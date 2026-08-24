@@ -1,0 +1,2419 @@
+<title>Lucenta</title>
+<meta name="description" content="Lucenta zeichnet dein Persönlichkeitsporträt anhand des wissenschaftlich fundierten Big-Five-Modells &mdash; keine Sternzeichen, keine Typ-Schubladen.">
+<meta property="og:title" content="Lucenta &mdash; dein wissenschaftliches Persönlichkeitsporträt">
+<meta property="og:description" content="50 Aussagen, ~5–7 Minuten, ein Porträt auf Basis des Big-Five-Modells. Vergleiche dein Ergebnis mit Freund:innen.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --paper:#F5F6EF;
+    --surface:#FFFFFF;
+    --surface-2:#EEF0E6;
+    --ink:#15201A;
+    --muted:#57655C;
+    --line:#DBDCCE;
+    --accent:#2F6F6A;
+    --accent-strong:#245854;
+    --accent-ink:#F5FBFA;
+    --accent-2:#C97A3C;
+    --accent-2-text:#9D5F2F;
+    --surface-3:#E7E9DC;
+    --shadow: 0 1px 2px rgba(21,32,25,.05), 0 12px 32px -12px rgba(21,32,25,.18);
+    --shadow-sm: 0 1px 2px rgba(21,32,25,.06);
+    --radius-l: 22px;
+    --radius-m: 14px;
+    --radius-s: 8px;
+    --serif: 'Fraunces', ui-serif, Georgia, serif;
+    --sans: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F1613;
+      --surface:#17211C;
+      --surface-2:#1D2822;
+      --ink:#ECEEE7;
+      --muted:#96A69C;
+      --line:#293630;
+      --accent:#5CB4AD;
+      --accent-strong:#7FC7C0;
+      --accent-ink:#08211E;
+      --accent-2:#E39A5C;
+      --accent-2-text:#E39A5C;
+      --surface-3:#24322B;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 16px 40px -14px rgba(0,0,0,.55);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1613;
+    --surface:#17211C;
+    --surface-2:#1D2822;
+    --ink:#ECEEE7;
+    --muted:#96A69C;
+    --line:#293630;
+    --accent:#5CB4AD;
+    --accent-strong:#7FC7C0;
+    --accent-ink:#08211E;
+    --accent-2:#E39A5C;
+    --accent-2-text:#E39A5C;
+    --surface-3:#24322B;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 16px 40px -14px rgba(0,0,0,.55);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--accent);color:var(--accent-ink);}
+  a{color:var(--accent-strong);}
+  button{font-family:inherit;}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;text-wrap:balance;margin:0;}
+  p{margin:0;line-height:1.6;}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+
+  #shell{
+    max-width:640px;
+    margin:0 auto;
+    padding:0 20px 80px;
+    min-height:100vh;
+    position:relative;
+  }
+
+  /* top focus-line: the "clarity" motif — sharpens as you progress */
+  #focusline{
+    position:sticky; top:0; z-index:30;
+    height:3px; width:100%;
+    background:var(--line);
+    margin-bottom:0;
+  }
+  .focusline-tick{
+    position:absolute; top:0; bottom:0; width:2px;
+    background:var(--paper); opacity:.55; z-index:2;
+  }
+  #focusline-fill{
+    position:relative; z-index:1;
+    height:100%; width:0%;
+    background:linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+    filter: blur(0px);
+    transition:width .4s ease;
+  }
+
+  header.top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 0 8px;
+  }
+  .wordmark{
+    font-family:var(--serif); font-size:20px; font-weight:600; letter-spacing:.01em;
+    display:flex; align-items:center; gap:8px;
+    background:none; border:none; padding:0; margin:0; color:inherit; cursor:pointer;
+  }
+  .wordmark:focus-visible{outline:2px solid var(--accent-strong);outline-offset:4px;}
+  .wordmark .dot{width:7px;height:7px;border-radius:50%;background:var(--accent-2);display:inline-block;}
+  .wordmark-beta{
+    font-family:var(--mono); font-size:9.5px; font-weight:600; letter-spacing:.04em;
+    text-transform:uppercase; color:var(--muted); border:1px solid var(--line);
+    border-radius:100px; padding:2px 7px; line-height:1.4;
+  }
+  .tagline{font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:.02em;}
+  .header-right{display:flex;align-items:center;gap:12px;}
+  .drawer-tab{
+    width:36px;height:36px;border-radius:50%;flex-shrink:0;
+    border:1px solid var(--line);background:var(--surface);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:border-color .15s ease,color .15s ease;
+  }
+  .drawer-tab:hover{border-color:var(--accent-strong);color:var(--accent-strong);}
+  .drawer-tab:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
+
+  #drawerScrim{
+    position:fixed;inset:0;background:rgba(8,12,10,.45);
+    opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:90;
+  }
+  #drawerScrim.show{opacity:1;pointer-events:auto;}
+  #drawerPanel{
+    position:fixed;top:0;right:0;height:100%;width:min(340px,86vw);
+    background:var(--surface);border-left:1px solid var(--line);
+    box-shadow:-16px 0 40px -16px rgba(0,0,0,.3);
+    transform:translateX(100%); visibility:hidden;
+    transition:transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear .32s;
+    z-index:91; display:flex; flex-direction:column; padding:22px 20px;
+    overflow-y:auto;
+  }
+  #drawerPanel.open{
+    transform:translateX(0); visibility:visible;
+    transition:transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear 0s;
+  }
+  @media (prefers-reduced-motion: reduce){ #drawerPanel{transition:visibility 0s;} #drawerScrim{transition:none;} }
+
+  #imgModalScrim{
+    position:fixed;inset:0;background:rgba(8,12,10,.55);
+    opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:95;
+  }
+  #imgModalScrim.show{opacity:1;pointer-events:auto;}
+  #imgModal{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-46%);width:min(380px,88vw);
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+    box-shadow:var(--shadow);padding:22px;z-index:96;opacity:0;visibility:hidden;
+    transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+    max-height:88vh;overflow-y:auto;
+  }
+  #imgModal.open{
+    opacity:1;visibility:visible;transform:translate(-50%,-50%);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  @media (prefers-reduced-motion: reduce){ #imgModal{transition:visibility 0s;} #imgModalScrim{transition:none;} }
+  .img-modal-inner{display:flex;flex-direction:column;gap:12px;position:relative;}
+  #shareImagePreview{width:100%;border-radius:var(--radius-m);border:1px solid var(--line);display:block;background:var(--surface-2);}
+  .img-modal-hint{font-size:12.5px;color:var(--muted);line-height:1.5;}
+  .img-modal-actions{display:flex;justify-content:flex-end;}
+  .drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+  .drawer-head h2{font-family:var(--serif);font-size:19px;font-weight:500;}
+  .drawer-close{
+    background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    transition:color .15s ease,background .15s ease;
+  }
+  .drawer-close:hover{color:var(--ink);background:var(--surface-2);}
+  .drawer-close:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .drawer-section{display:flex;flex-direction:column;gap:10px;}
+  .drawer-section + .drawer-section{margin-top:24px;padding-top:24px;border-top:1px solid var(--line);}
+  .drawer-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+  .drawer-copy{font-size:13.5px;color:var(--muted);line-height:1.55;}
+  .drawer-section .resume-card{margin-top:2px;box-shadow:none;}
+
+  .drawer-profile-row{
+    display:flex;align-items:center;gap:12px;width:100%;text-align:left;font-family:inherit;cursor:pointer;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:12px 14px;margin-bottom:22px;transition:border-color .15s ease;
+  }
+  .drawer-profile-row:hover{border-color:var(--accent-strong);}
+  .drawer-profile-row:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .drawer-profile-avatar{
+    width:42px;height:42px;border-radius:50%;flex-shrink:0;background:var(--accent);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;
+    background-size:cover;background-position:center;overflow:hidden;border:1px solid var(--line);
+  }
+  .drawer-profile-text{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+  .drawer-profile-text strong{font-family:var(--serif);font-weight:500;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .drawer-profile-text .l{font-size:12px;color:var(--muted);}
+  .drawer-profile-row .chev{color:var(--muted);flex-shrink:0;}
+
+  .view{display:none;}
+  .view.active{display:block; animation:rise .45s cubic-bezier(.2,.8,.2,1) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion: reduce){ .view.active{animation:none;} }
+
+  /* ---------- Landing ---------- */
+  .hero{padding:36px 0 8px;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--accent-strong); margin-bottom:14px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:'';width:16px;height:1px;background:var(--accent-strong);display:inline-block;}
+  .hero h1{font-size:clamp(30px,7vw,44px); line-height:1.08; letter-spacing:-.01em;}
+  .hero h1 em{font-style:italic;color:var(--accent-strong);}
+  .hero .sub{margin-top:16px;font-size:17px;color:var(--muted);max-width:52ch;}
+  .hero-note{margin-top:18px;border:1px solid var(--line);border-radius:var(--radius-m);padding:2px 14px;background:var(--surface);max-width:52ch;}
+  .hero-note summary{list-style:none;cursor:pointer;padding:12px 0;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px;color:var(--ink);font-weight:500;}
+  .hero-note summary::-webkit-details-marker{display:none;}
+  .hero-note summary .chev{color:var(--muted);flex-shrink:0;transition:transform .2s ease;}
+  .hero-note[open] summary .chev{transform:rotate(90deg);}
+  .hero-note summary:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .hero-note p{padding-bottom:14px;font-size:13.5px;color:var(--muted);line-height:1.55;}
+  .cta-row{margin-top:30px;display:flex;flex-direction:column;gap:10px;}
+  .btn{
+    appearance:none;border:none;cursor:pointer;
+    font-family:var(--sans);font-weight:600;font-size:15.5px;
+    padding:14px 22px;border-radius:100px;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:var(--shadow);background:var(--accent-strong);}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--accent-strong);color:var(--accent-strong);}
+  .btn-sm{padding:9px 16px;font-size:13.5px;border-radius:100px;}
+  .btn-hero{width:100%;justify-content:center;padding:19px 28px;font-size:17.5px;box-shadow:var(--shadow);}
+  .btn-hero:hover{transform:translateY(-1px);}
+  .meta-row{margin-top:22px;display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);font-family:var(--mono);}
+  .meta-row span{display:flex;align-items:flex-start;gap:6px;}
+  .meta-row .sw{width:6px;height:6px;border-radius:50%;background:var(--accent-2);flex-shrink:0;margin-top:5px;}
+
+  .resume-card{
+    margin-top:24px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:var(--shadow);
+  }
+  .resume-card .l{font-size:13.5px;color:var(--muted);}
+  .resume-card strong{font-family:var(--serif);font-size:16px;color:var(--ink);}
+
+  .why{margin-top:52px;border-top:1px solid var(--line);padding-top:28px;}
+  .why h2{font-size:20px;margin-bottom:12px;}
+  .why p{color:var(--muted);font-size:15px;max-width:56ch;}
+  .why p + p{margin-top:10px;}
+
+  .preview-card{
+    margin-top:26px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+    padding:20px;box-shadow:var(--shadow);
+  }
+  .preview-label{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center;gap:8px;}
+  .preview-tag{font-family:var(--sans);text-transform:none;letter-spacing:0;background:var(--surface-2);color:var(--accent-strong);border-radius:100px;padding:2px 9px;font-size:11px;font-weight:600;}
+  .preview-body{display:flex;align-items:center;gap:18px;margin-top:14px;}
+  .radar-wrap.preview-radar{max-width:130px;flex-shrink:0;margin:0;}
+  .preview-radar .radar-axis-label,.preview-radar .radar-axis-value{display:none;}
+  .preview-text{flex:1;min-width:0;}
+  .preview-title{font-family:var(--serif);font-size:18px;}
+  .preview-title .sep{color:var(--accent-2);}
+  .preview-text p{margin-top:8px;font-size:13px;color:var(--muted);line-height:1.55;}
+  @media (max-width:420px){ .preview-body{flex-direction:column;align-items:flex-start;} .radar-wrap.preview-radar{max-width:160px;align-self:center;} }
+
+  /* minmax(0,1fr) statt reinem 1fr: ohne die explizite 0-Minimalbreite erzwingt die
+     Grid-Spurbemessung pro Spalte mindestens die Min-Content-Breite ihres Inhalts, bevor der
+     restliche Platz gleichmäßig verteilt wird — lange Wörter wie "Gewissenhaftigkeit" hätten
+     dadurch eine breitere Box bekommen als kurze wie "Stabilität", obwohl beide Spalten
+     rechnerisch 1fr sind. minmax(0,1fr) erzwingt fünf wirklich gleich breite Boxen; die
+     bereits vorhandenen weichen Trennzeichen (&shy;) sorgen für sauberen Zeilenumbruch darin. */
+  .factsgrid{margin-top:28px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;}
+  .fact-col{display:flex;flex-direction:column;align-items:center;}
+  .fact-box{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-s);
+    padding:10px 6px;text-align:center;width:100%;box-sizing:border-box;
+  }
+  .factsgrid .k{font-family:var(--mono);font-size:11px;color:var(--muted);}
+  .factsgrid .v{font-family:var(--serif);font-size:15px;margin-top:2px;}
+  .factsgrid .en{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:5px;letter-spacing:.01em;}
+  @media (max-width:480px){
+    .factsgrid{gap:6px;}
+    .fact-box{padding:8px 3px;}
+    .factsgrid .k{font-size:10px;}
+    .factsgrid .v{font-size:11.5px;}
+    .factsgrid .en{font-size:8.5px;}
+  }
+  .acronym-note{margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.5;}
+  .acronym-note b{color:var(--ink);}
+
+  /* ---------- Quiz ---------- */
+  /* Der Fragebogen läuft 50x durch dieselbe Komposition — statt oben anzuhängen und darunter
+     bei kurzem Inhalt ins Leere zu laufen, wird der Fragenblock im verbleibenden Platz
+     vertikal zentriert. Bei sehr kurzen Viewports wächst die Box einfach normal mit. */
+  #view-quiz.active{display:flex;flex-direction:column;min-height:calc(100vh - 150px);}
+  .quiz-body{flex:1;display:flex;flex-direction:column;justify-content:safe center;}
+  .quiz-head{padding:28px 0 6px;display:flex;justify-content:space-between;align-items:baseline;}
+  .qcount{font-family:var(--mono);font-size:13px;color:var(--muted);}
+  .qcard{
+    margin-top:18px;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius-l);padding:34px 26px;box-shadow:var(--shadow);
+    min-height:180px;display:flex;align-items:center;
+  }
+  .qtext{font-family:var(--serif);font-size:clamp(21px,4.4vw,27px);line-height:1.3;letter-spacing:-.005em;}
+  .qtext::before{content:'„';color:var(--accent-2);}
+  .qtext::after{content:'“';color:var(--accent-2);}
+
+  .scale{margin-top:22px;}
+  .scale-row{display:flex;gap:8px;justify-content:space-between;}
+  .scale-btn{
+    flex:1;aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line);
+    background:var(--surface);cursor:pointer;transition:all .15s ease;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .scale-btn .fill{width:0%;height:0%;border-radius:50%;background:var(--accent);transition:all .15s ease;}
+  .scale-btn:hover{border-color:var(--accent-strong);}
+  .scale-btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
+  .scale-btn.picked{border-color:var(--accent);}
+  .scale-btn.picked .fill{width:62%;height:62%;}
+  .scale-labels{display:flex;justify-content:space-between;margin-top:10px;font-size:11.5px;color:var(--muted);}
+  .scale-labels span:nth-child(2),.scale-labels span:nth-child(3),.scale-labels span:nth-child(4){display:none;}
+  .scale-labels span{max-width:80px;}
+  .scale-labels span:last-child{text-align:right;}
+
+  .quiz-nav{margin-top:22px;display:flex;justify-content:space-between;align-items:center;}
+
+  /* ---------- Result ---------- */
+  .result-head{padding:30px 0 4px;text-align:center;}
+  .result-head .eyebrow{justify-content:center;}
+  .archetype{font-size:clamp(26px,6.4vw,34px);margin-top:6px;}
+  .archetype .sep{color:var(--accent-2);font-style:normal;}
+  .motto{margin-top:8px;font-family:var(--mono);font-size:13px;color:var(--accent-2-text);letter-spacing:.01em;}
+
+  .synthesis{
+    margin:22px auto 0;max-width:46ch;text-align:center;
+    font-family:var(--serif);font-size:19px;line-height:1.55;color:var(--ink);
+  }
+
+  .delta-card{
+    margin:22px auto 0;max-width:400px;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius-m);padding:16px 18px;
+  }
+  .delta-head{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+  .delta-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px;border-top:1px solid var(--line);}
+  .delta-head + .delta-row{border-top:none;margin-top:8px;}
+  .delta-move{font-family:var(--mono);font-size:12.5px;}
+  .delta-up, .delta-down{color:var(--ink);font-weight:600;}
+  .delta-flat{color:var(--muted);}
+  .delta-note{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5;}
+  .compat-note{margin-top:2px;font-size:12.5px;color:var(--muted);line-height:1.5;padding:0 2px;}
+
+  .radar-wrap{margin:26px auto 0;max-width:320px;}
+  .radar-wrap svg{width:100%;height:auto;overflow:visible;}
+  .radar-wrap svg polygon:last-of-type{transform-origin:center;transform-box:fill-box;animation:radar-in .7s cubic-bezier(.2,.8,.2,1) both;}
+  @keyframes radar-in{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+  @media (prefers-reduced-motion: reduce){ .radar-wrap svg polygon:last-of-type{animation:none;} }
+  .radar-axis-label{font-family:var(--mono);font-size:9.5px;fill:var(--muted);}
+  .radar-axis-value{font-family:var(--serif);font-size:13px;fill:var(--ink);font-weight:600;}
+  /* Beim Zwei-Personen-Vergleich müssen die beiden Zahlen pro Achse farblich unterscheidbar sein
+     (oben: eigener Wert, unten: Wert der anderen Person) — dieselben Farbfamilien wie Polygon und
+     Legende darunter (Teal = ich, Amber = andere Person). Compound-Selektor, damit die Regel die
+     .radar-axis-value-Basisregel oben zuverlässig schlägt, unabhängig von der Reihenfolge im Stylesheet. */
+  .radar-axis-value.radar-axis-value-me{fill:var(--accent-strong);}
+  .radar-axis-value.radar-axis-value-other{fill:var(--accent-2-text);}
+
+  .share-card{
+    margin-top:30px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+    padding:26px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .share-card::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%);
+    pointer-events:none;
+  }
+  .share-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:relative;}
+  .share-brand{font-family:var(--serif);font-size:14px;color:var(--muted);}
+  .share-title{font-family:var(--serif);font-size:21px;margin-top:8px;position:relative;}
+  .share-scores{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;position:relative;}
+  .chip{
+    font-family:var(--mono);font-size:11.5px;background:var(--surface-2);border:1px solid var(--line);
+    border-radius:100px;padding:5px 10px;display:flex;gap:6px;
+  }
+  .chip b{color:var(--accent-strong);}
+  .share-actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;position:relative;}
+  .code-box{
+    margin-top:10px;font-family:var(--mono);font-size:13px;background:var(--surface-2);
+    border:1px dashed var(--line);border-radius:var(--radius-s);padding:10px 12px;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;position:relative;
+  }
+  .code-note{margin-top:6px;font-size:11.5px;color:var(--muted);line-height:1.5;font-family:var(--sans);}
+
+  /* ---------- Precision gauge (data-dense stat visual, used in stat-strip + trait cards) ---------- */
+  .gauge-track{position:relative;height:8px;border-radius:100px;background:var(--surface-2);margin-top:10px;}
+  .gauge-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--accent-strong));border-radius:100px;transition:width .9s cubic-bezier(.2,.8,.2,1);}
+  .gauge-tick{position:absolute;top:-1px;bottom:-1px;width:1px;background:var(--paper);opacity:.65;}
+  .gauge-marker{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2.5px solid var(--accent-strong);transform:translate(-50%,-50%);box-shadow:var(--shadow-sm);transition:left .9s cubic-bezier(.2,.8,.2,1);}
+  @media (prefers-reduced-motion: reduce){ .gauge-fill,.gauge-marker{transition:none;} }
+
+  .stat-strip{margin-top:24px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;}
+  @media (max-width:480px){ .stat-strip{grid-template-columns:repeat(3,minmax(0,1fr));} }
+  .stat-tile{
+    background:var(--surface-3);border:1px solid var(--line);border-radius:var(--radius-s);
+    padding:13px 9px 12px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;
+    opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @media (prefers-reduced-motion: reduce){ .stat-tile{animation:none;opacity:1;} }
+  .stat-tile .stat-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+  .stat-tile .stat-num{font-family:var(--mono);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink);margin-top:2px;}
+  .stat-tile .gauge-track{width:100%;height:5px;margin-top:8px;}
+  .stat-tile .gauge-marker{width:9px;height:9px;}
+  .stat-tile,.history-row{transition:border-color .15s ease, transform .15s ease;}
+  .stat-tile:hover,.history-row:hover{border-color:var(--accent-strong);transform:translateY(-1px);}
+
+  /* ---------- Compatibility score ring ---------- */
+  .compat-score{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:2px;}
+  .ring-track{stroke:var(--surface-2);}
+  .ring-fill{stroke:var(--accent);transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1);}
+  @media (prefers-reduced-motion: reduce){ .ring-fill{transition:none;} }
+  .ring-text{font-family:var(--mono);font-size:27px;font-weight:700;fill:var(--ink);}
+  .ring-label{font-family:var(--mono);font-size:10px;fill:var(--muted);letter-spacing:.04em;text-transform:uppercase;}
+  .compat-score-label{font-family:var(--serif);font-size:16px;}
+
+  /* ---------- Trend / history ---------- */
+  .trend-list{margin-top:22px;display:flex;flex-direction:column;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:20px 18px;}
+  .trend-row{display:flex;align-items:center;gap:12px;}
+  .trend-label{font-family:var(--mono);font-size:11px;color:var(--muted);width:64px;flex-shrink:0;}
+  .trend-row svg{flex:1;min-width:0;display:block;}
+  .trend-val{font-family:var(--mono);font-size:14.5px;font-weight:600;width:28px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums;}
+  .history-list{margin-top:14px;display:flex;flex-direction:column;gap:8px;}
+  .history-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-s);padding:11px 14px;font-size:13.5px;}
+  .history-date{font-family:var(--mono);color:var(--muted);flex-shrink:0;font-size:12px;}
+  .history-title{font-family:var(--serif);text-align:right;}
+
+  /* ---------- Tagesform / State-Check: kurzfristiger Zustand (Energie/Stimmung), bewusst getrennt
+     vom stabilen Trait-Ergebnis oben ---------- */
+  .state-check-card{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:20px 18px;display:flex;flex-direction:column;gap:22px;}
+  .state-today-note{margin:0;font-size:12.5px;color:var(--muted);}
+  .state-question{display:flex;flex-direction:column;gap:8px;}
+  .state-q-label{font-family:var(--serif);font-size:16px;}
+  .state-q-sub{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);}
+
+  /* ---------- Processing overlay: brief "measuring" moment between quiz and reveal ---------- */
+  #processingOverlay{
+    position:fixed;inset:0;z-index:80;background:var(--paper);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  #processingOverlay.show{opacity:1;pointer-events:auto;}
+  .processing-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);animation:pulse-dot 1s ease-in-out infinite;}
+  @keyframes pulse-dot{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.6);opacity:.55;}}
+  .processing-text{font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.02em;}
+  @media (prefers-reduced-motion: reduce){ .processing-dot{animation:none;} }
+
+  @keyframes card-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  .traits{margin-top:34px;display:flex;flex-direction:column;gap:14px;}
+  .trait-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:18px 18px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;}
+  @media (prefers-reduced-motion: reduce){ .trait-card{animation:none;opacity:1;} }
+  .trait-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .trait-name{font-family:var(--serif);font-size:17px;}
+  .trait-score{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .trait-teaser{margin-top:10px;font-size:14px;color:var(--muted);}
+  .trait-sections{margin-top:14px;display:flex;flex-direction:column;gap:12px;}
+  .trait-section-label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin-bottom:4px;}
+  .trait-section p{font-size:14.5px;color:var(--ink);line-height:1.6;}
+
+  .unlock-ribbon{
+    margin-top:34px;display:flex;align-items:flex-start;gap:10px;
+    background:color-mix(in srgb, var(--accent-2) 14%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--accent-2) 40%, var(--line));
+    border-radius:var(--radius-m);padding:12px 14px;font-size:13.5px;
+  }
+  .unlock-ribbon b{color:var(--accent-2-text);}
+  .storage-warning{
+    margin-top:24px;display:flex;align-items:flex-start;gap:10px;
+    background:color-mix(in srgb, var(--accent-2) 14%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--accent-2) 40%, var(--line));
+    border-radius:var(--radius-m);padding:12px 14px;font-size:13.5px;line-height:1.5;
+  }
+  .storage-warning b{color:var(--accent-2-text);}
+  .unlock-ribbon svg{flex-shrink:0;color:var(--accent-2);margin-top:2px;}
+
+  .radar-note{margin-top:10px;text-align:center;font-size:11.5px;color:var(--muted);max-width:280px;margin-left:auto;margin-right:auto;line-height:1.5;}
+
+  .section-title{margin-top:40px;font-size:19px;font-family:var(--sans);font-weight:400;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .section-title .n{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:2px 8px;}
+
+  /* ---------- Archetypes overview ---------- */
+  .archetypes-head{padding:22px 0 4px;}
+  .archetypes-head h1{font-size:clamp(24px,6vw,32px);line-height:1.15;margin-top:8px;letter-spacing:-.01em;}
+  .archetypes-head p{margin-top:14px;font-size:14.5px;color:var(--muted);max-width:56ch;line-height:1.6;}
+  .archetypes-head b{color:var(--ink);}
+  .archetype-groups{margin-top:26px;display:flex;flex-direction:column;gap:12px;}
+  .role-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:16px 18px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;transition:border-color .15s ease;}
+  .role-card:hover{border-color:var(--accent-strong);}
+  @media (prefers-reduced-motion: reduce){ .role-card{animation:none;opacity:1;} }
+  .role-tag{
+    font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .role-tag-high{color:var(--accent-strong);}
+  .role-tag-low{color:var(--accent-2-text);}
+  .role-title{font-family:var(--serif);font-size:17px;}
+  .role-motto{margin-top:4px;font-family:var(--mono);font-size:12.5px;color:var(--accent-2-text);letter-spacing:.01em;}
+  .role-desc{margin-top:10px;font-size:14px;color:var(--muted);line-height:1.55;}
+
+  .profile-head{padding:22px 0 4px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .avatar-wrap{position:relative;width:96px;height:96px;}
+  .avatar{
+    width:96px;height:96px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:34px;
+    background-size:cover;background-position:center;border:1px solid var(--line);overflow:hidden;
+  }
+  .avatar-edit{
+    position:absolute;right:-2px;bottom:-2px;width:32px;height:32px;border-radius:50%;
+    background:var(--surface);border:1px solid var(--line);color:var(--muted);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);
+    transition:color .15s ease,border-color .15s ease;
+  }
+  .avatar-edit:hover{color:var(--accent-strong);border-color:var(--accent-strong);}
+  .avatar-edit:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .profile-remove-photo{
+    margin-top:10px;background:none;border:none;color:var(--muted);font-size:12.5px;
+    text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-family:inherit;
+  }
+  .profile-remove-photo:hover{color:var(--ink);}
+  .profile-name-label{margin-top:20px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+  .name-input{
+    margin-top:6px;border:none;border-bottom:1px solid var(--line);background:none;
+    font-family:var(--serif);font-size:22px;color:var(--ink);text-align:center;padding:4px 2px 8px;
+    width:100%;max-width:280px;
+  }
+  .name-input:focus{outline:none;border-bottom-color:var(--accent-strong);}
+  .name-input::placeholder{color:var(--muted);opacity:.7;}
+  .profile-note{margin-top:14px;font-size:12.5px;color:var(--muted);max-width:38ch;line-height:1.5;}
+  .profile-empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius-m);padding:20px 18px;margin-top:14px;text-align:center;}
+  .profile-empty p{color:var(--muted);font-size:14px;}
+  .profile-empty .btn{margin-top:14px;}
+  .profile-result-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:16px 18px;margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+  .profile-result-card strong{font-family:var(--serif);font-size:17px;}
+  .profile-result-card .l{font-size:12.5px;color:var(--muted);margin-top:2px;}
+
+  .theme-toggle{margin-top:14px;display:flex;gap:8px;}
+  .theme-btn{
+    flex:1;padding:11px 8px;border-radius:var(--radius-s);border:1px solid var(--line);
+    background:var(--surface);color:var(--muted);font-family:inherit;font-size:13.5px;cursor:pointer;
+    transition:border-color .15s ease,color .15s ease,background .15s ease;
+  }
+  .theme-btn[aria-pressed="true"]{border-color:var(--accent-strong);color:var(--ink);background:var(--surface-2);font-weight:600;}
+  .theme-btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .danger-btn{border-color:var(--accent-2);color:var(--accent-2-text);}
+  .danger-btn:hover{background:color-mix(in srgb, var(--accent-2) 12%, transparent);}
+  .danger-btn.armed{background:color-mix(in srgb, var(--accent-2) 10%, var(--surface));border-color:var(--accent-2);color:var(--accent-2-text);font-weight:600;}
+
+  .settings-hint{margin-top:8px;font-size:12.5px;color:var(--muted);}
+  .settings-row{
+    margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);padding:14px 16px;
+  }
+  .settings-row .l{font-size:14px;}
+  .settings-datalist{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
+  .settings-datalist li{font-size:13.5px;color:var(--ink);padding:9px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-s);}
+  .settings-empty{margin-top:12px;font-size:13.5px;color:var(--muted);font-style:italic;}
+  .settings-restore{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);}
+  .settings-restore-label{font-family:var(--serif);font-size:14.5px;color:var(--ink);}
+  .settings-restore-desc{margin-top:4px;font-size:12.5px;color:var(--muted);line-height:1.5;}
+  .settings-restore-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
+  .settings-restore-row .field{flex:1;min-width:160px;}
+
+  .settings-group{
+    margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:20px 20px 22px;
+  }
+  .archetypes-head + .settings-group{margin-top:26px;}
+  .settings-group h2{font-family:var(--serif);font-size:17px;font-weight:500;margin:0;}
+  .settings-group-desc{margin-top:5px;font-size:12.5px;color:var(--muted);line-height:1.55;}
+
+  .settings-account-row{margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .settings-account-avatar{
+    width:48px;height:48px;border-radius:50%;flex-shrink:0;background:var(--accent);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:17px;
+    background-size:cover;background-position:center;overflow:hidden;border:1px solid var(--line);
+  }
+  .settings-account-info{flex:1;min-width:120px;}
+  .settings-account-info strong{font-family:var(--serif);font-weight:500;font-size:16px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .settings-account-info .l{font-size:12.5px;color:var(--muted);margin-top:2px;}
+
+  .faq-item{border-top:1px solid var(--line);}
+  .faq-item:first-child{border-top:none;}
+  .faq-item summary{
+    list-style:none;cursor:pointer;padding:13px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;
+    font-size:14px;color:var(--ink);
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary .chev{color:var(--muted);flex-shrink:0;transition:transform .2s ease;}
+  .faq-item[open] summary .chev{transform:rotate(90deg);}
+  .faq-item summary:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .faq-item p{margin:0 0 14px;font-size:13.5px;color:var(--muted);line-height:1.55;}
+
+  .compare-box{
+    margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:18px;display:flex;flex-direction:column;gap:12px;
+  }
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:12.5px;color:var(--muted);font-family:var(--mono);}
+  .field input{
+    font-family:var(--mono);font-size:14px;padding:10px 12px;border-radius:var(--radius-s);
+    border:1px solid var(--line);background:var(--surface-2);color:var(--ink);
+  }
+  .field input:focus-visible{outline:2px solid var(--accent-strong);outline-offset:1px;}
+  .compat-result{margin-top:6px;display:flex;flex-direction:column;gap:10px;}
+  .compat-radar{margin:6px auto 0;max-width:280px;}
+  .compat-legend{display:flex;justify-content:center;gap:18px;margin:12px 0 4px;font-size:12.5px;color:var(--muted);}
+  .compat-legend span{display:flex;align-items:center;gap:6px;}
+  .compat-legend .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .dot-me{background:var(--accent);}
+  .dot-other{background:var(--accent-2);}
+  .compat-line{font-size:14px;line-height:1.6;padding:12px 14px;background:var(--surface-2);border-radius:var(--radius-s);}
+  .compat-line b{color:var(--accent-strong);}
+
+  footer.appfoot{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--paper);font-size:13.5px;padding:10px 16px;border-radius:100px;
+    box-shadow:var(--shadow);opacity:0;transition:all .25s ease;pointer-events:none;z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:100px;}
+</style>
+<script>(function(){document.documentElement.lang='de';try{var t=localStorage.getItem('lucenta_theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+
+<div id="shell">
+  <div id="focusline"><div id="focusline-fill"></div><div class="focusline-tick" style="left:25%"></div><div class="focusline-tick" style="left:50%"></div><div class="focusline-tick" style="left:75%"></div></div>
+  <header class="top">
+    <button type="button" class="wordmark" id="btnHome"><span class="dot"></span>Lucenta<span class="wordmark-beta">Beta</span></button>
+    <div class="header-right">
+      <div class="tagline" id="viewLabel">SELBSTPORTRÄT</div>
+      <button type="button" class="drawer-tab" id="btnDrawerToggle" aria-haspopup="dialog" aria-expanded="false" aria-controls="drawerPanel" aria-label="Weitere Funktionen: Profil, Ergebnis vergleichen, Archetypen, Einstellungen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="15" y1="4" x2="15" y2="20"></line></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- LANDING -->
+  <section class="view active" id="view-landing">
+    <div class="hero">
+      <div class="eyebrow">Big Five</div>
+      <h1>Lern dich kennen &mdash; <em>mit Wissenschaft</em>, nicht mit Sternzeichen.</h1>
+      <p class="sub">Lucenta zeichnet dein Persönlichkeitsporträt anhand des Big-Five-Modells &mdash; dem Modell mit der stärksten empirischen Grundlage in der Persönlichkeitspsychologie. Kein Horoskop, kein Vier-Buchstaben-Typ. Ein Spektrum, das wirklich zu dir passt.</p>
+      <details class="hero-note">
+        <summary>Was unterscheidet das von einem MBTI-Test?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+        <p>MBTI sortiert dich in eine von 16 festen Schubladen &mdash; ohne ausreichende wissenschaftliche Grundlage, und rund die Hälfte der Menschen bekommt bei einer Wiederholung einen anderen Typ zugewiesen. Das Big-Five-Modell misst dagegen fünf Dimensionen als fließendes Spektrum, seit den 1980ern in hunderten Studien über Kulturen hinweg repliziert.</p>
+      </details>
+      <div class="cta-row">
+        <button class="btn btn-primary btn-hero" id="btnStart">Test starten →</button>
+        <button type="button" class="btn btn-ghost btn-hero" id="btnHeroSecondary" style="display:none;"></button>
+      </div>
+      <div class="meta-row">
+        <span><span class="sw"></span>50 Aussagen</span>
+        <span><span class="sw"></span>~5&ndash;7 Minuten</span>
+        <span><span class="sw"></span>5 Dimensionen</span>
+        <span><span class="sw"></span>Kostenlos starten</span>
+        <span><span class="sw"></span>Läuft nur auf deinem Gerät &mdash; keine Registrierung</span>
+      </div>
+      <div class="storage-warning" id="storageWarning" style="display:none;" role="status">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:1px;"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <span><b>Speichern nicht möglich:</b> Dieser Browser-Modus (z. B. privates Surfen mit deaktiviertem Speicher) verhindert, dass Lucenta deinen Fortschritt oder dein Ergebnis merkt. Du kannst den Test trotzdem machen, solltest ihn aber am Stück abschließen und deinen Code notieren.</span>
+      </div>
+    </div>
+
+    <div class="why">
+      <h2>Warum kein MBTI, kein Horoskop?</h2>
+      <p>Typ-Tests wie MBTI sortieren dich in eine von 16 Schubladen &mdash; obwohl die Forschung zeigt, dass Persönlichkeit fließend ist, nicht kategorial. Sternzeichen haben keinerlei nachgewiesenen Zusammenhang mit Charakterzügen.</p>
+      <p>Die Big-Five-Dimensionen (Extraversion, Verträglichkeit, Gewissenhaftigkeit, emotionale Stabilität, Offenheit) sind seit den 1980ern in hunderten Studien über Kulturen hinweg repliziert &mdash; sie sagen tatsächlich etwas über Verhalten, Beziehungen und Wohlbefinden voraus.</p>
+    </div>
+
+    <div class="preview-card">
+      <div class="preview-label">So sieht dein Ergebnis aus <span class="preview-tag">Beispiel</span></div>
+      <div class="preview-body">
+        <div class="radar-wrap preview-radar" id="previewRadar"></div>
+        <div class="preview-text">
+          <div class="preview-title">Visionär:in <span class="sep">·</span> gesellig</div>
+          <p>Radar-Chart über alle 5 Dimensionen, ein zusammenhängendes Kurzporträt, ausführliche Berichte je Dimension &mdash; und ein Code zum Vergleichen mit Freund:innen.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="factsgrid">
+      <div class="fact-col"><div class="fact-box"><div class="k">O</div><div class="v">Offen&shy;heit</div></div><div class="en">Openness</div></div>
+      <div class="fact-col"><div class="fact-box"><div class="k">C</div><div class="v">Gewissen&shy;haftig&shy;keit</div></div><div class="en">Conscientious&shy;ness</div></div>
+      <div class="fact-col"><div class="fact-box"><div class="k">E</div><div class="v">Extra&shy;version</div></div><div class="en">Extraversion</div></div>
+      <div class="fact-col"><div class="fact-box"><div class="k">A</div><div class="v">Verträg&shy;lich&shy;keit</div></div><div class="en">Agreeableness</div></div>
+      <div class="fact-col"><div class="fact-box"><div class="k">N</div><div class="v">Stabili&shy;tät</div></div><div class="en">Neuroticism</div></div>
+    </div>
+    <p class="acronym-note">Das Akronym <b>OCEAN</b> ist der international gebräuchliche Name des Modells &mdash; die Buchstaben folgen den englischen Fachbegriffen (klein darunter). Bei <b>N</b> weichen wir bewusst von der deutschen Direktübersetzung „Neurotizismus“ ab und nennen die Dimension „Emotionale Stabilität“ &mdash; gleiche Skala, nur ohne die defizitorientierte Sprache.</p>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="view" id="view-quiz">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackLanding">← Abbrechen</button>
+      <div class="qcount mono"><span id="qNow">1</span> / 50</div>
+    </div>
+    <div class="quiz-body">
+      <div class="qcard"><p class="qtext" id="qText" aria-live="polite">&mdash;</p></div>
+      <div class="scale">
+        <div class="scale-row" id="scaleRow" role="group" aria-label="Antwort von 1 (trifft gar nicht zu) bis 5 (trifft voll zu)"></div>
+        <div class="scale-labels"><span>trifft gar nicht zu</span><span></span><span></span><span></span><span>trifft voll zu</span></div>
+      </div>
+      <div class="quiz-nav">
+        <button class="btn btn-ghost btn-sm" id="btnPrev">← Zurück</button>
+        <span class="tagline" id="qHint">Tippe eine Antwort an</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="view" id="view-result">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromResult">← Start</button>
+      <button class="btn btn-ghost btn-sm" id="btnRetakeTop">Test wiederholen</button>
+    </div>
+    <div class="result-head">
+      <div class="eyebrow">Dein Porträt</div>
+      <h1 class="archetype" id="archTitle">&mdash;</h1>
+      <p class="motto" id="archMotto">&mdash;</p>
+    </div>
+
+    <p class="synthesis" id="synthesis"></p>
+
+    <div class="stat-strip" id="statStrip"></div>
+
+    <div class="delta-card" id="deltaCard" style="display:none;" aria-live="polite"></div>
+
+    <div class="radar-wrap" id="radarWrap"></div>
+    <p class="radar-note">Werte auf einer 0–100-Skala relativ zu den 50 Aussagen – kein Vergleich mit einer Bevölkerungsnorm.</p>
+
+    <div class="share-card">
+      <div class="share-top">
+        <div>
+          <div class="share-brand">Lucenta &middot; Ergebniskarte</div>
+          <div class="share-title" id="shareTitle">&mdash;</div>
+        </div>
+      </div>
+      <div class="share-scores" id="shareChips"></div>
+      <div class="share-actions">
+        <button class="btn btn-primary btn-sm" id="btnShare">Ergebnis teilen</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnShareImage">Bild erstellen</button>
+        <button class="btn btn-ghost btn-sm" id="btnRetake">Test wiederholen</button>
+      </div>
+      <div class="code-box">
+        <span>Dein Code: <b class="mono" id="myCode">&mdash;</b></span>
+        <button class="btn btn-ghost btn-sm" id="btnCopyCode">Kopieren</button>
+      </div>
+      <p class="code-note">Der Code enthält dein vollständiges Ergebnis in allen fünf Dimensionen — teile ihn nur mit Personen, denen du es zeigen möchtest. Er eignet sich auch als Sicherung: auf einem neuen Gerät unter Einstellungen → Daten &amp; Datenschutz wiederherstellbar.</p>
+    </div>
+
+    <h2 class="section-title">Deine fünf Dimensionen <span class="n">voller Bericht</span></h2>
+    <div class="unlock-ribbon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 7.5-2"></path></svg>
+      <span><b>Kostenlos freigeschaltet:</b> Der vollständige Bericht ist aktuell für alle kostenlos zugänglich &mdash; regulär Teil von Lucenta+ (4,99&nbsp;€ einmalig).</span>
+    </div>
+    <div class="traits" id="traitsList"></div>
+
+    <h2 class="section-title" id="compareAnchor">Kompatibilität <span class="n">optional</span></h2>
+    <p style="color:var(--muted);font-size:14px;margin-top:8px;">Vergleiche dein Profil mit dem einer anderen Person &mdash; z. B. Partner:in, beste:r Freund:in oder Familie. Beide Codes eintragen, fertig.</p>
+    <div class="compare-box">
+      <div class="field"><label for="cmpMe">Dein Code</label><input type="text" id="cmpMe" maxlength="12" placeholder="z. B. 1a2b3c4d5e"></div>
+      <div class="field"><label for="cmpOther">Code der anderen Person</label><input type="text" id="cmpOther" maxlength="12" placeholder="Code einfügen"></div>
+      <button class="btn btn-primary btn-sm" id="btnCompare" style="align-self:flex-start;">Vergleichen</button>
+      <div class="compat-result" id="compatResult" aria-live="polite"></div>
+    </div>
+
+    <footer class="appfoot">
+      <span>Lucenta &middot; Big-Five-Modell (<a href="https://ipip.ori.org/new_ipip-50-item-scale.htm" target="_blank" rel="noopener">IPIP</a>)</span>
+      <span>Kein klinisches Instrument &mdash; dient der Selbstreflexion.</span>
+    </footer>
+  </section>
+
+  <!-- ARCHETYPES OVERVIEW -->
+  <section class="view" id="view-archetypes">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromArchetypes">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow">Zehn Grundrollen</div>
+      <h1>Die Rollen, aus denen sich dein Titel zusammensetzt</h1>
+      <p>Anders als bei MBTI gibt es hier keine festen Schubladen. Diese zehn Rollen sind die Grundbausteine &mdash; dein tatsächlicher Titel kombiniert immer eine davon mit einer zweiten, feineren Ausprägung aus einer anderen Dimension (macht insgesamt <b id="archTotalCount">&mdash;</b> mögliche Kombinationen). Das eigentliche Ergebnis bleibt aber immer das Spektrum darunter: fünf Zahlen zwischen 0 und 100, kein fester Typ.</p>
+    </div>
+    <div class="archetype-groups" id="archetypeGroups"></div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="view" id="view-history">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromHistory">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow">Verlauf</div>
+      <h1>Wie sich dein Profil über die Zeit entwickelt</h1>
+      <p>Big-Five-Dimensionen gelten auf Wochensicht als stabil — ein echter Trend zeigt sich erst über mehrere Monate hinweg, nicht von einem Durchlauf zum nächsten. Die letzten <b id="historyMaxCount">&mdash;</b> Testdurchläufe auf diesem Gerät fließen hier ein.</p>
+    </div>
+    <div id="historyContent"></div>
+  </section>
+
+  <!-- STATE CHECK -->
+  <section class="view" id="view-state">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromState">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow">Tagesform</div>
+      <h1>Wie geht es dir gerade?</h1>
+      <p>Deine fünf OCEAN-Dimensionen sind stabile Eigenschaften und ändern sich nicht von Tag zu Tag. Stimmung und Energie dagegen schon — das ist ein eigener, kurzfristiger Zustand, kein neues Testergebnis. Ein kurzer täglicher Check macht sichtbar, wie sich das über die Zeit bewegt, unabhängig von deinem Profil.</p>
+    </div>
+
+    <div class="state-check-card">
+      <p class="state-today-note" id="stateTodayNote"></p>
+      <div class="state-question">
+        <div class="state-q-label">Energie</div>
+        <div class="state-q-sub"><span>Erschöpft</span><span>Voller Energie</span></div>
+        <div class="scale-row" id="stateEnergyRow" role="group" aria-label="Energie von 1 (erschöpft) bis 5 (voller Energie)"></div>
+      </div>
+      <div class="state-question">
+        <div class="state-q-label">Stimmung</div>
+        <div class="state-q-sub"><span>Angespannt</span><span>Entspannt</span></div>
+        <div class="scale-row" id="stateValenceRow" role="group" aria-label="Stimmung von 1 (angespannt) bis 5 (entspannt)"></div>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm" id="btnStateSave" style="align-self:flex-start;">Speichern</button>
+    </div>
+
+    <div id="stateTrendContent"></div>
+  </section>
+
+  <!-- PROFILE -->
+  <section class="view" id="view-profile">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromProfile">← Start</button>
+    </div>
+    <div class="profile-head">
+      <div class="avatar-wrap">
+        <div class="avatar" id="profileAvatar" aria-hidden="true"></div>
+        <button type="button" class="avatar-edit" id="btnAvatarEdit" aria-label="Profilbild ändern">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+        </button>
+        <input type="file" accept="image/*" id="avatarFileInput" style="display:none;">
+      </div>
+      <button type="button" class="profile-remove-photo" id="btnAvatarRemove" style="display:none;">Bild entfernen</button>
+      <label class="profile-name-label" for="profileName">Name</label>
+      <input type="text" id="profileName" class="name-input" placeholder="Dein Name" maxlength="30" autocomplete="off">
+      <p class="profile-note">Nur auf diesem Gerät gespeichert &mdash; keine Registrierung, kein Abgleich mit einem Server.</p>
+    </div>
+
+    <h2 class="section-title">Dein Ergebnis</h2>
+    <div id="profileResultBlock"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="view" id="view-settings">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromSettings">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow">Einstellungen</div>
+      <h1>Konto, Darstellung &amp; mehr</h1>
+    </div>
+
+    <div class="settings-group">
+      <h2>Konto</h2>
+      <p class="settings-group-desc">Name und Bild &mdash; ausschließlich auf diesem Gerät, kein Login.</p>
+      <div class="settings-account-row">
+        <div class="settings-account-avatar" id="settingsAvatar" aria-hidden="true"></div>
+        <div class="settings-account-info">
+          <strong id="settingsAccountName">Profil</strong>
+          <div class="l" id="settingsAccountSub">Noch kein Name gesetzt</div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnSettingsEditProfile">Profil bearbeiten</button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h2>Darstellung</h2>
+      <div class="theme-toggle" role="group" aria-label="Darstellung wählen">
+        <button type="button" class="theme-btn" id="themeSystem" data-mode="system" aria-pressed="false">System</button>
+        <button type="button" class="theme-btn" id="themeLight" data-mode="light" aria-pressed="false">Hell</button>
+        <button type="button" class="theme-btn" id="themeDark" data-mode="dark" aria-pressed="false">Dunkel</button>
+      </div>
+      <p class="settings-hint">„System&ldquo; übernimmt automatisch die Einstellung deines Geräts.</p>
+    </div>
+
+    <div class="settings-group">
+      <h2>Test</h2>
+      <div class="settings-row">
+        <div class="l" id="settingsTestStatus">Gerade kein unterbrochener Test.</div>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnDiscardProgress" style="display:none;">Verwerfen</button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h2>Daten &amp; Datenschutz</h2>
+      <p class="settings-group-desc">Lucenta läuft vollständig auf diesem Gerät. Es gibt kein Konto beim Anbieter, keinen Server und keinen Abgleich in einer Cloud &mdash; alles unten bleibt ausschließlich hier gespeichert, bis du es löschst.</p>
+      <ul class="settings-datalist" id="settingsDataList"></ul>
+      <p class="settings-empty" id="settingsEmptyNote">Aktuell ist nichts gespeichert außer deiner Darstellung.</p>
+      <div class="settings-restore">
+        <div class="settings-restore-label">Ergebnis wiederherstellen</div>
+        <p class="settings-restore-desc">Hast du deinen 10-stelligen Ergebnis-Code von einem anderen Gerät notiert? Hier eingeben, um ihn hier wiederherzustellen &mdash; so lässt sich ein Ergebnis auch ohne Konto auf ein neues Gerät mitnehmen.</p>
+        <div class="settings-restore-row">
+          <div class="field"><input type="text" id="restoreCodeInput" maxlength="12" placeholder="Code einfügen" aria-label="Ergebnis-Code zum Wiederherstellen"></div>
+          <button type="button" class="btn btn-ghost btn-sm" id="btnRestoreCode">Wiederherstellen</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm danger-btn" id="btnResetData" aria-live="polite" style="margin-top:14px;">Eigene Daten zurücksetzen</button>
+    </div>
+
+    <div class="settings-group">
+      <h2>Hilfe</h2>
+      <div class="faq-item-list">
+        <details class="faq-item">
+          <summary>Wie wird mein Ergebnis berechnet?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p>Aus 50 wissenschaftlich validierten Aussagen (IPIP Big-Five-Modell). Jede Antwort fließt in eine von fünf Dimensionen ein; das Ergebnis zeigt deine Ausprägung auf einer Skala von 0 bis 100 relativ zu den Aussagen selbst, nicht im Vergleich zu einer Bevölkerungsgruppe. Wie jede Selbstauskunfts-Messung ist das eine Schätzung mit einer natürlichen Schwankungsbreite, keine exakte, fixe Zahl — nimm die Werte als verlässliche Tendenz, nicht auf den Punkt genau.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Kann ich den Test wiederholen?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p>Jederzeit, über „Test wiederholen&ldquo; auf der Ergebnisseite. Bei einer Wiederholung zeigt dir die App zusätzlich, wie sich dein Ergebnis seit dem letzten Mal verschoben hat. Für einen aussagekräftigen Vergleich lohnt sich ein Abstand von mehreren Monaten — auf Wochensicht gelten die Dimensionen als stabil, ein Test kurz nach dem letzten misst eher Tagesform als echte Veränderung.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Wie funktioniert der Vergleich mit einer anderen Person?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p>Nach dem Test bekommst du einen kurzen Code. Trägt eine zweite Person ihren eigenen Code ein, zeigt dir die App eine Überlagerung beider Profile und eine kurze Einschätzung, wo ihr euch ähnelt oder unterscheidet.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Wo werden meine Daten gespeichert?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p>Ausschließlich auf diesem Gerät &mdash; Details dazu stehen weiter oben unter „Daten &amp; Datenschutz&ldquo;.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Für wen ist Lucenta gedacht?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p>Für Erwachsene, die sich selbst besser verstehen wollen &mdash; als Anstoß zum Nachdenken, nicht als Urteil. Lucenta ist kein klinisches oder diagnostisches Instrument und ersetzt keine therapeutische oder medizinische Unterstützung. Falls es dir gerade nicht gut geht, wende dich bitte an eine Beratungsstelle oder eine Person deines Vertrauens.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Was ist der Unterschied zwischen meinem Ergebnis und der Tagesform?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p>Dein Testergebnis misst stabile Eigenschaften (Traits) &mdash; die ändern sich laut Forschung nicht von Tag zu Tag. Die Tagesform misst dagegen deinen aktuellen Zustand (State): Energie und Stimmung schwanken ganz normal von Tag zu Tag, unabhängig von deinem Profil. Beide Konzepte sind in der Psychologie klar getrennt, deshalb behandelt Lucenta sie auch getrennt &mdash; ein schlechter Tag ändert nichts an deinem Testergebnis.</p>
+        </details>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h2>Über Lucenta</h2>
+      <p class="settings-group-desc">Version 1.0 &middot; basiert auf dem wissenschaftlichen Big-Five-Modell (OCEAN) &middot; keine Werbung, kein Tracking, keine Weitergabe an Dritte.</p>
+    </div>
+  </section>
+</div>
+
+<div id="drawerScrim"></div>
+<aside id="drawerPanel" role="dialog" aria-modal="true" aria-label="Weitere Funktionen" aria-hidden="true">
+  <div class="drawer-head">
+    <h2>Mehr</h2>
+    <button type="button" class="drawer-close" id="btnDrawerClose" aria-label="Schließen">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+    </button>
+  </div>
+
+  <button type="button" class="drawer-profile-row" id="btnDrawerProfileRow">
+    <span class="drawer-profile-avatar" id="drawerAvatar" aria-hidden="true"></span>
+    <span class="drawer-profile-text">
+      <strong id="drawerProfileName">Profil</strong>
+      <span class="l" id="drawerProfileSub">Name, Bild &amp; Ergebnis</span>
+    </span>
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+  </button>
+
+  <div class="drawer-section">
+    <div class="drawer-label">Tagesform</div>
+    <p class="drawer-copy">Kurzer Check von Energie &amp; Stimmung &mdash; getrennt von deinem stabilen Testergebnis. <span id="drawerStateStatus"></span></p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerState" style="align-self:flex-start;">Tagesform erfassen</button>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-label">Vergleichen</div>
+    <p class="drawer-copy">Vergleiche dein Profil mit dem einer anderen Person &mdash; über euren Code.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerCompare" style="align-self:flex-start;">Ergebnis vergleichen</button>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-label">Archetypen</div>
+    <p class="drawer-copy">Entdecke alle möglichen Titel-Kombinationen, bevor du deinen eigenen bekommst.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerArchetypes" style="align-self:flex-start;">Alle ansehen</button>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-label">Verlauf</div>
+    <p class="drawer-copy">Sieh, wie sich dein Profil über mehrere Testdurchläufe hinweg entwickelt.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerHistory" style="align-self:flex-start;">Verlauf ansehen</button>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-label">Einstellungen</div>
+    <p class="drawer-copy">Konto, Darstellung, Daten und Hilfe an einem Ort.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerSettings" style="align-self:flex-start;">Einstellungen öffnen</button>
+  </div>
+
+  <div class="drawer-section" id="drawerProgressSection" style="display:none;">
+    <div class="drawer-label">Test unterbrochen</div>
+    <div class="resume-card" id="progressCard">
+      <div><div class="l">Frage <span id="progressQi">&mdash;</span> von 50</div><strong>Weiter, wo du aufgehört hast</strong></div>
+      <button class="btn btn-ghost btn-sm" id="btnResumeProgress">Fortsetzen</button>
+    </div>
+  </div>
+
+  <div class="drawer-section" id="drawerResumeSection" style="display:none;">
+    <div class="drawer-label">Gespeichertes Ergebnis</div>
+    <div class="resume-card" id="resumeCard">
+      <div><div class="l">Du hast bereits ein Ergebnis</div><strong id="resumeTitle">&mdash;</strong></div>
+      <button class="btn btn-ghost btn-sm" id="btnResume">Ansehen</button>
+    </div>
+  </div>
+</aside>
+
+<div id="imgModalScrim"></div>
+<div id="imgModal" role="dialog" aria-modal="true" aria-label="Ergebnisbild zum Teilen oder Speichern" aria-hidden="true">
+  <div class="img-modal-inner">
+    <button type="button" class="drawer-close" id="btnImgModalClose" aria-label="Schließen" style="position:absolute;top:-6px;right:-6px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+    </button>
+    <img id="shareImagePreview" alt="Ergebniskarte mit Archetyp-Titel und Radar-Chart zum Teilen oder Speichern">
+    <p class="img-modal-hint">Zum Speichern lange auf das Bild tippen (Mobil) oder rechtsklicken &rarr; „Bild speichern unter …&ldquo; (Desktop).</p>
+    <div class="img-modal-actions">
+      <button type="button" class="btn btn-primary btn-sm" id="btnImgModalShare">Teilen</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="processingOverlay" role="status" aria-live="polite" aria-hidden="true">
+  <div class="processing-dot"></div>
+  <div class="processing-text">Analysiere deine Antworten &hellip;</div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var LABELS = {E:'Extraversion', A:'Verträglichkeit', C:'Gewissenhaftigkeit', S:'Emotionale Stabilität', O:'Offenheit'};
+  var RADAR_LABELS = {E:'EXTRA.', A:'VERTR.', C:'GEWISS.', S:'STABIL.', O:'OFFEN.'};
+  var ORDER = ['O','E','C','A','S'];
+
+  var FACTORS = {
+    E: [
+      {t:'Bin auf Partys die Seele der Feier', k:1},
+      {t:'Fühle mich in Gesellschaft anderer wohl', k:1},
+      {t:'Beginne von mir aus Gespräche', k:1},
+      {t:'Rede auf Partys mit vielen verschiedenen Leuten', k:1},
+      {t:'Habe kein Problem damit, im Mittelpunkt zu stehen', k:1},
+      {t:'Rede nicht viel', k:-1},
+      {t:'Halte mich im Hintergrund', k:-1},
+      {t:'Habe wenig zu sagen', k:-1},
+      {t:'Mag es nicht, Aufmerksamkeit auf mich zu ziehen', k:-1},
+      {t:'Bin bei Fremden eher still', k:-1}
+    ],
+    A: [
+      {t:'Interessiere mich für andere Menschen', k:1},
+      {t:'Kann mit den Gefühlen anderer mitfühlen', k:1},
+      {t:'Habe ein weiches Herz', k:1},
+      {t:'Nehme mir Zeit für andere', k:1},
+      {t:'Spüre die Emotionen anderer', k:1},
+      {t:'Sorge dafür, dass sich andere wohlfühlen', k:1},
+      {t:'Empfinde wenig Anteilnahme für andere', k:-1},
+      {t:'Beleidige andere Menschen', k:-1},
+      {t:'Interessiere mich nicht für die Probleme anderer', k:-1},
+      {t:'Interessiere mich eigentlich nicht wirklich für andere', k:-1}
+    ],
+    C: [
+      {t:'Bin immer gut vorbereitet', k:1},
+      {t:'Achte auf Details', k:1},
+      {t:'Erledige Aufgaben sofort', k:1},
+      {t:'Mag Ordnung', k:1},
+      {t:'Halte mich an einen Zeitplan', k:1},
+      {t:'Arbeite sehr genau', k:1},
+      {t:'Lasse meine Sachen überall liegen', k:-1},
+      {t:'Hinterlasse gerne mal ein Chaos', k:-1},
+      {t:'Vergesse oft, Dinge an ihren Platz zurückzulegen', k:-1},
+      {t:'Drücke mich vor meinen Pflichten', k:-1}
+    ],
+    S: [
+      {t:'Bin meistens entspannt', k:1},
+      {t:'Fühle mich selten niedergeschlagen', k:1},
+      {t:'Bin schnell gestresst', k:-1},
+      {t:'Mache mir viele Sorgen', k:-1},
+      {t:'Lasse mich leicht aus der Ruhe bringen', k:-1},
+      {t:'Rege mich schnell auf', k:-1},
+      {t:'Meine Stimmung wechselt oft', k:-1},
+      {t:'Habe häufig Stimmungsschwankungen', k:-1},
+      {t:'Bin schnell gereizt', k:-1},
+      {t:'Fühle mich oft niedergeschlagen', k:-1}
+    ],
+    O: [
+      {t:'Habe einen reichen Wortschatz', k:1},
+      {t:'Habe eine lebhafte Vorstellungskraft', k:1},
+      {t:'Habe ausgezeichnete Ideen', k:1},
+      {t:'Verstehe Dinge schnell', k:1},
+      {t:'Verwende anspruchsvolle Wörter', k:1},
+      {t:'Denke gerne länger über Dinge nach', k:1},
+      {t:'Stecke voller Ideen', k:1},
+      {t:'Habe Schwierigkeiten, abstrakte Ideen zu verstehen', k:-1},
+      {t:'Interessiere mich nicht für abstrakte Ideen', k:-1},
+      {t:'Habe keine besonders gute Vorstellungskraft', k:-1}
+    ]
+  };
+
+  var ITEMS = [];
+  for (var i=0;i<10;i++){
+    for (var j=0;j<ORDER.length;j++){
+      var f = ORDER[j];
+      ITEMS.push({factor:f, text:FACTORS[f][i].t, key:FACTORS[f][i].k});
+    }
+  }
+
+  var PROFILES = {
+    E: { high: {teaser:'Du tankst Energie in Gesellschaft und gehst offen auf andere zu.',
+      alltag:'Kontakte knüpfen, Gespräche starten, im Mittelpunkt stehen — das kostet dich eher wenig Energie, oft gibt es dir sogar welche. Stille im Raum fühlt sich für dich schneller unangenehm an als für andere.',
+      beziehungen:'Du bist meist die Person, die Pläne anstößt und Stimmung reinbringt. Achte darauf, auch ruhigeren Menschen in deinem Umfeld Raum zu lassen, ohne dass ihre Stille wie Ablehnung wirkt.',
+      wachstum:'Übe bewusst kurze Pausen der Stille ein. Nicht jede Idee muss sofort ausgesprochen werden — manchmal wächst Klarheit gerade dort, wo du zuhörst statt zu reden.'},
+      low: {teaser:'Du gehst mit deiner Energie sorgsam um und blühst in kleineren, vertrauten Kreisen auf.',
+      alltag:'Große Gruppen oder Small Talk kosten dich eher Kraft, während du in ruhigeren, tieferen Eins-zu-eins-Situationen aufblühst. Du beobachtest gern, bevor du sprichst — deine Worte haben dadurch oft Gewicht.',
+      beziehungen:'Du brauchst nach sozialen Situationen Zeit für dich. Das solltest du offen kommunizieren, statt dich stillschweigend zurückzuziehen und missverstanden zu werden.',
+      wachstum:'Plane bewusst kleine, dosierte soziale Schritte außerhalb deiner Komfortzone ein, wenn dir eine Verbindung wichtig ist — ein einziges kurzes Gespräch reicht oft schon.'} },
+    A: { high: {teaser:'Die Gefühle anderer sind für dich real spürbar – Empathie ist deine Stärke.',
+      alltag:'Du nimmst Stimmungen und Bedürfnisse anderer fein wahr, oft bevor sie ausgesprochen werden, und stellst dich häufig hinten an, um zu helfen.',
+      beziehungen:'Das macht dich zu einer vertrauenswürdigen Bezugsperson — Menschen öffnen sich dir leicht. Es birgt aber das Risiko, eigene Bedürfnisse so lange zu verschieben, bis sie unsichtbar werden.',
+      wachstum:'Übe, „nein“ zu sagen, ohne dich lang zu rechtfertigen. Echte Fürsorge für andere beginnt mit Fürsorge für dich selbst.'},
+      low: {teaser:'Du triffst Entscheidungen mit dem Kopf und sagst klar, was Sache ist.',
+      alltag:'Du lässt dich von Fakten und Logik leiten statt primär von Stimmungen — auch dann, wenn das unbequem ist.',
+      beziehungen:'Andere schätzen deine Ehrlichkeit, auch wenn sie manchmal hart wirkt. In Konflikten bewahrst du eher kühlen Kopf als die Menschen um dich herum.',
+      wachstum:'Bevor du eine direkte Rückmeldung gibst, frag dich kurz: Wie kommt das gerade emotional an — nicht nur, ob es inhaltlich stimmt.'} },
+    C: { high: {teaser:'Struktur und Verlässlichkeit sind für dich kein Zwang, sondern ein Werkzeug.',
+      alltag:'Du planst gern voraus, hältst Zusagen ein und achtest auf Details, die andere übersehen.',
+      beziehungen:'Das macht dich zur verlässlichen Konstante, auf die sich andere verlassen können. Deine Genauigkeit kann als Fürsorge ankommen — oder als Kontrolle, je nachdem, wie viel Raum du für Unordnung bei anderen lässt.',
+      wachstum:'Plane bewusst ungeplante Zeit ein und übe, einen Plan auch mal spontan über den Haufen zu werfen, ohne dass es sich falsch anfühlt.'},
+      low: {teaser:'Du bleibst flexibel, wo andere sich an Plänen festhalten.',
+      alltag:'Starre Routinen fühlen sich für dich schnell einengend an — du reagierst lieber im Moment, als jeden Schritt vorab festzulegen.',
+      beziehungen:'Das macht dich anpassungsfähig und offen für Spontanes, kann aber bei Deadlines oder gemeinsamen Vorhaben zu Reibung führen.',
+      wachstum:'Externalisiere klare Absprachen (Kalender, Erinnerungen), statt dich auf reine Willenskraft zu verlassen. Wähle ein einziges Ritual, das du diese Woche konsequent durchziehst.'} },
+    S: { high: {teaser:'Du bleibst auch unter Druck erstaunlich ruhig.',
+      alltag:'Rückschläge und Stress bringen dich selten aus der Fassung — du reagierst eher abwägend als impulsiv und erholst dich schnell von negativen Erlebnissen.',
+      beziehungen:'Das macht dich in Krisen zu einer stabilisierenden Kraft für dein Umfeld. Deine Gelassenheit kann von Menschen mit stärkeren Gefühlsausschlägen manchmal als Distanz missverstanden werden.',
+      wachstum:'Zeig aktiv, wenn dich etwas doch bewegt. Worte für Gefühle zu finden macht deine Ruhe für andere greifbarer statt unnahbar.'},
+      low: {teaser:'Du fühlst intensiv – das macht dich feinfühlig für Zwischentöne, die andere übersehen.',
+      alltag:'Stimmungen, eigene wie fremde, wirken bei dir stärker nach — Stress, Sorgen oder Anspannung spürst du intensiver und schneller als andere.',
+      beziehungen:'Das ist keine Schwäche, sondern erhöhte Sensibilität: Du nimmst Feinheiten in Beziehungen oft früher wahr als andere.',
+      wachstum:'Richte dir bewusste Erholungsräume ein, statt Anspannung aufzuschieben, bis sie sich staut. Eine feste kleine Routine (Atmung, Bewegung, Schlafrhythmus) wirkt bei dir besonders spürbar.'} },
+    O: { high: {teaser:'Neue Ideen und ungewohnte Blickwinkel ziehen dich magisch an.',
+      alltag:'Du hinterfragst gern Gewohntes, denkst in Möglichkeiten statt in Regeln und findest ungewöhnliche Verbindungen zwischen Themen.',
+      beziehungen:'Das macht dich kreativ und anregend im Gespräch. Du profitierst von Menschen, die deine Ideen erden, ohne sie klein zu machen.',
+      wachstum:'Wähle eine Idee pro Monat aus, die du tatsächlich zu Ende bringst — Tiefe entsteht durch Fokus, nicht nur durch Breite.'},
+      low: {teaser:'Du vertraust auf Bewährtes und hältst die Füße auf dem Boden.',
+      alltag:'Du bevorzugst Konkretes vor Abstraktem und bewährte Lösungen vor Experimenten.',
+      beziehungen:'Das macht dich praktisch und geerdet — du bist oft der ruhende Pol, der Pläne tatsächlich umsetzt statt nur davon zu träumen.',
+      wachstum:'Lass dich bewusst einmal im Monat auf etwas völlig Neues ein, das nicht sofort einen erkennbaren Nutzen hat. Nicht jede Erfahrung muss sich rechnen.'} }
+  };
+
+  var CORE = {
+    E:{ high:'Du bist die Person, bei der ein Raum lauter wird, sobald du reinkommst.', low:'Du bist die Person, die einen Raum liest, bevor sie ihn betritt.' },
+    A:{ high:'Du bist die Person, bei der sich andere fallen lassen können.', low:'Du bist die Person, die man fragt, wenn man die Wahrheit will und keine Schonung.' },
+    C:{ high:'Du bist die Person, auf die sich andere verlassen, ohne es laut sagen zu müssen.', low:'Du bist die Person, die merkt, wenn ein Plan gerade zu eng wird.' },
+    S:{ high:'Du bist die Person im Raum, die auch dann noch ruhig atmet, wenn alle anderen die Nerven verlieren.', low:'Du bist die Person, die spürt, was in der Luft liegt, lange bevor es jemand ausspricht.' },
+    O:{ high:'Du bist die Person, die eine Frage stellt, auf die noch niemand gekommen ist.', low:'Du bist die Person, die ein Versprechen tatsächlich einlöst, statt nur davon zu träumen.' }
+  };
+  var FLAVOR = {
+    E:{ high:'Dabei suchst du aktiv die Nähe zu anderen — Energie ist für dich etwas, das zwischen Menschen entsteht.', low:'Dabei bleibst du lieber im Hintergrund, auch wenn du längst die Fäden in der Hand hast.' },
+    A:{ high:'Dabei hast du immer ein offenes Ohr für das, was andere gerade wirklich brauchen.', low:'Dabei scheust du dich nicht, eine unbequeme Wahrheit auszusprechen, wenn es nötig ist.' },
+    C:{ high:'Dabei hast du einen Blick für Struktur, der selten etwas durchrutschen lässt.', low:'Dabei klammerst du dich nicht an starre Pläne, sondern reagierst lieber im Moment.' },
+    S:{ high:'Dabei bringst du eine Ruhe mit, die auf andere ansteckend wirkt.', low:'Dabei kostet dich das manchmal mehr, als andere von außen sehen.' },
+    O:{ high:'Dabei bist du ständig auf der Suche nach der nächsten Idee, die es wert ist, verfolgt zu werden.', low:'Dabei bleibst du lieber bei dem, was sich in der Praxis schon bewährt hat.' }
+  };
+  var MOTTO = {
+    E:{ high:'Lädt jeden Raum auf.', low:'Beobachtet zuerst, spricht dann.' },
+    A:{ high:'Fühlt mit, bevor gefragt wird.', low:'Sagt, was Sache ist.' },
+    C:{ high:'Baut, was hält.', low:'Bleibt flexibel, wenn andere starr werden.' },
+    S:{ high:'Bleibt ruhig, wenn’s kippt.', low:'Spürt, was andere übersehen.' },
+    O:{ high:'Stellt die Frage, die noch fehlt.', low:'Vertraut, was sich bewährt hat.' }
+  };
+
+  var NOUN = { E:{high:'Verbinder:in', low:'Beobachter:in'}, A:{high:'Brückenbauer:in', low:'Realist:in'},
+    C:{high:'Baumeister:in', low:'Freigeist'}, S:{high:'Anker', low:'Feinfühler:in'}, O:{high:'Visionär:in', low:'Bewahrer:in'} };
+  var ADJ = { E:{high:'gesellig', low:'ruhig'}, A:{high:'warmherzig', low:'direkt'},
+    C:{high:'strukturiert', low:'spontan'}, S:{high:'gelassen', low:'feinfühlig'}, O:{high:'neugierig', low:'bodenständig'} };
+
+  var COMPAT = {
+    E:{ similar:'Ihr braucht ähnlich viel soziale Energie – gemeinsame Zeit lässt sich leicht abstimmen.', diff:'Eine Person lädt sich in Gesellschaft auf, die andere eher im Rückzug. Sprecht offen ab, wie viel gemeinsame vs. eigene Zeit ihr braucht.'},
+    A:{ similar:'Ihr tickt bei Rücksichtnahme und Direktheit ähnlich – eure Erwartungen ans Gespräch passen zusammen.', diff:'Eine Person entscheidet eher nach Gefühl, die andere eher nach Fakten. Das kann sich gut ergänzen, wenn ihr Kritik bewusst in der Sprache des anderen formuliert.'},
+    C:{ similar:'Euer Umgang mit Plänen und Ordnung ist ähnlich getaktet – das bedeutet weniger Reibung im Alltag.', diff:'Eine Person plant gern durch, die andere bleibt lieber spontan. Feste Absprachen (Kalender, klare Deadlines) beugen Frust auf beiden Seiten vor.'},
+    S:{ similar:'Ihr geht ähnlich mit Stress um – ihr versteht intuitiv, wie viel Raum der andere in schwierigen Momenten braucht.', diff:'Eine Person bleibt in stressigen Momenten ruhig, die andere reagiert emotionaler. Wichtig: Niemand muss sich für seine Reaktion rechtfertigen.'},
+    O:{ similar:'Eure Offenheit für Neues liegt auf ähnlichem Niveau – eure Vorstellung von einem guten gemeinsamen Abend dürfte zusammenpassen.', diff:'Eine Person sucht eher Neues, die andere Bewährtes. Wechselt euch bewusst ab, wer die nächste Aktivität aussucht.'}
+  };
+
+  // ---------- state ----------
+  var answers = new Array(50).fill(0);
+  var qi = 0;
+  var scores = null; // {E,A,C,S,O} 0-100
+  var pendingCompareScroll = false;
+  var resetArmed = false, resetArmTimeout = null;
+
+  var $ = function(id){ return document.getElementById(id); };
+  var VIEW_LABELS = {landing:'SELBSTPORTRÄT', quiz:'AUFNAHME', result:'ERGEBNIS', archetypes:'ARCHETYPEN', history:'VERLAUF', state:'TAGESFORM', profile:'PROFIL', settings:'EINSTELLUNGEN'};
+  function disarmResetButton(){
+    if (!resetArmed) return;
+    resetArmed = false;
+    clearTimeout(resetArmTimeout);
+    var btn = $('btnResetData');
+    if (btn){ btn.classList.remove('armed'); btn.textContent = 'Eigene Daten zurücksetzen'; }
+  }
+  function showView(name){
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+    $('view-'+name).classList.add('active');
+    $('viewLabel').textContent = VIEW_LABELS[name] || '';
+    window.scrollTo({top:0, behavior:'instant' in window ? 'instant':'auto'});
+    if (name!=='quiz'){ $('focusline-fill').style.width = name==='result' ? '100%':'0%'; disarmQuizAdvance(); }
+    if (name!=='settings'){ disarmResetButton(); }
+    if (name==='landing'){ syncHeroState(); }
+  }
+
+  // Die Startseite hat bisher jeder Besucherin, egal ob neu oder wiederkehrend, exakt dieselbe
+  // Werbe-Ansicht mit "Test starten" gezeigt — selbst mit einem fertigen Ergebnis auf dem Gerät.
+  // Für wiederkehrende Nutzer:innen stellt der Haupt-Button jetzt das eigentlich Relevante voran.
+  function syncHeroState(){
+    var progress = loadProgress();
+    var result = loadResult();
+    var btn = $('btnStart'), sec = $('btnHeroSecondary');
+    if (progress){
+      btn.textContent = 'Weitermachen (Frage '+(progress.qi+1)+'/50) →';
+      btn.onclick = function(){ answers=progress.answers; qi=progress.qi; renderQuestion(); showView('quiz'); };
+      sec.style.display = '';
+      if (result){
+        sec.textContent = 'Dein letztes Ergebnis ansehen';
+        sec.onclick = function(){ scores=result; renderResult(); showView('result'); };
+      } else {
+        sec.textContent = 'Neu starten';
+        sec.onclick = function(){ answers=new Array(50).fill(0); qi=0; clearProgress(); renderQuestion(); showView('quiz'); };
+      }
+    } else if (result){
+      btn.textContent = 'Dein Ergebnis ansehen →';
+      btn.onclick = function(){ scores=result; renderResult(); showView('result'); };
+      sec.style.display = '';
+      sec.textContent = 'Test erneut machen';
+      sec.onclick = function(){ answers=new Array(50).fill(0); qi=0; clearProgress(); renderQuestion(); showView('quiz'); };
+    } else {
+      btn.textContent = 'Test starten →';
+      btn.onclick = function(){ answers=new Array(50).fill(0); qi=0; clearProgress(); renderQuestion(); showView('quiz'); };
+      sec.style.display = 'none';
+    }
+  }
+
+  // ---------- persistence (per-viewer convenience only) ----------
+  // Alle Speicherfunktionen unten fangen Schreibfehler bereits ab und scheitern still —
+  // richtig für den Fall "Speicherkontingent voll" (Feedback-Runde 21). Ist localStorage aber
+  // grundsätzlich unerreichbar (z. B. manche privaten Browser-Modi), würde das sonst überall
+  // lautlos ins Leere laufen. Ein einmaliger Check beim Start macht das stattdessen sichtbar.
+  function storageAvailable(){
+    try{
+      var k = '__lucenta_probe__';
+      localStorage.setItem(k, '1');
+      localStorage.removeItem(k);
+      return true;
+    }catch(e){ return false; }
+  }
+  function saveResult(sc){
+    try{ localStorage.setItem('lucenta_result', JSON.stringify(sc)); }catch(e){}
+  }
+  function loadResult(){
+    try{
+      var r = localStorage.getItem('lucenta_result');
+      if (!r) return null;
+      var sc = JSON.parse(r);
+      if (!sc || typeof sc!=='object') return null;
+      for (var i=0;i<ORDER.length;i++){
+        var v = sc[ORDER[i]];
+        if (typeof v!=='number' || isNaN(v) || v<0 || v>100) return null;
+      }
+      return sc;
+    }catch(e){ return null; }
+  }
+  function saveProgress(){
+    try{ localStorage.setItem('lucenta_progress', JSON.stringify({answers:answers, qi:qi})); }catch(e){}
+  }
+  function loadProgress(){
+    try{
+      var r = localStorage.getItem('lucenta_progress');
+      if (!r) return null;
+      var p = JSON.parse(r);
+      if (!p || !Array.isArray(p.answers) || p.answers.length!==50 || typeof p.qi!=='number' || p.qi<1 || p.qi>49) return null;
+      return p;
+    }catch(e){ return null; }
+  }
+  function clearProgress(){
+    try{ localStorage.removeItem('lucenta_progress'); }catch(e){}
+  }
+  // Rollierender Verlauf abgeschlossener Testdurchläufe (unabhängig vom einzelnen "letzten
+  // Ergebnis" oben) — Grundlage für die Trend-Sparklines in der Verlauf-Ansicht. Auf die letzten
+  // MAX_HISTORY Einträge begrenzt, damit der lokale Speicher nicht unbegrenzt wächst.
+  var MAX_HISTORY = 12;
+  function loadHistory(){
+    try{
+      var r = localStorage.getItem('lucenta_history');
+      if (!r) return [];
+      var h = JSON.parse(r);
+      if (!Array.isArray(h)) return [];
+      return h.filter(function(e){
+        if (!e || typeof e!=='object' || typeof e.date!=='number' || !e.scores) return false;
+        for (var i=0;i<ORDER.length;i++){
+          var v = e.scores[ORDER[i]];
+          if (typeof v!=='number' || isNaN(v) || v<0 || v>100) return false;
+        }
+        return true;
+      });
+    }catch(e){ return []; }
+  }
+  function saveHistoryList(h){
+    try{ localStorage.setItem('lucenta_history', JSON.stringify(h)); return true; }catch(e){ return false; }
+  }
+  function appendHistory(sc){
+    var h = loadHistory();
+    h.push({scores:sc, date:Date.now()});
+    if (h.length>MAX_HISTORY) h = h.slice(h.length-MAX_HISTORY);
+    saveHistoryList(h);
+  }
+  function clearHistory(){
+    try{ localStorage.removeItem('lucenta_history'); }catch(e){}
+  }
+  // Tagesform / State-Check: kurzfristiger Zustand (Energie, Stimmung), bewusst als eigenes
+  // Datenmodell getrennt vom stabilen Trait-Ergebnis oben (State vs. Trait) — höchstens ein
+  // Eintrag pro Kalendertag, ein erneutes Speichern am selben Tag aktualisiert den Eintrag.
+  var MAX_STATE_HISTORY = 30;
+  function todayKey(){
+    var d = new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  function loadStateHistory(){
+    try{
+      var r = localStorage.getItem('lucenta_state');
+      if (!r) return [];
+      var h = JSON.parse(r);
+      if (!Array.isArray(h)) return [];
+      return h.filter(function(e){
+        return e && typeof e==='object' && typeof e.day==='string' &&
+          typeof e.energy==='number' && e.energy>=1 && e.energy<=5 &&
+          typeof e.valence==='number' && e.valence>=1 && e.valence<=5;
+      });
+    }catch(e){ return []; }
+  }
+  function saveStateHistoryList(h){
+    try{ localStorage.setItem('lucenta_state', JSON.stringify(h)); return true; }catch(e){ return false; }
+  }
+  function upsertStateToday(energy, valence){
+    var h = loadStateHistory();
+    var key = todayKey();
+    h = h.filter(function(e){ return e.day!==key; });
+    h.push({day:key, ts:Date.now(), energy:energy, valence:valence});
+    h.sort(function(a,b){ return a.ts-b.ts; });
+    if (h.length>MAX_STATE_HISTORY) h = h.slice(h.length-MAX_STATE_HISTORY);
+    return saveStateHistoryList(h);
+  }
+  function todayStateEntry(){
+    var key = todayKey();
+    var h = loadStateHistory();
+    for (var i=0;i<h.length;i++){ if (h[i].day===key) return h[i]; }
+    return null;
+  }
+  function clearStateHistory(){
+    try{ localStorage.removeItem('lucenta_state'); }catch(e){}
+  }
+  function saveProfile(p){
+    try{ localStorage.setItem('lucenta_profile', JSON.stringify(p)); return true; }catch(e){ return false; }
+  }
+  function loadProfile(){
+    try{ var r = localStorage.getItem('lucenta_profile'); return r? JSON.parse(r): {name:'', avatarImg:null}; }catch(e){ return {name:'', avatarImg:null}; }
+  }
+  function clearProfile(){
+    try{ localStorage.removeItem('lucenta_profile'); }catch(e){}
+  }
+  function saveThemeMode(mode){
+    try{
+      if (mode==='system') localStorage.removeItem('lucenta_theme');
+      else localStorage.setItem('lucenta_theme', mode);
+    }catch(e){}
+  }
+  function loadThemeMode(){
+    try{
+      var t = localStorage.getItem('lucenta_theme');
+      return (t==='dark' || t==='light') ? t : 'system';
+    }catch(e){ return 'system'; }
+  }
+  function applyTheme(mode){
+    if (mode==='dark' || mode==='light') document.documentElement.setAttribute('data-theme', mode);
+    else document.documentElement.removeAttribute('data-theme');
+    saveThemeMode(mode);
+    ['System','Light','Dark'].forEach(function(key){
+      var btn = $('theme'+key);
+      if (btn) btn.setAttribute('aria-pressed', btn.dataset.mode===mode ? 'true':'false');
+    });
+  }
+
+  // ---------- scoring ----------
+  function computeScores(){
+    var sums = {E:0,A:0,C:0,S:0,O:0};
+    for (var idx=0; idx<50; idx++){
+      var it = ITEMS[idx];
+      var a = answers[idx] || 3;
+      var val = it.key===1 ? a : (6-a);
+      sums[it.factor]+= val;
+    }
+    var out = {};
+    ORDER.forEach(function(f){ out[f] = Math.round(((sums[f]-10)/40)*100); });
+    return out;
+  }
+
+  function archetypeOf(sc){
+    var dev = ORDER.map(function(f){ return {f:f, d:Math.abs(sc[f]-50)}; });
+    dev.sort(function(a,b){ return b.d-a.d; });
+    var top1 = dev[0].f, top2 = dev[1].f;
+    var pole1 = sc[top1]>=50 ? 'high':'low';
+    var pole2 = sc[top2]>=50 ? 'high':'low';
+    return { title: NOUN[top1][pole1] + ' · ' + ADJ[top2][pole2], top1:top1, top2:top2 };
+  }
+
+  // ---------- archetypes overview (the 10 primary roles, generated from the same data the real result uses) ----------
+  function renderArchetypeGroups(){
+    var roles = [];
+    ORDER.forEach(function(t){
+      ['high','low'].forEach(function(p){
+        roles.push({ title: NOUN[t][p], motto: MOTTO[t][p], desc: CORE[t][p], dim: t, pole: p });
+      });
+    });
+    var totalCombos = roles.length * (ORDER.length-1) * 2; // each role paired with 4 other traits × 2 poles
+    $('archTotalCount').textContent = totalCombos;
+    // Jede Rolle stammt aus genau einer der fünf Dimensionen — das war bisher unsichtbar.
+    // Ein kleiner Tag macht die Herkunft transparent und bricht zehn sonst identisch wirkende
+    // Karten optisch auf, ohne neue Texte erfinden zu müssen (nutzt das vorhandene ADJ-Vokabular).
+    $('archetypeGroups').innerHTML = roles.map(function(r,i){
+      return '<div class="role-card" style="animation-delay:'+(i*40)+'ms">'+
+        '<div class="role-tag role-tag-'+r.pole+'">'+LABELS[r.dim]+' &middot; '+ADJ[r.dim][r.pole]+'</div>'+
+        '<div class="role-title">'+r.title+'</div>'+
+        '<div class="role-motto">'+r.motto+'</div>'+
+        '<p class="role-desc">'+r.desc+'</p>'+
+        '</div>';
+    }).join('');
+  }
+
+  // ---------- history (trend sparklines + list of past completed runs) ----------
+  var HISTORY_DATE_FMT = null;
+  function historyDateFmt(){
+    if (!HISTORY_DATE_FMT){
+      try{ HISTORY_DATE_FMT = new Intl.DateTimeFormat('de-DE', {day:'2-digit', month:'short', year:'numeric'}); }
+      catch(e){ HISTORY_DATE_FMT = { format:function(d){ return d.toLocaleDateString(); } }; }
+    }
+    return HISTORY_DATE_FMT;
+  }
+  function renderHistory(){
+    $('historyMaxCount').textContent = MAX_HISTORY;
+    var hist = loadHistory();
+    var wrap = $('historyContent');
+    if (hist.length===0){
+      wrap.innerHTML = '<div class="profile-empty"><p>Noch kein Testdurchlauf gespeichert. Mach den Test, um deinen Verlauf zu starten.</p></div>';
+      return;
+    }
+    if (hist.length<2){
+      wrap.innerHTML = '<div class="profile-empty"><p>Bisher liegt erst ein Testdurchlauf vor — mach den Test noch einmal, um einen Trend über die Zeit zu sehen.</p></div>';
+      return;
+    }
+    var trendRows = ORDER.map(function(f){
+      var vals = hist.map(function(e){ return e.scores[f]; });
+      var last = vals[vals.length-1];
+      return '<div class="trend-row"><div class="trend-label">'+RADAR_LABELS[f]+'</div>'+sparklineSVG(vals,140,32)+'<div class="trend-val mono">'+last+'</div></div>';
+    }).join('');
+    var fmt = historyDateFmt();
+    var listRows = hist.slice().reverse().map(function(e){
+      var a = archetypeOf(e.scores);
+      var title = NOUN[a.top1][e.scores[a.top1]>=50?'high':'low'] + ' · ' + ADJ[a.top2][e.scores[a.top2]>=50?'high':'low'];
+      var dateStr;
+      try{ dateStr = fmt.format(new Date(e.date)); }catch(ex){ dateStr = ''; }
+      return '<div class="history-row"><div class="history-date">'+dateStr+'</div><div class="history-title">'+title+'</div></div>';
+    }).join('');
+    wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
+      '<h2 class="section-title" style="margin-top:30px;">Frühere Ergebnisse <span class="n">'+hist.length+'</span></h2>'+
+      '<div class="history-list">'+listRows+'</div>';
+  }
+
+  // ---------- Tagesform / State-Check view ----------
+  var statePickedEnergy = null, statePickedValence = null;
+  function buildScaleRow(container, picked, labelPrefix, onPick){
+    container.innerHTML='';
+    for (var v=1; v<=5; v++){
+      var b = document.createElement('button');
+      var isPicked = picked===v;
+      b.className='scale-btn'+(isPicked?' picked':'');
+      b.setAttribute('aria-label', labelPrefix+' '+v+' von 5');
+      b.setAttribute('aria-pressed', isPicked?'true':'false');
+      b.innerHTML='<span class="fill"></span>';
+      (function(val){ b.addEventListener('click', function(){ onPick(val); }); })(v);
+      container.appendChild(b);
+    }
+  }
+  function renderStateRows(){
+    buildScaleRow($('stateEnergyRow'), statePickedEnergy, 'Energie', function(v){ statePickedEnergy=v; renderStateRows(); });
+    buildScaleRow($('stateValenceRow'), statePickedValence, 'Stimmung', function(v){ statePickedValence=v; renderStateRows(); });
+  }
+  function renderStateView(){
+    var today = todayStateEntry();
+    statePickedEnergy = today ? today.energy : null;
+    statePickedValence = today ? today.valence : null;
+    $('stateTodayNote').textContent = today
+      ? 'Heute bereits erfasst — du kannst sie unten aktualisieren.'
+      : 'Heute noch nicht erfasst.';
+    renderStateRows();
+    renderStateTrend();
+  }
+  function renderStateTrend(){
+    var hist = loadStateHistory();
+    var wrap = $('stateTrendContent');
+    if (hist.length===0){
+      wrap.innerHTML = '<div class="profile-empty"><p>Noch keine Tagesform erfasst — trag oben deinen ersten Check-in ein.</p></div>';
+      return;
+    }
+    if (hist.length<2){
+      wrap.innerHTML = '<div class="profile-empty"><p>Bisher liegt erst ein Eintrag vor — erfasse deine Tagesform an einem weiteren Tag, um einen Trend zu sehen.</p></div>';
+      return;
+    }
+    var energyVals = hist.map(function(e){ return (e.energy-1)/4*100; });
+    var valenceVals = hist.map(function(e){ return (e.valence-1)/4*100; });
+    var lastE = hist[hist.length-1].energy, lastV = hist[hist.length-1].valence;
+    var trendRows =
+      '<div class="trend-row"><div class="trend-label">Energie</div>'+sparklineSVG(energyVals,140,32)+'<div class="trend-val mono">'+lastE+'</div></div>'+
+      '<div class="trend-row"><div class="trend-label">Stimmung</div>'+sparklineSVG(valenceVals,140,32)+'<div class="trend-val mono">'+lastV+'</div></div>';
+    var fmt = historyDateFmt();
+    var listRows = hist.slice().reverse().slice(0,14).map(function(e){
+      var dateStr;
+      try{ dateStr = fmt.format(new Date(e.ts)); }catch(ex){ dateStr = e.day; }
+      return '<div class="history-row"><div class="history-date">'+dateStr+'</div><div class="history-title">Energie '+e.energy+'/5 &middot; Stimmung '+e.valence+'/5</div></div>';
+    }).join('');
+    wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
+      '<h2 class="section-title" style="margin-top:30px;">Letzte Einträge <span class="n">'+hist.length+'</span></h2>'+
+      '<div class="history-list">'+listRows+'</div>';
+  }
+
+  // ---------- code encode/decode ----------
+  function toCode(sc){
+    return ORDER.map(function(f){
+      var v = Math.max(0,Math.min(100, sc[f]));
+      return v.toString(36).padStart(2,'0');
+    }).join('');
+  }
+  function fromCode(code){
+    if (!code || code.length!==10) return null;
+    var out = {};
+    for (var i=0;i<5;i++){
+      var chunk = code.substr(i*2,2);
+      var v = parseInt(chunk,36);
+      if (isNaN(v)) return null;
+      out[ORDER[i]] = Math.max(0, Math.min(100, v));
+    }
+    return out;
+  }
+
+  // ---------- precision data visuals (gauge bar, ring gauge, sparkline, count-up) ----------
+  // Ersetzt den früheren simplen Fortschrittsbalken durch eine Skala mit Tick-Markierungen
+  // bei 25/50/75 und einem Marker-Punkt an der eigentlichen Position — liest sich eher wie eine
+  // gemessene Instrumentenanzeige (Apple Health/Whoop-Richtung) als wie ein reiner Ladebalken.
+  function gaugeBarHTML(value){
+    value = Math.max(0, Math.min(100, value));
+    return '<div class="gauge-track">'+
+      '<div class="gauge-fill" style="width:'+value+'%"></div>'+
+      '<div class="gauge-tick" style="left:25%"></div>'+
+      '<div class="gauge-tick" style="left:50%"></div>'+
+      '<div class="gauge-tick" style="left:75%"></div>'+
+      '<div class="gauge-marker" style="left:'+value+'%"></div>'+
+      '</div>';
+  }
+
+  function ringGaugeSVG(percent, size, label){
+    size = size || 132;
+    var pct = Math.max(0, Math.min(100, Math.round(percent)));
+    var r = size/2 - 9, c = size/2;
+    var circumf = 2*Math.PI*r;
+    var offset = circumf * (1 - pct/100);
+    return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" role="img" aria-label="'+(label||'Übereinstimmung')+': '+pct+' Prozent">'+
+      '<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="none" class="ring-track" stroke-width="9"/>'+
+      '<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="none" class="ring-fill" stroke-width="9" stroke-linecap="round" '+
+        'stroke-dasharray="'+circumf.toFixed(1)+'" stroke-dashoffset="'+offset.toFixed(1)+'" transform="rotate(-90 '+c+' '+c+')"/>'+
+      '<text x="'+c+'" y="'+(c+9)+'" text-anchor="middle" class="ring-text">'+pct+'</text>'+
+      '</svg>';
+  }
+
+  // Kompakter Sparkline-Liniengraph für den Dimensionsverlauf über mehrere Testdurchläufe.
+  // Braucht mindestens zwei Datenpunkte, um eine Linie zu ergeben.
+  function sparklineSVG(values, w, h){
+    w = w || 140; h = h || 32;
+    if (!values || values.length<2){
+      return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" role="img" aria-hidden="true"></svg>';
+    }
+    var pad = 4;
+    var pts = values.map(function(v,i){
+      var x = pad + (i/(values.length-1))*(w-2*pad);
+      var y = pad + (1-v/100)*(h-2*pad);
+      return [x,y];
+    });
+    var path = pts.map(function(p,i){ return (i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' ');
+    var last = pts[pts.length-1];
+    return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" role="img" aria-hidden="true">'+
+      '<path d="'+path+'" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'+
+      '<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="3" fill="var(--accent-strong)"/>'+
+      '</svg>';
+  }
+
+  function prefersReducedMotion(){
+    try{ return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; }
+  }
+
+  // Zählt eine Zahl von 0 auf ihren Zielwert hoch, statt sie instantan einzublenden — ein
+  // kleiner, aber typischer Baustein datengetriebener Premium-Apps beim "Reveal" eines Ergebnisses.
+  function animateCountUp(el, target, duration){
+    duration = duration || 900;
+    if (prefersReducedMotion()){ el.textContent = target; return; }
+    var start = null;
+    function step(ts){
+      if (!start) start = ts;
+      var p = Math.min(1, (ts-start)/duration);
+      var eased = 1 - Math.pow(1-p, 3);
+      el.textContent = Math.round(eased*target);
+      if (p<1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ---------- radar ----------
+  function polyPoints(sc, c, r){
+    return ORDER.map(function(f,i){
+      var ang = -Math.PI/2 + i*(2*Math.PI/5);
+      var v = Math.max(4,sc[f])/100 * r;
+      return [c + v*Math.cos(ang), c + v*Math.sin(ang)];
+    });
+  }
+
+  function radarSVG(sc, size, other, isExample){
+    size = size || 320;
+    var c = size/2, r = size*0.34, labelR = size*0.40;
+    var poly = polyPoints(sc, c, r).map(function(p){ return p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' ');
+
+    var rings = [0.25,0.5,0.75,1].map(function(frac){
+      var rp = ORDER.map(function(f,i){
+        var ang = -Math.PI/2 + i*(2*Math.PI/5);
+        return [c + r*frac*Math.cos(ang), c + r*frac*Math.sin(ang)];
+      });
+      return '<polygon points="'+rp.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="var(--line)" stroke-width="1"/>';
+    }).join('');
+
+    var axes = ORDER.map(function(f,i){
+      var ang = -Math.PI/2 + i*(2*Math.PI/5);
+      var x2 = c + r*Math.cos(ang), y2 = c + r*Math.sin(ang);
+      return '<line x1="'+c+'" y1="'+c+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="var(--line)" stroke-width="1"/>';
+    }).join('');
+
+    var otherPoly = '';
+    if (other){
+      var polyO = polyPoints(other.scores, c, r).map(function(p){ return p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' ');
+      otherPoly = '<polygon points="'+polyO+'" fill="color-mix(in srgb, var(--accent-2) 20%, transparent)" stroke="var(--accent-2)" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round"/>';
+    }
+
+    var labels = ORDER.map(function(f,i){
+      var ang = -Math.PI/2 + i*(2*Math.PI/5);
+      var lx = c + labelR*Math.cos(ang), ly = c + labelR*Math.sin(ang);
+      var anchor = Math.abs(Math.cos(ang))<0.2 ? 'middle' : (Math.cos(ang)>0?'start':'end');
+      var valueLine = other
+        ? '<text x="'+lx.toFixed(1)+'" y="'+(ly+13).toFixed(1)+'" text-anchor="'+anchor+'" class="radar-axis-value radar-axis-value-me">'+sc[f]+'</text>'+
+          '<text x="'+lx.toFixed(1)+'" y="'+(ly+27).toFixed(1)+'" text-anchor="'+anchor+'" class="radar-axis-value radar-axis-value-other">'+other.scores[f]+'</text>'
+        : '<text x="'+lx.toFixed(1)+'" y="'+(ly+13).toFixed(1)+'" text-anchor="'+anchor+'" class="radar-axis-value">'+sc[f]+'</text>';
+      return '<text x="'+lx.toFixed(1)+'" y="'+(ly-4).toFixed(1)+'" text-anchor="'+anchor+'" class="radar-axis-label">'+RADAR_LABELS[f]+'</text>'+valueLine;
+    }).join('');
+
+    var ariaLabel = other
+      ? 'Vergleich: Du ' + ORDER.map(function(f){ return LABELS[f]+' '+sc[f]; }).join(', ') + '. Andere Person ' + ORDER.map(function(f){ return LABELS[f]+' '+other.scores[f]; }).join(', ')
+      : (isExample ? 'Beispielhaftes Profil zur Illustration, nicht deine eigenen Werte: ' : 'Dein Profil: ') + ORDER.map(function(f){ return LABELS[f]+' '+sc[f]+' von 100'; }).join(', ');
+    return '<svg viewBox="0 0 '+size+' '+(other?size+14:size)+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+ariaLabel+'">'+
+      rings+axes+otherPoly+
+      '<polygon points="'+poly+'" fill="color-mix(in srgb, var(--accent) 28%, transparent)" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>'+
+      labels+
+      '</svg>';
+  }
+
+  // ---------- Ergebnisbild (Canvas-Karte zum Teilen/Speichern) ----------
+  // Feste, vom aktuellen Hell-/Dunkelmodus unabhängige Markenfarben — eine geteilte Bildkarte
+  // soll immer gleich aussehen, unabhängig vom Farbmodus des Geräts, auf dem sie geöffnet wird.
+  var SHARE_COLORS = { paper:'#F5F6EF', ink:'#15201A', muted:'#57655C', line:'#DBDCCE', accent:'#2F6F6A', accentFill:'rgba(47,111,106,.26)', accent2:'#C97A3C' };
+
+  function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
+    var words = text.split(' ');
+    var line = '', curY = y;
+    for (var i=0;i<words.length;i++){
+      var test = line + words[i] + ' ';
+      if (ctx.measureText(test).width > maxWidth && line !== ''){
+        ctx.fillText(line.trim(), x, curY);
+        line = words[i] + ' ';
+        curY += lineHeight;
+      } else { line = test; }
+    }
+    ctx.fillText(line.trim(), x, curY);
+    return curY;
+  }
+
+  function drawShareRadar(ctx, sc, cx, cy, r){
+    var C = SHARE_COLORS;
+    [0.25,0.5,0.75,1].forEach(function(frac){
+      ctx.beginPath();
+      ORDER.forEach(function(f,i){
+        var ang = -Math.PI/2 + i*(2*Math.PI/5);
+        var x = cx + r*frac*Math.cos(ang), y = cy + r*frac*Math.sin(ang);
+        if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.closePath();
+      ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; ctx.stroke();
+    });
+    ORDER.forEach(function(f,i){
+      var ang = -Math.PI/2 + i*(2*Math.PI/5);
+      ctx.beginPath(); ctx.moveTo(cx,cy);
+      ctx.lineTo(cx+r*Math.cos(ang), cy+r*Math.sin(ang));
+      ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; ctx.stroke();
+    });
+    ctx.beginPath();
+    ORDER.forEach(function(f,i){
+      var ang = -Math.PI/2 + i*(2*Math.PI/5);
+      var v = Math.max(4,sc[f])/100*r;
+      var x = cx+v*Math.cos(ang), y = cy+v*Math.sin(ang);
+      if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = C.accentFill; ctx.fill();
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.stroke();
+    var labelR = r*1.34;
+    ORDER.forEach(function(f,i){
+      var ang = -Math.PI/2 + i*(2*Math.PI/5);
+      var lx = cx + labelR*Math.cos(ang), ly = cy + labelR*Math.sin(ang);
+      ctx.textAlign = Math.abs(Math.cos(ang))<0.2 ? 'center' : (Math.cos(ang)>0 ? 'left':'right');
+      ctx.fillStyle = C.muted; ctx.font = '600 21px "IBM Plex Mono", monospace';
+      ctx.fillText(RADAR_LABELS[f], lx, ly-6);
+      ctx.fillStyle = C.ink; ctx.font = '700 32px Georgia, serif';
+      ctx.fillText(String(sc[f]), lx, ly+30);
+    });
+    ctx.textAlign = 'left';
+  }
+
+  function buildShareCanvas(){
+    var C = SHARE_COLORS, W = 1080, H = 1350, M = 84;
+    var canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = C.paper; ctx.fillRect(0,0,W,H);
+    ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+
+    ctx.fillStyle = C.accent2;
+    ctx.beginPath(); ctx.arc(M+8, M-4, 9, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = C.ink; ctx.font = '700 46px Georgia, serif';
+    ctx.fillText('Lucenta', M+30, M+8);
+    ctx.fillStyle = C.muted; ctx.font = '600 21px "IBM Plex Mono", monospace';
+    ctx.fillText('ERGEBNISKARTE', M+2, M+50);
+
+    var arch = archetypeOf(scores);
+    var pole1 = scores[arch.top1]>=50?'high':'low', pole2 = scores[arch.top2]>=50?'high':'low';
+    var titleText = NOUN[arch.top1][pole1] + ' · ' + ADJ[arch.top2][pole2];
+    ctx.fillStyle = C.ink; ctx.font = '600 60px Georgia, serif';
+    var afterTitleY = wrapCanvasText(ctx, titleText, M, M+188, W-2*M, 68);
+    ctx.fillStyle = C.accent2; ctx.font = 'italic 500 30px Georgia, serif';
+    ctx.fillText(MOTTO[arch.top1][pole1], M, afterTitleY + 52);
+
+    drawShareRadar(ctx, scores, W/2, 700, 220);
+
+    var sortedTraits = ORDER.slice().sort(function(a,b){ return scores[b]-scores[a]; });
+    var listTop = 1030, colGap = 28, colW = (W - 2*M - colGap)/2;
+    sortedTraits.forEach(function(f,i){
+      var col = i % 2, row = Math.floor(i/2);
+      var x = M + col*(colW+colGap), y = listTop + row*62;
+      ctx.textAlign = 'left'; ctx.fillStyle = C.muted; ctx.font = '500 23px "Work Sans", sans-serif';
+      ctx.fillText(LABELS[f], x, y);
+      ctx.textAlign = 'right'; ctx.fillStyle = C.accent; ctx.font = '700 25px "IBM Plex Mono", monospace';
+      ctx.fillText(String(scores[f]), x+colW, y);
+    });
+    ctx.textAlign = 'left';
+
+    ctx.fillStyle = C.muted; ctx.font = '500 20px "IBM Plex Mono", monospace';
+    ctx.fillText('Big-Five-Modell (IPIP) · lucenta', M, H-M+8);
+
+    return canvas;
+  }
+
+  // ---------- rendering ----------
+  function renderQuestion(){
+    var it = ITEMS[qi];
+    $('qNow').textContent = (qi+1);
+    $('qText').textContent = it.text;
+    $('focusline-fill').style.width = Math.round((qi/50)*100)+'%';
+    var row = $('scaleRow'); row.innerHTML='';
+    for (var v=1; v<=5; v++){
+      var b = document.createElement('button');
+      var isPicked = answers[qi]===v;
+      b.className='scale-btn'+(isPicked?' picked':'');
+      b.setAttribute('aria-label','Wert '+v+' von 5');
+      b.setAttribute('aria-pressed', isPicked ? 'true':'false');
+      b.innerHTML='<span class="fill"></span>';
+      (function(val){
+        b.addEventListener('click', function(){ selectAnswer(val); });
+      })(v);
+      row.appendChild(b);
+    }
+    $('btnPrev').style.visibility = qi===0 ? 'hidden':'visible';
+    $('qHint').textContent = QUIZ_HINTS[Math.min(4, Math.floor(qi/10))];
+  }
+
+  var QUIZ_HINTS = ['Tippe eine Antwort an', 'Was passt am ehesten zu dir?', 'Der erste Impuls reicht meist', 'Weiter im Flow', 'Fast geschafft'];
+  var QUIZ_MILESTONES = {
+    13:'Ein Viertel geschafft.',
+    25:'Die Hälfte ist geschafft — der Rest geht schneller, als es sich gerade anfühlt.',
+    38:'Nur noch eine Handvoll Fragen.'
+  };
+
+  var quizAdvanceTimeout = null;
+  function disarmQuizAdvance(){
+    if (quizAdvanceTimeout){ clearTimeout(quizAdvanceTimeout); quizAdvanceTimeout = null; }
+  }
+  function selectAnswer(v){
+    answers[qi] = v;
+    saveProgress();
+    renderQuestion();
+    // Vorherigen ausstehenden Übergang verwerfen, statt ihn zusätzlich laufen zu lassen —
+    // sonst würde ein schneller Doppel-Klick/Doppel-Tastendruck qi zweimal erhöhen und
+    // eine Frage überspringen.
+    disarmQuizAdvance();
+    quizAdvanceTimeout = setTimeout(function(){
+      quizAdvanceTimeout = null;
+      // Falls die Nutzerin inzwischen manuell zu einer anderen Ansicht gewechselt hat,
+      // nicht mehr automatisch weiterschalten oder das Ergebnis erzwingen.
+      var quizView = $('view-quiz');
+      if (!quizView || !quizView.classList.contains('active')) return;
+      if (qi<49){
+        qi++; renderQuestion();
+        saveProgress();
+        if (QUIZ_MILESTONES[qi]) toast(QUIZ_MILESTONES[qi]);
+      }
+      else { finishQuiz(); }
+    }, 220);
+  }
+
+  function finishQuiz(){
+    var previous = loadResult();
+    scores = computeScores();
+    saveResult(scores);
+    appendHistory(scores);
+    clearProgress();
+    function reveal(){
+      renderResult(previous);
+      showView('result');
+      if (pendingCompareScroll){
+        pendingCompareScroll = false;
+        setTimeout(function(){
+          $('compareAnchor').scrollIntoView({behavior:'smooth'});
+          $('cmpOther').focus();
+        }, 350);
+      }
+    }
+    // Kurzer, bewusst knapper "Analysiere..."-Moment statt eines instantanen Sprungs zum
+    // Ergebnis — ein etablierter kleiner Baustein datengetriebener Premium-Apps beim ersten
+    // Reveal. Wird bei reduzierter Bewegungspräferenz komplett übersprungen.
+    if (prefersReducedMotion()){ reveal(); return; }
+    var overlay = $('processingOverlay');
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden','false');
+    setTimeout(function(){
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden','true');
+      reveal();
+    }, 700);
+  }
+
+  function renderResult(previous){
+    var arch = archetypeOf(scores);
+    var pole1 = scores[arch.top1]>=50?'high':'low', pole2 = scores[arch.top2]>=50?'high':'low';
+    $('archTitle').innerHTML = NOUN[arch.top1][pole1] + ' <span class="sep">·</span> ' + ADJ[arch.top2][pole2];
+    $('archMotto').textContent = MOTTO[arch.top1][pole1];
+    $('shareTitle').textContent = arch.title;
+    $('synthesis').textContent = CORE[arch.top1][pole1] + ' ' + FLAVOR[arch.top2][pole2];
+    $('radarWrap').innerHTML = radarSVG(scores);
+
+    // Dimensionen nach erreichtem Score sortiert (höchster zuerst) für die lesbaren Listen
+    // unten auf der Ergebnisseite — das Radar-Chart selbst behält die feste O-C-E-A-N-Achsenreihenfolge,
+    // damit die Fünfeck-Form über mehrere Testdurchläufe hinweg vergleichbar bleibt.
+    var sortedTraits = ORDER.slice().sort(function(a,b){ return scores[b]-scores[a]; });
+
+    var chips = sortedTraits.map(function(f){
+      return '<span class="chip">'+LABELS[f]+' <b>'+scores[f]+'</b></span>';
+    }).join('');
+    $('shareChips').innerHTML = chips;
+
+    var code = toCode(scores);
+    $('myCode').textContent = code;
+    $('cmpMe').value = code;
+
+    // Kompakte "auf einen Blick"-Kennzahlenreihe direkt unter dem Kurzporträt — fünf knappe
+    // Ziffern mit Tick-Skala statt erst im ausführlichen Bericht weiter unten die erste Zahl zu
+    // zeigen. Die Zahlen zählen beim Erscheinen von 0 auf ihren Zielwert hoch.
+    var stripHTML = sortedTraits.map(function(f,i){
+      return '<div class="stat-tile" style="animation-delay:'+(i*55)+'ms">'+
+        '<div class="stat-label">'+RADAR_LABELS[f]+'</div>'+
+        '<div class="stat-num mono" id="statNum-'+f+'">0</div>'+
+        gaugeBarHTML(scores[f])+
+        '</div>';
+    }).join('');
+    $('statStrip').innerHTML = stripHTML;
+    sortedTraits.forEach(function(f){
+      animateCountUp($('statNum-'+f), scores[f]);
+    });
+
+    var list = $('traitsList'); list.innerHTML='';
+    sortedTraits.forEach(function(f,i){
+      var pole = scores[f]>=50 ? 'high':'low';
+      var pr = PROFILES[f][pole];
+      var card = document.createElement('div');
+      card.className='trait-card';
+      card.style.animationDelay = (i*60)+'ms';
+      card.innerHTML =
+        '<div class="trait-top"><span class="trait-name">'+LABELS[f]+'</span><span class="trait-score mono">'+scores[f]+' / 100</span></div>'+
+        gaugeBarHTML(scores[f])+
+        '<div class="trait-teaser">'+pr.teaser+'</div>'+
+        '<div class="trait-sections">'+
+          '<div class="trait-section"><div class="trait-section-label">Im Alltag</div><p>'+pr.alltag+'</p></div>'+
+          '<div class="trait-section"><div class="trait-section-label">In Beziehungen</div><p>'+pr.beziehungen+'</p></div>'+
+          '<div class="trait-section"><div class="trait-section-label">Wachstumsimpuls</div><p>'+pr.wachstum+'</p></div>'+
+        '</div>';
+      list.appendChild(card);
+    });
+
+    renderDelta(previous);
+  }
+
+  function renderDelta(previous){
+    var box = $('deltaCard');
+    if (!previous){ box.style.display='none'; box.innerHTML=''; return; }
+    var rows = ORDER.map(function(f){
+      var d = scores[f]-previous[f];
+      var cls = Math.abs(d)<5 ? 'delta-flat' : (d>0 ? 'delta-up':'delta-down');
+      var arrow = Math.abs(d)<5 ? '≈' : (d>0 ? '↑':'↓');
+      return '<div class="delta-row"><span>'+LABELS[f]+'</span><span class="delta-move '+cls+'">'+previous[f]+' → '+scores[f]+' &nbsp;'+arrow+'</span></div>';
+    }).join('');
+    box.innerHTML = '<div class="delta-head">Verglichen mit deinem letzten Ergebnis</div>'+rows+
+      '<div class="delta-note">Kleine Verschiebungen (unter 5 Punkten) sind normale Schwankung, keine echte Veränderung. Größere Sprünge können echte Entwicklung widerspiegeln — oder auch nur deine Tagesform beim Ausfüllen. Für aussagekräftige Vergleiche empfiehlt sich außerdem ein Abstand von mehreren Monaten zwischen zwei Durchläufen — auf Wochensicht gelten die fünf Dimensionen als stabil, ein kurzfristiger Vergleich misst eher Antwort-Schwankung als echte Veränderung.</div>';
+    box.style.display='block';
+  }
+
+  function renderCompat(){
+    var me = fromCode($('cmpMe').value.trim());
+    var other = fromCode($('cmpOther').value.trim());
+    var box = $('compatResult'); box.innerHTML='';
+    if (!me || !other){
+      box.innerHTML = '<div class="compat-line">Bitte zwei gültige 10-stellige Codes eintragen.</div>';
+      return;
+    }
+    var similar=0, diff=0;
+    var lines = ORDER.map(function(f){
+      var d = Math.abs(me[f]-other[f]);
+      var isSim = d<15;
+      if (isSim) similar++; else diff++;
+      return '<div class="compat-line"><b>'+LABELS[f]+'</b> — Du: '+me[f]+' · Andere Person: '+other[f]+'<br>'+(isSim?COMPAT[f].similar:COMPAT[f].diff)+'</div>';
+    });
+    // Einzelne, sofort erfassbare Kennzahl obendrauf — eine einfache, vereinfachte Kennzahl aus
+    // der mittleren Abweichung aller fünf Dimensionen, kein wissenschaftlich gewichteter Score
+    // (siehe Disclaimer unten). Gut für einen Screenshot, ersetzt aber nicht die Detailansicht darunter.
+    var avgDiff = ORDER.reduce(function(s,f){ return s+Math.abs(me[f]-other[f]); },0) / ORDER.length;
+    var match = Math.round(100 - avgDiff);
+    var matchLabel = match>=75 ? 'Hohe Übereinstimmung' : match>=45 ? 'Gemischtes Profil' : 'Deutlich unterschiedliche Profile';
+    var scoreBlock = '<div class="compat-score"><div id="compatRing"></div><div class="compat-score-label">'+matchLabel+'</div></div>';
+    var summary = '<div class="compat-line" style="background:transparent;border:1px solid var(--line);padding:12px 14px;"><b>Insgesamt:</b> '+similar+' von 5 Dimensionen ähnlich, '+diff+' unterschiedlich — beides kann eine gute Basis sein, je nachdem, wie bewusst ihr damit umgeht.</div>';
+    var radarBlock = '<div class="radar-wrap compat-radar">'+radarSVG(me, 300, {scores:other})+'</div>'+
+      '<div class="compat-legend"><span><i class="dot dot-me"></i>Du</span><span><i class="dot dot-other"></i>Andere Person</span></div>';
+    var note = '<div class="compat-note">Die Prozentzahl oben ist eine vereinfachte Kennzahl aus der durchschnittlichen Abweichung aller fünf Dimensionen — kein wissenschaftlich gewichteter Kompatibilitäts-Score. Ähnlicher zu sein ist zudem nicht automatisch besser — anders als bei den einzelnen Dimensionen selbst ist die Forschung dazu, welche Kombination gut zusammenpasst, deutlich weniger eindeutig. Die obige Einschätzung ist ein Denkanstoß, kein wissenschaftliches Urteil über eure Beziehung.</div>';
+    box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note;
+    // Ring zunächst bei 0% einfügen und den Ziel-Versatz erst einen Frame später auf demselben
+    // Kreis-Element setzen (nicht per innerHTML-Austausch) — nur so greift die CSS-Transition
+    // auf stroke-dashoffset tatsächlich, statt sofort im Endzustand zu erscheinen.
+    var ringHost = $('compatRing');
+    ringHost.innerHTML = ringGaugeSVG(0, 132, 'Übereinstimmung');
+    var fillCircle = ringHost.querySelector('.ring-fill');
+    var textEl = ringHost.querySelector('.ring-text');
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        if (fillCircle){
+          var r = 132/2 - 9, circumf = 2*Math.PI*r;
+          fillCircle.style.strokeDashoffset = (circumf * (1 - match/100)).toFixed(1);
+        }
+        if (textEl) textEl.textContent = match;
+      });
+    });
+  }
+
+  function toast(msg){
+    var t = $('toast'); t.textContent = msg; t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 1800);
+  }
+
+  // ---------- drawer (side panel: compare + saved result) ----------
+  var drawerLastFocus = null;
+  function drawerKeydown(e){
+    if (e.key==='Escape'){ closeDrawer(); return; }
+    if (e.key==='Tab'){
+      var all = $('drawerPanel').querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
+      var f = Array.prototype.filter.call(all, function(el){ return el.offsetParent !== null; });
+      if (!f.length) return;
+      var first = f[0], last = f[f.length-1];
+      if (e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+    }
+  }
+  function refreshDrawerState(){
+    var profile = loadProfile();
+    renderAvatarInto($('drawerAvatar'), profile);
+    $('drawerProfileName').textContent = profile.name ? profile.name : 'Profil';
+    $('drawerProfileSub').textContent = (profile.name || profile.avatarImg) ? 'Profil öffnen' : 'Name, Bild & Ergebnis hinzufügen';
+    var last = loadResult();
+    if (last){
+      $('drawerResumeSection').style.display='';
+      var a = archetypeOf(last);
+      $('resumeTitle').textContent = NOUN[a.top1][last[a.top1]>=50?'high':'low'] + ' · ' + ADJ[a.top2][last[a.top2]>=50?'high':'low'];
+    } else {
+      $('drawerResumeSection').style.display='none';
+    }
+    var progress = loadProgress();
+    if (progress){
+      $('drawerProgressSection').style.display='';
+      $('progressQi').textContent = (progress.qi+1);
+    } else {
+      $('drawerProgressSection').style.display='none';
+    }
+    $('drawerStateStatus').textContent = todayStateEntry() ? 'Heute bereits erfasst.' : 'Heute noch nicht erfasst.';
+  }
+
+  // ---------- profile ----------
+  function avatarInitials(name){
+    name = (name||'').trim();
+    if (!name) return '?';
+    var parts = name.split(/\s+/).filter(Boolean);
+    var chars = parts.slice(0,2).map(function(p){ return p.charAt(0).toUpperCase(); });
+    return chars.join('') || '?';
+  }
+  function renderAvatarInto(el, profile){
+    if (!el) return;
+    if (profile.avatarImg){
+      el.style.backgroundImage = 'url('+profile.avatarImg+')';
+      el.textContent = '';
+    } else {
+      el.style.backgroundImage = '';
+      el.textContent = avatarInitials(profile.name);
+    }
+  }
+  function renderAvatar(profile){
+    renderAvatarInto($('profileAvatar'), profile);
+    $('btnAvatarRemove').style.display = profile.avatarImg ? '' : 'none';
+  }
+  function renderProfile(){
+    var profile = loadProfile();
+    $('profileName').value = profile.name || '';
+    renderAvatar(profile);
+    var last = loadResult();
+    var block = $('profileResultBlock');
+    if (last){
+      var a = archetypeOf(last);
+      var title = NOUN[a.top1][last[a.top1]>=50?'high':'low'] + ' <span class="sep">·</span> ' + ADJ[a.top2][last[a.top2]>=50?'high':'low'];
+      var motto = MOTTO[a.top1][last[a.top1]>=50?'high':'low'];
+      block.innerHTML = '<div class="profile-result-card"><div><strong>'+title+'</strong><div class="l">'+motto+'</div></div><button type="button" class="btn btn-ghost btn-sm" id="btnProfileViewResult">Ansehen</button></div>';
+      $('btnProfileViewResult').addEventListener('click', function(){ scores = last; renderResult(); showView('result'); });
+    } else {
+      block.innerHTML = '<div class="profile-empty"><p>Noch kein Ergebnis auf diesem Gerät.</p><button type="button" class="btn btn-primary btn-sm" id="btnProfileStart">Test starten</button></div>';
+      $('btnProfileStart').addEventListener('click', function(){ answers=new Array(50).fill(0); qi=0; clearProgress(); renderQuestion(); showView('quiz'); });
+    }
+  }
+  function handleAvatarFile(file){
+    if (!file || !/^image\//.test(file.type)){ toast('Bitte ein Bild auswählen'); return; }
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var size = 240;
+        var canvas = document.createElement('canvas');
+        canvas.width = size; canvas.height = size;
+        var ctx = canvas.getContext('2d');
+        var side = Math.min(img.width, img.height);
+        var sx = (img.width - side)/2, sy = (img.height - side)/2;
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
+        var dataUrl;
+        try{ dataUrl = canvas.toDataURL('image/jpeg', 0.85); }
+        catch(err){ toast('Bild konnte nicht verarbeitet werden'); return; }
+        var profile = loadProfile();
+        profile.avatarImg = dataUrl;
+        if (saveProfile(profile)){
+          renderAvatar(profile);
+          toast('Profilbild gespeichert');
+        } else {
+          toast('Bild konnte nicht gespeichert werden — evtl. ist der Gerätespeicher voll');
+        }
+      };
+      img.onerror = function(){ toast('Bild konnte nicht geladen werden'); };
+      img.src = e.target.result;
+    };
+    reader.onerror = function(){ toast('Bild konnte nicht gelesen werden'); };
+    reader.readAsDataURL(file);
+  }
+
+  // ---------- settings ----------
+  function renderSettings(){
+    var progress = loadProgress();
+    var result = loadResult();
+    var profile = loadProfile();
+
+    renderAvatarInto($('settingsAvatar'), profile);
+    $('settingsAccountName').textContent = profile.name ? profile.name : 'Profil';
+    $('settingsAccountSub').textContent = profile.name ? 'Name gesetzt' : (profile.avatarImg ? 'Bild gesetzt, noch kein Name' : 'Noch kein Name gesetzt');
+
+    if (progress){
+      $('settingsTestStatus').textContent = 'Unterbrochen bei Frage ' + (progress.qi+1) + ' von 50.';
+      $('btnDiscardProgress').style.display = '';
+    } else {
+      $('settingsTestStatus').textContent = 'Gerade kein unterbrochener Test.';
+      $('btnDiscardProgress').style.display = 'none';
+    }
+
+    var items = [];
+    if (profile.name || profile.avatarImg){
+      var parts = [];
+      if (profile.name) parts.push('Name');
+      if (profile.avatarImg) parts.push('Bild');
+      items.push('Profil (' + parts.join(', ') + ')');
+    }
+    if (result) items.push('1 gespeichertes Ergebnis');
+    if (progress) items.push('1 unterbrochener Test');
+    var histCount = loadHistory().length;
+    if (histCount) items.push(histCount + (histCount===1 ? ' Ergebnis im Verlauf' : ' Ergebnisse im Verlauf'));
+    var stateCount = loadStateHistory().length;
+    if (stateCount) items.push(stateCount + (stateCount===1 ? ' Tagesform-Eintrag' : ' Tagesform-Einträge'));
+    var list = $('settingsDataList');
+    if (items.length){
+      list.innerHTML = items.map(function(t){ return '<li>'+t+'</li>'; }).join('');
+      list.style.display = '';
+      $('settingsEmptyNote').style.display = 'none';
+    } else {
+      list.innerHTML = '';
+      list.style.display = 'none';
+      $('settingsEmptyNote').style.display = '';
+    }
+  }
+
+  function openDrawer(){
+    refreshDrawerState();
+    drawerLastFocus = document.activeElement;
+    $('drawerPanel').classList.add('open');
+    $('drawerPanel').setAttribute('aria-hidden','false');
+    $('drawerScrim').classList.add('show');
+    $('btnDrawerToggle').setAttribute('aria-expanded','true');
+    document.body.style.overflow='hidden';
+    // Restlichen Seiteninhalt für Screenreader/Tastatur unerreichbar machen, solange der
+    // modale Drawer offen ist — sonst bleibt er per virtuellem Cursor navigierbar.
+    var shell = $('shell'); if (shell) shell.setAttribute('inert','');
+    document.addEventListener('keydown', drawerKeydown);
+    setTimeout(function(){ $('btnDrawerClose').focus(); }, 50);
+  }
+  function closeDrawer(){
+    $('drawerPanel').classList.remove('open');
+    $('drawerPanel').setAttribute('aria-hidden','true');
+    $('drawerScrim').classList.remove('show');
+    $('btnDrawerToggle').setAttribute('aria-expanded','false');
+    document.body.style.overflow='';
+    var shell = $('shell'); if (shell) shell.removeAttribute('inert');
+    document.removeEventListener('keydown', drawerKeydown);
+    if (drawerLastFocus && drawerLastFocus.focus) drawerLastFocus.focus();
+  }
+
+  // ---------- Ergebnisbild-Dialog ----------
+  var imgModalLastFocus = null, currentShareCanvas = null;
+  function imgModalKeydown(e){
+    if (e.key==='Escape'){ closeImgModal(); return; }
+    if (e.key==='Tab'){
+      var all = $('imgModal').querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
+      var f = Array.prototype.filter.call(all, function(el){ return el.offsetParent !== null; });
+      if (!f.length) return;
+      var first = f[0], last = f[f.length-1];
+      if (e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+    }
+  }
+  function openImgModal(){
+    imgModalLastFocus = document.activeElement;
+    currentShareCanvas = buildShareCanvas();
+    $('shareImagePreview').src = currentShareCanvas.toDataURL('image/png');
+    $('imgModal').classList.add('open');
+    $('imgModal').setAttribute('aria-hidden','false');
+    $('imgModalScrim').classList.add('show');
+    var shell = $('shell'); if (shell) shell.setAttribute('inert','');
+    document.addEventListener('keydown', imgModalKeydown);
+    setTimeout(function(){ $('btnImgModalClose').focus(); }, 50);
+  }
+  function closeImgModal(){
+    $('imgModal').classList.remove('open');
+    $('imgModal').setAttribute('aria-hidden','true');
+    $('imgModalScrim').classList.remove('show');
+    var shell = $('shell'); if (shell) shell.removeAttribute('inert');
+    document.removeEventListener('keydown', imgModalKeydown);
+    if (imgModalLastFocus && imgModalLastFocus.focus) imgModalLastFocus.focus();
+  }
+
+  // ---------- wiring ----------
+  // btnStart/btnHeroSecondary click handlers are assigned dynamically by syncHeroState() —
+  // what they do depends on whether a saved result or an interrupted test already exists.
+  $('btnBackLanding').addEventListener('click', function(){ if (qi>0 && loadProgress()){ toast('Fortschritt gespeichert — weiter geht’s oben rechts.'); } showView('landing'); });
+  $('btnHome').addEventListener('click', function(){ showView('landing'); });
+  $('btnBackFromResult').addEventListener('click', function(){ showView('landing'); });
+  $('btnBackFromArchetypes').addEventListener('click', function(){ showView('landing'); });
+  $('btnPrev').addEventListener('click', function(){ if (qi>0){ qi--; renderQuestion(); saveProgress(); } });
+  var retake = function(){ answers=new Array(50).fill(0); qi=0; clearProgress(); renderQuestion(); showView('quiz'); };
+  $('btnRetake').addEventListener('click', retake);
+  $('btnRetakeTop').addEventListener('click', retake);
+  $('btnDrawerToggle').addEventListener('click', openDrawer);
+  $('btnDrawerClose').addEventListener('click', closeDrawer);
+  $('drawerScrim').addEventListener('click', closeDrawer);
+  $('btnResume').addEventListener('click', function(){ closeDrawer(); scores = loadResult(); renderResult(); showView('result'); });
+  $('btnResumeProgress').addEventListener('click', function(){
+    var p = loadProgress();
+    closeDrawer();
+    if (!p) return;
+    answers = p.answers; qi = p.qi;
+    renderQuestion();
+    showView('quiz');
+  });
+  $('btnDrawerCompare').addEventListener('click', function(){
+    closeDrawer();
+    var r = loadResult();
+    if (r){ scores=r; renderResult(); showView('result'); setTimeout(function(){ $('compareAnchor').scrollIntoView({behavior:'smooth'}); },300); }
+    else { pendingCompareScroll=true; showView('quiz'); qi=0; renderQuestion(); toast('Erst den Test machen, dann vergleichen.'); }
+  });
+  $('btnDrawerArchetypes').addEventListener('click', function(){ closeDrawer(); showView('archetypes'); });
+  $('btnDrawerHistory').addEventListener('click', function(){ closeDrawer(); renderHistory(); showView('history'); });
+  $('btnDrawerState').addEventListener('click', function(){ closeDrawer(); renderStateView(); showView('state'); });
+  $('btnBackFromState').addEventListener('click', function(){ showView('landing'); });
+  $('btnStateSave').addEventListener('click', function(){
+    if (!statePickedEnergy || !statePickedValence){
+      toast('Bitte beide Fragen beantworten.');
+      return;
+    }
+    var ok = upsertStateToday(statePickedEnergy, statePickedValence);
+    if (ok){
+      toast('Tagesform gespeichert.');
+      renderStateView();
+      refreshDrawerState();
+    } else {
+      toast('Konnte nicht gespeichert werden.');
+    }
+  });
+  $('btnBackFromHistory').addEventListener('click', function(){ showView('landing'); });
+  $('btnDrawerProfileRow').addEventListener('click', function(){ closeDrawer(); renderProfile(); showView('profile'); });
+  $('btnBackFromProfile').addEventListener('click', function(){ showView('landing'); });
+  $('btnAvatarEdit').addEventListener('click', function(){ $('avatarFileInput').click(); });
+  $('avatarFileInput').addEventListener('change', function(e){
+    var f = e.target.files && e.target.files[0];
+    if (f) handleAvatarFile(f);
+    e.target.value = '';
+  });
+  $('btnAvatarRemove').addEventListener('click', function(){
+    var profile = loadProfile();
+    profile.avatarImg = null;
+    if (saveProfile(profile)){
+      renderAvatar(profile);
+      toast('Bild entfernt');
+    }
+  });
+  $('profileName').addEventListener('input', function(){
+    var profile = loadProfile();
+    profile.name = $('profileName').value;
+    if (saveProfile(profile) && !profile.avatarImg) renderAvatar(profile);
+  });
+  $('btnDrawerSettings').addEventListener('click', function(){ closeDrawer(); applyTheme(loadThemeMode()); renderSettings(); showView('settings'); });
+  $('btnBackFromSettings').addEventListener('click', function(){ showView('landing'); });
+  ['themeSystem','themeLight','themeDark'].forEach(function(id){
+    $(id).addEventListener('click', function(){ applyTheme($(id).dataset.mode); });
+  });
+  $('btnDiscardProgress').addEventListener('click', function(){
+    clearProgress();
+    answers = new Array(50).fill(0); qi = 0;
+    renderSettings();
+    refreshDrawerState();
+    toast('Unterbrochener Test verworfen');
+  });
+  $('btnSettingsEditProfile').addEventListener('click', function(){ renderProfile(); showView('profile'); });
+  $('btnRestoreCode').addEventListener('click', function(){
+    var input = $('restoreCodeInput');
+    var restored = fromCode(input.value.trim());
+    if (!restored){ toast('Ungültiger Code — bitte den 10-stelligen Ergebnis-Code prüfen'); return; }
+    scores = restored;
+    saveResult(scores);
+    clearProgress();
+    answers = new Array(50).fill(0); qi = 0;
+    input.value = '';
+    renderSettings();
+    refreshDrawerState();
+    toast('Ergebnis wiederhergestellt');
+  });
+  $('btnResetData').addEventListener('click', function(){
+    var btn = $('btnResetData');
+    if (!resetArmed){
+      resetArmed = true;
+      btn.classList.add('armed');
+      btn.textContent = 'Wirklich? Nochmal tippen zum Löschen';
+      resetArmTimeout = setTimeout(function(){
+        disarmResetButton();
+      }, 4000);
+      return;
+    }
+    disarmResetButton();
+    try{ localStorage.removeItem('lucenta_result'); }catch(e){}
+    clearProgress();
+    clearProfile();
+    clearHistory();
+    clearStateHistory();
+    scores = null; answers = new Array(50).fill(0); qi = 0;
+    refreshDrawerState();
+    renderSettings();
+    toast('Deine Daten wurden gelöscht');
+    showView('landing');
+  });
+  $('btnCompare').addEventListener('click', renderCompat);
+  [$('cmpMe'), $('cmpOther')].forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var clean = inp.value.replace(/[^a-z0-9]/gi,'').toLowerCase().slice(0,10);
+      if (clean !== inp.value) inp.value = clean;
+    });
+    inp.addEventListener('keydown', function(e){ if (e.key==='Enter'){ renderCompat(); } });
+  });
+  document.addEventListener('keydown', function(e){
+    if (!$('view-quiz').classList.contains('active')) return;
+    if (e.key>='1' && e.key<='5'){ selectAnswer(parseInt(e.key,10)); }
+    else if (e.key==='Backspace' || e.key==='ArrowLeft'){ if (qi>0){ qi--; renderQuestion(); saveProgress(); } }
+  });
+  $('btnCopyCode').addEventListener('click', function(){
+    var code = $('myCode').textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(code).then(function(){ toast('Code kopiert'); }).catch(function(){ toast('Code: '+code); });
+    } else { toast('Code: '+code); }
+  });
+  $('btnShare').addEventListener('click', function(){
+    var arch = archetypeOf(scores);
+    var url = (location.href.split('#')[0]).split('?')[0];
+    var text = 'Mein Lucenta-Porträt: '+ (NOUN[arch.top1][scores[arch.top1]>=50?'high':'low']) +' · '+ (ADJ[arch.top2][scores[arch.top2]>=50?'high':'low']) +
+      '. Mach den Test und vergleich dein Ergebnis mit meinem Code: '+toCode(scores);
+    function fallbackCopy(){
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text+' — '+url).then(function(){ toast('Zum Teilen kopiert'); }).catch(function(){ toast('Teilen nicht möglich — dein Code: '+toCode(scores)); });
+      } else { toast('Teilen nicht möglich — dein Code: '+toCode(scores)); }
+    }
+    if (navigator.share){
+      navigator.share({title:'Lucenta', text:text, url:url}).catch(function(err){
+        if (err && err.name === 'AbortError') return; // Nutzer:in hat den Teilen-Dialog selbst geschlossen
+        fallbackCopy();
+      });
+    } else {
+      fallbackCopy();
+    }
+  });
+  $('btnShareImage').addEventListener('click', openImgModal);
+  $('btnImgModalClose').addEventListener('click', closeImgModal);
+  $('imgModalScrim').addEventListener('click', closeImgModal);
+  $('btnImgModalShare').addEventListener('click', function(){
+    if (!currentShareCanvas) return;
+    currentShareCanvas.toBlob(function(blob){
+      if (!blob){ toast('Bild konnte nicht erstellt werden'); return; }
+      var file;
+      try{ file = new File([blob], 'lucenta-ergebnis.png', {type:'image/png'}); }
+      catch(e){ toast('Teilen hier nicht unterstützt — Bild lange antippen zum Speichern'); return; }
+      if (navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({files:[file], title:'Lucenta', text:'Mein Lucenta-Ergebnis'}).catch(function(err){
+          if (err && err.name === 'AbortError') return;
+          toast('Teilen nicht möglich — Bild lange antippen zum Speichern');
+        });
+      } else {
+        toast('Teilen als Bild hier nicht unterstützt — Bild lange antippen zum Speichern');
+      }
+    }, 'image/png');
+  });
+
+  // init
+  (function init(){
+    if (!storageAvailable()){ $('storageWarning').style.display = 'flex'; }
+    refreshDrawerState();
+    applyTheme(loadThemeMode());
+    $('previewRadar').innerHTML = radarSVG({O:78,E:65,C:45,A:58,S:50}, 160, null, true);
+    renderArchetypeGroups();
+    renderQuestion();
+    syncHeroState();
+  })();
+})();
+</script>
