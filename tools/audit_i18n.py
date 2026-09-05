@@ -82,29 +82,42 @@ html_marks=set(re.findall(r'data-i18n-html="([^"]+)"', MARKUP))
 unbal=[k for k in html_marks if k in DE and not bal(DE[k])]
 check(not unbal, "alle als HTML gesetzten Fragmente sind vollstaendig"+(": "+", ".join(unbal) if unbal else ""))
 
-print("\n6) Keine deutschen Literale mehr in sichtbaren Zuweisungen")
+print("\n6) Keine deutschen Literale im JavaScript")
+# Runde 59: Die alte Fassung suchte nach Zuweisungsmustern und einer von Hand gepflegten Liste
+# deutscher Woerter. Beides ist gescheitert. Das Muster ".innerHTML = ([^;]+);" brach am
+# Semikolon von "&middot;" ab, sodass fuenf Literale im Ergebnisbericht unsichtbar blieben —
+# darunter "Alltag · Beziehungen · Wachstum", das eine Nutzerin dann im Browser sah. Und eine
+# Wortliste kann nur finden, woran man vorher gedacht hat; "Alltag" stand nicht darauf.
+#
+# Der deutsche Wortschatz wird deshalb jetzt aus den Sprachpaketen selbst abgeleitet: alles,
+# was in den deutschen Texten vorkommt und in den englischen nicht. Diese Liste waechst
+# automatisch mit den Paketen mit und braucht keine Pflege.
 a2=JS.index('var CONTENT = {}'); b2=JS.index('// Aktive Sprache')
 rest=JS[:a2]+JS[b2:]
 rest=re.sub(r'/\*.*?\*/','',rest,flags=re.S); rest=re.sub(r'^\s*//.*$','',rest,flags=re.M)
-verdacht=set()
-for pat in [r"\.textContent\s*=\s*([^;]+);", r"toast\(([^;]+)\)",
-            r"setAttribute\('aria-label',\s*([^)]+)\)",
-            # Runde 58: Diese drei Wege fehlten. "Profil (Name, Bild)" und " Ergebnisse im
-            # Verlauf" standen ueber push() in der englischen Oberflaeche, die Beschriftungen
-            # der Tagesform-Kurve ueber innerHTML-Verkettung.
-            r"\.push\(([^;]+)\)",
-            r"\.innerHTML\s*=\s*([^;]+);",
-            r"setAttribute\('placeholder',\s*([^)]+)\)",
-            # Der Rueckmeldungstext geht ueber navigator.share bzw. die Zwischenablage nach
-            # draussen und ist damit genauso sichtbar wie Text im DOM — nur eben nirgends im DOM.
-            r"var text\s*=\s*([^;]+);",
-            r"writeText\(([^)]+)\)"]:
-    for m in re.finditer(pat, rest):
-        for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", m.group(1)):
-            if lit.startswith('js_') or lit.startswith('<') or len(lit)<4: continue
-            if re.search(r'[äöüßÄÖÜ]', lit) or re.search(r'\b(der|die|das|und|dein|nicht|kein|gespeichert|Vergleich|Ergebnis|Energie|Stimmung|Profil|Name|Wert|Code|Bild|Tagesform)\b', lit):
-                verdacht.add(lit)
-check(not verdacht, "keine unuebersetzten Texte"+(": "+", ".join(sorted(verdacht)[:5]) if verdacht else ""))
+
+def worte(text):
+    text=re.sub(r'<[^>]*>',' ',text)
+    text=re.sub(r'&[a-zA-Z]+;|&#\d+;',' ',text)
+    return set(w.lower() for w in re.findall(r'[A-Za-zÄÖÜäöüß]{4,}', text))
+
+de_worte=set(); en_worte=set()
+for v in DE.values(): de_worte |= worte(v)
+for v in EN.values(): en_worte |= worte(v)
+# Bezeichner, die in beiden Sprachen gleich sind, gehoeren nicht dazu
+NUR_DEUTSCH = de_worte - en_worte
+# Fachbegriffe und Eigennamen, die auch im englischen Text deutsch bleiben duerfen
+NUR_DEUTSCH -= {'deutsch','lucenta','neurotizismus','ostendorf','goldberg'}
+
+verdacht={}
+for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
+    if len(lit) < 4 or lit.startswith('js_') or lit.startswith('data-') or lit.startswith('aria'):
+        continue
+    treffer = worte(lit) & NUR_DEUTSCH
+    if treffer: verdacht[lit[:60]] = sorted(treffer)[:3]
+check(not verdacht, "keine deutschen Literale im Code"+
+      (": "+"; ".join("%s [%s]"%(k,",".join(v)) for k,v in list(verdacht.items())[:4]) if verdacht else
+       " (%d nur-deutsche Woerter als Massstab)"%len(NUR_DEUTSCH)))
 
 print("\n7) Uebersetzbare Attribute tragen eine Marke")
 # Der Kern der Luecke aus Runde 58: placeholder und aria-label sind Attribute. Der Ersatz-DOM

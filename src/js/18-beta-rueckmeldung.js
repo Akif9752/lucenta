@@ -249,7 +249,7 @@
     currentShareCanvas.toBlob(function(blob){
       if (!blob){ toast(tx('js_bild_konnte_nicht_erstellt')); return; }
       var file;
-      try{ file = new File([blob], 'lucenta-ergebnis-'+shareFormat+'.png', {type:'image/png'}); }
+      try{ file = new File([blob], tx('js_dateiname_ergebnis')+shareFormat+'.png', {type:'image/png'}); }
       catch(e){ toast(tx('js_teilen_hier_nicht_unterstü')); return; }
       if (navigator.canShare && navigator.canShare({files:[file]})){
         navigator.share({files:[file], title:'Lucenta', text:tx('js_mein_lucentaergebnis')}).catch(function(err){

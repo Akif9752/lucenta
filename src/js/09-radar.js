@@ -53,7 +53,7 @@
     }).join('');
 
     var ariaLabel = other
-      ? tx('js_vergleich_du') + ORDER.map(function(f){ return LABELS[f]+' '+sc[f]; }).join(', ') + '. Andere Person ' + ORDER.map(function(f){ return LABELS[f]+' '+other.scores[f]; }).join(', ')
+      ? tx('js_vergleich_du') + ORDER.map(function(f){ return LABELS[f]+' '+sc[f]; }).join(', ') + '. '+tx('js_andere_person')+' ' + ORDER.map(function(f){ return LABELS[f]+' '+other.scores[f]; }).join(', ')
       : (isExample ? tx('js_beispielhaftes_profil_zur') : tx('js_dein_profil')) + ORDER.map(function(f){ return LABELS[f]+' '+sc[f]+tx('js_von_100'); }).join(', ');
     return '<svg viewBox="0 0 '+size+' '+(other?size+14:size)+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+ariaLabel+'">'+
       rings+axes+otherPoly+

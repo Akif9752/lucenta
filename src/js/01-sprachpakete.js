@@ -48,6 +48,7 @@
     // Die Fragen werden aus FACTORS zusammengesetzt; ohne Neuaufbau bliebe der Fragebogen
     // in der alten Sprache stehen, waehrend die Oberflaeche schon gewechselt hat.
     rebuildItems();
+    resetDateFmt();
     applyI18n();
     syncLangButtons();
     $('viewLabel').textContent = VIEW_LABELS[currentView] || '';

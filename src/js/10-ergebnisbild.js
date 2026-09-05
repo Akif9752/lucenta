@@ -87,7 +87,10 @@
     ctx.fillStyle = C.ink; ctx.font = '700 46px Georgia, serif';
     ctx.fillText('Lucenta', M+30, M+8);
     ctx.fillStyle = C.muted; ctx.font = '600 21px "IBM Plex Mono", monospace';
-    ctx.fillText('ERGEBNISKARTE', M+2, M+50);
+    // Canvas-Text steht in keinem DOM: weder die zehn Reihen noch ein Vergleich der
+    // gerenderten Ansichten koennen ihn sehen. Runde 59 hat ihn deshalb nur beim Lesen des
+    // Codes gefunden — das Ergebnisbild ist ausgerechnet das, was Leute weitergeben.
+    ctx.fillText(decodeEntities(tx('js_ergebniskarte')), M+2, M+50);
 
     var arch = archetypeOf(scores);
     var pole1 = scores[arch.top1]>=50?'high':'low', pole2 = scores[arch.top2]>=50?'high':'low';
@@ -112,7 +115,7 @@
     ctx.textAlign = 'left';
 
     ctx.fillStyle = C.muted; ctx.font = '500 20px "IBM Plex Mono", monospace';
-    ctx.fillText('Big-Five-Modell (IPIP) · lucenta', M, H-M+8);
+    ctx.fillText(decodeEntities(tx('js_bildfuss')), M, H-M+8);
 
     return canvas;
   }

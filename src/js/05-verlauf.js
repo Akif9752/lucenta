@@ -43,11 +43,15 @@
   }
   function historyDateFmt(){
     if (!HISTORY_DATE_FMT){
-      try{ HISTORY_DATE_FMT = new Intl.DateTimeFormat('de-DE', {day:'2-digit', month:'short', year:'numeric'}); }
+      // Runde 59: Das Gebietsschema war fest auf 'de-DE' verdrahtet, also stand im englischen
+      // Verlauf "05. Sept. 2026". Es kommt jetzt aus dem Sprachpaket; resetDateFmt() leert den
+      // Zwischenspeicher beim Sprachwechsel, sonst bliebe das zuerst erzeugte Format bestehen.
+      try{ HISTORY_DATE_FMT = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {day:'2-digit', month:'short', year:'numeric'}); }
       catch(e){ HISTORY_DATE_FMT = { format:function(d){ return d.toLocaleDateString(); } }; }
     }
     return HISTORY_DATE_FMT;
   }
+  function resetDateFmt(){ HISTORY_DATE_FMT = null; }
   function renderHistory(){
     $('historyMaxCount').textContent = MAX_HISTORY;
     var hist = loadHistory();

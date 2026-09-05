@@ -49,12 +49,15 @@ Beim JavaScript entscheidet sie über die Ausführungsreihenfolge.
 npm test
 ```
 
-Drei Ebenen, die sich ergänzen:
+Vier Ebenen, die sich ergänzen:
 
 1. **`node build.js`** — muss durchlaufen; ein Syntaxfehler fällt hier auf.
 2. **`node tests/run.js`** — zehn Reihen, rund 7.000 Prüfungen. Der App-Code wird bis zur Marke
    `wiring` gegen einen Ersatz-DOM ausgeführt.
 3. **`python3 tools/audit_i18n.py`** — acht statische Eigenschaften der Mehrsprachigkeit.
+4. **`npm run diff-sprachen`** — fährt im echten Browser jede Ansicht einmal auf Deutsch und
+   einmal auf Englisch ab und meldet jede Zeile, die in beiden zeichengleich ist. Braucht
+   Playwright und läuft deshalb **nicht** in `npm test`.
 
 **Warum es Punkt 3 gibt, und das ist die wichtigste Zeile in dieser Datei:** Der Ersatz-DOM aus
 Punkt 2 behandelt `textContent` und `innerHTML` gleich. In Runde 56 war die App auf jedem Gerät
@@ -67,7 +70,27 @@ andere.**
 sichtbar und in allen zehn Reihen grün: nicht übersetzte Attribute, deutsche Anführungszeichen
 im englischen Paket, und deutsche Literale, die über `push()` oder Zeichenkettenverkettung in
 die Oberfläche wandern statt über `textContent`. Prüfung 6 ist entsprechend verschärft,
-Prüfung 7 und 8 sind neu. Das Muster wiederholt sich: **Was der Ersatz-DOM nicht kennt, kann
+Prüfung 7 und 8 sind neu.
+
+**Runde 59 kam von außen: Eine Nutzerin sah `ALLTAG · BEZIEHUNGEN · WACHSTUM` auf der
+englischen Ergebnisseite**, während alle zehn Reihen und alle acht Prüfungen grün waren. Der
+Grund war doppelt, und beide Hälften waren Fehler in der Prüfung selbst:
+
+- Prüfung 6 suchte nach Zuweisungsmustern. Das Muster `.innerHTML = ([^;]+);` brach am
+  Semikolon von `&middot;` ab — fünf Literale im Ergebnisbericht lagen dahinter.
+- Prüfung 6 verglich gegen eine **von Hand gepflegte Wortliste**. „Alltag" stand nicht darauf.
+
+Eine Liste kann nur finden, woran vorher jemand gedacht hat. Prüfung 6 leitet den deutschen
+Wortschatz deshalb jetzt **aus den Sprachpaketen selbst** ab: alles, was in den deutschen
+Texten vorkommt und in den englischen nicht (derzeit 710 Wörter). Die Liste wächst
+automatisch mit den Paketen mit. Beim ersten Lauf fand sie sofort fünf weitere Stellen, die
+niemand gesucht hatte — darunter zwei auf dem Canvas des Ergebnisbildes.
+
+Dazu kam ein Fehler im Prüfwerkzeug, nicht in der App: Der automatisierte Durchlauf klickte
+den Fragebogen mit 110 ms Abstand durch, die Weiterschaltung braucht aber 220 ms. Er
+beantwortete damit fünfzigmal dieselbe Frage und erreichte die Ergebnisansicht **nie** —
+ausgerechnet die Ansicht, in der der gemeldete Fehler stand. `tools/diff_sprachen.mjs` bricht
+jetzt ab, wenn nach dem Durchlauf kein Ergebnis gespeichert ist. Das Muster wiederholt sich: **Was der Ersatz-DOM nicht kennt, kann
 keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu.
 
 ## Der eigene Renderer
@@ -98,7 +121,7 @@ Texte stehen in `src/i18n/`. Drei Arten von Marken im Markup:
 
 Dynamische Texte laufen über `tx('schluessel')`.
 
-**Fünf Regeln, jede aus einem echten Fehler entstanden:**
+**Sechs Regeln, jede aus einem echten Fehler entstanden:**
 
 1. **Niemals über `textContent` setzen.** Die Texte enthalten Entitäten (`&mdash;`, `&shy;`,
    `&amp;`); über `textContent` zeigt der Browser sie wörtlich.
@@ -109,7 +132,11 @@ Dynamische Texte laufen über `tx('schluessel')`.
    Sinne des Ersatz-DOM — keine der zehn Reihen liest je ein Attribut. Bis Runde 58 waren
    deshalb 5 Platzhalter und 21 `aria-label` in jeder Sprache deutsch; auf Englisch war die
    Bedienoberfläche für Screenreader vollständig deutsch. Prüfung 7 erzwingt die Marke.
-5. **Anführungszeichen gehören zur Sprache.** Deutsch `&bdquo;…&ldquo;`, Englisch
+5. **Text auf dem Canvas ist genauso Text.** Das Ergebnisbild wird gezeichnet, nicht gerendert
+   — es steht in keinem DOM. Weder die zehn Reihen noch der Sprachvergleich können es sehen;
+   `ERGEBNISKARTE` und die Fußzeile blieben deshalb bis Runde 59 deutsch. Prüfung 6 findet
+   solche Literale, weil sie am Quelltext ansetzt und nicht am DOM.
+6. **Anführungszeichen gehören zur Sprache.** Deutsch `&bdquo;…&ldquo;`, Englisch
    `&ldquo;…&rdquo;`. Das englische Paket hatte an 12 Stellen das deutsche Paar übernommen —
    für Prüfung 1 und 3 unauffällig, im Browser sofort sichtbar. Prüfung 8 erzwingt es.
 
@@ -151,7 +178,27 @@ Aus 56 Runden, jeder einzelne aus einer konkreten Entscheidung:
 sichtbar und in allen zehn Reihen grün: nicht übersetzte Attribute, deutsche Anführungszeichen
 im englischen Paket, und deutsche Literale, die über `push()` oder Zeichenkettenverkettung in
 die Oberfläche wandern statt über `textContent`. Prüfung 6 ist entsprechend verschärft,
-Prüfung 7 und 8 sind neu. Das Muster wiederholt sich: **Was der Ersatz-DOM nicht kennt, kann
+Prüfung 7 und 8 sind neu.
+
+**Runde 59 kam von außen: Eine Nutzerin sah `ALLTAG · BEZIEHUNGEN · WACHSTUM` auf der
+englischen Ergebnisseite**, während alle zehn Reihen und alle acht Prüfungen grün waren. Der
+Grund war doppelt, und beide Hälften waren Fehler in der Prüfung selbst:
+
+- Prüfung 6 suchte nach Zuweisungsmustern. Das Muster `.innerHTML = ([^;]+);` brach am
+  Semikolon von `&middot;` ab — fünf Literale im Ergebnisbericht lagen dahinter.
+- Prüfung 6 verglich gegen eine **von Hand gepflegte Wortliste**. „Alltag" stand nicht darauf.
+
+Eine Liste kann nur finden, woran vorher jemand gedacht hat. Prüfung 6 leitet den deutschen
+Wortschatz deshalb jetzt **aus den Sprachpaketen selbst** ab: alles, was in den deutschen
+Texten vorkommt und in den englischen nicht (derzeit 710 Wörter). Die Liste wächst
+automatisch mit den Paketen mit. Beim ersten Lauf fand sie sofort fünf weitere Stellen, die
+niemand gesucht hatte — darunter zwei auf dem Canvas des Ergebnisbildes.
+
+Dazu kam ein Fehler im Prüfwerkzeug, nicht in der App: Der automatisierte Durchlauf klickte
+den Fragebogen mit 110 ms Abstand durch, die Weiterschaltung braucht aber 220 ms. Er
+beantwortete damit fünfzigmal dieselbe Frage und erreichte die Ergebnisansicht **nie** —
+ausgerechnet die Ansicht, in der der gemeldete Fehler stand. `tools/diff_sprachen.mjs` bricht
+jetzt ab, wenn nach dem Durchlauf kein Ergebnis gespeichert ist. Das Muster wiederholt sich: **Was der Ersatz-DOM nicht kennt, kann
 keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu. Verlaufspfeile bleiben farbneutral, das App-Symbol
   setzt keine Spitze.
 - **Bindung um ihrer selbst willen ist nicht das Ziel.** Kein Serien-Zähler, kein vorgetäuschter

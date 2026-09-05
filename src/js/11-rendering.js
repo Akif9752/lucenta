@@ -206,15 +206,15 @@
           '<div class="trait-top"><span class="trait-name">'+LABELS[f]+'</span><span class="trait-score mono">'+scores[f]+' / 100</span></div>'+
           gaugeBarHTML(scores[f])+
           '<div class="trait-teaser">'+pr.teaser+'</div>'+
-          '<div class="trait-more"><span class="tm-shut">Alltag &middot; Beziehungen &middot; Wachstum</span>'+
-          '<span class="tm-open">Weniger anzeigen</span>'+
+          '<div class="trait-more"><span class="tm-shut">'+tx('js_alltag_beziehungen_wachstum')+'</span>'+
+          '<span class="tm-open">'+tx('js_weniger_anzeigen')+'</span>'+
             '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>'+
           '</div>'+
         '</summary>'+
         '<div class="trait-sections">'+
-          '<div class="trait-section"><div class="trait-section-label">Im Alltag</div><p>'+pr.alltag+'</p></div>'+
-          '<div class="trait-section"><div class="trait-section-label">In Beziehungen</div><p>'+pr.beziehungen+'</p></div>'+
-          '<div class="trait-section"><div class="trait-section-label">Wachstumsimpuls</div><p>'+pr.wachstum+'</p></div>'+
+          '<div class="trait-section"><div class="trait-section-label">'+tx('js_im_alltag')+'</div><p>'+pr.alltag+'</p></div>'+
+          '<div class="trait-section"><div class="trait-section-label">'+tx('js_in_beziehungen')+'</div><p>'+pr.beziehungen+'</p></div>'+
+          '<div class="trait-section"><div class="trait-section-label">'+tx('js_wachstumsimpuls')+'</div><p>'+pr.wachstum+'</p></div>'+
         '</div>';
       list.appendChild(card);
     });
@@ -256,7 +256,7 @@
       var d = Math.abs(me[f]-other[f]);
       var isSim = d<15;
       if (isSim) similar++; else diff++;
-      return '<div class="compat-line"><b>'+LABELS[f]+tx('js_du')+me[f]+' · Andere Person: '+other[f]+'<br>'+(isSim?COMPAT[f].similar:COMPAT[f].diff)+'</div>';
+      return '<div class="compat-line"><b>'+LABELS[f]+tx('js_du')+me[f]+' · '+tx('js_andere_person')+': '+other[f]+'<br>'+(isSim?COMPAT[f].similar:COMPAT[f].diff)+'</div>';
     });
     // Einzelne, sofort erfassbare Kennzahl obendrauf — eine einfache, vereinfachte Kennzahl aus
     // der mittleren Abweichung aller fünf Dimensionen, kein wissenschaftlich gewichteter Score
