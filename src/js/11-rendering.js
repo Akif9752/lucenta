@@ -263,9 +263,9 @@
     // (siehe Disclaimer unten). Gut für einen Screenshot, ersetzt aber nicht die Detailansicht darunter.
     var avgDiff = ORDER.reduce(function(s,f){ return s+Math.abs(me[f]-other[f]); },0) / ORDER.length;
     var match = Math.round(100 - avgDiff);
-    var matchLabel = match>=75 ? tx('js_hohe_übereinstimmung') : match>=45 ? 'Gemischtes Profil' : 'Deutlich unterschiedliche Profile';
+    var matchLabel = match>=75 ? tx('js_hohe_übereinstimmung') : match>=45 ? tx('js_gemischtes_profil') : tx('js_deutlich_unterschiedliche_prof');
     var scoreBlock = '<div class="compat-score"><div id="compatRing"></div><div class="compat-score-label">'+matchLabel+'</div></div>';
-    var summary = '<div class="compat-line compat-line-total"><b>Insgesamt:</b> '+similar+tx('js_von__dimensionen_ähnlich')+diff+tx('js_unterschiedlich__beides_k');
+    var summary = '<div class="compat-line compat-line-total"><b>'+tx('js_insgesamt')+'</b> '+similar+tx('js_von__dimensionen_ähnlich')+diff+tx('js_unterschiedlich__beides_k');
     var radarBlock = '<div class="radar-wrap compat-radar">'+radarSVG(me, 300, {scores:other})+'</div>'+
       tx('js_duandere_person');
     var note = tx('js_die_prozentzahl_oben_ist_e');
@@ -273,8 +273,8 @@
     // Ergebnisblocks, nachdem der Vergleich bereits berechnet und sichtbar ist, statt vorab um
     // einen Namen zu bitten, bevor überhaupt klar ist, ob der Vergleich einen Blick wert ist.
     var saveRow = '<div class="compat-save-row">'+
-      '<div class="field"><label for="compatSaveLabel">Name (optional)</label><input type="text" id="compatSaveLabel" maxlength="30" placeholder="z. B. Mia"></div>'+
-      '<button type="button" class="btn btn-ghost btn-sm" id="btnSaveCompat">Vergleich speichern</button>'+
+      '<div class="field"><label for="compatSaveLabel">'+tx('js_name_optional')+'</label><input type="text" id="compatSaveLabel" maxlength="30" placeholder="'+decodeEntities(tx('ph_z_b_1a2b3c4d5e_mia'))+'"></div>'+
+      '<button type="button" class="btn btn-ghost btn-sm" id="btnSaveCompat">'+tx('js_vergleich_speichern')+'</button>'+
       '</div>';
     box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note + saveRow;
     lastCompatSnapshot = { myCode: $('cmpMe').value.trim(), otherCode: $('cmpOther').value.trim(), match: match };

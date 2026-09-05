@@ -11,7 +11,7 @@
     var rows = list.slice().reverse().map(function(e){
       var dateStr;
       try{ dateStr = fmt.format(new Date(e.ts)); }catch(ex){ dateStr=''; }
-      var label = e.label ? e.label : 'Unbenannter Vergleich';
+      var label = e.label ? e.label : tx('js_unbenannter_vergleich');
       return '<div class="history-row">'+
         '<div><div class="history-date">'+dateStr+'</div><div class="history-title">'+label+'</div></div>'+
         '<div class="archive-row-actions">'+

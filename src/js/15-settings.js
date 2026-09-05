@@ -19,16 +19,16 @@
     var items = [];
     if (profile.name || profile.avatarImg){
       var parts = [];
-      if (profile.name) parts.push('Name');
-      if (profile.avatarImg) parts.push('Bild');
-      items.push('Profil (' + parts.join(', ') + ')');
+      if (profile.name) parts.push(tx('js_datenpunkt_name'));
+      if (profile.avatarImg) parts.push(tx('js_datenpunkt_bild'));
+      items.push(tx('js_datenpunkt_profil') + ' (' + parts.join(', ') + ')');
     }
     if (result) items.push(tx('js_gespeichertes_ergebnis'));
     if (progress) items.push(tx('js_unterbrochener_test'));
     var histCount = loadHistory().length;
-    if (histCount) items.push(histCount + (histCount===1 ? tx('js_ergebnis_im_verlauf') : ' Ergebnisse im Verlauf'));
+    if (histCount) items.push(histCount + (histCount===1 ? tx('js_ergebnis_im_verlauf') : tx('js_ergebnisse_im_verlauf')));
     var stateCount = loadStateHistory().length;
-    if (stateCount) items.push(stateCount + (stateCount===1 ? ' Tagesform-Eintrag' : tx('js_tagesformeinträge')));
+    if (stateCount) items.push(stateCount + (stateCount===1 ? tx('js_tagesformeintrag') : tx('js_tagesformeinträge')));
     var archiveCount = loadCompatArchive().length;
     if (archiveCount) items.push(archiveCount + (archiveCount===1 ? tx('js_gespeicherter_vergleich') : tx('js_gespeicherte_vergleiche')));
     var list = $('settingsDataList');

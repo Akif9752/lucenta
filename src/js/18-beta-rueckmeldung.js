@@ -274,7 +274,7 @@
     syncLangButtons();
     refreshDrawerState();
     applyTheme(loadThemeMode());
-    $('previewRadar').innerHTML = radarSVG({O:78,E:65,C:45,A:58,S:50}, 160, null, true);
+    renderPreviewRadar();
     renderLandingUnderstandTeaser();
     renderLandingStateTeaser();
     renderArchetypeGroups();

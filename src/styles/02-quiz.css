@@ -29,7 +29,10 @@
   .scale{margin-top:22px;}
   .scale-row{display:flex;gap:8px;justify-content:space-between;}
   .scale-btn{
-    flex:1;aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line);
+    /* Runde 58: Der Rand lief ueber --line und kam auf 1,39:1 (hell) bzw. 1,31:1 (dunkel).
+       WCAG 1.4.11 verlangt fuer Bedienelemente 3:1 — die Antwortknoepfe des Fragebogens waren
+       damit am Rand der Sichtbarkeit. --line-strong ist genau dafuer da und bleibt zurueckhaltend. */
+    flex:1;aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line-strong);
     background:var(--surface);cursor:pointer;transition:all .15s ease;
     display:flex;align-items:center;justify-content:center;
   }
@@ -40,7 +43,11 @@
   .scale-btn.picked .fill{width:62%;height:62%;}
   .scale-labels{display:flex;justify-content:space-between;margin-top:10px;font-size:11.5px;color:var(--muted);}
   .scale-labels span:nth-child(2),.scale-labels span:nth-child(3),.scale-labels span:nth-child(4){display:none;}
-  .scale-labels span{max-width:80px;}
+  /* Runde 58: Die feste Obergrenze von 80px war fuer das Telefon gedacht, galt aber auf jeder
+     Breite — "trifft gar nicht zu" (~95px) brach dadurch selbst auf dem Schreibtisch zweizeilig
+     um, waehrend rechts einzeilig stehen blieb. Ein Anteil statt einer festen Zahl laesst der
+     Beschriftung den Platz, den die Zeile tatsaechlich hergibt. */
+  .scale-labels span{max-width:38%;}
   .scale-labels span:last-child{text-align:right;}
 
   .quiz-nav{margin-top:22px;display:flex;justify-content:space-between;align-items:center;}

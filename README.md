@@ -54,7 +54,7 @@ Drei Ebenen, die sich ergänzen:
 1. **`node build.js`** — muss durchlaufen; ein Syntaxfehler fällt hier auf.
 2. **`node tests/run.js`** — zehn Reihen, rund 7.000 Prüfungen. Der App-Code wird bis zur Marke
    `wiring` gegen einen Ersatz-DOM ausgeführt.
-3. **`python3 tools/audit_i18n.py`** — sechs statische Eigenschaften der Mehrsprachigkeit.
+3. **`python3 tools/audit_i18n.py`** — acht statische Eigenschaften der Mehrsprachigkeit.
 
 **Warum es Punkt 3 gibt, und das ist die wichtigste Zeile in dieser Datei:** Der Ersatz-DOM aus
 Punkt 2 behandelt `textContent` und `innerHTML` gleich. In Runde 56 war die App auf jedem Gerät
@@ -62,6 +62,13 @@ sichtbar kaputt — auf der Startseite stand wörtlich `Of&shy;fen&shy;heit` —
 Reihen grün waren. Ein Fehler, der genau in diesem Unterschied liegt, ist in Punkt 2 strukturell
 unsichtbar. Punkt 3 setzt deshalb an der Datei selbst an. **Keine der beiden Ebenen ersetzt die
 andere.**
+
+**Runde 58 hat dieselbe Lücke an drei weiteren Stellen gefunden**, alle im echten Browser
+sichtbar und in allen zehn Reihen grün: nicht übersetzte Attribute, deutsche Anführungszeichen
+im englischen Paket, und deutsche Literale, die über `push()` oder Zeichenkettenverkettung in
+die Oberfläche wandern statt über `textContent`. Prüfung 6 ist entsprechend verschärft,
+Prüfung 7 und 8 sind neu. Das Muster wiederholt sich: **Was der Ersatz-DOM nicht kennt, kann
+keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu.
 
 ## Der eigene Renderer
 
@@ -71,9 +78,10 @@ hätten geschätzt werden können. Er beherrscht Kaskade, CSS-Variablen, `color-
 Umbruch, Grid, absolute Positionierung, weiche Trennstriche, `overflow-wrap`, `min-width:auto`
 und SVG.
 
-**In einer Umgebung mit echtem Browser ist er überflüssig.** Er bleibt als Nachschlagewerk und
-für Vergleichsbilder liegen, aber die erste Handlung nach dem Umzug sollte sein, ihn durch einen
-echten Browser zu ersetzen. Seine Schriften sind Ersatz (DejaVu statt Fraunces/Work Sans/IBM
+**Seit Runde 58 ist ein echter Browser verfügbar** (Chromium über Playwright); der erste
+Durchlauf damit hat sofort sechs Fehler gefunden, die keine Testreihe sehen konnte. Der Renderer
+bleibt als Nachschlagewerk und für Vergleichsbilder liegen, ist für Gestaltungsfragen aber nicht
+mehr die maßgebliche Instanz. Seine Schriften sind Ersatz (DejaVu statt Fraunces/Work Sans/IBM
 Plex Mono) — exakte Zeilenumbrüche waren damit nie beurteilbar.
 
 ## Mehrsprachigkeit
@@ -85,16 +93,25 @@ Texte stehen in `src/i18n/`. Drei Arten von Marken im Markup:
 | `data-i18n` | setzt `innerHTML` |
 | `data-i18n-html` | setzt `innerHTML` (Fragmente mit Auszeichnung) |
 | `data-i18n-text` | ersetzt nur den Textknoten, lässt Symbole stehen |
+| `data-i18n-placeholder` | setzt das `placeholder`-Attribut (Entitäten aufgelöst) |
+| `data-i18n-aria` | setzt das `aria-label`-Attribut (Entitäten aufgelöst) |
 
 Dynamische Texte laufen über `tx('schluessel')`.
 
-**Drei Regeln, jede aus einem echten Fehler entstanden:**
+**Fünf Regeln, jede aus einem echten Fehler entstanden:**
 
 1. **Niemals über `textContent` setzen.** Die Texte enthalten Entitäten (`&mdash;`, `&shy;`,
    `&amp;`); über `textContent` zeigt der Browser sie wörtlich.
 2. **Kein Element markieren, dessen Inhalt der Code selbst setzt** — `applyI18n()` würde ihn
    überschreiben. Solche Stellen übersetzt der Code über `tx()`.
 3. **Neue Texte immer in beide Pakete.** `tools/audit_i18n.py` erzwingt das.
+4. **Jedes `placeholder` und `aria-label` bekommt eine Marke.** Attribute sind kein Text im
+   Sinne des Ersatz-DOM — keine der zehn Reihen liest je ein Attribut. Bis Runde 58 waren
+   deshalb 5 Platzhalter und 21 `aria-label` in jeder Sprache deutsch; auf Englisch war die
+   Bedienoberfläche für Screenreader vollständig deutsch. Prüfung 7 erzwingt die Marke.
+5. **Anführungszeichen gehören zur Sprache.** Deutsch `&bdquo;…&ldquo;`, Englisch
+   `&ldquo;…&rdquo;`. Das englische Paket hatte an 12 Stellen das deutsche Paar übernommen —
+   für Prüfung 1 und 3 unauffällig, im Browser sofort sichtbar. Prüfung 8 erzwingt es.
 
 Der Fragebogen wird **nicht übersetzt**. Je Sprache wird die dafür veröffentlichte Fassung
 verwendet; auf Englisch ist das der Originalwortlaut. Siehe `docs/klarsicht-produktplan.md`,
@@ -128,7 +145,14 @@ Aus 56 Runden, jeder einzelne aus einer konkreten Entscheidung:
 
 - **Das validierte Instrument wird nicht angetastet.** Keine Kürzung des Fragebogens, keine
   erfundenen Sub-Facetten, keine eigenmächtige Akquieszenz-Korrektur.
-- **Kein Pol ist besser als der andere.** Verlaufspfeile bleiben farbneutral, das App-Symbol
+- **Kein Pol ist besser als der andere.**
+
+**Runde 58 hat dieselbe Lücke an drei weiteren Stellen gefunden**, alle im echten Browser
+sichtbar und in allen zehn Reihen grün: nicht übersetzte Attribute, deutsche Anführungszeichen
+im englischen Paket, und deutsche Literale, die über `push()` oder Zeichenkettenverkettung in
+die Oberfläche wandern statt über `textContent`. Prüfung 6 ist entsprechend verschärft,
+Prüfung 7 und 8 sind neu. Das Muster wiederholt sich: **Was der Ersatz-DOM nicht kennt, kann
+keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu. Verlaufspfeile bleiben farbneutral, das App-Symbol
   setzt keine Spitze.
 - **Bindung um ihrer selbst willen ist nicht das Ziel.** Kein Serien-Zähler, kein vorgetäuschter
   Fortschritt, keine erfundenen Preisanker. Bewegung, die eine Handlung beantwortet, ist Funktion;

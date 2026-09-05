@@ -54,6 +54,7 @@
     document.title = VIEW_TITLES[currentView] ? ('Lucenta — '+VIEW_TITLES[currentView]) : 'Lucenta';
     renderQuestion();
     renderArchetypeGroups();
+    renderPreviewRadar();
     renderLandingUnderstandTeaser();
     renderLandingStateTeaser();
     syncHeroState();
@@ -116,6 +117,18 @@
       document.querySelectorAll('[data-i18n-html]').forEach(function(el){
         var v = t[el.getAttribute('data-i18n-html')];
         if (typeof v === 'string') el.innerHTML = v;
+      });
+      // Attribute sind reiner Text, kein HTML — die Entitaeten muessen deshalb vorher aufgeloest
+      // werden, sonst stuende &mdash; woertlich in der Vorlesung des Screenreaders. Runde 58:
+      // placeholder und aria-label waren bis dahin ueberhaupt nicht uebersetzt und blieben in
+      // jeder Sprache deutsch — im Ersatz-DOM unsichtbar, weil dort nie ein Attribut gelesen wird.
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+        var v = t[el.getAttribute('data-i18n-placeholder')];
+        if (typeof v === 'string') el.setAttribute('placeholder', decodeEntities(v));
+      });
+      document.querySelectorAll('[data-i18n-aria]').forEach(function(el){
+        var v = t[el.getAttribute('data-i18n-aria')];
+        if (typeof v === 'string') el.setAttribute('aria-label', decodeEntities(v));
       });
       document.documentElement.lang = LANG;
     }catch(e){}

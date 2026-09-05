@@ -38,7 +38,7 @@
     var r = size/2 - 9, c = size/2;
     var circumf = 2*Math.PI*r;
     var offset = circumf * (1 - pct/100);
-    return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" role="img" aria-label="'+(label||tx('js_übereinstimmung'))+': '+pct+' Prozent">'+
+    return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" role="img" aria-label="'+(label||tx('js_übereinstimmung'))+': '+pct+tx('js_prozent')+'">'+
       '<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="none" class="ring-track" stroke-width="9"/>'+
       '<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="none" class="ring-fill" stroke-width="9" stroke-linecap="round" '+
         'stroke-dasharray="'+circumf.toFixed(1)+'" stroke-dashoffset="'+offset.toFixed(1)+'" transform="rotate(-90 '+c+' '+c+')"/>'+

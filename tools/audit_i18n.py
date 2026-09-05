@@ -5,6 +5,13 @@ Entstanden aus einem echten Fehler: In Runde 54/55 setzte applyI18n() Texte uebe
 obwohl 38 davon HTML-Entitaeten enthalten — der Browser zeigte "Of&shy;fen&shy;heit" woertlich.
 Alle zehn Testreihen waren dabei gruen, weil sie den DOM nur stubben. Diese Pruefung schliesst
 die Luecke auf der Ebene, auf der der Fehler lag: der Datei selbst.
+
+Runde 58 hat drei weitere blinde Flecken derselben Art aufgedeckt, alle im echten Browser
+sichtbar und in allen zehn Reihen gruen: placeholder und aria-label waren ueberhaupt nicht
+uebersetzt (Attribute liest der Ersatz-DOM nie), das englische Paket setzte die deutschen
+Anfuehrungszeichen "&bdquo;...&ldquo;", und Prueflauf 6 sah nur Zuweisungen an textContent,
+nicht Literale, die ueber push() oder Zeichenkettenverkettung in die Oberflaeche wandern.
+Pruefung 6 ist entsprechend verschaerft, 7 und 8 sind neu.
 """
 import re, sys
 import os
@@ -31,7 +38,7 @@ fehlend=[k for k in DE if k not in EN]
 check(not fehlend, "kein Text ohne englische Fassung"+(": "+", ".join(fehlend[:5]) if fehlend else ""))
 
 print("\n2) Marken und Tabelle passen zusammen")
-marks=set(re.findall(r'data-i18n(?:-html|-text)?="([^"]+)"', MARKUP))
+marks=set(re.findall(r'data-i18n(?:-html|-text|-placeholder|-aria)?="([^"]+)"', MARKUP))
 ohne=[k for k in marks if k not in DE]
 check(not ohne, "jede Marke hat einen Tabelleneintrag"+(": "+", ".join(ohne[:5]) if ohne else ""))
 
@@ -44,6 +51,11 @@ check('innerHTML' in seg and 'textContent' not in seg,
 seg2=re.search(r"querySelectorAll\('\[data-i18n-text\]'\)(.*?)\}\);", blk, re.S)
 check(seg2 and 'decodeEntities' in seg2.group(1),
       "data-i18n-text loest Entitaeten vorher auf")
+# Attribute sind reiner Text: ohne decodeEntities stuende &mdash; woertlich in der Vorlesung.
+for mark in ('placeholder','aria'):
+    seg3=re.search(r"querySelectorAll\('\[data-i18n-%s\]'\)(.*?)\}\);"%mark, blk, re.S)
+    check(bool(seg3) and 'decodeEntities' in seg3.group(1),
+          "data-i18n-%s loest Entitaeten vorher auf"%mark)
 
 print("\n4) Keine Marke auf Elementen, die das JavaScript selbst befuellt")
 written=set(re.findall(r"\$\('([A-Za-z0-9_-]+)'\)\.(?:textContent|innerHTML)\s*=", JS))
@@ -75,13 +87,53 @@ a2=JS.index('var CONTENT = {}'); b2=JS.index('// Aktive Sprache')
 rest=JS[:a2]+JS[b2:]
 rest=re.sub(r'/\*.*?\*/','',rest,flags=re.S); rest=re.sub(r'^\s*//.*$','',rest,flags=re.M)
 verdacht=set()
-for pat in [r"\.textContent\s*=\s*([^;]+);", r"toast\(([^;]+)\)", r"setAttribute\('aria-label',\s*([^)]+)\)"]:
+for pat in [r"\.textContent\s*=\s*([^;]+);", r"toast\(([^;]+)\)",
+            r"setAttribute\('aria-label',\s*([^)]+)\)",
+            # Runde 58: Diese drei Wege fehlten. "Profil (Name, Bild)" und " Ergebnisse im
+            # Verlauf" standen ueber push() in der englischen Oberflaeche, die Beschriftungen
+            # der Tagesform-Kurve ueber innerHTML-Verkettung.
+            r"\.push\(([^;]+)\)",
+            r"\.innerHTML\s*=\s*([^;]+);",
+            r"setAttribute\('placeholder',\s*([^)]+)\)"]:
     for m in re.finditer(pat, rest):
         for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", m.group(1)):
             if lit.startswith('js_') or lit.startswith('<') or len(lit)<4: continue
             if re.search(r'[äöüßÄÖÜ]', lit) or re.search(r'\b(der|die|das|und|dein|nicht|kein|gespeichert|Vergleich|Ergebnis|Energie|Stimmung|Profil|Name|Wert|Code|Bild|Tagesform)\b', lit):
                 verdacht.add(lit)
 check(not verdacht, "keine unuebersetzten Texte"+(": "+", ".join(sorted(verdacht)[:5]) if verdacht else ""))
+
+print("\n7) Uebersetzbare Attribute tragen eine Marke")
+# Der Kern der Luecke aus Runde 58: placeholder und aria-label sind Attribute. Der Ersatz-DOM
+# der zehn Reihen liest nie ein Attribut, also konnte keine Reihe je bemerken, dass beide in
+# jeder Sprache deutsch blieben. Auf Englisch war die halbe Bedienoberfläche deutsch — fuer
+# Screenreader-Nutzerinnen sogar vollstaendig.
+offen=[]
+for m in re.finditer(r'<(\w+)([^>]*?)>', MARKUP):
+    attrs=m.group(2)
+    for a,mark in (('placeholder','data-i18n-placeholder'),('aria-label','data-i18n-aria')):
+        am=re.search(a+r'="([^"]*)"', attrs)
+        if not am: continue
+        if a=='aria-label' and am.group(1) in ('de','en'): continue
+        if mark not in attrs: offen.append(a+'="'+am.group(1)[:40]+'"')
+check(not offen, "jedes placeholder/aria-label ist markiert"+(": "+", ".join(offen[:5]) if offen else ""))
+
+print("\n8) Anfuehrungszeichen passen zur Sprache")
+# Deutsch setzt "&bdquo;...&ldquo;", Englisch "&ldquo;...&rdquo;". Das englische Paket hatte
+# durchgehend das deutsche Paar uebernommen: 12 Stellen, im Browser sichtbar, fuer Pruefung 1
+# und 3 aber unauffaellig, weil der Text vorhanden und korrekt als HTML gesetzt war.
+de_paare = sum(1 for v in DE.values() if '&bdquo;' in v or '\u201e' in v)
+en_falsch = sorted(k for k,v in EN.items() if '&bdquo;' in v or '\u201e' in v)
+check(not en_falsch, "englische Texte ohne deutsches Anfuehrungspaar"+
+      (": "+", ".join(en_falsch[:5]) if en_falsch else " (%d deutsche Texte gepruefft)"%de_paare))
+# Gegenprobe: jedes oeffnende Zeichen braucht ein schliessendes
+unpaarig=[]
+def zaehl(v,formen): return sum(v.count(f) for f in formen)
+for name,tab,op,cl in (('de',DE,('&bdquo;','\u201e'),('&ldquo;','\u201c')),
+                       ('en',EN,('&ldquo;','\u201c'),('&rdquo;','\u201d'))):
+    for k,v in tab.items():
+        if zaehl(v,op)!=zaehl(v,cl): unpaarig.append(name+':'+k)
+check(not unpaarig, "jedes oeffnende Anfuehrungszeichen hat ein schliessendes"+
+      (": "+", ".join(unpaarig[:5]) if unpaarig else ""))
 
 print("\n"+"="*54)
 print("ALLE PRUEFUNGEN BESTANDEN" if not fails else "%d PRUEFUNG(EN) FEHLGESCHLAGEN"%len(fails))

@@ -14,8 +14,8 @@
     }
   }
   function renderStateRows(){
-    buildScaleRow($('stateEnergyRow'), statePickedEnergy, 'Energie', function(v){ statePickedEnergy=v; renderStateRows(); });
-    buildScaleRow($('stateValenceRow'), statePickedValence, 'Stimmung', function(v){ statePickedValence=v; renderStateRows(); });
+    buildScaleRow($('stateEnergyRow'), statePickedEnergy, tx('js_energie'), function(v){ statePickedEnergy=v; renderStateRows(); });
+    buildScaleRow($('stateValenceRow'), statePickedValence, tx('js_stimmung'), function(v){ statePickedValence=v; renderStateRows(); });
   }
 
   // Feedback: Tagesform sollte nicht in der Schublade, sondern kreativ direkt auf der Startseite
@@ -24,8 +24,8 @@
   // unabhängig voneinander offen sein bzw. rendern, ohne sich gegenseitig zu überschreiben.
   var landingStatePickedEnergy = null, landingStatePickedValence = null;
   function renderLandingStateRows(){
-    buildScaleRow($('landingStateEnergyRow'), landingStatePickedEnergy, 'Energie heute', function(v){ landingStatePickedEnergy=v; renderLandingStateRows(); maybeSaveLandingState(); });
-    buildScaleRow($('landingStateValenceRow'), landingStatePickedValence, 'Stimmung heute', function(v){ landingStatePickedValence=v; renderLandingStateRows(); maybeSaveLandingState(); });
+    buildScaleRow($('landingStateEnergyRow'), landingStatePickedEnergy, tx('js_energie_heute'), function(v){ landingStatePickedEnergy=v; renderLandingStateRows(); maybeSaveLandingState(); });
+    buildScaleRow($('landingStateValenceRow'), landingStatePickedValence, tx('js_stimmung_heute'), function(v){ landingStatePickedValence=v; renderLandingStateRows(); maybeSaveLandingState(); });
   }
   function updateLandingStateCopy(){
     // Auch nach der ERSTEN Antwort passierte bislang sichtbar nichts — die zweite Frage stand
@@ -115,13 +115,13 @@
     var valenceVals = hist.map(function(e){ return (e.valence-1)/4*100; });
     var lastE = hist[hist.length-1].energy, lastV = hist[hist.length-1].valence;
     var trendRows =
-      '<div class="trend-row"><div class="trend-label">Energie</div>'+sparklineSVG(energyVals,140,32)+'<div class="trend-val mono">'+lastE+'</div></div>'+
-      '<div class="trend-row"><div class="trend-label">Stimmung</div>'+sparklineSVG(valenceVals,140,32)+'<div class="trend-val mono">'+lastV+'</div></div>';
+      '<div class="trend-row"><div class="trend-label">'+tx('js_energie')+'</div>'+sparklineSVG(energyVals,140,32)+'<div class="trend-val mono">'+lastE+'</div></div>'+
+      '<div class="trend-row"><div class="trend-label">'+tx('js_stimmung')+'</div>'+sparklineSVG(valenceVals,140,32)+'<div class="trend-val mono">'+lastV+'</div></div>';
     var fmt = historyDateFmt();
     var listRows = hist.slice().reverse().slice(0,14).map(function(e){
       var dateStr;
       try{ dateStr = fmt.format(new Date(e.ts)); }catch(ex){ dateStr = e.day; }
-      return '<div class="history-row"><div class="history-date">'+dateStr+'</div><div class="history-title">Energie '+e.energy+'/5 &middot; Stimmung '+e.valence+'/5</div></div>';
+      return '<div class="history-row"><div class="history-date">'+dateStr+'</div><div class="history-title">'+tx('js_energie')+' '+e.energy+'/5 &middot; '+tx('js_stimmung')+' '+e.valence+'/5</div></div>';
     }).join('');
     wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
       tx('js_letzte_einträge')+hist.length+'</span></h2>'+

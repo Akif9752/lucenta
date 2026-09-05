@@ -7,6 +7,15 @@
     });
   }
 
+  // Runde 58: Das Beispiel-Radar der Startseite wurde beim Start einmal gezeichnet und beim
+  // Sprachwechsel nie erneuert — Achsenbeschriftung und aria-label blieben deshalb in der
+  // Sprache, mit der die App geoeffnet wurde. Als benannte Funktion, damit setLang() sie
+  // genauso aufrufen kann wie der Startlauf.
+  function renderPreviewRadar(){
+    var el = $('previewRadar');
+    if (el) el.innerHTML = radarSVG({O:78,E:65,C:45,A:58,S:50}, 160, null, true);
+  }
+
   function radarSVG(sc, size, other, isExample){
     size = size || 320;
     var c = size/2, r = size*0.34, labelR = size*0.40;
@@ -45,7 +54,7 @@
 
     var ariaLabel = other
       ? tx('js_vergleich_du') + ORDER.map(function(f){ return LABELS[f]+' '+sc[f]; }).join(', ') + '. Andere Person ' + ORDER.map(function(f){ return LABELS[f]+' '+other.scores[f]; }).join(', ')
-      : (isExample ? tx('js_beispielhaftes_profil_zur') : tx('js_dein_profil')) + ORDER.map(function(f){ return LABELS[f]+' '+sc[f]+' von 100'; }).join(', ');
+      : (isExample ? tx('js_beispielhaftes_profil_zur') : tx('js_dein_profil')) + ORDER.map(function(f){ return LABELS[f]+' '+sc[f]+tx('js_von_100'); }).join(', ');
     return '<svg viewBox="0 0 '+size+' '+(other?size+14:size)+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+ariaLabel+'">'+
       rings+axes+otherPoly+
       '<polygon points="'+poly+'" fill="color-mix(in srgb, var(--accent) 28%, transparent)" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>'+

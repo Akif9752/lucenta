@@ -13,7 +13,7 @@
     <button type="button" class="wordmark" id="btnHome"><span class="brandmark" aria-hidden="true"><svg viewBox="0 0 24 24" width="21" height="21"><rect x="0" y="0" width="24" height="24" rx="5.4" fill="var(--accent)"></rect><polygon points="12,5.26 19.09,10.41 16.38,18.74 7.62,18.74 4.91,10.41" fill="var(--paper)" stroke="var(--paper)" stroke-width="1.7" stroke-linejoin="round"></polygon></svg></span>Lucenta<span class="wordmark-beta" data-i18n="beta">Beta</span></button>
     <div class="header-right">
       <div class="tagline" id="viewLabel"></div>
-      <button type="button" class="drawer-tab" id="btnDrawerToggle" aria-haspopup="dialog" aria-expanded="false" aria-controls="drawerPanel" aria-label="Weitere Funktionen: Profil, Verstehen, Archetypen, Vergleichen, Vergleichsarchiv, Einstellungen">
+      <button type="button" class="drawer-tab" id="btnDrawerToggle" aria-haspopup="dialog" aria-expanded="false" aria-controls="drawerPanel" aria-label="Weitere Funktionen: Profil, Verstehen, Archetypen, Vergleichen, Vergleichsarchiv, Einstellungen" data-i18n-aria="aria_weitere_funktionen_profil_ve">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="15" y1="4" x2="15" y2="20"></line></svg>
       </button>
     </div>
@@ -64,7 +64,7 @@
       <div class="a2hs-hint" id="a2hsHint" style="display:none;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"></path><polyline points="7 9 12 4 17 9"></polyline><rect x="4" y="16" width="16" height="5" rx="1.5"></rect></svg>
         <span data-i18n="lucenta_lässt_sich_zum_homeb">Lucenta lässt sich zum Home-Bildschirm hinzufügen und startet dann wie eine eigene App &mdash; über das Teilen-Symbol deines Geräts, dann &bdquo;Zum Home-Bildschirm&ldquo;.</span>
-        <button type="button" class="a2hs-dismiss" id="btnA2hsDismiss" aria-label="Hinweis ausblenden">
+        <button type="button" class="a2hs-dismiss" id="btnA2hsDismiss" aria-label="Hinweis ausblenden" data-i18n-aria="aria_hinweis_ausblenden">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
         </button>
       </div>
@@ -94,12 +94,12 @@
         <div class="state-question">
           <div class="state-q-label" data-i18n="energie">Energie</div>
           <div class="state-q-sub" data-i18n-html="erschöpftvoller_energie"><span>Erschöpft</span><span>Voller Energie</span></div>
-          <div class="scale-row" id="landingStateEnergyRow" role="group" aria-label="Energie heute von 1 (erschöpft) bis 5 (voller Energie)"></div>
+          <div class="scale-row" id="landingStateEnergyRow" role="group" aria-label="Energie heute von 1 (erschöpft) bis 5 (voller Energie)" data-i18n-aria="aria_energie_heute_von_1_erschöpf"></div>
         </div>
         <div class="state-question">
           <div class="state-q-label" data-i18n="stimmung">Stimmung</div>
           <div class="state-q-sub" data-i18n-html="angespanntentspannt"><span>Angespannt</span><span>Entspannt</span></div>
-          <div class="scale-row" id="landingStateValenceRow" role="group" aria-label="Stimmung heute von 1 (angespannt) bis 5 (entspannt)"></div>
+          <div class="scale-row" id="landingStateValenceRow" role="group" aria-label="Stimmung heute von 1 (angespannt) bis 5 (entspannt)" data-i18n-aria="aria_stimmung_heute_von_1_angespa"></div>
         </div>
       </div>
       <div class="state-done" id="landingStateDone" style="display:none;" role="status">
@@ -155,7 +155,7 @@
     <div class="quiz-body">
       <div class="qcard" id="qCard"><p class="qtext" id="qText" aria-live="polite">&mdash;</p></div>
       <div class="scale">
-        <div class="scale-row" id="scaleRow" role="group" aria-label="Antwort von 1 (trifft gar nicht zu) bis 5 (trifft voll zu)"></div>
+        <div class="scale-row" id="scaleRow" role="group" aria-label="Antwort von 1 (trifft gar nicht zu) bis 5 (trifft voll zu)" data-i18n-aria="aria_antwort_von_1_trifft_gar_nic"></div>
         <div class="scale-labels" data-i18n-html="trifft_gar_nicht_zutrifft_vo"><span>trifft gar nicht zu</span><span></span><span></span><span></span><span>trifft voll zu</span></div>
       </div>
       <div class="quiz-nav">
@@ -246,8 +246,8 @@
     <h2 class="section-title" id="compareAnchor" data-i18n-html="kompatibilität_optional">Kompatibilität <span class="n">optional</span></h2>
     <p class="section-lead" data-i18n="vergleiche_dein_profil_mit_d">Vergleiche dein Profil mit dem einer anderen Person &mdash; z. B. Partner:in, beste:r Freund:in oder Familie. Beide Codes eintragen, fertig.</p>
     <div class="compare-box">
-      <div class="field"><label for="cmpMe" data-i18n="dein_code">Dein Code</label><input type="text" id="cmpMe" maxlength="12" placeholder="z. B. 1a2b3c4d5e"></div>
-      <div class="field"><label for="cmpOther" data-i18n="code_der_anderen_person">Code der anderen Person</label><input type="text" id="cmpOther" maxlength="12" placeholder="Code einfügen"></div>
+      <div class="field"><label for="cmpMe" data-i18n="dein_code">Dein Code</label><input type="text" id="cmpMe" maxlength="12" placeholder="z. B. 1a2b3c4d5e" data-i18n-placeholder="ph_z_b_1a2b3c4d5e"></div>
+      <div class="field"><label for="cmpOther" data-i18n="code_der_anderen_person">Code der anderen Person</label><input type="text" id="cmpOther" maxlength="12" placeholder="Code einfügen" data-i18n-placeholder="ph_code_einfügen"></div>
       <button class="btn btn-primary btn-sm" id="btnCompare" style="align-self:flex-start;" data-i18n="vergleichen">Vergleichen</button>
       <div class="compat-result" id="compatResult" aria-live="polite"></div>
     </div>
@@ -260,14 +260,14 @@
          eine Übermittlung anzudeuten, die es nicht gibt. -->
     <div class="feedback-ask" id="feedbackAsk">
       <p class="feedback-q" data-i18n="war_dieses_porträt_für_dich">War dieses Porträt für dich stimmig?</p>
-      <div class="feedback-opts" id="feedbackOpts" role="group" aria-label="Einschätzung wählen">
+      <div class="feedback-opts" id="feedbackOpts" role="group" aria-label="Einschätzung wählen" data-i18n-aria="aria_einschätzung_wählen">
         <button type="button" class="feedback-opt" data-fb="Ja, hat gepasst" data-i18n="ja">Ja</button>
         <button type="button" class="feedback-opt" data-fb="Teilweise" data-i18n="teils">Teils</button>
         <button type="button" class="feedback-opt" data-fb="Nicht wirklich" data-i18n="nicht_wirklich">Nicht wirklich</button>
       </div>
       <div id="feedbackMore" style="display:none;">
         <label class="feedback-label" for="feedbackText" data-i18n="was_hat_gefehlt_oder_überras">Was hat gefehlt oder überrascht? (freiwillig)</label>
-        <textarea id="feedbackText" rows="3" maxlength="600" placeholder="Ein Satz reicht."></textarea>
+        <textarea id="feedbackText" rows="3" maxlength="600" placeholder="Ein Satz reicht." data-i18n-placeholder="ph_ein_satz_reicht"></textarea>
         <div class="feedback-actions">
           <button type="button" class="btn btn-primary btn-sm" id="btnFeedbackSend" data-i18n="rückmeldung_weitergeben">Rückmeldung weitergeben</button>
         </div>
@@ -310,12 +310,12 @@
       <div class="state-question">
         <div class="state-q-label" data-i18n="energie_2">Energie</div>
         <div class="state-q-sub" data-i18n-html="erschöpftvoller_energie_2"><span>Erschöpft</span><span>Voller Energie</span></div>
-        <div class="scale-row" id="stateEnergyRow" role="group" aria-label="Energie von 1 (erschöpft) bis 5 (voller Energie)"></div>
+        <div class="scale-row" id="stateEnergyRow" role="group" aria-label="Energie von 1 (erschöpft) bis 5 (voller Energie)" data-i18n-aria="aria_energie_von_1_erschöpft_bis"></div>
       </div>
       <div class="state-question">
         <div class="state-q-label" data-i18n="stimmung_2">Stimmung</div>
         <div class="state-q-sub" data-i18n-html="angespanntentspannt_2"><span>Angespannt</span><span>Entspannt</span></div>
-        <div class="scale-row" id="stateValenceRow" role="group" aria-label="Stimmung von 1 (angespannt) bis 5 (entspannt)"></div>
+        <div class="scale-row" id="stateValenceRow" role="group" aria-label="Stimmung von 1 (angespannt) bis 5 (entspannt)" data-i18n-aria="aria_stimmung_von_1_angespannt_bi"></div>
       </div>
       <button type="button" class="btn btn-primary btn-sm" id="btnStateSave" style="align-self:flex-start;" data-i18n="speichern">Speichern</button>
     </div>
@@ -357,7 +357,7 @@
     <div class="profile-head">
       <div class="avatar-wrap">
         <div class="avatar" id="profileAvatar" aria-hidden="true"></div>
-        <button type="button" class="avatar-edit" id="btnAvatarEdit" aria-label="Profilbild ändern">
+        <button type="button" class="avatar-edit" id="btnAvatarEdit" aria-label="Profilbild ändern" data-i18n-aria="aria_profilbild_ändern">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
         </button>
         <input type="file" accept="image/*" id="avatarFileInput" style="display:none;">
@@ -370,13 +370,13 @@
            Stelle in der App geprüft im Einsatz (Toast/Skip-Link für "Ink", normaler Fließtext für
            "Ruhig", der bestehende Standard-Akzent für "Teal") — nur sichtbar, solange kein eigenes
            Foto gesetzt ist, weil die Farbe nur den Initialen-Kreis betrifft. -->
-      <div class="avatar-color-row" id="avatarColorRow" role="group" aria-label="Farbe für den Initialen-Kreis">
-        <button type="button" class="avatar-color-swatch avatar-color-accent" id="avatarColorAccent" data-color="accent" aria-label="Teal" aria-pressed="false"></button>
-        <button type="button" class="avatar-color-swatch avatar-color-ink" id="avatarColorInk" data-color="ink" aria-label="Ink" aria-pressed="false"></button>
-        <button type="button" class="avatar-color-swatch avatar-color-quiet" id="avatarColorQuiet" data-color="quiet" aria-label="Ruhig" aria-pressed="false"></button>
+      <div class="avatar-color-row" id="avatarColorRow" role="group" aria-label="Farbe für den Initialen-Kreis" data-i18n-aria="aria_farbe_für_den_initialen_krei">
+        <button type="button" class="avatar-color-swatch avatar-color-accent" id="avatarColorAccent" data-color="accent" aria-label="Teal" data-i18n-aria="aria_teal" aria-pressed="false"></button>
+        <button type="button" class="avatar-color-swatch avatar-color-ink" id="avatarColorInk" data-color="ink" aria-label="Ink" data-i18n-aria="aria_ink" aria-pressed="false"></button>
+        <button type="button" class="avatar-color-swatch avatar-color-quiet" id="avatarColorQuiet" data-color="quiet" aria-label="Ruhig" data-i18n-aria="aria_ruhig" aria-pressed="false"></button>
       </div>
       <label class="profile-name-label" for="profileName" data-i18n="name">Name</label>
-      <input type="text" id="profileName" class="name-input" placeholder="Dein Name" maxlength="30" autocomplete="off">
+      <input type="text" id="profileName" class="name-input" placeholder="Dein Name" data-i18n-placeholder="ph_dein_name" maxlength="30" autocomplete="off">
       <!-- Feedback: der "Nur auf diesem Gerät gespeichert..."-Hinweis stand hier redundant zur
            ausführlicheren Erklärung unter Einstellungen → Daten & Datenschutz — raus, statt an
            mehreren Stellen dieselbe Aussage in leicht unterschiedlichen Worten zu wiederholen. -->
@@ -428,7 +428,7 @@
          Oberflaechensprache nicht versteht. -->
     <div class="settings-group">
       <h2 data-i18n="sprache">Sprache</h2>
-      <div class="theme-toggle" role="group" aria-label="Sprache wählen">
+      <div class="theme-toggle" role="group" aria-label="Sprache wählen" data-i18n-aria="aria_sprache_wählen">
         <button type="button" class="theme-btn" data-lang="de" aria-pressed="false" lang="de">Deutsch</button>
         <button type="button" class="theme-btn" data-lang="en" aria-pressed="false" lang="en">English</button>
       </div>
@@ -437,7 +437,7 @@
 
     <div class="settings-group">
       <h2 data-i18n="darstellung">Darstellung</h2>
-      <div class="theme-toggle" role="group" aria-label="Darstellung wählen">
+      <div class="theme-toggle" role="group" aria-label="Darstellung wählen" data-i18n-aria="aria_darstellung_wählen">
         <button type="button" class="theme-btn" id="themeSystem" data-mode="system" aria-pressed="false" data-i18n="system">System</button>
         <button type="button" class="theme-btn" id="themeLight" data-mode="light" aria-pressed="false" data-i18n="hell">Hell</button>
         <button type="button" class="theme-btn" id="themeDark" data-mode="dark" aria-pressed="false" data-i18n="dunkel">Dunkel</button>
@@ -462,7 +462,7 @@
         <div class="settings-restore-label" data-i18n="ergebnis_wiederherstellen">Ergebnis wiederherstellen</div>
         <p class="settings-restore-desc" data-i18n="hast_du_deinen_stelligen_erg">Hast du deinen 10-stelligen Ergebnis-Code von einem anderen Gerät notiert? Hier eingeben, um ihn hier wiederherzustellen &mdash; so lässt sich ein Ergebnis auch ohne Konto auf ein neues Gerät mitnehmen.</p>
         <div class="settings-restore-row">
-          <div class="field"><input type="text" id="restoreCodeInput" maxlength="12" placeholder="Code einfügen" aria-label="Ergebnis-Code zum Wiederherstellen"></div>
+          <div class="field"><input type="text" id="restoreCodeInput" maxlength="12" placeholder="Code einfügen" data-i18n-placeholder="ph_code_einfügen" aria-label="Ergebnis-Code zum Wiederherstellen" data-i18n-aria="aria_ergebnis_code_zum_wiederhers"></div>
           <button type="button" class="btn btn-ghost btn-sm" id="btnRestoreCode" data-i18n="wiederherstellen">Wiederherstellen</button>
         </div>
       </div>
@@ -524,9 +524,9 @@
 </div>
 
 <div id="drawerScrim"></div>
-<aside id="drawerPanel" role="dialog" aria-modal="true" aria-label="Weitere Funktionen" aria-hidden="true">
+<aside id="drawerPanel" role="dialog" aria-modal="true" aria-label="Weitere Funktionen" data-i18n-aria="aria_weitere_funktionen" aria-hidden="true">
   <div class="drawer-head">
-    <button type="button" class="drawer-close" id="btnDrawerClose" aria-label="Schließen">
+    <button type="button" class="drawer-close" id="btnDrawerClose" aria-label="Schließen" data-i18n-aria="aria_schließen">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
     </button>
   </div>
@@ -582,12 +582,12 @@
 </aside>
 
 <div id="imgModalScrim"></div>
-<div id="imgModal" role="dialog" aria-modal="true" aria-label="Ergebnisbild zum Teilen oder Speichern" aria-hidden="true">
+<div id="imgModal" role="dialog" aria-modal="true" aria-label="Ergebnisbild zum Teilen oder Speichern" data-i18n-aria="aria_ergebnisbild_zum_teilen_oder" aria-hidden="true">
   <div class="img-modal-inner">
-    <button type="button" class="drawer-close" id="btnImgModalClose" aria-label="Schließen" style="position:absolute;top:-6px;right:-6px;">
+    <button type="button" class="drawer-close" id="btnImgModalClose" aria-label="Schließen" data-i18n-aria="aria_schließen" style="position:absolute;top:-6px;right:-6px;">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
     </button>
-    <div class="img-format-row" role="group" aria-label="Bildformat wählen">
+    <div class="img-format-row" role="group" aria-label="Bildformat wählen" data-i18n-aria="aria_bildformat_wählen">
       <button type="button" class="img-format-btn" data-fmt="feed" aria-pressed="true" data-i18n-html="beitrag">Beitrag <span>4:5</span></button>
       <button type="button" class="img-format-btn" data-fmt="story" aria-pressed="false" data-i18n-html="story_amp_reel">Story &amp; Reel <span>9:16</span></button>
     </div>
