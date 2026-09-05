@@ -1,0 +1,50 @@
+1|1+|Am the life of the party.
+2|2-|Feel little concern for others.
+3|3+|Am always prepared.
+4|4-|Get stressed out easily.
+5|5+|Have a rich vocabulary.
+6|1-|Don't talk a lot.
+7|2+|Am interested in people.
+8|3-|Leave my belongings around.
+9|4+|Am relaxed most of the time.
+10|5-|Have difficulty understanding abstract ideas.
+11|1+|Feel comfortable around people.
+12|2-|Insult people.
+13|3+|Pay attention to details.
+14|4-|Worry about things.
+15|5+|Have a vivid imagination.
+16|1-|Keep in the background.
+17|2+|Sympathize with others' feelings.
+18|3-|Make a mess of things.
+19|4+|Seldom feel blue.
+20|5-|Am not interested in abstract ideas.
+21|1+|Start conversations.
+22|2-|Am not interested in other people's problems.
+23|3+|Get chores done right away.
+24|4-|Am easily disturbed.
+25|5+|Have excellent ideas.
+26|1-|Have little to say.
+27|2+|Have a soft heart.
+28|3-|Often forget to put things back in their proper place.
+29|4-|Get upset easily.
+30|5-|Do not have a good imagination.
+31|1+|Talk to a lot of different people at parties.
+32|2-|Am not really interested in others.
+33|3+|Like order.
+34|4-|Change my mood a lot.
+35|5+|Am quick to understand things.
+36|1-|Don't like to draw attention to myself.
+37|2+|Take time out for others.
+38|3-|Shirk my duties.
+39|4-|Have frequent mood swings.
+40|5+|Use difficult words.
+41|1+|Don't mind being the center of attention.
+42|2+|Feel others' emotions.
+43|3+|Follow a schedule.
+44|4-|Get irritated easily.
+45|5+|Spend time reflecting on things.
+46|1-|Am quiet around strangers.
+47|2+|Make people feel at ease.
+48|3+|Am exacting in my work.
+49|4-|Often feel blue.
+50|5+|Am full of ideas.

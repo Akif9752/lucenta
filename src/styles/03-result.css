@@ -1,0 +1,73 @@
+/* ---------- Result ---------- */
+  .result-head{padding:30px 0 4px;text-align:center;}
+  .result-head .eyebrow{justify-content:center;}
+  .archetype{font-size:clamp(26px,6.4vw,34px);margin-top:6px;}
+  .archetype .sep{color:var(--accent-2);font-style:normal;}
+  .motto{margin-top:8px;font-family:var(--mono);font-size:13px;color:var(--accent-2-text);letter-spacing:.01em;}
+
+  .synthesis{
+    margin:22px auto 0;max-width:46ch;text-align:center;
+    font-family:var(--serif);font-size:19px;line-height:1.55;color:var(--ink);
+  }
+
+  .delta-card{
+    margin:22px auto 0;max-width:400px;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius-m);padding:16px 18px;
+  }
+  .delta-head{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+  .delta-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px;border-top:1px solid var(--line);}
+  .delta-head + .delta-row{border-top:none;margin-top:8px;}
+  .delta-move{font-family:var(--mono);font-size:12.5px;}
+  .delta-up, .delta-down{color:var(--ink);font-weight:600;}
+  .delta-flat{color:var(--muted);}
+  .delta-note{margin-top:10px;line-height:1.5;}
+  .compat-note{margin-top:2px;line-height:1.5;padding:0 2px;}
+
+  .radar-wrap{margin:26px auto 0;max-width:320px;}
+  .radar-wrap svg{width:100%;height:auto;overflow:visible;}
+  .radar-wrap svg polygon:last-of-type{transform-origin:center;transform-box:fill-box;animation:radar-in .7s cubic-bezier(.2,.8,.2,1) both;}
+  @keyframes radar-in{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+  @media (prefers-reduced-motion: reduce){ .radar-wrap svg polygon:last-of-type{animation:none;} }
+  .radar-axis-label{font-family:var(--mono);font-size:9.5px;fill:var(--muted);}
+  .radar-axis-value{font-family:var(--serif);font-size:13px;fill:var(--ink);font-weight:600;}
+  /* Beim Zwei-Personen-Vergleich müssen die beiden Zahlen pro Achse farblich unterscheidbar sein
+     (oben: eigener Wert, unten: Wert der anderen Person) — dieselben Farbfamilien wie Polygon und
+     Legende darunter (Teal = ich, Amber = andere Person). Compound-Selektor, damit die Regel die
+     .radar-axis-value-Basisregel oben zuverlässig schlägt, unabhängig von der Reihenfolge im Stylesheet. */
+  .radar-axis-value.radar-axis-value-me{fill:var(--accent-strong);}
+  .radar-axis-value.radar-axis-value-other{fill:var(--accent-2-text);}
+
+  .share-card{
+    margin-top:30px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+    padding:26px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .share-card::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%);
+    pointer-events:none;
+  }
+  .share-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:relative;}
+  .share-brand{font-family:var(--serif);font-size:14px;color:var(--muted);}
+  .share-title{font-family:var(--serif);font-size:21px;margin-top:8px;position:relative;}
+  .share-scores{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;position:relative;}
+  /* Ebenfalls aus dem Zoom-Test: „Gewissenhaftigkeit" ist als einzelnes Wort breiter als der
+     Chip, die Zahl dahinter schob sich dadurch ueber das Wort. Umbruch innerhalb des Chips statt
+     Ueberlagerung; bei normaler Breite bleibt jeder Chip einzeilig. */
+  .chip{
+    font-family:var(--mono);font-size:11.5px;background:var(--surface-2);border:1px solid var(--line);
+    border-radius:100px;padding:5px 10px;display:flex;gap:6px;flex-wrap:wrap;
+  }
+  .chip b{color:var(--accent-strong);}
+  .share-actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;position:relative;}
+  .code-box{
+    margin-top:10px;font-family:var(--mono);font-size:13px;background:var(--surface-2);
+    border:1px dashed var(--line);border-radius:var(--radius-s);padding:10px 12px;
+    /* Zoom-Test: Code-Zeile und „Kopieren"-Schaltflaeche zusammen breiter als der Kasten. */
+    display:flex;justify-content:space-between;align-items:center;gap:10px;position:relative;flex-wrap:wrap;
+  }
+  /* Bewusst NICHT Teil der gedämpften Fußnoten-Gruppe: handlungsrelevanter Hinweis in normaler
+     Lesegröße, wie .storage-warning — nur ohne Warnfarbe, weil hier nichts schiefgegangen ist. */
+  .code-lead{margin-top:10px;font-size:13.5px;color:var(--muted);line-height:1.55;position:relative;}
+  .code-note{margin-top:6px;line-height:1.5;font-family:var(--sans);}
+
+  

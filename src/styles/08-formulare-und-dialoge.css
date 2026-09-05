@@ -1,0 +1,148 @@
+/* ---------- Processing overlay: brief "measuring" moment between quiz and reveal ---------- */
+  #processingOverlay{
+    position:fixed;inset:0;z-index:80;background:var(--paper);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  #processingOverlay.show{opacity:1;pointer-events:auto;}
+  .processing-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);animation:pulse-dot 1s ease-in-out infinite;}
+  @keyframes pulse-dot{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.6);opacity:.55;}}
+  .processing-text{font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.02em;}
+  @media (prefers-reduced-motion: reduce){ .processing-dot{animation:none;} }
+
+  @keyframes card-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  .traits{margin-top:34px;display:flex;flex-direction:column;gap:14px;}
+  .trait-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:18px 18px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;}
+  /* Der gesamte Kopfbereich der Karte ist die Schaltfläche — Name, Messbalken und
+     Zusammenfassung zusammen ergeben eine große, auf dem Telefon leicht zu treffende Fläche,
+     statt nur ein kleines Pfeilsymbol am Rand. */
+  .trait-card > summary{list-style:none;cursor:pointer;display:block;}
+  .trait-card > summary::-webkit-details-marker{display:none;}
+  .trait-card > summary:focus-visible{outline:2px solid var(--accent-strong);outline-offset:4px;border-radius:var(--radius-s);}
+  /* Benennt, was hinter der Karte liegt, statt es nur durch einen Pfeil anzudeuten — wer den
+     ausführlichen Teil sucht, sieht vorher, was ihn erwartet. */
+  .trait-more{
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--accent-strong);
+  }
+  .trait-more .chev{color:var(--muted);flex-shrink:0;transition:transform .2s ease;transform:rotate(90deg);}
+  .trait-card[open] .trait-more .chev{transform:rotate(-90deg);}
+  /* Zugeklappt kündigt die Zeile an, was dahinter liegt; aufgeklappt wäre dieselbe Aufzählung
+     überflüssig, weil die Abschnitte direkt darunter ihre eigenen Überschriften tragen — dort
+     wird sie deshalb zur Schaltfläche zum Wiederzuklappen. */
+  .trait-card .tm-open{display:none;}
+  .trait-card[open] .tm-shut{display:none;}
+  .trait-card[open] .tm-open{display:inline;color:var(--muted);}
+  @media (prefers-reduced-motion: reduce){ .trait-card{animation:none;opacity:1;} }
+  .trait-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .trait-name{font-family:var(--serif);font-size:17px;}
+  .trait-score{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .trait-teaser{margin-top:10px;font-size:14px;color:var(--muted);}
+  /* Feedback-Runde 53: Aufklappen war der zweite unbewegte Klick-Moment — der Inhalt sprang
+     schlagartig da. Die Karte selbst ändert ihre Höhe weiterhin sofort (eine Höhen-Animation auf
+     <details> ist ohne feste Höhen nicht sauber lösbar und ruckelt auf schwachen Geräten), aber
+     der Inhalt kommt gestaffelt herein. Das reicht, um den Klick beantwortet zu bekommen. */
+  .trait-card[open] .trait-section{ animation:sec-in .3s cubic-bezier(.2,.8,.2,1) both; }
+  .trait-card[open] .trait-section:nth-child(2){ animation-delay:.05s; }
+  .trait-card[open] .trait-section:nth-child(3){ animation-delay:.1s; }
+  @keyframes sec-in{ from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:none;} }
+  @media (prefers-reduced-motion: reduce){ .trait-card[open] .trait-section{animation:none;} }
+  .trait-sections{margin-top:14px;display:flex;flex-direction:column;gap:12px;}
+  /* Feedback-Runde 42: alle einzeiligen Mono-Versal-Mikrolabels liegen jetzt einheitlich auf 11px.
+     Zuvor waren es vier Größen für dieselbe Rolle (10,5 / 11 / 11,5 px), deren Unterschiede zu
+     klein sind, um als Hierarchie gelesen zu werden — sie wirkten nur unruhig. Bewusst
+     ausgenommen bleiben .stat-label und .wordmark-beta bei 9,5px: beide sitzen in engen Rastern
+     bzw. in einem Badge, wo die Größe eine Platzentscheidung ist, keine Hierarchieentscheidung. */
+  .trait-section-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin-bottom:4px;}
+  .trait-section p{font-size:14.5px;color:var(--ink);line-height:1.6;}
+
+  .unlock-ribbon{
+    margin-top:34px;display:flex;align-items:flex-start;gap:10px;
+    background:color-mix(in srgb, var(--accent-2) 14%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--accent-2) 40%, var(--line));
+    border-radius:var(--radius-m);padding:12px 14px;font-size:13.5px;
+  }
+  .unlock-ribbon b{color:var(--accent-2-text);}
+  /* Feedback-Runde 41: .uniform-note teilt sich die Gestaltung mit .storage-warning, weil beide
+     dieselbe Rolle haben — ein echter, handlungsrelevanter Hinweis, kein bloßer Disclaimer (und
+     deshalb bewusst NICHT Teil der gedämpften .acronym-note-Gruppe weiter unten). Gemeinsame
+     Selektorliste statt kopierter Regel, damit beide optisch nicht auseinanderlaufen. */
+  .storage-warning, .uniform-note{
+    margin-top:24px;display:flex;align-items:flex-start;gap:10px;
+    background:color-mix(in srgb, var(--accent-2) 14%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--accent-2) 40%, var(--line));
+    border-radius:var(--radius-m);padding:12px 14px;font-size:13.5px;line-height:1.5;
+  }
+  .storage-warning b, .uniform-note b{color:var(--accent-2-text);}
+  .uniform-note{margin:22px auto 0;max-width:46ch;text-align:left;}
+
+  /* Wahl zwischen eigenem Wiederholungslauf und Gastdurchlauf (Backlog Runde 27, Punkt 5).
+     Übernimmt bewusst das bereits etablierte Zeilen-Muster der Schublade (.drawer-profile-row):
+     Karte mit Rahmen, linksbündig, Titel plus erklärende Unterzeile — statt ein neues, nur hier
+     vorkommendes Aussehen zu erfinden. */
+  .run-choice{
+    margin-top:18px;display:flex;flex-direction:column;gap:10px;text-align:left;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);padding:16px;
+  }
+  .run-choice-q{font-family:var(--serif);font-size:15.5px;font-weight:500;color:var(--ink);margin:0 0 2px;}
+  .run-choice-opt{
+    display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;font-family:inherit;cursor:pointer;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:12px 14px;transition:border-color .15s ease;
+  }
+  @media (hover:hover){ .run-choice-opt:hover{border-color:var(--accent-strong);} }
+  .run-choice-opt:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .run-choice-opt:active{border-color:var(--accent-strong);}
+  .run-choice-opt-t{font-family:var(--sans);font-size:14.5px;font-weight:600;color:var(--ink);}
+  .run-choice-opt-d{font-size:12.5px;line-height:1.45;color:var(--muted-soft);}
+
+  /* Hinweis auf der Ergebnisseite eines Gastdurchlaufs. Teilt die Gestaltung von .storage-warning,
+     weil es dieselbe Rolle hat: eine echte, handlungsrelevante Konsequenz (wird nicht gespeichert),
+     kein Kleingedrucktes. */
+  .guest-note{
+    margin:0 auto 18px;max-width:46ch;text-align:left;
+    display:flex;align-items:flex-start;gap:10px;
+    background:color-mix(in srgb, var(--accent-2) 14%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--accent-2) 40%, var(--line));
+    border-radius:var(--radius-m);padding:12px 14px;font-size:13.5px;line-height:1.5;
+  }
+  .guest-note b{color:var(--accent-2-text);}
+
+  /* Home-Bildschirm-Hinweis (Backlog Runde 29, Punkt 6). Bewusst OHNE die Amber-Fläche von
+     .storage-warning: das ist kein Problem, das gelöst werden muss, sondern eine Möglichkeit —
+     ruhige Oberfläche, kleinere Schrift, und ein Wegtipp-Kreuz, das ihn endgültig verschwinden
+     lässt. Ein zweites Mal wird nicht gefragt. */
+  .a2hs-hint{
+    margin-top:20px;display:flex;align-items:flex-start;gap:10px;text-align:left;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:11px 12px 11px 14px;font-size:12.5px;line-height:1.5;color:var(--muted);
+  }
+  .a2hs-hint > svg{flex-shrink:0;color:var(--accent-strong);margin-top:2px;}
+  .a2hs-hint > span{flex:1;min-width:0;}
+  .a2hs-dismiss{
+    flex-shrink:0;background:transparent;border:0;padding:2px;margin:-2px -2px 0 0;cursor:pointer;
+    color:var(--muted);border-radius:var(--radius-s);line-height:0;
+  }
+  @media (hover:hover){ .a2hs-dismiss:hover{color:var(--ink);} }
+  .a2hs-dismiss:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .guest-note svg{flex-shrink:0;color:var(--accent-2);margin-top:2px;}
+  .unlock-ribbon svg{flex-shrink:0;color:var(--accent-2);margin-top:2px;}
+
+  .radar-note{margin-top:10px;text-align:center;max-width:280px;margin-left:auto;margin-right:auto;line-height:1.5;}
+
+  .section-title{margin-top:40px;font-size:19px;font-family:var(--sans);font-weight:400;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .section-title .n{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:2px 8px;}
+  /* Feedback-Runde 42: Abschnittstitel hatten je nach Fundstelle 40px (Klasse), 36px und 30px
+     (beides per Inline-Style) Abstand — drei Werte für dieselbe Rolle. Der reguläre Abstand ist
+     jetzt durchgehend 40px; untergeordnete Titel innerhalb eines Abschnitts (z. B. "Frühere
+     Ergebnisse" unterhalb der Trendgrafik) bekommen mit dieser Modifikator-Klasse einen bewusst
+     engeren Abstand, statt ihn an Ort und Stelle zu improvisieren. */
+  .section-title-sub{margin-top:30px;}
+  /* Einleitungsabsatz unter einem Abschnittstitel — identische Rolle wie .archetypes-head p, war
+     auf der Ergebnisseite aber per Inline-Style mit abweichender Größe nachgebaut. */
+  .section-lead{margin-top:8px;font-size:14.5px;color:var(--muted);line-height:1.6;max-width:56ch;}
+
+  

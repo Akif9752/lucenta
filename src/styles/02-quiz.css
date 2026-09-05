@@ -1,0 +1,48 @@
+/* ---------- Quiz ---------- */
+  /* Der Fragebogen läuft 50x durch dieselbe Komposition — statt oben anzuhängen und darunter
+     bei kurzem Inhalt ins Leere zu laufen, wird der Fragenblock im verbleibenden Platz
+     vertikal zentriert. Bei sehr kurzen Viewports wächst die Box einfach normal mit. */
+  #view-quiz.active{display:flex;flex-direction:column;min-height:calc(100vh - 150px);}
+  .quiz-body{flex:1;display:flex;flex-direction:column;justify-content:safe center;}
+  /* flex-wrap ergaenzt nach dem 200-%-Zoom-Test (Backlog Runde 28, Punkt 2): die Kopfzeile aus
+     „← Start" und „Test wiederholen" ist bei halber Layoutbreite breiter als die Seite, die zweite
+     Schaltflaeche lief rechts aus dem Bild. Bei normaler Breite passt die Zeile weiterhin in eine
+     Reihe, der Umbruch greift also nur dort, wo er gebraucht wird. */
+  .quiz-head{padding:28px 0 6px;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;}
+  .qcount{font-family:var(--mono);font-size:13px;color:var(--muted);}
+  .qcard{
+    margin-top:18px;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius-l);padding:34px 26px;box-shadow:var(--shadow);
+    min-height:180px;display:flex;align-items:center;
+  }
+  /* Feedback-Runde 53: Der Fragewechsel war der am häufigsten erlebte Moment der App — fünfzig
+     Mal je Durchlauf — und der einzige völlig unbewegte: Nach 220 ms tauschte der Text schlicht
+     aus. Jetzt kommt die neue Frage herein. Bewusst nur EIN-, nicht ausblendend: Ein Ausblenden
+     würde die eben angetippte Antwort verschlucken, bevor man sie gefüllt gesehen hat. */
+  .qcard.q-in{ animation:q-enter .3s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes q-enter{ from{opacity:0;transform:translateY(9px);} to{opacity:1;transform:none;} }
+  @media (prefers-reduced-motion: reduce){ .qcard.q-in{animation:none;} }
+  .qtext{font-family:var(--serif);font-size:clamp(21px,4.4vw,27px);line-height:1.3;letter-spacing:-.005em;}
+  .qtext::before{content:'„';color:var(--accent-2);}
+  .qtext::after{content:'“';color:var(--accent-2);}
+
+  .scale{margin-top:22px;}
+  .scale-row{display:flex;gap:8px;justify-content:space-between;}
+  .scale-btn{
+    flex:1;aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line);
+    background:var(--surface);cursor:pointer;transition:all .15s ease;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .scale-btn .fill{width:0%;height:0%;border-radius:50%;background:var(--accent);transition:all .15s ease;}
+  @media (hover:hover){ .scale-btn:hover{border-color:var(--accent-strong);} }
+  .scale-btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
+  .scale-btn.picked{border-color:var(--accent);}
+  .scale-btn.picked .fill{width:62%;height:62%;}
+  .scale-labels{display:flex;justify-content:space-between;margin-top:10px;font-size:11.5px;color:var(--muted);}
+  .scale-labels span:nth-child(2),.scale-labels span:nth-child(3),.scale-labels span:nth-child(4){display:none;}
+  .scale-labels span{max-width:80px;}
+  .scale-labels span:last-child{text-align:right;}
+
+  .quiz-nav{margin-top:22px;display:flex;justify-content:space-between;align-items:center;}
+
+  

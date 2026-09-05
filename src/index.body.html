@@ -1,0 +1,607 @@
+
+<script>(function(){document.documentElement.lang='de';try{var t=localStorage.getItem('lucenta_theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+
+<a href="#mainContent" class="skip-link" data-i18n="zum_inhalt_springen">Zum Inhalt springen</a>
+<div id="shell">
+  <div id="focusline"><div id="focusline-fill"></div><div class="focusline-tick" style="left:25%"></div><div class="focusline-tick" style="left:50%"></div><div class="focusline-tick" style="left:75%"></div></div>
+  <header class="top">
+    <!-- Feedback-Runde 50: Vor „Lucenta" stand bislang ein Amber-Punkt — ein Zeichen, das mit dem
+         App-Symbol nichts gemeinsam hatte. Das Symbol kam damit an genau einer Stelle vor, dem
+         Homescreen, und tauchte in der App nie wieder auf; es konnte gar nicht wiedererkannt
+         werden. Jetzt steht das Fenster-Zeichen selbst hier, in jeder der neun Ansichten. Die
+         Farben kommen aus den Token, das Zeichen dreht sich im Dunkelmodus also mit. -->
+    <button type="button" class="wordmark" id="btnHome"><span class="brandmark" aria-hidden="true"><svg viewBox="0 0 24 24" width="21" height="21"><rect x="0" y="0" width="24" height="24" rx="5.4" fill="var(--accent)"></rect><polygon points="12,5.26 19.09,10.41 16.38,18.74 7.62,18.74 4.91,10.41" fill="var(--paper)" stroke="var(--paper)" stroke-width="1.7" stroke-linejoin="round"></polygon></svg></span>Lucenta<span class="wordmark-beta" data-i18n="beta">Beta</span></button>
+    <div class="header-right">
+      <div class="tagline" id="viewLabel"></div>
+      <button type="button" class="drawer-tab" id="btnDrawerToggle" aria-haspopup="dialog" aria-expanded="false" aria-controls="drawerPanel" aria-label="Weitere Funktionen: Profil, Verstehen, Archetypen, Vergleichen, Vergleichsarchiv, Einstellungen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="15" y1="4" x2="15" y2="20"></line></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="mainContent" tabindex="-1">
+  <!-- LANDING -->
+  <section class="view active" id="view-landing" tabindex="-1">
+    <div class="hero">
+      <div class="eyebrow" data-i18n="big_five">Big Five</div>
+      <h1 data-i18n-html="lern_dich_kennen_mdash_mit_w">Lern dich kennen &mdash; <em>mit Wissenschaft</em>, nicht mit Sternzeichen.</h1>
+      <p class="sub" data-i18n="lucenta_zeichnet_dein_persön">Lucenta zeichnet dein Persönlichkeitsporträt anhand des Big-Five-Modells &mdash; dem Modell mit der stärksten empirischen Grundlage in der Persönlichkeitspsychologie. Kein Horoskop, kein Vier-Buchstaben-Typ. Ein Spektrum, das wirklich zu dir passt.</p>
+      <div class="cta-row">
+        <button class="btn btn-primary btn-hero" id="btnStart" data-i18n="test_starten">Test starten →</button>
+        <button type="button" class="btn btn-ghost btn-hero" id="btnHeroSecondary" style="display:none;"></button>
+      </div>
+      <!-- Backlog Runde 27, Punkt 5: Lucenta hat kein Konto und geht deshalb stillschweigend davon
+           aus, dass ein Gerät zu genau einer Person gehört. Das eigene Kernfeature holt aber gezielt
+           zwei Personen vor denselben Bildschirm ("Ich vs. meine beste Freundin"). Bislang landete
+           ein zweiter Durchlauf ungefragt im selben Verlauf und überschrieb das gespeicherte
+           Ergebnis — die Verlaufskurve mischte damit zwei Personen zu einer Linie, ohne dass das
+           irgendwo sichtbar wurde. Der Gastdurchlauf trennt beides sauber: er speichert nichts. -->
+      <div class="run-choice" id="runChoice" style="display:none;">
+        <p class="run-choice-q" data-i18n="auf_diesem_gerät_liegt_berei">Auf diesem Gerät liegt bereits ein Ergebnis. Wer macht den Test?</p>
+        <button type="button" class="run-choice-opt" id="btnRunSelf" data-i18n-html="ich_selbst_noch_ei">
+          <span class="run-choice-opt-t">Ich selbst, noch einmal</span>
+          <span class="run-choice-opt-d">Kommt in deinen Verlauf und wird mit deinem letzten Ergebnis verglichen.</span>
+        </button>
+        <button type="button" class="run-choice-opt" id="btnRunGuest" data-i18n-html="jemand_anderes">
+          <span class="run-choice-opt-t">Jemand anderes</span>
+          <span class="run-choice-opt-d">Gastdurchlauf: Dein Ergebnis und dein Verlauf bleiben unangetastet. Das Gastergebnis wird nicht gespeichert &mdash; es gibt am Ende einen Code zum Mitnehmen.</span>
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnRunCancel" style="align-self:flex-start;" data-i18n="abbrechen">Abbrechen</button>
+      </div>
+      <!-- Feedback: die verbliebene meta-row (Minuten/Dimensionen/Kostenlos) ist komplett raus —
+           der Hero-Button und die Karten darunter tragen die Startseite bereits, ohne diese
+           zusätzliche Fakten-Zeile. -->
+      <div class="storage-warning" id="storageWarning" style="display:none;" role="status">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:1px;"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <span data-i18n-html="speichern_nicht_möglich_der"><b>Speichern nicht möglich:</b> Der private Modus verhindert gerade, dass Lucenta deinen Fortschritt oder dein Ergebnis merkt. Du kannst den Test trotzdem machen, solltest ihn aber am Stück abschließen und deinen Code notieren.</span>
+      </div>
+      <!-- Backlog Runde 29, Punkt 6: Seit Runde 45 startet Lucenta, zum Home-Bildschirm hinzugefügt,
+           als eigenständige App ohne Adressleiste — nur weiß das niemand, weil die Option im
+           Teilen-Menü des Systems versteckt ist und die App bisher nie darauf hinwies. Erscheint
+           erst nach dem ersten abgeschlossenen Test (vorher gibt es nichts, wozu man zurückkehren
+           würde), nicht in der bereits installierten Ansicht, und verschwindet nach einmaligem
+           Wegtippen dauerhaft. -->
+      <div class="a2hs-hint" id="a2hsHint" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"></path><polyline points="7 9 12 4 17 9"></polyline><rect x="4" y="16" width="16" height="5" rx="1.5"></rect></svg>
+        <span data-i18n="lucenta_lässt_sich_zum_homeb">Lucenta lässt sich zum Home-Bildschirm hinzufügen und startet dann wie eine eigene App &mdash; über das Teilen-Symbol deines Geräts, dann &bdquo;Zum Home-Bildschirm&ldquo;.</span>
+        <button type="button" class="a2hs-dismiss" id="btnA2hsDismiss" aria-label="Hinweis ausblenden">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <details class="why">
+      <summary data-i18n-text="warum_kein_mbti_kein_horosko">Warum kein MBTI, kein Horoskop?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+      <p data-i18n="typtests_wie_mbti_sortieren">Typ-Tests wie MBTI sortieren dich in eine von 16 Schubladen &mdash; obwohl die Forschung zeigt, dass Persönlichkeit fließend ist, nicht kategorial. Sternzeichen haben keinerlei nachgewiesenen Zusammenhang mit Charakterzügen.</p>
+      <p data-i18n="die_bigfivedimensionen_extra">Die Big-Five-Dimensionen (Extraversion, Verträglichkeit, Gewissenhaftigkeit, emotionale Stabilität, Offenheit) sind seit den 1980ern in hunderten Studien über Kulturen hinweg repliziert &mdash; sie sagen tatsächlich etwas über Verhalten, Beziehungen und Wohlbefinden voraus.</p>
+    </details>
+
+    <div class="understand-card state-teaser-card" id="landingStateTeaser" style="animation:none;opacity:1;">
+      <div class="understand-group-label" data-i18n="tagesform">Tagesform</div>
+      <p class="state-teaser-copy" id="landingStateCopy">&mdash;</p>
+      <!-- Feedback-Runde 43: Die Frage-Bezeichnungen („Energie" / „Stimmung") fehlten hier, obwohl
+           die vollständige Tagesform-Ansicht sie hat. Zwei optisch identische Reihen aus je fünf
+           leeren Kreisen, darüber nur die Endpunkte — was gefragt ist, musste man sich erschließen.
+           Jetzt dieselben Bezeichnungen wie in der Vollansicht, damit beide Orte dieselbe Frage
+           auch gleich stellen. -->
+      <!-- Feedback-Runde 52 (erste externe Rückmeldung): Nach dem zweiten Antippen sah die Karte
+           exakt so aus wie vorher. Bestätigt wurde nur über einen Toast am Bildschirmrand und eine
+           Textzeile ÜBER den Kreisen — beides weit weg vom Finger, beides in 1,8 Sekunden vorbei.
+           Wer nicht zufällig hinsah, hielt die Eingabe für verloren. Die Karte wechselt jetzt
+           sichtbar den Zustand: Die Skalen räumen sich weg, an ihrer Stelle steht die Bestätigung
+           mit dem tatsächlich gespeicherten Wert. -->
+      <div id="landingStateInputs">
+        <div class="state-question">
+          <div class="state-q-label" data-i18n="energie">Energie</div>
+          <div class="state-q-sub" data-i18n-html="erschöpftvoller_energie"><span>Erschöpft</span><span>Voller Energie</span></div>
+          <div class="scale-row" id="landingStateEnergyRow" role="group" aria-label="Energie heute von 1 (erschöpft) bis 5 (voller Energie)"></div>
+        </div>
+        <div class="state-question">
+          <div class="state-q-label" data-i18n="stimmung">Stimmung</div>
+          <div class="state-q-sub" data-i18n-html="angespanntentspannt"><span>Angespannt</span><span>Entspannt</span></div>
+          <div class="scale-row" id="landingStateValenceRow" role="group" aria-label="Stimmung heute von 1 (angespannt) bis 5 (entspannt)"></div>
+        </div>
+      </div>
+      <div class="state-done" id="landingStateDone" style="display:none;" role="status">
+        <span class="state-done-check" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        <div class="state-done-text" data-i18n-html="heute_erfasst">
+          <strong>Heute erfasst</strong>
+          <span class="state-done-vals mono" id="landingStateDoneVals"></span>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnLandingStateEdit" data-i18n="ändern">Ändern</button>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" id="btnLandingStateHistory" style="align-self:flex-start;" data-i18n="tagesformverlauf_ansehen">Tagesform-Verlauf ansehen</button>
+    </div>
+
+    <div class="understand-card" id="landingUnderstandTeaser" style="animation:none;opacity:1;">
+      <div class="understand-group-label" data-i18n-html="aus_der_forschung__verstehen">Aus der Forschung <span class="sep">·</span> Verstehen</div>
+      <h3 id="landingTeaserTitle">&mdash;</h3>
+      <p id="landingTeaserBody">&mdash;</p>
+      <button type="button" class="btn btn-ghost btn-sm" id="btnLandingTeaserMore" style="margin-top:10px;" data-i18n="mehr_davon_entdecken">Mehr davon entdecken</button>
+    </div>
+
+    <div class="preview-card">
+      <div class="preview-label" data-i18n-html="so_sieht_dein_ergebnis_aus_b">So sieht dein Ergebnis aus <span class="preview-tag">Beispiel</span></div>
+      <div class="preview-body">
+        <div class="radar-wrap preview-radar" id="previewRadar"></div>
+        <div class="preview-text">
+          <div class="preview-title" data-i18n-html="visionärin__gesellig">Visionär:in <span class="sep">·</span> gesellig</div>
+          <p data-i18n="radarchart_über_alle__dimens">Radar-Chart über alle 5 Dimensionen, ein zusammenhängendes Kurzporträt, ausführliche Berichte je Dimension &mdash; und ein Code zum Vergleichen mit Freund:innen.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="factsgrid">
+      <!-- Feedback-Runde 43: Die Trennstellen waren zu grob gesetzt. Gemessen auf einem 390px
+           breiten Gerät stehen pro Box rund 56px zur Verfügung — „Gewissen" allein braucht aber
+           78px, „Extra&shy;version" bricht in ein 61px breites „version". Die Wörter liefen
+           deshalb seitlich aus ihren Kästchen heraus. Jetzt an allen regulären deutschen bzw.
+           englischen Silbengrenzen trennbar, sodass jedes Bruchstück in die Spalte passt. -->
+      <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="o">O</div><div class="v" data-i18n="ofshyfenshyheit">Of&shy;fen&shy;heit</div></div><div class="en" data-i18n="openshyness">Open&shy;ness</div></div>
+      <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="c">C</div><div class="v" data-i18n="geshywisshysenshyhafshytigsh">Ge&shy;wis&shy;sen&shy;haf&shy;tig&shy;keit</div></div><div class="en" data-i18n="conshyscishyenshytiousshynes">Con&shy;sci&shy;en&shy;tious&shy;ness</div></div>
+      <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="e">E</div><div class="v" data-i18n="exshytrashyvershysion">Ex&shy;tra&shy;ver&shy;sion</div></div><div class="en" data-i18n="exshytrashyvershysion_2">Ex&shy;tra&shy;ver&shy;sion</div></div>
+      <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="a">A</div><div class="v" data-i18n="vershyträgshylichshykeit">Ver&shy;träg&shy;lich&shy;keit</div></div><div class="en" data-i18n="agreeshyableshyness">Agree&shy;able&shy;ness</div></div>
+      <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="n">N</div><div class="v" data-i18n="stashybishylishytät">Sta&shy;bi&shy;li&shy;tät</div></div><div class="en" data-i18n="neushyroshytishycism">Neu&shy;ro&shy;ti&shy;cism</div></div>
+    </div>
+    <p class="acronym-note" data-i18n-html="das_akronym_ocean_ist_der_in">Das Akronym <b>OCEAN</b> ist der international gebräuchliche Name des Modells &mdash; die Buchstaben folgen den englischen Fachbegriffen (klein darunter). Bei <b>N</b> weichen wir bewusst von der deutschen Direktübersetzung „Neurotizismus“ ab und nennen die Dimension „Emotionale Stabilität“ &mdash; gleiche Skala, nur ohne die defizitorientierte Sprache.</p>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="view" id="view-quiz" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackLanding" data-i18n="abbrechen_2">← Abbrechen</button>
+      <div class="qcount mono"><span id="qNow">1</span> / 50</div>
+    </div>
+    <div class="quiz-body">
+      <div class="qcard" id="qCard"><p class="qtext" id="qText" aria-live="polite">&mdash;</p></div>
+      <div class="scale">
+        <div class="scale-row" id="scaleRow" role="group" aria-label="Antwort von 1 (trifft gar nicht zu) bis 5 (trifft voll zu)"></div>
+        <div class="scale-labels" data-i18n-html="trifft_gar_nicht_zutrifft_vo"><span>trifft gar nicht zu</span><span></span><span></span><span></span><span>trifft voll zu</span></div>
+      </div>
+      <div class="quiz-nav">
+        <button class="btn btn-ghost btn-sm" id="btnPrev" data-i18n="zurück">← Zurück</button>
+        <span class="tagline" id="qHint">Tippe eine Antwort an</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="view" id="view-result" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromResult" data-i18n="start">← Start</button>
+      <button class="btn btn-ghost btn-sm" id="btnRetakeTop" data-i18n="test_wiederholen">Test wiederholen</button>
+    </div>
+    <div class="result-head">
+      <div class="eyebrow" id="resultEyebrow">Dein Porträt</div>
+      <h1 class="archetype" id="archTitle">&mdash;</h1>
+      <p class="motto" id="archMotto">&mdash;</p>
+    </div>
+
+    <!-- Gastdurchlauf (Backlog Runde 27, Punkt 5): steht vor dem Ergebnis, nicht darunter — die
+         Konsequenz "wird nicht gespeichert" muss bekannt sein, bevor jemand die Seite verlässt. -->
+    <div class="guest-note" id="guestNote" style="display:none;" role="status">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      <span data-i18n-html="gastdurchlauf_dieses_ergebni"><b>Gastdurchlauf:</b> Dieses Ergebnis wird auf diesem Gerät nicht gespeichert und taucht in keinem Verlauf auf. Notiere oder kopiere den Code weiter unten, wenn du es behalten oder woanders wieder öffnen willst &mdash; sobald du diese Seite verlässt, ist es fort.</span>
+    </div>
+
+    <p class="synthesis" id="synthesis"></p>
+
+    <!-- Feedback-Runde 41: erscheint nur bei sehr gleichförmigem Antwortmuster. Bewusst zwischen
+         Kurzporträt und Zahlenreihe platziert — der Hinweis soll die Zahlen einordnen, bevor sie
+         gelesen werden, statt erst darunter nachzuklappen. -->
+    <div class="uniform-note" id="uniformNote" style="display:none;" role="status">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:1px;color:var(--accent-2);"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      <span data-i18n-html="sehr_gleichförmige_antworten"><b>Sehr gleichförmige Antworten:</b> Du hast fast durchgehend denselben Wert gewählt. Ein Teil der 50 Aussagen ist bewusst gegensätzlich formuliert &mdash; eine echte Selbsteinschätzung ergibt deshalb fast immer ein gemischteres Bild. Das Porträt unten wird trotzdem berechnet, sagt so aber mehr über das Antwortmuster aus als über dich. Ein zweiter Durchlauf in Ruhe liefert ein belastbareres Ergebnis.</span>
+    </div>
+
+    <div class="stat-strip" id="statStrip"></div>
+
+    <div class="delta-card" id="deltaCard" style="display:none;" aria-live="polite"></div>
+
+    <div class="radar-wrap" id="radarWrap"></div>
+    <p class="radar-note" data-i18n="werte_auf_einer_skala_relati">Werte auf einer 0–100-Skala relativ zu den 50 Aussagen – kein Vergleich mit einer Bevölkerungsnorm.</p>
+
+    <div class="share-card">
+      <div class="share-top">
+        <div>
+          <div class="share-brand" data-i18n="lucenta_middot_ergebniskarte">Lucenta &middot; Ergebniskarte</div>
+          <div class="share-title" id="shareTitle">&mdash;</div>
+        </div>
+      </div>
+      <div class="share-scores" id="shareChips"></div>
+      <div class="share-actions">
+        <button class="btn btn-primary btn-sm" id="btnShare" data-i18n="ergebnis_teilen">Ergebnis teilen</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnShareImage" data-i18n="bild_erstellen">Bild erstellen</button>
+        <button class="btn btn-ghost btn-sm" id="btnRetake" data-i18n="test_wiederholen_2">Test wiederholen</button>
+      </div>
+      <div class="code-box">
+        <span data-i18n-html="dein_code_mdash">Dein Code: <b class="mono" id="myCode">&mdash;</b></span>
+        <button class="btn btn-ghost btn-sm" id="btnCopyCode" data-i18n="kopieren">Kopieren</button>
+      </div>
+      <!-- Feedback-Runde 46: Der wichtigste Satz stand vorher an zweiter Stelle einer gedämpften
+           Fußnote. Lucenta speichert ausschließlich im Gerätespeicher — wird der geleert oder
+           wechselt jemand das Gerät, ist das Ergebnis endgültig fort. Das ist ein tatsächlicher
+           Verlust, kein herbeigeredeter, und die Abhilfe steht unmittelbar daneben. Deshalb jetzt
+           in normaler Lesegröße vor der Fußnote, sachlich formuliert und ohne Warnfarbe: Wer den
+           Code mitnimmt, verliert nichts; wer ihn ignoriert, soll wenigstens gewusst haben, was
+           auf dem Spiel steht. Der Hinweis zum Teilen bleibt Fußnote — er betrifft die Vorsicht,
+           nicht den Verlust. -->
+      <p class="code-lead" id="codeLead">Dein Ergebnis liegt ausschließlich auf diesem Gerät. Wird der Speicher von Lucenta geleert oder wechselst du das Gerät, ist es fort &mdash; mit diesem Code holst du es unter Einstellungen &rarr; Daten &amp; Datenschutz zurück.</p>
+      <p class="code-note" data-i18n="der_code_enthält_dein_vollst">Der Code enthält dein vollständiges Ergebnis in allen fünf Dimensionen — teile ihn nur mit Personen, denen du es zeigen möchtest.</p>
+    </div>
+
+    <h2 class="section-title" data-i18n-html="deine_fünf_dimensionen_volle">Deine fünf Dimensionen <span class="n">voller Bericht</span></h2>
+    <div class="unlock-ribbon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 7.5-2"></path></svg>
+      <!-- Feedback-Runde 46: Vorher stand hier „regulär Teil von Lucenta+ (4,99 €)". Das Wort
+           „regulär" behauptet einen bestehenden Normalpreis — Lucenta+ ist aber bislang nie
+           verkauft worden, es gibt also keinen regulären Preis, von dem hier abgewichen würde.
+           Genau so entsteht ein erfundener Vergleichsanker: Der Preis wirkt gespart, obwohl nie
+           jemand ihn zahlen musste. Die Zahl bleibt, weil sie die echte Planung ist (siehe
+           Abschnitt Monetarisierung) — aber sie wird als Absicht benannt, nicht als Nachlass. -->
+      <span data-i18n-html="in_der_beta_kostenlos_der_vo"><b>In der Beta kostenlos:</b> Der vollständige Bericht ist gerade für alle freigeschaltet. Geplant ist er als Teil von Lucenta+ für einmalig 4,99&nbsp;€ &mdash; verkauft wird davon aktuell nichts.</span>
+    </div>
+    <div class="traits" id="traitsList"></div>
+
+    <h2 class="section-title" id="compareAnchor" data-i18n-html="kompatibilität_optional">Kompatibilität <span class="n">optional</span></h2>
+    <p class="section-lead" data-i18n="vergleiche_dein_profil_mit_d">Vergleiche dein Profil mit dem einer anderen Person &mdash; z. B. Partner:in, beste:r Freund:in oder Familie. Beide Codes eintragen, fertig.</p>
+    <div class="compare-box">
+      <div class="field"><label for="cmpMe" data-i18n="dein_code">Dein Code</label><input type="text" id="cmpMe" maxlength="12" placeholder="z. B. 1a2b3c4d5e"></div>
+      <div class="field"><label for="cmpOther" data-i18n="code_der_anderen_person">Code der anderen Person</label><input type="text" id="cmpOther" maxlength="12" placeholder="Code einfügen"></div>
+      <button class="btn btn-primary btn-sm" id="btnCompare" style="align-self:flex-start;" data-i18n="vergleichen">Vergleichen</button>
+      <div class="compat-result" id="compatResult" aria-live="polite"></div>
+    </div>
+
+    <!-- Backlog Runde 29, Punkt 1: "Echtes Feedback einholen" steht seit Runde 5 als Priorität 1 im
+         Produktplan, aber die App selbst bot dafür nie eine Stelle — Rückmeldung entstand nur, wenn
+         jemand von sich aus etwas sagte. Bewusst ganz unten platziert, nach dem gesamten Bericht:
+         Wer bis hierhin liest, hat das Produkt tatsächlich benutzt und ist die Person, deren Urteil
+         zählt. Ohne Server geht der Text nirgendwohin automatisch — das steht offen dabei, statt
+         eine Übermittlung anzudeuten, die es nicht gibt. -->
+    <div class="feedback-ask" id="feedbackAsk">
+      <p class="feedback-q" data-i18n="war_dieses_porträt_für_dich">War dieses Porträt für dich stimmig?</p>
+      <div class="feedback-opts" id="feedbackOpts" role="group" aria-label="Einschätzung wählen">
+        <button type="button" class="feedback-opt" data-fb="Ja, hat gepasst" data-i18n="ja">Ja</button>
+        <button type="button" class="feedback-opt" data-fb="Teilweise" data-i18n="teils">Teils</button>
+        <button type="button" class="feedback-opt" data-fb="Nicht wirklich" data-i18n="nicht_wirklich">Nicht wirklich</button>
+      </div>
+      <div id="feedbackMore" style="display:none;">
+        <label class="feedback-label" for="feedbackText" data-i18n="was_hat_gefehlt_oder_überras">Was hat gefehlt oder überrascht? (freiwillig)</label>
+        <textarea id="feedbackText" rows="3" maxlength="600" placeholder="Ein Satz reicht."></textarea>
+        <div class="feedback-actions">
+          <button type="button" class="btn btn-primary btn-sm" id="btnFeedbackSend" data-i18n="rückmeldung_weitergeben">Rückmeldung weitergeben</button>
+        </div>
+        <p class="profile-note" data-i18n="lucenta_hat_keinen_server__n">Lucenta hat keinen Server — nichts davon wird verschickt oder gespeichert. Der Knopf öffnet nur das Teilen-Menü deines Geräts beziehungsweise legt den Text in die Zwischenablage, damit du ihn selbst weitergeben kannst. Deine Werte und dein Code sind darin nicht enthalten.</p>
+      </div>
+    </div>
+
+    <footer class="appfoot">
+      <span data-i18n-html="lucenta_middot_bigfivemodell">Lucenta &middot; Big-Five-Modell (<a href="https://ipip.ori.org/new_ipip-50-item-scale.htm" target="_blank" rel="noopener">IPIP</a>)</span>
+      <span data-i18n="kein_klinisches_instrument_m">Kein klinisches Instrument &mdash; dient der Selbstreflexion.</span>
+    </footer>
+  </section>
+
+  <!-- ARCHETYPES OVERVIEW -->
+  <section class="view" id="view-archetypes" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromArchetypes" data-i18n="start_2">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="zehn_grundrollen">Zehn Grundrollen</div>
+      <h1 data-i18n="die_rollen_aus_denen_sich_de">Die Rollen, aus denen sich dein Titel zusammensetzt</h1>
+      <p data-i18n-html="anders_als_bei_mbti_gibt_es">Anders als bei MBTI gibt es hier keine festen Schubladen. Diese zehn Rollen sind die Grundbausteine &mdash; dein tatsächlicher Titel kombiniert immer eine davon mit einer zweiten, feineren Ausprägung aus einer anderen Dimension (macht insgesamt <b id="archTotalCount">&mdash;</b> mögliche Kombinationen). Das eigentliche Ergebnis bleibt aber immer das Spektrum darunter: fünf Zahlen zwischen 0 und 100, kein fester Typ.</p>
+    </div>
+    <div class="archetype-groups" id="archetypeGroups"></div>
+  </section>
+
+  <!-- STATE CHECK -->
+  <section class="view" id="view-state" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromState" data-i18n="start_3">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="tagesform_2">Tagesform</div>
+      <h1 data-i18n="wie_geht_es_dir_gerade">Wie geht es dir gerade?</h1>
+      <p data-i18n="deine_fünf_oceandimensionen">Deine fünf OCEAN-Dimensionen sind stabile Eigenschaften und ändern sich nicht von Tag zu Tag. Stimmung und Energie dagegen schon — das ist ein eigener, kurzfristiger Zustand, kein neues Testergebnis. Ein kurzer täglicher Check macht sichtbar, wie sich das über die Zeit bewegt, unabhängig von deinem Profil.</p>
+    </div>
+
+    <div class="state-check-card">
+      <p class="state-today-note" id="stateTodayNote"></p>
+      <div class="state-question">
+        <div class="state-q-label" data-i18n="energie_2">Energie</div>
+        <div class="state-q-sub" data-i18n-html="erschöpftvoller_energie_2"><span>Erschöpft</span><span>Voller Energie</span></div>
+        <div class="scale-row" id="stateEnergyRow" role="group" aria-label="Energie von 1 (erschöpft) bis 5 (voller Energie)"></div>
+      </div>
+      <div class="state-question">
+        <div class="state-q-label" data-i18n="stimmung_2">Stimmung</div>
+        <div class="state-q-sub" data-i18n-html="angespanntentspannt_2"><span>Angespannt</span><span>Entspannt</span></div>
+        <div class="scale-row" id="stateValenceRow" role="group" aria-label="Stimmung von 1 (angespannt) bis 5 (entspannt)"></div>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm" id="btnStateSave" style="align-self:flex-start;" data-i18n="speichern">Speichern</button>
+    </div>
+
+    <div id="stateTrendContent"></div>
+  </section>
+
+  <!-- COMPAT ARCHIVE -->
+  <section class="view" id="view-compat-archive" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromCompatArchive" data-i18n="start_4">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="vergleichsarchiv">Vergleichsarchiv</div>
+      <h1 data-i18n="deine_gespeicherten_vergleic">Deine gespeicherten Vergleiche</h1>
+      <p data-i18n-html="jeder_kompatibilitätsverglei">Jeder Kompatibilitäts-Vergleich lässt sich nach der Berechnung speichern &mdash; so behältst du mehrere Personen im Blick, statt nur den zuletzt berechneten Vergleich zu sehen. Die letzten <b id="compatArchiveMaxCount">&mdash;</b> gespeicherten Vergleiche bleiben auf diesem Gerät erhalten.</p>
+    </div>
+    <div id="compatArchiveContent"></div>
+  </section>
+
+  <!-- VERSTEHEN -->
+  <section class="view" id="view-understand" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromUnderstand" data-i18n="start_5">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="verstehen">Verstehen</div>
+      <h1 data-i18n="was_die_forschung_über_dein">Was die Forschung über dein Profil zeigt</h1>
+      <p data-i18n="kurze_wissenschaftlich_fundi">Kurze, wissenschaftlich fundierte Einordnungen zu deinen beiden stärksten Dimensionen &mdash; keine erfundenen Sub-Facetten, sondern etablierte Zusammenhänge aus der Big-Five-Forschung.</p>
+    </div>
+    <div id="understandContent"></div>
+  </section>
+
+  <!-- PROFILE -->
+  <section class="view" id="view-profile" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromProfile" data-i18n="start_6">← Start</button>
+    </div>
+    <div class="profile-head">
+      <div class="avatar-wrap">
+        <div class="avatar" id="profileAvatar" aria-hidden="true"></div>
+        <button type="button" class="avatar-edit" id="btnAvatarEdit" aria-label="Profilbild ändern">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+        </button>
+        <input type="file" accept="image/*" id="avatarFileInput" style="display:none;">
+      </div>
+      <button type="button" class="profile-remove-photo" id="btnAvatarRemove" style="display:none;" data-i18n="bild_entfernen">Bild entfernen</button>
+      <!-- Feedback: Frage, ob es neben dem eigenen Foto auch Avatar-Optionen "von uns aus" geben
+           sollte. Statt bunter Cartoon-Avatare (würde der zurückhaltenden, monochromen
+           Markenidentität widersprechen — vgl. die aus demselben Grund verworfenen farbcodierten
+           Trait-Karten) hier drei ruhige Farbtöne für den Initialen-Kreis, alle bereits an anderer
+           Stelle in der App geprüft im Einsatz (Toast/Skip-Link für "Ink", normaler Fließtext für
+           "Ruhig", der bestehende Standard-Akzent für "Teal") — nur sichtbar, solange kein eigenes
+           Foto gesetzt ist, weil die Farbe nur den Initialen-Kreis betrifft. -->
+      <div class="avatar-color-row" id="avatarColorRow" role="group" aria-label="Farbe für den Initialen-Kreis">
+        <button type="button" class="avatar-color-swatch avatar-color-accent" id="avatarColorAccent" data-color="accent" aria-label="Teal" aria-pressed="false"></button>
+        <button type="button" class="avatar-color-swatch avatar-color-ink" id="avatarColorInk" data-color="ink" aria-label="Ink" aria-pressed="false"></button>
+        <button type="button" class="avatar-color-swatch avatar-color-quiet" id="avatarColorQuiet" data-color="quiet" aria-label="Ruhig" aria-pressed="false"></button>
+      </div>
+      <label class="profile-name-label" for="profileName" data-i18n="name">Name</label>
+      <input type="text" id="profileName" class="name-input" placeholder="Dein Name" maxlength="30" autocomplete="off">
+      <!-- Feedback: der "Nur auf diesem Gerät gespeichert..."-Hinweis stand hier redundant zur
+           ausführlicheren Erklärung unter Einstellungen → Daten & Datenschutz — raus, statt an
+           mehreren Stellen dieselbe Aussage in leicht unterschiedlichen Worten zu wiederholen. -->
+    </div>
+
+    <h2 class="section-title" data-i18n="dein_ergebnis">Dein Ergebnis</h2>
+    <div id="profileResultBlock"></div>
+
+    <!-- Feedback: Verlauf gehört inhaltlich zum eigenen Ergebnis und war zuvor eine eigene, über die
+         Schublade erreichbare Ansicht — jetzt direkter Teil des Profils, gleich unterhalb des
+         aktuellen Ergebnisses. -->
+    <h2 class="section-title" data-i18n="verlauf">Verlauf</h2>
+    <div id="historyContent"></div>
+    <!-- Feedback-Runde 44: Der einordnende Hinweis stand vorher zwischen Überschrift und Kurve —
+         sieben Zeilen kleiner Schrift, bevor überhaupt etwas zu sehen war. Überall sonst in der App
+         stehen solche Einordnungen unter ihrem Gegenstand (siehe .radar-note unter dem Radar und
+         .delta-note unter dem Vergleich zum Vorergebnis); hier folgt er jetzt derselben Regel. -->
+    <p class="profile-note" style="margin-top:12px;" data-i18n-html="bigfivedimensionen_gelten_au">Big-Five-Dimensionen gelten auf Wochensicht als stabil — ein echter Trend zeigt sich erst über mehrere Monate, nicht von einem Durchlauf zum nächsten. Die letzten <b id="historyMaxCount">&mdash;</b> Testdurchläufe auf diesem Gerät fließen hier ein.</p>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="view" id="view-settings" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromSettings" data-i18n="start_7">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="einstellungen">Einstellungen</div>
+      <h1 data-i18n="konto_darstellung_amp_mehr">Konto, Darstellung &amp; mehr</h1>
+    </div>
+
+    <div class="settings-group">
+      <h2 data-i18n="konto">Konto</h2>
+      <!-- Feedback: dieselbe Aussage steht wenige Abschnitte weiter unten unter "Daten & Datenschutz"
+           bereits vollständig — auf derselben Ansicht doppelt, daher hier raus statt nur umformuliert. -->
+      <div class="settings-account-row">
+        <div class="settings-account-avatar" id="settingsAvatar" aria-hidden="true"></div>
+        <div class="settings-account-info">
+          <strong id="settingsAccountName">Profil</strong>
+          <div class="l" id="settingsAccountSub">Noch kein Name gesetzt</div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnSettingsEditProfile" data-i18n="profil_bearbeiten">Profil bearbeiten</button>
+      </div>
+    </div>
+
+    <!-- Feedback-Runde 54, dritte externe Rueckmeldung: Sprache waehlbar machen. Die Karte steht
+         VOR der Darstellung, weil die Sprache bestimmt, in welcher die Darstellungs-Optionen
+         ueberhaupt gelesen werden. Die Bezeichnungen stehen bewusst in der jeweiligen Sprache
+         selbst ("Deutsch", nicht "German") — so findet sie auch jemand, der die aktuelle
+         Oberflaechensprache nicht versteht. -->
+    <div class="settings-group">
+      <h2 data-i18n="sprache">Sprache</h2>
+      <div class="theme-toggle" role="group" aria-label="Sprache wählen">
+        <button type="button" class="theme-btn" data-lang="de" aria-pressed="false" lang="de">Deutsch</button>
+        <button type="button" class="theme-btn" data-lang="en" aria-pressed="false" lang="en">English</button>
+      </div>
+      <p class="settings-hint" data-i18n="weitere_sprachen_folgen">Weitere Sprachen folgen. Der Fragebogen selbst wird nicht übersetzt, sondern je Sprache in der dafür veröffentlichten Fassung verwendet &mdash; auf Englisch ist das der Originalwortlaut.</p>
+    </div>
+
+    <div class="settings-group">
+      <h2 data-i18n="darstellung">Darstellung</h2>
+      <div class="theme-toggle" role="group" aria-label="Darstellung wählen">
+        <button type="button" class="theme-btn" id="themeSystem" data-mode="system" aria-pressed="false" data-i18n="system">System</button>
+        <button type="button" class="theme-btn" id="themeLight" data-mode="light" aria-pressed="false" data-i18n="hell">Hell</button>
+        <button type="button" class="theme-btn" id="themeDark" data-mode="dark" aria-pressed="false" data-i18n="dunkel">Dunkel</button>
+      </div>
+      <p class="settings-hint" data-i18n="systemldquo_übernimmt_automa">„System&ldquo; übernimmt automatisch die Einstellung deines Geräts.</p>
+    </div>
+
+    <div class="settings-group">
+      <h2 data-i18n="test">Test</h2>
+      <div class="settings-row">
+        <div class="l" id="settingsTestStatus">Gerade kein unterbrochener Test.</div>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnDiscardProgress" style="display:none;" data-i18n="verwerfen">Verwerfen</button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h2 data-i18n="daten_amp_datenschutz">Daten &amp; Datenschutz</h2>
+      <p class="settings-group-desc" data-i18n="lucenta_läuft_vollständig_au">Lucenta läuft vollständig auf diesem Gerät. Es gibt kein Konto beim Anbieter, keinen Server und keinen Abgleich in einer Cloud &mdash; alles unten bleibt ausschließlich hier gespeichert, bis du es löschst.</p>
+      <ul class="settings-datalist" id="settingsDataList"></ul>
+      <p class="settings-empty" id="settingsEmptyNote" data-i18n="aktuell_ist_nichts_gespeiche">Aktuell ist nichts gespeichert außer deiner Darstellung.</p>
+      <div class="settings-restore">
+        <div class="settings-restore-label" data-i18n="ergebnis_wiederherstellen">Ergebnis wiederherstellen</div>
+        <p class="settings-restore-desc" data-i18n="hast_du_deinen_stelligen_erg">Hast du deinen 10-stelligen Ergebnis-Code von einem anderen Gerät notiert? Hier eingeben, um ihn hier wiederherzustellen &mdash; so lässt sich ein Ergebnis auch ohne Konto auf ein neues Gerät mitnehmen.</p>
+        <div class="settings-restore-row">
+          <div class="field"><input type="text" id="restoreCodeInput" maxlength="12" placeholder="Code einfügen" aria-label="Ergebnis-Code zum Wiederherstellen"></div>
+          <button type="button" class="btn btn-ghost btn-sm" id="btnRestoreCode" data-i18n="wiederherstellen">Wiederherstellen</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm danger-btn" id="btnResetData" aria-live="polite" style="margin-top:14px;" data-i18n="eigene_daten_zurücksetzen">Eigene Daten zurücksetzen</button>
+    </div>
+
+    <div class="settings-group">
+      <h2 data-i18n="hilfe">Hilfe</h2>
+      <div class="faq-item-list">
+        <details class="faq-item">
+          <summary data-i18n-text="wie_wird_mein_ergebnis_berec">Wie wird mein Ergebnis berechnet?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="aus__wissenschaftlich_validi">Aus 50 wissenschaftlich validierten Aussagen (IPIP Big-Five-Modell). Jede Antwort fließt in eine von fünf Dimensionen ein; das Ergebnis zeigt deine Ausprägung auf einer Skala von 0 bis 100 relativ zu den Aussagen selbst, nicht im Vergleich zu einer Bevölkerungsgruppe. Wie jede Selbstauskunfts-Messung ist das eine Schätzung mit einer natürlichen Schwankungsbreite, keine exakte, fixe Zahl — nimm die Werte als verlässliche Tendenz, nicht auf den Punkt genau.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n-text="warum_bekomme_ich_ein_ergebn">Warum bekomme ich ein Ergebnis, auch wenn ich überall dasselbe angetippt habe?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="weil_die_berechnung_jede_ant">Weil die Berechnung jede Antwort gleich behandelt, ohne zu bewerten, wie sie zustande kam. Ein Teil der 50 Aussagen ist umgekehrt gepolt („Rede nicht viel“ zählt gegenläufig zu „Beginne von mir aus Gespräche“) — aber diese Umpolung ist je Dimension unterschiedlich stark vertreten, wie im ursprünglichen wissenschaftlichen Fragebogen auch. Wer durchgehend denselben Wert wählt, landet deshalb nicht neutral in der Mitte, sondern bekommt trotzdem ein ausgeprägtes Profil. Lucenta weist auf der Ergebnisseite darauf hin, wenn dein Antwortmuster sehr gleichförmig war. Aussagekräftig wird das Ergebnis erst, wenn du jede Aussage einzeln für dich beantwortest — auch dann, wenn sich zwei davon widersprüchlich anfühlen.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n-text="kann_ich_den_test_wiederhole">Kann ich den Test wiederholen?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="jederzeit_über_test_wiederho">Jederzeit, über „Test wiederholen&ldquo; auf der Ergebnisseite. Bei einer Wiederholung zeigt dir die App zusätzlich, wie sich dein Ergebnis seit dem letzten Mal verschoben hat. Für einen aussagekräftigen Vergleich lohnt sich ein Abstand von mehreren Monaten — auf Wochensicht gelten die Dimensionen als stabil, ein Test kurz nach dem letzten misst eher Tagesform als echte Veränderung.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n-text="kann_jemand_anderes_den_test">Kann jemand anderes den Test auf meinem Gerät machen?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="ja_sobald_ein_ergebnis_auf_d">Ja. Sobald ein Ergebnis auf dem Gerät liegt, fragt Lucenta vor jedem neuen Durchlauf, wer ihn macht. Beim Gastdurchlauf bleiben dein Ergebnis, dein Verlauf und dein Profil unangetastet: Das Gastergebnis wird nirgends gespeichert und erscheint in keiner Verlaufskurve. Wer es behalten will, nimmt den Code mit, der unter dem Ergebnis steht, und öffnet es damit auf dem eigenen Gerät. Genau dieser Code ist auch das, was du für den Kompatibilitäts-Vergleich brauchst.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n-text="wie_funktioniert_der_verglei">Wie funktioniert der Vergleich mit einer anderen Person?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="nach_dem_test_bekommst_du_ei">Nach dem Test bekommst du einen kurzen Code. Trägt eine zweite Person ihren eigenen Code ein, zeigt dir die App eine Überlagerung beider Profile und eine kurze Einschätzung, wo ihr euch ähnelt oder unterscheidet.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n-text="wo_werden_meine_daten_gespei">Wo werden meine Daten gespeichert?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="ausschließlich_auf_diesem_ge">Ausschließlich auf diesem Gerät &mdash; Details dazu stehen weiter oben unter „Daten &amp; Datenschutz&ldquo;.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n-text="für_wen_ist_lucenta_gedacht">Für wen ist Lucenta gedacht?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="für_erwachsene_die_sich_selb">Für Erwachsene, die sich selbst besser verstehen wollen &mdash; als Anstoß zum Nachdenken, nicht als Urteil. Lucenta ist kein klinisches oder diagnostisches Instrument und ersetzt keine therapeutische oder medizinische Unterstützung. Falls es dir gerade nicht gut geht, wende dich bitte an eine Beratungsstelle oder eine Person deines Vertrauens.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n-text="was_ist_der_unterschied_zwis">Was ist der Unterschied zwischen meinem Ergebnis und der Tagesform?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="dein_testergebnis_misst_stab">Dein Testergebnis misst stabile Eigenschaften (Traits) &mdash; die ändern sich laut Forschung nicht von Tag zu Tag. Die Tagesform misst dagegen deinen aktuellen Zustand (State): Energie und Stimmung schwanken ganz normal von Tag zu Tag, unabhängig von deinem Profil. Beide Konzepte sind in der Psychologie klar getrennt, deshalb behandelt Lucenta sie auch getrennt &mdash; ein schlechter Tag ändert nichts an deinem Testergebnis.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n-text="kann_ich_mehrere_vergleiche">Kann ich mehrere Vergleiche gleichzeitig speichern?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="ja_nach_jedem_berechneten_ve">Ja. Nach jedem berechneten Vergleich kannst du ihn unter „Vergleichen&ldquo; mit einem optionalen Namen speichern. Die letzten 20 gespeicherten Vergleiche findest du jederzeit im Vergleichsarchiv wieder, erreichbar über die Schublade.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n-text="was_ist_verstehenldquo">Was ist „Verstehen&ldquo;?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="eine_kurze_auswahl_an_wissen">Eine kurze Auswahl an wissenschaftlichen Einordnungen, passend zu deinen zwei stärksten Dimensionen aus deinem eigenen Ergebnis. Keine neuen Unterkategorien, sondern breit replizierte Zusammenhänge auf Dimensionsebene, verständlich zusammengefasst.</p>
+        </details>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h2 data-i18n="über_lucenta">Über Lucenta</h2>
+      <p class="settings-group-desc" data-i18n="version__middot_basiert_auf">Version 1.0 &middot; basiert auf dem wissenschaftlichen Big-Five-Modell (OCEAN) &middot; keine Werbung, kein Tracking, keine Weitergabe an Dritte.</p>
+    </div>
+  </section>
+  </main>
+</div>
+
+<div id="drawerScrim"></div>
+<aside id="drawerPanel" role="dialog" aria-modal="true" aria-label="Weitere Funktionen" aria-hidden="true">
+  <div class="drawer-head">
+    <button type="button" class="drawer-close" id="btnDrawerClose" aria-label="Schließen">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+    </button>
+  </div>
+
+  <button type="button" class="drawer-profile-row" id="btnDrawerProfileRow">
+    <span class="drawer-profile-avatar" id="drawerAvatar" aria-hidden="true"></span>
+    <span class="drawer-profile-text">
+      <strong id="drawerProfileName">Profil</strong>
+      <span class="l" id="drawerProfileSub">Name, Bild &amp; Ergebnis</span>
+    </span>
+    <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+  </button>
+
+  <!-- Feedback: Tagesform (jetzt direkt auf der Startseite) und Verlauf (jetzt Teil des Profils)
+       sind hier raus — die Schublade zeigt nur noch, was nirgendwo sonst schon einen Platz hat.
+       "Dein Ergebnis" als eigene Gruppe entfiel dadurch; Verstehen zieht zu Archetypen. -->
+  <div class="drawer-group-title" data-i18n="entdecken">Entdecken</div>
+  <div class="drawer-section">
+    <div class="drawer-label" data-i18n="verstehen_2">Verstehen</div>
+    <p class="drawer-copy" data-i18n="kurze_forschungsbasierte_ein">Kurze, forschungsbasierte Einordnungen passend zu deinem eigenen Ergebnis.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerUnderstand" style="align-self:flex-start;" data-i18n="verstehen_öffnen">Verstehen öffnen</button>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-label" data-i18n="archetypen">Archetypen</div>
+    <p class="drawer-copy" data-i18n="entdecke_alle_möglichen_tite">Entdecke alle möglichen Titel-Kombinationen, bevor du deinen eigenen bekommst.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerArchetypes" style="align-self:flex-start;" data-i18n="alle_ansehen">Alle ansehen</button>
+  </div>
+
+  <div class="drawer-group-title" data-i18n="mit_anderen">Mit anderen</div>
+  <div class="drawer-section">
+    <div class="drawer-label" data-i18n="vergleichen_2">Vergleichen</div>
+    <p class="drawer-copy" data-i18n="vergleiche_dein_profil_mit_d_2">Vergleiche dein Profil mit dem einer anderen Person &mdash; über euren Code.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerCompare" style="align-self:flex-start;" data-i18n="ergebnis_vergleichen">Ergebnis vergleichen</button>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-label" data-i18n="vergleichsarchiv_2">Vergleichsarchiv</div>
+    <p class="drawer-copy" data-i18n-html="mehrere_gespeicherte_verglei">Mehrere gespeicherte Vergleiche mit verschiedenen Personen an einem Ort. <span id="drawerCompatArchiveStatus"></span></p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerCompatArchive" style="align-self:flex-start;" data-i18n="archiv_ansehen">Archiv ansehen</button>
+  </div>
+
+  <!-- Feedback: Einstellungen soll der letzte Eintrag der Schublade sein — eigene Gruppe statt
+       zusammen mit Archetypen, damit klar wird, dass hier die Verwaltungs-Zone beginnt, und die
+       beiden zuvor darunter hängenden "Test unterbrochen"/"Gespeichertes Ergebnis"-Karten sind
+       komplett raus (siehe CSS-Kommentar bei .resume-card). -->
+  <div class="drawer-group-title" data-i18n="verwalten">Verwalten</div>
+  <div class="drawer-section">
+    <div class="drawer-label" data-i18n="einstellungen_2">Einstellungen</div>
+    <p class="drawer-copy" data-i18n="konto_darstellung_daten_und">Konto, Darstellung, Daten und Hilfe an einem Ort.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerSettings" style="align-self:flex-start;" data-i18n="einstellungen_öffnen">Einstellungen öffnen</button>
+  </div>
+</aside>
+
+<div id="imgModalScrim"></div>
+<div id="imgModal" role="dialog" aria-modal="true" aria-label="Ergebnisbild zum Teilen oder Speichern" aria-hidden="true">
+  <div class="img-modal-inner">
+    <button type="button" class="drawer-close" id="btnImgModalClose" aria-label="Schließen" style="position:absolute;top:-6px;right:-6px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+    </button>
+    <div class="img-format-row" role="group" aria-label="Bildformat wählen">
+      <button type="button" class="img-format-btn" data-fmt="feed" aria-pressed="true" data-i18n-html="beitrag">Beitrag <span>4:5</span></button>
+      <button type="button" class="img-format-btn" data-fmt="story" aria-pressed="false" data-i18n-html="story_amp_reel">Story &amp; Reel <span>9:16</span></button>
+    </div>
+    <img id="shareImagePreview" alt="Ergebniskarte mit Archetyp-Titel und Radar-Chart zum Teilen oder Speichern">
+    <p class="img-modal-hint" data-i18n="zum_speichern_lange_auf_das">Zum Speichern lange auf das Bild tippen (Mobil) oder rechtsklicken &rarr; „Bild speichern unter …&ldquo; (Desktop).</p>
+    <div class="img-modal-actions">
+      <button type="button" class="btn btn-primary btn-sm" id="btnImgModalShare" data-i18n="teilen">Teilen</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="processingOverlay" role="status" aria-live="polite" aria-hidden="true">
+  <div class="processing-dot"></div>
+  <div class="processing-text" data-i18n="analysiere_deine_antworten_h">Analysiere deine Antworten &hellip;</div>
+</div>
+

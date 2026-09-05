@@ -1,0 +1,57 @@
+/* ================= Druckzustände =================
+     Zweite externe Rückmeldung: „mehr Animationen beim Antippen". Beim Nachmessen zeigte sich,
+     dass es die Druckzustände längst gab — sie lagen nur unter der Wahrnehmungsschwelle.
+     `scale(.985)` ist eine Verkleinerung um 1,5 %; das sieht niemand. Und weil `.scale-btn` ein
+     `transition: all .15s` trägt, blendete sich der Druckzustand über 150 ms ein — bei einem
+     kurzen Tipp war er vorbei, bevor er sichtbar wurde. Das Gefühl „die App reagiert nicht"
+     entstand also nicht durch fehlende Bewegung, sondern durch zu zaghafte und zu träge.
+
+     Zwei Regeln liegen dem hier zugrunde:
+     1. SOFORT an, weich zurück. `transition-duration:0s` im :active-Zustand heißt: Der Druck
+        folgt dem Finger ohne Verzögerung, das Loslassen federt zurück. Genau umgekehrt fühlt es
+        sich träge an.
+     2. Große Flächen brauchen weniger Weg als kleine — ein Prozentwert wirkt auf einer breiten
+        Schaltfläche stärker als auf einem kleinen Kreis. Deshalb gestaffelte Werte statt eines
+        einzigen für alles.
+
+     Der Block steht bewusst am Ende: Vorher standen die Druckzustände weit oben und wurden von
+     später notierten :hover-Regeln einzelner Komponenten überschrieben (.btn-hero verschob sich
+     beim Zeigen um -1px und gewann damit gegen den Druckzustand). */
+  .btn, .theme-btn, .drawer-tab, .avatar-edit, .feedback-opt, .img-format-btn,
+  .run-choice-opt, .history-row, .role-card, .drawer-profile-row, .archive-del,
+  .avatar-color-swatch, .profile-remove-photo, .a2hs-dismiss, .drawer-close{
+    transition:transform .24s cubic-bezier(.2,.8,.2,1), border-color .15s ease,
+               background .15s ease, color .15s ease, box-shadow .15s ease;
+  }
+  .btn:active, .theme-btn:active, .drawer-tab:active, .avatar-edit:active,
+  .feedback-opt:active, .img-format-btn:active, .archive-del:active,
+  .profile-remove-photo:active, .a2hs-dismiss:active, .drawer-close:active{
+    transform:scale(.955); transition-duration:0s;
+  }
+  /* Breite Flächen: derselbe Prozentsatz wirkt dort deutlich stärker. */
+  .btn-hero:active{ transform:scale(.978); transition-duration:0s; }
+  .run-choice-opt:active, .history-row:active, .role-card:active, .drawer-profile-row:active{
+    transform:scale(.985); border-color:var(--accent-strong); transition-duration:0s;
+  }
+  .avatar-color-swatch:active{ transform:scale(.9); transition-duration:0s; }
+  /* Die Antwortkreise sind das mit Abstand meistgetippte Element der App — fünfzig Mal je
+     Durchlauf. Der Druck darf hier nicht erst einblenden, sondern muss unmittelbar sitzen; die
+     Füllung selbst behält ihre weiche Bewegung. */
+  .scale-btn{ transition:transform .24s cubic-bezier(.2,.8,.2,1), border-color .15s ease, background .15s ease; }
+  .scale-btn:active{
+    transform:scale(.9); border-color:var(--accent-strong); background:var(--surface-2);
+    transition-duration:0s;
+  }
+  /* Aufklappbares: eine Fläche, die nur Text trägt, quittiert über Helligkeit statt über Größe. */
+  .trait-card > summary:active .trait-more, .why summary:active, .faq-item summary:active{ opacity:.62; }
+  .trait-card > summary:active{ transform:scale(.99); transition-duration:0s; }
+  .trait-card > summary{ transition:transform .24s cubic-bezier(.2,.8,.2,1); }
+
+  @media (prefers-reduced-motion: reduce){
+    .btn:active, .theme-btn:active, .drawer-tab:active, .avatar-edit:active,
+    .feedback-opt:active, .img-format-btn:active, .archive-del:active,
+    .profile-remove-photo:active, .a2hs-dismiss:active, .drawer-close:active,
+    .btn-hero:active, .run-choice-opt:active, .history-row:active, .role-card:active,
+    .drawer-profile-row:active, .avatar-color-swatch:active, .scale-btn:active,
+    .trait-card > summary:active{ transform:none; }
+  }

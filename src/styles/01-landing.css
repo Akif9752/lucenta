@@ -1,0 +1,150 @@
+/* ---------- Landing ---------- */
+  .hero{padding:36px 0 8px;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--accent-strong); margin-bottom:14px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:'';width:16px;height:1px;background:var(--accent-strong);display:inline-block;}
+  .hero h1{font-size:clamp(30px,7vw,44px); line-height:1.08; letter-spacing:-.01em;}
+  .hero h1 em{font-style:italic;color:var(--accent-strong);}
+  .hero .sub{margin-top:16px;font-size:17px;color:var(--muted);max-width:52ch;}
+  /* Das separate, aufklappbare .hero-note-Element (MBTI-FAQ direkt im Hero) wurde entfernt, weil es
+     sich fast wörtlich mit dem .why-Text überschnitt ("16 Schubladen", "seit den 1980ern ...
+     hunderten Studien ... repliziert"). Auf weiteres Feedback hin lebt das Aufklapp-Verhalten aber
+     weiter — .why selbst ist jetzt ein <details>-Element (siehe unten), sodass es nur noch eine
+     einzige Stelle mit diesem Text gibt, aber weiterhin einklappbar. */
+  .cta-row{margin-top:30px;display:flex;flex-direction:column;gap:10px;}
+  .btn{
+    appearance:none;border:none;cursor:pointer;
+    font-family:var(--sans);font-weight:600;font-size:15.5px;
+    padding:14px 22px;border-radius:100px;
+    /* max-width statt fester Breite: bei 200 % Zoom lief die Beschriftung langer Schaltflächen
+       („Tagesform-Verlauf ansehen") über den Pillenrand hinaus, weil inline-flex sich an der
+       Textbreite ausrichtet statt am Platzangebot. */
+    max-width:100%;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);}
+  @media (hover:hover){ .btn-primary:hover{transform:translateY(-1px);box-shadow:var(--shadow);background:var(--accent-strong);} }
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
+  @media (hover:hover){ .btn-ghost:hover{border-color:var(--accent-strong);color:var(--accent-strong);} }
+  .btn-sm{padding:9px 16px;font-size:13.5px;border-radius:100px;}
+  .btn-hero{width:100%;justify-content:center;padding:19px 28px;font-size:17.5px;box-shadow:var(--shadow);}
+  @media (hover:hover){ .btn-hero:hover{transform:translateY(-1px);} }
+  /* .meta-row (Minuten/Dimensionen/Kostenlos-Fakten-Zeile unter dem Hero-Button) auf
+     Nutzerfeedback hin entfernt. */
+
+  /* .resume-card ("Test unterbrochen" / "Gespeichertes Ergebnis" ganz unten in der Schublade,
+     unterhalb von Einstellungen) auf Nutzerfeedback hin entfernt: beide Karten dupliziert bereits
+     vorhandene, prominentere Wege zum selben Ziel — der Haupt-Button im Hero übernimmt "Weitermachen"
+     bzw. "Ergebnis ansehen" bereits selbst (siehe syncHeroState()), und das gespeicherte Ergebnis
+     steht ohnehin im Profil ("Dein Ergebnis"). Zusätzlich widersprach die Platzierung ganz unten der
+     Erwartung, dass Einstellungen der letzte Eintrag der Schublade sein sollte. */
+
+  /* Feedback: das aufklappbare Muster (vormals .hero-note) kam gut an — statt es parallel zum
+     immer sichtbaren ".why"-Text als zweite, inhaltlich fast identische Stelle zu führen (siehe
+     Feedback-Runde 32), wird ".why" jetzt selbst zu einem <details>-Element. Ein Vorkommen, ein
+     Text, aber weiterhin auf Wunsch einklappbar statt permanent Platz auf der Startseite zu
+     beanspruchen. */
+  /* Feedback: als reiner Abschnitts-Titel (Serif, 20px, wie jede andere Überschrift der App) war
+     ".why" von außen nicht als aufklappbar erkennbar — der kleine Chevron allein reichte als Hinweis
+     nicht. Anders als die FAQ-Liste in den Einstellungen (dort signalisiert die Listenform selbst
+     schon "hier gibt's mehrere aufklappbare Fragen"), steht dieses Element hier allein auf der
+     Startseite, ohne diesen Kontext. Deshalb jetzt wieder eine eigene, klar umrandete Karte —
+     dasselbe Muster, das als eigenständiges .hero-note-Element schon einmal gut ankam, nur diesmal
+     mit dem .why-Inhalt statt einer zweiten, redundanten Textstelle. */
+  .why{
+    margin-top:32px;border:1px solid var(--line);border-radius:var(--radius-m);
+    background:var(--surface);padding:2px 16px;
+  }
+  .why summary{
+    list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+    gap:10px;padding:14px 0;font-family:var(--serif);font-size:15.5px;font-weight:500;color:var(--ink);
+  }
+  .why summary::-webkit-details-marker{display:none;}
+  /* Feedback-Runde 43: Der Pfeil zeigte zugeklappt nach rechts — das ist die Geste für
+     „führt woanders hin", nicht für „klappt hier auf". Zusammen damit, dass die Karte optisch
+     genauso aussieht wie die reinen Informationskarten darunter, las sie sich als statischer
+     Kasten. Genau das war schon der Punkt in Runde 37, den die Umgestaltung zur Karte damals
+     nicht behoben hat. Jetzt zeigt der Pfeil zugeklappt nach unten (Einladung: hier kommt mehr)
+     und aufgeklappt nach oben (wieder schließen) — dieselbe Bewegung, aber mit der Bedeutung, die
+     man auf einem Telefon erwartet. Gilt gleichermaßen für die Fragenliste in den Einstellungen,
+     damit dieselbe Interaktion überall gleich aussieht. */
+  .why summary .chev{color:var(--muted);flex-shrink:0;transition:transform .2s ease;transform:rotate(90deg);}
+  .why[open] summary .chev{transform:rotate(-90deg);}
+  .why summary:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .why p{color:var(--muted);font-size:14px;line-height:1.55;padding-bottom:2px;}
+  .why p:last-child{padding-bottom:16px;}
+  .why p + p{margin-top:10px;}
+
+  .preview-card{
+    margin-top:26px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+    padding:20px;box-shadow:var(--shadow);
+  }
+  /* flex-wrap, weil die Zeile aus Bezeichnung und „Beispiel"-Chip bei 200 % Zoom breiter war als
+     die Karte und der Chip rechts heraushing. */
+  .preview-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .preview-tag{font-family:var(--sans);text-transform:none;letter-spacing:0;background:var(--surface-2);color:var(--accent-strong);border-radius:100px;padding:2px 9px;font-size:11px;font-weight:600;}
+  .preview-body{display:flex;align-items:center;gap:18px;margin-top:14px;}
+  .radar-wrap.preview-radar{max-width:130px;flex-shrink:0;margin:0;}
+  .preview-radar .radar-axis-label,.preview-radar .radar-axis-value{display:none;}
+  .preview-text{flex:1;min-width:0;}
+  .preview-title{font-family:var(--serif);font-size:18px;}
+  .preview-title .sep{color:var(--accent-2);}
+  .preview-text p{margin-top:8px;font-size:13px;color:var(--muted);line-height:1.55;}
+  @media (max-width:420px){ .preview-body{flex-direction:column;align-items:flex-start;} .radar-wrap.preview-radar{max-width:160px;align-self:center;} }
+
+  /* minmax(0,1fr) statt reinem 1fr: ohne die explizite 0-Minimalbreite erzwingt die
+     Grid-Spurbemessung pro Spalte mindestens die Min-Content-Breite ihres Inhalts, bevor der
+     restliche Platz gleichmäßig verteilt wird — lange Wörter wie "Gewissenhaftigkeit" hätten
+     dadurch eine breitere Box bekommen als kurze wie "Stabilität", obwohl beide Spalten
+     rechnerisch 1fr sind. minmax(0,1fr) erzwingt fünf wirklich gleich breite Boxen; die
+     bereits vorhandenen weichen Trennzeichen (&shy;) sorgen für sauberen Zeilenumbruch darin. */
+  .factsgrid{margin-top:28px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;}
+  .fact-col{display:flex;flex-direction:column;align-items:center;}
+  /* Feedback-Runde 43: In Runde 33 wurden die fünf OCEAN-Boxen per min-height auf zwei Zeilen
+     vereinheitlicht. Die visuelle Prüfung zeigt jetzt, dass das nicht reicht: „Gewissenhaftigkeit"
+     und „Verträglichkeit" brechen auf schmalen Geräten dreizeilig um und sprengen die reservierte
+     Höhe wieder — die Boxen standen erneut unterschiedlich hoch nebeneinander, und die englischen
+     Begriffe darunter saßen auf verschiedenen Grundlinien. min-height kann das prinzipiell nicht
+     lösen, weil sie nur eine Untergrenze setzt, keine Gleichheit.
+     Jetzt über die Mechanik des Rasters selbst: Rasterelemente dehnen sich standardmäßig auf die
+     Zeilenhöhe, .fact-col ist bereits eine Flex-Spalte — die Box muss den verfügbaren Platz nur
+     noch einnehmen (flex:1) und ihren Inhalt darin mittig setzen. Damit sind alle fünf Boxen
+     gleich hoch, unabhängig von Wortlänge, Schriftart und Gerätebreite. */
+  .fact-box{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-s);
+    padding:10px 6px;text-align:center;width:100%;box-sizing:border-box;
+    flex:1;display:flex;flex-direction:column;justify-content:center;
+  }
+  .factsgrid .k{font-family:var(--mono);font-size:11px;color:var(--muted);}
+  /* Feedback: unterschiedlich lange deutsche Begriffe ("Offenheit" vs. "Gewissenhaftigkeit")
+     wickelten unterschiedlich oft um und machten die fünf Boxen sichtbar unterschiedlich hoch.
+     Fix: .v reserviert per min-height + line-height immer den Platz für zwei Zeilen und zentriert
+     den Text darin — kurze Wörter wie "Offenheit" bleiben einzeilig, aber die Box bleibt trotzdem
+     so hoch wie bei zweizeiligen Wörtern. In em statt px, damit es mit der mobilen Schriftgröße
+     unten automatisch mitskaliert, ohne eine zweite Zahl pflegen zu müssen. */
+  .factsgrid .v{
+    font-family:var(--serif);font-size:15px;line-height:1.3;margin-top:2px;
+    min-height:2.6em;display:flex;align-items:center;justify-content:center;
+  }
+  /* min-height reserviert zwei Zeilen: „Conscientiousness" bricht um, die übrigen nicht — ohne
+     diese Reserve wären die englischen Begriffe unterschiedlich hoch und würden die darüber
+     liegenden Kästchen wieder ungleich hoch machen (sie teilen sich mit ihnen die Spaltenhöhe).
+     overflow-wrap ist das Sicherheitsnetz: sollte je ein Wort trotz aller Trennstellen zu breit
+     sein, bricht es hart um, statt aus dem Kästchen zu laufen. */
+  .factsgrid .en{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-top:5px;letter-spacing:.01em;min-height:2.7em;}
+  .factsgrid .v, .factsgrid .en{overflow-wrap:break-word;}
+  @media (max-width:480px){
+    .factsgrid{gap:6px;}
+    .fact-box{padding:8px 3px;}
+    .factsgrid .k{font-size:10px;}
+    .factsgrid .v{font-size:11.5px;}
+    .factsgrid .en{font-size:8.5px;}
+  }
+  .acronym-note{margin-top:10px;line-height:1.5;}
+  .acronym-note b{color:var(--ink);}
+
+  

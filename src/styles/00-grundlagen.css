@@ -1,0 +1,345 @@
+
+  :root{
+    --paper:#F5F6EF;
+    --surface:#FFFFFF;
+    --surface-2:#EEF0E6;
+    --ink:#15201A;
+    --muted:#57655C;
+    /* Feedback-Runde 42: dritte, bewusst leisere Textstufe für Fußnoten und rechtliche Hinweise.
+       Ersetzt die in Runde 34 eingeführte opacity:.7 — Transparenz nimmt nicht nur die Betonung
+       zurück, sondern auch den Kontrast, und zwar unter die Lesbarkeitsgrenze (gemessen 2,9–3,2:1
+       im Hellmodus, nötig sind 4,5:1). Dieser Ton ist rechnerisch so weit zurückgenommen wie
+       möglich, ohne auf irgendeinem der drei Untergründe unter 4,6:1 zu fallen. */
+    --muted-soft:#5F6F65;
+    --line:#DBDCCE;
+    --accent:#2F6F6A;
+    --accent-strong:#245854;
+    --accent-ink:#F5FBFA;
+    --accent-2:#C97A3C;
+    /* minimal nachgedunkelt (war #9D5F2F): als Fettschrift auf der Amber-Fläche der Hinweisbänder
+       lag der alte Wert bei 4,41:1 und damit knapp unter AA; jetzt 4,60:1, auf allen übrigen
+       Untergründen ebenfalls leicht besser. */
+    --accent-2-text:#995D2E;
+    /* Fehlerfarbe als Token statt hartkodiert — im Dunkelmodus braucht sie einen eigenen Wert. */
+    --danger:#C0392B;
+    --surface-3:#E7E9DC;
+    --shadow: 0 1px 2px rgba(21,32,25,.05), 0 12px 32px -12px rgba(21,32,25,.18);
+    --shadow-sm: 0 1px 2px rgba(21,32,25,.06);
+    --radius-l: 22px;
+    --radius-m: 14px;
+    --radius-s: 8px;
+    --serif: 'Fraunces', ui-serif, Georgia, serif;
+    --sans: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F1613;
+      --surface:#17211C;
+      --surface-2:#1D2822;
+      --ink:#ECEEE7;
+      --muted:#96A69C;
+      --muted-soft:#7F9286;
+      --danger:#D24638;
+      --line:#293630;
+      --accent:#5CB4AD;
+      --accent-strong:#7FC7C0;
+      --accent-ink:#08211E;
+      --accent-2:#E39A5C;
+      --accent-2-text:#E39A5C;
+      --surface-3:#24322B;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 16px 40px -14px rgba(0,0,0,.55);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1613;
+    --surface:#17211C;
+    --surface-2:#1D2822;
+    --ink:#ECEEE7;
+    --muted:#96A69C;
+    --muted-soft:#7F9286;
+    --danger:#D24638;
+    --line:#293630;
+    --accent:#5CB4AD;
+    --accent-strong:#7FC7C0;
+    --accent-ink:#08211E;
+    --accent-2:#E39A5C;
+    --accent-2-text:#E39A5C;
+    --surface-3:#24322B;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 16px 40px -14px rgba(0,0,0,.55);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--accent);color:var(--accent-ink);}
+  a{color:var(--accent-strong);}
+  button{font-family:inherit;}
+
+  /* Backlog Runde 26, Punkt 4 — Fokusring-Audit, ausgezählt statt geschätzt: 18 Klassen brachten
+     einen eigenen Ring mit, ein gutes Dutzend weiterer Bedienelemente fiel auf den Standardring
+     des Systems zurück (andere Farbe, anderer Abstand, im Dunkelmodus teils kaum sichtbar), und
+     genau eine Stelle entfernte ihn ersatzlos (.name-input, siehe dort). Statt zwölf Einzelregeln
+     nachzutragen steht der Ring jetzt einmal als Grundregel für alle echten Bedienelemente — die
+     bestehenden Sonderregeln überschreiben nur noch den Abstand, wo eine Komponente ihn braucht.
+     Bewusst NICHT als *:focus-visible: die neun Ansichten sind seit Runde 45 mit tabindex="-1"
+     programmatisch fokussierbar, damit Vorleseprogramme den Wechsel bemerken — ein Ring um die
+     ganze Ansicht bei jeder Navigation wäre das Gegenteil einer Verbesserung. */
+  button:focus-visible, a:focus-visible, input:focus-visible,
+  textarea:focus-visible, select:focus-visible, summary:focus-visible{
+    outline:2px solid var(--accent-strong); outline-offset:2px;
+  }
+
+  /* Feedback-Runde 45: Wie sich das Antippen anfühlt.
+     1. Der graue Aufblitz, den mobile Browser über jede Schaltfläche legen, gehört zu den
+        deutlichsten Merkmalen, an denen man eine Webseite von einer App unterscheidet. Er ist
+        hier abgeschaltet — aber nur, weil unmittelbar darunter ein eigener Druckzustand
+        definiert wird. Ohne Ersatz wegzunehmen wäre eine Verschlechterung, keine Politur.
+     2. touch-action:manipulation nimmt die Wartezeit heraus, mit der Browser prüfen, ob ein
+        Doppeltippen zum Zoomen gemeint war — Tippen wirkt dadurch unmittelbar.
+     3. Beschriftungen von Bedienelementen lassen sich nicht mehr versehentlich markieren, wenn
+        man beim Tippen minimal wischt. Fließtext bleibt bewusst markierbar. */
+  button, summary, .scale-btn, .theme-btn, .avatar-color-swatch, .drawer-tab{
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+    -webkit-user-select:none; user-select:none;
+  }
+  /* Die Druckzustände selbst stehen gesammelt am Ende dieses Stylesheets (Abschnitt
+     „Druckzustände"), damit sie nicht von später notierten :hover-Regeln einzelner Komponenten
+     überschrieben werden — genau das war bei .btn-hero der Fall. */
+  h1,h2,h3{font-family:var(--serif);font-weight:500;text-wrap:balance;margin:0;}
+
+  /* Backlog Runde 28, Punkt 2 — Textvergrößerung/Reflow nach WCAG 1.4.4, erstmals tatsächlich
+     bei 200 % nachgestellt (390px Gerätebreite entspricht dann rund 195px Layoutbreite). Befund:
+     Deutsche Komposita sind bei halber Breite länger als die Zeile — „Wissenschaft",
+     „Sternzeichen", „Persönlichkeitsporträt" und „Vier-Buchstaben-Typ" liefen im Hero rechts aus
+     dem Bild, der Text war dort schlicht nicht mehr lesbar. Bei normaler Breite passen dieselben
+     Wörter, weshalb das in keiner der bisherigen Mobil-Prüfungen (375/390/360px) auffallen konnte.
+     overflow-wrap:break-word greift ausschließlich dann, wenn ein Wort sonst überliefe — bei
+     390px ändert sich dadurch kein einziger Umbruch, bei 195px bleibt der Text vollständig
+     lesbar. hyphens:auto kommt dazu, damit die erzwungenen Brüche im deutschen Fließtext an
+     Silbengrenzen liegen (das lang-Attribut wird vom Anti-Flacker-Skript gesetzt) statt mitten
+     im Wort. */
+  h1, h2, h3, p, li, summary, label, .btn, td, th{
+    overflow-wrap:break-word;
+  }
+  h1, h2, h3, p, li{ hyphens:auto; }
+  p{margin:0;line-height:1.6;}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+
+  /* Feedback-Runde 45: Auf Geräten mit Aussparung und Home-Leiste lief der Inhalt bisher bis an
+     den physischen Bildschirmrand — im Vollbild (zum Home-Bildschirm hinzugefügt, ohne
+     Browserleisten) rutscht der Fußbereich damit unter die Home-Leiste und die seitlichen Ränder
+     im Querformat unter die abgerundeten Ecken. Die sicheren Ränder kommen zu den bestehenden
+     Abständen hinzu, statt sie zu ersetzen: auf Geräten ohne Aussparung liefert env() den
+     Ersatzwert 0px, dort ändert sich also nichts. */
+  #shell{
+    max-width:640px;
+    margin:0 auto;
+    padding-top:0;
+    padding-left:calc(20px + env(safe-area-inset-left, 0px));
+    padding-right:calc(20px + env(safe-area-inset-right, 0px));
+    padding-bottom:calc(80px + env(safe-area-inset-bottom, 0px));
+    min-height:100vh;
+    position:relative;
+  }
+
+  /* top focus-line: the "clarity" motif — sharpens as you progress */
+  #focusline{
+    position:sticky; top:env(safe-area-inset-top, 0px); z-index:30;
+    height:3px; width:100%;
+    background:var(--line);
+    margin-bottom:0;
+  }
+  .focusline-tick{
+    position:absolute; top:0; bottom:0; width:2px;
+    background:var(--paper); opacity:.55; z-index:2;
+  }
+  #focusline-fill{
+    position:relative; z-index:1;
+    height:100%; width:0%;
+    background:linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+    filter: blur(0px);
+    transition:width .4s ease;
+  }
+
+  /* Feedback: die obere Leiste (Wortmarke links, Schubladen-Symbol rechts) sollte beim Scrollen auf
+     jedem Screen sichtbar bleiben statt wegzuscrollen — sticky statt statisch, direkt unterhalb der
+     bereits vorhandenen 3px-Fokuslinie (die ist schon sticky, siehe #focusline), damit beide bündig
+     als eine durchgehende, fixierte Einheit wirken. Der Hintergrund entspricht bewusst genau
+     var(--paper) — das ist zugleich die Seitenhintergrundfarbe, wodurch die Leiste optisch nahtlos
+     über die volle Breite wirkt, obwohl #shell selbst schmaler ist. Die Trennlinie erscheint erst,
+     sobald tatsächlich gescrollt wurde (.scrolled, per JS gesetzt) — im Ruhezustand ganz oben bleibt
+     die Leiste randlos, ähnlich wie native iOS-Navigationsleisten. */
+  header.top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 0 14px;
+    position:sticky; top:calc(3px + env(safe-area-inset-top, 0px)); z-index:30;
+    background:var(--paper);
+    border-bottom:1px solid transparent;
+    transition:border-color .2s ease;
+  }
+  header.top.scrolled{border-bottom-color:var(--line);}
+  .wordmark{
+    font-family:var(--serif); font-size:20px; font-weight:600; letter-spacing:.01em;
+    display:flex; align-items:center; gap:8px;
+    background:none; border:none; padding:0; margin:0; color:inherit; cursor:pointer;
+  }
+  /* Feedback-Runde 42: Fokusring-Abstände waren über die App verteilt 1/2/3/4px. Runde Flächen
+     (Buttons mit Pillen- oder Kreisform) behalten bewusst 3px, weil der Ring dort sonst optisch
+     an der Rundung klebt; alle rechteckigen Elemente liegen jetzt einheitlich auf 2px. Die
+     Wortmarke sitzt direkt neben dem Schubladen-Symbol und übernimmt dessen 3px. */
+  .wordmark:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
+  /* Das Marken-Zeichen in der Kopfzeile (Feedback-Runde 50): dieselbe Konstruktion wie das
+     App-Symbol — Teal-Feld, ausgespartes regelmäßiges Fünfeck —, nur ohne Verlauf, weil ein Verlauf auf 21px
+     nicht als Tiefe, sondern als Unsauberkeit gelesen würde. flex-shrink:0, damit das Zeichen bei
+     starker Textvergrößerung nicht als Erstes nachgibt (siehe Zoom-Prüfung Runde 48). */
+  .wordmark .brandmark{display:inline-flex;flex-shrink:0;line-height:0;}
+  .wordmark-beta{
+    font-family:var(--mono); font-size:9.5px; font-weight:600; letter-spacing:.04em;
+    text-transform:uppercase; color:var(--muted); border:1px solid var(--line);
+    border-radius:100px; padding:2px 7px; line-height:1.4;
+  }
+  .tagline{font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:.02em;}
+  .header-right{display:flex;align-items:center;gap:12px;}
+  .drawer-tab{
+    width:36px;height:36px;border-radius:50%;flex-shrink:0;
+    border:1px solid var(--line);background:var(--surface);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:border-color .15s ease,color .15s ease;
+  }
+  /* Feedback: als iPhone-App gedacht, kein Browser mehr — :hover-Regeln bleiben auf echte
+     Zeigegeräte beschränkt (@media (hover:hover)), sonst bleibt ein Button nach dem Antippen auf
+     iOS oft optisch im "Hover"-Zustand hängen, bis irgendwo anders hingetippt wird. Betrifft alle
+     :hover-Regeln in dieser Datei, jeweils einzeln an ihrer bisherigen Stelle eingefasst, statt sie
+     an einer Stelle zu sammeln und den Kontext zu ihren jeweiligen Komponenten zu verlieren. */
+  @media (hover:hover){ .drawer-tab:hover{border-color:var(--accent-strong);color:var(--accent-strong);} }
+  .drawer-tab:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
+
+  #drawerScrim{
+    position:fixed;inset:0;background:rgba(8,12,10,.45);
+    opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:90;
+  }
+  #drawerScrim.show{opacity:1;pointer-events:auto;}
+  #drawerPanel{
+    position:fixed;top:0;right:0;height:100%;width:min(340px,86vw);
+    background:var(--surface);border-left:1px solid var(--line);
+    box-shadow:-16px 0 40px -16px rgba(0,0,0,.3);
+    transform:translateX(100%); visibility:hidden;
+    transition:transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear .32s;
+    z-index:91; display:flex; flex-direction:column;
+    padding:calc(22px + env(safe-area-inset-top, 0px)) calc(20px + env(safe-area-inset-right, 0px)) calc(22px + env(safe-area-inset-bottom, 0px)) 20px;
+    overflow-y:auto;
+    /* Verhindert, dass eine Wischbewegung am Ende der Schubladenliste die Seite dahinter
+       mitscrollt — auf dem Telefon der Unterschied zwischen „Panel" und „Webseite mit Panel". */
+    overscroll-behavior:contain;
+  }
+  #drawerPanel.open{
+    transform:translateX(0); visibility:visible;
+    transition:transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear 0s;
+  }
+  /* Bugfix Feedback-Runde 32: #drawerPanel.open hat (Id + Klasse) höhere Spezifität als die
+     einfache Id-Regel #drawerPanel oben und überschrieb deshalb die reduced-motion-Regel wieder mit
+     ihrer eigenen .32s-Transform-Transition, sobald die Schublade geöffnet wurde — derselbe
+     Spezifitäts-Mechanismus, der in Feedback-Runde 16 (Punkt 2) schon einmal zu einem Fehltreffer
+     führte, hier aber umgekehrt: nicht der Tag- vs. Klassen-Selektor, sondern zwei Regeln
+     unterschiedlicher Spezifität für denselben Zustand. Fix: den offenen Zustand explizit mit
+     aufnehmen. */
+  @media (prefers-reduced-motion: reduce){ #drawerPanel, #drawerPanel.open{transition:visibility 0s;} #drawerScrim{transition:none;} }
+
+  #imgModalScrim{
+    position:fixed;inset:0;background:rgba(8,12,10,.55);
+    opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:95;
+  }
+  #imgModalScrim.show{opacity:1;pointer-events:auto;}
+  #imgModal{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-46%);width:min(380px,88vw);
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+    box-shadow:var(--shadow);padding:22px;z-index:96;opacity:0;visibility:hidden;
+    transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+    max-height:88vh;overflow-y:auto;
+  }
+  #imgModal.open{
+    opacity:1;visibility:visible;transform:translate(-50%,-50%);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  /* Bugfix Feedback-Runde 32: dieselbe Spezifitäts-Lücke wie bei #drawerPanel.open oben, hier für
+     das Bild-Modal — #imgModal.open muss in der reduced-motion-Regel explizit mitgenannt werden. */
+  @media (prefers-reduced-motion: reduce){ #imgModal, #imgModal.open{transition:visibility 0s;} #imgModalScrim{transition:none;} }
+  .img-modal-inner{display:flex;flex-direction:column;gap:12px;position:relative;}
+  #shareImagePreview{width:100%;border-radius:var(--radius-m);border:1px solid var(--line);display:block;background:var(--surface-2);}
+  /* Formatwahl über der Vorschau (Backlog Runde 27, Punkt 1) — über und nicht unter dem Bild,
+     weil sie bestimmt, was man darunter sieht. Das Seitenverhältnis steht als eigene, leisere
+     Zeile im Knopf: "Story & Reel" sagt, wofür es ist, "9:16" prüft, ob es stimmt. */
+  .img-format-row{display:flex;gap:8px;margin-bottom:12px;}
+  .img-format-btn{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;
+    font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);
+    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);padding:9px 8px;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .img-format-btn span{font-family:var(--mono);font-size:10.5px;font-weight:400;letter-spacing:.04em;}
+  @media (hover:hover){ .img-format-btn:hover{border-color:var(--accent-strong);} }
+  .img-format-btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .img-format-btn[aria-pressed="true"]{border-color:var(--accent-strong);color:var(--accent-strong);background:var(--surface-3);}
+  .img-modal-hint{font-size:12.5px;color:var(--muted);line-height:1.5;}
+  .img-modal-actions{display:flex;justify-content:flex-end;}
+  /* Feedback: "Mehr" über dem Profil war überflüssig — das Profil selbst ist bereits der erste,
+     selbsterklärende Eintrag der Schublade. Der Titel ist raus, der Schließen-Button rutscht dafür
+     an den rechten Rand (justify-content:flex-end statt space-between, da jetzt nur noch ein
+     Kind-Element im Head steht). */
+  .drawer-head{display:flex;justify-content:flex-end;align-items:center;margin-bottom:14px;}
+  .drawer-close{
+    background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    transition:color .15s ease,background .15s ease;
+  }
+  @media (hover:hover){ .drawer-close:hover{color:var(--ink);background:var(--surface-2);} }
+  .drawer-close:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .drawer-section{display:flex;flex-direction:column;gap:10px;}
+  .drawer-section + .drawer-section{margin-top:24px;padding-top:24px;border-top:1px solid var(--line);}
+  /* Gruppen-Überschriften bündeln die Schubladen-Einträge (ursprünglich acht, Feedback-Runde 32; nach
+     dem Auszug von Tagesform/Verlauf in Feedback-Runde 35 noch fünf) zu benannten Clustern, statt sie
+     als eine lange, gleichrangige Liste zu zeigen. Bewusst per Nachbar-Selektor statt :first-of-type
+     für den ersten Titel adressiert — :first-of-type bezieht sich auf den Tag-Namen, nicht die
+     Klasse, und hätte hier denselben Fehltreffer wie in Feedback-Runde 16 (Punkt 2) verursacht. */
+  .drawer-group-title{
+    margin-top:24px;padding-top:24px;border-top:1px solid var(--line);
+    font-family:var(--serif);font-size:13.5px;font-weight:500;color:var(--ink);
+  }
+  .drawer-profile-row + .drawer-group-title{margin-top:0;padding-top:0;border-top:none;}
+  .drawer-group-title + .drawer-section{margin-top:14px;padding-top:0;border-top:none;}
+  .drawer-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+  .drawer-copy{font-size:13.5px;color:var(--muted);line-height:1.55;}
+
+  .drawer-profile-row{
+    display:flex;align-items:center;gap:12px;width:100%;text-align:left;font-family:inherit;cursor:pointer;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:12px 14px;margin-bottom:22px;transition:border-color .15s ease;
+  }
+  @media (hover:hover){ .drawer-profile-row:hover{border-color:var(--accent-strong);} }
+  .drawer-profile-row:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .drawer-profile-avatar{
+    width:42px;height:42px;border-radius:50%;flex-shrink:0;background:var(--accent);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;
+    background-size:cover;background-position:center;overflow:hidden;border:1px solid var(--line);
+  }
+  .drawer-profile-text{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+  .drawer-profile-text strong{font-family:var(--serif);font-weight:500;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .drawer-profile-text .l{font-size:12px;color:var(--muted);}
+  .drawer-profile-row .chev{color:var(--muted);flex-shrink:0;}
+
+  .view{display:none;}
+  .view.active{display:block; animation:rise .45s cubic-bezier(.2,.8,.2,1) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion: reduce){ .view.active{animation:none;} }
+
+  

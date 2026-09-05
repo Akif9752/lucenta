@@ -1,0 +1,36 @@
+{
+ "css": [
+  "00-grundlagen.css",
+  "01-landing.css",
+  "02-quiz.css",
+  "03-result.css",
+  "04-ergebnis-teile.css",
+  "05-compatibility-score-ring.css",
+  "06-trend-history.css",
+  "07-tagesform.css",
+  "08-formulare-und-dialoge.css",
+  "09-archetypen.css",
+  "10-druckzustaende.css"
+ ],
+ "js": [
+  "00-start.js",
+  "01-sprachpakete.js",
+  "02-state.js",
+  "03-speicherung.js",
+  "04-scoring.js",
+  "05-verlauf.js",
+  "06-vergleichsarchiv.js",
+  "07-tagesform.js",
+  "08-code.js",
+  "09-radar.js",
+  "10-ergebnisbild.js",
+  "11-rendering.js",
+  "12-schublade.js",
+  "13-profile.js",
+  "14-verstehen.js",
+  "15-settings.js",
+  "16-ergebnisbild-dialog.js",
+  "17-wiring.js",
+  "18-beta-rueckmeldung.js"
+ ]
+}

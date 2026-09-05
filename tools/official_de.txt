@@ -1,0 +1,50 @@
+1|1+|bringe eine Party in Schwung.
+2|2-|empfinde wenig für andere.
+3|3+|bin immer vorbereitet.
+4|4-|gerate leicht in Stress.
+5|5+|besitze einen großen Wortschatz.
+6|1-|spreche nicht viel.
+7|2+|bin interessiert an anderen Menschen.
+8|3-|lasse meine Sachen herumliegen.
+9|4+|bin die meiste Zeit entspannt.
+10|5-|habe Schwierigkeiten abstrakte Ideen zu verstehen.
+11|1+|fühle mich wohl unter Menschen.
+12|2-|beleidige andere
+13|3+|achte auf Details
+14|4-|grübel über Dinge
+15|5+|habe eine lebhafte Vorstellungskraft.
+16|1-|halte mich im Hintergrund.
+17|2+|fühle mit anderen Menschen mit.
+18|3-|verursache großes Durcheinander.
+19|4+|fühle mich selten deprimiert (bedrückt).
+20|5-|bin an abstrakten Ideen nicht interessiert.
+21|1+|beginne Gespräche.
+22|2-|bin nicht interessiert an den Problemen anderer Leute.
+23|3+|erledige Hausarbeiten unmittelbar.
+24|4-|bin leicht beunruhigt.
+25|5+|habe ausgezeichnete Ideen.
+26|1-|habe wenig zu sagen.
+27|2+|habe ein weiches Herz.
+28|3-|vergesse oft, Dinge an ihren Platz zurückzulegen.
+29|4-|rege mich leicht auf.
+30|5-|habe kein gutes Vorstellungsvermögen.
+31|1+|spreche mit vielen verschiedenen Leuten auf Parties.
+32|2-|bin nicht wirklich interessiert an anderen.
+33|3+|mag Ordnung.
+34|4-|wechsel oft meine Stimmung.
+35|5+|verstehe Dinge schnell.
+36|1-|mag es nicht, Aufmerksamkeit auf mich zu ziehen
+37|2+|nehme mir Zeit für andere.
+38|3-|drücke mich vor meinen Pflichten.
+39|4-|habe häufig Stimmungsschwankungen.
+40|5+|gebrauche schwierige Wörter.
+41|1+|es macht mir nichts aus im Zentrum der Aufmerksamkeit zu stehen.
+42|2+|fühle die Gefühle anderer.
+43|3+|folge einem Plan.
+44|4-|bin leicht gereizt.
+45|5+|verbringe Zeit damit über Dinge nachzudenken.
+46|1-|bin still unter Fremden.
+47|2+|kann andere beruhigen.
+48|3+|bin anspruchsvoll in meiner Arbeit.
+49|4-|fühle mich oft deprimiert (bedrückt).
+50|5+|bin voller Ideen.

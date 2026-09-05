@@ -1,0 +1,10 @@
+/* ---------- Compatibility score ring ---------- */
+  .compat-score{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:2px;}
+  .ring-track{stroke:var(--surface-2);}
+  .ring-fill{stroke:var(--accent);transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1);}
+  @media (prefers-reduced-motion: reduce){ .ring-fill{transition:none;} }
+  .ring-text{font-family:var(--mono);font-size:27px;font-weight:700;fill:var(--ink);}
+  .ring-label{font-family:var(--mono);font-size:10px;fill:var(--muted);letter-spacing:.04em;text-transform:uppercase;}
+  .compat-score-label{font-family:var(--serif);font-size:16px;}
+
+  

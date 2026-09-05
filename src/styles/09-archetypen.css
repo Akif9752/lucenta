@@ -1,0 +1,306 @@
+/* ---------- Archetypes overview ---------- */
+  .archetypes-head{padding:22px 0 4px;}
+  .archetypes-head h1{font-size:clamp(24px,6vw,32px);line-height:1.15;margin-top:8px;letter-spacing:-.01em;}
+  .archetypes-head p{margin-top:14px;font-size:14.5px;color:var(--muted);max-width:56ch;line-height:1.6;}
+  .archetypes-head b{color:var(--ink);}
+  .archetype-groups{margin-top:26px;display:flex;flex-direction:column;gap:12px;}
+  .role-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:16px 18px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;transition:border-color .15s ease;}
+  @media (hover:hover){ .role-card:hover{border-color:var(--accent-strong);} }
+  @media (prefers-reduced-motion: reduce){ .role-card{animation:none;opacity:1;} }
+  .role-tag{
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .role-tag-high{color:var(--accent-strong);}
+  .role-tag-low{color:var(--accent-2-text);}
+  .role-title{font-family:var(--serif);font-size:17px;}
+  .role-motto{margin-top:4px;font-family:var(--mono);font-size:12.5px;color:var(--accent-2-text);letter-spacing:.01em;}
+  .role-desc{margin-top:10px;font-size:14px;color:var(--muted);line-height:1.55;}
+
+  .profile-head{padding:22px 0 4px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .avatar-wrap{position:relative;width:96px;height:96px;}
+  .avatar{
+    width:96px;height:96px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:34px;
+    background-size:cover;background-position:center;border:1px solid var(--line);overflow:hidden;
+  }
+  .avatar-edit{
+    position:absolute;right:-2px;bottom:-2px;width:32px;height:32px;border-radius:50%;
+    background:var(--surface);border:1px solid var(--line);color:var(--muted);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);
+    transition:color .15s ease,border-color .15s ease;
+  }
+  @media (hover:hover){ .avatar-edit:hover{color:var(--accent-strong);border-color:var(--accent-strong);} }
+  .avatar-edit:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .profile-remove-photo{
+    margin-top:10px;background:none;border:none;color:var(--muted);font-size:12.5px;
+    text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-family:inherit;
+  }
+  @media (hover:hover){ .profile-remove-photo:hover{color:var(--ink);} }
+  .avatar-color-row{margin-top:14px;display:flex;gap:10px;}
+  /* Feedback-Runde 44: Der Ring der Farbtupfer war in --line gehalten. Auf dem hellen Untergrund
+     ergibt das für den Ton „Ruhig" — dessen Füllung selbst nahezu Seitenfarbe hat — ein
+     Kontrastverhältnis von rund 1,1:1: eine der drei Auswahlmöglichkeiten war schlicht nicht zu
+     sehen. Der Ring liegt jetzt in --muted (5,6:1 gegen die Seite) und macht alle drei Tupfer
+     gleich sicher erkennbar; auf den beiden dunklen Füllungen tritt er ohnehin kaum in
+     Erscheinung, weil sie sich selbst deutlich genug abheben. */
+  .avatar-color-swatch{
+    width:28px;height:28px;border-radius:50%;padding:0;cursor:pointer;
+    border:2px solid transparent;box-shadow:0 0 0 1px var(--muted) inset;
+    transition:border-color .15s ease;
+  }
+  .avatar-color-swatch[aria-pressed="true"]{border-color:var(--ink);}
+  .avatar-color-swatch:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .avatar-color-swatch.avatar-color-accent{background:var(--accent);}
+  .avatar-color-swatch.avatar-color-ink{background:var(--ink);}
+  .avatar-color-swatch.avatar-color-quiet{background:var(--surface-2);}
+  /* Auf die tatsächlichen Avatar-Kreise (.avatar/.drawer-profile-avatar/.settings-account-avatar)
+     angewendet — als Doppelklassen-Selektor statt einfacher .avatar-color-x-Regel, damit die
+     Spezifität sicher über der jeweiligen Basisregel liegt, unabhängig von deren Reihenfolge im
+     Stylesheet (.settings-account-avatar steht z. B. erst weiter unten). */
+  .avatar.avatar-color-ink, .drawer-profile-avatar.avatar-color-ink, .settings-account-avatar.avatar-color-ink{background:var(--ink);color:var(--paper);}
+  .avatar.avatar-color-quiet, .drawer-profile-avatar.avatar-color-quiet, .settings-account-avatar.avatar-color-quiet{background:var(--surface-2);color:var(--ink);}
+  /* Bugfix Feedback-Runde 39: .drawer-profile-row hat selbst background:var(--surface-2) — exakt
+     derselbe Ton wie die "Ruhig"-Avatarfarbe oben. Ohne eigenes Foto verschwamm der Initialen-Kreis
+     dort fast vollständig mit seiner Umgebung; nur der dünne 1px-Rahmen blieb zur Unterscheidung.
+     Nur in diesem einen Kontext betroffen (Profil und Einstellungen haben einen abweichenden
+     Untergrund, siehe .settings-group/.profile-head) — dort per Ansehen-Selektor auf --surface-3
+     angehoben, denselben etwas kräftigeren Ton, den auch .stat-tile für denselben Zweck nutzt. Die
+     zusätzliche Ansehen-Klasse hebt die Spezifität sicher über die geteilte Regel direkt darüber.*/
+  .drawer-profile-row .drawer-profile-avatar.avatar-color-quiet{background:var(--surface-3);}
+  .profile-name-label{margin-top:20px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+  .name-input{
+    margin-top:6px;border:none;border-bottom:1px solid var(--line);background:none;
+    font-family:var(--serif);font-size:22px;color:var(--ink);text-align:center;padding:4px 2px 8px;
+    width:100%;max-width:280px;
+  }
+  /* Backlog Runde 26, Punkt 4: Das war die einzige Stelle der App, die den Fokusring ersatzlos
+     abschaltete. Als Ersatz diente eine Farbänderung der 1px-Unterlinie — für ein Feld, das ohne
+     Rahmen und ohne Fläche auskommt, ist das als einziger Hinweis zu wenig, gerade neben dem
+     kräftigen Ring, den jedes andere Bedienelement der App zeigt. Der Ring kommt zurück; die
+     Unterlinie bleibt zusätzlich, weil sie beim Tippen mit der Maus (also ohne :focus-visible)
+     der einzige Hinweis ist, dass das Feld aktiv ist. */
+  .name-input:focus{border-bottom-color:var(--accent-strong);}
+  .name-input:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
+  /* Feedback-Runde 42: derselbe Fehler wie bei den Fußnoten — muted bei opacity .7 landet bei
+     rund 3:1. Platzhaltertext ist echter Text und fällt unter dieselbe Anforderung, deshalb jetzt
+     ebenfalls über die dafür berechnete Farbstufe statt über Transparenz. Das verbliebene
+     opacity:.7 im Leerzustands-Symbol bleibt: ein rein dekoratives, per aria-hidden ausgeblendetes
+     Icon trägt keine Textinformation und unterliegt der Anforderung nicht. */
+  .name-input::placeholder{color:var(--muted-soft);opacity:1;}
+  .profile-note{margin-top:14px;max-width:38ch;line-height:1.5;}
+
+  /* Feedback: die wissenschaftlichen/rechtlichen Absicherungs-Hinweise, die quer durch die App an
+     Ergebnis, Vergleich, Verstehen, Code-Teilen und Profil hängen, wirkten trotz kleiner Schrift zu
+     präsent — sie waren farblich/gewichtsmäßig kaum von wichtigerem Sekundärtext (z. B. Karten-
+     Untertiteln) zu unterscheiden und traten dadurch lauter auf, als ihrer eigentlich niedrigen
+     Priorität entspricht. Eine gemeinsame, bewusst zurückgenommene Stufe hier — reduzierte Deckkraft
+     statt eigener Farbe, damit sie eindeutig als unterste, am wenigsten dringende Textebene lesbar
+     bleiben, ohne komplett zu verschwinden (das wären echte Rechts-/Wissenschafts-Hinweise, die
+     sichtbar bleiben sollen — anders als z. B. die MBTI-Erklärung oben, die inhaltlich, nicht nur
+     optisch, entlastet werden konnte). .storage-warning bleibt bewusst ausgenommen: das ist ein
+     echter, handlungsrelevanter Hinweis (Speichern nicht möglich), kein bloßer Disclaimer, und soll
+     sichtbar bleiben. */
+  /* Korrektur Feedback-Runde 42: die ursprüngliche Fassung dämpfte per opacity:.7 bei 11px.
+     Nachgerechnet ergab das 2,92–3,17:1 im Hellmodus und 3,68–4,14:1 im Dunkelmodus — durchgehend
+     unter dem AA-Mindestwert von 4,5:1 für Fließtext. Transparenz ist dafür schlicht das falsche
+     Werkzeug: sie nimmt Betonung UND Lesbarkeit gleichzeitig zurück. Dieselbe visuelle Absicht
+     (unterste Textebene, leiser als normaler Sekundärtext) wird jetzt über eine eigene, dafür
+     berechnete Farbstufe erreicht — und der halbe Punkt mehr Schriftgröße gleicht aus, dass die
+     Farbe allein weniger stark zurücknimmt als die alte Transparenz.
+     Diese Regel ist zugleich die einzige Quelle für die Größe dieser sechs Klassen; die früheren
+     Einzelangaben in ihren jeweiligen Regeln wurden von hier ohnehin überschrieben und sind
+     deshalb entfernt worden, statt als irreführender toter Code stehen zu bleiben. */
+  .acronym-note, .compat-note, .radar-note, .code-note, .profile-note, .delta-note{
+    color:var(--muted-soft); font-size:11.5px;
+  }
+  .profile-empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius-m);padding:20px 18px;margin-top:14px;text-align:center;}
+  .profile-empty p{color:var(--muted);font-size:14px;}
+  .profile-empty .btn{margin-top:14px;}
+  .profile-empty .empty-icon{color:var(--muted);opacity:.7;margin-bottom:8px;}
+  .profile-result-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:16px 18px;margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+  .profile-result-card strong{font-family:var(--serif);font-size:17px;}
+  .profile-result-card .l{font-size:12.5px;color:var(--muted);margin-top:2px;}
+
+  .theme-toggle{margin-top:14px;display:flex;gap:8px;}
+  .theme-btn{
+    flex:1;padding:11px 8px;border-radius:var(--radius-s);border:1px solid var(--line);
+    background:var(--surface);color:var(--muted);font-family:inherit;font-size:13.5px;cursor:pointer;
+    transition:border-color .15s ease,color .15s ease,background .15s ease;
+  }
+  .theme-btn[aria-pressed="true"]{border-color:var(--accent-strong);color:var(--ink);background:var(--surface-2);font-weight:600;}
+  .theme-btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .danger-btn{border-color:var(--accent-2);color:var(--accent-2-text);}
+  @media (hover:hover){ .danger-btn:hover{background:color-mix(in srgb, var(--accent-2) 12%, transparent);} }
+  .danger-btn.armed{background:color-mix(in srgb, var(--accent-2) 10%, var(--surface));border-color:var(--accent-2);color:var(--accent-2-text);font-weight:600;}
+
+  .settings-hint{margin-top:8px;font-size:12.5px;color:var(--muted);}
+  .settings-row{
+    margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);padding:14px 16px;
+  }
+  .settings-row .l{font-size:14px;}
+  .settings-datalist{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
+  .settings-datalist li{font-size:13.5px;color:var(--ink);padding:9px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-s);}
+  .settings-empty{margin-top:12px;font-size:13.5px;color:var(--muted);font-style:italic;}
+  .settings-restore{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);}
+  .settings-restore-label{font-family:var(--serif);font-size:14.5px;color:var(--ink);}
+  .settings-restore-desc{margin-top:4px;font-size:12.5px;color:var(--muted);line-height:1.5;}
+  .settings-restore-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
+  .settings-restore-row .field{flex:1;min-width:160px;}
+
+  .settings-group{
+    margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:20px 20px 22px;
+  }
+  .archetypes-head + .settings-group{margin-top:26px;}
+  .settings-group h2{font-family:var(--serif);font-size:17px;font-weight:500;margin:0;}
+  .settings-group-desc{margin-top:5px;font-size:12.5px;color:var(--muted);line-height:1.55;}
+
+  .settings-account-row{margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .settings-account-avatar{
+    width:48px;height:48px;border-radius:50%;flex-shrink:0;background:var(--accent);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:17px;
+    background-size:cover;background-position:center;overflow:hidden;border:1px solid var(--line);
+  }
+  .settings-account-info{flex:1;min-width:120px;}
+  .settings-account-info strong{font-family:var(--serif);font-weight:500;font-size:16px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .settings-account-info .l{font-size:12.5px;color:var(--muted);margin-top:2px;}
+
+  .faq-item{border-top:1px solid var(--line);}
+  .faq-item:first-child{border-top:none;}
+  .faq-item summary{
+    list-style:none;cursor:pointer;padding:13px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;
+    font-size:14px;color:var(--ink);
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary .chev{color:var(--muted);flex-shrink:0;transition:transform .2s ease;transform:rotate(90deg);}
+  .faq-item[open] summary .chev{transform:rotate(-90deg);}
+  .faq-item summary:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .faq-item p{margin:0 0 14px;font-size:13.5px;color:var(--muted);line-height:1.55;}
+
+  .compare-box{
+    margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:18px;display:flex;flex-direction:column;gap:12px;
+  }
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:12.5px;color:var(--muted);font-family:var(--mono);}
+  .field input{
+    font-family:var(--mono);font-size:14px;padding:10px 12px;border-radius:var(--radius-s);
+    border:1px solid var(--line);background:var(--surface-2);color:var(--ink);
+  }
+  .field input:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+
+  /* Beta-Rückmeldung am Ende der Ergebnisseite (Backlog Runde 29, Punkt 1). Ruhig gehalten:
+     dieselbe Karte wie .settings-group, keine Farbfläche, kein Ausrufezeichen — es ist eine Bitte,
+     keine Aufforderung, und darf entsprechend übersehbar sein. */
+  .feedback-ask{
+    margin-top:34px;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius-m);padding:18px 20px 20px;
+  }
+  .feedback-q{font-family:var(--serif);font-size:15.5px;font-weight:500;color:var(--ink);margin:0;}
+  .feedback-opts{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+  .feedback-opt{
+    font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink);cursor:pointer;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:100px;padding:8px 15px;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  @media (hover:hover){ .feedback-opt:hover{border-color:var(--accent-strong);color:var(--accent-strong);} }
+  .feedback-opt:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .feedback-opt:active{border-color:var(--accent-strong);}
+  .feedback-opt[aria-pressed="true"]{border-color:var(--accent-strong);color:var(--accent-strong);background:var(--surface-3);}
+  .feedback-label{display:block;margin-top:16px;font-size:12.5px;color:var(--muted);font-family:var(--mono);}
+  #feedbackText{
+    margin-top:6px;width:100%;box-sizing:border-box;resize:vertical;
+    font-family:var(--sans);font-size:14px;line-height:1.5;padding:10px 12px;border-radius:var(--radius-s);
+    border:1px solid var(--line);background:var(--surface-2);color:var(--ink);
+  }
+  #feedbackText::placeholder{color:var(--muted-soft);opacity:1;}
+  #feedbackText:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .feedback-actions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;}
+  .feedback-ask .profile-note{margin-top:10px;}
+  .compat-result{margin-top:6px;display:flex;flex-direction:column;gap:10px;}
+  .compat-radar{margin:6px auto 0;max-width:280px;}
+  .compat-legend{display:flex;justify-content:center;gap:18px;margin:12px 0 4px;font-size:12.5px;color:var(--muted);}
+  .compat-legend span{display:flex;align-items:center;gap:6px;}
+  .compat-legend .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .dot-me{background:var(--accent);}
+  .dot-other{background:var(--accent-2);}
+  .compat-line{font-size:14px;line-height:1.6;padding:12px 14px;background:var(--surface-2);border-radius:var(--radius-s);}
+  .compat-line b{color:var(--accent-strong);}
+  /* Die Gesamt-Zusammenfassung hebt sich von den fünf Einzelzeilen durch Umriss statt Füllung ab —
+     war zuvor als Inline-Style direkt im erzeugten Markup hinterlegt. */
+  .compat-line-total{background:transparent;border:1px solid var(--line);}
+  .compat-save-row{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;}
+  .compat-save-row .field{flex:1;min-width:160px;}
+  /* Live-Validierung der beiden Code-Felder (Feedback-Runde 32): bislang zeigte sich ein falscher
+     oder unvollständiger Code erst nach Klick auf "Vergleichen" — jetzt gibt ein dezenter Rahmen
+     sofort Rückmeldung, ohne aufdringlich zu sein (kein Rot bei bloß noch unvollständiger Eingabe,
+     nur bei tatsächlich zehnstelligem, aber ungültigem Code). */
+  input.field-valid{border-color:var(--accent-strong);}
+  /* Feedback-Runde 42: war als #c0392b hartkodiert und damit im Dunkelmodus zu dunkel für seinen
+     eigenen Untergrund (gemessen 2,80:1, nötig sind 3,0:1 für Bedienelemente). Als Token mit
+     eigenem Dunkelmodus-Wert jetzt 3,40:1. */
+  input.field-invalid{border-color:var(--danger);}
+  /* Der Tastatur-Hinweis im Quiz ("Tipp: Die Zahlentasten 1–5 funktionieren auch", Feedback-Runde 32)
+     ist raus: Lucenta wird ausschließlich als iPhone-App gedacht, und ein Hinweis auf Tastenkürzel
+     passt nicht ins Bild einer reinen Touch-App, egal wie selten er sichtbar war. Der zugrunde
+     liegende globale keydown-Listener bleibt bestehen (schadet nicht, falls doch mal eine externe
+     Tastatur an einem iPhone/iPad hängt), wird aber nirgends mehr beworben. */
+  .archive-empty-note{margin-top:14px;}
+  .archive-row-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .archive-match{font-family:var(--mono);font-size:12.5px;color:var(--accent-strong);font-weight:600;white-space:nowrap;}
+  .archive-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .15s ease,background .15s ease;}
+  @media (hover:hover){ .archive-del:hover{color:var(--accent-2-text);background:var(--surface-2);} }
+  .archive-del:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .understand-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:18px 18px;margin-top:14px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;}
+  @media (prefers-reduced-motion: reduce){ .understand-card{animation:none;opacity:1;} }
+  .understand-group-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin:28px 0 4px;}
+  /* Feedback-Runde 44: Die Ausnahme für das erste Gruppenlabel war für die Karte auf der
+     Startseite gedacht, wo das Label das erste Element der Karte ist. Sie griff aber auch in der
+     Verstehen-Ansicht, wo das erste Label direkt unter dem Einleitungsabsatz steht — es klebte
+     dort mit 4px an dem Text darüber, während alle folgenden Gruppen 28px Luft bekamen. Jetzt auf
+     den Kartenkontext beschränkt, für den sie gemeint war. */
+  .understand-card .understand-group-label:first-child{margin-top:4px;}
+  .understand-card h3{font-family:var(--serif);font-size:16.5px;font-weight:500;}
+  .understand-card p{margin-top:8px;font-size:14px;color:var(--muted);line-height:1.6;}
+
+  /* Feedback: Tagesform sollte nicht als Schubladen-Reiter, sondern kreativ direkt auf der
+     Startseite ankommen. Statt nur eines Verweis-Buttons lässt sich der tägliche Kurz-Check hier
+     direkt ausfüllen — dieselben Skalen-Buttons wie in der vollständigen Tagesform-Ansicht
+     (.scale-row/.scale-btn/.state-q-sub, unverändert wiederverwendet), nur kompakter und ohne
+     eigenen Speichern-Klick: sobald beide Werte gesetzt sind, speichert die Karte automatisch. Der
+     ausführlichere Verlauf über mehrere Tage bleibt einen Klick entfernt erreichbar. */
+  .state-teaser-card{display:flex;flex-direction:column;gap:16px;}
+  .state-teaser-copy{margin-top:2px;font-size:13.5px;color:var(--muted);line-height:1.5;}
+
+  footer.appfoot{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--paper);font-size:13.5px;padding:10px 16px;border-radius:100px;
+    box-shadow:var(--shadow);opacity:0;transition:all .25s ease;pointer-events:none;z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:100px;}
+
+  /* Das Druck-Stylesheet (@media print, Feedback-Runde 32) ist raus: Drucken über Strg/Cmd+P ist ein
+     Browser-/Desktop-Konzept, das im Bild einer reinen iPhone-App keine Rolle spielt — eine native
+     App würde, falls überhaupt, über eine eigene Teilen-/Druck-Funktion gehen, nicht über eine
+     CSS-Druckansicht. */
+
+  /* Skip-Link (Feedback-Runde 32): Tastatur- und Screenreader-Nutzung mussten bislang immer erst
+     durch die Top-Bar (Logo, Drawer-Button) tabben, bevor der eigentliche Inhalt erreichbar war.
+     Standard-Muster: unsichtbar bis fokussiert, dann sichtbar oben links. */
+  .skip-link{
+    position:absolute;left:12px;top:-48px;z-index:200;
+    background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:var(--radius-s);
+    font-size:13.5px;text-decoration:none;transition:top .15s ease;
+  }
+  .skip-link:focus{top:12px;}
+
+  
