@@ -94,7 +94,11 @@ for pat in [r"\.textContent\s*=\s*([^;]+);", r"toast\(([^;]+)\)",
             # der Tagesform-Kurve ueber innerHTML-Verkettung.
             r"\.push\(([^;]+)\)",
             r"\.innerHTML\s*=\s*([^;]+);",
-            r"setAttribute\('placeholder',\s*([^)]+)\)"]:
+            r"setAttribute\('placeholder',\s*([^)]+)\)",
+            # Der Rueckmeldungstext geht ueber navigator.share bzw. die Zwischenablage nach
+            # draussen und ist damit genauso sichtbar wie Text im DOM — nur eben nirgends im DOM.
+            r"var text\s*=\s*([^;]+);",
+            r"writeText\(([^)]+)\)"]:
     for m in re.finditer(pat, rest):
         for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", m.group(1)):
             if lit.startswith('js_') or lit.startswith('<') or len(lit)<4: continue

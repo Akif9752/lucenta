@@ -326,6 +326,8 @@
       'ph_code_einfügen': 'Paste code',
       'ph_ein_satz_reicht': 'One sentence is enough.',
       'ph_dein_name': 'Your name',
+      'js_ohne_angabe': 'not stated',
+      'js_anmerkung': '\nNote: ',
       'ph_z_b_1a2b3c4d5e_mia': 'e.g. Mia',
       'aria_weitere_funktionen_profil_ve': 'More features: profile, understand, archetypes, compare, comparison archive, settings',
       'aria_hinweis_ausblenden': 'Hide notice',

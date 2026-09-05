@@ -122,6 +122,8 @@ CONTENT.de = {
       'ph_code_einfügen': 'Code einfügen',
       'ph_ein_satz_reicht': 'Ein Satz reicht.',
       'ph_dein_name': 'Dein Name',
+      'js_ohne_angabe': 'ohne Angabe',
+      'js_anmerkung': '\nAnmerkung: ',
       'ph_z_b_1a2b3c4d5e_mia': 'z. B. Mia',
       'aria_weitere_funktionen_profil_ve': 'Weitere Funktionen: Profil, Verstehen, Archetypen, Vergleichen, Vergleichsarchiv, Einstellungen',
       'aria_hinweis_ausblenden': 'Hinweis ausblenden',

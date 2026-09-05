@@ -13,8 +13,8 @@
     // Bewusst ohne Werte, ohne Code, ohne Namen: eine Rückmeldung zur App soll keine
     // Persönlichkeitsdaten mit sich tragen, nur weil sie gerade greifbar wären.
     var note = ($('feedbackText').value || '').trim();
-    var text = tx('js_lucenta_betarückmeldungnpo') + (feedbackRating || 'ohne Angabe') +
-               (note ? ('\nAnmerkung: ' + note) : '');
+    var text = tx('js_lucenta_betarückmeldungnpo') + (feedbackRating || tx('js_ohne_angabe')) +
+               (note ? (decodeEntities(tx('js_anmerkung')) + note) : '');
     var done = function(){ toast(tx('js_danke__das_hilft_wirklich')); };
     if (navigator.share){
       navigator.share({text:text}).then(done).catch(function(){ copyFeedback(text, done); });
