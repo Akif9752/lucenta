@@ -55,3 +55,28 @@
     .drawer-profile-row:active, .avatar-color-swatch:active, .scale-btn:active,
     .trait-card > summary:active{ transform:none; }
   }
+
+/* ================= Antippflächen =================
+     Runde 60, gemessen bei 390x844 (iPhone) und 320x568: Drei Bedienelemente der Kopfzeile und
+     der Startseite lagen unter 44px, dem Maß, das Apple seit jeher nennt und das WCAG 2.5.5 als
+     AAA führt — der Schubladen-Knopf mit 36x36 ausgerechnet als Haupteinstieg in die Navigation,
+     das Wortzeichen mit 25px Höhe, die kleinen Pillen-Schaltflächen mit 37px.
+
+     Der Eingriff vergrößert NUR die Trefferfläche, nicht die Darstellung: ein ::after ohne
+     eigene Erscheinung, mittig über dem Element, mindestens 44x44. Das Aussehen bleibt exakt so,
+     wie es in 57 Runden festgelegt wurde; nur der Finger bekommt mehr Platz.
+
+     Bewusst nicht angefasst: die Antwortkreise (.scale-btn). Sie messen bei 320px 42x42 und
+     wären damit knapp unter dem Ziel — aber sie stehen zu fünft in einer Reihe, und eine
+     vergrößerte Trefferfläche würde dort die Nachbarn überlappen und Fehlgriffe erzeugen.
+     42px bei fünf gleich großen, direkt benachbarten Zielen ist die bessere Abwägung. */
+  .drawer-tab, .wordmark, .btn-sm, .drawer-close, .a2hs-dismiss{ position:relative; }
+  .drawer-tab::after, .wordmark::after, .btn-sm::after, .drawer-close::after, .a2hs-dismiss::after{
+    content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:max(100%, 44px); height:max(100%, 44px);
+    /* Nur Trefferfläche, keine Erscheinung. */
+    background:none; border:none; pointer-events:auto;
+  }
+  /* Das Wortzeichen ist breit genug; hier fehlt allein die Höhe. Eine über die Textbreite
+     hinaus verbreiterte Fläche würde in den Bereich des Schubladen-Knopfs reichen. */
+  .wordmark::after{ width:100%; }
