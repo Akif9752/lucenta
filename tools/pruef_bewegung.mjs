@@ -54,6 +54,9 @@ async function verlauf(p, lesen, punkte){
   return werte;
 }
 const bewegtSich = w => new Set(w.map(String)).size > 1;
+// So viele Meilensteine kennt der Fragebogen (QUIZ_MILESTONES in src/i18n/de.js). Steht hier als
+// erwartete Zahl, damit ein versehentlich entfernter Meilenstein auffaellt statt stillzuliegen.
+const MEILENSTEINE = 3;
 
 async function durchlauf(reduziert){
   const b = await chromium.launch(START);
@@ -90,17 +93,64 @@ async function durchlauf(reduziert){
     const b = document.querySelector('#scaleRow .scale-btn.picked');
     return b ? getComputedStyle(b).animationName : '-';
   });
-  pruefe(reduziert ? puls === 'none' : puls === 'antwort-puls',
+  // Runde 78: Der Kreis traegt jetzt ZWEI Animationen — den Ring nach aussen und das
+  // Zusammendruecken mit Ueberschwung. Eine Gleichheitspruefung auf einen einzelnen Namen wuerde
+  // beim Hinzufuegen der zweiten fehlschlagen, obwohl beide korrekt laufen; gefragt ist, ob die
+  // erwarteten Namen ENTHALTEN sind.
+  const pulsTeile = puls.split(',').map(x => x.trim());
+  pruefe(reduziert ? puls === 'none'
+                   : pulsTeile.includes('antwort-puls') && pulsTeile.includes('antwort-quetsch'),
          reduziert ? 'Antwort ohne Impuls' : 'Antwort gibt einen Impuls', `(${puls})`);
   // Die Weiterschaltung braucht 220 ms. Ohne diese Pause beantwortet der nächste Klick dieselbe
   // Frage noch einmal, und am Ende fehlt eine — der Fragebogen bleibt bei 50 stehen, die
   // Ergebnisseite wird nie erreicht, und alles Weitere meldet falsche Fehler.
   await p.waitForTimeout(320);
 
+  // --- Die naechste Frage kommt herein, und die Antwortreihe folgt ihr gestaffelt
+  const einlauf = await p.evaluate(() => {
+    const c = document.getElementById('qCard');
+    const k = Array.from(document.querySelectorAll('#scaleRow .scale-btn'));
+    return {
+      karte:  c ? getComputedStyle(c).animationName : '-',
+      kreise: k.map(b => getComputedStyle(b).animationName),
+      verzug: k.map(b => getComputedStyle(b).animationDelay)
+    };
+  });
+  const versetzt = new Set(einlauf.verzug).size > 1;
+  if (reduziert){
+    pruefe(einlauf.karte === 'none' && einlauf.kreise.every(n => n === 'none'),
+           'Fragewechsel ohne Bewegung', `(${einlauf.karte}/${einlauf.kreise[0]})`);
+  } else {
+    pruefe(einlauf.karte === 'q-schub' && einlauf.kreise.every(n => n === 'kreis-ein') && versetzt,
+           'Frage kommt herein, Antwortreihe folgt gestaffelt',
+           `(${einlauf.karte}, ${einlauf.kreise[0]}, ${einlauf.verzug.join('/')})`);
+  }
+
+  // --- Meilenstein: fliegen bei 10, 20, 30, 40 Schnipsel?
+  // Gemessen WAEHREND des Durchlaufs, nicht danach: Der Behaelter raeumt sich nach 1150 ms
+  // selbst ab. Genau diese Art Fehler — eine Animation, die es gibt, die aber im entscheidenden
+  // Moment nicht da ist — ist der Grund, warum es diese Datei gibt.
+  let schnipsel = 0, stoesse = 0, zuvor = 0;
   for (let i = 1; i < 50; i++){
     const q = await p.$$('#scaleRow .scale-btn');
     if (!q.length) break;
     await q[i % 5].click(); await p.waitForTimeout(330);
+    // Nach JEDEM Schritt nachsehen, statt die Meilensteine hier zu wiederholen: Wo sie liegen,
+    // steht in den Sprachpaketen (QUIZ_MILESTONES) und darf sich dort aendern, ohne dass diese
+    // Datei nachgezogen werden muss. Gemessen wird, dass es so viele Stoesse gibt wie
+    // Meilensteine — und keinen einzigen daneben.
+    // Ein Stoss lebt 1150 ms, ein Schritt dauert 330 ms — er wird also mehrfach gesehen.
+    // Gezaehlt wird deshalb der UEBERGANG von "nichts da" zu "Schnipsel da", nicht jede Sichtung.
+    const n = await p.evaluate(() => document.querySelectorAll('.konfetti i').length);
+    if (n > 0 && zuvor === 0){ stoesse++; }
+    schnipsel = Math.max(schnipsel, n);
+    zuvor = n;
+  }
+  if (reduziert){
+    pruefe(stoesse === 0, 'kein Stoss bei reduzierter Bewegung', `(${stoesse} Stoesse)`);
+  } else {
+    pruefe(stoesse === MEILENSTEINE && schnipsel >= 12,
+           'Meilensteine feiern mit einem Stoss', `(${stoesse} von ${MEILENSTEINE}, ${schnipsel} Schnipsel)`);
   }
 
   // --- Ankunftsmoment: zeichnet sich das Fünfeck WÄHREND der Überlagerung?
@@ -138,6 +188,22 @@ async function durchlauf(reduziert){
   });
   pruefe(reduziert ? radar === 'none' : radar === 'radar-in',
          reduziert ? 'Radar ohne Einblendung' : 'Radar blendet ein', `(${radar})`);
+
+  // --- Abweisung: schuettelt das Feld, das den Code nicht annimmt?
+  await p.click('#btnDrawerToggle'); await p.waitForTimeout(400);
+  await p.click('#btnDrawerSettings'); await p.waitForTimeout(500);
+  await p.fill('#restoreCodeInput', 'KEINCODE');
+  await p.click('#btnRestoreCode'); await p.waitForTimeout(60);
+  const schuettel = await p.evaluate(() => {
+    const el = document.getElementById('restoreCodeInput');
+    return { klasse: el.classList.contains('schuettel'), name: getComputedStyle(el).animationName };
+  });
+  if (reduziert){
+    pruefe(!schuettel.klasse, 'abgewiesener Code ohne Schuetteln', `(${schuettel.name})`);
+  } else {
+    pruefe(schuettel.klasse && schuettel.name === 'schuettel-kf',
+           'abgewiesener Code schuettelt das Feld', `(${schuettel.name})`);
+  }
 
   pruefe(!abstuerze.length, 'keine Ausnahme in der Konsole', abstuerze.join(' | '));
   await b.close();

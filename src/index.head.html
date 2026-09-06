@@ -1,3 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<!-- Runde 78, beim Nachmessen im Browser aufgefallen: Die Datei trug keine Zeichensatzangabe.
+     Als Artefakt veroeffentlicht faellt das nicht auf — die Veroeffentlichung legt selbst einen
+     Rahmen mit <head> und Zeichensatz darum. Direkt im Browser geoeffnet oder von einem Server
+     ohne charset im Kopf ausgeliefert wurde dagegen JEDER Umlaut und jedes typografische
+     Anfuehrungszeichen zu Buchstabensalat („Erledige" wurde zu „a€Erledige").
+     Beides steht bewusst hier ganz oben: Der Browser liest die Zeichensatzangabe nur in den
+     ersten 1024 Byte, und ohne Dokumenttyp laeuft die Seite im Modus fuer alte Seiten.
+     Im Artefakt sind beide Angaben doppelt und werden dort schlicht ueberlesen. -->
 <title>Lucenta</title>
 <meta name="description" content="Lucenta zeichnet dein Persönlichkeitsporträt anhand des wissenschaftlich fundierten Big-Five-Modells &mdash; keine Sternzeichen, keine Typ-Schubladen.">
 <meta property="og:title" content="Lucenta &mdash; dein wissenschaftliches Persönlichkeitsporträt">

@@ -156,7 +156,7 @@
   $('btnRestoreCode').addEventListener('click', function(){
     var input = $('restoreCodeInput');
     var restored = fromCode(input.value.trim());
-    if (!restored){ toast(tx('js_ungültiger_code__bitte_den')); return; }
+    if (!restored){ toast(tx('js_ungültiger_code__bitte_den')); schuetteln(input); return; }
     scores = restored;
     saveResult(scores);
     clearProgress();

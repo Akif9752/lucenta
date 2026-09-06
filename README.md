@@ -20,10 +20,10 @@ Keine Abhängigkeiten. Node und Python 3 genügen.
 
 ```
 src/
-  index.head.html     Kopf: Meta-Angaben, App-Symbol, Anti-Flacker-Skript
+  index.head.html     Kopf: Dokumenttyp, Zeichensatz, Meta-Angaben, App-Symbol, Anti-Flacker-Skript
   index.body.html     gesamtes Markup (neun Ansichten)
-  styles/             11 CSS-Teile — die REIHENFOLGE ist bedeutsam
-  js/                 19 JavaScript-Teile — die REIHENFOLGE ist bedeutsam
+  styles/             12 CSS-Teile — die REIHENFOLGE ist bedeutsam
+  js/                 21 JavaScript-Teile — die REIHENFOLGE ist bedeutsam
   i18n/de.js, en.js   Sprachpakete (Items, Texte, Oberfläche)
   manifest.json       legt die Reihenfolge fest
 build.js              setzt alles zu dist/lucenta.html zusammen
@@ -37,6 +37,12 @@ assets/icon/          App-Symbol in elf Größen
 **Warum ein Aufbauschritt und keine Module im Browser:** Die App soll ohne Server lauffähig
 bleiben — `dist/lucenta.html` lässt sich direkt öffnen —, und die Veröffentlichung als Artefakt
 verlangt genau eine Datei. Die Aufteilung dient der Entwicklung, nicht der Auslieferung.
+
+**`<!doctype html>` und `<meta charset="utf-8">` stehen in den ersten 40 Byte von
+`index.head.html` und müssen dort bleiben.** Als Artefakt veröffentlicht wäre beides entbehrlich —
+die Veröffentlichung legt selbst einen Rahmen darum. Direkt geöffnet oder von einem Server ohne
+`charset` im Kopf ausgeliefert entschied ihr Fehlen aber darüber, ob „Erledige" als „a€Erledige"
+erscheint (Runde 78, im Browser aufgefallen, im Artefakt unsichtbar).
 
 **Die Reihenfolge in `manifest.json` ist keine Formsache.** Beim CSS entscheidet sie über die
 Kaskade: Die Druckzustände in `10-druckzust-nde.css` müssen zuletzt stehen, sonst überschreiben

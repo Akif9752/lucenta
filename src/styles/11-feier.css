@@ -1,0 +1,127 @@
+
+/* ================= Feier, Schub, Abweisung =================
+     Runde 78, erneut mit Verweis auf Duolingo. Der Unterschied zwischen den bisherigen
+     Bewegungen und denen dort laesst sich in einem Satz sagen: Die App blendet ein, jene App
+     wirft. Ein Einblenden beantwortet eine Handlung hoeflich; ein Wurf mit Ueberschwung
+     beantwortet sie koerperlich — etwas hat Masse, kommt an, schwingt aus.
+
+     Uebernommen wird wieder das Handwerk, nicht die Bindungsmechanik: kein Serien-Zaehler,
+     kein XP, keine Herzen. Was hier steht, haengt ausnahmslos an einer Handlung, die gerade
+     stattgefunden hat.
+
+     Der Block steht zuletzt, weil er drei Bewegungen aus 02-quiz.css und 10-druckzustaende.css
+     bewusst ersetzt. Das Ueberschreiben ist gewollt und hier benannt, damit niemand die alte
+     Regel sucht und sich wundert, warum sie nicht greift. */
+
+  /* ---------- 1. Der Fragewechsel: Schub statt Einblenden ----------
+     Ersetzt "q-enter" aus 02-quiz.css. Die Frage stieg dort 9px auf. Jetzt kommt sie von rechts
+     herein und faengt sich mit leichtem Ueberschwung — dieselbe Richtung, in die der
+     Fragebogen laeuft. body traegt overflow-x:hidden, es entsteht also kein seitlicher Balken. */
+  .qcard.q-in{ animation:q-schub .42s cubic-bezier(.22,1.2,.36,1) both; }
+  @keyframes q-schub{
+    from{ opacity:0; transform:translateX(26px) scale(.975); }
+    to  { opacity:1; transform:none; }
+  }
+
+  /* ---------- 2. Die fuenf Antwortkreise kommen einzeln ----------
+     Ein knapper Versatz laesst die Reihe der Frage folgen, statt fertig unter ihr zu stehen.
+     34 ms je Kreis: die ganze Reihe ist nach 136 ms plus Laufzeit da und wird als EINE Bewegung
+     gelesen. Die Klasse setzt animateQuestionIn() und nimmt sie beim Antworten wieder weg —
+     sonst liefe der Einlauf bei jedem Tipp erneut. */
+  #scaleRow.row-in .scale-btn{ animation:kreis-ein .3s cubic-bezier(.34,1.56,.64,1) both; }
+  #scaleRow.row-in .scale-btn:nth-child(1){ animation-delay:.04s; }
+  #scaleRow.row-in .scale-btn:nth-child(2){ animation-delay:.074s; }
+  #scaleRow.row-in .scale-btn:nth-child(3){ animation-delay:.108s; }
+  #scaleRow.row-in .scale-btn:nth-child(4){ animation-delay:.142s; }
+  #scaleRow.row-in .scale-btn:nth-child(5){ animation-delay:.176s; }
+  @keyframes kreis-ein{
+    from{ opacity:0; transform:translateY(9px) scale(.78); }
+    to  { opacity:1; transform:none; }
+  }
+
+  /* ---------- 3. Die Antwort selbst: zusammendruecken und aufspringen ----------
+     Ergaenzt "antwort-puls" aus 10-druckzustaende.css um die eigentliche Signatur: Der Kreis
+     geht kurz zusammen und federt darueber hinaus, bevor er sich setzt. Der Ring bleibt, beide
+     laufen zusammen als eine Antwort. */
+  .scale-btn.picked{
+    animation:antwort-puls .34s cubic-bezier(.34,1.56,.64,1),
+              antwort-quetsch .42s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes antwort-quetsch{
+    0%  { transform:scale(.84); }
+    44% { transform:scale(1.14); }
+    100%{ transform:scale(1); }
+  }
+
+  /* ---------- 4. Der Meilenstein-Stoss ----------
+     Vier Mal je Durchlauf, an genau den Stellen, an denen ohnehin ein Hinweistext erscheint.
+     Der Behaelter liegt punktgenau am rechten Ende des Fortschrittsbalkens und ist fuer Zeiger
+     wie fuer Hilfstechnik unsichtbar; die Schnipsel tragen ihre Bahn in eigenen Eigenschaften,
+     die das JavaScript je Stueck setzt. */
+  .konfetti{
+    position:fixed; z-index:60; width:0; height:0; pointer-events:none;
+  }
+  .konfetti i{
+    position:absolute; left:0; top:0; display:block; border-radius:1.5px;
+    opacity:0; will-change:transform, opacity;
+    animation:konfetti-flug .95s cubic-bezier(.16,.78,.36,1) both;
+    animation-delay:var(--verzug, 0ms);
+  }
+  /* Zwei Abschnitte in einer Bewegung: erst der Stoss nach aussen, dann der Fall. Ein reines
+     Auseinanderfliegen ohne Schwerkraft sieht nach Bildschirmschoner aus, nicht nach Papier. */
+  @keyframes konfetti-flug{
+    0%  { opacity:0; transform:translate(0,0) rotate(0deg) scale(.4); }
+    12% { opacity:1; }
+    55% { transform:translate(var(--dx), var(--dy)) rotate(calc(var(--dreh) * .6)) scale(1); }
+    100%{ opacity:0;
+          transform:translate(calc(var(--dx) * 1.18), calc(var(--dy) + var(--fall)))
+                    rotate(var(--dreh)) scale(.9); }
+  }
+
+  /* ---------- 5. Der Fortschrittsbalken bekommt Koerper ----------
+     Ein hellerer Streifen in der oberen Haelfte der Fuellung. Das ist keine Bewegung, sondern
+     die zweite Haelfte derselben Formensprache: Eine Flaeche mit Glanzkante liest sich als
+     Koerper, eine ohne als Farbfeld. */
+  #focusline-fill{ position:relative; overflow:hidden; }
+  #focusline-fill::after{
+    content:''; position:absolute; left:4px; right:3px; top:2px; height:2.5px;
+    border-radius:100px; background:rgba(255,255,255,.42); pointer-events:none;
+  }
+
+  /* ---------- 6. Die Ergebniskacheln springen ----------
+     Ersetzt "card-in" fuer die fuenf Kacheln der Ergebnisseite. Sie stiegen bisher gerade auf;
+     jetzt kommen sie mit demselben Ueberschwung wie die Antwortkreise. Der Versatz je Kachel
+     steht im JavaScript (renderResult). */
+  .stat-tile{
+    animation-name:kachel-pop; animation-duration:.52s;
+    animation-timing-function:cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes kachel-pop{
+    from{ opacity:0; transform:translateY(11px) scale(.88); }
+    to  { opacity:1; transform:none; }
+  }
+
+  /* ---------- 7. Die Abweisung ----------
+     Ein abgelehnter Code hatte bisher nur eine Zeile Text als Antwort. Das Schuetteln sagt
+     dasselbe schneller und zeigt zugleich, WELCHES Feld gemeint ist. Kurz und abklingend, nicht
+     gleichmaessig: ein gleichmaessiges Wackeln wirkt wie ein Defekt, ein abklingendes wie ein
+     Kopfschuetteln. */
+  .schuettel{ animation:schuettel-kf .44s cubic-bezier(.36,.07,.19,.97) both; }
+  @keyframes schuettel-kf{
+    0%,100%{ transform:translateX(0); }
+    14%    { transform:translateX(-7px); }
+    30%    { transform:translateX(6px); }
+    46%    { transform:translateX(-4px); }
+    62%    { transform:translateX(3px); }
+    80%    { transform:translateX(-1.5px); }
+  }
+  input.schuettel, textarea.schuettel{ border-color:var(--danger); }
+
+  @media (prefers-reduced-motion: reduce){
+    .qcard.q-in{ animation:none; }
+    #scaleRow.row-in .scale-btn{ animation:none; }
+    .scale-btn.picked{ animation:none; }
+    .konfetti{ display:none; }
+    .stat-tile{ animation:none; opacity:1; }
+    .schuettel{ animation:none; }
+  }

@@ -91,6 +91,15 @@
     c.classList.remove('q-in');
     try{ void c.offsetWidth; }catch(e){}
     c.classList.add('q-in');
+    // Runde 78: Die fuenf Antwortkreise laufen der Frage hinterher, statt fertig unter ihr zu
+    // stehen. Dieselbe Klasse muss beim Antworten wieder weg (siehe selectAnswer) — sonst
+    // liefe der Einlauf bei jedem Tipp erneut, weil renderQuestion die Knoepfe neu baut.
+    var row = $('scaleRow');
+    if (row && row.classList){
+      row.classList.remove('row-in');
+      try{ void row.offsetWidth; }catch(e){}
+      row.classList.add('row-in');
+    }
   }
   function disarmQuizAdvance(){
     if (quizAdvanceTimeout){ clearTimeout(quizAdvanceTimeout); quizAdvanceTimeout = null; }
@@ -99,6 +108,8 @@
     answers[qi] = v;
     tapFeedback();
     saveProgress();
+    var row = $('scaleRow');
+    if (row && row.classList) row.classList.remove('row-in');
     renderQuestion();
     // Vorherigen ausstehenden Übergang verwerfen, statt ihn zusätzlich laufen zu lassen —
     // sonst würde ein schneller Doppel-Klick/Doppel-Tastendruck qi zweimal erhöhen und
@@ -114,7 +125,7 @@
         qi++; renderQuestion();
         animateQuestionIn();
         saveProgress();
-        if (QUIZ_MILESTONES[qi]){ toast(QUIZ_MILESTONES[qi]); pulseFocusline(); }
+        if (QUIZ_MILESTONES[qi]){ toast(QUIZ_MILESTONES[qi]); pulseFocusline(); konfettiAmFortschritt(); }
       }
       else { finishQuiz(); }
     }, 220);
@@ -252,7 +263,7 @@
     // Ziffern mit Tick-Skala statt erst im ausführlichen Bericht weiter unten die erste Zahl zu
     // zeigen. Die Zahlen zählen beim Erscheinen von 0 auf ihren Zielwert hoch.
     var stripHTML = sortedTraits.map(function(f,i){
-      return '<div class="stat-tile" style="animation-delay:'+(i*55)+'ms">'+
+      return '<div class="stat-tile" style="animation-delay:'+(i*70)+'ms">'+
         '<div class="stat-label">'+RADAR_LABELS[f]+'</div>'+
         '<div class="stat-num mono" id="statNum-'+f+'">0</div>'+
         gaugeBarHTML(scores[f])+
@@ -326,12 +337,17 @@
     lastCompatSnapshot = null;
     if (!me || !other){
       box.innerHTML = tx('js_bitte_zwei_gültige_stellig');
+      // Runde 78: Der Hinweis stand als Zeile unter den Feldern und sagte nicht, WELCHES Feld
+      // gemeint ist. Geschuettelt wird nur das tatsaechlich unbrauchbare.
+      if (!me) schuetteln($('cmpMe'));
+      if (!other) schuetteln($('cmpOther'));
       return;
     }
     // Bugfix Feedback-Runde 32: identische Codes ergaben zuvor eine bedeutungslose "100 % Übereinstimmung
     // mit dir selbst" ohne jeden Hinweis. Früher, expliziter Check statt stiller Fehlinterpretation.
     if ($('cmpMe').value.trim() === $('cmpOther').value.trim()){
       box.innerHTML = tx('js_das_ist_derselbe_code_wie');
+      schuetteln($('cmpOther'));
       return;
     }
     var similar=0, diff=0;

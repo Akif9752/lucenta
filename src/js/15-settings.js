@@ -127,19 +127,19 @@
   }
 
   function datenEinspielen(text){
-    if (!text || !text.trim()){ toast(tx('js_import_leer')); return; }
+    if (!text || !text.trim()){ toast(tx('js_import_leer')); schuetteln($('importFeld')); return; }
     var d = null;
     try{ d = JSON.parse(text); }catch(e){}
     // Bewusst streng: Wer hier irgendetwas einspielt, ueberschreibt seinen eigenen Bestand.
     if (!d || d.app !== 'lucenta' || !d.daten || typeof d.daten !== 'object'){
-      toast(tx('js_import_fehler')); return;
+      toast(tx('js_import_fehler')); schuetteln($('importFeld')); return;
     }
     var geschrieben = 0;
     DATEN_SCHLUESSEL.forEach(function(k){
       if (typeof d.daten[k] !== 'string') return;
       try{ localStorage.setItem(k, d.daten[k]); geschrieben++; }catch(e){}
     });
-    if (!geschrieben){ toast(tx('js_import_fehler')); return; }
+    if (!geschrieben){ toast(tx('js_import_fehler')); schuetteln($('importFeld')); return; }
     toast(tx('js_import_ok'));
     // Neu laden statt jede Ansicht einzeln nachzuziehen: Nach einem Austausch des gesamten
     // Bestands ist das der einzige Weg, der sicher keinen alten Zustand stehen laesst.

@@ -10,7 +10,8 @@
   "07-tagesform.css",
   "08-formulare-und-dialoge.css",
   "09-archetypen.css",
-  "10-druckzustaende.css"
+  "10-druckzustaende.css",
+  "11-feier.css"
  ],
  "js": [
   "00-start.js",
@@ -30,8 +31,9 @@
   "14-verstehen.js",
   "15-settings.js",
   "16-ergebnisbild-dialog.js",
-  "17-wiring.js",
-  "18-beta-rueckmeldung.js",
-  "19-sternenhimmel.js"
+  "17-feier.js",
+  "18-wiring.js",
+  "19-beta-rueckmeldung.js",
+  "20-sternenhimmel.js"
  ]
 }
