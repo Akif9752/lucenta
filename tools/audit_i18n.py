@@ -97,7 +97,16 @@ rest=JS[:a2]+JS[b2:]
 rest=re.sub(r'/\*.*?\*/','',rest,flags=re.S); rest=re.sub(r'^\s*//.*$','',rest,flags=re.M)
 
 def worte(text):
+    # Bezeichner sind kein Oberflaechentext. CSS-Marken (var(--daten-energie)), Klassen- und
+    # id-Namen sind aus dem deutschen Wortschatz gebildet und wuerden sonst als unuebersetzte
+    # Literale gemeldet — ausgerechnet dann, wenn eine Stelle sauber gebaut ist.
+    text=re.sub(r'var\(\s*--[A-Za-z0-9_-]*\s*\)?',' ',text)
+    text=re.sub(r'(?:class|id|for|href|data-[\w-]+)\s*=\s*"[^"]*"',' ',text)
+    # Vollstaendige Elemente entfernen, danach ein etwaiges angeschnittenes Element am Rand:
+    # Zeichenketten im Code enden oft mitten in einem Element ('<div class="x">'+wert+'</div>').
     text=re.sub(r'<[^>]*>',' ',text)
+    text=re.sub(r'<[^>]*$',' ',text)
+    text=re.sub(r'^[^<]*?>',' ',text)
     text=re.sub(r'&[a-zA-Z]+;|&#\d+;',' ',text)
     return set(w.lower() for w in re.findall(r'[A-Za-zÄÖÜäöüß]{4,}', text))
 
@@ -118,6 +127,12 @@ for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
     # Literale gemeldet — genau dann, wenn eine Stelle RICHTIG ueber tx() uebersetzt wird.
     # Der Praefix 'js_' allein reichte dafuer nicht: Marken im Markup tragen ihn nicht.
     if lit in DE or lit in EN:
+        continue
+    # CSS-Selektoren, die an querySelector gehen: '.verlauf-svg', '#focusline', '.a.b'.
+    # Bewusst eng gefasst — echter Oberflaechentext sieht nie so aus, also verdeckt die Regel
+    # nichts. Ein Selektor mit Leerzeichen ('.a .b') faellt absichtlich NICHT darunter, damit
+    # aus der Ausnahme kein Scheunentor wird.
+    if re.fullmatch(r'[.#][A-Za-z0-9_-]+(?:[.#][A-Za-z0-9_-]+)*', lit):
         continue
     treffer = worte(lit) & NUR_DEUTSCH
     if treffer: verdacht[lit[:60]] = sorted(treffer)[:3]

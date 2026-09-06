@@ -107,6 +107,28 @@ ausgerechnet die Ansicht, in der der gemeldete Fehler stand. `tools/diff_sprache
 jetzt ab, wenn nach dem Durchlauf kein Ergebnis gespeichert ist. Das Muster wiederholt sich: **Was der Ersatz-DOM nicht kennt, kann
 keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu.
 
+## Farben für Daten
+
+`--daten-energie` und `--daten-stimmung` sind von den Akzenten der Oberfläche getrennt, und das
+hat einen gerechneten Grund: `--accent` (`#2F6F6A`) hat in OKLCH die Chroma **0,066** und liegt
+damit unter dem Boden von 0,10, ab dem eine Fläche als Farbe statt als Grau gelesen wird. In der
+Oberfläche ist diese Zurückhaltung gewollt; eine Datenlinie muss dagegen Identität tragen. Selbst
+ein voll gesättigtes Teal derselben Helligkeit erreicht den Boden nicht — der Ton muss heller
+werden.
+
+Beide Paare sind gegen die sechs Prüfungen gerechnet, nicht geschätzt: Helligkeitsband, Chroma,
+Trennschärfe bei Farbfehlsichtigkeit (Protanopie/Deuteranopie), Normalsicht, Kontrast zur Fläche.
+Der Dunkelmodus hat **eigene Stufen** statt aufgehellter heller Werte.
+
+| | Energie | Stimmung |
+|---|---|---|
+| hell (auf `--surface` `#FFFFFF`) | `#0E9C92` | `#C97A3C` |
+| dunkel (auf `--surface` `#17211C`) | `#25A89D` | `#C87F45` |
+
+**Eine Achse, nie zwei.** Energie und Stimmung teilen die Skala 1–5 und liegen deshalb in einem
+Diagramm auf einer Achse. Zwei y-Achsen wären hier der naheliegende Fehler: Sie erzeugen
+Kreuzungen und Abstände, die in den Daten nicht existieren.
+
 ## Der eigene Renderer
 
 `tools/renderer/` ist ein von Grund auf gebauter HTML/CSS/SVG-Renderer in Python. Er existiert,

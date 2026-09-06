@@ -18,6 +18,15 @@
     /* Runde 63: Unterkante fuer die fuehlbaren Knoepfe — dunkler als --accent-strong, damit die
        Kante als Tiefe gelesen wird und nicht als zweite Farbe. */
     --accent-deep:#17403C;
+    /* Runde 67: Eigene Marken fuer Datenlinien, getrennt von den Akzenten der Oberflaeche.
+       Grund: --accent (#2F6F6A) hat in OKLCH die Chroma 0,066 und liegt damit unter dem Boden
+       von 0,10, ab dem eine Flaeche als Farbe statt als Grau gelesen wird. In der Oberflaeche
+       ist diese Zurueckhaltung gewollt; eine Datenlinie muss dagegen Identitaet tragen. Selbst
+       ein voll gesaettigtes Teal derselben Helligkeit erreicht den Boden nicht — der Ton muss
+       heller werden. Gerechnet, nicht geschaetzt: beide Paare bestehen alle sechs Pruefungen
+       (Helligkeitsband, Chroma, Farbfehlsichtigkeit, Normalsicht, Kontrast zur Flaeche). */
+    --daten-energie:#0E9C92;
+    --daten-stimmung:#C97A3C;
     --accent-ink:#F5FBFA;
     --accent-2:#C97A3C;
     /* minimal nachgedunkelt (war #9D5F2F): als Fettschrift auf der Amber-Fläche der Hinweisbänder
@@ -50,6 +59,8 @@
       --accent:#5CB4AD;
       --accent-strong:#7FC7C0;
       --accent-deep:#2E6F6A;
+      --daten-energie:#25A89D;
+      --daten-stimmung:#C87F45;
       --accent-ink:#08211E;
       --accent-2:#E39A5C;
       --accent-2-text:#E39A5C;
@@ -71,6 +82,8 @@
     --accent:#5CB4AD;
     --accent-strong:#7FC7C0;
     --accent-deep:#2E6F6A;
+    --daten-energie:#25A89D;
+    --daten-stimmung:#C87F45;
     --accent-ink:#08211E;
     --accent-2:#E39A5C;
     --accent-2-text:#E39A5C;

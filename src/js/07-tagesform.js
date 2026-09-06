@@ -111,12 +111,29 @@
         tx('js_erster_eintrag_steht_ab_de');
       return;
     }
-    var energyVals = hist.map(function(e){ return (e.energy-1)/4*100; });
-    var valenceVals = hist.map(function(e){ return (e.valence-1)/4*100; });
     var lastE = hist[hist.length-1].energy, lastV = hist[hist.length-1].valence;
+    // Höchstens 30 Tage: Darüber hinaus wird der Abstand zwischen zwei Tagen so klein, dass die
+    // Linie zur Textur wird und die einzelne Angabe nicht mehr ablesbar ist.
+    var fenster = hist.slice(-30);
+    var tage = fenster.length;
+    // Legende bei zwei Reihen immer, damit die Zuordnung nie allein an der Farbe hängt — ein
+    // farbiges Plättchen NEBEN dem Wort, nicht das Wort in der Farbe.
+    var legende =
+      '<div class="verlauf-legende">'+
+        '<span class="vl-eintrag"><span class="vl-punkt vl-energie"></span>'+tx('js_energie')+
+          '<b class="mono vl-energie-wert">'+lastE+'</b></span>'+
+        '<span class="vl-eintrag"><span class="vl-punkt vl-stimmung"></span>'+tx('js_stimmung')+
+          '<b class="mono vl-stimmung-wert">'+lastV+'</b></span>'+
+        '<span class="vl-datum mono">'+tx('js_heute')+'</span>'+
+      '</div>';
     var trendRows =
-      '<div class="trend-row"><div class="trend-label">'+tx('js_energie')+'</div>'+sparklineSVG(energyVals,140,32)+'<div class="trend-val mono">'+lastE+'</div></div>'+
-      '<div class="trend-row"><div class="trend-label">'+tx('js_stimmung')+'</div>'+sparklineSVG(valenceVals,140,32)+'<div class="trend-val mono">'+lastV+'</div></div>';
+      legende +
+      '<div class="verlauf-flaeche">'+
+        '<div class="verlauf-skala"><span>5</span><span>1</span></div>'+
+        verlaufDiagrammSVG(fenster, 320, 150)+
+      '</div>'+
+      '<div class="verlauf-achse"><span>'+(tage>1 ? (tx('js_vor_tagen')+(tage-1)+tx('js_tagen')) : '')+
+        '</span><span>'+tx('js_heute')+'</span></div>';
     var fmt = historyDateFmt();
     var listRows = hist.slice().reverse().slice(0,14).map(function(e){
       var dateStr;
@@ -126,6 +143,7 @@
     wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
       tx('js_letzte_einträge')+hist.length+'</span></h2>'+
       '<div class="history-list">'+listRows+'</div>';
+    verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), fenster, fmt);
   }
 
   
