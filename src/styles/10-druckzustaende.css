@@ -243,3 +243,61 @@
     #focusline-fill{ transition:none; }
     #focusline.beat #focusline-fill{ animation:none; }
   }
+
+/* ================= Erscheinungsbild: Kante statt Schatten =================
+     Runde 69, auf Wunsch am optischen Vorbild Duolingo ausgerichtet. Der Unterschied zur
+     bisherigen Anmutung ist benennbar und laesst sich deshalb systematisch umsetzen:
+
+       bisher: Haarlinie (1px), weicher Schatten, kleine Radien  -> Papier, Redaktion
+       jetzt:  krsftiger Rand (2px), harte Unterkante, grosse Radien -> Objekt, greifbar
+
+     Der weiche Schatten verschwindet dort, wo eine Flaeche ein Objekt ist, und wird durch eine
+     Unterkante ersetzt. Ueber Ueberlagerungen (Schublade, Bild-Dialog) bleibt er: Dort trennt er
+     zwei Ebenen, und dafuer ist er das richtige Mittel.
+
+     Zugleich loest das die Kartenflut der Ergebnisseite (46 gerahmte Elemente): Bedienbare
+     Flaechen tragen jetzt Kante und kraeftigen Rand, Lesetext gar keinen Rahmen mehr. Der
+     Unterschied zwischen "das kann ich antippen" und "das lese ich" ist damit sichtbar, statt
+     dass beides dasselbe Kaestchen ist. */
+
+  /* 1. Flaechen, die man ansieht: kraeftiger Rand, grosser Radius, kein Schatten. */
+  .trend-list, .state-check-card, .understand-card, .preview-card, .delta-card, .compat-line-total{
+    border-width:2px !important;
+    box-shadow:none !important;
+  }
+
+  /* 2. Flaechen, die man antippt: zusaetzlich eine Unterkante, die beim Druecken zusammengeht.
+        Dasselbe Prinzip wie bei den Knoepfen, nur zurueckhaltender — eine Karte soll sich heben
+        lassen, aber nicht wie eine Schaltflaeche schreien. */
+  .trait-card, .history-row, .role-card, .run-choice-opt, .drawer-profile-row{
+    border-width:2px !important;
+    box-shadow:0 3px 0 var(--kante);
+    transition:transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s cubic-bezier(.2,.8,.2,1),
+               border-color .15s ease;
+  }
+  .trait-card:active, .history-row:active, .role-card:active,
+  .run-choice-opt:active, .drawer-profile-row:active{
+    transform:translateY(2px); box-shadow:0 1px 0 var(--kante); transition-duration:0s;
+  }
+
+  /* 3. Die Antwortkreise sind das Kernstueck. Kraeftiger Rand, und die Auswahl fuellt die
+        Flaeche statt nur den Rand einzufaerben — flaechige Farbe ist der Kern dieser
+        Formensprache. */
+  .scale-btn{ border-width:2.5px; }
+  .scale-btn.picked{ background:var(--accent); border-color:var(--accent); }
+  .scale-btn.picked .fill{ background:var(--accent-ink); }
+
+  /* 4. Der Fortschrittsbalken war 3px hoch und lag als Haarlinie unter der Kopfzeile. In dieser
+        Formensprache ist er ein eigenes Objekt: dicker, mit runden Enden. */
+  #focusline{ height:10px; background:var(--surface-2); border-bottom:1px solid var(--line); }
+  #focusline-fill{ border-radius:0 100px 100px 0; }
+  .focusline-tick{ opacity:.35; }
+
+  /* 5. Die grosse Fragekarte trug einen weichen Schatten und wirkte dadurch schwebend statt
+        greifbar. */
+  .qcard{ border:2px solid var(--line); box-shadow:0 4px 0 var(--kante) !important; }
+
+  @media (prefers-reduced-motion: reduce){
+    .trait-card:active, .history-row:active, .role-card:active,
+    .run-choice-opt:active, .drawer-profile-row:active{ transform:none; }
+  }

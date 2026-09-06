@@ -38,9 +38,14 @@
     --surface-3:#E7E9DC;
     --shadow: 0 1px 2px rgba(21,32,25,.05), 0 12px 32px -12px rgba(21,32,25,.18);
     --shadow-sm: 0 1px 2px rgba(21,32,25,.06);
-    --radius-l: 22px;
-    --radius-m: 14px;
-    --radius-s: 8px;
+    /* Runde 69: Groessere Radien als Teil der Umstellung des Erscheinungsbilds. Die Marken
+       waren konsequent verwendet (radius-m 21x, radius-s 12x), der Wechsel laeuft deshalb ueber
+       sie statt ueber verstreute Einzeleingriffe. */
+    --radius-l: 26px;
+    --radius-m: 18px;
+    --radius-s: 12px;
+    /* Die Unterkante, die in dieser Formensprache den weichen Schatten ersetzt. */
+    --kante:#CDCFBE;
     --serif: 'Fraunces', ui-serif, Georgia, serif;
     --sans: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
     --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
@@ -66,6 +71,7 @@
       --accent-2-text:#E39A5C;
       --surface-3:#24322B;
       --shadow: 0 1px 2px rgba(0,0,0,.35), 0 16px 40px -14px rgba(0,0,0,.55);
+      --kante:#0C1310;
       --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
     }
   }
@@ -89,6 +95,7 @@
     --accent-2-text:#E39A5C;
     --surface-3:#24322B;
     --shadow: 0 1px 2px rgba(0,0,0,.35), 0 16px 40px -14px rgba(0,0,0,.55);
+    --kante:#0C1310;
     --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
   }
 
