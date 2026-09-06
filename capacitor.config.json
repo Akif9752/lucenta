@@ -1,0 +1,14 @@
+{
+  "appId": "app.lucenta.ios",
+  "appName": "Lucenta",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "ios": {
+    "contentInset": "always",
+    "limitsNavigationsToAppBoundDomains": true,
+    "backgroundColor": "#F5F6EF"
+  },
+  "server": {
+    "iosScheme": "lucenta"
+  }
+}

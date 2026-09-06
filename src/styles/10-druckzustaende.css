@@ -114,7 +114,12 @@
      44 hätte sich mit der des Nachbarn um 6 Punkte überschnitten — ein Tipp rechts neben dem
      ersten Tupfer hätte den zweiten ausgelöst. Deshalb WÄCHST hier zuerst der Abstand auf 16,
      womit die Flächen exakt aneinanderstoßen statt sich zu überlagern. */
-  .avatar-color-row{ gap:16px; }
+  /* Der Abstand nach oben waechst mit: Der Stift am Profilbild sitzt direkt darueber, und
+     seine 44er-Flaeche und die des ersten Farbtupfers stiessen auf den Punkt genau aneinander.
+     Gemessen landete ein Tipp 21 Punkte unter der Mitte des Stifts auf dem Farbtupfer — die
+     Ueberlappung, vor der die Regel oben warnt, diesmal zwischen zwei verschiedenen
+     Bedienelementen statt zwischen Nachbarn derselben Reihe. */
+  .avatar-color-row{ gap:16px; margin-top:24px; }
   .avatar-color-swatch::after{
     content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     width:44px; height:44px;

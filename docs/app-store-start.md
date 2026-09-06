@@ -62,8 +62,12 @@ die Store-Beschreibung muss es genauso halten.
 Nichts davon lässt sich ohne Apple-Hardware abschließen. Die Schritte in Reihenfolge:
 
 1. `npm i -D @capacitor/cli @capacitor/core @capacitor/ios`
-2. `npx cap init Lucenta app.lucenta.ios --web-dir dist`
-3. `npx cap add ios`
+2. **Kein `npx cap init`** — `capacitor.config.json` liegt bereits im Repo, mit Kennung
+   `app.lucenta.ios`, `webDir: dist` und drei Einstellungen, die hier begründet sind:
+   `limitsNavigationsToAppBoundDomains: true` (die App ruft nichts nach außen, also darf
+   sie es auch nicht dürfen), `contentInset: "always"` (sichere Ränder auch in der Hülle)
+   und eine Hintergrundfarbe, damit beim Start nicht kurz Weiß aufblitzt.
+3. `npx cap add ios`, danach nach jedem `node build.js` ein `npx cap sync ios`
 4. Symbole aus `assets/icon/` in den Asset-Katalog legen (1024 px ohne Alphakanal — Apple
    weist PNG mit Transparenz zurück; `lucenta-icon-1024.png` ist dafür die richtige Datei,
    die gerundete Fassung ist für andere Zwecke).
