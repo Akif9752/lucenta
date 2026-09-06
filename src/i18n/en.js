@@ -626,6 +626,7 @@
       'hg_welle': 'Wave',
       'hg_kohle': 'Charcoal',
       'hg_keine': 'No background',
+      'demo_marke': 'Example data — not yours',
       'demo_erst_beenden': 'Remove the example data first.',
       'demo_beenden': 'Remove example data',
       'rechtliches': 'Legal',

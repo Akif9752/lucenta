@@ -625,6 +625,7 @@
       'hg_welle': 'Onda',
       'hg_kohle': 'Carvão',
       'hg_keine': 'Sem fundo',
+      'demo_marke': 'Dados de exemplo — não são teus',
       'demo_erst_beenden': 'Remove primeiro os dados de exemplo.',
       'demo_beenden': 'Remover os dados de exemplo',
       'rechtliches': 'Informação legal',

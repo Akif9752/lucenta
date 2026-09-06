@@ -629,6 +629,7 @@
       'hg_welle': '波',
       'hg_kohle': '炭',
       'hg_keine': '背景なし',
+      'demo_marke': 'サンプルデータ — あなたのものではありません',
       'demo_erst_beenden': 'まずサンプルデータを消してください。',
       'demo_beenden': 'サンプルデータを消す',
       'rechtliches': '法的情報',

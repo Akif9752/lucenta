@@ -625,6 +625,7 @@
       'hg_welle': 'Vague',
       'hg_kohle': 'Charbon',
       'hg_keine': 'Aucun fond',
+      'demo_marke': 'Données d\'exemple — pas les tiennes',
       'demo_erst_beenden': 'Retire d\'abord les données d\'exemple.',
       'demo_beenden': 'Retirer les données d’exemple',
       'rechtliches': 'Mentions légales',

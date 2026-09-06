@@ -95,7 +95,11 @@
      den Daumen, ohne dass daneben noch eine unsichtbare Fläche nötig wäre" — gemessen sind es
      32 Punkte Höhe und damit zwölf zu wenig. Die Behauptung war eine Schätzung; das hier ist
      eine Messung. Nur die Höhe fehlt, links und rechts steht nichts daneben. */
-  .schalter, .theme-btn, .avatar-edit, .avatar-color-swatch{ position:relative; }
+  /* .avatar-edit steht bewusst NICHT in dieser Zeile: Es ist bereits position:absolute (es
+     sitzt in der Ecke des Profilbilds), und das ist ebenso ein Bezugsrahmen fuer ein ::after.
+     Ein position:relative haette es aus der Ecke in den Textfluss geholt — beim ersten Versuch
+     genau so passiert. */
+  .schalter, .theme-btn, .avatar-color-swatch{ position:relative; }
   .schalter::after, .theme-btn::after{
     content:''; position:absolute; top:50%; left:0; transform:translateY(-50%);
     width:100%; height:44px;

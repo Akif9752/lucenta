@@ -422,6 +422,7 @@ CONTENT.de = {
       'hg_welle': 'Welle',
       'hg_kohle': 'Kohle',
       'hg_keine': 'Kein Hintergrund',
+      'demo_marke': 'Beispieldaten — nicht deine',
       'demo_erst_beenden': 'Dafür zuerst die Beispieldaten entfernen.',
       'demo_beenden': 'Beispieldaten entfernen',
       'rechtliches': 'Rechtliches',

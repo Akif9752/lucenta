@@ -86,11 +86,21 @@ const suchTippflaechen = (min) => {
   if (!v) return klein;
   const halb = Math.floor(min/2) - 1;
   v.querySelectorAll('button, a[href], input, select, [role="switch"], [role="button"]').forEach(el => {
-    const r = el.getBoundingClientRect();
+    let r = el.getBoundingClientRect();
     if (r.width === 0 || r.height === 0) return;
     if (getComputedStyle(el).visibility === 'hidden') return;
+    // Am oberen oder unteren Bildrand laege ein Tastpunkt ausserhalb des Fensters, und
+    // elementFromPoint gibt dort nichts zurueck — der erste Entwurf zaehlte das als zu klein
+    // und meldete jedes Bedienelement am Seitenende. Uebergehen waere der bequeme Ausweg
+    // gewesen und haette echte Faelle mit verschwiegen; stattdessen wird das Element in die
+    // Mitte gerollt und danach neu vermessen.
+    if (r.top < halb + 2 || r.bottom > innerHeight - halb - 2){
+      el.scrollIntoView({block:'center', inline:'center', behavior:'instant'});
+      r = el.getBoundingClientRect();
+    }
     const cx = r.left + r.width/2, cy = r.top + r.height/2;
-    if (cx < 0 || cy < 0 || cx > innerWidth || cy > innerHeight) return;   // ausserhalb des Bildes
+    if (cx < 0 || cx > innerWidth) return;
+    if (cy - halb < 0 || cy + halb > innerHeight - 1) return;   // passt selbst gerollt nicht ins Bild
     const trifft = (x, y) => {
       if (x < 0 || y < 0 || x > innerWidth - 1 || y > innerHeight - 1) return false;
       const t = document.elementFromPoint(x, y);

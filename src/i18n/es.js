@@ -625,6 +625,7 @@
       'hg_welle': 'Ola',
       'hg_kohle': 'Carbón',
       'hg_keine': 'Sin fondo',
+      'demo_marke': 'Datos de ejemplo — no son tuyos',
       'demo_erst_beenden': 'Primero quita los datos de ejemplo.',
       'demo_beenden': 'Quitar los datos de ejemplo',
       'rechtliches': 'Aviso legal',
