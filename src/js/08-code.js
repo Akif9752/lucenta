@@ -62,6 +62,50 @@
     else setzen();
   }
 
+  // Runde 81: Der Messbalken des Vergleichs. Er zeigt bewusst NICHT zwei Balken untereinander,
+  // sondern eine Spur mit zwei Punkten und der Strecke dazwischen: Der Gegenstand des Vergleichs
+  // ist der Abstand, nicht die beiden Zahlen fuer sich. Zwei getrennte Balken haetten die
+  // Leserin die Differenz selbst schaetzen lassen — genau die Arbeit, die eine Darstellung
+  // abnehmen soll.
+  function compatBalkenHTML(me, other){
+    me = Math.max(0, Math.min(100, me));
+    other = Math.max(0, Math.min(100, other));
+    var von = Math.min(me, other), bis = Math.max(me, other);
+    return '<div class="gauge-track cmp-track" data-cmp-me="'+me+'" data-cmp-other="'+other+'" '+
+      'data-cmp-von="'+von+'" data-cmp-bis="'+bis+'" role="img" aria-label="'+
+      tx('js_du_kurz')+' '+me+', '+tx('js_andere_person')+': '+other+'">'+
+      '<div class="cmp-span" style="left:'+von+'%;width:0%"></div>'+
+      '<div class="gauge-tick" style="left:25%"></div>'+
+      '<div class="gauge-tick" style="left:50%"></div>'+
+      '<div class="gauge-tick" style="left:75%"></div>'+
+      '<div class="cmp-dot cmp-dot-other" style="left:50%"></div>'+
+      '<div class="cmp-dot cmp-dot-me" style="left:50%"></div>'+
+      '</div>';
+  }
+
+  // Dieselbe Mechanik wie startGauges: erst im Endzustand setzen, wenn das Element im Baum
+  // steht, sonst laeuft kein Uebergang. Der Datenwert wird danach entfernt, damit ein zweiter
+  // Aufruf den Balken nicht noch einmal von vorn beginnen laesst.
+  function startCompatBars(root){
+    if (!root || !root.querySelectorAll) return;
+    var spuren = root.querySelectorAll('.cmp-track[data-cmp-me]');
+    var setzen = function(){
+      for (var i=0;i<spuren.length;i++){
+        var t = spuren[i];
+        var von = t.getAttribute('data-cmp-von'), bis = t.getAttribute('data-cmp-bis');
+        var sp = t.querySelector('.cmp-span');
+        var dm = t.querySelector('.cmp-dot-me'), doo = t.querySelector('.cmp-dot-other');
+        if (sp) sp.style.width = (bis - von)+'%';
+        if (dm) dm.style.left = t.getAttribute('data-cmp-me')+'%';
+        if (doo) doo.style.left = t.getAttribute('data-cmp-other')+'%';
+        t.removeAttribute('data-cmp-me');
+      }
+    };
+    if (prefersReducedMotion()){ setzen(); return; }
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(function(){ requestAnimationFrame(setzen); });
+    else setzen();
+  }
+
   function ringGaugeSVG(percent, size, label){
     size = size || 132;
     var pct = Math.max(0, Math.min(100, Math.round(percent)));

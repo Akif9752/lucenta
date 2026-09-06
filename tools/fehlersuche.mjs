@@ -210,7 +210,32 @@ const WEGE = {
   recht:      ['#btnDrawerToggle', '#btnDrawerSettings', '#btnRecht'],
   state:      ['#btnHome', '#btnLandingStateHistory'],
   result:     ['#btnDrawerToggle', '#btnDrawerProfileRow', '#btnProfileViewResult'],
-  quiz:       ['#btnHome', '#btnStart', '#btnRunSelf']
+  quiz:       ['#btnHome', '#btnStart', '#btnRunSelf'],
+  // Runde 81: Das Vergleichsergebnis entsteht erst, wenn zwei Codes eingetragen und verglichen
+  // wurden — bis dahin ist der Block leer. Die Pruefung lief deshalb bisher an fuenf
+  // aufklappbaren Karten, zwei Eingabefeldern und einem Messbalken vorbei, ohne sie je zu
+  // sehen. Der Weg traegt seine Eingaben jetzt selbst.
+  vergleich:  ['#btnDrawerToggle', '#btnDrawerCompare']
+};
+// Ansichten, deren Kennung nicht 'view-<name>' lautet, und was nach dem Weg noch zu tun ist.
+const NACHBEREITUNG = {
+  // Zwei Ergebnisse aus echten Werten: O, C und A liegen nah beieinander, E und S weit
+  // auseinander. Das ergibt eine gemischte Verteilung und damit BEIDE Kartensorten in einem
+  // Bild — mit zwei gleichen oder zwei entgegengesetzten Codes waere immer nur eine zu sehen.
+  vergleich: {ansicht:'result', tun: async (p) => {
+    await p.fill('#cmpMe', '221r1g1y1c');
+    await p.fill('#cmpOther', '240k1e1w2d');
+    await p.click('#btnCompare');
+    await p.waitForTimeout(1400);
+    // Alle Karten aufklappen: zugeklappt bleibt der halbe Inhalt ungemessen.
+    await p.evaluate(() => document.querySelectorAll('.compat-card').forEach(k => k.open = true));
+    await p.waitForTimeout(500);
+    // Ohne diese Zeile waere ein leeres Vergleichsergebnis eine bestandene Pruefung: Wo nichts
+    // steht, ragt nichts heraus und ist keine Flaeche zu klein. Eine Pruefung, die an ihrem
+    // eigenen Gegenstand vorbeilaufen kann, ist keine.
+    const karten = await p.evaluate(() => document.querySelectorAll('.compat-card').length);
+    if (karten !== 5) throw new Error('Vergleich zeigt ' + karten + ' statt 5 Karten');
+  }}
 };
 
 async function zu(p, ansicht){
@@ -225,8 +250,11 @@ async function zu(p, ansicht){
     await p.waitForTimeout(400);
   }
   await p.waitForTimeout(250);
+  const nach = NACHBEREITUNG[ansicht];
   const jetzt = await p.evaluate(() => document.querySelector('.view.active')?.id || '');
-  return jetzt === 'view-' + ansicht;
+  if (jetzt !== 'view-' + ((nach && nach.ansicht) || ansicht)) return false;
+  if (nach) await nach.tun(p);
+  return true;
 }
 
 async function pruefeAnsicht(p, ansicht, kennung, breite){
@@ -282,7 +310,7 @@ async function durchlauf({thema, demo, sprache, breite}){
     const angekommen = await zu(p, ansicht);
     if (!angekommen){
       // Ohne Bestand gibt es kein Ergebnis und damit richtigerweise keinen Weg dorthin.
-      if (!(ansicht === 'result' && !demo)) melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar');
+      if (!((ansicht === 'result' || ansicht === 'vergleich') && !demo)) melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar');
       continue;
     }
     await pruefeAnsicht(p, ansicht, kennung, breite);

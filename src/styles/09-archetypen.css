@@ -426,3 +426,30 @@
     outline:2px dashed var(--danger); outline-offset:2px;
   }
   .drawer-profile-row.ist-demo .drawer-profile-text .l{ color:var(--danger); }
+
+  /* ---------- Vergleich je Dimension (Runde 81) ----------
+     Die Karten sind dieselbe Bauform wie beim eigenen Ergebnis (.trait-card) — die Regeln dafuer
+     stehen in 08-formulare-und-dialoge.css und gelten hier unveraendert mit. Ergaenzt wird nur,
+     was es beim eigenen Ergebnis nicht gibt: zwei Werte statt einem und der Abstand dazwischen. */
+  .compat-paar{display:flex;align-items:baseline;gap:6px;font-size:13px;flex-shrink:0;}
+  .compat-wert-me{color:var(--accent-strong);font-weight:500;}
+  .compat-wert-other{color:var(--accent-2-text);font-weight:500;}
+  .compat-wert-sep{color:var(--muted);}
+  /* Die Strecke zwischen beiden Werten ist der eigentliche Gegenstand: Sie zeigt den Abstand als
+     Laenge, statt ihn aus zwei Zahlen erschliessen zu lassen. */
+  .cmp-span{
+    position:absolute;top:0;bottom:0;border-radius:100px;
+    background:linear-gradient(90deg, var(--accent), var(--accent-2));
+    opacity:.55;transition:width .9s cubic-bezier(.2,.8,.2,1);
+  }
+  .cmp-dot{
+    position:absolute;top:50%;width:12px;height:12px;border-radius:50%;
+    background:var(--surface);transform:translate(-50%,-50%);box-shadow:var(--shadow-sm);
+    transition:left .9s cubic-bezier(.2,.8,.2,1);
+  }
+  .cmp-dot-me{border:2.5px solid var(--accent-strong);z-index:2;}
+  .cmp-dot-other{border:2.5px solid var(--accent-2-text);z-index:1;}
+  @media (prefers-reduced-motion: reduce){ .cmp-span,.cmp-dot{transition:none;} }
+  /* Der Schlusssatz haengt an der tatsaechlichen Verteilung und ist damit laenger als die Zeile
+     davor — er bekommt eine eigene Zeile statt im selben Absatz weiterzulaufen. */
+  .compat-gesamt-satz{margin-top:8px;color:var(--muted);}

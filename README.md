@@ -135,6 +135,13 @@ Sechs Ebenen, die sich ergänzen:
    Runde 60). Sie steht namentlich da und nicht als gesenkte Zahl, damit sie eine Entscheidung
    bleibt.
 
+   Ein Weg trägt seine eigenen Eingaben: Das Vergleichsergebnis entsteht erst, wenn zwei Codes
+   eingetragen und verglichen wurden — bis dahin ist der Block leer, und die Prüfung lief an
+   fünf Karten, zwei Feldern und einem Messbalken vorbei, ohne sie je zu sehen. Sie trägt die
+   Codes jetzt selbst ein und **bricht ab, wenn danach keine fünf Karten dastehen**: Wo nichts
+   steht, ragt nichts heraus und ist keine Fläche zu klein — eine Prüfung, die an ihrem eigenen
+   Gegenstand vorbeilaufen kann, ist keine.
+
    Nicht in `npm test`, weil es einen Browser braucht; ein voller Lauf dauert rund zwölf Minuten.
 
 **Warum es Punkt 3 gibt, und das ist die wichtigste Zeile in dieser Datei:** Der Ersatz-DOM aus

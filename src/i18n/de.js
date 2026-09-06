@@ -82,7 +82,7 @@ CONTENT.de = {
       'js_von__dimensionen_ähnlich': ' von 5 Dimensionen ähnlich, ',
       'js_unterschiedlich__beides_k': ' unterschiedlich — beides kann eine gute Basis sein, je nachdem, wie bewusst ihr damit umgeht.</div>',
       'js_duandere_person': '<div class="compat-legend"><span><span class="dot dot-me"></span>Du</span><span><span class="dot dot-other"></span>Andere Person</span></div>',
-      'js_die_prozentzahl_oben_ist_e': '<div class="compat-note">Die Prozentzahl oben ist eine vereinfachte Kennzahl aus der durchschnittlichen Abweichung aller fünf Dimensionen — kein wissenschaftlich gewichteter Kompatibilitäts-Score. Ähnlicher zu sein ist zudem nicht automatisch besser — anders als bei den einzelnen Dimensionen selbst ist die Forschung dazu, welche Kombination gut zusammenpasst, deutlich weniger eindeutig. Die obige Einschätzung ist ein Denkanstoß, kein wissenschaftliches Urteil über eure Beziehung.</div>',
+      'js_die_prozentzahl_oben_ist_e': '<div class="compat-note">Die Prozentzahl ist eine vereinfachte Kennzahl aus der mittleren Abweichung der fünf Dimensionen &mdash; kein Kompatibilitäts-Score. Ähnlicher hei&szlig;t nicht besser: Welche Kombination gut zusammenpasst, ist wissenschaftlich deutlich weniger klar als die Dimensionen selbst. Ein Denkansto&szlig;, kein Urteil über eure Beziehung.</div>',
       'js_übereinstimmung': 'Übereinstimmung',
       'js_profil_öffnen': 'Profil öffnen',
       'js_name_bild__ergebnis_hinzuf': 'Name, Bild & Ergebnis hinzufügen',
@@ -422,6 +422,12 @@ CONTENT.de = {
       'hg_welle': 'Welle',
       'hg_kohle': 'Kohle',
       'hg_keine': 'Kein Hintergrund',
+      'cmp_feld_alltag': 'Im Alltag',
+      'cmp_feld_gespraech': 'Im Gespräch',
+      'cmp_feld_gemeinsam': 'Gemeinsam unternehmen',
+      'js_alltag_beziehungen_wachstum_cmp': 'Alltag &middot; Gespräch &middot; Gemeinsam',
+      'js_unterschiedlich_punkt': ' unterschiedlich.',
+      'js_du_kurz': 'Du:',
       'demo_marke': 'Beispieldaten — nicht deine',
       'demo_erst_beenden': 'Dafür zuerst die Beispieldaten entfernen.',
       'demo_beenden': 'Beispieldaten entfernen',
@@ -571,12 +577,35 @@ CONTENT.de = {
     ADJ: { E:{high:'gesellig', low:'ruhig'}, A:{high:'warmherzig', low:'direkt'},
         C:{high:'strukturiert', low:'spontan'}, S:{high:'gelassen', low:'feinfühlig'}, O:{high:'neugierig', low:'bodenständig'} },
     COMPAT: {
-        E:{ similar:'Ihr braucht ähnlich viel soziale Energie – gemeinsame Zeit lässt sich leicht abstimmen.', diff:'Eine Person lädt sich in Gesellschaft auf, die andere eher im Rückzug. Sprecht offen ab, wie viel gemeinsame vs. eigene Zeit ihr braucht.'},
-        A:{ similar:'Ihr tickt bei Rücksichtnahme und Direktheit ähnlich – eure Erwartungen ans Gespräch passen zusammen.', diff:'Eine Person entscheidet eher nach Gefühl, die andere eher nach Fakten. Das kann sich gut ergänzen, wenn ihr Kritik bewusst in der Sprache des anderen formuliert.'},
-        C:{ similar:'Euer Umgang mit Plänen und Ordnung ist ähnlich getaktet – das bedeutet weniger Reibung im Alltag.', diff:'Eine Person plant gern durch, die andere bleibt lieber spontan. Feste Absprachen (Kalender, klare Deadlines) beugen Frust auf beiden Seiten vor.'},
-        S:{ similar:'Ihr geht ähnlich mit Stress um – ihr versteht intuitiv, wie viel Raum der andere in schwierigen Momenten braucht.', diff:'Eine Person bleibt in stressigen Momenten ruhig, die andere reagiert emotionaler. Wichtig: Niemand muss sich für seine Reaktion rechtfertigen.'},
-        O:{ similar:'Eure Offenheit für Neues liegt auf ähnlichem Niveau – eure Vorstellung von einem guten gemeinsamen Abend dürfte zusammenpassen.', diff:'Eine Person sucht eher Neues, die andere Bewährtes. Wechselt euch bewusst ab, wer die nächste Aktivität aussucht.'}
+        E:{ similar:'Ihr braucht ähnlich viel soziale Energie – gemeinsame Zeit lässt sich leicht abstimmen.', diff:'Eine Person lädt sich in Gesellschaft auf, die andere eher im Rückzug. Sprecht offen ab, wie viel gemeinsame vs. eigene Zeit ihr braucht.',
+          felder:{
+            similar:{alltag:'Ihr braucht ungefähr gleich viel Gesellschaft und gleich viel Ruhe. Die Frage, wie ein Abend aussieht, hat bei euch selten Verhandlungscharakter.', gespraech:'Ihr redet in ähnlichem Tempo und mit ähnlich vielen Pausen. Keiner von euch muss sich Raum nehmen, keiner muss Raum lassen.', gemeinsam:'Große Runde oder zu zweit — ihr tendiert zur selben Antwort. Achtet darauf, dass ihr euch nicht gegenseitig bestätigt, bis die andere Seite ganz wegfällt.'},
+            diff:{alltag:'Eine Person lädt sich unter Menschen auf, die andere allein. Nach demselben Tag braucht ihr Gegenteiliges — das ist kein Desinteresse, sondern eine andere Batterie.', gespraech:'Eine Person denkt beim Reden, die andere denkt vor dem Reden. Eine Pause ist deshalb nicht immer Zustimmung, und eine schnelle Antwort nicht immer Übereilung.', gemeinsam:'Plant beides ein, statt einen Mittelweg zu suchen, bei dem sich keiner erholt: einen Abend mit Leuten und einen ohne. Wer aussucht, wechselt sich ab.'}}},
+        A:{ similar:'Ihr tickt bei Rücksichtnahme und Direktheit ähnlich – eure Erwartungen ans Gespräch passen zusammen.', diff:'Eine Person entscheidet eher nach Gefühl, die andere eher nach Fakten. Das kann sich gut ergänzen, wenn ihr Kritik bewusst in der Sprache des anderen formuliert.',
+          felder:{
+            similar:{alltag:'Ihr habt ein ähnliches Maß dafür, wann man nachgibt und wann man auf etwas besteht. Kleine Reibungen klären sich meist von selbst.', gespraech:'Kritik kommt bei euch in vergleichbarer Verpackung an. Ihr müsst nicht übersetzen, was die andere Person eigentlich meint.', gemeinsam:'Bei Entscheidungen zieht ihr in dieselbe Richtung. Passt auf, dass nicht beide aus Rücksicht schweigen und am Ende keiner bekommt, was er wollte.'},
+            diff:{alltag:'Eine Person achtet zuerst auf die Stimmung, die andere zuerst auf die Sache. Beides ist im Alltag nützlich, nur selten gleichzeitig.', gespraech:'Direkt gesagt ist für die eine Person Klarheit und für die andere Härte. Sagt euch einmal, was ihr jeweils als fair empfindet — das erspart viele Auslegungen.', gemeinsam:'Bei Absprachen mit Dritten übernimmt am besten die Person das Wort, die den Ton dafür leichter trifft, statt dass beide es gleichzeitig versuchen.'}}},
+        C:{ similar:'Euer Umgang mit Plänen und Ordnung ist ähnlich getaktet – das bedeutet weniger Reibung im Alltag.', diff:'Eine Person plant gern durch, die andere bleibt lieber spontan. Feste Absprachen (Kalender, klare Deadlines) beugen Frust auf beiden Seiten vor.',
+          felder:{
+            similar:{alltag:'Plan, Ordnung und Fristen sind bei euch ähnlich getaktet. Der häufigste Reibungspunkt zwischen zusammenlebenden Menschen fällt bei euch weitgehend weg.', gespraech:'Ihr meint dasselbe, wenn ihr „gleich" sagt. Verabredungen brauchen bei euch weniger Nachfragen.', gemeinsam:'Ob eine Reise durchgeplant oder offen ist, darüber müsst ihr kaum streiten. Prüft trotzdem gelegentlich, ob eure gemeinsame Gewohnheit noch zu dem passt, was ihr eigentlich wollt.'},
+            diff:{alltag:'Eine Person plant, die andere entscheidet unterwegs. Im Haushalt und bei Terminen erzeugt dieser Unterschied am schnellsten Frust — und lässt sich mit einer sichtbaren Absprache am leichtesten entschärfen.', gespraech:'„Ich mach das noch" bedeutet für euch verschiedene Zeiträume. Nennt Zeitpunkte statt Absichten, dann ist niemand unzuverlässig, nur weil er anders rechnet.', gemeinsam:'Lasst die planende Person den Rahmen setzen und die spontane die Lücken füllen. Das nutzt beide Stärken, statt eine davon zu bremsen.'}}},
+        S:{ similar:'Ihr geht ähnlich mit Stress um – ihr versteht intuitiv, wie viel Raum der andere in schwierigen Momenten braucht.', diff:'Eine Person bleibt in stressigen Momenten ruhig, die andere reagiert emotionaler. Wichtig: Niemand muss sich für seine Reaktion rechtfertigen.',
+          felder:{
+            similar:{alltag:'Ihr reagiert auf Belastung ähnlich stark. Ihr müsst euch seltener erklären, warum euch etwas mitnimmt — oder eben nicht.', gespraech:'In angespannten Momenten schlagt ihr ein ähnliches Tempo an. Das macht Streit berechenbarer.', gemeinsam:'Wenn es beide gleichzeitig trifft, fehlt der ruhige Pol. Überlegt vorher, wen ihr dazu holt, wenn eine Woche für euch beide zu viel wird.'},
+            diff:{alltag:'Eine Person bleibt in schwierigen Momenten ruhig, die andere reagiert stärker. Ruhe ist dabei nicht Gleichgültigkeit und eine starke Reaktion keine Übertreibung.', gespraech:'Wer sich schneller aufregt, braucht zuerst Gehör und nicht zuerst eine Lösung. Wer ruhig bleibt, braucht die Zusicherung, dass Ruhe nicht als Desinteresse gelesen wird.', gemeinsam:'Bei Unvorhergesehenem ist der ruhigere Pol eine echte Entlastung. Achtet darauf, dass daraus keine Rolle wird, die immer dieselbe Person trägt.'}}},
+        O:{ similar:'Eure Offenheit für Neues liegt auf ähnlichem Niveau – eure Vorstellung von einem guten gemeinsamen Abend dürfte zusammenpassen.', diff:'Eine Person sucht eher Neues, die andere Bewährtes. Wechselt euch bewusst ab, wer die nächste Aktivität aussucht.',
+          felder:{
+            similar:{alltag:'Neues oder Bewährtes — ihr habt eine ähnliche Grundneigung. Ob etwas ausprobiert wird, stellt sich bei euch seltener als Konflikt.', gespraech:'Ihr findet ähnliche Themen interessant. Gespräche laufen leichter an, drehen sich aber auch schneller im Kreis.', gemeinsam:'Eure Vorstellung von einem guten gemeinsamen Abend dürfte zusammenpassen. Holt euch gelegentlich einen Vorschlag von außen, damit die Auswahl nicht schrumpft.'},
+            diff:{alltag:'Eine Person sucht Abwechslung, die andere Verlässlichkeit. Im Alltag zeigt sich das an Kleinigkeiten — Essen, Wege, Routinen — häufiger als an großen Entscheidungen.', gespraech:'Was für die eine Person ein spannender Gedanke ist, ist für die andere eine unnötige Verkomplizierung. Beides gilt, wenn ihr es benennt, statt es zu bewerten.', gemeinsam:'Wechselt euch bewusst damit ab, wer die nächste Unternehmung aussucht — und die andere Person geht ohne Kommentar mit.'}}}
       },
+    CMP_GESAMT: [
+      'Ihr unterscheidet euch in allen fünf Dimensionen. Das heißt selten, dass es nicht passt — es heißt, dass wenig von selbst geht und vieles besprochen werden will.',
+      'Vier von fünf Dimensionen liegen auseinander. Ihr erlebt dieselben Situationen unterschiedlich; die eine Gemeinsamkeit ist der Boden, von dem aus sich das erklären lässt.',
+      'Zwei Dimensionen tragen, drei fordern. Ihr merkt eure Unterschiede im Alltag — und habt zugleich zwei Stellen, an denen ihr euch nicht erklären müsst.',
+      'Drei Dimensionen tragen, zwei fordern. Das ist die Mischung, in der die meisten langen Verbindungen liegen: genug Gemeinsames für Selbstverständlichkeit, genug Unterschied, dass es nicht eng wird.',
+      'Vier von fünf Dimensionen liegen nah beieinander. Vieles versteht sich bei euch von selbst; achtet darauf, dass der eine Unterschied deshalb nicht schwerer wiegt, als er ist.',
+      'Ihr liegt in allen fünf Dimensionen nah beieinander. Das ist bequem — und die Lage, in der gemeinsame blinde Flecken am wahrscheinlichsten sind, weil euch dasselbe auffällt und dasselbe entgeht.',
+    ],
       // "Verstehen"-Bibliothek: kurze, an etablierte Big-Five-Forschung angelehnte Einordnungen,
       // bewusst getrennt vom Alltag/Beziehungen/Wachstum-Bericht oben — keine neuen Sub-Facetten,
       // sondern breit replizierte Zusammenhänge auf Dimensionsebene, vorsichtig formuliert

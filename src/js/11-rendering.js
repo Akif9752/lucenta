@@ -372,11 +372,42 @@
       return;
     }
     var similar=0, diff=0;
-    var lines = ORDER.map(function(f){
+    // Runde 81: Der Vergleich zeigte je Dimension EINEN Satz und sonst nichts, waehrend das
+    // eigene Ergebnis daneben aufklappbare Karten mit drei Lebensbereichen hat. Derselbe
+    // Gegenstand, zwei Tiefen — und die flachere ausgerechnet dort, wo es um zwei Menschen
+    // geht. Die Karten hier sind bewusst DIESELBE Bauform (.trait-card): gleiche Geste,
+    // gleicher Aufbau, gleiche Erwartung. Nur die Kopfzeile traegt statt einer Punktzahl
+    // beide Werte, weil es hier zwei Messungen gibt.
+    var lines = ORDER.map(function(f, i){
       var d = Math.abs(me[f]-other[f]);
       var isSim = d<15;
       if (isSim) similar++; else diff++;
-      return '<div class="compat-line"><b>'+LABELS[f]+tx('js_du')+me[f]+' · '+tx('js_andere_person')+': '+other[f]+'<br>'+(isSim?COMPAT[f].similar:COMPAT[f].diff)+'</div>';
+      var lage = isSim ? 'similar' : 'diff';
+      var fe = (COMPAT[f].felder || {})[lage] || {};
+      var abschnitt = function(schluessel, text){
+        return text ? '<div class="trait-section"><div class="trait-section-label">'+
+               tx(schluessel)+'</div><p>'+text+'</p></div>' : '';
+      };
+      return '<details class="trait-card compat-card"'+(i===0?' open':'')+
+        ' style="animation-delay:'+(i*60)+'ms">'+
+        '<summary>'+
+          '<div class="trait-top"><span class="trait-name">'+LABELS[f]+'</span>'+
+            '<span class="compat-paar mono"><span class="compat-wert-me">'+me[f]+'</span>'+
+            '<span class="compat-wert-sep">·</span>'+
+            '<span class="compat-wert-other">'+other[f]+'</span></span></div>'+
+          compatBalkenHTML(me[f], other[f])+
+          '<div class="trait-teaser">'+(isSim?COMPAT[f].similar:COMPAT[f].diff)+'</div>'+
+          '<div class="trait-more"><span class="tm-shut">'+tx('js_alltag_beziehungen_wachstum_cmp')+'</span>'+
+          '<span class="tm-open">'+tx('js_weniger_anzeigen')+'</span>'+
+            '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>'+
+          '</div>'+
+        '</summary>'+
+        '<div class="trait-sections">'+
+          abschnitt('cmp_feld_alltag', fe.alltag)+
+          abschnitt('cmp_feld_gespraech', fe.gespraech)+
+          abschnitt('cmp_feld_gemeinsam', fe.gemeinsam)+
+        '</div>'+
+      '</details>';
     });
     // Einzelne, sofort erfassbare Kennzahl obendrauf — eine einfache, vereinfachte Kennzahl aus
     // der mittleren Abweichung aller fünf Dimensionen, kein wissenschaftlich gewichteter Score
@@ -385,7 +416,15 @@
     var match = Math.round(100 - avgDiff);
     var matchLabel = match>=75 ? tx('js_hohe_übereinstimmung') : match>=45 ? tx('js_gemischtes_profil') : tx('js_deutlich_unterschiedliche_prof');
     var scoreBlock = '<div class="compat-score"><div id="compatRing"></div><div class="compat-score-label">'+matchLabel+'</div></div>';
-    var summary = '<div class="compat-line compat-line-total"><b>'+tx('js_insgesamt')+'</b> '+similar+tx('js_von__dimensionen_ähnlich')+diff+tx('js_unterschiedlich__beides_k');
+    // Runde 81: Der Schlusssatz war fuer JEDE Verteilung derselbe — "beides kann eine gute
+    // Basis sein, je nachdem, wie bewusst ihr damit umgeht". Der Satz ist nicht falsch, aber
+    // er gilt fuer alles und sagt damit nichts: Wer fuenf von fuenf teilt, liest denselben
+    // Satz wie jemand, der keine einzige teilt. Jetzt haengt er an der tatsaechlichen
+    // Verteilung, sechs Lagen von null bis fuenf, und jede sagt etwas anderes.
+    var gesamtSatz = (CMP_GESAMT && CMP_GESAMT[similar]) || '';
+    var summary = '<div class="compat-line compat-line-total"><b>'+tx('js_insgesamt')+'</b> '+similar+
+      tx('js_von__dimensionen_ähnlich')+diff+tx('js_unterschiedlich_punkt')+
+      '<div class="compat-gesamt-satz">'+gesamtSatz+'</div></div>';
     var radarBlock = '<div class="radar-wrap compat-radar">'+radarSVG(me, 300, {scores:other})+'</div>'+
       tx('js_duandere_person');
     var note = tx('js_die_prozentzahl_oben_ist_e');
@@ -397,6 +436,7 @@
       '<button type="button" class="btn btn-ghost btn-sm" id="btnSaveCompat">'+tx('js_vergleich_speichern')+'</button>'+
       '</div>';
     box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note + saveRow;
+    startCompatBars(box);
     lastCompatSnapshot = { myCode: $('cmpMe').value.trim(), otherCode: $('cmpOther').value.trim(), match: match };
     var saveBtn = $('btnSaveCompat');
     if (saveBtn){

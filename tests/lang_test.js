@@ -73,9 +73,23 @@
     var fehlend = Object.keys(CONTENT.de.UI).filter(function(k){ return !(k in pack.UI); });
     ok(fehlend.length === 0, c+": kein Oberflaechen-Text ohne Fassung: "+fehlend.slice(0,3).join(', '));
     ok(pack.QUIZ_HINTS.length === CONTENT.de.QUIZ_HINTS.length, c+": gleich viele Quiz-Hinweise");
+    // Sechs Gesamteinschaetzungen, eine je Zahl uebereinstimmender Dimensionen (0 bis 5). Fehlte
+    // eine, stuende bei genau dieser Verteilung gar nichts — schlimmer als der eine Satz fuer
+    // alle, den sie ersetzen.
+    ok(pack.CMP_GESAMT && pack.CMP_GESAMT.length === 6, c+": CMP_GESAMT hat sechs Lagen");
+    ok((pack.CMP_GESAMT||[]).every(function(t){ return typeof t === 'string' && t.length > 20; }),
+       c+": jede Lage in CMP_GESAMT traegt einen Satz");
     ['E','A','C','S','O'].forEach(function(f){
       ok(pack.PROFILES[f].high.alltag && pack.PROFILES[f].low.wachstum, c+": PROFILES."+f+" vollstaendig");
       ok(pack.COMPAT[f].similar && pack.COMPAT[f].diff, c+": COMPAT."+f+" vollstaendig");
+      // Runde 81: Der Vergleich hat je Dimension und Lage drei Lebensbereiche. Sechs Texte je
+      // Dimension, in sieben Sprachen — ohne diese Pruefung faellt ein fehlender erst dann auf,
+      // wenn jemand in genau dieser Sprache genau diese Dimension aufklappt.
+      ['similar','diff'].forEach(function(lage){
+        var fe = (pack.COMPAT[f].felder||{})[lage]||{};
+        ok(fe.alltag && fe.gespraech && fe.gemeinsam,
+           c+": COMPAT."+f+".felder."+lage+" hat alle drei Lebensbereiche");
+      });
       ok(pack.UNDERSTAND[f].high.length===2 && pack.UNDERSTAND[f].low.length===2, c+": UNDERSTAND."+f+" vollstaendig");
       ok(pack.FACTORS[f].length === 10, c+": FACTORS."+f+" hat 10 Items");
       // Der entscheidende Punkt: Die MESSUNG darf sich durch eine Uebersetzung nicht aendern.
