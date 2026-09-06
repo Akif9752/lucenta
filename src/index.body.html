@@ -2,6 +2,11 @@
 <script>(function(){document.documentElement.lang='de';try{var t=localStorage.getItem('lucenta_theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
 
 <a href="#mainContent" class="skip-link" data-i18n="zum_inhalt_springen">Zum Inhalt springen</a>
+<!-- Runde 71: Bewegter Hintergrund. Liegt bewusst VOR #shell und nicht in der Startansicht:
+     Eine Ansicht bekommt beim Wechsel eine Animation und damit einen eigenen Stapelkontext, in
+     dem ein negativer z-index gefangen bliebe. Als Geschwister von #shell mit z-index:0 liegt
+     die Fläche über dem Seitenhintergrund und unter allem Inhalt (#shell trägt z-index:1). -->
+<canvas id="sternenhimmel" aria-hidden="true"></canvas>
 <div id="shell">
   <div id="focusline"><div id="focusline-fill"></div><div class="focusline-tick" style="left:25%"></div><div class="focusline-tick" style="left:50%"></div><div class="focusline-tick" style="left:75%"></div></div>
   <header class="top">

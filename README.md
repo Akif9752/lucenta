@@ -268,7 +268,17 @@ keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu. Ve
   Fortschritt, keine erfundenen Preisanker. Bewegung, die eine Handlung beantwortet, ist Funktion;
   Bewegung, die beeindrucken soll, ist Dekoration.
 
-  **Eine bewusste Ausnahme (Runde 62):** Der schwache, langsam atmende Schein hinter der
+  **Zwei bewusste Ausnahmen.** Beide beantworten keine Handlung, beide waren ausdrücklich
+  gewünscht, beide stehen hier, damit sie niemand später für ein Versehen hält — und damit klar
+  bleibt, dass der Grundsatz gilt und diese Stellen die Ausnahmen sind, nicht der neue Maßstab.
+
+  **Runde 71: der bewegte Sternenhimmel auf der Startseite.** Er läuft nur dort, pausiert im
+  Fragebogen und bei verborgenem Tab und steht bei `prefers-reduced-motion` still. Anzumerken
+  ist, dass er der Aussage direkt davor widerspricht: „Lern dich kennen &mdash; mit Wissenschaft,
+  nicht mit Sternzeichen." Ein Sternenhimmel hinter genau diesem Satz ist ein sichtbarer
+  Widerspruch zur Kernaussage der Marke. Das wurde vor dem Bau benannt und bewusst so entschieden.
+
+  **Runde 62:** Der schwache, langsam atmende Schein hinter der
   Startseiten-Überschrift beantwortet keine Handlung. Er ist Zierde, wurde ausdrücklich gewünscht
   und ist in `10-druckzustaende.css` als solche benannt. Er steht hier, damit niemand ihn später
   für ein Versehen hält und entfernt — und damit klar bleibt, dass der Grundsatz selbst gilt und
