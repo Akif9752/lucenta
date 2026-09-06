@@ -34,9 +34,27 @@ tools/audit_i18n.py   statische Prüfung der Mehrsprachigkeit
 tools/fehlersuche.mjs Fehlersuche im echten Browser über alle Ansichten
 tools/schriften_holen.mjs  holt die Schriften und legt sie als Daten ins Stilblatt
 tools/renderer/       eigener HTML/CSS-Renderer (Python), siehe unten
-docs/                 Produktplan und Markenrecherche
+docs/                 Produktplan, Markenrecherche, App-Store-Arbeitsliste
+LIZENZEN.md           Urheberrechtsvermerke der drei eingebetteten Schriften (OFL 1.1)
 assets/icon/          App-Symbol in elf Größen
 ```
+
+**Die Datei ist seit Runde 80 deutlich groesser, und das ist ein Handel, kein Versehen.**
+Vorher: 788 KB roh, 251 KB gzip, dazu drei Schriften, die von Google nachgeladen wurden.
+Jetzt: 1.026 KB roh, 429 KB gzip, und nichts wird nachgeladen. Die 176 KB Schriftdaten
+liegen im Stilblatt und damit im ersten Abruf — bei einem eingebetteten Stilblatt gibt es
+kein Nachreichen, `font-display:swap` laeuft ins Leere.
+
+Fuer eine App aus dem Store ist das gleichgueltig (die Datei liegt auf dem Geraet) und der
+Gewinn eindeutig: keine Verbindung nach aussen, kein Datenschutzproblem, vollstaendiges
+Aussehen ohne Netz. Fuer die Fassung im Browser kostet es rund eine Sekunde auf gedrosseltem
+Mobilfunk. Der Handel ist zugunsten der App entschieden, weil sie das Ziel ist.
+
+Der groesste einzelne Posten ist die **kursive Fraunces mit 41 KB fuer genau eine Stelle** —
+das `<em>` in der Ueberschrift der Startseite. Bewusst behalten: Es ist die erste Zeile, die
+jemand sieht, und eine schraeggestellte Fraunces ist keine kursive Fraunces, weil die echten
+Kursivformen andere Buchstaben sind. Wer die Datei kleiner braucht, streicht diesen einen
+Schnitt in `tools/schriften_holen.mjs`.
 
 **Warum ein Aufbauschritt und keine Module im Browser:** Die App soll ohne Server lauffähig
 bleiben — `dist/lucenta.html` lässt sich direkt öffnen —, und die Veröffentlichung als Artefakt
