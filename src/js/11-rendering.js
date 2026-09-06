@@ -155,14 +155,24 @@
     // Ergebnis — ein etablierter kleiner Baustein datengetriebener Premium-Apps beim ersten
     // Reveal. Wird bei reduzierter Bewegungspräferenz komplett übersprungen.
     if (prefersReducedMotion()){ reveal(); return; }
+    // Runde 64: Der Balken sprang bisher erst beim Wechsel zur Ergebnisansicht auf 100 % — also
+    // hinter der Überlagerung, wo ihn niemand sah. Die fünfzigste Antwort schließt ihn jetzt
+    // sichtbar ab, bevor die Überlagerung kommt. Das ist der eigentliche Abschluss: nicht das
+    // Ergebnis, sondern die letzte beantwortete Frage.
+    $('focusline-fill').style.width = '100%';
+    pulseFocusline();
     var overlay = $('processingOverlay');
-    overlay.classList.add('show');
-    overlay.setAttribute('aria-hidden','false');
+    // 900 statt 700 ms: Das Fünfeck braucht 620 ms zum Zeichnen und 340 ms zum Füllen. Kürzer
+    // hieße, den Moment abzuschneiden, den man gerade erst eingeführt hat; länger hieße warten.
     setTimeout(function(){
-      overlay.classList.remove('show');
-      overlay.setAttribute('aria-hidden','true');
-      reveal();
-    }, 700);
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden','false');
+      setTimeout(function(){
+        overlay.classList.remove('show');
+        overlay.setAttribute('aria-hidden','true');
+        reveal();
+      }, 900);
+    }, 260);
   }
 
   // Runde 62: Die fünf Dimensionskarten blendeten beim Rendern ein — alle fünf, gleichzeitig,

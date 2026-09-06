@@ -5,10 +5,39 @@
     opacity:0;pointer-events:none;transition:opacity .25s ease;
   }
   #processingOverlay.show{opacity:1;pointer-events:auto;}
-  .processing-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);animation:pulse-dot 1s ease-in-out infinite;}
-  @keyframes pulse-dot{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.6);opacity:.55;}}
+  /* Runde 64: Vorher ein pulsierender Punkt — funktional, aber austauschbar; derselbe Punkt
+     stünde in jeder beliebigen App. Jetzt zeichnet sich das Fünfeck der Marke selbst und füllt
+     sich danach. Das ist wörtlich das Produktversprechen ("Lucenta zeichnet dein
+     Persönlichkeitsporträt") und dieselbe Form wie das App-Symbol und die fünf Radar-Achsen —
+     eine Bewegung, die etwas bedeutet, statt eine, die Wartezeit überbrückt.
+
+     Der Umfang des Fünfecks liegt bei rund 44 Einheiten im 24er-Koordinatensystem; 46 als
+     Strichmuster ist knapp darüber und schließt die Kontur damit sicher. */
+  .processing-mark{color:var(--accent);}
+  /* Die Animation haengt an ".show", nicht am Element selbst. Zuerst stand sie direkt auf dem
+     Polygon — dann lief sie beim Laden der Seite los, in einer unsichtbaren Ueberlagerung, und
+     war laengst fertig, wenn der Moment kam. Gemessen: stroke-dashoffset war zu jedem Zeitpunkt
+     schon 0. Ein Fehler, den man nur im Browser sieht, nicht im Quelltext. */
+  .processing-mark polygon{ stroke-dasharray:46; stroke-dashoffset:46; }
+  .processing-mark .processing-mark-fill{ opacity:0; stroke-dasharray:none; stroke-dashoffset:0; }
+  #processingOverlay.show .processing-mark polygon{
+    animation:mark-zeichnen .62s cubic-bezier(.4,0,.2,1) forwards;
+  }
+  #processingOverlay.show .processing-mark .processing-mark-fill{
+    animation:mark-fuellen .34s ease .52s forwards;
+  }
+  @keyframes mark-zeichnen{ to{ stroke-dashoffset:0; } }
+  @keyframes mark-fuellen{ from{opacity:0;transform:scale(.94);} to{opacity:.16;transform:none;} }
+  .processing-mark .processing-mark-fill{ transform-origin:50% 50%; transform-box:fill-box; }
   .processing-text{font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.02em;}
-  @media (prefers-reduced-motion: reduce){ .processing-dot{animation:none;} }
+  /* Bei reduzierter Bewegung wird der ganze Moment ohnehin übersprungen (finishQuiz steigt
+     vorher aus); die Regel steht trotzdem hier, falls die Überlagerung je anders erreicht wird. */
+  @media (prefers-reduced-motion: reduce){
+    #processingOverlay.show .processing-mark polygon{ animation:none; }
+    .processing-mark polygon{ stroke-dashoffset:0; }
+    #processingOverlay.show .processing-mark .processing-mark-fill{ animation:none; }
+    .processing-mark .processing-mark-fill{ opacity:.16; }
+  }
 
   @keyframes card-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 
