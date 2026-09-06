@@ -194,7 +194,19 @@
       el.setAttribute('content', mode==='dark' ? '#0F1613' : '#F5F6EF');
     }catch(e){}
   }
+  var themeShiftTimer = null;
   function applyTheme(mode){
+    // Runde 61: Der Wechsel zwischen hell und dunkel sprang hart um — die Farbmarken wechseln,
+    // aber nichts blendet. Die Ueberblendung laeuft NUR waehrend des Wechsels: eine Klasse fuer
+    // 300 ms, danach wieder weg. Dauerhafte Farbuebergaenge auf allen Elementen wuerden sonst
+    // jede andere Rueckmeldung der App traege machen — besonders die Druckzustaende, die
+    // absichtlich mit transition-duration:0s sofort sitzen.
+    var el = document.documentElement;
+    if (!prefersReducedMotion() && el.getAttribute('data-theme') !== mode){
+      el.classList.add('theme-shift');
+      if (themeShiftTimer) clearTimeout(themeShiftTimer);
+      themeShiftTimer = setTimeout(function(){ el.classList.remove('theme-shift'); themeShiftTimer = null; }, 300);
+    }
     if (mode==='dark' || mode==='light') document.documentElement.setAttribute('data-theme', mode);
     else document.documentElement.removeAttribute('data-theme');
     syncThemeColor(mode);

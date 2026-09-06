@@ -50,6 +50,10 @@
     rebuildItems();
     resetDateFmt();
     applyI18n();
+    // Runde 61: Der Sprachwechsel tauschte den Text ohne jede Antwort aus — auf einer langen
+    // Seite wie den Einstellungen war nicht sicher zu sehen, DASS etwas passiert ist. Ein kurzes
+    // Aufblenden der aktiven Ansicht beantwortet den Tipp, ohne den Inhalt zu bewegen.
+    markLangShift();
     syncLangButtons();
     $('viewLabel').textContent = VIEW_LABELS[currentView] || '';
     document.title = VIEW_TITLES[currentView] ? ('Lucenta — '+VIEW_TITLES[currentView]) : 'Lucenta';
@@ -66,6 +70,22 @@
     if (currentView === 'state') renderStateView();
     if (currentView === 'profile') renderProfile();
     if (currentView === 'archetypes') renderArchetypeGroups();
+  }
+  function markLangShift(){
+    if (prefersReducedMotion()) return;
+    try{
+      var views = document.querySelectorAll('.view');
+      for (var i=0;i<views.length;i++){
+        if (getComputedStyle(views[i]).display === 'none') continue;
+        var v = views[i];
+        v.classList.remove('lang-shift');
+        // Erzwungenes Auslesen, damit der Browser die Animation als neu erkennt — dasselbe
+        // Muster wie bei animateQuestionIn().
+        void v.offsetWidth;
+        v.classList.add('lang-shift');
+        break;
+      }
+    }catch(e){}
   }
   function syncLangButtons(){
     try{

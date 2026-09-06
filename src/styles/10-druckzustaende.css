@@ -80,3 +80,54 @@
   /* Das Wortzeichen ist breit genug; hier fehlt allein die Höhe. Eine über die Textbreite
      hinaus verbreiterte Fläche würde in den Bereich des Schubladen-Knopfs reichen. */
   .wordmark::after{ width:100%; }
+
+/* ================= Bewegung, die einen Wechsel beantwortet =================
+     Runde 61. Drei Handlungen bekamen bisher keine Antwort. Alles andere, was hier naheliegend
+     schien, gab es beim Nachmessen schon: Druckzustände, das Einlaufen der Frage, das Hochzählen
+     der Ergebniszahlen (animateCountUp), das Einblenden der Karten, das Gleiten der Schublade.
+
+     Der Grundsatz aus dem README bleibt der Maßstab: Bewegung, die eine Handlung beantwortet,
+     ist Funktion. Alle drei hier hängen an genau einem Tipp. */
+
+  /* 1. Theme-Wechsel. Die Farbmarken wechselten hart. Die Überblendung liegt bewusst NUR auf der
+        Klasse, die applyTheme() für 300 ms setzt — dauerhafte Farbübergänge auf allen Elementen
+        würden die Druckzustände träge machen, die absichtlich sofort sitzen. */
+  html.theme-shift, html.theme-shift body,
+  html.theme-shift .card, html.theme-shift .btn, html.theme-shift .stat-tile,
+  html.theme-shift .trait-card, html.theme-shift .scale-btn, html.theme-shift .theme-btn,
+  html.theme-shift .state-check-card, html.theme-shift .history-row, html.theme-shift .role-card,
+  html.theme-shift #drawerPanel, html.theme-shift .drawer-section, html.theme-shift .top{
+    transition:background-color .28s ease, color .28s ease, border-color .28s ease !important;
+  }
+
+  /* 2. Sprachwechsel. Der Text wurde ohne jede Antwort getauscht; auf einer langen Seite war
+        nicht sicher zu sehen, dass etwas passiert ist. Nur Deckkraft, keine Bewegung — der
+        Inhalt soll nicht springen, während man liest. */
+  .view.lang-shift{ animation:lang-fade .26s ease both; }
+  @keyframes lang-fade{ from{opacity:.55;} to{opacity:1;} }
+
+  /* 3. Schublade. Das Feld glitt herein, sein Inhalt erschien fertig. Ein knapper Versatz je
+        Abschnitt lässt die Liste dem Feld folgen, statt vor ihm da zu sein. 34 ms sind knapp
+        genug, dass die fünf Abschnitte als eine Bewegung gelesen werden. */
+  #drawerPanel.open .drawer-section{ animation:drawer-item .26s cubic-bezier(.2,.8,.2,1) both; }
+  /* nth-child zaehlt ALLE Geschwister, nicht nur die Abschnitte — gemessen kamen dabei
+     0.162s, 0.196s, 0s, 0s, 0s heraus, also genau die falsche Reihenfolge. ":nth-child(n of S)"
+     zaehlt innerhalb der Auswahl und trifft die Abschnitte selbst. */
+  #drawerPanel.open .drawer-section:nth-child(1 of .drawer-section){ animation-delay:.06s; }
+  #drawerPanel.open .drawer-section:nth-child(2 of .drawer-section){ animation-delay:.094s; }
+  #drawerPanel.open .drawer-section:nth-child(3 of .drawer-section){ animation-delay:.128s; }
+  #drawerPanel.open .drawer-section:nth-child(4 of .drawer-section){ animation-delay:.162s; }
+  #drawerPanel.open .drawer-section:nth-child(5 of .drawer-section){ animation-delay:.196s; }
+  @keyframes drawer-item{ from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:none;} }
+
+  /* Alle drei sind reine Zugabe und verschwinden vollständig, wenn weniger Bewegung gewünscht
+     ist. Die Klasse theme-shift wird in dem Fall gar nicht erst gesetzt, lang-shift ebenso. */
+  @media (prefers-reduced-motion: reduce){
+    html.theme-shift, html.theme-shift body, html.theme-shift .card, html.theme-shift .btn,
+    html.theme-shift .stat-tile, html.theme-shift .trait-card, html.theme-shift .scale-btn,
+    html.theme-shift .theme-btn, html.theme-shift .state-check-card, html.theme-shift .history-row,
+    html.theme-shift .role-card, html.theme-shift #drawerPanel, html.theme-shift .drawer-section,
+    html.theme-shift .top{ transition:none !important; }
+    .view.lang-shift{ animation:none; }
+    #drawerPanel.open .drawer-section{ animation:none; }
+  }
