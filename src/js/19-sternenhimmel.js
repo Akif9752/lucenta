@@ -30,11 +30,17 @@
   // Richtung: von rechts oben nach links unten. Ein flacher Winkel wirkt ruhiger als 45°.
   var RICHTUNG_X = -0.62, RICHTUNG_Y = 0.42;
 
+  var farbeWarm = null, farbeKalt = null;
   function farbenLesen(){
     try{
       var s = getComputedStyle(document.documentElement);
       farbeStern = (s.getPropertyValue('--stern') || '').trim() || 'rgba(21,32,25,.5)';
       farbeSchnuppe = (s.getPropertyValue('--stern-schnuppe') || '').trim() || farbeStern;
+      // Runde 72: Ein echter Himmel ist nicht einfarbig. Ein kleiner Teil der Sterne zieht ins
+      // Warme, ein kleiner ins Kalte — kaum als Farbe erkennbar, aber der Unterschied zwischen
+      // "Punkte" und "Sternen".
+      farbeWarm = (s.getPropertyValue('--stern-warm') || '').trim() || farbeStern;
+      farbeKalt = (s.getPropertyValue('--stern-kalt') || '').trim() || farbeStern;
     }catch(e){}
   }
 
@@ -48,19 +54,36 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     // Anzahl an der Fläche bemessen, nicht fest: Auf einem Telefon wären 200 Sterne ein Teppich,
     // auf einem Schreibtisch wären 40 eine leere Fläche.
-    var anzahl = Math.round(Math.min(110, Math.max(28, (b * h) / 12000)));
+    var anzahl = Math.round(Math.min(420, Math.max(110, (b * h) / 3100)));
     sterne.length = 0;
     for (var i = 0; i < anzahl; i++){
+      // Runde 72: Die Größe war gleichverteilt — dadurch sahen alle Sterne gleich groß aus und
+      // das Feld wirkte wie ein Raster aus Punkten. Ein echter Himmel hat sehr viele schwache
+      // und sehr wenige helle. Die Potenz verschiebt die Verteilung genau dorthin.
+      // Der Exponent steuert, wie stark schwache Sterne ueberwiegen. Bei 2,8 lagen fast alle
+      // unter einem Bildpunkt und erschienen dadurch gar nicht — gemessen 0,08 % Deckung. 2,1
+      // laesst genug mittlere uebrig, ohne dass ein gleichfoermiges Raster entsteht. Der
+      // Mindestradius liegt jetzt ueber einem halben Bildpunkt, damit auch der schwaechste
+      // Stern tatsaechlich gezeichnet wird.
+      var t = Math.pow(Math.random(), 2.1);
+      var r = 0.52 + t * 1.75;
       sterne.push({
         x: Math.random() * b,
         y: Math.random() * h,
-        r: 0.5 + Math.random() * 1.25,
-        // Nähere Sterne ziehen schneller — das erzeugt Tiefe, ohne dass man sie benennen muss.
-        v: 0.06 + Math.random() * 0.16,
-        a: 0.25 + Math.random() * 0.55,
-        // Eigene Phase und Tempo, damit das Funkeln nicht im Gleichtakt läuft.
+        r: r,
+        // Helligkeit folgt der Größe: Ein großer, blasser Stern gibt es am Himmel nicht.
+        a: 0.20 + t * 0.62 + Math.random() * 0.14,
+        // Tempo folgt ebenfalls der Größe — größer heißt näher heißt schneller. Das ist echte
+        // Parallaxe statt zufälliger Geschwindigkeit und erzeugt Tiefe.
+        v: 0.035 + t * 0.20,
+        // Kleine Sterne flackern stärker, große stehen ruhiger.
+        f: 0.34 - t * 0.26,
         p: Math.random() * Math.PI * 2,
-        pv: 0.004 + Math.random() * 0.010
+        pv: 0.005 + Math.random() * 0.014,
+        // Ein Achtel warm, ein Achtel kalt, der Rest neutral.
+        ton: (function(){ var z = Math.random(); return z < 0.12 ? 1 : (z > 0.88 ? 2 : 0); })(),
+        // Die hellsten bekommen einen weichen Hof; darunter wäre er nur Unschärfe.
+        hof: t > 0.86
       });
     }
     schnuppen.length = 0;
@@ -85,9 +108,22 @@
     var i, s;
     for (i = 0; i < sterne.length; i++){
       s = sterne[i];
-      var funkeln = wenigerBewegung ? 1 : (0.72 + 0.28 * Math.sin(s.p));
+      var funkeln = wenigerBewegung ? 1 : (1 - s.f + s.f * (0.5 + 0.5 * Math.sin(s.p)));
+      var ton = s.ton === 1 ? farbeWarm : (s.ton === 2 ? farbeKalt : farbeStern);
+      if (s.hof){
+        // Der Hof ist ein eigener, sehr schwacher Kreis mit Verlauf — vier Radien weit, damit er
+        // als Schein und nicht als zweiter Stern gelesen wird.
+        var g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4.2);
+        g.addColorStop(0, ton);
+        g.addColorStop(1, 'transparent');
+        ctx.globalAlpha = s.a * funkeln * 0.22;
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 4.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.globalAlpha = s.a * funkeln;
-      ctx.fillStyle = farbeStern;
+      ctx.fillStyle = ton;
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fill();

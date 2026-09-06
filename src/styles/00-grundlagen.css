@@ -43,6 +43,8 @@
        Dunkelmodus tut die Flaeche das, was der Name sagt. */
     --stern:rgba(21,32,25,.30);
     --stern-schnuppe:rgba(47,111,106,.75);
+    --stern-warm:rgba(90,62,34,.30);
+    --stern-kalt:rgba(30,52,74,.30);
     --accent-ink:#F5FBFA;
     --accent-2:#C97A3C;
     /* minimal nachgedunkelt (war #9D5F2F): als Fettschrift auf der Amber-Fläche der Hinweisbänder
@@ -89,6 +91,8 @@
       --dim-s:#D06694;
       --stern:rgba(236,238,231,.62);
       --stern-schnuppe:rgba(160,220,214,.95);
+      --stern-warm:rgba(255,232,198,.68);
+      --stern-kalt:rgba(206,226,255,.66);
       --accent-ink:#08211E;
       --accent-2:#E39A5C;
       --accent-2-text:#E39A5C;
@@ -120,6 +124,8 @@
     --dim-s:#D06694;
     --stern:rgba(236,238,231,.62);
     --stern-schnuppe:rgba(160,220,214,.95);
+    --stern-warm:rgba(255,232,198,.68);
+    --stern-kalt:rgba(206,226,255,.66);
     --accent-ink:#08211E;
     --accent-2:#E39A5C;
     --accent-2-text:#E39A5C;
