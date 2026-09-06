@@ -45,6 +45,9 @@
     --stern-schnuppe:rgba(47,111,106,.75);
     --stern-warm:rgba(90,62,34,.30);
     --stern-kalt:rgba(30,52,74,.30);
+    --fokuslinie-hoehe:10px;
+    --kopf-links:#EDEFE4;
+    --kopf-rechts:#F7F8F2;
     --accent-ink:#F5FBFA;
     --accent-2:#C97A3C;
     /* minimal nachgedunkelt (war #9D5F2F): als Fettschrift auf der Amber-Fläche der Hinweisbänder
@@ -93,6 +96,8 @@
       --stern-schnuppe:rgba(160,220,214,.95);
       --stern-warm:rgba(255,232,198,.68);
       --stern-kalt:rgba(206,226,255,.66);
+      --kopf-links:#16221D;
+      --kopf-rechts:#0D1512;
       --accent-ink:#08211E;
       --accent-2:#E39A5C;
       --accent-2-text:#E39A5C;
@@ -126,6 +131,8 @@
     --stern-schnuppe:rgba(160,220,214,.95);
     --stern-warm:rgba(255,232,198,.68);
     --stern-kalt:rgba(206,226,255,.66);
+    --kopf-links:#16221D;
+    --kopf-rechts:#0D1512;
     --accent-ink:#08211E;
     --accent-2:#E39A5C;
     --accent-2-text:#E39A5C;
@@ -246,8 +253,15 @@
   header.top{
     display:flex; align-items:center; justify-content:space-between;
     padding:16px 0 14px;
-    position:sticky; top:calc(3px + env(safe-area-inset-top, 0px)); z-index:30;
-    background:var(--paper);
+    /* Runde 73: Der Versatz stand auf 3px — der Hoehe des Fortschrittsbalkens, BEVOR er in
+       Runde 69 auf 10px wuchs. Die Leiste ueberlappte ihn beim Scrollen seither um 7px. Die
+       Marke haelt beide jetzt zusammen, damit sich das nicht wiederholt. */
+    position:sticky; top:calc(var(--fokuslinie-hoehe) + env(safe-area-inset-top, 0px)); z-index:30;
+    /* Der Hintergrund war exakt --paper und damit nicht von der Seite zu unterscheiden — vor
+       einem bewegten Sternenhimmel sah die Leiste aus wie ein Stueck Himmel, in dem zufaellig
+       keine Sterne fliegen. Ein flacher Verlauf von links nach rechts gibt ihr eine eigene
+       Flaeche, ohne sie als Kasten abzusetzen. */
+    background:linear-gradient(96deg, var(--kopf-links) 0%, var(--kopf-rechts) 68%, var(--kopf-rechts) 100%);
     border-bottom:1px solid transparent;
     transition:border-color .2s ease;
   }

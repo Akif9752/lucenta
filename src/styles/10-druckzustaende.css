@@ -289,7 +289,7 @@
 
   /* 4. Der Fortschrittsbalken war 3px hoch und lag als Haarlinie unter der Kopfzeile. In dieser
         Formensprache ist er ein eigenes Objekt: dicker, mit runden Enden. */
-  #focusline{ height:10px; background:var(--surface-2); border-bottom:1px solid var(--line); }
+  #focusline{ height:var(--fokuslinie-hoehe); background:var(--surface-2); border-bottom:1px solid var(--line); }
   #focusline-fill{ border-radius:0 100px 100px 0; }
   .focusline-tick{ opacity:.35; }
 

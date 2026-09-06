@@ -66,7 +66,8 @@
       // Mindestradius liegt jetzt ueber einem halben Bildpunkt, damit auch der schwaechste
       // Stern tatsaechlich gezeichnet wird.
       var t = Math.pow(Math.random(), 2.1);
-      var r = 0.52 + t * 1.75;
+      // Die grossen waren zu dominant; der obere Rand faellt von 2,27 auf 1,62.
+      var r = 0.45 + t * 1.17;
       sterne.push({
         x: Math.random() * b,
         y: Math.random() * h,
@@ -75,7 +76,9 @@
         a: 0.20 + t * 0.62 + Math.random() * 0.14,
         // Tempo folgt ebenfalls der Größe — größer heißt näher heißt schneller. Das ist echte
         // Parallaxe statt zufälliger Geschwindigkeit und erzeugt Tiefe.
-        v: 0.035 + t * 0.20,
+        // Runde 73: Tempo weiter zurueckgenommen (vorher 0,035 + t*0,20). Die Schnuppen
+        // behalten ihres — sie sollen ein Ereignis bleiben, kein Teil der Grundbewegung.
+        v: 0.022 + t * 0.125,
         // Kleine Sterne flackern stärker, große stehen ruhiger.
         f: 0.34 - t * 0.26,
         p: Math.random() * Math.PI * 2,
@@ -83,7 +86,10 @@
         // Ein Achtel warm, ein Achtel kalt, der Rest neutral.
         ton: (function(){ var z = Math.random(); return z < 0.12 ? 1 : (z > 0.88 ? 2 : 0); })(),
         // Die hellsten bekommen einen weichen Hof; darunter wäre er nur Unschärfe.
-        hof: t > 0.86
+        hof: t > 0.86,
+        // Laenge der Spitzen als Vielfaches des Radius; 0 heisst keine. Nur die oberen rund
+        // 30 Prozent bekommen welche, und je heller, desto weiter reichen sie.
+        zacken: t > 0.68 ? (2.1 + t * 1.9) : 0
       });
     }
     schnuppen.length = 0;
@@ -127,6 +133,21 @@
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fill();
+      // Runde 73: Vier feine Spitzen nach oben, unten, links und rechts — das, was ein Objektiv
+      // aus einem hellen Punkt macht und was ein Stern im Bild von einem Kreis unterscheidet.
+      // Nur fuer die helleren: An einem schwachen Punkt waere die Spitze laenger als der Stern
+      // selbst und sae wie ein Kreuz aus, nicht wie Licht.
+      if (s.zacken){
+        var l = s.r * s.zacken;
+        ctx.globalAlpha = s.a * funkeln * 0.5;
+        ctx.strokeStyle = ton;
+        ctx.lineWidth = Math.max(0.5, s.r * 0.32);
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(s.x - l, s.y); ctx.lineTo(s.x + l, s.y);
+        ctx.moveTo(s.x, s.y - l); ctx.lineTo(s.x, s.y + l);
+        ctx.stroke();
+      }
     }
     for (i = 0; i < schnuppen.length; i++){
       var f = schnuppen[i];
