@@ -216,17 +216,32 @@
     max-width:640px;
     margin:0 auto;
     padding-top:0;
-    padding-left:calc(20px + env(safe-area-inset-left, 0px));
-    padding-right:calc(20px + env(safe-area-inset-right, 0px));
+    /* Runde 74: Die Polsterung liegt jetzt in Marken, damit die Elemente, die ueber die volle
+       Breite gehen sollen, sie exakt zurueckrechnen koennen statt einen Wert zu wiederholen. */
+    --rand-links:calc(20px + env(safe-area-inset-left, 0px));
+    --rand-rechts:calc(20px + env(safe-area-inset-right, 0px));
+    padding-left:var(--rand-links);
+    padding-right:var(--rand-rechts);
     padding-bottom:calc(80px + env(safe-area-inset-bottom, 0px));
     min-height:100vh;
     position:relative;
   }
 
   /* top focus-line: the "clarity" motif — sharpens as you progress */
+  /* Runde 74, gemeldet vom iPhone: Fortschrittsbalken und Kopfleiste hoerten 20px vor dem
+     Bildschirmrand auf, weil sie INNERHALB der Polsterung von #shell liegen. Gemessen bei 390px
+     Fensterbreite: beide 350px breit, links wie rechts 20px Luft. Sie ziehen die Polsterung
+     jetzt ueber negative Aussenabstaende zurueck und gehen damit bis an die Kante.
+     Bewusst ueber die Marken von #shell und nicht ueber 100vw: vw zaehlt auf dem Schreibtisch
+     die Bildlaufleiste mit und erzeugt dort einen Ueberhang. */
   #focusline{
+    margin-left:calc(-1 * var(--rand-links));
+    margin-right:calc(-1 * var(--rand-rechts));
     position:sticky; top:env(safe-area-inset-top, 0px); z-index:30;
-    height:3px; width:100%;
+    /* Kein width:100% — das bezieht sich auf die INHALTSBREITE des Elternelements und haette
+       den Balken trotz der negativen Aussenabstaende bei 350px festgehalten (gemessen: links 0,
+       rechts 40). Ein Block fuellt die verfuegbare Breite von selbst. */
+    height:3px;
     background:var(--line);
     margin-bottom:0;
   }
@@ -256,6 +271,12 @@
     /* Runde 73: Der Versatz stand auf 3px — der Hoehe des Fortschrittsbalkens, BEVOR er in
        Runde 69 auf 10px wuchs. Die Leiste ueberlappte ihn beim Scrollen seither um 7px. Die
        Marke haelt beide jetzt zusammen, damit sich das nicht wiederholt. */
+    /* Die Flaeche geht bis an die Kante, der Inhalt bleibt buendig mit dem Text darunter:
+       negativer Aussenabstand nach aussen, gleich grosse Polsterung nach innen. */
+    margin-left:calc(-1 * var(--rand-links));
+    margin-right:calc(-1 * var(--rand-rechts));
+    padding-left:var(--rand-links);
+    padding-right:var(--rand-rechts);
     position:sticky; top:calc(var(--fokuslinie-hoehe) + env(safe-area-inset-top, 0px)); z-index:30;
     /* Der Hintergrund war exakt --paper und damit nicht von der Seite zu unterscheiden — vor
        einem bewegten Sternenhimmel sah die Leiste aus wie ein Stueck Himmel, in dem zufaellig
