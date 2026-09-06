@@ -297,6 +297,9 @@
       list.appendChild(card);
     });
     revealOnScroll(list.children);
+    // Erst hier, nachdem beide Aufrufstellen von gaugeBarHTML im Baum stehen: die Kennzahlenreihe
+    // oben und die fünf Dimensionskarten darunter.
+    startGauges($('view-result'));
 
     renderDelta(previous);
   }

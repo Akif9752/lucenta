@@ -49,7 +49,7 @@ Beim JavaScript entscheidet sie über die Ausführungsreihenfolge.
 npm test
 ```
 
-Vier Ebenen, die sich ergänzen:
+Fünf Ebenen, die sich ergänzen:
 
 1. **`node build.js`** — muss durchlaufen; ein Syntaxfehler fällt hier auf.
 2. **`node tests/run.js`** — zehn Reihen, rund 7.000 Prüfungen. Der App-Code wird bis zur Marke
@@ -58,6 +58,20 @@ Vier Ebenen, die sich ergänzen:
 4. **`npm run diff-sprachen`** — fährt im echten Browser jede Ansicht einmal auf Deutsch und
    einmal auf Englisch ab und meldet jede Zeile, die in beiden zeichengleich ist. Braucht
    Playwright und läuft deshalb **nicht** in `npm test`.
+5. **`npm run pruef-bewegung`** — misst im echten Browser, ob Bewegung tatsächlich läuft, und ob
+   sie ausbleibt, wenn weniger Bewegung gewünscht ist. Ebenfalls nicht in `npm test`.
+
+   **Warum es das braucht:** Dreimal hintereinander (Runde 63 bis 65) stand eine Animation
+   korrekt im Stilblatt und war trotzdem nie zu sehen. Das Fünfeck im Ankunftsmoment hing am
+   Element statt an `.show` und zeichnete sich beim Laden der Seite in einer unsichtbaren
+   Überlagerung. Die Messbalken trugen seit jeher eine Übergangszeit von 0,9 s, die nie anlief,
+   weil ein Übergang eine Änderung braucht und die Breite schon im erzeugten Markup stand. Die
+   Versätze der Schublade zählten über `nth-child` alle Geschwister statt nur die Abschnitte.
+
+   Keiner der drei Fälle ist im Quelltext zu sehen: Die Regel ist gültig, die Syntax stimmt, die
+   Animation ist definiert. Sichtbar wird der Fehler erst, wenn man den Wert **über die Zeit**
+   misst. Genau dafür ist diese Ebene da — dieselbe Lücke wie zwischen Punkt 2 und Punkt 3, nur
+   eine Dimension weiter.
 
 **Warum es Punkt 3 gibt, und das ist die wichtigste Zeile in dieser Datei:** Der Ersatz-DOM aus
 Punkt 2 behandelt `textContent` und `innerHTML` gleich. In Runde 56 war die App auf jedem Gerät

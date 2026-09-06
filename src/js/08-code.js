@@ -21,15 +21,45 @@
   // Ersetzt den früheren simplen Fortschrittsbalken durch eine Skala mit Tick-Markierungen
   // bei 25/50/75 und einem Marker-Punkt an der eigentlichen Position — liest sich eher wie eine
   // gemessene Instrumentenanzeige (Apple Health/Whoop-Richtung) als wie ein reiner Ladebalken.
+  // Runde 65: .gauge-fill und .gauge-marker tragen seit jeher eine Übergangszeit von 0,9 s —
+  // die aber nie lief. Ein Übergang braucht eine Änderung; die Breite stand schon im erzeugten
+  // Markup und war damit ab dem ersten Bild endgültig. Gemessen: 171,594px im ersten Bild und
+  // unverändert danach. Sichtbar war das als Widerspruch — die Zahlen zählten hoch (dafür gibt
+  // es animateCountUp), während die Balken darunter längst voll waren.
+  //
+  // Jetzt beginnt der Balken bei 0 und trägt sein Ziel als Datenwert; startGauges() setzt es
+  // im nächsten Einzelbild, wodurch der Übergang tatsächlich anläuft.
   function gaugeBarHTML(value){
     value = Math.max(0, Math.min(100, value));
-    return '<div class="gauge-track">'+
-      '<div class="gauge-fill" style="width:'+value+'%"></div>'+
+    return '<div class="gauge-track" data-gauge="'+value+'">'+
+      '<div class="gauge-fill" style="width:0%"></div>'+
       '<div class="gauge-tick" style="left:25%"></div>'+
       '<div class="gauge-tick" style="left:50%"></div>'+
       '<div class="gauge-tick" style="left:75%"></div>'+
-      '<div class="gauge-marker" style="left:'+value+'%"></div>'+
+      '<div class="gauge-marker" style="left:0%"></div>'+
       '</div>';
+  }
+
+  function startGauges(root){
+    if (!root || !root.querySelectorAll) return;
+    var spuren = root.querySelectorAll('.gauge-track[data-gauge]');
+    var setzen = function(){
+      for (var i=0;i<spuren.length;i++){
+        var t = spuren[i], v = t.getAttribute('data-gauge');
+        if (v === null) continue;
+        var f = t.querySelector('.gauge-fill'), m = t.querySelector('.gauge-marker');
+        if (f) f.style.width = v+'%';
+        if (m) m.style.left = v+'%';
+        // Der Datenwert wird entfernt, damit ein erneuter Aufruf einen bereits gefüllten
+        // Balken nicht ein zweites Mal von vorn beginnen lässt.
+        t.removeAttribute('data-gauge');
+      }
+    };
+    // Ohne Bewegungswunsch sofort: die Übergangszeit ist dort ohnehin abgeschaltet, ein
+    // zusätzliches Einzelbild Wartezeit brächte nur ein kurzes Aufblitzen bei 0.
+    if (prefersReducedMotion()){ setzen(); return; }
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(function(){ requestAnimationFrame(setzen); });
+    else setzen();
   }
 
   function ringGaugeSVG(percent, size, label){
