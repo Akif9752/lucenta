@@ -50,23 +50,51 @@
   console.log("\n=== Rueckwechsel und unbekannte Sprache ===");
   setLang('de');
   ok(LANG==='de', "Rueckwechsel funktioniert");
-  setLang('fr');
+  // Runde 78: Hier stand 'fr' als Beispiel fuer eine nicht vorhandene Sprache. Mit dem
+  // franzoesischen Paket wurde daraus ein gueltiger Wechsel, und die Reihe schlug fehl —
+  // korrekt, aber aus dem falschen Grund. 'xx' ist kein Sprachkuerzel und wird auch keines.
+  setLang('xx');
   ok(LANG==='de', "eine nicht vorhandene Sprache wird ignoriert statt die App zu leeren");
   setLang('de');
   ok(LANG==='de', "ein Wechsel auf die bereits aktive Sprache ist wirkungslos");
 
-  console.log("\n=== Beide Pakete sind strukturgleich ===");
-  var kd=Object.keys(CONTENT.de).sort().join(','), ke=Object.keys(CONTENT.en).sort().join(',');
-  ok(kd===ke, "dieselben Bloecke");
-  ok(Object.keys(CONTENT.de.UI).length===Object.keys(CONTENT.en.UI).length,
-     "gleich viele Oberflaechen-Texte ("+Object.keys(CONTENT.de.UI).length+"/"+Object.keys(CONTENT.en.UI).length+")");
-  var fehlend=Object.keys(CONTENT.de.UI).filter(function(k){ return !(k in CONTENT.en.UI); });
-  ok(fehlend.length===0, "kein Oberflaechen-Text ohne englische Fassung: "+fehlend.join(', '));
-  for (var f3 of ['E','A','C','S','O']){
-    ok(CONTENT.en.PROFILES[f3].high.alltag && CONTENT.en.PROFILES[f3].low.wachstum, "PROFILES."+f3+" vollstaendig");
-    ok(CONTENT.en.COMPAT[f3].similar && CONTENT.en.COMPAT[f3].diff, "COMPAT."+f3+" vollstaendig");
-    ok(CONTENT.en.UNDERSTAND[f3].high.length===2 && CONTENT.en.UNDERSTAND[f3].low.length===2, "UNDERSTAND."+f3+" vollstaendig");
-  }
+  console.log("\n=== Alle Pakete sind strukturgleich ===");
+  // Runde 78: Geprueft wurde Deutsch gegen Englisch. Bei sieben Sprachen muss jede einzelne
+  // gegen die Rueckfallsprache stehen — sonst faellt ein Paket mit fehlendem Block erst im
+  // Browser auf, und dort als leere Stelle statt als Fehler.
+  var SPRACHEN = Object.keys(CONTENT).filter(function(c){ return c !== 'de'; }).sort();
+  ok(SPRACHEN.length === 6, "sechs Sprachen neben Deutsch: "+SPRACHEN.join(', '));
+  var kd = Object.keys(CONTENT.de).sort().join(',');
+  SPRACHEN.forEach(function(c){
+    var pack = CONTENT[c];
+    ok(Object.keys(pack).sort().join(',') === kd, c+": dieselben Bloecke");
+    ok(Object.keys(pack.UI).length === Object.keys(CONTENT.de.UI).length,
+       c+": gleich viele Oberflaechen-Texte ("+Object.keys(pack.UI).length+")");
+    var fehlend = Object.keys(CONTENT.de.UI).filter(function(k){ return !(k in pack.UI); });
+    ok(fehlend.length === 0, c+": kein Oberflaechen-Text ohne Fassung: "+fehlend.slice(0,3).join(', '));
+    ok(pack.QUIZ_HINTS.length === CONTENT.de.QUIZ_HINTS.length, c+": gleich viele Quiz-Hinweise");
+    ['E','A','C','S','O'].forEach(function(f){
+      ok(pack.PROFILES[f].high.alltag && pack.PROFILES[f].low.wachstum, c+": PROFILES."+f+" vollstaendig");
+      ok(pack.COMPAT[f].similar && pack.COMPAT[f].diff, c+": COMPAT."+f+" vollstaendig");
+      ok(pack.UNDERSTAND[f].high.length===2 && pack.UNDERSTAND[f].low.length===2, c+": UNDERSTAND."+f+" vollstaendig");
+      ok(pack.FACTORS[f].length === 10, c+": FACTORS."+f+" hat 10 Items");
+      // Der entscheidende Punkt: Die MESSUNG darf sich durch eine Uebersetzung nicht aendern.
+      ok(pack.FACTORS[f].map(function(x){return x.k;}).join('') ===
+         CONTENT.de.FACTORS[f].map(function(x){return x.k;}).join(''),
+         c+": Polung von FACTORS."+f+" identisch zur Rueckfallsprache");
+    });
+  });
+
+  console.log("\n=== Dieselben Antworten ergeben in JEDER Sprache dasselbe Ergebnis ===");
+  var probe = []; for (var pi=0; pi<50; pi++) probe.push((pi%5)+1);
+  setLang('de'); answers = probe.slice();
+  var referenz = JSON.stringify(computeScores());
+  SPRACHEN.forEach(function(c){
+    setLang(c); answers = probe.slice();
+    ok(JSON.stringify(computeScores()) === referenz, c+": dieselben Werte wie auf Deutsch");
+  });
+  setLang('de');
+  console.log("  Werte in allen sieben Sprachen: "+referenz);
 
   console.log("\n==================================================");
   console.log(fails===0 ? ("ALLE "+checks+" PRUEFUNGEN BESTANDEN") : (fails+" von "+checks+" PRUEFUNGEN FEHLGESCHLAGEN"));

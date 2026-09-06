@@ -69,9 +69,17 @@
     --radius-s: 12px;
     /* Die Unterkante, die in dieser Formensprache den weichen Schatten ersetzt. */
     --kante:#CDCFBE;
-    --serif: 'Fraunces', ui-serif, Georgia, serif;
-    --sans: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
-    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    /* Runde 78, mit Japanisch dazugekommen: Fraunces, Work Sans und IBM Plex Mono bringen keine
+       CJK-Zeichen mit. Ohne ausdruecklichen Rueckfall waehlt der Browser dafuer irgendeine
+       Schrift — auf Windows haeufig eine, die neben der lateinischen Schrift sichtbar fremd
+       wirkt. Die genannten Familien sind die Systemschriften von iOS/macOS (Hiragino), Windows
+       (Yu Gothic, Meiryo) und Android/Linux (Noto). Fuer die uebrigen sechs Sprachen aendert
+       sich nichts: Sie finden ihre Zeichen in der ersten Familie und kommen nie so weit. */
+    --cjk: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
+    --cjk-sans: 'Hiragino Sans', 'Yu Gothic', Meiryo, 'Noto Sans JP', sans-serif;
+    --serif: 'Fraunces', ui-serif, Georgia, var(--cjk);
+    --sans: 'Work Sans', ui-sans-serif, system-ui, var(--cjk-sans);
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, var(--cjk-sans), monospace;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){

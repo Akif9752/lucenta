@@ -133,25 +133,40 @@ async function tour(){
   await home(); return out;
 }
 const DEv=await tour();
-// Sprache wechseln
-await drawer('btnDrawerSettings'); await p.click('[data-lang="en"]'); await p.waitForTimeout(900); await home();
-const ENv=await tour();
+// Runde 78: Verglichen wurde Deutsch gegen Englisch. Bei sieben Sprachen muss JEDE gegen die
+// Rueckfallsprache stehen — eine unuebersetzte Zeile faellt sonst genau in den Paketen nicht
+// auf, die neu und damit am ehesten unvollstaendig sind. Ohne Argument laufen alle vorhandenen;
+// "node tools/diff_sprachen.mjs es fr" prueft gezielt einzelne (ein Durchgang dauert ~2 min).
+const VORHANDEN = await p.evaluate(() =>
+  Array.from(document.querySelectorAll('[data-lang]')).map(b => b.getAttribute('data-lang')));
+const ZIELE = (process.argv.slice(2).length ? process.argv.slice(2) : VORHANDEN).filter(c => c !== 'de');
+const ANDERE = {};
+for (const code of ZIELE){
+  await drawer('btnDrawerSettings'); await p.click('[data-lang="'+code+'"]'); await p.waitForTimeout(900); await home();
+  ANDERE[code] = await tour();
+}
 await b.close();
 
 const INVARIANT=/^[\s\d\W]*$|^(Lucenta|BETA|Beta|OCEAN|O|C|E|A|N|Akif|Big Five|IPIP|Teal|Ink|E-Mail)$/i;
-console.log('\n=== Zeilen, die auf Deutsch und Englisch identisch sind ===');
 let treffer=0;
-for(const k of Object.keys(DEv)){
-  if(!ENv[k]) continue;
-  const de=new Set(DEv[k].lines), en=new Set(ENv[k].lines);
-  const beide=[...de].filter(x=>en.has(x)&&!INVARIANT.test(x)&&/\p{L}{3}/u.test(x));
-  const deA=new Set(DEv[k].attrs), enA=new Set(ENv[k].attrs);
-  const beideA=[...deA].filter(x=>enA.has(x)&&!INVARIANT.test(x)&&/\p{L}{3}/u.test(x));
-  if(beide.length||beideA.length){
-    console.log('\n--- '+k+' ('+DEv[k].view+') ---');
-    beide.forEach(x=>{treffer++;console.log('  TEXT   '+x.slice(0,110));});
-    beideA.forEach(x=>{treffer++;console.log('  ATTR   '+x.slice(0,110));});
+for (const code of ZIELE){
+  const ENv = ANDERE[code];
+  console.log('\n=== Zeilen, die auf Deutsch und in "'+code+'" identisch sind ===');
+  let hier=0;
+  for(const k of Object.keys(DEv)){
+    if(!ENv || !ENv[k]) continue;
+    const de=new Set(DEv[k].lines), en=new Set(ENv[k].lines);
+    const beide=[...de].filter(x=>en.has(x)&&!INVARIANT.test(x)&&/\p{L}{3}/u.test(x));
+    const deA=new Set(DEv[k].attrs), enA=new Set(ENv[k].attrs);
+    const beideA=[...deA].filter(x=>enA.has(x)&&!INVARIANT.test(x)&&/\p{L}{3}/u.test(x));
+    if(beide.length||beideA.length){
+      console.log('\n--- '+k+' ('+DEv[k].view+') ---');
+      beide.forEach(x=>{hier++;console.log('  TEXT   '+x.slice(0,110));});
+      beideA.forEach(x=>{hier++;console.log('  ATTR   '+x.slice(0,110));});
+    }
   }
+  console.log('\n  Summe fuer '+code+': '+hier);
+  treffer+=hier;
 }
-console.log('\nSumme verdaechtiger Zeilen: '+treffer);
+console.log('\nSumme verdaechtiger Zeilen ueber alle Sprachen: '+treffer);
 console.log('Konsole: '+(logs.join(' | ')||'(leer)'));

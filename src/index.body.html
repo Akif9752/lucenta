@@ -1,5 +1,5 @@
 
-<script>(function(){document.documentElement.lang='de';try{var t=localStorage.getItem('lucenta_theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
+<script>/* Runde 78: lang wurde hier fest auf 'de' gesetzt und erst von applyI18n() nachgezogen. Bei sieben Sprachen ist das ein sichtbarer Moment mit falscher Silbentrennung. */(function(){var l='de';try{var s=localStorage.getItem('lucenta_lang');if(s&&/^[a-z]{2}$/.test(s))l=s;}catch(e){}document.documentElement.lang=l;try{var t=localStorage.getItem('lucenta_theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
 
 <a href="#mainContent" class="skip-link" data-i18n="zum_inhalt_springen">Zum Inhalt springen</a>
 <!-- Runde 71: Bewegter Hintergrund. Liegt bewusst VOR #shell und nicht in der Startansicht:
@@ -439,11 +439,21 @@
          Oberflaechensprache nicht versteht. -->
     <div class="settings-group">
       <h2 data-i18n="sprache">Sprache</h2>
-      <div class="theme-toggle" role="group" aria-label="Sprache wählen" data-i18n-aria="aria_sprache_wählen">
+      <!-- Runde 78: Aus zwei Sprachen wurden sieben. Eine Reihe aus sieben Knoepfen waere auf
+           390px unlesbar schmal; ein Raster mit fester Mindestbreite bricht stattdessen um.
+           Jede Sprache steht in ihrer eigenen Sprache und traegt ihr eigenes lang-Attribut:
+           Wer Japanisch sucht, sucht nicht nach "Japanese", und ein Screenreader soll die
+           Beschriftung in der jeweiligen Sprache aussprechen. -->
+      <div class="sprach-raster" role="group" aria-label="Sprache wählen" data-i18n-aria="aria_sprache_wählen">
         <button type="button" class="theme-btn" data-lang="de" aria-pressed="false" lang="de">Deutsch</button>
         <button type="button" class="theme-btn" data-lang="en" aria-pressed="false" lang="en">English</button>
+        <button type="button" class="theme-btn" data-lang="es" aria-pressed="false" lang="es">Espa&ntilde;ol</button>
+        <button type="button" class="theme-btn" data-lang="fr" aria-pressed="false" lang="fr">Fran&ccedil;ais</button>
+        <button type="button" class="theme-btn" data-lang="it" aria-pressed="false" lang="it">Italiano</button>
+        <button type="button" class="theme-btn" data-lang="pt" aria-pressed="false" lang="pt">Portugu&ecirc;s</button>
+        <button type="button" class="theme-btn" data-lang="ja" aria-pressed="false" lang="ja">&#26085;&#26412;&#35486;</button>
       </div>
-      <p class="settings-hint" data-i18n="weitere_sprachen_folgen">Weitere Sprachen folgen. Der Fragebogen selbst wird nicht übersetzt, sondern je Sprache in der dafür veröffentlichten Fassung verwendet &mdash; auf Englisch ist das der Originalwortlaut.</p>
+      <p class="settings-hint" data-i18n="weitere_sprachen_folgen">Der Fragebogen wird je Sprache in der dafür veröffentlichten Fassung verwendet &mdash; auf Englisch ist das der Originalwortlaut von Goldberg. Für Deutsch, Spanisch, Französisch, Italienisch, Portugiesisch und Japanisch ist der Wortlaut eine sorgfältige Arbeitsübersetzung: Zuordnung und Polung der 50 Aussagen stimmen, der Wortlaut ist aber nicht zitierbar.</p>
     </div>
 
     <!-- Runde 75: Bedienung. Beide Schalter schliessen Luecken, die durch fruehere Runden

@@ -428,7 +428,7 @@
       'js_ergebnisse_im_verlauf': ' results in history',
       'js_tagesformeintrag': ' check-in entry',
       'sprache': 'Language',
-      'weitere_sprachen_folgen': 'More languages to follow. The questionnaire itself is not translated but used, per language, in the version published for it &mdash; in English that is the original wording.',
+      'weitere_sprachen_folgen': 'The questionnaire is used, per language, in the version published for it &mdash; in English that is Goldberg&rsquo;s original wording. For German, Spanish, French, Italian, Portuguese and Japanese the wording is a careful working translation: the assignment and polarity of the 50 statements are correct, but the wording is not citable.',
       'beta': 'Beta',
       'big_five': 'Big Five',
       'lern_dich_kennen_mdash_mit_w': 'Get to know yourself &mdash; <em>with science</em>, not star signs.',

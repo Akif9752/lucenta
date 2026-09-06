@@ -24,7 +24,8 @@ src/
   index.body.html     gesamtes Markup (neun Ansichten)
   styles/             12 CSS-Teile — die REIHENFOLGE ist bedeutsam
   js/                 21 JavaScript-Teile — die REIHENFOLGE ist bedeutsam
-  i18n/de.js, en.js   Sprachpakete (Items, Texte, Oberfläche)
+  i18n/*.js           7 Sprachpakete (Items, Texte, Oberfläche) — build.js liest alle
+                      Dateien des Ordners, ein neues Paket wird durch Hinzulegen wirksam
   manifest.json       legt die Reihenfolge fest
 build.js              setzt alles zu dist/lucenta.html zusammen
 tests/                Testreihen und Ersatz-DOM
@@ -61,9 +62,15 @@ Fünf Ebenen, die sich ergänzen:
 2. **`node tests/run.js`** — zehn Reihen, rund 7.000 Prüfungen. Der App-Code wird bis zur Marke
    `wiring` gegen einen Ersatz-DOM ausgeführt.
 3. **`python3 tools/audit_i18n.py`** — acht statische Eigenschaften der Mehrsprachigkeit.
-4. **`npm run diff-sprachen`** — fährt im echten Browser jede Ansicht einmal auf Deutsch und
-   einmal auf Englisch ab und meldet jede Zeile, die in beiden zeichengleich ist. Braucht
-   Playwright und läuft deshalb **nicht** in `npm test`.
+4. **`npm run diff-sprachen`** — fährt im echten Browser jede Ansicht auf Deutsch ab und danach
+   in **jeder** weiteren Sprache, und meldet jede Zeile, die zeichengleich geblieben ist. Braucht
+   Playwright und läuft deshalb **nicht** in `npm test`; ein Durchgang je Sprache dauert rund zwei
+   Minuten, deshalb nimmt das Werkzeug Sprachkürzel als Argument
+   (`node tools/diff_sprachen.mjs es fr`). **Erwarteter Rest** (Runde 78 nachgeprüft, alle
+   legitim): die fünf englischen OCEAN-Beschriftungen und die sechs Sprachnamen — beide stehen
+   absichtlich in jeder Sprache gleich da — sowie echte Wortgleichheiten: `EXTRA.` (es, fr),
+   `Extraversion` (en, fr), `Test` (en, es, fr, it), `System`, `NAME`, `optional`, `STABIL.`
+   (en). Zusammen 121 Zeilen über alle sechs Sprachen; keine einzige unübersetzte.
 5. **`npm run pruef-bewegung`** — misst im echten Browser, ob Bewegung tatsächlich läuft, und ob
    sie ausbleibt, wenn weniger Bewegung gewünscht ist. Ebenfalls nicht in `npm test`.
 
@@ -190,6 +197,17 @@ Texte stehen in `src/i18n/`. Drei Arten von Marken im Markup:
 
 Dynamische Texte laufen über `tx('schluessel')`.
 
+**Sieben Sprachen:** Deutsch (Rückfallsprache), Englisch, Spanisch, Französisch, Italienisch,
+Portugiesisch, Japanisch. `src/i18n/de.js` ist der Maßstab — jedes andere Paket muss **genau
+dieselben Schlüssel** tragen; die Reihe „Sprachwechsel" (196 Prüfungen) und Prüfung 1 des Audits
+erzwingen das von zwei Seiten.
+
+**Die Messung darf sich durch eine Übersetzung nicht ändern.** Deshalb prüft die Reihe für jede
+Sprache einzeln, dass `FACTORS` je Dimension 10 Items hat und die **Polung Zeichen für Zeichen**
+der Rückfallsprache entspricht — und dass dieselben 50 Antworten in allen sieben Sprachen
+denselben Wert ergeben. Eine vertauschte Polung wäre sonst ein stiller Messfehler: Der Text sähe
+richtig aus, das Ergebnis wäre falsch.
+
 **Sechs Regeln, jede aus einem echten Fehler entstanden:**
 
 1. **Niemals über `textContent` setzen.** Die Texte enthalten Entitäten (`&mdash;`, `&shy;`,
@@ -205,13 +223,20 @@ Dynamische Texte laufen über `tx('schluessel')`.
    — es steht in keinem DOM. Weder die zehn Reihen noch der Sprachvergleich können es sehen;
    `ERGEBNISKARTE` und die Fußzeile blieben deshalb bis Runde 59 deutsch. Prüfung 6 findet
    solche Literale, weil sie am Quelltext ansetzt und nicht am DOM.
-6. **Anführungszeichen gehören zur Sprache.** Deutsch `&bdquo;…&ldquo;`, Englisch
-   `&ldquo;…&rdquo;`. Das englische Paket hatte an 12 Stellen das deutsche Paar übernommen —
-   für Prüfung 1 und 3 unauffällig, im Browser sofort sichtbar. Prüfung 8 erzwingt es.
+6. **Anführungszeichen gehören zur Sprache.** Deutsch `&bdquo;…&ldquo;`, Englisch und
+   Portugiesisch `&ldquo;…&rdquo;`, Spanisch/Französisch/Italienisch `&laquo;…&raquo;`,
+   Japanisch `「…」`. Das englische Paket hatte an 12 Stellen das deutsche Paar übernommen —
+   für Prüfung 1 und 3 unauffällig, im Browser sofort sichtbar. Prüfung 8 erzwingt seit Runde 78
+   für **jedes** Paket, dass es sein eigenes Paar benutzt und keines einer anderen Sprache.
 
-Der Fragebogen wird **nicht übersetzt**. Je Sprache wird die dafür veröffentlichte Fassung
-verwendet; auf Englisch ist das der Originalwortlaut. Siehe `docs/klarsicht-produktplan.md`,
-Runde 54.
+**Zum Wortlaut des Fragebogens.** Englisch ist der Originalwortlaut der IPIP Big-Five Factor
+Markers (Goldberg 1992, gemeinfrei) — die einzige Sprache ohne Übersetzungsrisiko. Für die
+übrigen sechs ist der Wortlaut eine sorgfältige Arbeitsübersetzung: Zuordnung und Polung stimmen
+Item für Item, der Wortlaut ist aber nicht zitierbar. Das galt seit jeher schon für Deutsch (35
+der 50 Items sind eigene Umformulierungen, siehe „Offene Punkte") und gilt seit Runde 78 auch für
+Spanisch, Französisch, Italienisch, Portugiesisch und Japanisch. Die App sagt das selbst — der
+Hinweis unter der Sprachauswahl nennt es beim Namen, statt eine Validierung zu behaupten, die es
+nicht gibt. Siehe `docs/klarsicht-produktplan.md`, Runde 54.
 
 ## Offene Punkte
 
@@ -225,8 +250,12 @@ Runde 54.
   Ähnlichkeitsprüfung zu LUCENTIS und LUCENT steht aus.
 - **Installierbarkeit** funktioniert erst mit eigener Domain — im eingebetteten Rahmen liest iOS
   nur die äußere Seite (Runde 51).
-- **Spanisch und Französisch** erst mit belegten Item-Fassungen; für Spanisch existiert bei IPIP
-  keine für die Big-Five-Marker.
+- **Belegte Item-Fassungen fehlen für sechs der sieben Sprachen.** Runde 78 hat Spanisch,
+  Französisch, Italienisch, Portugiesisch und Japanisch als Arbeitsübersetzung ergänzt, weil die
+  App sonst einsprachig geblieben wäre; für Spanisch existiert bei IPIP keine veröffentlichte
+  Fassung der Big-Five-Marker. Solange das so ist, ist die App in diesen Sprachen benutzbar, aber
+  ihr Fragebogen nicht zitierbar. Für einen wissenschaftlichen Anspruch bleibt das der größte
+  offene Punkt — vor Impressum und Markenrecherche.
 
 ## Nächster Schritt: iOS
 

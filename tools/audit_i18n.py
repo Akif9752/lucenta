@@ -26,16 +26,28 @@ def check(cond,msg):
     if not cond: fails.append(msg)
 
 # Tabellen
-tabs=[]
-for m in re.finditer(r"UI: \{(.*?)\n    \}[,\n]", S, re.S):
-    tabs.append(dict((k, v.replace("\\'","'").replace('\\\\','\\'))
-                     for k,v in re.findall(r"'([^']+)': '((?:[^'\\]|\\.)*)'", m.group(1))))
-DE, EN = tabs[0], tabs[1]
+# Runde 78: Aus zwei Sprachen wurden sieben. Die Tabellen wurden bis dahin ueber ihre POSITION
+# geholt (tabs[0], tabs[1]) — mit einem dritten Paket haette das stillschweigend das falsche
+# geprueft. Jetzt kommt das Sprachkuerzel aus dem "CONTENT.xx = {" davor mit.
+SPRACHEN = {}
+for m in re.finditer(r"CONTENT\.([a-z]{2}) = \{.*?UI: \{(.*?)\n    \}[,\n]", S, re.S):
+    SPRACHEN[m.group(1)] = dict((k, v.replace("\\'","'").replace('\\\\','\\'))
+                                for k,v in re.findall(r"'([^']+)': '((?:[^'\\]|\\.)*)'", m.group(2)))
+DE = SPRACHEN['de']
+EN = SPRACHEN['en']
+# Alle Pakete ausser der Rueckfallsprache — das sind die, die vollstaendig sein muessen.
+ANDERE = sorted(k for k in SPRACHEN if k != 'de')
 
 print("\n1) Vollstaendigkeit")
-check(len(DE)==len(EN), "gleich viele Texte in beiden Sprachen (%d/%d)"%(len(DE),len(EN)))
-fehlend=[k for k in DE if k not in EN]
-check(not fehlend, "kein Text ohne englische Fassung"+(": "+", ".join(fehlend[:5]) if fehlend else ""))
+check(len(SPRACHEN)>=2, "mindestens zwei Sprachpakete gefunden (%s)"%", ".join(sorted(SPRACHEN)))
+luecken=[]
+for code in ANDERE:
+    fehlt=[k for k in DE if k not in SPRACHEN[code]]
+    zuviel=[k for k in SPRACHEN[code] if k not in DE]
+    if fehlt: luecken.append("%s fehlen %d (%s)"%(code, len(fehlt), ", ".join(fehlt[:3])))
+    if zuviel: luecken.append("%s kennt %d unbekannte (%s)"%(code, len(zuviel), ", ".join(zuviel[:3])))
+check(not luecken, "jede Sprache hat genau die Texte des deutschen Pakets"+
+      (": "+"; ".join(luecken[:4]) if luecken else " (%d Texte x %d Sprachen)"%(len(DE), len(SPRACHEN))))
 
 print("\n2) Marken und Tabelle passen zusammen")
 marks=set(re.findall(r'data-i18n(?:-html|-text|-placeholder|-aria)?="([^"]+)"', MARKUP))
@@ -79,8 +91,12 @@ def bal(h):
         else: st.append(t)
     return not st
 html_marks=set(re.findall(r'data-i18n-html="([^"]+)"', MARKUP))
-unbal=[k for k in html_marks if k in DE and not bal(DE[k])]
-check(not unbal, "alle als HTML gesetzten Fragmente sind vollstaendig"+(": "+", ".join(unbal) if unbal else ""))
+# Runde 78: Geprueft wurde nur das deutsche Paket. Ein unvollstaendiges <span> in einer der
+# uebrigen sechs Sprachen haette den Rest der Seite zerlegt, ohne dass hier etwas auffaellt.
+unbal=[c+':'+k for c in sorted(SPRACHEN) for k in html_marks
+       if k in SPRACHEN[c] and not bal(SPRACHEN[c][k])]
+check(not unbal, "alle als HTML gesetzten Fragmente sind vollstaendig"+
+      (": "+", ".join(unbal[:5]) if unbal else " (%d Fragmente x %d Sprachen)"%(len(html_marks), len(SPRACHEN))))
 
 print("\n6) Keine deutschen Literale im JavaScript")
 # Runde 59: Die alte Fassung suchte nach Zuweisungsmustern und einer von Hand gepflegten Liste
@@ -197,7 +213,7 @@ for m in re.finditer(r'<(\w+)([^>]*?)>', MARKUP):
     for a,mark in (('placeholder','data-i18n-placeholder'),('aria-label','data-i18n-aria')):
         am=re.search(a+r'="([^"]*)"', attrs)
         if not am: continue
-        if a=='aria-label' and am.group(1) in ('de','en'): continue
+        if a=='aria-label' and am.group(1) in SPRACHEN: continue
         if mark not in attrs: offen.append(a+'="'+am.group(1)[:40]+'"')
 check(not offen, "jedes placeholder/aria-label ist markiert"+(": "+", ".join(offen[:5]) if offen else ""))
 
@@ -205,17 +221,49 @@ print("\n8) Anfuehrungszeichen passen zur Sprache")
 # Deutsch setzt "&bdquo;...&ldquo;", Englisch "&ldquo;...&rdquo;". Das englische Paket hatte
 # durchgehend das deutsche Paar uebernommen: 12 Stellen, im Browser sichtbar, fuer Pruefung 1
 # und 3 aber unauffaellig, weil der Text vorhanden und korrekt als HTML gesetzt war.
-de_paare = sum(1 for v in DE.values() if '&bdquo;' in v or '\u201e' in v)
-en_falsch = sorted(k for k,v in EN.items() if '&bdquo;' in v or '\u201e' in v)
-check(not en_falsch, "englische Texte ohne deutsches Anfuehrungspaar"+
-      (": "+", ".join(en_falsch[:5]) if en_falsch else " (%d deutsche Texte gepruefft)"%de_paare))
+#
+# Runde 78: Mit fuenf weiteren Sprachen wird aus der Regel eine Tabelle. Die Zuordnung folgt der
+# jeweils uebliche Typografie, nicht dem Geschmack:
+#   de              „ …"     Gaensefuesschen unten/oben
+#   en, pt          " … "     doppelte Anfuehrungszeichen
+#   es, fr, it      « … »     Guillemets (im Franzoesischen mit schmalem Leerraum)
+#   ja             「 … 」     Kagi-Klammern
+PAARE = {
+    'de': (('&bdquo;', '\u201e'), ('&ldquo;', '\u201c')),
+    'en': (('&ldquo;', '\u201c'), ('&rdquo;', '\u201d')),
+    'pt': (('&ldquo;', '\u201c'), ('&rdquo;', '\u201d')),
+    'es': (('&laquo;', '\u00ab'), ('&raquo;', '\u00bb')),
+    'fr': (('&laquo;', '\u00ab'), ('&raquo;', '\u00bb')),
+    'it': (('&laquo;', '\u00ab'), ('&raquo;', '\u00bb')),
+    'ja': (('\u300c',), ('\u300d',)),
+}
+ohne_regel = [c for c in SPRACHEN if c not in PAARE]
+check(not ohne_regel, "fuer jede Sprache ist ein Anfuehrungspaar festgelegt"+
+      (": "+", ".join(ohne_regel) if ohne_regel else " (%d Sprachen)"%len(PAARE))) 
+
+def zaehl(v, formen): return sum(v.count(f) for f in formen)
+
+# Kein Paket darf das Paar einer ANDEREN Sprache verwenden. Genau das war der Fehler von
+# Runde 58 — nur damals mit zwei Sprachen und deshalb als Einzelfall behandelt.
+fremd = []
+for code in sorted(SPRACHEN):
+    if code not in PAARE: continue
+    eigen = set(PAARE[code][0]) | set(PAARE[code][1])
+    for anderes, (op, cl) in PAARE.items():
+        if set(op) <= eigen or set(cl) <= eigen: continue
+        for zeichen in op:
+            treffer = sorted(k for k, v in SPRACHEN[code].items() if zeichen in v)
+            if treffer: fremd.append("%s benutzt %s (%s)"%(code, anderes, treffer[0]))
+check(not fremd, "keine Sprache benutzt das Anfuehrungspaar einer anderen"+
+      (": "+"; ".join(sorted(set(fremd))[:5]) if fremd else ""))
+
 # Gegenprobe: jedes oeffnende Zeichen braucht ein schliessendes
 unpaarig=[]
-def zaehl(v,formen): return sum(v.count(f) for f in formen)
-for name,tab,op,cl in (('de',DE,('&bdquo;','\u201e'),('&ldquo;','\u201c')),
-                       ('en',EN,('&ldquo;','\u201c'),('&rdquo;','\u201d'))):
-    for k,v in tab.items():
-        if zaehl(v,op)!=zaehl(v,cl): unpaarig.append(name+':'+k)
+for code in sorted(SPRACHEN):
+    if code not in PAARE: continue
+    op, cl = PAARE[code]
+    for k, v in SPRACHEN[code].items():
+        if zaehl(v, op) != zaehl(v, cl): unpaarig.append(code+':'+k)
 check(not unpaarig, "jedes oeffnende Anfuehrungszeichen hat ein schliessendes"+
       (": "+", ".join(unpaarig[:5]) if unpaarig else ""))
 

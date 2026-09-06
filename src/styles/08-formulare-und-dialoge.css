@@ -186,3 +186,12 @@
   .settings-sub h3{font-family:var(--serif); font-weight:500; font-size:15.5px; margin-bottom:4px;}
   .daten-knoepfe{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
   #importFeld{width:100%; margin-top:10px; font-family:var(--mono); font-size:12px;}
+
+  /* Sieben Sprachen passen nicht in eine Reihe. auto-fit mit einer Mindestbreite laesst das
+     Raster selbst entscheiden, wie viele Spalten die vorhandene Breite hergibt: auf 390px sind
+     es drei, auf dem Schreibtisch vier — ohne dass hier eine einzige Bildschirmbreite genannt
+     wird. 96px ist die Breite, ab der auch "Portugu&ecirc;s" einzeilig bleibt. */
+  .sprach-raster{
+    margin-top:14px; display:grid; gap:8px;
+    grid-template-columns:repeat(auto-fit, minmax(96px, 1fr));
+  }

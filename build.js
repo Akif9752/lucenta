@@ -20,7 +20,14 @@ const man = JSON.parse(fs.readFileSync(path.join(SRC, 'manifest.json'), 'utf8'))
 const read = (...p) => fs.readFileSync(path.join(SRC, ...p), 'utf8');
 
 const css = man.css.map(f => read('styles', f)).join('');
-const i18n = read('i18n', 'de.js') + read('i18n', 'en.js');
+// Sprachpakete: ALLE Dateien in src/i18n, nicht zwei fest benannte. Deutsch zuerst, weil es die
+// Rueckfallsprache ist und im Quelltext oben stehen soll; die uebrigen alphabetisch. Ein neues
+// Paket wird damit allein durch Hinzulegen der Datei wirksam — die frueher hier stehende feste
+// Liste war beim Sprung von zwei auf sieben Sprachen die erste Stelle, die man vergisst.
+const i18nDateien = fs.readdirSync(path.join(SRC, 'i18n'))
+  .filter(f => f.endsWith('.js'))
+  .sort((a, b) => (a === 'de.js' ? -1 : b === 'de.js' ? 1 : a.localeCompare(b)));
+const i18n = i18nDateien.map(f => read('i18n', f)).join('');
 const js = man.js.map(f => read('js', f)).join('').replace('@@I18N@@\n', i18n);
 
 const html = read('index.head.html') + '<style>' + css + '</style>' +
@@ -30,5 +37,6 @@ fs.mkdirSync(path.dirname(OUT), { recursive: true });
 fs.writeFileSync(OUT, html);
 
 const gz = require('zlib').gzipSync(Buffer.from(html), { level: 9 }).length;
-console.log('dist/lucenta.html  %s KB roh, %s KB gzip  (%d CSS-, %d JS-Teile)',
-  (Buffer.byteLength(html) / 1024).toFixed(1), (gz / 1024).toFixed(1), man.css.length, man.js.length);
+console.log('dist/lucenta.html  %s KB roh, %s KB gzip  (%d CSS-, %d JS-Teile, %d Sprachen)',
+  (Buffer.byteLength(html) / 1024).toFixed(1), (gz / 1024).toFixed(1), man.css.length, man.js.length,
+  i18nDateien.length);

@@ -224,7 +224,7 @@ CONTENT.de = {
       'js_ergebnisse_im_verlauf': ' Ergebnisse im Verlauf',
       'js_tagesformeintrag': ' Tagesform-Eintrag',
       'sprache': 'Sprache',
-      'weitere_sprachen_folgen': 'Weitere Sprachen folgen. Der Fragebogen selbst wird nicht übersetzt, sondern je Sprache in der dafür veröffentlichten Fassung verwendet &mdash; auf Englisch ist das der Originalwortlaut.',
+      'weitere_sprachen_folgen': 'Der Fragebogen wird je Sprache in der dafür veröffentlichten Fassung verwendet &mdash; auf Englisch ist das der Originalwortlaut von Goldberg. Für Deutsch, Spanisch, Französisch, Italienisch, Portugiesisch und Japanisch ist der Wortlaut eine sorgfältige Arbeitsübersetzung: Zuordnung und Polung der 50 Aussagen stimmen, der Wortlaut ist aber nicht zitierbar.',
       'beta': 'Beta',
       'big_five': 'Big Five',
       'lern_dich_kennen_mdash_mit_w': 'Lern dich kennen &mdash; <em>mit Wissenschaft</em>, nicht mit Sternzeichen.',
