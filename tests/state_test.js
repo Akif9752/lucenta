@@ -33,15 +33,39 @@
   ok(!$('landingStateDone').classList.contains('just-saved'), "die Animation laeuft beim blossen Zurueckkehren NICHT erneut");
   console.log("  Bestaetigung sichtbar, ohne Animation");
 
-  console.log("\n=== 'Aendern' fuehrt zurueck zu den Skalen ===");
+  console.log("\n=== Ein zweiter Eintrag am selben Tag ERGAENZT (Runde 82) ===");
+  // Bis Runde 82 loeschte der zweite Check-in eines Tages den ersten stillschweigend. Wer
+  // morgens bei Energie 2 eintrug und abends bei 4, hatte den Morgen nicht mehr. Diese Reihe
+  // haelt die neue Zusage fest, weil sie sonst beim naechsten Umbau unbemerkt zurueckfaellt.
   showLandingStateInputs(); renderLandingStateRows();
   ok($('landingStateInputs').style.display==='', "die Skalen sind wieder da");
   ok($('landingStateDone').style.display==='none', "die Bestaetigung weicht");
-  ok(landingStatePickedEnergy===4 && landingStatePickedValence===3, "die gespeicherten Werte bleiben vorgewaehlt");
-  landingStatePickedValence = 5; maybeSaveLandingState();
-  ok(loadStateHistory().length===1, "eine Aenderung am selben Tag legt KEINEN zweiten Eintrag an");
-  ok(loadStateHistory()[0].valence===5, "sondern aktualisiert den bestehenden (ist: "+loadStateHistory()[0].valence+")");
-  console.log("  Eintraege: "+loadStateHistory().length+", Stimmung jetzt "+loadStateHistory()[0].valence);
+  ok(landingStatePickedEnergy===null && landingStatePickedValence===null,
+     "die Skalen stehen LEER: ein weiterer Eintrag ist ein neuer, keine Korrektur");
+  landingStatePickedEnergy = 2; landingStatePickedValence = 5; maybeSaveLandingState();
+  ok(loadStateHistory().length===2, "der zweite Eintrag kommt dazu, statt den ersten zu ersetzen (sind: "+loadStateHistory().length+")");
+  ok(loadStateHistory()[0].valence===3 && loadStateHistory()[1].valence===5,
+     "beide Werte stehen noch da, in ihrer Reihenfolge");
+  var heute = todayStateEntry();
+  ok(heute.anzahl===2, "der Tag weiss, dass er aus zwei Eintraegen besteht");
+  ok(Math.abs(heute.energy - 3) < 0.001 && Math.abs(heute.valence - 4) < 0.001,
+     "und der Tageswert ist das Mittel (ist: "+heute.energy+"/"+heute.valence+")");
+  ok(loadStateHistory().every(function(e){ return ['morgen','mittag','abend'].indexOf(e.slot) >= 0; }),
+     "jeder Eintrag traegt einen Tagesabschnitt");
+  ok(stateTage(loadStateHistory()).length===1, "zusammengefasst bleibt es EIN Tag");
+  console.log("  Eintraege: "+loadStateHistory().length+", Tag im Mittel "+heute.energy+"/"+heute.valence);
+
+  console.log("\n=== Eintraege ohne Abschnitt (vor Runde 82) bekommen ihn beim Lesen ===");
+  // Bestand aus einer aelteren Fassung darf nicht dazu fuehren, dass eine Auswertung auf
+  // undefined trifft. Der Abschnitt wird beim Lesen aus dem Zeitstempel ergaenzt.
+  var alt2 = [{day:'2020-01-01', ts: new Date(2020,0,1,8,0).getTime(), energy:3, valence:3},
+              {day:'2020-01-02', ts: new Date(2020,0,2,20,0).getTime(), energy:4, valence:4}];
+  localStorage.setItem('lucenta_state', JSON.stringify(alt2));
+  var gelesen = loadStateHistory();
+  ok(gelesen.length===2, "alter Bestand bleibt lesbar");
+  ok(gelesen[0].slot==='morgen' && gelesen[1].slot==='abend',
+     "und bekommt seinen Abschnitt aus der Uhrzeit (ist: "+gelesen[0].slot+"/"+gelesen[1].slot+")");
+  console.log("  ergaenzt: "+gelesen[0].slot+", "+gelesen[1].slot);
 
   console.log("\n==================================================");
   console.log(fails===0 ? ("ALLE "+checks+" PRUEFUNGEN BESTANDEN") : (fails+" von "+checks+" PRUEFUNGEN FEHLGESCHLAGEN"));

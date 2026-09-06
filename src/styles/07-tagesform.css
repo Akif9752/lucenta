@@ -40,3 +40,9 @@
   .state-q-sub span:last-child{text-align:right;}
 
   
+  /* Runde 82: Die Marke fuer einen Tag mit mehreren Eintraegen. Bewusst neben dem Datum und
+     nicht neben den Werten: Sie sagt etwas ueber die Erhebung, nicht ueber das Befinden. */
+  .tf-anzahl{
+    margin-left:6px; font-size:10.5px; color:var(--muted);
+    border:1px solid var(--line); border-radius:100px; padding:1px 5px;
+  }

@@ -46,7 +46,9 @@
     var done = $('landingStateDone');
     // Ohne „/5": Die Skala hat man gerade selbst angetippt, und die Kurzform bleibt neben der
     // „Ändern"-Schaltfläche einzeilig, statt umzubrechen.
-    $('landingStateDoneVals').textContent = tx('js_energie_praefix')+entry.energy+tx('js_trenner_stimmung')+entry.valence;
+    $('landingStateDoneVals').textContent =
+      tx('js_energie_praefix')+tagWert(entry.energy)+tx('js_trenner_stimmung')+tagWert(entry.valence)+
+      (entry.anzahl > 1 ? (' ' + tx('js_mittel_aus_a') + entry.anzahl + tx('js_mittel_aus_b')) : '');
     done.style.display = 'flex';
     done.classList.remove('just-saved');
     if (animate){
@@ -63,20 +65,29 @@
   }
   function maybeSaveLandingState(){
     if (!landingStatePickedEnergy || !landingStatePickedValence){ updateLandingStateCopy(); return; }
-    var ok = upsertStateToday(landingStatePickedEnergy, landingStatePickedValence);
+    var ok = addStateEntry(landingStatePickedEnergy, landingStatePickedValence);
     if (!ok){
       toast(tx('js_konnte_nicht_gespeichert_w'));
       return;
     }
     // Kein Erfolgs-Toast mehr: Die Karte bestätigt jetzt selbst, an der Stelle, auf die
     // tatsächlich geschaut wird. Zwei Bestätigungen für dasselbe wären Lärm.
-    showLandingStateDone({energy:landingStatePickedEnergy, valence:landingStatePickedValence}, true);
+    //
+    // Runde 82: Gezeigt wird der zusammengefasste Stand des Tages, nicht das eben Angetippte.
+    // Beim zweiten Eintrag eines Tages sind das verschiedene Zahlen, und die richtige ist die
+    // zusammengefasste — sonst behauptete die Karte, der Tag stehe bei 4, obwohl er im Mittel
+    // bei 3 steht.
+    showLandingStateDone(todayStateEntry(), true);
+    landingStatePickedEnergy = null; landingStatePickedValence = null;
+    renderLandingStateRows();
     refreshDrawerState();
   }
   function renderLandingStateTeaser(){
     var today = todayStateEntry();
-    landingStatePickedEnergy = today ? today.energy : null;
-    landingStatePickedValence = today ? today.valence : null;
+    // Die Skalen stehen beim Wiederkommen leer: Ein weiterer Eintrag ist ein NEUER Eintrag,
+    // keine Korrektur des alten. Vorbelegte Werte wuerden das Gegenteil nahelegen.
+    landingStatePickedEnergy = null;
+    landingStatePickedValence = null;
     renderLandingStateRows();
     if (today){ showLandingStateDone(today, false); }
     else { showLandingStateInputs(); }
@@ -104,13 +115,17 @@
 
   function tagesformBefunde(hist){
     var teile = [];
-    if (hist.length < 7) return teile;
+    // Runde 82: Gerechnet wird auf TAGEN, nicht auf Eintraegen. Sonst haette jemand mit drei
+    // Eintraegen am Tag nach zweieinhalb Tagen einen "7-Tage-Befund" — und ein Tag mit drei
+    // Eintraegen zaehlte im Wochentagsmuster dreimal.
+    var tage = stateTage(hist);
+    if (tage.length < 7) return teile;
 
     // 1) Schwankungsbreite neben dem Stabilitätswert
-    var sE = streuung(hist.map(function(e){ return e.energy; }));
-    var sS = streuung(hist.map(function(e){ return e.valence; }));
+    var sE = streuung(tage.map(function(e){ return e.energy; }));
+    var sS = streuung(tage.map(function(e){ return e.valence; }));
     var res = loadResult();
-    var satz = tx('js_befund_schwankung_a') + hist.length + tx('js_befund_schwankung_b') +
+    var satz = tx('js_befund_schwankung_a') + tage.length + tx('js_befund_schwankung_b') +
                zahl1(sE) + tx('js_befund_schwankung_c') + zahl1(sS) + tx('js_befund_schwankung_d');
     if (res && typeof res.S === 'number'){
       satz += ' ' + tx('js_befund_stabil_a') + res.S + tx('js_befund_stabil_b');
@@ -119,10 +134,10 @@
     teile.push({titel: tx('js_befund_titel_schwankung'), text: satz});
 
     // 2) Wochentagsmuster
-    if (hist.length >= 14){
+    if (tage.length >= 14){
       var proTag = [];
       for (var i=0;i<7;i++) proTag.push([]);
-      hist.forEach(function(e){
+      tage.forEach(function(e){
         var d;
         try{ d = new Date(e.ts).getDay(); }catch(x){ return; }
         if (typeof d === 'number') proTag[d].push(e.energy);
@@ -145,7 +160,42 @@
         }
       }
     }
+
+    // 3) Tageszeit. Erst moeglich, seit ein Tag mehrere Eintraege tragen kann (Runde 82) — und
+    //    der Befund, der am unmittelbarsten etwas mit dem eigenen Tag zu tun hat: Wann jemand
+    //    hoch und wann niedrig liegt, laesst sich anders einteilen als welcher Wochentag es ist.
+    //
+    //    Die Huerden sind dieselben wie beim Wochentagsmuster und aus demselben Grund: mindestens
+    //    drei Messungen JE verglichenem Abschnitt (sonst vergleicht man zwei Einzelmessungen und
+    //    nennt es Muster) und mindestens ein halber Skalenpunkt Unterschied (darunter ist es bei
+    //    einer Fuenferskala Rauschen).
+    var proAbschnitt = {morgen:[], mittag:[], abend:[]};
+    hist.forEach(function(e){
+      if (proAbschnitt[e.slot]) proAbschnitt[e.slot].push(e.energy);
+    });
+    var abKand = ['morgen','mittag','abend'].filter(function(k){ return proAbschnitt[k].length >= 3; })
+      .map(function(k){
+        var w = proAbschnitt[k];
+        return {slot:k, mittel: w.reduce(function(a,b){ return a+b; },0) / w.length, anzahl:w.length};
+      });
+    if (abKand.length >= 2){
+      abKand.sort(function(a,b){ return b.mittel - a.mittel; });
+      var aHoch = abKand[0], aTief = abKand[abKand.length-1];
+      if (aHoch.mittel - aTief.mittel >= 0.5){
+        teile.push({titel: tx('js_befund_titel_tageszeit'),
+          text: tx('js_befund_tageszeit_a') + tx('js_abschnitt_'+aHoch.slot) + tx('js_befund_tageszeit_b') +
+                tx('js_abschnitt_'+aTief.slot) + tx('js_befund_tageszeit_c') +
+                zahl1(aHoch.mittel - aTief.mittel) + tx('js_befund_tageszeit_d')});
+      }
+    }
     return teile;
+  }
+
+  // Ein Tag mit einem Eintrag ist eine ganze Zahl und soll auch so dastehen: "4/5", nicht
+  // "4,0/5". Eine Nachkommastelle, die immer 0 ist, behauptet eine Genauigkeit, die die Angabe
+  // nicht hat — erst der Mittelwert aus mehreren Eintraegen hat sie wirklich.
+  function tagWert(v){
+    return Math.abs(v - Math.round(v)) < 0.001 ? String(Math.round(v)) : zahl1(v);
   }
 
   function zahl1(v){
@@ -168,16 +218,22 @@
 
   function renderStateView(){
     var today = todayStateEntry();
-    statePickedEnergy = today ? today.energy : null;
-    statePickedValence = today ? today.valence : null;
-    $('stateTodayNote').textContent = today
-      ? tx('js_heute_bereits_erfasst__du')
-      : tx('js_heute_noch_nicht_erfasst');
+    // Wie auf der Startseite: leere Skalen, weil ein weiterer Eintrag ein neuer ist.
+    statePickedEnergy = null;
+    statePickedValence = null;
+    $('stateTodayNote').textContent = !today
+      ? tx('js_heute_noch_nicht_erfasst')
+      : (today.anzahl > 1
+          ? (tx('js_heute_schon_a') + today.anzahl + tx('js_heute_schon_b'))
+          : tx('js_heute_bereits_erfasst__du'));
     renderStateRows();
     renderStateTrend();
   }
   function renderStateTrend(){
-    var hist = loadStateHistory();
+    var eintraege = loadStateHistory();
+    // Diagramm und Liste zeigen TAGE. Ein Tag mit drei Eintraegen ist ein Punkt auf der Linie,
+    // kein dreifaches Gewicht — die Linie beschreibt den Verlauf ueber Tage, nicht ueber Tipps.
+    var hist = stateTage(eintraege);
     var wrap = $('stateTrendContent');
     if (hist.length===0){
       wrap.innerHTML = emptyStateHTML(tx('js_noch_keine_tagesform_erfas'));
@@ -191,12 +247,12 @@
       wrap.innerHTML =
         '<div class="history-list"><div class="history-row">'+
           '<div class="history-date">'+sd+'</div>'+
-          tx('js_html_energie')+s1.energy+'/5'+tx('js_trenner_stimmung_html')+s1.valence+'/5</div>'+
+          tx('js_html_energie')+tagWert(s1.energy)+'/5'+tx('js_trenner_stimmung_html')+tagWert(s1.valence)+'/5</div>'+
         '</div></div>'+
         tx('js_erster_eintrag_steht_ab_de');
       return;
     }
-    var lastE = hist[hist.length-1].energy, lastV = hist[hist.length-1].valence;
+    var lastE = tagWert(hist[hist.length-1].energy), lastV = tagWert(hist[hist.length-1].valence);
     // Höchstens 30 Tage: Darüber hinaus wird der Abstand zwischen zwei Tagen so klein, dass die
     // Linie zur Textur wird und die einzelne Angabe nicht mehr ablesbar ist.
     var fenster = hist.slice(-30);
@@ -223,12 +279,15 @@
     var listRows = hist.slice().reverse().slice(0,14).map(function(e){
       var dateStr;
       try{ dateStr = fmt.format(new Date(e.ts)); }catch(ex){ dateStr = e.day; }
-      return '<div class="history-row"><div class="history-date">'+dateStr+'</div><div class="history-title">'+tx('js_energie')+' '+e.energy+'/5 &middot; '+tx('js_stimmung')+' '+e.valence+'/5</div></div>';
+      return '<div class="history-row"><div class="history-date">'+dateStr+
+             (e.anzahl > 1 ? ' <span class="tf-anzahl mono">'+e.anzahl+'&times;</span>' : '')+
+             '</div><div class="history-title">'+tx('js_energie')+' '+tagWert(e.energy)+'/5 &middot; '+
+             tx('js_stimmung')+' '+tagWert(e.valence)+'/5</div></div>';
     }).join('');
     wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
       tx('js_letzte_einträge')+hist.length+'</span></h2>'+
       '<div class="history-list">'+listRows+'</div>';
-    var befunde = tagesformBefunde(hist);
+    var befunde = tagesformBefunde(eintraege);
     if (befunde.length){
       var block = '<h2 class="section-title section-title-sub">'+tx('js_befunde_titel')+'</h2>'+
         '<div class="befund-liste">'+befunde.map(function(b){

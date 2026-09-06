@@ -20,7 +20,7 @@
 
   console.log("\n=== Tagesform nach GENAU EINEM Eintrag ===");
   delete __store['lucenta_state'];
-  upsertStateToday(4,3);
+  addStateEntry(4,3);
   renderStateTrend();
   var s=el('stateTrendContent').innerHTML;
   console.log('  '+strip(s).slice(0,160));

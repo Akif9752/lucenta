@@ -70,15 +70,24 @@
   __store['lucenta_history']='[{"kaputt":true},{"date":1,"scores":{"O":5,"C":1,"E":1,"A":1,"S":1}}]';
   ok(loadHistory().length===1, "loadHistory filtert kaputte Eintraege nicht");
 
-  console.log("\n[7] Tagesform: max 1 Eintrag pro Tag, Update statt Duplikat");
+  console.log("\n[7] Tagesform: mehrere Eintraege pro Tag, Mittel statt Ueberschreiben (Runde 82)");
   delete __store['lucenta_state'];
-  upsertStateToday(3,4); upsertStateToday(5,2); upsertStateToday(1,1);
+  addStateEntry(3,4); addStateEntry(5,2); addStateEntry(1,1);
   var sh=loadStateHistory();
-  ok(sh.length===1, "sollte 1 Eintrag pro Tag sein, sind "+sh.length);
-  ok(sh[0].energy===1&&sh[0].valence===1, "letzter Wert nicht uebernommen: "+JSON.stringify(sh[0]));
+  ok(sh.length===3, "drei Eintraege muessen stehen bleiben, sind "+sh.length);
+  ok(sh[0].energy===3&&sh[2].energy===1, "die Reihenfolge stimmt nicht: "+JSON.stringify(sh.map(function(e){return e.energy;})));
   var te=todayStateEntry();
-  ok(te&&te.energy===1, "todayStateEntry falsch: "+JSON.stringify(te));
-  console.log("  3x gespeichert -> "+sh.length+" Eintrag, Werte: energy="+sh[0].energy+", valence="+sh[0].valence);
+  ok(te&&te.anzahl===3, "der Tag muss aus drei Eintraegen bestehen: "+JSON.stringify(te));
+  ok(te&&Math.abs(te.energy-3)<0.001&&Math.abs(te.valence-(7/3))<0.001,
+     "der Tageswert ist nicht das Mittel: "+JSON.stringify(te));
+  ok(stateTage(sh).length===1, "drei Eintraege desselben Tages sind EIN Tag");
+  console.log("  3x gespeichert -> "+sh.length+" Eintraege, Tag im Mittel energy="+te.energy.toFixed(2)+", valence="+te.valence.toFixed(2));
+  // Der Deckel zaehlt jetzt Eintraege, nicht Tage.
+  delete __store['lucenta_state'];
+  for(var se=0; se<MAX_STATE_EINTRAEGE+10; se++) addStateEntry(3,3);
+  ok(loadStateHistory().length===MAX_STATE_EINTRAEGE,
+     "Deckel greift nicht: "+loadStateHistory().length+" statt "+MAX_STATE_EINTRAEGE);
+  console.log("  Deckel "+MAX_STATE_EINTRAEGE+" Eintraege eingehalten");
   __store['lucenta_state']='[{"day":"x","energy":9,"valence":1},{"day":"y","energy":3,"valence":3}]';
   ok(loadStateHistory().length===1, "loadStateHistory filtert ungueltige Werte nicht");
 

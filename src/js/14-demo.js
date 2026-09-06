@@ -64,7 +64,14 @@
     ];
     // 35 Tage Tagesform mit einer Luecke von drei Tagen — wer fuenf Wochen lang jeden Tag
     // eintraegt, ist die Ausnahme, und die Ansicht muss auch mit Luecken stimmen.
+    //
+    // Runde 82: An jedem dritten Tag stehen zwei bis drei Eintraege zu verschiedenen Tageszeiten
+    // statt einem. Nicht als Zierde: Ohne mehrere Abschnitte je Tag gaebe es den Tageszeit-Befund
+    // nie zu sehen, und die Beispielnutzerin ist genau dafuer da — die Zustaende zu zeigen, die
+    // sonst fuenf Wochen Warten brauchen. Das Muster ist bewusst deutlich (morgens niedriger),
+    // damit sichtbar wird, was der Befund erkennt.
     var zustand = [];
+    var ABSCHNITTE = [{h:8, ab:-0.7}, {h:13, ab:0.1}, {h:20, ab:0.6}];
     for (var i = 34; i >= 0; i--){
       if (i === 12 || i === 11 || i === 10) continue;
       var d = new Date(jetzt - i*TAG_MS);
@@ -73,11 +80,17 @@
       // das tagesformBefunde() ab 14 Eintraegen erkennen soll — sonst prueft man die Ansicht,
       // ohne je den Befund zu sehen.
       var wochen = (wt === 1 ? -0.8 : (wt === 5 ? 0.7 : (wt === 6 ? 0.6 : 0)));
-      var e = Math.round(Math.max(1, Math.min(5, 3.3 + wochen + (demoZufall(i+1) - 0.5) * 1.6)));
-      var s = Math.round(Math.max(1, Math.min(5, 3.5 + wochen*0.6 + (demoZufall(i+50) - 0.5) * 1.7)));
-      zustand.push({
-        day: d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),
-        ts: d.getTime(), energy: e, valence: s
+      var tagKey = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      // Jeder dritte Tag traegt alle drei Abschnitte, die uebrigen nur den Abend — so, wie
+      // jemand es tatsaechlich taete: meistens einmal, manchmal oefter.
+      var wieOft = (i % 3 === 0) ? 3 : 1;
+      var abschnitte = (wieOft === 3) ? ABSCHNITTE : [ABSCHNITTE[2]];
+      abschnitte.forEach(function(ab, k){
+        var zeit = new Date(d.getFullYear(), d.getMonth(), d.getDate(), ab.h, 0, 0);
+        var e = Math.round(Math.max(1, Math.min(5, 3.3 + wochen + ab.ab + (demoZufall(i*3+k+1) - 0.5) * 1.2)));
+        var s = Math.round(Math.max(1, Math.min(5, 3.5 + wochen*0.6 + ab.ab*0.5 + (demoZufall(i*3+k+50) - 0.5) * 1.3)));
+        zustand.push({day: tagKey, ts: zeit.getTime(), energy: e, valence: s,
+                      slot: ab.h < 11 ? 'morgen' : (ab.h < 17 ? 'mittag' : 'abend')});
       });
     }
     // Vier Vergleiche. Drei sind die Untergrenze, ab der das Archiv auswertet — mit vier sieht

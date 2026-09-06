@@ -96,7 +96,7 @@
       toast(tx('js_bitte_beide_fragen'));
       return;
     }
-    var ok = upsertStateToday(statePickedEnergy, statePickedValence);
+    var ok = addStateEntry(statePickedEnergy, statePickedValence);
     if (ok){
       toast(tx('js_tagesform_gespeichert'));
       renderStateView();

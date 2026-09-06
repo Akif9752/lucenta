@@ -77,7 +77,32 @@
   // Tagesform / State-Check: kurzfristiger Zustand (Energie, Stimmung), bewusst als eigenes
   // Datenmodell getrennt vom stabilen Trait-Ergebnis oben (State vs. Trait) — höchstens ein
   // Eintrag pro Kalendertag, ein erneutes Speichern am selben Tag aktualisiert den Eintrag.
-  var MAX_STATE_HISTORY = 30;
+  // Runde 82: Die Tagesform zaehlt nicht mehr Tage, sondern Eintraege.
+  //
+  // Bis hierher galt EIN Eintrag je Tag, und upsertStateToday() setzte das durch, indem es den
+  // heutigen Tag herausfilterte und neu schrieb. Der zweite Check-in eines Tages hat den ersten
+  // damit stillschweigend geloescht: Wer morgens bei Energie 2 eintrug und abends bei 4, hatte
+  // den Morgen nicht mehr.
+  //
+  // Das war nicht nur Datenverlust, sondern eine Verzerrung. Der Tageswert hing davon ab, WANN
+  // jemand zufaellig tippte — und wer an schlechten Tagen abends eincheckt und an guten Tagen
+  // morgens, erzeugt eine Schwankung, die im Diagramm nach Befinden aussieht und Messfehler ist.
+  //
+  // Jetzt ergaenzt jeder Eintrag statt zu ueberschreiben, und jeder traegt seine Tageszeit. Der
+  // Tageswert ist das Mittel. Ausdruecklich NICHT eingefuehrt: eine Aufforderung, mehrmals am
+  // Tag einzutragen. Ein Tipp bleibt in sich fertig — die Grenze aus Runde 46 (kein Druck bei
+  // einer Anwendung rund um Befinden) gilt weiter.
+  var MAX_STATE_EINTRAEGE = 150;
+  // Drei Abschnitte statt Uhrzeiten: Eine Uhrzeit im Verlauf zu zeigen waere eine Genauigkeit,
+  // die die Angabe nicht hat. Die Grenzen sind bewusst grob und liegen dort, wo die meisten
+  // Menschen den Tag selbst teilen.
+  function zeitabschnitt(ts){
+    var h;
+    try{ h = new Date(ts).getHours(); }catch(e){ return 'mittag'; }
+    if (h < 11) return 'morgen';
+    if (h < 17) return 'mittag';
+    return 'abend';
+  }
   function todayKey(){
     var d = new Date();
     return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -92,26 +117,52 @@
         return e && typeof e==='object' && typeof e.day==='string' &&
           typeof e.energy==='number' && e.energy>=1 && e.energy<=5 &&
           typeof e.valence==='number' && e.valence>=1 && e.valence<=5;
+      }).map(function(e){
+        // Eintraege von vor Runde 82 tragen keinen Abschnitt. Er wird beim Lesen aus dem
+        // Zeitstempel ergaenzt, damit der gesamte uebrige Code nur EINE Form kennt — sonst
+        // muesste jede Auswertung den Sonderfall selbst behandeln und eine davon vergaesse ihn.
+        if (!e.slot) e.slot = zeitabschnitt(e.ts);
+        return e;
       });
     }catch(e){ return []; }
   }
   function saveStateHistoryList(h){
     try{ localStorage.setItem('lucenta_state', JSON.stringify(h)); return true; }catch(e){ return false; }
   }
-  function upsertStateToday(energy, valence){
+  function addStateEntry(energy, valence){
     var h = loadStateHistory();
-    var key = todayKey();
-    h = h.filter(function(e){ return e.day!==key; });
-    h.push({day:key, ts:Date.now(), energy:energy, valence:valence});
+    var jetzt = Date.now();
+    h.push({day:todayKey(), ts:jetzt, energy:energy, valence:valence, slot:zeitabschnitt(jetzt)});
     h.sort(function(a,b){ return a.ts-b.ts; });
-    if (h.length>MAX_STATE_HISTORY) h = h.slice(h.length-MAX_STATE_HISTORY);
+    if (h.length>MAX_STATE_EINTRAEGE) h = h.slice(h.length-MAX_STATE_EINTRAEGE);
     return saveStateHistoryList(h);
   }
-  function todayStateEntry(){
+  // Fasst die Eintraege zu Tagen zusammen. Diagramm, Liste und die Befunde ueber Tage rechnen
+  // damit weiter in Tagen — sonst haette ein Tag mit drei Eintraegen im Diagramm dreimal so viel
+  // Gewicht wie einer mit einem, und "7 Tage" bedeutete ploetzlich "7 Eintraege".
+  function stateTage(hist){
+    var proTag = {}, reihenfolge = [];
+    (hist||[]).forEach(function(e){
+      if (!proTag[e.day]){ proTag[e.day] = {day:e.day, ts:e.ts, energy:0, valence:0, anzahl:0}; reihenfolge.push(e.day); }
+      var t = proTag[e.day];
+      t.energy += e.energy; t.valence += e.valence; t.anzahl++;
+      if (e.ts > t.ts) t.ts = e.ts;
+    });
+    return reihenfolge.map(function(k){
+      var t = proTag[k];
+      return {day:t.day, ts:t.ts, anzahl:t.anzahl,
+              energy: t.energy/t.anzahl, valence: t.valence/t.anzahl};
+    }).sort(function(a,b){ return a.ts-b.ts; });
+  }
+  function todayStateEntries(){
     var key = todayKey();
-    var h = loadStateHistory();
-    for (var i=0;i<h.length;i++){ if (h[i].day===key) return h[i]; }
-    return null;
+    return loadStateHistory().filter(function(e){ return e.day===key; });
+  }
+  // Der zusammengefasste Stand von heute — oder nichts, wenn heute noch nichts eingetragen ist.
+  function todayStateEntry(){
+    var heute = todayStateEntries();
+    if (!heute.length) return null;
+    return stateTage(heute)[0];
   }
   function clearStateHistory(){
     try{ localStorage.removeItem('lucenta_state'); }catch(e){}
