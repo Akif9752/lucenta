@@ -52,6 +52,35 @@
 
 
 
+  // Runde 63. Zwei kleine Helfer für die fühlbare Seite des Fragebogens.
+  //
+  // Der Impuls im Fortschrittsbalken läuft nur an den Meilensteinen — also dort, wo ohnehin
+  // schon ein Hinweistext erscheint. Ein Balken, der bei jeder der fünfzig Antworten aufblitzt,
+  // wäre nach zehn Fragen nur noch Flimmern.
+  var focuslineBeatTimer = null;
+  function pulseFocusline(){
+    if (prefersReducedMotion()) return;
+    var fl = $('focusline');
+    if (!fl) return;
+    fl.classList.remove('beat');
+    try{ void fl.offsetWidth; }catch(e){}
+    fl.classList.add('beat');
+    if (focuslineBeatTimer) clearTimeout(focuslineBeatTimer);
+    focuslineBeatTimer = setTimeout(function(){ fl.classList.remove('beat'); focuslineBeatTimer = null; }, 620);
+  }
+
+  // Haptik: Auf Android beantwortet das Gerät den Tipp sofort mit einem kurzen Impuls. iOS Safari
+  // kennt navigator.vibrate nicht — dort bleibt es wirkungslos, bis die App als Capacitor-Hülle
+  // läuft; der Aufrufpunkt ist damit aber schon an der richtigen Stelle (README: "Der lohnendste
+  // native Zugewinn ist Haptik im Fragebogen").
+  //
+  // 8 ms sind ein Tick, kein Brummen. Bei reduzierter Bewegung bleibt es aus: Wer visuelle
+  // Reize zurückdreht, will in aller Regel auch keine körperlichen.
+  function tapFeedback(){
+    if (prefersReducedMotion()) return;
+    try{ if (navigator.vibrate) navigator.vibrate(8); }catch(e){}
+  }
+
   var quizAdvanceTimeout = null;
   // Lässt die neue Frage hereinkommen. Das Entfernen und erneute Setzen der Klasse ist nötig,
   // damit der Browser die Animation überhaupt als neu erkennt — sonst liefe sie nur beim
@@ -68,6 +97,7 @@
   }
   function selectAnswer(v){
     answers[qi] = v;
+    tapFeedback();
     saveProgress();
     renderQuestion();
     // Vorherigen ausstehenden Übergang verwerfen, statt ihn zusätzlich laufen zu lassen —
@@ -84,7 +114,7 @@
         qi++; renderQuestion();
         animateQuestionIn();
         saveProgress();
-        if (QUIZ_MILESTONES[qi]) toast(QUIZ_MILESTONES[qi]);
+        if (QUIZ_MILESTONES[qi]){ toast(QUIZ_MILESTONES[qi]); pulseFocusline(); }
       }
       else { finishQuiz(); }
     }, 220);
@@ -150,8 +180,12 @@
   // wäre ein deutlich schlechterer Fehler als eine Animation, die niemand sieht. Nach drei
   // Sekunden wird alles gezeigt, was der Beobachter bis dahin nicht erfasst hat.
   function revealOnScroll(elemente){
+    // Reihenfolge ist hier wichtig: Erst aussteigen, dann anfassen. Eine frühere Fassung wandelte
+    // `elemente` vor dieser Prüfung in ein Feld um und stürzte damit im Ersatz-DOM der Testreihen
+    // ab, wo es weder einen IntersectionObserver noch `children` gibt.
+    if (!elemente || prefersReducedMotion() || !('IntersectionObserver' in window)) return;
     var liste = Array.prototype.slice.call(elemente);
-    if (prefersReducedMotion() || !('IntersectionObserver' in window) || !liste.length) return;
+    if (!liste.length) return;
     liste.forEach(function(el){ el.classList.add('defer'); });
     var zeigen = function(el){ el.classList.add('reveal-in'); };
     var beobachter = new IntersectionObserver(function(eintraege){

@@ -180,3 +180,66 @@
        Bildes, nur eben ohne Bewegung. */
     #view-landing .hero::before{ animation:none; }
   }
+
+/* ================= Fühlbare Bedienung =================
+     Runde 63, angefragt mit Verweis auf Duolingo. Übernommen wird das Handwerk, nicht die
+     Bindungsmechanik: kein Serien-Zähler, kein XP, keine Herzen, keine Bestenliste — das lehnt
+     der Grundsatz im README ausdrücklich ab, und auf einem Persönlichkeitstest wäre eine
+     "Serie" auch inhaltlich sinnlos, weil sich Persönlichkeit nicht täglich ändert.
+
+     Was solche Apps tatsächlich gut machen und was hier ankommt: Bedienelemente, die sich
+     körperlich anfühlen, Bewegung mit einer Feder statt mit einer Bremse, und großzügige
+     Rückmeldung auf die eine Handlung, um die es gerade geht. */
+
+  /* 1. Die Signatur: eine sichtbare Unterkante, die beim Drücken zusammengeht. Der Knopf bekommt
+        dadurch eine Höhe, die man mit dem Auge sieht und beim Tippen verliert — deutlich
+        greifbarer als eine reine Verkleinerung. Nur für die primäre Handlung; Geister- und
+        kleine Knöpfe behalten ihre zurückhaltende Verkleinerung, sonst trüge jede Fläche
+        dieselbe Betonung und keine hätte mehr Gewicht. */
+  .btn-primary{
+    box-shadow:0 4px 0 var(--accent-deep);
+    transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s cubic-bezier(.2,.8,.2,1),
+               background .15s ease;
+  }
+  .btn-primary:active{
+    transform:translateY(3px); box-shadow:0 1px 0 var(--accent-deep); transition-duration:0s;
+  }
+  .btn-hero.btn-primary{ box-shadow:0 5px 0 var(--accent-deep); }
+  .btn-hero.btn-primary:active{ transform:translateY(4px); box-shadow:0 1px 0 var(--accent-deep); }
+  /* Der bisherige Schwebe-Effekt hob den Knopf an und ersetzte dabei den Schatten — damit wäre
+     die Kante beim Zeigen verschwunden. Beide Zustände tragen sie jetzt. */
+  @media (hover:hover){
+    .btn-primary:hover{ transform:translateY(-1px); box-shadow:0 5px 0 var(--accent-deep); }
+    .btn-hero.btn-primary:hover{ transform:translateY(-1px); box-shadow:0 6px 0 var(--accent-deep); }
+  }
+
+  /* 2. Die Antwort im Fragebogen ist die meistwiederholte Handlung der App — fünfzig Mal je
+        Durchlauf. Die Füllung wuchs bisher linear ein; jetzt federt sie mit leichtem Überschwung
+        auf, und der Ring gibt einen kurzen Impuls nach außen. Das ist dieselbe Handlung wie
+        vorher, nur beantwortet statt bloß registriert. */
+  .scale-btn .fill{ transition:width .26s cubic-bezier(.34,1.56,.64,1), height .26s cubic-bezier(.34,1.56,.64,1), background .15s ease; }
+  .scale-btn.picked{ animation:antwort-puls .34s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes antwort-puls{
+    0%  { box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 42%, transparent); }
+    100%{ box-shadow:0 0 0 11px color-mix(in srgb, var(--accent) 0%, transparent); }
+  }
+
+  /* 3. Der Fortschrittsbalken schob sich bisher gleichmäßig weiter. Mit derselben Feder wie die
+        Antwort wirkt er als Folge des Tippens, nicht als nebenherlaufende Anzeige. Der Impuls
+        bei den Meilensteinen ist die einzige Stelle, an der der Balken selbst auf sich
+        aufmerksam macht — dort gibt es auch schon den Hinweistext. */
+  #focusline-fill{ transition:width .5s cubic-bezier(.34,1.4,.64,1); }
+  #focusline.beat #focusline-fill{ animation:balken-impuls .6s ease; }
+  @keyframes balken-impuls{
+    0%,100%{ filter:brightness(1); }
+    38%    { filter:brightness(1.5) saturate(1.2); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .btn-primary, .btn-hero.btn-primary{ transition:background .15s ease; }
+    .btn-primary:active, .btn-hero.btn-primary:active{ transform:none; }
+    .scale-btn.picked{ animation:none; }
+    .scale-btn .fill{ transition:none; }
+    #focusline-fill{ transition:none; }
+    #focusline.beat #focusline-fill{ animation:none; }
+  }

@@ -15,6 +15,9 @@
     --line-strong:#94958C;
     --accent:#2F6F6A;
     --accent-strong:#245854;
+    /* Runde 63: Unterkante fuer die fuehlbaren Knoepfe — dunkler als --accent-strong, damit die
+       Kante als Tiefe gelesen wird und nicht als zweite Farbe. */
+    --accent-deep:#17403C;
     --accent-ink:#F5FBFA;
     --accent-2:#C97A3C;
     /* minimal nachgedunkelt (war #9D5F2F): als Fettschrift auf der Amber-Fläche der Hinweisbänder
@@ -46,6 +49,7 @@
       --line-strong:#546F62;
       --accent:#5CB4AD;
       --accent-strong:#7FC7C0;
+      --accent-deep:#2E6F6A;
       --accent-ink:#08211E;
       --accent-2:#E39A5C;
       --accent-2-text:#E39A5C;
@@ -66,6 +70,7 @@
     --line-strong:#546F62;
     --accent:#5CB4AD;
     --accent-strong:#7FC7C0;
+    --accent-deep:#2E6F6A;
     --accent-ink:#08211E;
     --accent-2:#E39A5C;
     --accent-2-text:#E39A5C;
