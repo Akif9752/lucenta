@@ -16,7 +16,7 @@
 //   npx http-server dist -p 8017 -s &
 //   node tools/diff_sprachen.mjs
 //
-// Erwarteter Rest (Stand Runde 59): 25 Zeilen, alle geprueft und berechtigt — die englischen
+// Erwarteter Rest (Stand Runde 66): 25 Zeilen, alle geprueft und berechtigt — die englischen
 // Unterschriften der OCEAN-Kacheln, die Abkuerzungen EXTRA./STABIL., "Extraversion",
 // "optional", "NAME", "Deutsch", "English", "System", "Test". Waechst diese Zahl, ist etwas
 // neu hinzugekommen, das nicht uebersetzt wird.
@@ -89,7 +89,12 @@ async function grab(){ await expandAll();
   return p.evaluate(()=>{
     const v=[...document.querySelectorAll('[id^=view-]')].find(x=>getComputedStyle(x).display!=='none');
     const txt=v?v.innerText:'';
-    const attrs=[...document.querySelectorAll('[aria-label],[placeholder],[title]')]
+    // Nur die aktive Ansicht, genau wie beim Text. Zuvor wurde das ganze Dokument gelesen und
+    // damit auch verborgene Ansichten — die Ergebnisansicht behält nach einem Sprachwechsel ihr
+    // altes aria-label, bis sie das nächste Mal geöffnet und dabei neu gerendert wird. Das ist
+    // für niemanden sichtbar (ein Screenreader liest display:none nicht) und wurde trotzdem als
+    // Fehler gemeldet. Was nicht dargestellt wird, ist auch nicht zu prüfen.
+    const attrs=[...(v?v.querySelectorAll('[aria-label],[placeholder],[title]'):[])]
       .flatMap(e=>[e.getAttribute('aria-label'),e.getAttribute('placeholder'),e.getAttribute('title')])
       .filter(Boolean);
     return {view:v?v.id:'-', lines:txt.split('\n').map(s=>s.trim()).filter(Boolean), attrs,

@@ -120,13 +120,19 @@
       <button type="button" class="btn btn-ghost btn-sm" id="btnLandingTeaserMore" style="margin-top:10px;" data-i18n="mehr_davon_entdecken">Mehr davon entdecken</button>
     </div>
 
-    <div class="preview-card">
-      <div class="preview-label" data-i18n-html="so_sieht_dein_ergebnis_aus_b">So sieht dein Ergebnis aus <span class="preview-tag">Beispiel</span></div>
+    <!-- Runde 66: Diese Karte zeigte auch dann ein erfundenes Beispiel ("Visionär:in · gesellig"),
+         wenn längst ein eigenes Ergebnis vorlag — jemand mit eigenem Porträt bekam auf der
+         Startseite das Porträt einer erfundenen Person zu sehen. renderPreviewCard() füllt sie
+         jetzt je nach Lage. Die Marken sind bewusst entfernt: Regel 2 der Mehrsprachigkeit sagt,
+         dass kein Element markiert wird, dessen Inhalt der Code selbst setzt — applyI18n() würde
+         das eigene Porträt sonst beim Sprachwechsel durch das Beispiel ersetzen. -->
+    <div class="preview-card" id="previewCard">
+      <div class="preview-label" id="previewLabel"></div>
       <div class="preview-body">
         <div class="radar-wrap preview-radar" id="previewRadar"></div>
         <div class="preview-text">
-          <div class="preview-title" data-i18n-html="visionärin__gesellig">Visionär:in <span class="sep">·</span> gesellig</div>
-          <p data-i18n="radarchart_über_alle__dimens">Radar-Chart über alle 5 Dimensionen, ein zusammenhängendes Kurzporträt, ausführliche Berichte je Dimension &mdash; und ein Code zum Vergleichen mit Freund:innen.</p>
+          <div class="preview-title" id="previewTitle"></div>
+          <p id="previewBody"></p>
         </div>
       </div>
     </div>

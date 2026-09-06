@@ -274,7 +274,7 @@
     syncLangButtons();
     refreshDrawerState();
     applyTheme(loadThemeMode());
-    renderPreviewRadar();
+    renderPreviewCard(); ordneStartseite();
     renderLandingUnderstandTeaser();
     renderLandingStateTeaser();
     renderArchetypeGroups();

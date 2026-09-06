@@ -111,7 +111,13 @@ NUR_DEUTSCH -= {'deutsch','lucenta','neurotizismus','ostendorf','goldberg'}
 
 verdacht={}
 for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
-    if len(lit) < 4 or lit.startswith('js_') or lit.startswith('data-') or lit.startswith('aria'):
+    if len(lit) < 4 or lit.startswith('data-'):
+        continue
+    # Ein Schluessel ist kein Oberflaechentext. Die Schluesselnamen sind aus dem deutschen
+    # Ausgangstext gebildet ('so_sieht_dein_ergebnis_aus_b') und wuerden sonst als deutsche
+    # Literale gemeldet — genau dann, wenn eine Stelle RICHTIG ueber tx() uebersetzt wird.
+    # Der Praefix 'js_' allein reichte dafuer nicht: Marken im Markup tragen ihn nicht.
+    if lit in DE or lit in EN:
         continue
     treffer = worte(lit) & NUR_DEUTSCH
     if treffer: verdacht[lit[:60]] = sorted(treffer)[:3]

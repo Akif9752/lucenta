@@ -59,7 +59,7 @@
     document.title = VIEW_TITLES[currentView] ? ('Lucenta — '+VIEW_TITLES[currentView]) : 'Lucenta';
     renderQuestion();
     renderArchetypeGroups();
-    renderPreviewRadar();
+    renderPreviewCard(); ordneStartseite();
     renderLandingUnderstandTeaser();
     renderLandingStateTeaser();
     syncHeroState();

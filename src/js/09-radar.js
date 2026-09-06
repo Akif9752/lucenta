@@ -16,6 +16,85 @@
     if (el) el.innerHTML = radarSVG({O:78,E:65,C:45,A:58,S:50}, 160, null, true);
   }
 
+  // Runde 66: Die Startseite war für jemanden gebaut, der Lucenta zum ersten Mal sieht — und
+  // blieb das auch nach fünfzig beantworteten Fragen. Wer wiederkommt, las zuerst wieder die
+  // Verkaufsansprache ("Lern dich kennen — mit Wissenschaft, nicht mit Sternzeichen"), dann die
+  // Erklärung des Big-Five-Modells, dann "Warum kein MBTI" — und erreichte erst danach die
+  // Tagesform, also das Einzige, das sich seit gestern überhaupt geändert haben kann.
+  //
+  // Das ist keine Bindungsmechanik, sondern das Naheliegende: Die Seite zeigt zuerst, was dieser
+  // Person gehört, und die Einführung rutscht dorthin, wo sie hingehört, wenn man sie nicht mehr
+  // braucht. Ohne Ergebnis bleibt die Reihenfolge unverändert.
+  function ordneStartseite(){
+    var view = $('view-landing');
+    if (!view) return;
+    var hero = view.querySelector('.hero');
+    var why = view.querySelector('.why');
+    var sub = view.querySelector('.hero .sub');
+    var state = $('landingStateTeaser');
+    var verstehen = $('landingUnderstandTeaser');
+    var portrait = $('previewCard');
+    if (!hero || !why || !state || !verstehen || !portrait) return;
+    var hatErgebnis = !!loadResult();
+
+    // Die ausführliche Erklärung des Modells ist Text für den ersten Besuch.
+    sub.style.display = hatErgebnis ? 'none' : '';
+
+    var soll = hatErgebnis
+      ? [hero, state, portrait, verstehen, why]
+      : [hero, why, state, verstehen, portrait];
+    // Nur umhängen, wenn die Reihenfolge tatsächlich abweicht — appendChild verschiebt den
+    // Knoten auch dann, wenn er schon richtig steht, und würde die Einblendungen der Karten
+    // bei jeder Rückkehr zur Startseite neu auslösen.
+    var ist = [];
+    for (var i=0;i<view.children.length;i++){
+      if (soll.indexOf(view.children[i]) >= 0) ist.push(view.children[i]);
+    }
+    var gleich = ist.length === soll.length;
+    for (var j=0; gleich && j<soll.length; j++){ if (ist[j] !== soll[j]) gleich = false; }
+    if (gleich) return;
+    // Vor dem ersten Element einsetzen, das nicht Teil der Umordnung ist (die Kachelreihe),
+    // damit alles Übrige an seinem Platz bleibt.
+    var anker = null;
+    for (var k=0;k<view.children.length;k++){
+      if (soll.indexOf(view.children[k]) < 0 && view.children[k].className.indexOf('factsgrid') >= 0){
+        anker = view.children[k]; break;
+      }
+    }
+    soll.forEach(function(el){ view.insertBefore(el, anker); });
+  }
+
+  // Runde 66: Die Karte zeigte immer dasselbe erfundene Beispiel — auch jemandem, der seit
+  // Wochen sein eigenes Ergebnis hat. Das war die einzige Stelle auf der Startseite, an der ein
+  // Porträt stand, und es war das einer erfundenen Person.
+  //
+  // Wer ein Ergebnis hat, sieht hier jetzt sein eigenes: eigener Titel, eigenes Motto, eigenes
+  // Radar. Das ist kein Kunstgriff zur Bindung, sondern das Naheliegende — die Startseite zeigt
+  // das, was diese Person tatsächlich hat, statt einer Werbefläche für etwas, das sie längst
+  // besitzt. Ohne Ergebnis bleibt alles wie bisher.
+  function renderPreviewCard(){
+    var karte = $('previewCard');
+    if (!karte) return;
+    var label = $('previewLabel'), titel = $('previewTitle'), text = $('previewBody');
+    var res = loadResult();
+    if (res){
+      var a = archetypeOf(res);
+      var pol1 = res[a.top1] >= 50 ? 'high' : 'low';
+      var pol2 = res[a.top2] >= 50 ? 'high' : 'low';
+      label.innerHTML = tx('js_dein_porträt');
+      titel.innerHTML = NOUN[a.top1][pol1] + ' <span class="sep">·</span> ' + ADJ[a.top2][pol2];
+      text.innerHTML = MOTTO[a.top1][pol1];
+      $('previewRadar').innerHTML = radarSVG(res, 160);
+      karte.classList.add('preview-eigen');
+    } else {
+      label.innerHTML = tx('so_sieht_dein_ergebnis_aus_b');
+      titel.innerHTML = tx('visionärin__gesellig');
+      text.innerHTML = tx('radarchart_über_alle__dimens');
+      renderPreviewRadar();
+      karte.classList.remove('preview-eigen');
+    }
+  }
+
   function radarSVG(sc, size, other, isExample){
     size = size || 320;
     var c = size/2, r = size*0.34, labelR = size*0.40;

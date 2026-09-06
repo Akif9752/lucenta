@@ -86,7 +86,7 @@
     // umgekehrt nach "Eigene Daten zurücksetzen" fälschlich weiter sichtbar). Jetzt Teil derselben
     // Landing-Aktualisierung wie syncHeroState()/renderLandingStateTeaser(), die aus genau diesem
     // Grund schon bei jedem showView('landing') statt nur einmalig laufen.
-    if (name==='landing'){ syncHeroState(); syncA2hsHint(); renderLandingStateTeaser(); renderLandingUnderstandTeaser(); }
+    if (name==='landing'){ syncHeroState(); syncA2hsHint(); renderLandingStateTeaser(); renderLandingUnderstandTeaser(); renderPreviewCard(); ordneStartseite(); }
     if (!opts.fromHistory) pushViewState(name);
     // Fokus an den Anfang der neuen Ansicht setzen, damit Vorleseprogramme den Wechsel überhaupt
     // bemerken — ohne das bleibt der Fokus auf der angetippten Schaltfläche der alten Ansicht.
