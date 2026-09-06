@@ -11,4 +11,6 @@
   // Moment, in dem die zweite Person den Test spontan auch machen will.
   $('btnRetake').addEventListener('click', requestRun);
   $('btnRetakeTop').addEventListener('click', requestRun);
-  
+    $('btnRecht').addEventListener('click', function(){ renderRecht(); showView('recht'); });
+  $('btnRechtFuss').addEventListener('click', function(){ renderRecht(); showView('recht'); });
+  $('btnBackFromRecht').addEventListener('click', function(){ showView('landing'); });

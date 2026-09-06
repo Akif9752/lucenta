@@ -145,3 +145,57 @@
     // Bestands ist das der einzige Weg, der sicher keinen alten Zustand stehen laesst.
     setTimeout(function(){ try{ location.reload(); }catch(e){} }, 700);
   }
+
+  // ---------- Rechtliches (Runde 79) ----------
+  //
+  // Impressum und Datenschutzerklaerung sind fuer eine Veroeffentlichung nicht optional: ohne
+  // sie gibt es weder einen App-Store-Eintrag noch einen rechtssicheren Betrieb in Deutschland.
+  // Was daran ohne Angaben der betreibenden Person moeglich ist, steht hier fertig; die sechs
+  // Angaben, die nur sie liefern kann, stehen an EINER Stelle.
+  //
+  // Solange eine davon fehlt, sagt die Ansicht das in aller Deutlichkeit — ein Impressum mit
+  // Platzhaltern ist schlimmer als keines, weil es Vollstaendigkeit vortaeuscht.
+  var IMPRESSUM = {
+    name:    '',   // Vor- und Nachname bzw. Firma mit Rechtsform
+    strasse: '',   // Strasse und Hausnummer (kein Postfach)
+    ort:     '',   // Postleitzahl und Ort
+    land:    'Deutschland',
+    email:   '',   // erreichbare E-Mail-Adresse
+    ust:     '',   // Umsatzsteuer-Identifikationsnummer, falls vorhanden — sonst leer lassen
+    hoster:  '',   // Name und Sitz des Hosters
+    stand:   '2026-09'
+  };
+
+  function impressumLuecken(){
+    var fehlt = [];
+    ['name','strasse','ort','email','hoster'].forEach(function(k){
+      if (!IMPRESSUM[k]) fehlt.push(k);
+    });
+    return fehlt;
+  }
+
+  // Setzt die Angaben in den Text ein. Fehlende bleiben als sichtbarer Platzhalter stehen,
+  // statt eine Luecke zu hinterlassen, die man beim Lesen ueberliest.
+  function rechtFuellen(text){
+    return String(text).replace(/\{\{([a-z]+)\}\}/g, function(_, k){
+      if (IMPRESSUM[k]) return IMPRESSUM[k];
+      // Die Umsatzsteuer-Nummer hat nicht jede betreibende Person. Ein Platzhalter waere hier
+      // also kein Hinweis auf eine Luecke, sondern eine falsche Behauptung — deshalb ein
+      // uebersetzter Satz statt einer eckigen Klammer.
+      if (k === 'ust') return tx('js_recht_keine_ust');
+      return '[' + k + ']';
+    });
+  }
+
+  function renderRecht(){
+    var quelle = (CONTENT[LANG] && CONTENT[LANG].RECHT) || (CONTENT.de && CONTENT.de.RECHT) || {};
+    var imp = $('rechtImpressum'), ds = $('rechtDatenschutz'), hinweis = $('rechtHinweis');
+    if (imp) imp.innerHTML = rechtFuellen(quelle.impressum || '');
+    if (ds) ds.innerHTML = rechtFuellen(quelle.datenschutz || '');
+    if (!hinweis) return;
+    var fehlt = impressumLuecken();
+    hinweis.innerHTML = fehlt.length
+      ? '<div class="recht-luecke" role="status"><span><b>' + tx('js_recht_luecke_titel') + '</b> ' +
+        tx('js_recht_luecke_text') + ' <code>' + fehlt.join('</code>, <code>') + '</code></span></div>'
+      : '';
+  }

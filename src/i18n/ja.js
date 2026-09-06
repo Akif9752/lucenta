@@ -4,6 +4,10 @@
   // das Weglassen des Subjekts die natuerliche Form ist. Der vertraute, direkte Ton der uebrigen
   // sechs Sprachen entsteht hier durch Kuerze, nicht durch Anrede.
   CONTENT.ja = {
+    RECHT: {
+      impressum: '<p><em>この法的情報はドイツ語と英語で用意されています。以下は英語版です。</em></p><h3>Provider</h3><p>{{name}}<br>{{strasse}}<br>{{ort}}<br>{{land}}</p><h3>Contact</h3><p>Email: {{email}}</p><h3>Responsible for content</h3><p>{{name}}, address as above.</p><h3>VAT</h3><p>{{ust}}</p><h3>Dispute resolution</h3><p>The European Commission provides a platform for online dispute resolution: <code>ec.europa.eu/consumers/odr</code>. We are neither willing nor obliged to take part in dispute resolution proceedings before a consumer arbitration board.</p><h3>Liability</h3><p>Lucenta is a tool for self-reflection and not a clinical or diagnostic instrument. Its results do not replace therapeutic, psychological or medical advice and are not intended for decisions about hiring, selection or assessment of people.</p><p>The operators of linked external pages are solely responsible for their content. No legal violations were apparent at the time of linking.</p>',
+      datenschutz: '<p><em>この法的情報はドイツ語と英語で用意されています。以下は英語版です。</em></p><h3>In short</h3><p>Lucenta has no server. Your answers, your result, your history, your check-ins and your profile never leave your device. There is no account, no advertising, no tracking and nothing passed to third parties.</p><h3>Controller</h3><p>{{name}}, {{strasse}}, {{ort}} &mdash; email: {{email}}</p><h3>What is stored on your device</h3><ul><li><code>lucenta_result</code> &mdash; your last result (five numbers)</li><li><code>lucenta_history</code> &mdash; up to twelve earlier results with dates</li><li><code>lucenta_state</code> &mdash; up to 30 entries on energy and mood</li><li><code>lucenta_profile</code> &mdash; name, chosen figure, colour and a picture you chose</li><li><code>lucenta_compat_archive</code> &mdash; up to 20 saved comparisons</li><li><code>lucenta_progress</code> &mdash; one interrupted test run</li><li>settings for appearance, language, haptics and motion</li></ul><p>All of this lives in your device&rsquo;s local storage only. None of it is transmitted to us or to anyone else at any point. You can delete it yourself at any time under Settings &rarr; Data &amp; privacy &rarr; &ldquo;Reset my data&rdquo;, or through your browser settings.</p><h3>Fonts</h3><p>The interface loads its fonts from Google Fonts. This transmits your IP address to a Google server, which may allow you to be identified. The legal basis is our legitimate interest in a consistent presentation (Art. 6(1)(f) GDPR). The provider is Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland.</p><h3>Page requests</h3><p>When the page is requested, the host {{hoster}} processes technically necessary data (IP address, time, file requested, browser identifier) in order to deliver it and to defend against attacks. The legal basis is Art. 6(1)(f) GDPR. We do not evaluate these logs.</p><h3>Your rights</h3><p>You have the rights to access, rectification, erasure, restriction of processing, data portability and objection (Art. 15 to 21 GDPR), as well as the right to lodge a complaint with a supervisory authority. Because we store no personal data about you, we can neither provide information about your content nor delete it &mdash; it exists only on your device.</p><h3>Changes</h3><p>Version of this statement: {{stand}}.</p>'
+    },
     LABELS: {E:'外向性', A:'協調性', C:'誠実性', S:'情緒安定性', O:'開放性'},
     RADAR_LABELS: {E:'外向', A:'協調', C:'誠実', S:'安定', O:'開放'},
     NOUN: { E:{high:'つなぐ人', low:'見る人'}, A:{high:'橋をかける人', low:'率直な人'},
@@ -54,8 +58,8 @@
       O:{ similar:'新しいものへの開かれ方が近い水準にあり、一緒に過ごすいい夜の想像もおそらく重なります。',
           diff:'一方は新しいものを、もう一方は確かめられたものを求めます。次に何をするかを、意識して交代で選んでください。'}
     },
-    VIEW_LABELS: {landing:'', quiz:'診断', result:'結果', archetypes:'原型', state:'記録', profile:'プロフィール', settings:'設定', 'compat-archive':'アーカイブ', understand:'知る'},
-    VIEW_TITLES: {landing:'', quiz:'質問票', result:'あなたの結果', archetypes:'原型',
+    VIEW_LABELS: {landing:'', recht:'法的情報', quiz:'診断', result:'結果', archetypes:'原型', state:'記録', profile:'プロフィール', settings:'設定', 'compat-archive':'アーカイブ', understand:'知る'},
+    VIEW_TITLES: {landing:'', recht:'事業者情報とプライバシー', quiz:'質問票', result:'あなたの結果', archetypes:'原型',
       state:'今日の記録', profile:'プロフィール', settings:'設定', 'compat-archive':'比較アーカイブ',
       understand:'知る'},
     QUIZ_HINTS: ['答えをタップ', 'いちばん近いのはどれですか', '最初の直感でたいてい足ります', 'その調子', 'もう少しです'],
@@ -600,6 +604,18 @@
       'demo_aktiv': 'サンプルデータが有効です。いま見えているものはすべてこの架空の人物のもので、あなたのデータは別に控えてあります。',
       'demo_laden': '例のユーザーを読み込む',
       'demo_beenden': 'サンプルデータを消す',
+      'rechtliches': '法的情報',
+      'rechtliches_2': '法的情報',
+      'impressum': '事業者情報',
+      'datenschutz': 'プライバシー',
+      'impressum_und_datenschutz': '事業者情報とプライバシー',
+      'impressum_und_datenschutzerkl': '事業者情報とプライバシーに関する説明。',
+      'impressum_ansehen': '事業者情報とプライバシー',
+      'impressum_datenschutz_kurz': '事業者情報とプライバシー',
+      'start_8': '← ホーム',
+      'js_recht_luecke_titel': 'まだ記入されていません:',
+      'js_recht_luecke_text': '次の情報が未記入です。公開前に入力してください（アプリ内の IMPRESSUM）:',
+      'js_recht_keine_ust': '付加価値税の識別番号はありません。',
       'analysiere_deine_antworten_h': '回答を分析しています &hellip;'
     }
   };

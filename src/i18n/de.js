@@ -1,6 +1,10 @@
 CONTENT.de = {
     // Sichtbare Texte der Oberflaeche. Die deutschen Fassungen stehen zusaetzlich weiterhin
     // direkt im Markup — faellt das JavaScript aus, bleibt die App vollstaendig lesbar.
+    RECHT: {
+      impressum: '<h3>Angaben gemäß § 5 DDG</h3><p>{{name}}<br>{{strasse}}<br>{{ort}}<br>{{land}}</p><h3>Kontakt</h3><p>E-Mail: {{email}}</p><h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3><p>{{name}}, Anschrift wie oben.</p><h3>Umsatzsteuer</h3><p>{{ust}}</p><h3>Streitbeilegung</h3><p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit: <code>ec.europa.eu/consumers/odr</code>. Wir sind weder bereit noch verpflichtet, an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p><h3>Haftung</h3><p>Lucenta ist ein Werkzeug zur Selbstreflexion und kein klinisches oder diagnostisches Instrument. Die Ergebnisse ersetzen keine therapeutische, psychologische oder medizinische Beratung und sind nicht für Entscheidungen über Einstellung, Auswahl oder Beurteilung von Personen bestimmt.</p><p>Für Inhalte externer Verweise ist ausschließlich deren Betreiber verantwortlich. Zum Zeitpunkt der Verlinkung waren keine Rechtsverstöße erkennbar.</p>',
+      datenschutz: '<h3>Kurz gefasst</h3><p>Lucenta hat keinen Server. Deine Antworten, dein Ergebnis, dein Verlauf, deine Tagesform und dein Profil verlassen dein Gerät nicht. Es gibt kein Konto, keine Werbung, kein Tracking und keine Weitergabe an Dritte.</p><h3>Verantwortlicher</h3><p>{{name}}, {{strasse}}, {{ort}} &mdash; E-Mail: {{email}}</p><h3>Was auf deinem Gerät gespeichert wird</h3><ul><li><code>lucenta_result</code> &mdash; dein letztes Ergebnis (fünf Zahlen)</li><li><code>lucenta_history</code> &mdash; bis zu zwölf frühere Ergebnisse mit Datum</li><li><code>lucenta_state</code> &mdash; bis zu 30 Einträge zu Energie und Stimmung</li><li><code>lucenta_profile</code> &mdash; Name, gewählte Figur, Farbe und ein selbst gewähltes Bild</li><li><code>lucenta_compat_archive</code> &mdash; bis zu 20 gespeicherte Vergleiche</li><li><code>lucenta_progress</code> &mdash; ein unterbrochener Testdurchlauf</li><li>Einstellungen zu Darstellung, Sprache, Haptik und Bewegung</li></ul><p>Diese Angaben liegen ausschließlich im lokalen Speicher deines Geräts. Sie werden zu keinem Zeitpunkt an uns oder an Dritte übertragen. Du löschst sie jederzeit selbst unter Einstellungen &rarr; Daten &amp; Datenschutz &rarr; &bdquo;Eigene Daten zurücksetzen&ldquo; oder über die Einstellungen deines Browsers.</p><h3>Schriftarten</h3><p>Die Oberfläche lädt ihre Schriften von Google Fonts. Dabei wird deine IP-Adresse an einen Server von Google übertragen; ein Personenbezug ist damit möglich. Rechtsgrundlage ist unser berechtigtes Interesse an einer einheitlichen Darstellung (Art. 6 Abs. 1 lit. f DSGVO). Anbieter ist Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland.</p><h3>Aufruf der Seite</h3><p>Beim Abruf verarbeitet der Hoster {{hoster}} technisch notwendige Daten (IP-Adresse, Zeitpunkt, abgerufene Datei, Browserkennung) zur Auslieferung und zur Abwehr von Angriffen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Wir werten diese Protokolle nicht aus.</p><h3>Deine Rechte</h3><p>Dir stehen die Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch zu (Art. 15 bis 21 DSGVO) sowie das Recht auf Beschwerde bei einer Aufsichtsbehörde. Weil wir keine personenbezogenen Daten von dir speichern, können wir zu deinen Inhalten weder Auskunft geben noch sie löschen &mdash; sie liegen ausschließlich bei dir.</p><h3>Änderungen</h3><p>Stand dieser Erklärung: {{stand}}.</p>'
+    },
     UI: {
       'js_energie_praefix': 'Energie ',
       'js_trenner_stimmung_html': ' &middot; Stimmung ',
@@ -393,6 +397,18 @@ CONTENT.de = {
       'demo_aktiv': 'Die Beispieldaten sind aktiv. Alles, was du gerade siehst, gehört zu dieser erfundenen Person — deine eigenen Daten liegen gesichert daneben.',
       'demo_laden': 'Beispielnutzerin laden',
       'demo_beenden': 'Beispieldaten entfernen',
+      'rechtliches': 'Rechtliches',
+      'rechtliches_2': 'Rechtliches',
+      'impressum': 'Impressum',
+      'datenschutz': 'Datenschutz',
+      'impressum_und_datenschutz': 'Impressum und Datenschutz',
+      'impressum_und_datenschutzerkl': 'Impressum und Datenschutzerklärung.',
+      'impressum_ansehen': 'Impressum &amp; Datenschutz',
+      'impressum_datenschutz_kurz': 'Impressum &amp; Datenschutz',
+      'start_8': '← Start',
+      'js_recht_luecke_titel': 'Noch nicht ausgefüllt:',
+      'js_recht_luecke_text': 'Diese Angaben fehlen und müssen vor einer Veröffentlichung eingetragen werden (in der App unter IMPRESSUM):',
+      'js_recht_keine_ust': 'Keine Umsatzsteuer-Identifikationsnummer vorhanden.',
       'analysiere_deine_antworten_h': 'Analysiere deine Antworten &hellip;'
     },
     LABELS: {E:'Extraversion', A:'Verträglichkeit', C:'Gewissenhaftigkeit', S:'Emotionale Stabilität', O:'Offenheit'},
@@ -580,10 +596,10 @@ CONTENT.de = {
       // jetzt bewusst ohne Label, die Überschrift im Hero übernimmt diese Rolle bereits.
       // 'history' entfernt: view-history existiert nicht mehr, der Verlauf lebt jetzt innerhalb von
       // view-profile (siehe VIEW_LABELS.profile).
-    VIEW_LABELS: {landing:'', quiz:'AUFNAHME', result:'ERGEBNIS', archetypes:'ARCHETYPEN', state:'TAGESFORM', profile:'PROFIL', settings:'EINSTELLUNGEN', 'compat-archive':'ARCHIV', understand:'VERSTEHEN'},
+    VIEW_LABELS: {landing:'', recht:'RECHTLICHES', quiz:'AUFNAHME', result:'ERGEBNIS', archetypes:'ARCHETYPEN', state:'TAGESFORM', profile:'PROFIL', settings:'EINSTELLUNGEN', 'compat-archive':'ARCHIV', understand:'VERSTEHEN'},
       // Feedback-Runde 45: Klartext-Titel für die Fensterbeschriftung. VIEW_LABELS sind kurze
       // Versalien für die Kopfzeile und eignen sich dafür nicht.
-    VIEW_TITLES: {landing:'', quiz:'Fragebogen', result:'Dein Ergebnis', archetypes:'Archetypen',
+    VIEW_TITLES: {landing:'', recht:'Impressum und Datenschutz', quiz:'Fragebogen', result:'Dein Ergebnis', archetypes:'Archetypen',
         state:'Tagesform', profile:'Profil', settings:'Einstellungen', 'compat-archive':'Vergleichsarchiv',
         understand:'Verstehen'},
     QUIZ_HINTS: ['Tippe eine Antwort an', 'Was passt am ehesten zu dir?', 'Der erste Impuls reicht meist', 'Weiter im Flow', 'Fast geschafft'],

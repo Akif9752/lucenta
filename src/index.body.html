@@ -294,6 +294,7 @@
     <footer class="appfoot">
       <span data-i18n-html="lucenta_middot_bigfivemodell">Lucenta &middot; Big-Five-Modell (<a href="https://ipip.ori.org/new_ipip-50-item-scale.htm" target="_blank" rel="noopener">IPIP</a>)</span>
       <span data-i18n="kein_klinisches_instrument_m">Kein klinisches Instrument &mdash; dient der Selbstreflexion.</span>
+      <button type="button" class="fuss-link" id="btnRechtFuss" data-i18n="impressum_datenschutz_kurz">Impressum &amp; Datenschutz</button>
     </footer>
   </section>
 
@@ -589,9 +590,35 @@
     </div>
 
     <div class="settings-group">
+      <h2 data-i18n="rechtliches_2">Rechtliches</h2>
+      <p class="settings-group-desc" data-i18n="impressum_und_datenschutzerkl">Impressum und Datenschutzerklärung.</p>
+      <div class="daten-knoepfe">
+        <button type="button" class="btn btn-ghost btn-sm" id="btnRecht" data-i18n="impressum_ansehen">Impressum &amp; Datenschutz</button>
+      </div>
+    </div>
+
+    <div class="settings-group">
       <h2 data-i18n="über_lucenta">Über Lucenta</h2>
       <p class="settings-group-desc" data-i18n="version__middot_basiert_auf">Version 1.0 &middot; basiert auf dem wissenschaftlichen Big-Five-Modell (OCEAN) &middot; keine Werbung, kein Tracking, keine Weitergabe an Dritte.</p>
     </div>
+  </section>
+
+  <!-- RECHTLICHES (Runde 79) -->
+  <!-- Eigene Ansicht statt zweier Aufklapp-Felder in den Einstellungen: Impressum und
+       Datenschutzerklaerung muessen aus JEDER Ansicht in zwei Schritten erreichbar und als
+       eigenstaendige Seite verlinkbar sein — das verlangt sowohl das Gesetz als auch der
+       App-Store-Pruefprozess. -->
+  <section class="view" id="view-recht" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromRecht" data-i18n="start_8">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="rechtliches">Rechtliches</div>
+      <h1 data-i18n="impressum_und_datenschutz">Impressum und Datenschutz</h1>
+    </div>
+    <div id="rechtHinweis"></div>
+    <div class="settings-group"><h2 data-i18n="impressum">Impressum</h2><div class="recht-text" id="rechtImpressum"></div></div>
+    <div class="settings-group"><h2 data-i18n="datenschutz">Datenschutz</h2><div class="recht-text" id="rechtDatenschutz"></div></div>
   </section>
   </main>
 </div>

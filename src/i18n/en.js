@@ -1,5 +1,9 @@
   // ---- Englisch ----
   CONTENT.en = {
+    RECHT: {
+      impressum: '<h3>Provider</h3><p>{{name}}<br>{{strasse}}<br>{{ort}}<br>{{land}}</p><h3>Contact</h3><p>Email: {{email}}</p><h3>Responsible for content</h3><p>{{name}}, address as above.</p><h3>VAT</h3><p>{{ust}}</p><h3>Dispute resolution</h3><p>The European Commission provides a platform for online dispute resolution: <code>ec.europa.eu/consumers/odr</code>. We are neither willing nor obliged to take part in dispute resolution proceedings before a consumer arbitration board.</p><h3>Liability</h3><p>Lucenta is a tool for self-reflection and not a clinical or diagnostic instrument. Its results do not replace therapeutic, psychological or medical advice and are not intended for decisions about hiring, selection or assessment of people.</p><p>The operators of linked external pages are solely responsible for their content. No legal violations were apparent at the time of linking.</p>',
+      datenschutz: '<h3>In short</h3><p>Lucenta has no server. Your answers, your result, your history, your check-ins and your profile never leave your device. There is no account, no advertising, no tracking and nothing passed to third parties.</p><h3>Controller</h3><p>{{name}}, {{strasse}}, {{ort}} &mdash; email: {{email}}</p><h3>What is stored on your device</h3><ul><li><code>lucenta_result</code> &mdash; your last result (five numbers)</li><li><code>lucenta_history</code> &mdash; up to twelve earlier results with dates</li><li><code>lucenta_state</code> &mdash; up to 30 entries on energy and mood</li><li><code>lucenta_profile</code> &mdash; name, chosen figure, colour and a picture you chose</li><li><code>lucenta_compat_archive</code> &mdash; up to 20 saved comparisons</li><li><code>lucenta_progress</code> &mdash; one interrupted test run</li><li>settings for appearance, language, haptics and motion</li></ul><p>All of this lives in your device&rsquo;s local storage only. None of it is transmitted to us or to anyone else at any point. You can delete it yourself at any time under Settings &rarr; Data &amp; privacy &rarr; &ldquo;Reset my data&rdquo;, or through your browser settings.</p><h3>Fonts</h3><p>The interface loads its fonts from Google Fonts. This transmits your IP address to a Google server, which may allow you to be identified. The legal basis is our legitimate interest in a consistent presentation (Art. 6(1)(f) GDPR). The provider is Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland.</p><h3>Page requests</h3><p>When the page is requested, the host {{hoster}} processes technically necessary data (IP address, time, file requested, browser identifier) in order to deliver it and to defend against attacks. The legal basis is Art. 6(1)(f) GDPR. We do not evaluate these logs.</p><h3>Your rights</h3><p>You have the rights to access, rectification, erasure, restriction of processing, data portability and objection (Art. 15 to 21 GDPR), as well as the right to lodge a complaint with a supervisory authority. Because we store no personal data about you, we can neither provide information about your content nor delete it &mdash; it exists only on your device.</p><h3>Changes</h3><p>Version of this statement: {{stand}}.</p>'
+    },
     LABELS: {E:'Extraversion', A:'Agreeableness', C:'Conscientiousness', S:'Emotional stability', O:'Openness'},
     RADAR_LABELS: {E:'EXTRA.', A:'AGREE.', C:'CONSC.', S:'STABIL.', O:'OPEN.'},
     NOUN: { E:{high:'Connector', low:'Observer'}, A:{high:'Bridge-builder', low:'Straight talker'},
@@ -50,8 +54,8 @@
       O:{ similar:'Your openness to the new sits at a similar level — your idea of a good evening together probably lines up.',
           diff:'One of you seeks out the new, the other the tried and tested. Take deliberate turns choosing what you do next.'}
     },
-    VIEW_LABELS: {landing:'', quiz:'ASSESSMENT', result:'RESULT', archetypes:'ARCHETYPES', state:'CHECK-IN', profile:'PROFILE', settings:'SETTINGS', 'compat-archive':'ARCHIVE', understand:'UNDERSTAND'},
-    VIEW_TITLES: {landing:'', quiz:'Questionnaire', result:'Your result', archetypes:'Archetypes',
+    VIEW_LABELS: {landing:'', recht:'LEGAL', quiz:'ASSESSMENT', result:'RESULT', archetypes:'ARCHETYPES', state:'CHECK-IN', profile:'PROFILE', settings:'SETTINGS', 'compat-archive':'ARCHIVE', understand:'UNDERSTAND'},
+    VIEW_TITLES: {landing:'', recht:'Provider information and privacy', quiz:'Questionnaire', result:'Your result', archetypes:'Archetypes',
       state:'Daily check-in', profile:'Profile', settings:'Settings', 'compat-archive':'Comparison archive',
       understand:'Understand'},
     QUIZ_HINTS: ['Tap an answer', 'What fits you best?', 'Your first instinct is usually enough', 'Keep going', 'Almost there'],
@@ -597,6 +601,18 @@
       'demo_aktiv': 'The example data is active. Everything you see right now belongs to this made-up person — your own data is backed up alongside.',
       'demo_laden': 'Load example user',
       'demo_beenden': 'Remove example data',
+      'rechtliches': 'Legal',
+      'rechtliches_2': 'Legal',
+      'impressum': 'Provider information',
+      'datenschutz': 'Privacy',
+      'impressum_und_datenschutz': 'Provider information and privacy',
+      'impressum_und_datenschutzerkl': 'Provider information and privacy statement.',
+      'impressum_ansehen': 'Provider info &amp; privacy',
+      'impressum_datenschutz_kurz': 'Provider info &amp; privacy',
+      'start_8': '← Home',
+      'js_recht_luecke_titel': 'Not filled in yet:',
+      'js_recht_luecke_text': 'These details are missing and must be entered before publication (in the app under IMPRESSUM):',
+      'js_recht_keine_ust': 'No VAT identification number.',
       'analysiere_deine_antworten_h': 'Analysing your answers &hellip;'
     }
   };
