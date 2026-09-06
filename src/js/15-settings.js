@@ -93,10 +93,28 @@
     return JSON.stringify(d);
   }
 
+  // Ein blockierter Download wirft KEINEN Fehler — a.click() tut in dem Fall schlicht nichts.
+  // Der erste Entwurf schloss aus dem ausbleibenden Fehler auf Erfolg und haette in einem
+  // eingebetteten Rahmen "Datei gespeichert" gemeldet und nichts geliefert. Da sich das nicht
+  // abfragen laesst, entscheidet die Lage: In einem Rahmen sind Downloads regelmaessig
+  // unterbunden, dort geht es direkt in die Zwischenablage.
+  function imRahmen(){
+    try{ return window.self !== window.top; }catch(e){ return true; }
+  }
+
+  function inZwischenablage(text){
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast(tx('js_export_kopiert')); })
+        .catch(function(){ toast(tx('js_export_kopiert')); });
+    } else {
+      toast(tx('js_export_kopiert'));
+    }
+  }
+
   function datenSichern(){
     var text = datenSammeln();
+    if (imRahmen()){ inZwischenablage(text); return; }
     var name = 'lucenta-' + new Date().toISOString().slice(0,10) + '.json';
-    var geschafft = false;
     try{
       var blob = new Blob([text], {type:'application/json'});
       var url = URL.createObjectURL(blob);
@@ -104,13 +122,8 @@
       a.href = url; a.download = name;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-      geschafft = true;
-    }catch(e){}
-    if (geschafft){ toast(tx('js_export_geladen')); return; }
-    if (navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(function(){ toast(tx('js_export_kopiert')); })
-        .catch(function(){ toast(tx('js_export_kopiert')); });
-    }
+      toast(tx('js_export_geladen'));
+    }catch(e){ inZwischenablage(text); }
   }
 
   function datenEinspielen(text){
