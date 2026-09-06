@@ -222,42 +222,49 @@
       navigator.clipboard.writeText(code).then(function(){ toast(tx('js_code_kopiert')); }).catch(function(){ toast(tx('js_code_doppelpunkt')+code); });
     } else { toast(tx('js_code_doppelpunkt')+code); }
   });
-  $('btnShare').addEventListener('click', function(){
+  // Runde 79: "Ergebnis teilen" legte nur Text in die Zwischenablage. Was Leute tatsaechlich
+  // weitergeben, ist das Bild — der Knopf oeffnet deshalb den Bild-Dialog, in dem geteilt wird.
+  // Der Text-Weg ist nicht verschwunden: Er ist der Rueckfall im Dialog, wenn das Geraet keine
+  // Dateien teilen kann (siehe btnImgModalShare).
+  $('btnShare').addEventListener('click', openImgModal);
+  $('btnImgModalClose').addEventListener('click', closeImgModal);
+  $('imgModalScrim').addEventListener('click', closeImgModal);
+  // Runde 79: Der Text-Weg ist der Rueckfall, nicht mehr ein eigener Knopf. Wo das Geraet keine
+  // Datei teilen kann (Schreibtisch-Browser), war die alte Antwort ein Hinweis und sonst nichts —
+  // jetzt geht wenigstens Titel und Code hinaus, statt dass der Tipp ins Leere laeuft.
+  function teilenAlsText(){
     var arch = archetypeOf(scores);
     var url = (location.href.split('#')[0]).split('?')[0];
-    var text = tx('js_mein_lucentaporträt')+ (NOUN[arch.top1][scores[arch.top1]>=50?'high':'low']) +' · '+ (ADJ[arch.top2][scores[arch.top2]>=50?'high':'low']) +
-      tx('js_mach_den_test_und_verglei')+toCode(scores);
-    function fallbackCopy(){
+    var text = tx('js_mein_lucentaporträt')+ (NOUN[arch.top1][scores[arch.top1]>=50?'high':'low']) +' · '+
+      (ADJ[arch.top2][scores[arch.top2]>=50?'high':'low']) + tx('js_mach_den_test_und_verglei')+toCode(scores);
+    function inAblage(){
       if (navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text+' — '+url).then(function(){ toast(tx('js_zum_teilen_kopiert')); }).catch(function(){ toast(tx('js_teilen_nicht_möglich__dein')+toCode(scores)); });
+        navigator.clipboard.writeText(text+' — '+url)
+          .then(function(){ toast(tx('js_zum_teilen_kopiert')); })
+          .catch(function(){ toast(tx('js_teilen_nicht_möglich__dein')+toCode(scores)); });
       } else { toast(tx('js_teilen_nicht_möglich__dein')+toCode(scores)); }
     }
     if (navigator.share){
       navigator.share({title:'Lucenta', text:text, url:url}).catch(function(err){
-        if (err && err.name === 'AbortError') return; // Nutzer:in hat den Teilen-Dialog selbst geschlossen
-        fallbackCopy();
+        if (err && err.name === 'AbortError') return;
+        inAblage();
       });
-    } else {
-      fallbackCopy();
-    }
-  });
-  $('btnShareImage').addEventListener('click', openImgModal);
-  $('btnImgModalClose').addEventListener('click', closeImgModal);
-  $('imgModalScrim').addEventListener('click', closeImgModal);
+    } else { inAblage(); }
+  }
   $('btnImgModalShare').addEventListener('click', function(){
-    if (!currentShareCanvas) return;
+    if (!currentShareCanvas){ teilenAlsText(); return; }
     currentShareCanvas.toBlob(function(blob){
-      if (!blob){ toast(tx('js_bild_konnte_nicht_erstellt')); return; }
+      if (!blob){ teilenAlsText(); return; }
       var file;
       try{ file = new File([blob], tx('js_dateiname_ergebnis')+shareFormat+'.png', {type:'image/png'}); }
-      catch(e){ toast(tx('js_teilen_hier_nicht_unterstü')); return; }
+      catch(e){ teilenAlsText(); return; }
       if (navigator.canShare && navigator.canShare({files:[file]})){
         navigator.share({files:[file], title:'Lucenta', text:tx('js_mein_lucentaergebnis')}).catch(function(err){
           if (err && err.name === 'AbortError') return;
-          toast(tx('js_teilen_nicht_möglich__bild'));
+          teilenAlsText();
         });
       } else {
-        toast(tx('js_teilen_als_bild_hier_nicht'));
+        teilenAlsText();
       }
     }, 'image/png');
   });
@@ -282,12 +289,9 @@
       if (feld.style.display === 'none'){ feld.style.display = ''; feld.focus(); return; }
       datenEinspielen(feld.value);
     });
-    [['haptikAn','lucenta_haptik','an','haptikAn','haptikAus'],
-     ['haptikAus','lucenta_haptik','aus','haptikAn','haptikAus'],
-     ['bewegungAn','lucenta_bewegung','an','bewegungAn','bewegungAus'],
-     ['bewegungAus','lucenta_bewegung','aus','bewegungAn','bewegungAus']].forEach(function(z){
+    [['haptikSchalter','lucenta_haptik'], ['bewegungSchalter','lucenta_bewegung']].forEach(function(z){
       var el = $(z[0]);
-      if (el) el.addEventListener('click', function(){ schalterSetzen(z[1], z[2], z[3], z[4]); });
+      if (el) el.addEventListener('click', function(){ schalterUmlegen(z[1], z[0]); });
     });
     renderPreviewCard(); ordneStartseite();
     renderLandingUnderstandTeaser();

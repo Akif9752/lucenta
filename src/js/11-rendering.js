@@ -308,12 +308,33 @@
         '</div>';
       list.appendChild(card);
     });
+    renderRhythmus();
     revealOnScroll(list.children);
     // Erst hier, nachdem beide Aufrufstellen von gaugeBarHTML im Baum stehen: die Kennzahlenreihe
     // oben und die fünf Dimensionskarten darunter.
     startGauges($('view-result'));
 
     renderDelta(previous);
+  }
+
+  // Runde 79: Der Satz, der aus einem einmaligen Test eine wiederkehrende Nutzung macht.
+  // Vorher stand an dieser Stelle der Vorbehalt "kein Vergleich mit einer Bevoelkerungsnorm" —
+  // richtig, aber folgenlos. Wer nicht weiss, dass sich das Ergebnis ueber Monate verschiebt,
+  // haelt einen Durchlauf fuer abschliessend und kommt nicht wieder.
+  //
+  // Der zweite Satz haengt am tatsaechlichen Bestand: Wer schon zwei Durchlaeufe hat, braucht
+  // keine Einladung mehr, sondern eine Bestaetigung. Ein Aufruf, den man beim zweiten Mal
+  // woertlich wieder liest, wirkt wie eine Schleife.
+  function renderRhythmus(){
+    var el = $('rhythmusHinweis');
+    if (!el) return;
+    var anzahl = 0;
+    try{ anzahl = loadHistory().length; }catch(e){}
+    var satz = tx('js_rhythmus_a') + (anzahl >= 2
+      ? (tx('js_rhythmus_verlauf_a') + anzahl + tx('js_rhythmus_verlauf_b'))
+      : tx('js_rhythmus_neu'));
+    el.innerHTML = '<div class="rhythmus-titel">' + tx('js_rhythmus_titel') + '</div>' +
+                   '<p class="rhythmus-text">' + satz + '</p>';
   }
 
   function renderDelta(previous){

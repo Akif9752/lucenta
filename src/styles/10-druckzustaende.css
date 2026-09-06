@@ -305,6 +305,32 @@
     .run-choice-opt:active, .drawer-profile-row:active{ transform:none; }
   }
 
+  /* 6. Runde 79, gemeldet: Der zweite Knopf auf der Startseite ("Test wiederholen" bzw.
+        "Dein Ergebnis ansehen") ist durchsichtig. Er traegt .btn-ghost, und Geisterknoepfe haben
+        seit jeher keinen Hintergrund — auf einer Karte faellt das nicht auf, vor dem bewegten
+        Sternenhimmel schon: Man sieht die Sterne durch den Knopf hindurchziehen.
+
+        Nur die grosse Ausfuehrung bekommt deshalb eine eigene Flaeche. Die kleinen Geisterknoepfe
+        bleiben, wie sie sind: Sie stehen ausnahmslos auf Karten, wo eine zweite Flaeche nur ein
+        weiteres Kaestchen waere. */
+  .btn-hero.btn-ghost{
+    background:var(--surface);
+    border:2px solid var(--line-strong);
+    box-shadow:0 4px 0 var(--kante);
+    transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s cubic-bezier(.2,.8,.2,1),
+               border-color .15s ease;
+  }
+  .btn-hero.btn-ghost:active{
+    transform:translateY(3px); box-shadow:0 1px 0 var(--kante); transition-duration:0s;
+  }
+  @media (hover:hover){
+    .btn-hero.btn-ghost:hover{ transform:translateY(-1px); box-shadow:0 5px 0 var(--kante); border-color:var(--accent-strong); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .btn-hero.btn-ghost{ transition:border-color .15s ease; }
+    .btn-hero.btn-ghost:active{ transform:none; }
+  }
+
   /* ---------- Bewegung aus (Runde 75) ----------
      Ein einziger Block statt einer Kopie jeder einzelnen reduced-motion-Regel. Das erfasst auch
      jede Animation, die spaeter dazukommt, ohne dass jemand daran denken muss. Die Dauer geht

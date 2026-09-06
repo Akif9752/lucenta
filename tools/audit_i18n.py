@@ -115,12 +115,20 @@ rest=re.sub(r'/\*.*?\*/','',rest,flags=re.S); rest=re.sub(r'^\s*//.*$','',rest,f
 # toggle/contains) und nicht ueber ihre Schreibweise — eine Regel nach Zeichenform ('enthaelt
 # einen Bindestrich, keine Leerzeichen') koennte auch echten Text verdecken. Runde 75.
 rest=re.sub(r'classList\.(?:add|remove|toggle|contains)\s*\([^)]*\)', ' ', rest)
+# Runde 79, dieselbe Art Regel: Der NAME einer CSS-Marke ist ein Bezeichner. Er wird ueber den
+# Kontext erkannt (style.setProperty/removeProperty) und nicht ueber seine Schreibweise.
+rest=re.sub(r'style\.(?:setProperty|removeProperty)\s*\(\s*\'--[A-Za-z0-9_-]+\'', ' ', rest)
 
-def worte(text):
-    # Bezeichner sind kein Oberflaechentext. CSS-Marken (var(--daten-energie)), Klassen- und
-    # id-Namen sind aus dem deutschen Wortschatz gebildet und wuerden sonst als unuebersetzte
-    # Literale gemeldet — ausgerechnet dann, wenn eine Stelle sauber gebaut ist.
+def entkleiden(text):
+    """Entfernt aus einem Literal alles, was Bezeichner ist und kein Oberflaechentext.
+
+    Runde 79: Stand bisher NUR in worte() und damit nur auf dem Weg ueber den abgeleiteten
+    Wortschatz. Die beiden paketunabhaengigen Signale (Funktionswoerter, Umlaute) sahen
+    dagegen den Rohtext — ein Klassenname wie "figur-keine" in einem HTML-Bruchstueck wurde
+    dadurch als deutsches Wort gemeldet, obwohl dieselbe Zeichenkette auf dem anderen Weg
+    laengst richtig als Bezeichner erkannt war."""
     text=re.sub(r'var\(\s*--[A-Za-z0-9_-]*\s*\)?',' ',text)
+    text=re.sub(r'--[A-Za-z0-9_-]+',' ',text)
     text=re.sub(r'(?:class|id|for|href|data-[\w-]+)\s*=\s*"[^"]*"',' ',text)
     # Vollstaendige Elemente entfernen, danach ein etwaiges angeschnittenes Element am Rand:
     # Zeichenketten im Code enden oft mitten in einem Element ('<div class="x">'+wert+'</div>').
@@ -128,7 +136,11 @@ def worte(text):
     text=re.sub(r'<[^>]*$',' ',text)
     text=re.sub(r'^[^<]*?>',' ',text)
     text=re.sub(r'&[a-zA-Z]+;|&#\d+;',' ',text)
-    return set(w.lower() for w in re.findall(r'[A-Za-zÄÖÜäöüß]{4,}', text))
+    return text
+
+def worte(text):
+    # Bezeichner sind kein Oberflaechentext — die Begruendung steht bei entkleiden().
+    return set(w.lower() for w in re.findall(r'[A-Za-zÄÖÜäöüß]{4,}', entkleiden(text)))
 
 de_worte=set(); en_worte=set()
 for v in DE.values(): de_worte |= worte(v)
@@ -175,6 +187,10 @@ for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
     # aus der Ausnahme kein Scheunentor wird.
     if re.fullmatch(r'[.#][A-Za-z0-9_-]+(?:[.#][A-Za-z0-9_-]+)*', lit):
         continue
+    # Runde 79: Attribut-Selektoren ('[data-figur]', '[data-hg]'). Dieselbe Begruendung wie eine
+    # Zeile darueber — echter Oberflaechentext sieht nie so aus, die Regel kann nichts verdecken.
+    if re.fullmatch(r'\[[A-Za-z0-9_-]+\]', lit):
+        continue
     # Speicherschluessel. Das Praefix ist eindeutig und kommt in keinem Oberflaechentext vor,
     # die Regel kann also nichts verdecken. Ueber den Kontext waere es hier nicht zu loesen: Die
     # Schluessel werden an eigene Hilfsfunktionen uebergeben, nicht direkt an localStorage.
@@ -193,9 +209,9 @@ for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
     # deckt weiterhin der abgeleitete Wortschatz ab (der zum Beispiel 'ERGEBNISKARTE' fand).
     mehrwortig = ' ' in lit.strip()
     if not treffer and mehrwortig:
-        kurz = set(x.lower() for x in re.findall(r'[A-Za-zÄÖÜäöüß]{3,}', re.sub(r'<[^>]*>', ' ', lit)))
+        kurz = set(x.lower() for x in re.findall(r'[A-Za-zÄÖÜäöüß]{3,}', entkleiden(lit)))
         treffer = kurz & FUNKTIONSWOERTER
-    if not treffer and mehrwortig and re.search(r'[äöüßÄÖÜ]', re.sub(r'&[a-zA-Z]+;', ' ', lit)):
+    if not treffer and mehrwortig and re.search(r'[äöüßÄÖÜ]', entkleiden(lit)):
         treffer = {'Umlaut/ß'}
     if treffer: verdacht[lit[:60]] = sorted(treffer)[:3]
 check(not verdacht, "keine deutschen Literale im Code"+

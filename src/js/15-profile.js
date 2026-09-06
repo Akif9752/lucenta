@@ -12,27 +12,89 @@
   // jedes übergebene Avatar-Element (Profil, Schublade, Einstellungen — alle drei nutzen dieselbe
   // Funktion, bleiben also automatisch synchron).
   var AVATAR_COLORS = ['accent','ink','quiet'];
+  // Runde 79: Drei Zustaende statt zwei — eigenes Foto, gewaehlte Figur, oder der Buchstabe.
+  // Die Reihenfolge ist eine Rangfolge: Ein eigenes Foto schlaegt alles, danach die Figur, und
+  // der Buchstabe ist der Rueckfall. Alle drei Kreise der App (Profil, Schublade, Einstellungen)
+  // laufen weiterhin durch DIESE eine Funktion und bleiben dadurch von selbst gleich.
   function renderAvatarInto(el, profile){
-    if (!el) return;
+    if (!el || !el.classList) return;
     AVATAR_COLORS.forEach(function(c){ el.classList.remove('avatar-color-'+c); });
+    el.classList.remove('hat-figur');
     var color = AVATAR_COLORS.indexOf(profile.avatarColor)!==-1 ? profile.avatarColor : 'accent';
     el.classList.add('avatar-color-'+color);
+    try{ el.style.removeProperty('--figur-feld'); }catch(e){}
     if (profile.avatarImg){
       el.style.backgroundImage = 'url('+profile.avatarImg+')';
-      el.textContent = '';
-    } else {
-      el.style.backgroundImage = '';
-      el.textContent = avatarInitials(profile.name);
+      el.innerHTML = '';
+      return;
     }
+    el.style.backgroundImage = '';
+    var fig = profile.figur ? figurFinden(profile.figur) : null;
+    if (fig){
+      el.classList.add('hat-figur');
+      try{ el.style.setProperty('--figur-feld', fig.feld); }catch(e){}
+      el.innerHTML = figurSVG(fig);
+      return;
+    }
+    el.textContent = avatarInitials(profile.name);
+  }
+  // Die zwoelf Figuren als Auswahl, plus ein Feld fuer "keine". Wird bei jedem Aufruf neu
+  // gebaut, damit der gedrueckte Zustand nicht getrennt nachgefuehrt werden muss.
+  function renderFigurRaster(profile){
+    var wrap = $('figurRaster');
+    if (!wrap || !wrap.querySelectorAll) return;
+    var aktiv = profile.figur || '';
+    var teile = ['<button type="button" class="figur-wahl figur-keine" data-figur="" aria-pressed="'+
+                 (aktiv ? 'false' : 'true')+'">'+avatarInitials(profile.name)+'</button>'];
+    FIGUREN.forEach(function(f){
+      teile.push('<button type="button" class="figur-wahl" data-figur="'+f.id+'" '+
+        'style="--figur-feld:'+f.feld+'" aria-pressed="'+(aktiv===f.id?'true':'false')+'">'+
+        figurSVG(f)+'</button>');
+    });
+    wrap.innerHTML = teile.join('');
+    wrap.querySelectorAll('[data-figur]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var pr = loadProfile();
+        pr.figur = b.getAttribute('data-figur') || null;
+        if (saveProfile(pr)){ renderAvatar(pr); refreshDrawerState(); renderSettings(); }
+        else toast(tx('js_konnte_nicht_gespeichert_w'));
+      });
+    });
+  }
+  // Zehn Hintergrundvorlagen fuer die Profilzeile der Schublade.
+  function renderHintergrundRaster(profile){
+    var wrap = $('hgRaster');
+    if (!wrap || !wrap.querySelectorAll) return;
+    var aktiv = profile.hintergrund || '';
+    var teile = ['<button type="button" class="hg-wahl hg-keine" data-hg="" aria-pressed="'+
+                 (aktiv ? 'false' : 'true')+'">&mdash;</button>'];
+    HINTERGRUENDE.forEach(function(id){
+      teile.push('<button type="button" class="hg-wahl hg-'+id+'" data-hg="'+id+'" aria-pressed="'+
+        (aktiv===id?'true':'false')+'"></button>');
+    });
+    wrap.innerHTML = teile.join('');
+    wrap.querySelectorAll('[data-hg]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var pr = loadProfile();
+        pr.hintergrund = b.getAttribute('data-hg') || null;
+        if (saveProfile(pr)){ renderHintergrundRaster(pr); refreshDrawerState(); }
+        else toast(tx('js_konnte_nicht_gespeichert_w'));
+      });
+    });
   }
   function renderAvatar(profile){
     renderAvatarInto($('profileAvatar'), profile);
     $('btnAvatarRemove').style.display = profile.avatarImg ? '' : 'none';
-    $('avatarColorRow').style.display = profile.avatarImg ? 'none' : '';
+    // Die Farbwahl betrifft nur den Buchstaben-Kreis. Mit Foto ODER Figur ist sie wirkungslos
+    // und waere damit eine Schaltflaeche, die nichts tut.
+    var eigenesBild = !!(profile.avatarImg || profile.figur);
+    $('avatarColorRow').style.display = eigenesBild ? 'none' : '';
     AVATAR_COLORS.forEach(function(c){
       var pressed = (profile.avatarColor || 'accent') === c;
       $('avatarColor'+c.charAt(0).toUpperCase()+c.slice(1)).setAttribute('aria-pressed', pressed?'true':'false');
     });
+    renderFigurRaster(profile);
+    renderHintergrundRaster(profile);
   }
   function renderProfile(){
     var profile = loadProfile();
@@ -54,6 +116,23 @@
     // aktualisiert deshalb den Verlauf direkt mit (renderHistory() befüllt #historyContent, das jetzt
     // hier in view-profile statt in einer eigenen view-history liegt).
     renderHistory();
+    renderDemoBlock();
+  }
+  // Der Entwicklerbereich. Steht ganz unten im Profil, hinter allem Echten — er gehoert nicht in
+  // den Weg von jemandem, der die App benutzt.
+  function renderDemoBlock(){
+    var el = $('demoBlock');
+    if (!el) return;
+    var aktiv = demoAktiv();
+    el.innerHTML =
+      '<h2 data-demo-titel>'+tx('demo_titel')+'</h2>'+
+      '<p class="settings-group-desc">'+(aktiv ? tx('demo_aktiv') : tx('demo_lead'))+'</p>'+
+      '<div class="daten-knoepfe">'+
+        '<button type="button" class="btn btn-ghost btn-sm" id="btnDemo">'+
+        (aktiv ? tx('demo_beenden') : tx('demo_laden'))+'</button>'+
+      '</div>';
+    var b = $('btnDemo');
+    if (b) b.addEventListener('click', function(){ aktiv ? demoBeenden() : demoLaden(); });
   }
   function handleAvatarFile(file){
     if (!file || !/^image\//.test(file.type)){ toast(tx('js_bitte_ein_bild_auswählen')); return; }

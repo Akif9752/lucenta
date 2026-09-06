@@ -195,3 +195,38 @@
     margin-top:14px; display:grid; gap:8px;
     grid-template-columns:repeat(auto-fit, minmax(96px, 1fr));
   }
+
+  /* ---------- Schieber (Runde 79) ----------
+     Ein Zustand mit genau zwei Werten braucht kein Knopfpaar mit Beschriftung — der Schieber
+     zeigt ihn und bedient ihn in einem, und jede Person kennt die Geste vom Telefon.
+
+     Bewusst ueber role="switch" statt ueber ein <input type="checkbox">: Der Rest der App
+     arbeitet durchgehend mit Knoepfen, und die Darstellung eines Kontrollkaestchens laesst sich
+     nur ueber Umwege (appearance:none, ::before) so weit zurechtbiegen. Die Rolle sagt
+     Vorleseprogrammen dasselbe.
+
+     Die Groesse folgt der Trefferflaeche, nicht dem Bild: 52x32 ist gross genug fuer den Daumen,
+     ohne dass daneben noch eine unsichtbare Flaeche noetig waere. */
+  .schalter{
+    position:relative; flex-shrink:0; cursor:pointer;
+    width:52px; height:32px; padding:0; border-radius:100px;
+    border:1px solid var(--line-strong); background:var(--surface-2);
+    transition:background .22s ease, border-color .22s ease;
+  }
+  .schalter-knopf{
+    position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%;
+    background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,.28);
+    transition:transform .22s cubic-bezier(.2,.8,.2,1);
+  }
+  .schalter[aria-checked="true"]{ background:var(--accent); border-color:var(--accent); }
+  .schalter[aria-checked="true"] .schalter-knopf{ transform:translateX(20px); }
+  .schalter:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:3px; }
+  /* Der Druck sitzt hier im Knopf, nicht in der ganzen Flaeche: Eine schrumpfende Bahn saehe
+     aus, als wuerde der Schalter kleiner, statt dass man ihn drueckt. */
+  .schalter:active .schalter-knopf{ transform:scale(.9); transition-duration:0s; }
+  .schalter[aria-checked="true"]:active .schalter-knopf{ transform:translateX(20px) scale(.9); }
+  @media (prefers-reduced-motion: reduce){
+    .schalter, .schalter-knopf{ transition:none; }
+    .schalter:active .schalter-knopf{ transform:none; }
+    .schalter[aria-checked="true"]:active .schalter-knopf{ transform:translateX(20px); }
+  }

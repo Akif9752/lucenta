@@ -94,3 +94,23 @@
     fill:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 22%, transparent);
   }
   #previewCard.preview-eigen{ border-color:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 45%, var(--line)); }
+
+  /* ---------- Rhythmus-Hinweis (Runde 79) ----------
+     An der Stelle, an der bis eben der Vorbehalt zur Bevoelkerungsnorm stand. Der Unterschied:
+     Jener Satz sagte, was das Ergebnis NICHT ist; dieser sagt, was man damit tut. Ohne ihn haelt
+     man einen einzigen Durchlauf fuer abschliessend — und genau das ist der Grund, warum die App
+     nach dem ersten Mal nicht wieder geoeffnet wird.
+
+     Bewusst kein Kasten: Er steht unter dem Radar, wo bisher eine leise Fussnote stand, und soll
+     dort nicht mit der Ergebnisgrafik um Aufmerksamkeit ringen. Die Kante links ist dieselbe
+     Auszeichnung wie bei den Befunden der Tagesform. */
+  .rhythmus{
+    margin:18px auto 0; max-width:46ch;
+    border-left:2px solid var(--accent); padding-left:14px; text-align:left;
+  }
+  .rhythmus-titel{
+    font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--accent-2-text); margin-bottom:5px;
+  }
+  .rhythmus-text{ font-size:13.5px; line-height:1.6; color:var(--ink); margin:0; }
+  .rhythmus-text b{ color:var(--ink); font-weight:600; }

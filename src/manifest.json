@@ -27,13 +27,15 @@
   "10-ergebnisbild.js",
   "11-rendering.js",
   "12-schublade.js",
-  "13-profile.js",
-  "14-verstehen.js",
-  "15-settings.js",
-  "16-ergebnisbild-dialog.js",
-  "17-feier.js",
-  "18-wiring.js",
-  "19-beta-rueckmeldung.js",
-  "20-sternenhimmel.js"
+  "13-figuren.js",
+  "14-demo.js",
+  "15-profile.js",
+  "16-verstehen.js",
+  "17-settings.js",
+  "18-ergebnisbild-dialog.js",
+  "19-feier.js",
+  "20-wiring.js",
+  "21-beta-rueckmeldung.js",
+  "22-sternenhimmel.js"
  ]
 }

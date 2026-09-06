@@ -18,7 +18,22 @@
     var profile = loadProfile();
     renderAvatarInto($('drawerAvatar'), profile);
     $('drawerProfileName').textContent = profile.name ? profile.name : tx('js_profil');
-    $('drawerProfileSub').textContent = (profile.name || profile.avatarImg) ? tx('js_profil_öffnen') : tx('js_name_bild__ergebnis_hinzuf');
+    $('drawerProfileSub').textContent = (profile.name || profile.avatarImg || profile.figur)
+      ? tx('js_profil_öffnen') : tx('js_name_bild__ergebnis_hinzuf');
+    // Runde 79: Hintergrundvorlage der Profilzeile. Die Klasse traegt Flaeche UND Schriftfarben
+    // (siehe 09-archetypen.css) — ohne das zweite waere ein dunkler Nachthimmel im Hellmodus
+    // eine Zeile mit unlesbarem Text.
+    var zeile = $('btnDrawerProfileRow');
+    if (zeile && zeile.classList){
+      HINTERGRUENDE.forEach(function(id){ zeile.classList.remove('hg-'+id); });
+      var hg = profile.hintergrund;
+      if (hg && HINTERGRUENDE.indexOf(hg) >= 0){
+        zeile.classList.add('hg-'+hg);
+        zeile.setAttribute('data-hg', hg);
+      } else {
+        zeile.removeAttribute('data-hg');
+      }
+    }
     var archiveCount = loadCompatArchive().length;
     $('drawerCompatArchiveStatus').textContent = archiveCount
       ? (archiveCount + (archiveCount===1?tx('js_gespeicherter_vergleich'):tx('js_gespeicherte_vergleiche')))

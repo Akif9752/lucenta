@@ -210,7 +210,11 @@
     <div class="delta-card" id="deltaCard" style="display:none;" aria-live="polite"></div>
 
     <div class="radar-wrap" id="radarWrap"></div>
-    <p class="radar-note" data-i18n="werte_auf_einer_skala_relati">Werte auf einer 0–100-Skala relativ zu den 50 Aussagen – kein Vergleich mit einer Bevölkerungsnorm.</p>
+    <!-- Runde 79: Der Satz zur Bevoelkerungsnorm ist raus (Wunsch). An seiner Stelle steht
+         jetzt der Hinweis, der tatsaechlich eine Handlung nach sich zieht: Ein Ergebnis gilt
+         auf Wochensicht als stabil, ueber Monate verschiebt es sich. Ohne diesen Satz haelt
+         man einen einzigen Durchlauf fuer abschliessend. -->
+    <div class="rhythmus" id="rhythmusHinweis"></div>
 
     <div class="share-card">
       <div class="share-top">
@@ -221,8 +225,10 @@
       </div>
       <div class="share-scores" id="shareChips"></div>
       <div class="share-actions">
+        <!-- Runde 79: Zwei Knoepfe fuer dasselbe Ziel. "Ergebnis teilen" legte nur Text in die
+             Zwischenablage — was man weitergibt, ist aber das Bild. Der Knopf oeffnet jetzt den
+             Bild-Dialog; "Bild erstellen" daneben war damit doppelt. -->
         <button class="btn btn-primary btn-sm" id="btnShare" data-i18n="ergebnis_teilen">Ergebnis teilen</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="btnShareImage" data-i18n="bild_erstellen">Bild erstellen</button>
         <button class="btn btn-ghost btn-sm" id="btnRetake" data-i18n="test_wiederholen_2">Test wiederholen</button>
       </div>
       <div class="code-box">
@@ -237,8 +243,7 @@
            Code mitnimmt, verliert nichts; wer ihn ignoriert, soll wenigstens gewusst haben, was
            auf dem Spiel steht. Der Hinweis zum Teilen bleibt Fußnote — er betrifft die Vorsicht,
            nicht den Verlust. -->
-      <p class="code-lead" id="codeLead">Dein Ergebnis liegt ausschließlich auf diesem Gerät. Wird der Speicher von Lucenta geleert oder wechselst du das Gerät, ist es fort &mdash; mit diesem Code holst du es unter Einstellungen &rarr; Daten &amp; Datenschutz zurück.</p>
-      <p class="code-note" data-i18n="der_code_enthält_dein_vollst">Der Code enthält dein vollständiges Ergebnis in allen fünf Dimensionen — teile ihn nur mit Personen, denen du es zeigen möchtest.</p>
+      <p class="code-lead" id="codeLead">Nur auf diesem Gerät gespeichert. Mit diesem Code holst du es zurück.</p>
     </div>
 
     <h2 class="section-title" data-i18n-html="deine_fünf_dimensionen_volle">Deine fünf Dimensionen <span class="n">voller Bericht</span></h2>
@@ -386,12 +391,20 @@
         <button type="button" class="avatar-color-swatch avatar-color-ink" id="avatarColorInk" data-color="ink" aria-label="Ink" data-i18n-aria="aria_ink" aria-pressed="false"></button>
         <button type="button" class="avatar-color-swatch avatar-color-quiet" id="avatarColorQuiet" data-color="quiet" aria-label="Ruhig" data-i18n-aria="aria_ruhig" aria-pressed="false"></button>
       </div>
+      <!-- Runde 79: Zwoelf Figuren fuer den Kreis. Sechs Menschen, sechs Tiere — wer sich
+           selbst sucht, soll nicht zuerst an einem Fuchs vorbei. Das erste Feld fuehrt zurueck
+           zum Buchstaben; ohne diesen Weg waere die Wahl eine Sackgasse. -->
+      <div class="figur-raster" id="figurRaster" role="group" aria-label="Figur wählen" data-i18n-aria="aria_figur_waehlen"></div>
       <label class="profile-name-label" for="profileName" data-i18n="name">Name</label>
       <input type="text" id="profileName" class="name-input" placeholder="Dein Name" data-i18n-placeholder="ph_dein_name" maxlength="30" autocomplete="off">
       <!-- Feedback: der "Nur auf diesem Gerät gespeichert..."-Hinweis stand hier redundant zur
            ausführlicheren Erklärung unter Einstellungen → Daten & Datenschutz — raus, statt an
            mehreren Stellen dieselbe Aussage in leicht unterschiedlichen Worten zu wiederholen. -->
     </div>
+
+    <h2 class="section-title" data-i18n="hintergrund">Hintergrund</h2>
+    <p class="section-lead" data-i18n="der_hintergrund_liegt_hinter">Liegt hinter deinem Namen in der Seitenleiste. Jede Vorlage bringt ihre eigenen Schriftfarben mit, damit der Name auf ihr lesbar bleibt.</p>
+    <div class="hg-raster" id="hgRaster" role="group" aria-label="Hintergrund wählen" data-i18n-aria="aria_hintergrund_waehlen"></div>
 
     <h2 class="section-title" data-i18n="dein_ergebnis">Dein Ergebnis</h2>
     <div id="profileResultBlock"></div>
@@ -405,6 +418,9 @@
          sieben Zeilen kleiner Schrift, bevor überhaupt etwas zu sehen war. Überall sonst in der App
          stehen solche Einordnungen unter ihrem Gegenstand (siehe .radar-note unter dem Radar und
          .delta-note unter dem Vergleich zum Vorergebnis); hier folgt er jetzt derselben Regel. -->
+    <!-- Runde 79: Entwicklerbereich. Ganz unten, hinter allem Echten. -->
+    <div class="settings-group" id="demoBlock"></div>
+
     <p class="profile-note" style="margin-top:12px;" data-i18n-html="bigfivedimensionen_gelten_au">Big-Five-Dimensionen gelten auf Wochensicht als stabil — ein echter Trend zeigt sich erst über mehrere Monate, nicht von einem Durchlauf zum nächsten. Die letzten <b id="historyMaxCount">&mdash;</b> Testdurchläufe auf diesem Gerät fließen hier ein.</p>
   </section>
 
@@ -453,7 +469,6 @@
         <button type="button" class="theme-btn" data-lang="pt" aria-pressed="false" lang="pt">Portugu&ecirc;s</button>
         <button type="button" class="theme-btn" data-lang="ja" aria-pressed="false" lang="ja">&#26085;&#26412;&#35486;</button>
       </div>
-      <p class="settings-hint" data-i18n="weitere_sprachen_folgen">Der Fragebogen wird je Sprache in der dafür veröffentlichten Fassung verwendet &mdash; auf Englisch ist das der Originalwortlaut von Goldberg. Für Deutsch, Spanisch, Französisch, Italienisch, Portugiesisch und Japanisch ist der Wortlaut eine sorgfältige Arbeitsübersetzung: Zuordnung und Polung der 50 Aussagen stimmen, der Wortlaut ist aber nicht zitierbar.</p>
     </div>
 
     <!-- Runde 75: Bedienung. Beide Schalter schliessen Luecken, die durch fruehere Runden
@@ -465,22 +480,19 @@
       <div class="settings-zeile">
         <div class="settings-zeile-text">
           <strong data-i18n="haptik">Haptik</strong>
-          <span class="settings-hint" data-i18n="kurzer_impuls_bei_jeder_antw">Kurzer Impuls bei jeder Antwort im Fragebogen. Nicht jedes Gerät unterstützt das.</span>
+          <span class="settings-hint" data-i18n="kurzer_impuls_bei_jeder_antw">Kurzer Impuls bei jeder Antwort im Fragebogen.</span>
         </div>
-        <div class="theme-toggle" role="group" aria-label="Haptik" data-i18n-aria="aria_haptik">
-          <button type="button" class="theme-btn" id="haptikAn" data-haptik="an" aria-pressed="false" data-i18n="an">An</button>
-          <button type="button" class="theme-btn" id="haptikAus" data-haptik="aus" aria-pressed="false" data-i18n="aus">Aus</button>
-        </div>
+        <!-- Runde 79: Zwei Knoepfe "An"/"Aus" beschriften einen Zustand, der genau zwei Werte
+             kennt — ein Schieber zeigt ihn und bedient ihn in einem. role="switch" ist die
+             Entsprechung dazu fuer Vorleseprogramme; die Beschriftung steht links daneben. -->
+        <button type="button" class="schalter" id="haptikSchalter" role="switch" aria-checked="true" aria-label="Haptik" data-i18n-aria="aria_haptik"><span class="schalter-knopf"></span></button>
       </div>
       <div class="settings-zeile">
         <div class="settings-zeile-text">
           <strong data-i18n="bewegung">Bewegung</strong>
           <span class="settings-hint" data-i18n="übergänge_und_der_bewegte_hi">Übergänge und der bewegte Hintergrund. Steht dein Gerät auf reduzierte Bewegung, gilt das ohnehin.</span>
         </div>
-        <div class="theme-toggle" role="group" aria-label="Bewegung" data-i18n-aria="aria_bewegung">
-          <button type="button" class="theme-btn" id="bewegungAn" data-bewegung="an" aria-pressed="false" data-i18n="an_2">An</button>
-          <button type="button" class="theme-btn" id="bewegungAus" data-bewegung="aus" aria-pressed="false" data-i18n="reduziert">Reduziert</button>
-        </div>
+        <button type="button" class="schalter" id="bewegungSchalter" role="switch" aria-checked="true" aria-label="Bewegung" data-i18n-aria="aria_bewegung"><span class="schalter-knopf"></span></button>
       </div>
     </div>
 

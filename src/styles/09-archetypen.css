@@ -304,3 +304,116 @@
   .skip-link:focus{top:12px;}
 
   
+  /* ---------- Figur im Initialen-Kreis (Runde 79) ----------
+     Die Figur fuellt den Kreis vollstaendig; ihre eigene Feldfarbe steht als Eigenschaft am
+     Element, damit sie nicht als elfte Klasse im Stilblatt landet. Der Buchstabe weicht ihr —
+     beides gleichzeitig waere doppelt belegt. */
+  .avatar.hat-figur, .drawer-profile-avatar.hat-figur,
+  .settings-account-avatar.hat-figur{ background:var(--figur-feld, var(--surface-2)); padding:0; }
+  .avatar.hat-figur > svg, .drawer-profile-avatar.hat-figur > svg,
+  .settings-account-avatar.hat-figur > svg{ width:100%; height:100%; }
+
+  .figur-raster{
+    margin-top:14px; display:grid; gap:8px;
+    grid-template-columns:repeat(auto-fit, minmax(52px, 1fr));
+    width:100%; max-width:340px;
+  }
+  .figur-wahl{
+    aspect-ratio:1; border-radius:50%; padding:0; cursor:pointer; overflow:hidden;
+    border:2px solid transparent; box-shadow:0 0 0 1px var(--line) inset;
+    background:var(--figur-feld, var(--surface-2));
+    transition:border-color .15s ease, transform .18s cubic-bezier(.2,.8,.2,1);
+  }
+  .figur-wahl[aria-pressed="true"]{ border-color:var(--ink); }
+  .figur-wahl:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
+  .figur-wahl:active{ transform:scale(.9); transition-duration:0s; }
+  @media (prefers-reduced-motion: reduce){ .figur-wahl:active{ transform:none; } }
+  /* "Kein Bild" — die Rueckkehr zum Buchstaben. Ohne diesen Weg waere die Wahl eine Sackgasse. */
+  .figur-wahl.figur-keine{
+    background:var(--surface-2); display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-family:var(--mono); font-size:15px;
+  }
+
+  /* ---------- Hintergrundvorlagen der Profilzeile (Runde 79) ----------
+     Jede Vorlage setzt Flaeche UND Schriftfarbe. Ein dunkler Nachthimmel mit der hellen
+     Textfarbe der App waere sonst im Hellmodus unlesbar — genau der Fehler, den eine reine
+     Hintergrundwahl macht. Deshalb tragen die Regeln ihre Textfarben selbst. */
+  .drawer-profile-row[data-hg]{ border-color:transparent; color:var(--hg-ink); }
+  .drawer-profile-row[data-hg] .drawer-profile-text strong{ color:var(--hg-ink); }
+  .drawer-profile-row[data-hg] .drawer-profile-text .l,
+  .drawer-profile-row[data-hg] .chev{ color:var(--hg-muted); }
+  /* Der Avatar braucht auf einer gemusterten Flaeche einen eigenen Rand, sonst verschwimmt er. */
+  .drawer-profile-row[data-hg] .drawer-profile-avatar{ border-color:var(--hg-ink); }
+
+  .hg-sternenbild{
+    --hg-ink:#F2F4F0; --hg-muted:#B9C6D6;
+    background:
+      radial-gradient(1.4px 1.4px at 18% 30%, #FFFFFF, transparent),
+      radial-gradient(1.2px 1.2px at 62% 22%, #FFFFFF, transparent),
+      radial-gradient(1.6px 1.6px at 80% 62%, #FFFFFF, transparent),
+      radial-gradient(1.1px 1.1px at 34% 72%, #DCE7FF, transparent),
+      radial-gradient(1.3px 1.3px at 47% 48%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 88% 34%, #DCE7FF, transparent),
+      radial-gradient(1px 1px at 8% 60%, #FFFFFF, transparent),
+      linear-gradient(126deg, #16233B 0%, #0C1220 100%);
+  }
+  .hg-nordlicht{
+    --hg-ink:#EAF6F1; --hg-muted:#A9D5C4;
+    background:linear-gradient(118deg, #0E2622 0%, #16584A 42%, #2E7F6B 62%, #123047 100%);
+  }
+  .hg-daemmerung{
+    --hg-ink:#2A1C22; --hg-muted:#6B4A52;
+    background:linear-gradient(118deg, #F7C9A0 0%, #EFA48C 45%, #C98BA5 100%);
+  }
+  .hg-tiefsee{
+    --hg-ink:#E7F1F6; --hg-muted:#9DC2D6;
+    background:linear-gradient(160deg, #0B2436 0%, #14496B 60%, #1D6E8C 100%);
+  }
+  .hg-wueste{
+    --hg-ink:#3A2A1C; --hg-muted:#7A6047;
+    background:linear-gradient(118deg, #F3DFC0 0%, #E4BE8C 55%, #CE9A66 100%);
+  }
+  .hg-wald{
+    --hg-ink:#EDF3E8; --hg-muted:#A9C4A0;
+    background:linear-gradient(126deg, #1B3324 0%, #2E5638 55%, #47764C 100%);
+  }
+  .hg-nebel{
+    --hg-ink:#26302E; --hg-muted:#5E6E6A;
+    background:linear-gradient(118deg, #DCE5E2 0%, #C4D2CF 50%, #AFC2C0 100%);
+  }
+  .hg-papier{
+    --hg-ink:#2C2A24; --hg-muted:#65604F;
+    background:
+      repeating-linear-gradient(96deg, rgba(120,110,86,.07) 0 2px, transparent 2px 7px),
+      linear-gradient(118deg, #F5F1E4 0%, #E8E2D0 100%);
+  }
+  .hg-welle{
+    --hg-ink:#F1F5F7; --hg-muted:#AFC6D2;
+    background:
+      repeating-linear-gradient(58deg, rgba(255,255,255,.09) 0 3px, transparent 3px 12px),
+      linear-gradient(118deg, #2C5F72 0%, #3E8296 60%, #244A5C 100%);
+  }
+  .hg-kohle{
+    --hg-ink:#F0EFEC; --hg-muted:#A7A49E;
+    background:linear-gradient(118deg, #2B2A28 0%, #3E3C38 55%, #22211F 100%);
+  }
+
+  /* Die kleinen Vorschauen in der Profilansicht: dieselben Klassen, nur klein. */
+  .hg-raster{
+    margin-top:14px; display:grid; gap:8px;
+    grid-template-columns:repeat(auto-fit, minmax(58px, 1fr));
+    width:100%; max-width:340px;
+  }
+  .hg-wahl{
+    height:38px; border-radius:var(--radius-s); cursor:pointer; padding:0;
+    border:2px solid transparent; box-shadow:0 0 0 1px var(--line) inset;
+    transition:border-color .15s ease, transform .18s cubic-bezier(.2,.8,.2,1);
+  }
+  .hg-wahl[aria-pressed="true"]{ border-color:var(--ink); }
+  .hg-wahl:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
+  .hg-wahl:active{ transform:scale(.94); transition-duration:0s; }
+  @media (prefers-reduced-motion: reduce){ .hg-wahl:active{ transform:none; } }
+  .hg-wahl.hg-keine{
+    background:var(--surface-2); display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-family:var(--mono); font-size:13px;
+  }

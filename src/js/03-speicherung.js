@@ -201,12 +201,17 @@
   function schalterLesen(schluessel, standard){
     try{ return localStorage.getItem(schluessel) || standard; }catch(e){ return standard; }
   }
-  function schalterSetzen(schluessel, wert, anId, ausId){
+  // Runde 79: Aus dem Knopfpaar wurde ein Schieber. Der Zustand steht damit im Element selbst
+  // (aria-checked) statt verteilt auf zwei aria-pressed — und das ist zugleich die Rolle, die
+  // Vorleseprogramme als Schalter ansagen.
+  function schalterSetzen(schluessel, wert, schalterId){
     try{ localStorage.setItem(schluessel, wert); }catch(e){}
     if (schluessel === 'lucenta_bewegung') bewegungKlasse(wert);
-    var an = $(anId), aus = $(ausId);
-    if (an) an.setAttribute('aria-pressed', wert === 'an' ? 'true' : 'false');
-    if (aus) aus.setAttribute('aria-pressed', wert === 'aus' ? 'true' : 'false');
+    var el = $(schalterId);
+    if (el && el.setAttribute) el.setAttribute('aria-checked', wert === 'an' ? 'true' : 'false');
+  }
+  function schalterUmlegen(schluessel, schalterId){
+    schalterSetzen(schluessel, schalterLesen(schluessel, 'an') === 'an' ? 'aus' : 'an', schalterId);
   }
   // Die Klasse ist noetig, weil CSS-Animationen nur auf die SYSTEM-Einstellung hoeren. Ohne sie
   // wirkte der Schalter zwar auf alles, was ueber JavaScript laeuft (Haptik, Sternenhimmel,
@@ -216,9 +221,9 @@
     try{ document.documentElement.classList.toggle('bewegung-aus', wert === 'aus'); }catch(e){}
   }
   function schalterAnwenden(){
-    schalterSetzen('lucenta_haptik', schalterLesen('lucenta_haptik','an'), 'haptikAn', 'haptikAus');
+    schalterSetzen('lucenta_haptik', schalterLesen('lucenta_haptik','an'), 'haptikSchalter');
     var bw = schalterLesen('lucenta_bewegung','an');
-    schalterSetzen('lucenta_bewegung', bw, 'bewegungAn', 'bewegungAus');
+    schalterSetzen('lucenta_bewegung', bw, 'bewegungSchalter');
     bewegungKlasse(bw);
   }
 
