@@ -30,7 +30,10 @@ const START = process.env.CHROMIUM_PFAD ? {executablePath: process.env.CHROMIUM_
 
 // Die kleinste Flaeche, die Apple in den Richtlinien fuer eine Schaltflaeche nennt.
 const MIN_TIPP = 44;
-const BREITE = 390, HOEHE = 844;
+// 390 ist die Breite der verbreiteten iPhones, 320 die des kleinsten, das noch aktuelles iOS
+// bekommt. Seitlicher Ueberlauf zeigt sich immer zuerst bei 320 — deutsche Komposita und
+// franzoesische Umschreibungen brauchen dort mehr Platz, als da ist.
+const HOEHE = 844;
 
 const fehler = [];
 const gesehen = new Set();
@@ -106,6 +109,12 @@ const suchTippflaechen = (min) => {
       const t = document.elementFromPoint(x, y);
       return !!t && (t === el || el.contains(t) || t.parentElement === el);
     };
+    // Eine begruendete Ausnahme, und nur diese eine. Die fuenf Antwortkreise messen bei 320px
+    // 42x42 und stehen unmittelbar nebeneinander; eine groessere Trefferflaeche wuerde dort die
+    // Nachbarn ueberlappen und Fehlgriffe erzeugen statt sie zu verhindern. Die Abwaegung steht
+    // seit Runde 60 in 10-druckzustaende.css. Sie steht hier NAMENTLICH, damit sie eine
+    // Entscheidung bleibt und nicht zu einer Zahl wird, die man beliebig senkt.
+    if (el.classList && el.classList.contains('scale-btn')) return;
     const fehlt = [];
     if (!trifft(cx, cy - halb) || !trifft(cx, cy + halb)) fehlt.push('hoch');
     if (!trifft(cx - halb, cy) || !trifft(cx + halb, cy)) fehlt.push('breit');
@@ -220,9 +229,9 @@ async function zu(p, ansicht){
   return jetzt === 'view-' + ansicht;
 }
 
-async function pruefeAnsicht(p, ansicht, kennung){
+async function pruefeAnsicht(p, ansicht, kennung, breite){
   for (const [name, fn, arg] of [
-    ['ragt seitlich heraus', suchUeberlauf, BREITE],
+    ['ragt seitlich heraus', suchUeberlauf, breite],
     ['Tippflaeche unter ' + MIN_TIPP + 'px', suchTippflaechen, MIN_TIPP],
     ['Schaltflaeche ohne Namen', suchNamenlos, null],
     ['Rest einer Ersetzung im Text', suchReste, null],
@@ -235,11 +244,12 @@ async function pruefeAnsicht(p, ansicht, kennung){
 
 // ---------- ein Durchlauf ueber alle Ansichten ----------
 
-async function durchlauf({thema, demo, sprache}){
-  const kennung = [thema, sprache, demo ? 'Beispielnutzerin' : 'leer'].join('/');
+async function durchlauf({thema, demo, sprache, breite}){
+  breite = breite || 390;
+  const kennung = [breite + 'px', thema, sprache, demo ? 'Beispielnutzerin' : 'leer'].join('/');
   console.log('\n' + kennung);
   const b = await chromium.launch(START);
-  const ctx = await b.newContext({viewport:{width:BREITE,height:HOEHE}, isMobile:true, hasTouch:true,
+  const ctx = await b.newContext({viewport:{width:breite,height:HOEHE}, isMobile:true, hasTouch:true,
     colorScheme: thema === 'dunkel' ? 'dark' : 'light'});
   const p = await ctx.newPage();
   const abstuerze = [];
@@ -275,7 +285,7 @@ async function durchlauf({thema, demo, sprache}){
       if (!(ansicht === 'result' && !demo)) melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar');
       continue;
     }
-    await pruefeAnsicht(p, ansicht, kennung);
+    await pruefeAnsicht(p, ansicht, kennung, breite);
   }
 
   abstuerze.forEach(a => melde(kennung + ': Ausnahme — ' + a));
@@ -290,6 +300,9 @@ const laeufe = [
   {thema:'dunkel', demo:true,  sprache:'de'},
   {thema:'hell',   demo:true,  sprache:'ja'},
   {thema:'hell',   demo:true,  sprache:'fr'},
+  // Der schmale Bildschirm, in den zwei Sprachen mit den laengsten Woertern.
+  {thema:'hell',   demo:true,  sprache:'de', breite:320},
+  {thema:'hell',   demo:true,  sprache:'fr', breite:320},
 ];
 for (const l of laeufe) await durchlauf(l);
 

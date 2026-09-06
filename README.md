@@ -91,7 +91,9 @@ Sechs Ebenen, die sich ergänzen:
    legitim): die fünf englischen OCEAN-Beschriftungen und die sechs Sprachnamen — beide stehen
    absichtlich in jeder Sprache gleich da — sowie echte Wortgleichheiten: `EXTRA.` (es, fr),
    `Extraversion` (en, fr), `Test` (en, es, fr, it), `System`, `NAME`, `optional`, `STABIL.`
-   (en). Zusammen 121 Zeilen über alle sechs Sprachen; keine einzige unübersetzte.
+   (en). Runde 80 kamen sechs dazu, alle aus den Namen der neuen Figuren und Vorlagen:
+   `Panda` in fünf Sprachen und `Papier` auf Französisch — echte Wortgleichheiten, geprüft.
+   Zusammen 127 Zeilen über alle sechs Sprachen; keine einzige unübersetzte.
 5. **`npm run pruef-bewegung`** — misst im echten Browser, ob Bewegung tatsächlich läuft, und ob
    sie ausbleibt, wenn weniger Bewegung gewünscht ist. Ebenfalls nicht in `npm test`.
 
@@ -122,7 +124,18 @@ Sechs Ebenen, die sich ergänzen:
    auch auf, dass zwei der sechs echten Fälle aus der Runde davor stammten — die Schieber für
    Haptik und Bewegung, deren Kommentar behauptete, 52x32 sei groß genug.
 
-   Nicht in `npm test`, weil es einen Browser braucht; ein voller Lauf dauert rund zehn Minuten.
+   Gelaufen wird bei **390 px und bei 320 px** — der Breite der verbreiteten iPhones und der
+   des kleinsten, das noch aktuelles iOS bekommt. Seitlicher Überlauf zeigt sich immer zuerst
+   bei 320, wo deutsche Komposita und französische Umschreibungen mehr Platz brauchen als da
+   ist. **Ergebnis Runde 80: kein Überlauf in keiner Sprache**, auch nicht bei 320.
+
+   Genau **eine** Ausnahme steht namentlich im Werkzeug: die fünf Antwortkreise messen bei
+   320 px 42x42 und stehen unmittelbar nebeneinander — eine größere Trefferfläche würde dort
+   die Nachbarn überlappen und Fehlgriffe erzeugen statt sie zu verhindern (Abwägung aus
+   Runde 60). Sie steht namentlich da und nicht als gesenkte Zahl, damit sie eine Entscheidung
+   bleibt.
+
+   Nicht in `npm test`, weil es einen Browser braucht; ein voller Lauf dauert rund zwölf Minuten.
 
 **Warum es Punkt 3 gibt, und das ist die wichtigste Zeile in dieser Datei:** Der Ersatz-DOM aus
 Punkt 2 behandelt `textContent` und `innerHTML` gleich. In Runde 56 war die App auf jedem Gerät
