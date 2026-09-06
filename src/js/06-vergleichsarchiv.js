@@ -1,4 +1,35 @@
 // ---------- Vergleichsarchiv ----------
+  // Mittlere absolute Abweichung je Dimension ueber alle gespeicherten Vergleiche. Eigene Werte
+  // kommen aus dem gespeicherten Ergebnis, die der anderen aus dem mitgespeicherten Code.
+  function archivUebersicht(list){
+    if (!list || list.length < 3) return '';
+    var eigen = loadResult();
+    if (!eigen) return '';
+    var summe = {O:0,C:0,E:0,A:0,S:0}, n = 0;
+    var beste = null;
+    list.forEach(function(e){
+      var andere = null;
+      try{ andere = fromCode(e.otherCode); }catch(x){}
+      if (!andere) return;
+      n++;
+      ORDER.forEach(function(f){ summe[f] += Math.abs(eigen[f] - andere[f]); });
+      if (!beste || e.match > beste.match) beste = e;
+    });
+    if (n < 3) return '';
+    var sortiert = ORDER.slice().sort(function(a,b){ return summe[b] - summe[a]; });
+    var weitest = sortiert[0], naechst = sortiert[sortiert.length-1];
+    var teile = '';
+    if (beste){
+      teile += '<div class="befund"><div class="befund-titel">'+tx('js_archiv_titel_naechste')+'</div>'+
+        '<p class="befund-text">'+(beste.label ? beste.label : tx('js_unbenannter_vergleich'))+
+        tx('js_archiv_naechste_a')+beste.match+tx('js_archiv_naechste_b')+'</p></div>';
+    }
+    teile += '<div class="befund"><div class="befund-titel">'+tx('js_archiv_titel_muster')+'</div>'+
+      '<p class="befund-text">'+tx('js_archiv_muster_a')+LABELS[weitest]+tx('js_archiv_muster_b')+
+      LABELS[naechst]+tx('js_archiv_muster_c')+n+tx('js_archiv_muster_d')+'</p></div>';
+    return '<div class="befund-liste archiv-uebersicht">'+teile+'</div>';
+  }
+
   function renderCompatArchive(){
     $('compatArchiveMaxCount').textContent = MAX_COMPAT_ARCHIVE;
     var list = loadCompatArchive();
@@ -7,6 +38,14 @@
       wrap.innerHTML = emptyStateHTML(tx('js_noch_kein_vergleich_gespei'), {extraClass:'archive-empty-note'});
       return;
     }
+    // Runde 76: Das Archiv war eine reine Liste — es sammelte, wertete aber nichts aus. Aus den
+    // gespeicherten Codes laesst sich das Profil der anderen Person zurueckrechnen, und damit
+    // laesst sich sagen, WORIN du dich von anderen typischerweise unterscheidest. Das ist die
+    // eigentliche Aussage eines Archivs; die Liste allein ist nur ein Beleg.
+    //
+    // Erst ab drei Vergleichen: Bei zweien waere "typischerweise" eine Behauptung ueber einen
+    // einzelnen anderen Menschen, nicht ueber ein Muster.
+    var uebersicht = archivUebersicht(list);
     var fmt = historyDateFmt();
     var rows = list.slice().reverse().map(function(e){
       var dateStr;
@@ -22,7 +61,7 @@
           '</button>'+
         '</div></div>';
     }).join('');
-    wrap.innerHTML = '<div class="history-list">'+rows+'</div>';
+    wrap.innerHTML = uebersicht + '<div class="history-list">'+rows+'</div>';
     wrap.querySelectorAll('[data-view-archive]').forEach(function(btn){
       btn.addEventListener('click', function(){
         var id = btn.getAttribute('data-view-archive');

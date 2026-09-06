@@ -74,3 +74,61 @@
   }
 
   
+  // ---------- Sichern und Einspielen (Runde 76) ----------
+  // Der 10-Zeichen-Code traegt nur das Ergebnis. Verlauf, Tagesform, Profil und Vergleichsarchiv
+  // gingen beim Geraetewechsel verloren — die App sagt zu, dass alles im Geraet bleibt, sagte
+  // aber nicht, wie man es mitnimmt.
+  //
+  // Zwei Wege beim Sichern, weil der eine nicht ueberall geht: Erst der Versuch, eine Datei zu
+  // speichern; wo das unterbunden ist (eingebettete Ansichten unterbinden Downloads), landet
+  // alles in der Zwischenablage. Ein Weg allein waere in der Haelfte der Faelle eine Sackgasse.
+  var DATEN_SCHLUESSEL = ['lucenta_result','lucenta_history','lucenta_state','lucenta_profile',
+                          'lucenta_compat_archive','lucenta_progress'];
+
+  function datenSammeln(){
+    var d = {app:'lucenta', fassung:1, ts:Date.now(), daten:{}};
+    DATEN_SCHLUESSEL.forEach(function(k){
+      try{ var v = localStorage.getItem(k); if (v !== null) d.daten[k] = v; }catch(e){}
+    });
+    return JSON.stringify(d);
+  }
+
+  function datenSichern(){
+    var text = datenSammeln();
+    var name = 'lucenta-' + new Date().toISOString().slice(0,10) + '.json';
+    var geschafft = false;
+    try{
+      var blob = new Blob([text], {type:'application/json'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      geschafft = true;
+    }catch(e){}
+    if (geschafft){ toast(tx('js_export_geladen')); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast(tx('js_export_kopiert')); })
+        .catch(function(){ toast(tx('js_export_kopiert')); });
+    }
+  }
+
+  function datenEinspielen(text){
+    if (!text || !text.trim()){ toast(tx('js_import_leer')); return; }
+    var d = null;
+    try{ d = JSON.parse(text); }catch(e){}
+    // Bewusst streng: Wer hier irgendetwas einspielt, ueberschreibt seinen eigenen Bestand.
+    if (!d || d.app !== 'lucenta' || !d.daten || typeof d.daten !== 'object'){
+      toast(tx('js_import_fehler')); return;
+    }
+    var geschrieben = 0;
+    DATEN_SCHLUESSEL.forEach(function(k){
+      if (typeof d.daten[k] !== 'string') return;
+      try{ localStorage.setItem(k, d.daten[k]); geschrieben++; }catch(e){}
+    });
+    if (!geschrieben){ toast(tx('js_import_fehler')); return; }
+    toast(tx('js_import_ok'));
+    // Neu laden statt jede Ansicht einzeln nachzuziehen: Nach einem Austausch des gesamten
+    // Bestands ist das der einzige Weg, der sicher keinen alten Zustand stehen laesst.
+    setTimeout(function(){ try{ location.reload(); }catch(e){} }, 700);
+  }

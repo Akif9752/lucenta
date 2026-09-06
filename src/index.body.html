@@ -505,6 +505,18 @@
           <button type="button" class="btn btn-ghost btn-sm" id="btnRestoreCode" data-i18n="wiederherstellen">Wiederherstellen</button>
         </div>
       </div>
+      <!-- Runde 76: Der 10-Zeichen-Code traegt nur das Ergebnis. Verlauf, Tagesform, Profil und
+           Vergleichsarchiv gingen beim Geraetewechsel verloren — die App sagt zu, dass alles im
+           Geraet bleibt, sagte aber nicht, wie man es mitnimmt. -->
+      <div class="settings-sub">
+        <h3 data-i18n="alles_mitnehmen">Alles mitnehmen</h3>
+        <p class="settings-hint" data-i18n="der_code_oben_traegt_nur_das">Der Code oben trägt nur dein Ergebnis. Hier bekommst du alles: Ergebnis, Verlauf, Tagesform, Profil und Vergleichsarchiv.</p>
+        <div class="daten-knoepfe">
+          <button type="button" class="btn btn-ghost btn-sm" id="btnExport" data-i18n="daten_sichern">Daten sichern</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="btnImport" data-i18n="daten_einspielen">Daten einspielen</button>
+        </div>
+        <textarea id="importFeld" rows="3" style="display:none;" placeholder="Gesicherte Daten hier einfügen" data-i18n-placeholder="ph_gesicherte_daten_hier_ein"></textarea>
+      </div>
       <button type="button" class="btn btn-ghost btn-sm danger-btn" id="btnResetData" aria-live="polite" style="margin-top:14px;" data-i18n="eigene_daten_zurücksetzen">Eigene Daten zurücksetzen</button>
     </div>
 

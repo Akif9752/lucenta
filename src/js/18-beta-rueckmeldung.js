@@ -275,6 +275,13 @@
     refreshDrawerState();
     applyTheme(loadThemeMode());
     schalterAnwenden();
+    if ($('btnExport')) $('btnExport').addEventListener('click', datenSichern);
+    if ($('btnImport')) $('btnImport').addEventListener('click', function(){
+      var feld = $('importFeld');
+      if (!feld) return;
+      if (feld.style.display === 'none'){ feld.style.display = ''; feld.focus(); return; }
+      datenEinspielen(feld.value);
+    });
     [['haptikAn','lucenta_haptik','an','haptikAn','haptikAus'],
      ['haptikAus','lucenta_haptik','aus','haptikAn','haptikAus'],
      ['bewegungAn','lucenta_bewegung','an','bewegungAn','bewegungAus'],

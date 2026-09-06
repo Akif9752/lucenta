@@ -181,3 +181,8 @@
   .settings-zeile-text{flex:1; min-width:180px; display:flex; flex-direction:column; gap:3px;}
   .settings-zeile-text strong{font-family:var(--serif); font-weight:500; font-size:15.5px;}
   .settings-zeile .theme-toggle{flex-shrink:0;}
+
+  .settings-sub{margin-top:20px; padding-top:18px; border-top:1px solid var(--line);}
+  .settings-sub h3{font-family:var(--serif); font-weight:500; font-size:15.5px; margin-bottom:4px;}
+  .daten-knoepfe{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+  #importFeld{width:100%; margin-top:10px; font-family:var(--mono); font-size:12px;}
