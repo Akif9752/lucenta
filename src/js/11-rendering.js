@@ -215,6 +215,7 @@
 
   function renderResult(previous){
     var arch = archetypeOf(scores);
+    setzeDimensionsfarbe($('view-result'), scores);
     var pole1 = scores[arch.top1]>=50?'high':'low', pole2 = scores[arch.top2]>=50?'high':'low';
     $('archTitle').innerHTML = NOUN[arch.top1][pole1] + ' <span class="sep">·</span> ' + ADJ[arch.top2][pole2];
     $('archMotto').textContent = MOTTO[arch.top1][pole1];

@@ -125,6 +125,33 @@ Der Dunkelmodus hat **eigene Stufen** statt aufgehellter heller Werte.
 | hell (auf `--surface` `#FFFFFF`) | `#0E9C92` | `#C97A3C` |
 | dunkel (auf `--surface` `#17211C`) | `#25A89D` | `#C87F45` |
 
+## Eine Farbe je Dimension — und warum nur eine zur Zeit
+
+`--dim-o`, `--dim-c`, `--dim-e`, `--dim-a`, `--dim-s` tragen je eine Farbe für die fünf
+Dimensionen. Das Porträt nimmt die Farbe der **stärksten** Dimension an: Kopfzeile, Radar und
+die Vorschaukarte auf der Startseite.
+
+**Fünf gleichzeitig sichtbare Farbtöne sind nicht sicher unterscheidbar.** Das ist gemessen, nicht
+vermutet: Selbst die geprüfte Referenzpalette fällt bei allen Paaren durch — Magenta gegen Aqua
+liegt bei Deuteranopie auf ΔE 1,6, und im Hellmodus scheitert sogar die Normalsicht mit 12,9
+gegenüber dem Boden von 15. Warme Töne (Orange, Olive, Gold) fallen bei Protanopie ohnehin
+zusammen; mehr als etwa vier trennbare Positionen gibt der Farbraum nicht her.
+
+Deshalb: **nie zwei davon nebeneinander.** Die Kennzahlenreihe, die Messbalken und die
+Dimensionskarten bleiben einfarbig. Jede der fünf Farben ist einzeln gegen Helligkeitsband,
+Chroma und Kontrast zur Fläche geprüft, in beiden Modi.
+
+| Dimension | hell | dunkel |
+|---|---|---|
+| Offenheit | `#7B5BD6` | `#8E78E0` |
+| Gewissenhaftigkeit | `#2A78D6` | `#4E93E8` |
+| Extraversion | `#C4562F` | `#CE7539` |
+| Verträglichkeit | `#0E9C92` | `#25A89D` |
+| Emotionale Stabilität | `#B8447E` | `#D06694` |
+
+Das ist Identität, keine Bewertung — der Grundsatz „kein Pol ist besser als der andere" bleibt
+unberührt: Die Farbe sagt *welche* Dimension, nicht *wie gut*.
+
 **Eine Achse, nie zwei.** Energie und Stimmung teilen die Skala 1–5 und liegen deshalb in einem
 Diagramm auf einer Achse. Zwei y-Achsen wären hier der naheliegende Fehler: Sie erzeugen
 Kreuzungen und Abstände, die in den Daten nicht existieren.

@@ -77,3 +77,20 @@
   .code-note{margin-top:6px;line-height:1.5;font-family:var(--sans);}
 
   
+  /* ---------- Dimensionsfarbe (Runde 70) ----------
+     --dim-aktiv wird vom JavaScript auf die Ansicht gesetzt und traegt die Farbe der eigenen
+     staerksten Dimension. Der Rueckfall auf --accent greift ueberall dort, wo noch kein
+     Ergebnis vorliegt. Nur Akzente, nie Flaechen unter Text: Die geprueften Werte gelten fuer
+     Marken auf der Flaeche, nicht als Hintergrund fuer Fliesstext. */
+  #view-result .result-head .eyebrow{ color:var(--dim-aktiv, var(--accent-strong)); }
+  #view-result .result-head .eyebrow::before{ background:var(--dim-aktiv, var(--accent)); }
+  #view-result .radar-wrap svg polygon:last-of-type{
+    stroke:var(--dim-aktiv, var(--accent));
+    fill:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 22%, transparent);
+  }
+  #previewCard.preview-eigen .preview-label{ color:var(--dim-aktiv, var(--muted)); }
+  #previewCard.preview-eigen .radar-wrap svg polygon:last-of-type{
+    stroke:var(--dim-aktiv, var(--accent));
+    fill:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 22%, transparent);
+  }
+  #previewCard.preview-eigen{ border-color:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 45%, var(--line)); }

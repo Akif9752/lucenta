@@ -27,6 +27,16 @@
        (Helligkeitsband, Chroma, Farbfehlsichtigkeit, Normalsicht, Kontrast zur Flaeche). */
     --daten-energie:#0E9C92;
     --daten-stimmung:#C97A3C;
+    /* Runde 70: Eine Farbe je Dimension. Gerechnet, nicht ausgesucht — und bewusst so
+       eingesetzt, dass NIE zwei davon gleichzeitig um Unterscheidbarkeit konkurrieren.
+       Der Grund steht im README: Fuenf gleichzeitig sichtbare Farbtoene sind nicht sicher
+       trennbar; selbst die geprueste Referenzpalette faellt dort durch. Jede Farbe ist einzeln
+       gegen Helligkeitsband, Chroma und Kontrast zur Flaeche geprueft, in beiden Modi. */
+    --dim-o:#7B5BD6;
+    --dim-c:#2A78D6;
+    --dim-e:#C4562F;
+    --dim-a:#0E9C92;
+    --dim-s:#B8447E;
     --accent-ink:#F5FBFA;
     --accent-2:#C97A3C;
     /* minimal nachgedunkelt (war #9D5F2F): als Fettschrift auf der Amber-Fläche der Hinweisbänder
@@ -66,6 +76,11 @@
       --accent-deep:#2E6F6A;
       --daten-energie:#25A89D;
       --daten-stimmung:#C87F45;
+      --dim-o:#8E78E0;
+      --dim-c:#4E93E8;
+      --dim-e:#CE7539;
+      --dim-a:#25A89D;
+      --dim-s:#D06694;
       --accent-ink:#08211E;
       --accent-2:#E39A5C;
       --accent-2-text:#E39A5C;
@@ -90,6 +105,11 @@
     --accent-deep:#2E6F6A;
     --daten-energie:#25A89D;
     --daten-stimmung:#C87F45;
+    --dim-o:#8E78E0;
+    --dim-c:#4E93E8;
+    --dim-e:#CE7539;
+    --dim-a:#25A89D;
+    --dim-s:#D06694;
     --accent-ink:#08211E;
     --accent-2:#E39A5C;
     --accent-2-text:#E39A5C;

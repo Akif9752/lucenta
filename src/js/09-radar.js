@@ -72,6 +72,23 @@
   // Radar. Das ist kein Kunstgriff zur Bindung, sondern das Naheliegende — die Startseite zeigt
   // das, was diese Person tatsächlich hat, statt einer Werbefläche für etwas, das sie längst
   // besitzt. Ohne Ergebnis bleibt alles wie bisher.
+  // Runde 70: Die Farbe der eigenen stärksten Dimension. Sie wird als Eigenschaft auf den
+  // Behälter gesetzt, damit das Stilblatt sie über var(--dim-aktiv) aufgreifen kann, ohne dass
+  // JavaScript einzelne Farben zuweist.
+  //
+  // Bewusst immer nur EINE: Fünf gleichzeitig sichtbare Farbtöne sind nicht sicher
+  // unterscheidbar (gemessen, siehe README) — eine je Porträt dagegen ist gefahrlos und macht
+  // das Ergebnis persönlich.
+  var DIM_MARKE = {O:'--dim-o', C:'--dim-c', E:'--dim-e', A:'--dim-a', S:'--dim-s'};
+  function setzeDimensionsfarbe(el, sc){
+    if (!el || !sc) return;
+    try{
+      var a = archetypeOf(sc);
+      var marke = DIM_MARKE[a.top1];
+      if (marke) el.style.setProperty('--dim-aktiv', 'var(' + marke + ')');
+    }catch(e){}
+  }
+
   function renderPreviewCard(){
     var karte = $('previewCard');
     if (!karte) return;
@@ -85,6 +102,7 @@
       titel.innerHTML = NOUN[a.top1][pol1] + ' <span class="sep">·</span> ' + ADJ[a.top2][pol2];
       text.innerHTML = MOTTO[a.top1][pol1];
       $('previewRadar').innerHTML = radarSVG(res, 160);
+      setzeDimensionsfarbe(karte, res);
       karte.classList.add('preview-eigen');
     } else {
       label.innerHTML = tx('so_sieht_dein_ergebnis_aus_b');
