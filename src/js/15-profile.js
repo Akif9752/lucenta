@@ -44,12 +44,17 @@
     var wrap = $('figurRaster');
     if (!wrap || !wrap.querySelectorAll) return;
     var aktiv = profile.figur || '';
+    // Fehlersuche Runde 80: Die Knoepfe enthielten nur eine Zeichnung. Fuer eine Sprachausgabe
+    // waren es vierzehn namenlose Schaltflaechen hintereinander — unbenutzbar. Jede traegt
+    // jetzt ihren Namen, und die Zeichnung selbst wird davor verborgen, damit nicht zweimal
+    // etwas vorgelesen wird.
     var teile = ['<button type="button" class="figur-wahl figur-keine" data-figur="" aria-pressed="'+
-                 (aktiv ? 'false' : 'true')+'">'+avatarInitials(profile.name)+'</button>'];
+                 (aktiv ? 'false' : 'true')+'" aria-label="'+tx('figur_keine')+'">'+
+                 avatarInitials(profile.name)+'</button>'];
     FIGUREN.forEach(function(f){
       teile.push('<button type="button" class="figur-wahl" data-figur="'+f.id+'" '+
-        'style="--figur-feld:'+f.feld+'" aria-pressed="'+(aktiv===f.id?'true':'false')+'">'+
-        figurSVG(f)+'</button>');
+        'style="--figur-feld:'+f.feld+'" aria-pressed="'+(aktiv===f.id?'true':'false')+'" '+
+        'aria-label="'+tx('figur_'+f.id)+'">'+figurSVG(f)+'</button>');
     });
     wrap.innerHTML = teile.join('');
     wrap.querySelectorAll('[data-figur]').forEach(function(b){
@@ -66,11 +71,13 @@
     var wrap = $('hgRaster');
     if (!wrap || !wrap.querySelectorAll) return;
     var aktiv = profile.hintergrund || '';
+    // Dieselbe Sache wie bei den Figuren: zehn leere Flaechen sind fuer eine Sprachausgabe
+    // zehn namenlose Schaltflaechen. Jede Vorlage traegt ihren Namen.
     var teile = ['<button type="button" class="hg-wahl hg-keine" data-hg="" aria-pressed="'+
-                 (aktiv ? 'false' : 'true')+'">&mdash;</button>'];
+                 (aktiv ? 'false' : 'true')+'" aria-label="'+tx('hg_keine')+'">&mdash;</button>'];
     HINTERGRUENDE.forEach(function(id){
       teile.push('<button type="button" class="hg-wahl hg-'+id+'" data-hg="'+id+'" aria-pressed="'+
-        (aktiv===id?'true':'false')+'"></button>');
+        (aktiv===id?'true':'false')+'" aria-label="'+tx('hg_'+id)+'"></button>');
     });
     wrap.innerHTML = teile.join('');
     wrap.querySelectorAll('[data-hg]').forEach(function(b){

@@ -1,5 +1,6 @@
 {
  "css": [
+  "00-schriften.css",
   "00-grundlagen.css",
   "01-landing.css",
   "02-quiz.css",

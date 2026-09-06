@@ -171,6 +171,9 @@ FUNKTIONSWOERTER = {
     'alle','allen','alles','jede','jeden','jedes','viele','wenige','etwas','andere','anderen',
 }
 
+# Vorsilben, aus denen der Code Schluessel zusammensetzt: tx('figur_'+f.id) -> 'figur_'.
+KEY_VORSILBEN = set(re.findall(r"tx\('([a-z0-9_]+_)'\s*\+", rest))
+
 verdacht={}
 for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
     if len(lit) < 4 or lit.startswith('data-'):
@@ -195,6 +198,33 @@ for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
     # die Regel kann also nichts verdecken. Ueber den Kontext waere es hier nicht zu loesen: Die
     # Schluessel werden an eigene Hilfsfunktionen uebergeben, nicht direkt an localStorage.
     if re.fullmatch(r'lucenta_[a-z0-9_]+', lit):
+        continue
+    # Runde 80: Kennungen, aus denen der Code einen Uebersetzungsschluessel zusammensetzt.
+    #
+    # Die Figuren heissen 'fuchs', 'katze', 'locken', 'dutt'; ihre Namen holt der Code mit
+    # tx('figur_'+id). Sobald diese Namen im Sprachpaket standen, meldete die Wortschatz-Regel
+    # die Kennungen selbst als deutsche Literale — sie wurden erst dadurch zu deutschen
+    # Woertern, dass die Stelle RICHTIG uebersetzt wird.
+    #
+    # Die Ausnahme belegt sich selbst: Sie gilt nur, wenn der Code irgendwo tx('<vorsilbe>'+…)
+    # schreibt UND '<vorsilbe><literal>' ein echter Schluessel im deutschen Paket ist. Ein
+    # Literal, das diese Probe besteht, IST ein Kennungsteil — es kann gar kein Oberflaechentext
+    # sein, denn der Text dazu steht unter dem Schluessel, den es bildet.
+    if any((vs + lit) in DE for vs in KEY_VORSILBEN):
+        continue
+    if lit in KEY_VORSILBEN:
+        continue
+    # Runde 80, zweiter Teil: Aufzaehlungswerte. Die Frisuren heissen intern 'locken', 'dutt',
+    # 'tuch'; sie werden gesetzt (haar:'locken') und verglichen (o.haar === 'locken'), aber nie
+    # ausgegeben — der sichtbare Name kommt aus dem Sprachpaket.
+    #
+    # Die Probe ist streng und deshalb tragfaehig: Ausgenommen wird nur, wenn JEDES Vorkommen
+    # im Quelltext in genau diesen beiden Formen steht. Ein einziges Vorkommen, das den Wert
+    # irgendwohin schreibt, an tx() gibt oder mit etwas verkettet, faellt aus der Ausnahme
+    # heraus und der Fund bleibt bestehen. Gegengeprueft: Ein 'Fuchs' in einem textContent
+    # wird weiterhin gemeldet.
+    if lit and all(re.search(r'[A-Za-z_$][\w$]*\s*(?::|===|==)\s*$', v)
+                   for v in re.split(r"'" + re.escape(lit) + r"'", rest)[:-1]):
         continue
     w = worte(lit)
     treffer = w & NUR_DEUTSCH

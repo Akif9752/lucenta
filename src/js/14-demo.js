@@ -23,6 +23,23 @@
     try{ return localStorage.getItem(DEMO_MARKE) === '1'; }catch(e){ return false; }
   }
 
+  // Fehlersuche Runde 80: Solange die Beispieldaten liegen, sind Sichern, Einspielen und
+  // Zuruecksetzen keine harmlosen Handlungen mehr, sondern drei Wege, echte Daten zu verlieren:
+  //
+  //   - Sichern haette die erfundenen Werte als eigene Sicherung ausgegeben.
+  //   - Einspielen haette in die Beispielschicht geschrieben; das Beenden des Beispiels haette
+  //     die eingespielten Daten anschliessend wieder mit der Sicherung ueberschrieben.
+  //   - Zuruecksetzen haette die Beispielschicht geloescht, die Sicherung mit den echten Daten
+  //     aber liegen gelassen — "alles geloescht" waere schlicht nicht wahr gewesen.
+  //
+  // Deshalb halten die drei hier an, statt sich einen Sonderweg zu bauen: Ein Beispielzustand
+  // ist ein Blick, kein Bestand, und man verlaesst ihn, bevor man am Bestand arbeitet.
+  function demoSperrt(){
+    if (!demoAktiv()) return false;
+    toast(tx('demo_erst_beenden'));
+    return true;
+  }
+
   // Ein Tag in Millisekunden, damit die Zeitrechnung unten lesbar bleibt.
   var TAG_MS = 86400000;
 

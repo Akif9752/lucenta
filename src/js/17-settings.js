@@ -112,6 +112,7 @@
   }
 
   function datenSichern(){
+    if (demoSperrt()) return;
     var text = datenSammeln();
     if (imRahmen()){ inZwischenablage(text); return; }
     var name = 'lucenta-' + new Date().toISOString().slice(0,10) + '.json';
@@ -127,6 +128,7 @@
   }
 
   function datenEinspielen(text){
+    if (demoSperrt()) return;
     if (!text || !text.trim()){ toast(tx('js_import_leer')); schuetteln($('importFeld')); return; }
     var d = null;
     try{ d = JSON.parse(text); }catch(e){}

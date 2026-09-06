@@ -168,6 +168,7 @@
   });
   $('btnResetData').addEventListener('click', function(){
     var btn = $('btnResetData');
+    if (demoSperrt()){ disarmResetButton(); return; }
     if (!resetArmed){
       resetArmed = true;
       btn.classList.add('armed');

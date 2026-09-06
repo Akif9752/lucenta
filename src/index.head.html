@@ -14,9 +14,12 @@
 <meta property="og:description" content="50 Aussagen, ~5–7 Minuten, ein Porträt auf Basis des Big-Five-Modells. Vergleiche dein Ergebnis mit Freund:innen.">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Die Schriften stehen seit Runde 80 als Daten im Stilblatt (src/styles/00-schriften.css,
+     erzeugt von tools/schriften_holen.mjs) statt bei Google zu liegen. Zwei Gruende, beide
+     zwingend: Der Abruf uebertrug bei jedem Oeffnen die IP-Adresse an einen Dritten — in einer
+     App, die verspricht, dass die Antworten das Geraet nicht verlassen, ist das ein
+     Widerspruch — und ohne Netz kam die Seite in Systemschrift heraus. Die Datei traegt jetzt
+     alles, was sie zum Aussehen braucht. -->
 <!-- viewport-fit=cover ist Voraussetzung dafür, dass env(safe-area-inset-*) auf Geräten mit
      Aussparung überhaupt Werte liefert; ohne das bleiben die sicheren Ränder unten wirkungslos.
      Bewusst ohne maximum-scale/user-scalable=no: Zoom zu unterbinden ist eine der häufigsten
