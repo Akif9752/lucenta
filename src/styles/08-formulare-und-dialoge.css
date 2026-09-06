@@ -205,8 +205,10 @@
      nur ueber Umwege (appearance:none, ::before) so weit zurechtbiegen. Die Rolle sagt
      Vorleseprogrammen dasselbe.
 
-     Die Groesse folgt der Trefferflaeche, nicht dem Bild: 52x32 ist gross genug fuer den Daumen,
-     ohne dass daneben noch eine unsichtbare Flaeche noetig waere. */
+     52x32 ist das Bild. Die Trefferflaeche ist es NICHT: 32 Punkte Hoehe sind zwoelf zu wenig.
+     Der Satz, der hier stand, behauptete das Gegenteil und war eine Schaetzung; die Messung in
+     Runde 80 hat sie widerlegt. Die fehlende Hoehe kommt aus einem ::after in
+     10-druckzustaende.css, wo alle diese Faelle beieinanderstehen. */
   .schalter{
     position:relative; flex-shrink:0; cursor:pointer;
     width:52px; height:32px; padding:0; border-radius:100px;

@@ -260,7 +260,11 @@ async function durchlauf({thema, demo, sprache}){
 
   for (const ansicht of Object.keys(WEGE)){
     const angekommen = await zu(p, ansicht);
-    if (!angekommen){ melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar'); continue; }
+    if (!angekommen){
+      // Ohne Bestand gibt es kein Ergebnis und damit richtigerweise keinen Weg dorthin.
+      if (!(ansicht === 'result' && !demo)) melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar');
+      continue;
+    }
     await pruefeAnsicht(p, ansicht, kennung);
   }
 

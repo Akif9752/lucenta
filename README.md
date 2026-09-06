@@ -21,15 +21,18 @@ Keine Abhängigkeiten. Node und Python 3 genügen.
 ```
 src/
   index.head.html     Kopf: Dokumenttyp, Zeichensatz, Meta-Angaben, App-Symbol, Anti-Flacker-Skript
-  index.body.html     gesamtes Markup (neun Ansichten)
-  styles/             12 CSS-Teile — die REIHENFOLGE ist bedeutsam
-  js/                 21 JavaScript-Teile — die REIHENFOLGE ist bedeutsam
+  index.body.html     gesamtes Markup (zehn Ansichten, seit Runde 79 mit view-recht)
+  styles/             13 CSS-Teile — die REIHENFOLGE ist bedeutsam
+                      (00-schriften.css ist erzeugt, siehe tools/schriften_holen.mjs)
+  js/                 23 JavaScript-Teile — die REIHENFOLGE ist bedeutsam
   i18n/*.js           7 Sprachpakete (Items, Texte, Oberfläche) — build.js liest alle
                       Dateien des Ordners, ein neues Paket wird durch Hinzulegen wirksam
   manifest.json       legt die Reihenfolge fest
 build.js              setzt alles zu dist/lucenta.html zusammen
 tests/                Testreihen und Ersatz-DOM
 tools/audit_i18n.py   statische Prüfung der Mehrsprachigkeit
+tools/fehlersuche.mjs Fehlersuche im echten Browser über alle Ansichten
+tools/schriften_holen.mjs  holt die Schriften und legt sie als Daten ins Stilblatt
 tools/renderer/       eigener HTML/CSS-Renderer (Python), siehe unten
 docs/                 Produktplan und Markenrecherche
 assets/icon/          App-Symbol in elf Größen
@@ -56,7 +59,7 @@ Beim JavaScript entscheidet sie über die Ausführungsreihenfolge.
 npm test
 ```
 
-Fünf Ebenen, die sich ergänzen:
+Sechs Ebenen, die sich ergänzen:
 
 1. **`node build.js`** — muss durchlaufen; ein Syntaxfehler fällt hier auf.
 2. **`node tests/run.js`** — zehn Reihen, rund 7.000 Prüfungen. Der App-Code wird bis zur Marke
@@ -85,6 +88,23 @@ Fünf Ebenen, die sich ergänzen:
    Animation ist definiert. Sichtbar wird der Fehler erst, wenn man den Wert **über die Zeit**
    misst. Genau dafür ist diese Ebene da — dieselbe Lücke wie zwischen Punkt 2 und Punkt 3, nur
    eine Dimension weiter.
+
+6. **`npm run fehlersuche`** — läuft im echten Browser alle zehn Ansichten ab, in beiden
+   Farbschemata, einmal leer und einmal mit der Beispielnutzerin, in drei Sprachen, und sucht
+   nach dem, was die fünf Ebenen davor strukturell nicht sehen können: seitlicher Überlauf,
+   zu kleine Trefferflächen, Schaltflächen ohne lesbaren Namen, Reste einer Ersetzung im Text
+   (`{{name}}`, `undefined`, `NaN`), doppelt vergebene Kennungen, unsichtbarer Text.
+
+   **Trefferflächen werden getastet, nicht gemessen.** Der erste Entwurf las den Kasten des
+   Elements aus und meldete daraufhin jede kleine Schaltfläche der App — obwohl deren Fläche
+   seit Runde 60 über ein `::after` auf 44 Punkte gebracht wird, das im Kasten nicht auftaucht.
+   Eine Prüfung, die genau dort anschlägt, wo das Problem längst gelöst ist, verdeckt die
+   Stellen, an denen es das nicht ist. Jetzt fragt sie, was ein Daumen fragt: Trifft ein Tipp
+   21 Punkte über, unter, links und rechts von der Mitte noch dasselbe Element? Damit fiel
+   auch auf, dass zwei der sechs echten Fälle aus der Runde davor stammten — die Schieber für
+   Haptik und Bewegung, deren Kommentar behauptete, 52x32 sei groß genug.
+
+   Nicht in `npm test`, weil es einen Browser braucht; ein voller Lauf dauert rund zehn Minuten.
 
 **Warum es Punkt 3 gibt, und das ist die wichtigste Zeile in dieser Datei:** Der Ersatz-DOM aus
 Punkt 2 behandelt `textContent` und `innerHTML` gleich. In Runde 56 war die App auf jedem Gerät
@@ -244,8 +264,11 @@ nicht gibt. Siehe `docs/klarsicht-produktplan.md`, Runde 54.
   wortgleich die Übersetzung von Fritz Ostendorf, die übrigen 35 sind eigene Umformulierungen
   desselben Items. Zuordnung und Polung stimmen, die Berechnung ist sauber — aber der Wortlaut
   ist nicht zitierbar. Entscheidung offen (Runde 54).
-- **Impressum und Datenschutzerklärung fehlen.** Blockiert jeden öffentlichen Launch und ist für
-  einen App-Store-Eintrag zwingend.
+- **Impressum und Datenschutzerklärung stehen, sechs Angaben fehlen.** Der Text ist fertig und
+  liegt unter Einstellungen → Rechtliches. Was nur die betreibende Person liefern kann — Name,
+  Straße, Ort, E-Mail, Hoster, ggf. USt-ID —, steht an genau einer Stelle: `IMPRESSUM` in
+  `src/js/17-settings.js`. Solange eine davon fehlt, sagt die Ansicht das in aller Deutlichkeit;
+  ein Impressum mit Platzhaltern ist schlimmer als keines.
 - **Markenrecherche:** Registerteil erledigt (`docs/lucenta-markenrecherche.md`), die anwaltliche
   Ähnlichkeitsprüfung zu LUCENTIS und LUCENT steht aus.
 - **Installierbarkeit** funktioniert erst mit eigener Domain — im eingebetteten Rahmen liest iOS
@@ -259,10 +282,22 @@ nicht gibt. Siehe `docs/klarsicht-produktplan.md`, Runde 54.
 
 ## Nächster Schritt: iOS
 
+Die vollständige Arbeitsliste steht in **`docs/app-store-start.md`** — getrennt nach erledigt,
+vorbereitet (wartet auf einen Mac) und nur von der betreibenden Person zu erledigen.
+
 Vorgesehen ist **Capacitor**, nicht eine Neuentwicklung — die bestehende App bekommt eine native
-Hülle und behält alles. Voraussetzungen: Mac mit Xcode, Apple Developer Program (99 €/Jahr) und
-eine erreichbare Datenschutzerklärung. Der lohnendste native Zugewinn ist **Haptik** im
-Fragebogen — ein spürbarer Impuls bei jeder der 50 Antworten.
+Hülle und behält alles.
+
+Zwei Dinge sind seit Runde 80 erledigt, die vorher stillschweigend im Weg standen: Die App
+**lädt nichts mehr nach** (die Schriften lagen bei Google und hätten eine Store-App ohne Netz in
+Systemschrift geöffnet — nebenbei ein Datenschutzproblem, weil bei jedem Öffnen die IP-Adresse
+an einen Dritten ging), und die Datenschutzangaben im Store lassen sich dadurch auf den
+kleinstmöglichen Fall stellen: **Data Not Collected**, in jeder Kategorie.
+
+Der wahrscheinlichste Ablehnungsgrund ist **Richtlinie 4.2**: eine in eine Hülle gepackte
+Webseite. Dagegen hilft keine Formulierung, sondern Funktionen, die es im Browser nicht gibt.
+Die zwei kleinsten mit dem größten Effekt sind eine **lokale Mitteilung für die Tagesform** und
+das **System-Teilen-Blatt** für das Ergebnisbild; beides steht in der Arbeitsliste.
 
 ## Grundsätze
 

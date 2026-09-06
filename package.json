@@ -9,7 +9,9 @@
     "audit": "python3 tools/audit_i18n.py",
     "render": "python3 tools/renderer/go.py",
     "diff-sprachen": "node tools/diff_sprachen.mjs",
-    "pruef-bewegung": "node tools/pruef_bewegung.mjs"
+    "pruef-bewegung": "node tools/pruef_bewegung.mjs",
+    "fehlersuche": "node tools/fehlersuche.mjs",
+    "schriften": "node tools/schriften_holen.mjs"
   },
   "license": "UNLICENSED"
 }

@@ -81,6 +81,47 @@
      hinaus verbreiterte Fläche würde in den Bereich des Schubladen-Knopfs reichen. */
   .wordmark::after{ width:100%; }
 
+  /* Runde 80. Die Regel oben stammt aus Runde 60 und deckte ab, was damals gemessen wurde.
+     Seither sind Bedienelemente dazugekommen, und die neue Fehlersuche (tools/fehlersuche.mjs)
+     misst nicht mehr den Kasten, sondern tastet: Trifft ein Tipp 21 Punkte über und unter der
+     Mitte noch dasselbe Element? Damit fielen sechs Stellen auf, die vorher niemand sah —
+     darunter zwei aus der Runde davor, die ich selbst gebaut hatte.
+
+     Für jede Stelle steht dabei die Frage, ob die Fläche wachsen darf oder nur die
+     Trefferzone, weil eine Trefferzone, die den Nachbarn überlappt, Fehlgriffe erzeugt statt
+     sie zu verhindern (genau die Abwägung, an der die Antwortkreise oben ausgenommen sind). */
+
+  /* Die Schalter für Haptik und Bewegung. Ihr Kommentar behauptete, 52x32 sei „groß genug für
+     den Daumen, ohne dass daneben noch eine unsichtbare Fläche nötig wäre" — gemessen sind es
+     32 Punkte Höhe und damit zwölf zu wenig. Die Behauptung war eine Schätzung; das hier ist
+     eine Messung. Nur die Höhe fehlt, links und rechts steht nichts daneben. */
+  .schalter, .theme-btn, .avatar-edit, .avatar-color-swatch{ position:relative; }
+  .schalter::after, .theme-btn::after{
+    content:''; position:absolute; top:50%; left:0; transform:translateY(-50%);
+    width:100%; height:44px;
+  }
+  /* Der Stift am Profilbild sitzt in einer Ecke des Kreises, ohne Nachbarn — hier darf die
+     Fläche in alle Richtungen wachsen. */
+  .avatar-edit::after{
+    content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:44px; height:44px;
+  }
+  /* Die drei Farbtupfer standen mit 10 Punkten Abstand nebeneinander. Eine Trefferfläche von
+     44 hätte sich mit der des Nachbarn um 6 Punkte überschnitten — ein Tipp rechts neben dem
+     ersten Tupfer hätte den zweiten ausgelöst. Deshalb WÄCHST hier zuerst der Abstand auf 16,
+     womit die Flächen exakt aneinanderstoßen statt sich zu überlagern. */
+  .avatar-color-row{ gap:16px; }
+  .avatar-color-swatch::after{
+    content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:44px; height:44px;
+  }
+
+  /* Zwei Stellen, an denen die Fläche selbst wachsen darf, weil sie nichts verdeckt: Die
+     Hintergrund-Vorlagen sind Farbflächen, denen sechs Punkte mehr Höhe nichts nehmen — und
+     bei einem Eingabefeld wirkt ein ::after ohnehin nicht, dort muss die Höhe echt sein. */
+  .hg-wahl{ height:44px; }
+  input[type="text"], input:not([type]), textarea{ min-height:44px; }
+
 /* ================= Bewegung, die einen Wechsel beantwortet =================
      Runde 61. Drei Handlungen bekamen bisher keine Antwort. Alles andere, was hier naheliegend
      schien, gab es beim Nachmessen schon: Druckzustände, das Einlaufen der Frage, das Hochzählen
