@@ -1,13 +1,19 @@
 /* ---------- Result ---------- */
   .result-head{padding:30px 0 4px;text-align:center;}
   .result-head .eyebrow{justify-content:center;}
-  .archetype{font-size:clamp(26px,6.4vw,34px);margin-top:6px;}
+  /* Runde 68: Gemessen bei 390px ergibt 6.4vw nur 25px — die Untergrenze griff also immer, und
+     die 34px sah auf dem Telefon niemand. Titel 26px gegen Zusammenfassung 19px ist ein
+     Verhaeltnis von 1,37: Die Belohnung fuer fuenfzig beantwortete Fragen setzte sich gegen den
+     Absatz darunter nicht durch. Jetzt 8.6vw, also 33,5px bei 390px und 27,5px bei 320px.
+     text-wrap:balance, damit ein zweizeiliger Titel nicht mit einem einzelnen Wort endet. */
+  .archetype{font-size:clamp(27px,8.6vw,42px);margin-top:8px;line-height:1.12;text-wrap:balance;}
   .archetype .sep{color:var(--accent-2);font-style:normal;}
   .motto{margin-top:8px;font-family:var(--mono);font-size:13px;color:var(--accent-2-text);letter-spacing:.01em;}
 
   .synthesis{
     margin:22px auto 0;max-width:46ch;text-align:center;
-    font-family:var(--serif);font-size:19px;line-height:1.55;color:var(--ink);
+    /* Eine Stufe zurueck, damit der Titel fuehrt statt mit dem Absatz zu konkurrieren. */
+    font-family:var(--serif);font-size:17px;line-height:1.62;color:var(--ink);
   }
 
   .delta-card{

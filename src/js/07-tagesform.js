@@ -81,6 +81,91 @@
     if (today){ showLandingStateDone(today, false); }
     else { showLandingStateInputs(); }
   }
+  // Runde 68: Die Brücke zwischen Tagesform und Profil.
+  //
+  // Die App behauptet an mehreren Stellen, die Tagesform sei "unabhängig von deinem stabilen
+  // Testergebnis" — eingelöst war dieser Zusammenhang aber nirgends. Hier steht er zum ersten
+  // Mal, und zwar mit ausdrücklich benannten Grenzen: Aus drei Wochen eigener Einträge folgt
+  // kein Zusammenhang, und das steht auch so da. Der Grundsatz "Was nicht geprüft ist, wird als
+  // ungeprüft benannt" gilt gerade dort, wo eine Zahl nach Beweis aussieht.
+  //
+  // Zwei Beobachtungen, beide nur bei genug Daten:
+  //   - Schwankungsbreite (Standardabweichung) neben dem eigenen Stabilitätswert. Ab 7 Tagen.
+  //   - Wochentagsmuster: der Tag mit der im Schnitt höchsten und niedrigsten Energie. Ab 14
+  //     Tagen UND mindestens zwei Messungen je verglichenem Wochentag — sonst vergliche man
+  //     einen einzelnen Dienstag mit einem einzelnen Freitag und nennte das ein Muster.
+  function streuung(werte){
+    var n = werte.length;
+    if (n < 2) return 0;
+    var m = werte.reduce(function(a,b){ return a+b; }, 0) / n;
+    var q = werte.reduce(function(a,b){ return a + (b-m)*(b-m); }, 0) / (n-1);
+    return Math.sqrt(q);
+  }
+
+  function tagesformBefunde(hist){
+    var teile = [];
+    if (hist.length < 7) return teile;
+
+    // 1) Schwankungsbreite neben dem Stabilitätswert
+    var sE = streuung(hist.map(function(e){ return e.energy; }));
+    var sS = streuung(hist.map(function(e){ return e.valence; }));
+    var res = loadResult();
+    var satz = tx('js_befund_schwankung_a') + hist.length + tx('js_befund_schwankung_b') +
+               zahl1(sE) + tx('js_befund_schwankung_c') + zahl1(sS) + tx('js_befund_schwankung_d');
+    if (res && typeof res.S === 'number'){
+      satz += ' ' + tx('js_befund_stabil_a') + res.S + tx('js_befund_stabil_b');
+    }
+    satz += ' ' + tx('js_befund_grenze');
+    teile.push({titel: tx('js_befund_titel_schwankung'), text: satz});
+
+    // 2) Wochentagsmuster
+    if (hist.length >= 14){
+      var proTag = [];
+      for (var i=0;i<7;i++) proTag.push([]);
+      hist.forEach(function(e){
+        var d;
+        try{ d = new Date(e.ts).getDay(); }catch(x){ return; }
+        if (typeof d === 'number') proTag[d].push(e.energy);
+      });
+      var kandidaten = [];
+      for (var t=0;t<7;t++){
+        if (proTag[t].length >= 2){
+          var m = proTag[t].reduce(function(a,b){ return a+b; },0) / proTag[t].length;
+          kandidaten.push({tag:t, mittel:m, anzahl:proTag[t].length});
+        }
+      }
+      if (kandidaten.length >= 3){
+        kandidaten.sort(function(a,b){ return b.mittel - a.mittel; });
+        var hoch = kandidaten[0], tief = kandidaten[kandidaten.length-1];
+        // Ein Unterschied unter einem halben Skalenpunkt ist bei einer Fünferskala Rauschen.
+        if (hoch.mittel - tief.mittel >= 0.5){
+          teile.push({titel: tx('js_befund_titel_wochentag'),
+            text: tx('js_befund_wochentag_a') + wochentagName(hoch.tag) + tx('js_befund_wochentag_b') +
+                  wochentagName(tief.tag) + tx('js_befund_wochentag_c')});
+        }
+      }
+    }
+    return teile;
+  }
+
+  function zahl1(v){
+    var s = (Math.round(v*10)/10).toFixed(1);
+    return tx('datum_gebietsschema').indexOf('de') === 0 ? s.replace('.', ',') : s;
+  }
+
+  var WOCHENTAG_FMT = null;
+  function wochentagName(index){
+    // Über Intl statt über eine eigene Liste: Die Namen kommen damit aus derselben Quelle wie
+    // das Datumsformat und stimmen in jeder Sprache, ohne dass sie im Sprachpaket doppelt
+    // gepflegt werden müssen.
+    try{
+      if (!WOCHENTAG_FMT) WOCHENTAG_FMT = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {weekday:'long'});
+      // 2024-01-07 war ein Sonntag; +index trifft damit den gesuchten Wochentag.
+      return WOCHENTAG_FMT.format(new Date(Date.UTC(2024, 0, 7 + index)));
+    }catch(e){ return ''; }
+  }
+  function resetWochentagFmt(){ WOCHENTAG_FMT = null; }
+
   function renderStateView(){
     var today = todayStateEntry();
     statePickedEnergy = today ? today.energy : null;
@@ -143,6 +228,23 @@
     wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
       tx('js_letzte_einträge')+hist.length+'</span></h2>'+
       '<div class="history-list">'+listRows+'</div>';
+    var befunde = tagesformBefunde(hist);
+    if (befunde.length){
+      var block = '<h2 class="section-title section-title-sub">'+tx('js_befunde_titel')+'</h2>'+
+        '<div class="befund-liste">'+befunde.map(function(b){
+          return '<div class="befund"><div class="befund-titel">'+b.titel+'</div>'+
+                 '<p class="befund-text">'+b.text+'</p></div>';
+        }).join('')+'</div>';
+      // Zwischen Diagramm und Einzelliste: erst das Bild, dann was darin steht, dann die Belege.
+      // Der Einschub muss VOR die Ueberschrift "Letzte Eintraege", nicht vor deren Liste — sonst
+      // steht die Ueberschrift oberhalb der Befunde und ihre eigene Liste darunter, getrennt
+      // durch fremden Text. Genau das war im ersten Versuch zu sehen.
+      var ueberschrift = wrap.querySelector('.section-title-sub');
+      var liste = wrap.querySelector('.history-list');
+      var ziel = ueberschrift || liste;
+      if (ziel) ziel.insertAdjacentHTML('beforebegin', block);
+      else wrap.insertAdjacentHTML('beforeend', block);
+    }
     verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), fenster, fmt);
   }
 

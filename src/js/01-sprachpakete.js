@@ -49,6 +49,7 @@
     // in der alten Sprache stehen, waehrend die Oberflaeche schon gewechselt hat.
     rebuildItems();
     resetDateFmt();
+    resetWochentagFmt();
     applyI18n();
     // Runde 61: Der Sprachwechsel tauschte den Text ohne jede Antwort aus — auf einer langen
     // Seite wie den Einstellungen war nicht sicher zu sehen, DASS etwas passiert ist. Ein kurzes

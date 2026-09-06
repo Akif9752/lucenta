@@ -6,7 +6,21 @@
   @media (prefers-reduced-motion: reduce){ .gauge-fill,.gauge-marker{transition:none;} }
 
   .stat-strip{margin-top:24px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;}
-  @media (max-width:480px){ .stat-strip{grid-template-columns:repeat(3,minmax(0,1fr));} }
+  /* Runde 68: Unter 480px standen die fuenf Kennzahlen in drei Spalten und brachen damit 3+2 um
+     — eine verwaiste zweite Zeile, die eine Gruppierung nahelegt, die es nicht gibt. Die fuenf
+     Dimensionen sind EIN Satz und stehen jetzt in einer Reihe. Enger gesetzt, damit sie passen;
+     unter 340px wird die Beschriftung zusaetzlich kleiner. */
+  @media (max-width:480px){
+    .stat-strip{gap:5px;}
+    .stat-tile{padding:11px 4px 10px;}
+    .stat-tile .stat-label{font-size:8.5px;letter-spacing:.02em;}
+    .stat-tile .stat-num{font-size:19px;}
+  }
+  @media (max-width:340px){
+    .stat-strip{gap:4px;}
+    .stat-tile .stat-label{font-size:7.5px;}
+    .stat-tile .stat-num{font-size:17px;}
+  }
   .stat-tile{
     background:var(--surface-3);border:1px solid var(--line);border-radius:var(--radius-s);
     padding:13px 9px 12px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;
