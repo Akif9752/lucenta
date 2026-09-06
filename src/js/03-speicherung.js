@@ -195,6 +195,33 @@
     }catch(e){}
   }
   var themeShiftTimer = null;
+  // Runde 75: Beide Schalter folgen demselben Muster wie die Darstellung — Wert merken,
+  // aria-pressed setzen. Die Wirkung liegt woanders: bei der Haptik in tapFeedback(), bei der
+  // Bewegung in prefersReducedMotion(), das jede Animation der App ohnehin abfragt.
+  function schalterLesen(schluessel, standard){
+    try{ return localStorage.getItem(schluessel) || standard; }catch(e){ return standard; }
+  }
+  function schalterSetzen(schluessel, wert, anId, ausId){
+    try{ localStorage.setItem(schluessel, wert); }catch(e){}
+    if (schluessel === 'lucenta_bewegung') bewegungKlasse(wert);
+    var an = $(anId), aus = $(ausId);
+    if (an) an.setAttribute('aria-pressed', wert === 'an' ? 'true' : 'false');
+    if (aus) aus.setAttribute('aria-pressed', wert === 'aus' ? 'true' : 'false');
+  }
+  // Die Klasse ist noetig, weil CSS-Animationen nur auf die SYSTEM-Einstellung hoeren. Ohne sie
+  // wirkte der Schalter zwar auf alles, was ueber JavaScript laeuft (Haptik, Sternenhimmel,
+  // Richtung des Ansichtswechsels), aber die Ansicht stieg weiter auf — gemessen: animationName
+  // blieb "rise". Der Schalter muss beide Welten erreichen.
+  function bewegungKlasse(wert){
+    try{ document.documentElement.classList.toggle('bewegung-aus', wert === 'aus'); }catch(e){}
+  }
+  function schalterAnwenden(){
+    schalterSetzen('lucenta_haptik', schalterLesen('lucenta_haptik','an'), 'haptikAn', 'haptikAus');
+    var bw = schalterLesen('lucenta_bewegung','an');
+    schalterSetzen('lucenta_bewegung', bw, 'bewegungAn', 'bewegungAus');
+    bewegungKlasse(bw);
+  }
+
   function applyTheme(mode){
     // Runde 61: Der Wechsel zwischen hell und dunkel sprang hart um — die Farbmarken wechseln,
     // aber nichts blendet. Die Ueberblendung laeuft NUR waehrend des Wechsels: eine Klasse fuer

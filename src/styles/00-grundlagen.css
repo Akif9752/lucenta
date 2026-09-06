@@ -45,7 +45,9 @@
     --stern-schnuppe:rgba(47,111,106,.75);
     --stern-warm:rgba(90,62,34,.30);
     --stern-kalt:rgba(30,52,74,.30);
-    --fokuslinie-hoehe:10px;
+    /* Nur im Fragebogen sichtbar; ausserhalb faellt die Hoehe auf 0 und die Kopfleiste rueckt
+       automatisch nach, weil ihr Versatz an derselben Marke haengt. */
+    --fokuslinie-hoehe:0px;
     --kopf-links:#EDEFE4;
     --kopf-rechts:#F7F8F2;
     --accent-ink:#F5FBFA;
@@ -459,3 +461,7 @@
   @media (prefers-reduced-motion: reduce){
     #sternenhimmel{transition:none;}
   }
+
+  html.fortschritt-sichtbar{ --fokuslinie-hoehe:10px; }
+  #focusline{ overflow:hidden; transition:height .22s cubic-bezier(.2,.8,.2,1); }
+  @media (prefers-reduced-motion: reduce){ #focusline{ transition:none; } }

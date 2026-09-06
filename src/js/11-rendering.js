@@ -77,7 +77,7 @@
   // 8 ms sind ein Tick, kein Brummen. Bei reduzierter Bewegung bleibt es aus: Wer visuelle
   // Reize zurückdreht, will in aller Regel auch keine körperlichen.
   function tapFeedback(){
-    if (prefersReducedMotion()) return;
+    if (haptikAbgeschaltet() || prefersReducedMotion()) return;
     try{ if (navigator.vibrate) navigator.vibrate(8); }catch(e){}
   }
 

@@ -95,6 +95,10 @@ print("\n6) Keine deutschen Literale im JavaScript")
 a2=JS.index('var CONTENT = {}'); b2=JS.index('// Aktive Sprache')
 rest=JS[:a2]+JS[b2:]
 rest=re.sub(r'/\*.*?\*/','',rest,flags=re.S); rest=re.sub(r'^\s*//.*$','',rest,flags=re.M)
+# Klassennamen sind Bezeichner. Sie werden ueber den KONTEXT erkannt (classList.add/remove/
+# toggle/contains) und nicht ueber ihre Schreibweise — eine Regel nach Zeichenform ('enthaelt
+# einen Bindestrich, keine Leerzeichen') koennte auch echten Text verdecken. Runde 75.
+rest=re.sub(r'classList\.(?:add|remove|toggle|contains)\s*\([^)]*\)', ' ', rest)
 
 def worte(text):
     # Bezeichner sind kein Oberflaechentext. CSS-Marken (var(--daten-energie)), Klassen- und
@@ -118,6 +122,27 @@ NUR_DEUTSCH = de_worte - en_worte
 # Fachbegriffe und Eigennamen, die auch im englischen Text deutsch bleiben duerfen
 NUR_DEUTSCH -= {'deutsch','lucenta','neurotizismus','ostendorf','goldberg'}
 
+# Runde 75: Der abgeleitete Wortschatz hat eine Grenze, die beim Gegenpruefen auffiel — er
+# erkennt nur Woerter, die im deutschen Paket schon vorkommen. "Ansicht wurde gewechselt" ging
+# glatt durch, weil keines der drei Woerter je in einem Text stand. Zwei Signale, die NICHT vom
+# Paket abhaengen, schliessen die Luecke:
+#
+#   1. Rechtschreibung: ä, ö, ü, ß kommen im englischen Text nicht vor.
+#   2. Ein kleiner Bestand deutscher Funktionswoerter. Bewusst kurz und auf Grammatik beschraenkt
+#      statt auf Inhalt — Inhaltswoerter kann niemand vollstaendig auflisten, Artikel, Hilfsverben
+#      und Praepositionen dagegen stehen in fast jedem deutschen Satz.
+FUNKTIONSWOERTER = {
+    'oder','und','aber','denn','dass','wenn','weil','damit','sodass','also','doch',
+    'der','die','das','dem','den','des','ein','eine','einen','einem','einer','eines',
+    'wurde','wurden','wird','werden','worden','sind','waren','wars','hast','habe','haben','hatte',
+    'kann','kannst','koennen','können','soll','sollte','muss','musst','müssen','darf',
+    'nicht','kein','keine','keinen','nichts','noch','schon','immer','wieder','sehr','mehr',
+    'dein','deine','deinen','deinem','deiner','mein','meine','sich','dich','dir','ihr','ihre',
+    'auf','aus','bei','beim','durch','fuer','für','gegen','mit','nach','ohne','seit','ueber','über',
+    'unter','vom','von','vor','zum','zur','zwischen','hier','dort','jetzt','dann','danach','vorher',
+    'alle','allen','alles','jede','jeden','jedes','viele','wenige','etwas','andere','anderen',
+}
+
 verdacht={}
 for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
     if len(lit) < 4 or lit.startswith('data-'):
@@ -134,7 +159,28 @@ for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
     # aus der Ausnahme kein Scheunentor wird.
     if re.fullmatch(r'[.#][A-Za-z0-9_-]+(?:[.#][A-Za-z0-9_-]+)*', lit):
         continue
-    treffer = worte(lit) & NUR_DEUTSCH
+    # Speicherschluessel. Das Praefix ist eindeutig und kommt in keinem Oberflaechentext vor,
+    # die Regel kann also nichts verdecken. Ueber den Kontext waere es hier nicht zu loesen: Die
+    # Schluessel werden an eigene Hilfsfunktionen uebergeben, nicht direkt an localStorage.
+    if re.fullmatch(r'lucenta_[a-z0-9_]+', lit):
+        continue
+    w = worte(lit)
+    treffer = w & NUR_DEUTSCH
+    # Fuer die Funktionswoerter eigene Zerlegung ab DREI Buchstaben: die verlaesslichsten
+    # deutschen Marker (der, die, das, und, zur, vom, mit, auf) sind genau drei lang und fielen
+    # durch die Vierergrenze der Wortschatz-Zerlegung. Gegengeprueft an "Zurueck zur Startseite",
+    # das vorher glatt durchging.
+    # Die zwei paketunabhaengigen Signale gelten nur fuer MEHRWORTIGE Zeichenketten. Grund:
+    # 'nav-vor' ist ein Klassenname aus einer Zuweisung, den die Kontextregel fuer classList
+    # nicht sieht — und er enthaelt 'vor'. Echter Oberflaechentext mit einem Funktionswort hat
+    # praktisch immer ein Leerzeichen; ein Bezeichner praktisch nie. Einzelne deutsche Woerter
+    # deckt weiterhin der abgeleitete Wortschatz ab (der zum Beispiel 'ERGEBNISKARTE' fand).
+    mehrwortig = ' ' in lit.strip()
+    if not treffer and mehrwortig:
+        kurz = set(x.lower() for x in re.findall(r'[A-Za-zÄÖÜäöüß]{3,}', re.sub(r'<[^>]*>', ' ', lit)))
+        treffer = kurz & FUNKTIONSWOERTER
+    if not treffer and mehrwortig and re.search(r'[äöüßÄÖÜ]', re.sub(r'&[a-zA-Z]+;', ' ', lit)):
+        treffer = {'Umlaut/ß'}
     if treffer: verdacht[lit[:60]] = sorted(treffer)[:3]
 check(not verdacht, "keine deutschen Literale im Code"+
       (": "+"; ".join("%s [%s]"%(k,",".join(v)) for k,v in list(verdacht.items())[:4]) if verdacht else

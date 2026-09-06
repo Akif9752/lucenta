@@ -274,6 +274,14 @@
     syncLangButtons();
     refreshDrawerState();
     applyTheme(loadThemeMode());
+    schalterAnwenden();
+    [['haptikAn','lucenta_haptik','an','haptikAn','haptikAus'],
+     ['haptikAus','lucenta_haptik','aus','haptikAn','haptikAus'],
+     ['bewegungAn','lucenta_bewegung','an','bewegungAn','bewegungAus'],
+     ['bewegungAus','lucenta_bewegung','aus','bewegungAn','bewegungAus']].forEach(function(z){
+      var el = $(z[0]);
+      if (el) el.addEventListener('click', function(){ schalterSetzen(z[1], z[2], z[3], z[4]); });
+    });
     renderPreviewCard(); ordneStartseite();
     renderLandingUnderstandTeaser();
     renderLandingStateTeaser();

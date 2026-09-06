@@ -446,6 +446,34 @@
       <p class="settings-hint" data-i18n="weitere_sprachen_folgen">Weitere Sprachen folgen. Der Fragebogen selbst wird nicht übersetzt, sondern je Sprache in der dafür veröffentlichten Fassung verwendet &mdash; auf Englisch ist das der Originalwortlaut.</p>
     </div>
 
+    <!-- Runde 75: Bedienung. Beide Schalter schliessen Luecken, die durch fruehere Runden
+         entstanden sind: Die Haptik kam in Runde 63 dazu, ohne dass man sie abstellen konnte,
+         und die Bewegungsvorliebe war nur ueber die Systemeinstellung erreichbar — wer sie
+         nur FUER DIESE APP zurueckdrehen will, hatte keine Moeglichkeit. -->
+    <div class="settings-group">
+      <h2 data-i18n="bedienung">Bedienung</h2>
+      <div class="settings-zeile">
+        <div class="settings-zeile-text">
+          <strong data-i18n="haptik">Haptik</strong>
+          <span class="settings-hint" data-i18n="kurzer_impuls_bei_jeder_antw">Kurzer Impuls bei jeder Antwort im Fragebogen. Nicht jedes Gerät unterstützt das.</span>
+        </div>
+        <div class="theme-toggle" role="group" aria-label="Haptik" data-i18n-aria="aria_haptik">
+          <button type="button" class="theme-btn" id="haptikAn" data-haptik="an" aria-pressed="false" data-i18n="an">An</button>
+          <button type="button" class="theme-btn" id="haptikAus" data-haptik="aus" aria-pressed="false" data-i18n="aus">Aus</button>
+        </div>
+      </div>
+      <div class="settings-zeile">
+        <div class="settings-zeile-text">
+          <strong data-i18n="bewegung">Bewegung</strong>
+          <span class="settings-hint" data-i18n="übergänge_und_der_bewegte_hi">Übergänge und der bewegte Hintergrund. Steht dein Gerät auf reduzierte Bewegung, gilt das ohnehin.</span>
+        </div>
+        <div class="theme-toggle" role="group" aria-label="Bewegung" data-i18n-aria="aria_bewegung">
+          <button type="button" class="theme-btn" id="bewegungAn" data-bewegung="an" aria-pressed="false" data-i18n="an_2">An</button>
+          <button type="button" class="theme-btn" id="bewegungAus" data-bewegung="aus" aria-pressed="false" data-i18n="reduziert">Reduziert</button>
+        </div>
+      </div>
+    </div>
+
     <div class="settings-group">
       <h2 data-i18n="darstellung">Darstellung</h2>
       <div class="theme-toggle" role="group" aria-label="Darstellung wählen" data-i18n-aria="aria_darstellung_wählen">

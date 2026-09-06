@@ -289,7 +289,10 @@
 
   /* 4. Der Fortschrittsbalken war 3px hoch und lag als Haarlinie unter der Kopfzeile. In dieser
         Formensprache ist er ein eigenes Objekt: dicker, mit runden Enden. */
-  #focusline{ height:var(--fokuslinie-hoehe); background:var(--surface-2); border-bottom:1px solid var(--line); }
+  #focusline{ height:var(--fokuslinie-hoehe); background:var(--surface-2); }
+  /* Die Unterkante gehoert zum sichtbaren Zustand — sonst bliebe ausserhalb des Fragebogens
+     eine Haarlinie ganz oben stehen, die nichts bedeutet. Gemessen: 1px statt 0. */
+  html.fortschritt-sichtbar #focusline{ border-bottom:1px solid var(--line); }
   #focusline-fill{ border-radius:0 100px 100px 0; }
   .focusline-tick{ opacity:.35; }
 
@@ -300,4 +303,18 @@
   @media (prefers-reduced-motion: reduce){
     .trait-card:active, .history-row:active, .role-card:active,
     .run-choice-opt:active, .drawer-profile-row:active{ transform:none; }
+  }
+
+  /* ---------- Bewegung aus (Runde 75) ----------
+     Ein einziger Block statt einer Kopie jeder einzelnen reduced-motion-Regel. Das erfasst auch
+     jede Animation, die spaeter dazukommt, ohne dass jemand daran denken muss. Die Dauer geht
+     auf nahezu null statt auf "none", damit Ereignisse wie animationend weiterhin ausgeloest
+     werden und nichts haengen bleibt, das darauf wartet. */
+  html.bewegung-aus *,
+  html.bewegung-aus *::before,
+  html.bewegung-aus *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
   }

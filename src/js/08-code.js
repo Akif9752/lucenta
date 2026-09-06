@@ -226,8 +226,21 @@
       '</svg>';
   }
 
+  // Runde 75: Die Bewegungsvorliebe war nur ueber die Systemeinstellung erreichbar. Wer sie nur
+  // FUER DIESE APP zurueckdrehen will, hatte keine Moeglichkeit. Der Schalter setzt hier an, an
+  // genau EINER Stelle — prefersReducedMotion() fragen alle Bewegungen der App ab, der Schalter
+  // wirkt damit ueberall, ohne dass eine einzelne Animation davon wissen muss.
+  //
+  // Das System kann nur strenger sein, nie lockerer: Steht es auf reduziert, hilft "An" nicht.
+  function bewegungAbgeschaltet(){
+    try{ return localStorage.getItem('lucenta_bewegung') === 'aus'; }catch(e){ return false; }
+  }
   function prefersReducedMotion(){
+    if (bewegungAbgeschaltet()) return true;
     try{ return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; }
+  }
+  function haptikAbgeschaltet(){
+    try{ return localStorage.getItem('lucenta_haptik') === 'aus'; }catch(e){ return false; }
   }
 
   // Zählt eine Zahl von 0 auf ihren Zielwert hoch, statt sie instantan einzublenden — ein

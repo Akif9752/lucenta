@@ -175,3 +175,9 @@
   .section-lead{margin-top:8px;font-size:14.5px;color:var(--muted);line-height:1.6;max-width:56ch;}
 
   
+  /* Zeile in den Einstellungen: Beschriftung links, Schalter rechts. Auf schmalen Geraeten
+     untereinander, damit der Schalter nicht auf Daumenbreite zusammengedrueckt wird. */
+  .settings-zeile{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-top:14px; flex-wrap:wrap;}
+  .settings-zeile-text{flex:1; min-width:180px; display:flex; flex-direction:column; gap:3px;}
+  .settings-zeile-text strong{font-family:var(--serif); font-weight:500; font-size:15.5px;}
+  .settings-zeile .theme-toggle{flex-shrink:0;}

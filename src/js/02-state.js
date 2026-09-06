@@ -76,6 +76,14 @@
     document.title = VIEW_TITLES[name] ? ('Lucenta — '+VIEW_TITLES[name]) : 'Lucenta';
     window.scrollTo({top: opts.restoreScroll ? (viewScroll[name]||0) : 0, behavior:'instant' in window ? 'instant':'auto'});
     syncHeaderScrollState();
+    // Runde 75: Der Balken stand auf jeder Ansicht, obwohl er nur im Fragebogen etwas anzeigt —
+    // auf der Startseite war er eine leere Leiste ohne Bedeutung. Er erscheint jetzt nur dort,
+    // wo er einen Fortschritt hat. Die Marke --fokuslinie-hoehe geht dabei auf 0, damit die
+    // Kopfleiste automatisch nachrueckt: Beide haengen seit Runde 73 an derselben Marke, genau
+    // damit so etwas nicht wieder auseinanderlaeuft.
+    // Der Ersatz-DOM der Testreihen kennt classList.toggle nicht; der Zugriff wird deshalb
+    // abgesichert, wie an den anderen Stellen mit DOM-Zugriff auch.
+    try{ document.documentElement.classList.toggle('fortschritt-sichtbar', name === 'quiz'); }catch(e){}
     if (name!=='quiz'){ $('focusline-fill').style.width = name==='result' ? '100%':'0%'; disarmQuizAdvance(); setFocuslineProgress(null); }
     if (name!=='settings'){ disarmResetButton(); }
     // Bugfix Feedback-Runde 39: renderLandingUnderstandTeaser() blendet die "Verstehen"-Karte
