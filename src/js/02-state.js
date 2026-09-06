@@ -52,8 +52,24 @@
     // zurückführt statt an den Seitenanfang — bei einer acht Bildschirme langen Ergebnisseite
     // ist das der Unterschied zwischen „zurück" und „von vorn suchen".
     if (currentView && currentView !== name) viewScroll[currentView] = window.scrollY;
-    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+    // Runde 62: Richtung im Ansichtswechsel. Bisher stieg jede Ansicht gleich auf — ob man
+    // tiefer ging oder zurückkam, sah identisch aus. Die Richtung ist eine Information, keine
+    // Zierde: Sie sagt, wo man sich in der App befindet.
+    //
+    // Die Zuordnung folgt der Wahrnehmung, nicht einer Tiefenzahl: Die Zurück-Geste des Systems
+    // ist immer zurück, die Startseite ist immer zurück, alles andere geht hinein. Eine
+    // Tiefentabelle hätte bei gleicher Ebene (Ergebnis -> Verstehen) keine Antwort gehabt.
+    var richtung = (opts.fromHistory || name === 'landing') ? 'nav-zurueck' : 'nav-vor';
+    document.querySelectorAll('.view').forEach(function(v){
+      v.classList.remove('active','nav-vor','nav-zurueck');
+    });
     var section = $('view-'+name);
+    if (!prefersReducedMotion() && currentView && currentView !== name){
+      // Erzwungenes Auslesen, damit der Browser die Animation als neu erkennt — dasselbe
+      // Muster wie bei animateQuestionIn() und markLangShift().
+      void section.offsetWidth;
+      section.classList.add(richtung);
+    }
     section.classList.add('active');
     currentView = name;
     $('viewLabel').textContent = VIEW_LABELS[name] || '';

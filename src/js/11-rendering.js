@@ -135,6 +135,40 @@
     }, 700);
   }
 
+  // Runde 62: Die fünf Dimensionskarten blendeten beim Rendern ein — alle fünf, gleichzeitig,
+  // obwohl die Ergebnisseite rund acht Bildschirme lang ist. Die Karten drei bis fünf hatten
+  // ihre Bewegung längst hinter sich, wenn man dort ankam; gesehen hat sie niemand. Jetzt
+  // blendet jede Karte ein, sobald sie in den Blick kommt.
+  //
+  // Erster Versuch maß beim Rendern, welche Karte unterhalb des Sichtbereichs liegt — das ging
+  // schief: renderResult() läuft, während die Ansicht noch display:none ist, alle Maße sind 0,
+  // und es wurde keine einzige Karte zurückgehalten. Der IntersectionObserver weiß das von
+  // selbst besser: Für Karten, die beim Einblenden der Ansicht schon sichtbar sind, meldet er
+  // sofort, der Rest folgt beim Scrollen. Kein eigenes Messen mehr.
+  //
+  // Die Sicherung ist Absicht: Inhalt, der wegen einer Animation dauerhaft unsichtbar bleibt,
+  // wäre ein deutlich schlechterer Fehler als eine Animation, die niemand sieht. Nach drei
+  // Sekunden wird alles gezeigt, was der Beobachter bis dahin nicht erfasst hat.
+  function revealOnScroll(elemente){
+    var liste = Array.prototype.slice.call(elemente);
+    if (prefersReducedMotion() || !('IntersectionObserver' in window) || !liste.length) return;
+    liste.forEach(function(el){ el.classList.add('defer'); });
+    var zeigen = function(el){ el.classList.add('reveal-in'); };
+    var beobachter = new IntersectionObserver(function(eintraege){
+      eintraege.forEach(function(e){
+        if (!e.isIntersecting) return;
+        zeigen(e.target);
+        beobachter.unobserve(e.target);
+      });
+    }, {rootMargin:'0px 0px -8% 0px'});
+    liste.forEach(function(el){ beobachter.observe(el); });
+    setTimeout(function(){
+      liste.forEach(function(el){
+        if (!el.classList.contains('reveal-in')){ zeigen(el); beobachter.unobserve(el); }
+      });
+    }, 3000);
+  }
+
   function renderResult(previous){
     var arch = archetypeOf(scores);
     var pole1 = scores[arch.top1]>=50?'high':'low', pole2 = scores[arch.top2]>=50?'high':'low';
@@ -218,6 +252,7 @@
         '</div>';
       list.appendChild(card);
     });
+    revealOnScroll(list.children);
 
     renderDelta(previous);
   }

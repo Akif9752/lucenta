@@ -204,6 +204,12 @@ keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu. Ve
 - **Bindung um ihrer selbst willen ist nicht das Ziel.** Kein Serien-Zähler, kein vorgetäuschter
   Fortschritt, keine erfundenen Preisanker. Bewegung, die eine Handlung beantwortet, ist Funktion;
   Bewegung, die beeindrucken soll, ist Dekoration.
+
+  **Eine bewusste Ausnahme (Runde 62):** Der schwache, langsam atmende Schein hinter der
+  Startseiten-Überschrift beantwortet keine Handlung. Er ist Zierde, wurde ausdrücklich gewünscht
+  und ist in `10-druckzustaende.css` als solche benannt. Er steht hier, damit niemand ihn später
+  für ein Versehen hält und entfernt — und damit klar bleibt, dass der Grundsatz selbst gilt und
+  diese eine Stelle die Ausnahme ist, nicht der neue Maßstab.
 - **Was nicht geprüft ist, wird als ungeprüft benannt** — im Produktplan steht zu jeder Runde ein
   ehrlicher Verifikationsstatus.
 

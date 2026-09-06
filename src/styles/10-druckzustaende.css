@@ -131,3 +131,52 @@
     .view.lang-shift{ animation:none; }
     #drawerPanel.open .drawer-section{ animation:none; }
   }
+
+/* ================= Richtung, Sichtbarkeit, Atmosphäre =================
+     Runde 62. Zwei davon tragen Information, eine ist ausdrücklich gewünschte Zierde und als
+     solche benannt. */
+
+  /* 1. Richtung im Ansichtswechsel. Bisher stieg jede Ansicht gleich auf; ob man tiefer ging
+        oder zurückkam, sah identisch aus. 16px sind genug, um die Richtung zu lesen, und wenig
+        genug, dass nichts wandert — body trägt overflow-x:hidden, es entsteht also kein
+        seitlicher Balken. Dieselbe Kurve und Dauer wie "rise", damit sich die drei Varianten
+        wie ein Übergang anfühlen und nicht wie drei. */
+  .view.active.nav-vor{ animation:view-vor .45s cubic-bezier(.2,.8,.2,1) both; }
+  .view.active.nav-zurueck{ animation:view-zurueck .45s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes view-vor{ from{opacity:0;transform:translateX(16px);} to{opacity:1;transform:none;} }
+  @keyframes view-zurueck{ from{opacity:0;transform:translateX(-16px);} to{opacity:1;transform:none;} }
+
+  /* 2. Ergebniskarten blenden ein, wenn sie in den Blick kommen. Die Klasse "defer" setzt nur
+        das JavaScript, und nur auf Karten unterhalb des Sichtbereichs — ohne sie bleibt alles
+        beim bisherigen Verhalten. */
+  .trait-card.defer{ animation:none; opacity:0; }
+  .trait-card.defer.reveal-in{ animation:card-in .5s cubic-bezier(.2,.8,.2,1) both; }
+
+  /* 3. Atmosphäre auf der Startseite. Das ist Zierde, kein Funktionsträger — ausdrücklich
+        gewünscht und hier als das benannt, was es ist. Ein sehr schwacher Schein in der
+        Akzentfarbe hinter der Überschrift, der langsam atmet. Kein Text bewegt sich, nichts
+        verschiebt sich im Fluss: Der Schein liegt in einem eigenen, nicht anklickbaren Element
+        hinter dem Inhalt. 18 Sekunden sind langsam genug, dass die Bewegung nicht auffällt,
+        solange man hinsieht — sie wirkt nur, wenn man wegschaut und zurückkommt. */
+  #view-landing .hero{ position:relative; }
+  #view-landing .hero::before{
+    content:''; position:absolute; z-index:0; pointer-events:none;
+    top:-40px; left:-18%; width:78%; aspect-ratio:1;
+    background:radial-gradient(closest-side, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%);
+    filter:blur(6px);
+    animation:hero-atem 18s ease-in-out infinite;
+  }
+  #view-landing .hero > *{ position:relative; z-index:1; }
+  @keyframes hero-atem{
+    0%,100%{ transform:translate3d(0,0,0) scale(1); opacity:.85; }
+    50%    { transform:translate3d(6%,3%,0) scale(1.1); opacity:1; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .view.active.nav-vor, .view.active.nav-zurueck{ animation:none; }
+    .trait-card.defer{ animation:none; opacity:1; }
+    .trait-card.defer.reveal-in{ animation:none; }
+    /* Der Schein bleibt als ruhige Fläche stehen, statt zu verschwinden — er ist Teil des
+       Bildes, nur eben ohne Bewegung. */
+    #view-landing .hero::before{ animation:none; }
+  }
