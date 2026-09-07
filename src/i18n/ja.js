@@ -766,6 +766,7 @@
       'plus_modal_preis': '<b>買い切り、定期購読なし。</b> データはすべて端末の中にあります。期限切れの定期購読は、自分自身の履歴を締め出すことになります。',
       'plus_modal_beta': 'ベータ期間中は販売していません &mdash; この画面は予定を示すものです。',
       'plus_knopf': 'Lucenta+とは',
+      'plus_vergleich_karte': '日常・会話・一緒に過ごすこと。この次元がその三つの場面でふたりにとって何を意味するかは、Lucenta+ が示します。',
       'plus_verlauf_a': 'あと ',
       'plus_verlauf_b': ' 回ぶんの記録があります。保存されています。すべてを通した曲線は Lucenta+で見られます。',
       'plus_tagesform_a': 'あと ',

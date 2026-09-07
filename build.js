@@ -30,6 +30,26 @@ const i18nDateien = fs.readdirSync(path.join(SRC, 'i18n'))
 const i18n = i18nDateien.map(f => read('i18n', f)).join('');
 const js = man.js.map(f => read('js', f)).join('').replace('@@I18N@@\n', i18n);
 
+// ---------- Der Bau prueft, ob das Ergebnis ueberhaupt laeuft (Runde 90) ----------
+//
+// Anlass: Eine fehlende schliessende Klammer in 22-sternenhimmel.js kam durch ALLE sechs
+// Pruefschichten. Der Bau haengt nur Text aneinander und merkt nichts; die Testreihen laden
+// den gemeinsamen Bereich bis zu einer Marke und sahen die Datei gar nicht; der i18n-Pruefer
+// liest den Quelltext als Text. Gruen gemeldet, und im Browser startete die App nicht — kein
+// Hintergrund, kein Text, gar nichts.
+//
+// Ein Bau, der kaputten Code ausliefert und dabei "fertig" sagt, ist schlimmer als keiner.
+// new Function() parst, ohne auszufuehren: Das reicht fuer genau diese Fehlerklasse und
+// braucht weder Browser noch Abhaengigkeit.
+function pruefeSyntax(name, quelltext){
+  try{ new Function(quelltext); }
+  catch(e){
+    console.error('\nBAU ABGEBROCHEN — ' + name + ' laesst sich nicht lesen:\n  ' + e.message + '\n');
+    process.exit(1);
+  }
+}
+pruefeSyntax('das zusammengesetzte JavaScript', js);
+
 const html = read('index.head.html') + '<style>' + css + '</style>' +
              read('index.body.html') + '<script>' + js + '</script>' + read('index.tail.html');
 

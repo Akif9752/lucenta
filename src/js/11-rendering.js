@@ -393,18 +393,17 @@
         return text ? '<div class="trait-section"><div class="trait-section-label">'+
                tx(schluessel)+'</div><p>'+text+'</p></div>' : '';
       };
-      if (!cmpPlus){
-        // Ohne Aufklappen keine Aufklapp-Geste: Eine Karte, die aussieht, als ginge sie auf,
-        // und dann nicht aufgeht, ist schlechter als eine, die gar nicht so aussieht.
-        return '<div class="trait-card compat-card compat-karte-frei" style="animation-delay:'+(i*60)+'ms">'+
-          '<div class="trait-top"><span class="trait-name">'+LABELS[f]+'</span>'+
-            '<span class="compat-paar mono"><span class="compat-wert-me">'+me[f]+'</span>'+
-            '<span class="compat-wert-sep">·</span>'+
-            '<span class="compat-wert-other">'+other[f]+'</span></span></div>'+
-          compatBalkenHTML(me[f], other[f])+
-          '<div class="trait-teaser">'+(isSim?COMPAT[f].similar:COMPAT[f].diff)+'</div></div>';
-      }
-      return '<details class="trait-card compat-card"'+(i===0?' open':'')+
+      // Runde 90: Die freie Fassung zeigte hier eine flache Karte ohne Aufklapp-Geste. Die
+      // Begruendung damals — "eine Karte, die aussieht, als ginge sie auf, und dann nicht
+      // aufgeht, ist schlechter als eine, die gar nicht so aussieht" — war auf die falsche
+      // Annahme gebaut, dass beim Aufklappen NICHTS passiert. Sie geht jetzt auf, und darin
+      // steht, was dahinter liegt. Das ist der Unterschied zwischen einer Tuer, die klemmt,
+      // und einer, hinter der jemand erklaert, wie man sie oeffnet.
+      //
+      // Der Vorteil gegenueber dem frueheren Hinweiskasten weiter unten: Er steht jetzt in dem
+      // Moment da, in dem die Frage tatsaechlich entsteht — beim Griff nach genau dieser
+      // Dimension —, statt als allgemeine Zeile unter allen fuenf.
+      return '<details class="trait-card compat-card"'+((cmpPlus && i===0)?' open':'')+
         ' style="animation-delay:'+(i*60)+'ms">'+
         '<summary>'+
           '<div class="trait-top"><span class="trait-name">'+LABELS[f]+'</span>'+
@@ -419,9 +418,11 @@
           '</div>'+
         '</summary>'+
         '<div class="trait-sections">'+
-          abschnitt('cmp_feld_alltag', fe.alltag)+
-          abschnitt('cmp_feld_gespraech', fe.gespraech)+
-          abschnitt('cmp_feld_gemeinsam', fe.gemeinsam)+
+          (cmpPlus
+            ? abschnitt('cmp_feld_alltag', fe.alltag)+
+              abschnitt('cmp_feld_gespraech', fe.gespraech)+
+              abschnitt('cmp_feld_gemeinsam', fe.gemeinsam)
+            : schlossHTML(tx('plus_vergleich_karte')))+
         '</div>'+
       '</details>';
     });
@@ -451,8 +452,9 @@
       '<div class="field"><label for="compatSaveLabel">'+tx('js_name_optional')+'</label><input type="text" id="compatSaveLabel" maxlength="30" placeholder="'+decodeEntities(tx('ph_z_b_1a2b3c4d5e_mia'))+'"></div>'+
       '<button type="button" class="btn btn-ghost btn-sm" id="btnSaveCompat">'+tx('js_vergleich_speichern')+'</button>'+
       '</div>';
-    box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') +
-      (cmpPlus ? '' : schlossHTML(tx('plus_vergleich'))) + note +
+    // Der frueher hier stehende Hinweiskasten ist raus: Er saesse unter fuenf Karten, die den
+    // gleichen Hinweis schon in sich tragen, und wuerde denselben Satz sechsmal sagen.
+    box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note +
       (cmpPlus ? saveRow : '');
     startCompatBars(box);
     schloesserVerdrahten(box);

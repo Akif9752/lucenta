@@ -763,6 +763,7 @@
       'plus_modal_preis': '<b>One purchase, no subscription.</b> All data lives on your device; an expiring subscription would lock you out of your own history.',
       'plus_modal_beta': 'Nothing is for sale during the beta &mdash; this window shows what is planned.',
       'plus_knopf': 'What is Lucenta+?',
+      'plus_vergleich_karte': 'Everyday life, conversation and doing things together: what this dimension means for the two of you in those three areas is shown by Lucenta+.',
       'plus_verlauf_a': 'You have ',
       'plus_verlauf_b': ' further runs. They are saved — the curve across all of them is in Lucenta+.',
       'plus_tagesform_a': 'You have recorded ',

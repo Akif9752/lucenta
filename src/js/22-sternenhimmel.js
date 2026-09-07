@@ -222,7 +222,12 @@
   // steiler nach Mittag, und der Nachmittag passt zu einer Seite, die man abends oeffnet.
   // Runde 86 weiter abgeflacht (war 2,16): Aus einer Ecke faellt Licht schraeg ueber die
   // Flaeche, nicht senkrecht hinunter.
-  var FAECHER_MITTE = 2.52;
+  // Runde 90, gemessen statt geschaetzt: Bei 2,52 (144 Grad) zeigt die Richtung (-0,81 / +0,58),
+  // also ueberwiegend ZUR SEITE. Die Strahlen verliessen die Seite links, lange bevor sie unten
+  // ankamen — man sah fast waagerechte Baender ueber dem oberen Rand, keinen Faecher aus der
+  // Ecke. Bei 2,05 (117 Grad) zeigt sie (-0,46 / +0,89): ueberwiegend nach unten, leicht nach
+  // links. Erst dadurch faellt das Licht ueber die ganze Seite und kommt sichtbar aus der Ecke.
+  var FAECHER_MITTE = 2.05;
   function strahlenAufbauen(){
     faecher.length = 0;
     if (!staub) return;
@@ -232,7 +237,7 @@
       faecher.push({
         // Ablage vom Mittelwinkel, mit etwas Unregelmaessigkeit: gleiche Abstaende sehen
         // gezeichnet aus.
-        ab: mitte * 0.74 + (Math.random() - 0.5) * 0.055,
+        ab: mitte * 0.92 + (Math.random() - 0.5) * 0.07,
         // Halbe Breite als Steigung (Gegenkathete je Laenge). Die schmalen sind die klaren.
         br: 0.012 + Math.random() * 0.030,
         // Die Strahlen in der Mitte des Faechers sind kraeftiger als die an den Raendern —
@@ -245,7 +250,14 @@
         // Seite badete in Gelb. Licht soll man bemerken, nicht ansehen.
         a: (0.15 + 0.16 * Math.random()) * (1 - Math.abs(mitte) * 0.80),
         ph: Math.random() * Math.PI * 2,
-        pv: 0.00035 + Math.random() * 0.00075
+        pv: 0.00035 + Math.random() * 0.00075,
+        // Runde 90: "zu wenig dynamik ... und zu lang". Beides hatte dieselbe Ursache — alle
+        // sieben Strahlen waren gleich lang und reichten weit ueber den Bildrand hinaus. Was
+        // dabei fehlt, ist das, was einen Lichtstrahl lebendig macht: dass er IRGENDWO endet.
+        // Jeder hat jetzt seine eigene Laenge, und sie schwankt zusaetzlich langsam.
+        laenge: 0.42 + Math.random() * 0.44,
+        lph: Math.random() * Math.PI * 2,
+        lpv: 0.00055 + Math.random() * 0.0011
       });
     }
   }
@@ -284,7 +296,7 @@
     // Bei der alten Lage lag der Punkt, aus dem die Strahlen kommen, oben am RAND und nicht in
     // der Ecke — man sah einen Faecher von oben, nicht Licht aus der Ecke. Jetzt liegt sie
     // knapp ausserhalb der rechten oberen Ecke; der Faecher zeigt sichtbar dorthin zurueck.
-    return { x: b * (1.02 + 0.07 * Math.sin(strahlPhase)), y: -h * 0.03 };
+    return { x: b * (0.99 + 0.06 * Math.sin(strahlPhase)), y: -h * 0.05 };
   }
   function faecherZeichnen(){
     if (!staub || farbeSonne === 'transparent' || !faecher.length) return;
@@ -295,9 +307,14 @@
     ctx.translate(o.x, o.y);
     for (var i = 0; i < faecher.length; i++){
       var f = faecher[i];
-      var winkel = basis + f.ab + (wenigerBewegung ? 0 : Math.sin(f.ph) * 0.016);
+      var winkel = basis + f.ab + (wenigerBewegung ? 0 : Math.sin(f.ph) * 0.030);
+      // Die Laenge atmet mit. Skaliert statt neu gerechnet, damit der zwischengespeicherte
+      // Verlauf mitwaechst — ein kuerzerer Strahl waere sonst nicht kuerzer, sondern
+      // abgeschnitten, und ein abgeschnittener Strahl ist eine Kante.
+      var lang = f.laenge * (wenigerBewegung ? 1 : (1 + Math.sin(f.lph) * 0.16));
       ctx.save();
       ctx.rotate(winkel);
+      ctx.scale(lang, lang);
       for (var k = 0; k < LAGEN.length; k++){
         var q = LAGEN[k].w * f.br * L;
         ctx.globalAlpha = f.a * LAGEN[k].a;
@@ -336,7 +353,13 @@
       var f = faecher[i];
       // Die weichen Aussenlagen reichen weiter als die Kernbreite; der Faktor bildet das ab.
       var e = Math.abs(d - f.ab) / (f.br * 2.6 + 0.02);
-      if (e < 1) summe += (1 - e) * (1 - e) * (f.a / 0.8);
+      if (e >= 1) continue;
+      // Ein Korn hinter dem Ende des Strahls steht nicht mehr im Licht. Ohne diese Zeile
+      // leuchteten Koerner dort, wo gar kein Strahl mehr ist — derselbe Widerspruch zweier
+      // Lichtquellen wie in Runde 86, nur eine Ebene tiefer.
+      var weg = Math.sqrt((x - o.x) * (x - o.x) + (y - o.y) * (y - o.y));
+      if (weg > f.laenge * (b + h) * 1.25) continue;
+      summe += (1 - e) * (1 - e) * (f.a / 0.8);
     }
     return summe > 1 ? 1 : summe;
   }
@@ -507,7 +530,7 @@
     // ein Suchscheinwerfer statt eines Nachmittags.
     if (staub){
       strahlPhase += 0.00042;
-      for (i = 0; i < faecher.length; i++) faecher[i].ph += faecher[i].pv;
+      for (i = 0; i < faecher.length; i++){ faecher[i].ph += faecher[i].pv; faecher[i].lph += faecher[i].lpv; }
     }
     if (++farbZaehler > 60){ farbZaehler = 0; farbenLesen(); }
     zeichnen();

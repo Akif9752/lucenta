@@ -445,6 +445,13 @@ keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu. Ve
   und ist in `10-druckzustaende.css` als solche benannt. Er steht hier, damit niemand ihn später
   für ein Versehen hält und entfernt — und damit klar bleibt, dass der Grundsatz selbst gilt und
   diese eine Stelle die Ausnahme ist, nicht der neue Maßstab.
+- **Der Bau prüft, ob das Ergebnis überhaupt läuft.** Anlass war eine fehlende schließende
+  Klammer, die durch *alle sechs* Prüfschichten kam: Der Bau hängt nur Text aneinander, die
+  Testreihen laden den gemeinsamen Bereich bis zu einer Marke und sahen die betroffene Datei gar
+  nicht, der i18n-Prüfer liest den Quelltext als Text. Grün gemeldet — und im Browser startete
+  die App nicht. Ein Bau, der kaputten Code ausliefert und dabei „fertig" sagt, ist schlimmer als
+  keiner. `new Function()` parst jetzt das zusammengesetzte JavaScript, ohne es auszuführen; das
+  deckt genau diese Fehlerklasse und braucht weder Browser noch Abhängigkeit.
 - **Was nicht geprüft ist, wird als ungeprüft benannt** — im Produktplan steht zu jeder Runde ein
   ehrlicher Verifikationsstatus.
 

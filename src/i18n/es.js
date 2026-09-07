@@ -762,6 +762,7 @@
       'plus_modal_preis': '<b>Una compra, sin suscripción.</b> Todos los datos están en tu dispositivo; una suscripción que caduca te cerraría el acceso a tu propio historial.',
       'plus_modal_beta': 'Durante la beta no hay nada a la venta &mdash; esta ventana muestra lo que está previsto.',
       'plus_knopf': '¿Qué es Lucenta+?',
+      'plus_vergleich_karte': 'Día a día, conversación y hacer cosas juntos: lo que esta dimensión significa para vosotros en esas tres áreas lo muestra Lucenta+.',
       'plus_verlauf_a': 'Tienes ',
       'plus_verlauf_b': ' vueltas más. Están guardadas: la curva sobre todas ellas está en Lucenta+.',
       'plus_tagesform_a': 'Has registrado ',

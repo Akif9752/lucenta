@@ -494,6 +494,7 @@ CONTENT.de = {
       'plus_modal_preis': '<b>Einmal kaufen, kein Abo.</b> Alle Daten liegen auf deinem Gerät; ein ablaufendes Abo würde dir den Blick auf deine eigene Historie wieder verschließen.',
       'plus_modal_beta': 'In der Beta ist noch nichts käuflich &mdash; dieses Fenster zeigt, was geplant ist.',
       'plus_knopf': 'Was ist Lucenta+?',
+      'plus_vergleich_karte': 'Alltag, Gespräch und gemeinsam unternehmen: Was diese Dimension in den drei Bereichen für euch bedeutet, zeigt Lucenta+.',
       'plus_verlauf_a': 'Du hast ',
       'plus_verlauf_b': ' weitere Durchläufe. Sie liegen gespeichert — die Kurve über alle zeigt Lucenta+.',
       'plus_tagesform_a': 'Du hast ',
