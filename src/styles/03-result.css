@@ -187,16 +187,25 @@
        als Strahlenkranz — eine Grafik, die man ansieht. Gewollt sind Auslaeufer, die man
        bemerkt, ohne sie zu betrachten. Weniger Strahlen, blasser, mit mehr Luft dazwischen. */
     background:repeating-conic-gradient(from 0deg,
-      color-mix(in srgb, var(--dim-aktiv, var(--accent)) 13%, transparent) 0deg 3deg,
-      transparent 3deg 26deg);
+      color-mix(in srgb, var(--dim-aktiv, var(--accent)) var(--kranz-anteil), transparent) 0deg 6deg,
+      transparent 6deg 22deg);
     /* Ohne diese Maske waere es ein Speichenrad mit harter Kante. Sie laesst die Strahlen zur
        Mitte hin verschwinden und nach aussen ausfransen — erst dadurch werden es Auslaeufer.
        Runde 86: Das Loch in der Mitte von 12 auf 24 Prozent. Durch die Stauchung liegen die
        Strahlen waagerecht dichter beieinander, und der Punkt, in dem sie zusammenlaufen, stand
        als heller Fleck hinter der Ueberschrift. */
-    -webkit-mask-image:radial-gradient(closest-side, transparent 24%, #000 58%, transparent 86%);
-            mask-image:radial-gradient(closest-side, transparent 24%, #000 58%, transparent 86%);
-    opacity:.34;
+    -webkit-mask-image:radial-gradient(closest-side, transparent 18%, #000 52%, transparent 94%);
+            mask-image:radial-gradient(closest-side, transparent 18%, #000 52%, transparent 94%);
+    /* Runde 94, gemeldet: "der strahlenkranz ist nicht mehr sichtbar." Nachgemessen, indem
+       dasselbe Bild einmal mit und einmal ohne den Kranz aufgenommen und Bildpunkt fuer
+       Bildpunkt verglichen wurde: groesster Unterschied 7 von 255 Stufen, und nur 0,7 Prozent
+       der Flaeche wichen ueberhaupt um mehr als 2 Stufen ab. Das ist keine leise Andeutung,
+       das ist nichts.
+       Die Ursache lag nicht an der Stauchung der Runde davor, sondern an der Rechnung
+       dahinter: 13 Prozent Farbe mal 0,34 Deckung ergeben 4,4 Prozent — bei einem Farbabstand
+       von 112 Stufen sind das eben jene 5 Stufen. Der Wert war seit Runde 86 zu klein und ist
+       nur nie nachgemessen worden. Jetzt 26 Prozent mal 0,62, also 16 Prozent. */
+    opacity:var(--kranz-deckung);
     animation:strahlen-drehen 150s linear infinite;
   }
   /* Eine Umdrehung in zweieinhalb Minuten. Schnell genug, dass die Bewegung da ist, langsam

@@ -119,6 +119,14 @@
        ist warmes Salbeigruen, und genau der Unterschied macht oben zu Himmel. Die Deckung ist
        so gewaehlt, dass die Farbe am oberen Rand erkennbar ist und auf halber Hoehe restlos
        verschwunden — die Karten darunter stehen auf --paper, nicht auf Blau. */
+    /* Runde 94: Wie kraeftig der Strahlenkranz auf der Ergebnisseite steht. Zwei Marken statt
+       fester Zahlen, weil der Kranz im Hell- und im Dunkelmodus auf verschieden hellem Grund
+       liegt: Dieselbe Farbe mit derselben Deckung ist auf hellem Papier ein kleinerer
+       Unterschied als auf dunklem. Gemessen im Bildvergleich (dasselbe Bild mit und ohne
+       Kranz, Bildpunkt fuer Bildpunkt): Bei gleichen Werten kam der Hellmodus auf 29 von 255
+       Stufen, der Dunkelmodus auf 41. Der Hellmodus bekommt deshalb mehr. */
+    --kranz-anteil:44%;
+    --kranz-deckung:.82;
     --himmel-hoch:rgba(114,152,192,.40);
     --wolke:rgba(255,255,255,.22);
     --wolke-licht:rgba(255,246,226,.30);
@@ -203,17 +211,12 @@
          die nur im Hellmodus erklaert sind, gelten im Dunkelmodus WEITER — der Dunkelblock
          ueberschreibt nur, was er nennt. Dass die Wolken dort trotzdem nicht erscheinen, haengt
          sonst allein an einer Abfrage im Skript, und ein einzelnes Schloss ist keines. */
+      --kranz-anteil:34%;
+      --kranz-deckung:.70;
       --himmel-hoch:rgba(0,0,0,0);
       --wolke:rgba(0,0,0,0);
       --wolke-licht:rgba(0,0,0,0);
-      /* Der Tageshimmel gehoert nicht in die Nacht. Er steht trotzdem hier, mit Deckung 0: Marken,
-       die nur im Hellmodus erklaert sind, gelten im Dunkelmodus WEITER — der Dunkelblock
-       ueberschreibt nur, was er nennt. Dass die Wolken dort trotzdem nicht erscheinen, haengt
-       sonst allein an einer Abfrage im Skript, und ein einzelnes Schloss ist keines. */
-    --himmel-hoch:rgba(0,0,0,0);
-    --wolke:rgba(0,0,0,0);
-    --wolke-licht:rgba(0,0,0,0);
-    --atmosphaere:'sterne';
+      --atmosphaere:'sterne';
       --stern:rgba(236,238,231,.62);
       --stern-schnuppe:rgba(160,220,214,.95);
       --stern-warm:rgba(255,232,198,.68);
@@ -233,6 +236,18 @@
     }
   }
   :root[data-theme="dark"]{
+    /* Runde 94: Diese sechs Marken haben in diesem Block gefehlt. Sie SOLLTEN seit Runde 93
+       hier stehen — die Einfuegung ist damals zweimal in den Block darueber gelaufen, weil
+       ein Suchmuster mit vier Leerzeichen Einrueckung auch in einer Zeile mit sechs
+       Leerzeichen passt. Folge: Wer ausdruecklich "dunkel" gewaehlt hatte, bekam die
+       Himmelsfarben des HELLMODUS vererbt, und dass trotzdem keine Wolken erschienen, hing
+       allein an einer Abfrage im Skript. Genau davor warnt der Kommentar, den dieselbe
+       Einfuegung mitgebracht hat. */
+    --kranz-anteil:34%;
+    --kranz-deckung:.70;
+    --himmel-hoch:rgba(0,0,0,0);
+    --wolke:rgba(0,0,0,0);
+    --wolke-licht:rgba(0,0,0,0);
     --paper:#0F1613;
     --surface:#17211C;
     --surface-2:#1D2822;

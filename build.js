@@ -112,6 +112,37 @@ function pruefeBildfarben(css, js){
 }
 pruefeBildfarben(css, js);
 
+// Der Dunkelmodus steht zweimal im Stilblatt: einmal fuer die Systemvorgabe
+// (@media prefers-color-scheme) und einmal fuer die ausdrueckliche Wahl
+// (:root[data-theme="dark"]). Beide MUESSEN dieselben Marken tragen. Steht eine nur im einen
+// Block, faellt sie im anderen stillschweigend auf den Wert des Hellmodus zurueck — und das
+// sieht man erst, wenn jemand genau diese Kombination oeffnet.
+//
+// Runde 94 ist genau das passiert, und zwar durch einen Fehler beim Einfuegen: Ein Suchmuster
+// mit vier Leerzeichen Einrueckung passt auch mitten in eine Zeile mit sechs Leerzeichen.
+// Beide Einfuegungen landeten dadurch im selben Block, und die sechs Himmelsmarken fehlten
+// eine Runde lang im anderen. Diese Pruefung vergleicht schlicht die beiden Namenslisten.
+function pruefeDunkelbloecke(css){
+  const a = css.indexOf('@media (prefers-color-scheme: dark)');
+  const b = css.indexOf(':root[data-theme="dark"]');
+  if (a < 0 || b < 0 || b < a) return;
+  const namen = (text) => new Set((text.match(/--[a-z0-9-]+(?=\s*:)/g) || []));
+  const imMedia = namen(css.slice(a, b));
+  const ende = css.indexOf('\n  }', b);
+  const imAusdruecklichen = namen(css.slice(b, ende < 0 ? css.length : ende));
+  const nurA = [...imMedia].filter(n => !imAusdruecklichen.has(n));
+  const nurB = [...imAusdruecklichen].filter(n => !imMedia.has(n));
+  if (nurA.length || nurB.length){
+    console.error('\nBAU ABGEBROCHEN — die beiden Dunkelbloecke tragen nicht dieselben Marken:');
+    if (nurA.length) console.error('  nur unter @media prefers-color-scheme: ' + nurA.join(', '));
+    if (nurB.length) console.error('  nur unter :root[data-theme="dark"]:      ' + nurB.join(', '));
+    console.error('\nEine Marke, die nur in einem der beiden steht, faellt im anderen auf den\n' +
+                  'Wert des Hellmodus zurueck.\n');
+    process.exit(1);
+  }
+}
+pruefeDunkelbloecke(css);
+
 const html = read('index.head.html') + '<style>' + css + '</style>' +
              read('index.body.html') + '<script>' + js + '</script>' + read('index.tail.html');
 
