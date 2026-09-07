@@ -736,6 +736,8 @@
       'js_ed_spanne_weit': 'Es una amplitud grande: tu perfil tiene esquinas marcadas, y las diferencias entre las dimensiones moldean tu conducta más que su altura.',
       'js_ed_spanne_mittel': 'Es una amplitud media: algunas dimensiones destacan sin que las demás desaparezcan.',
       'js_ed_spanne_eng': 'Es una amplitud pequeña: ningún rasgo sobresale claramente. Estos perfiles son menos llamativos y a la vez más móviles, porque hay menos fijado.',
+      'js_gespeicherte_vergleiche': ' comparaciones guardadas',
+      'js_gespeicherter_vergleich': ' comparación guardada',
       'demo_marke': 'Datos de ejemplo — no son tuyos',
       'demo_erst_beenden': 'Primero quita los datos de ejemplo.',
       'demo_beenden': 'Quitar los datos de ejemplo',

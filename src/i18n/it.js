@@ -736,6 +736,8 @@
       'js_ed_spanne_weit': 'È un&rsquo;ampiezza larga: il tuo profilo ha spigoli netti, e le differenze fra le dimensioni plasmano il tuo comportamento più della loro altezza.',
       'js_ed_spanne_mittel': 'È un&rsquo;ampiezza media: alcune dimensioni emergono senza che le altre spariscano.',
       'js_ed_spanne_eng': 'È un&rsquo;ampiezza stretta: nessun tratto svetta chiaramente sugli altri. Profili così sono meno vistosi e insieme più mobili, perché meno è fissato.',
+      'js_gespeicherte_vergleiche': ' confronti salvati',
+      'js_gespeicherter_vergleich': ' confronto salvato',
       'demo_marke': 'Dati di esempio — non i tuoi',
       'demo_erst_beenden': 'Rimuovi prima i dati di esempio.',
       'demo_beenden': 'Rimuovi i dati di esempio',

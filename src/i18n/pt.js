@@ -736,6 +736,8 @@
       'js_ed_spanne_weit': 'É uma amplitude larga: o teu perfil tem cantos marcados, e as diferenças entre as dimensões moldam o teu comportamento mais do que a sua altura.',
       'js_ed_spanne_mittel': 'É uma amplitude média &mdash; algumas dimensões destacam-se sem que as outras desapareçam.',
       'js_ed_spanne_eng': 'É uma amplitude estreita: nenhum traço se ergue claramente acima dos outros. Perfis assim são menos vistosos e ao mesmo tempo mais móveis, porque há menos fixado.',
+      'js_gespeicherte_vergleiche': ' comparações guardadas',
+      'js_gespeicherter_vergleich': ' comparação guardada',
       'demo_marke': 'Dados de exemplo — não são teus',
       'demo_erst_beenden': 'Remove primeiro os dados de exemplo.',
       'demo_beenden': 'Remover os dados de exemplo',

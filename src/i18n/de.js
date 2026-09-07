@@ -468,6 +468,8 @@ CONTENT.de = {
       'js_ed_spanne_weit': 'Das ist eine weite Spanne: Dein Profil hat deutliche Ecken, und die Unterschiede zwischen den Dimensionen prägen dein Verhalten mehr als ihre Höhe.',
       'js_ed_spanne_mittel': 'Das ist eine mittlere Spanne — einzelne Dimensionen treten hervor, ohne dass die übrigen verschwinden.',
       'js_ed_spanne_eng': 'Das ist eine enge Spanne: Kein Zug überragt die anderen deutlich. Solche Profile sind unauffälliger und zugleich beweglicher, weil weniger festliegt.',
+      'js_gespeicherte_vergleiche': ' gespeicherte Vergleiche',
+      'js_gespeicherter_vergleich': ' gespeicherter Vergleich',
       'demo_marke': 'Beispieldaten — nicht deine',
       'demo_erst_beenden': 'Dafür zuerst die Beispieldaten entfernen.',
       'demo_beenden': 'Beispieldaten entfernen',

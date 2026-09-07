@@ -736,6 +736,8 @@
       'js_ed_spanne_weit': 'C&rsquo;est un écart large : ton profil a des angles nets, et les différences entre les dimensions façonnent ton comportement davantage que leur hauteur.',
       'js_ed_spanne_mittel': 'C&rsquo;est un écart moyen &mdash; certaines dimensions ressortent sans que les autres disparaissent.',
       'js_ed_spanne_eng': 'C&rsquo;est un écart étroit : aucun trait ne domine nettement les autres. De tels profils sont plus discrets et en même temps plus mobiles, parce que moins est fixé.',
+      'js_gespeicherte_vergleiche': ' comparaisons enregistrées',
+      'js_gespeicherter_vergleich': ' comparaison enregistrée',
       'demo_marke': 'Données d\'exemple — pas les tiennes',
       'demo_erst_beenden': 'Retire d\'abord les données d\'exemple.',
       'demo_beenden': 'Retirer les données d’exemple',

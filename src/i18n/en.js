@@ -737,6 +737,8 @@
       'js_ed_spanne_weit': 'That is a wide spread: your profile has distinct corners, and the differences between the dimensions shape your behaviour more than their height does.',
       'js_ed_spanne_mittel': 'That is a middling spread &mdash; individual dimensions stand out without the others disappearing.',
       'js_ed_spanne_eng': 'That is a narrow spread: no trait clearly towers over the others. Such profiles are less conspicuous and at the same time more mobile, because less is fixed.',
+      'js_gespeicherte_vergleiche': ' saved comparisons',
+      'js_gespeicherter_vergleich': ' saved comparison',
       'demo_marke': 'Example data — not yours',
       'demo_erst_beenden': 'Remove the example data first.',
       'demo_beenden': 'Remove example data',
