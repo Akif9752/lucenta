@@ -32,7 +32,12 @@
     var fig = profile.figur ? figurFinden(profile.figur) : null;
     if (fig){
       el.classList.add('hat-figur');
-      try{ el.style.setProperty('--figur-feld', fig.feld); }catch(e){}
+      // Beide Farben mitgeben, die Wahl trifft das Stilblatt. So wirkt ein Wechsel des
+      // Farbmodus sofort und ohne dass hier etwas neu gezeichnet werden muesste.
+      try{
+        el.style.setProperty('--figur-feld', fig.feld);
+        el.style.setProperty('--figur-feld-dunkel', figFeldDunkel(fig.feld));
+      }catch(e){}
       el.innerHTML = figurSVG(fig);
       return;
     }
@@ -53,7 +58,8 @@
                  avatarInitials(profile.name)+'</button>'];
     FIGUREN.forEach(function(f){
       teile.push('<button type="button" class="figur-wahl" data-figur="'+f.id+'" '+
-        'style="--figur-feld:'+f.feld+'" aria-pressed="'+(aktiv===f.id?'true':'false')+'" '+
+        'style="--figur-feld:'+f.feld+';--figur-feld-dunkel:'+figFeldDunkel(f.feld)+'" '+
+        'aria-pressed="'+(aktiv===f.id?'true':'false')+'" '+
         'aria-label="'+tx('figur_'+f.id)+'">'+figurSVG(f)+'</button>');
     });
     wrap.innerHTML = teile.join('');

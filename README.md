@@ -401,8 +401,8 @@ keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu. Ve
   Fortschritt, keine erfundenen Preisanker. Bewegung, die eine Handlung beantwortet, ist Funktion;
   Bewegung, die beeindrucken soll, ist Dekoration.
 
-  **Zwei bewusste Ausnahmen.** Beide beantworten keine Handlung, beide waren ausdrücklich
-  gewünscht, beide stehen hier, damit sie niemand später für ein Versehen hält — und damit klar
+  **Drei bewusste Ausnahmen.** Alle drei beantworten keine Handlung, alle drei waren ausdrücklich
+  gewünscht, alle drei stehen hier, damit sie niemand später für ein Versehen hält — und damit klar
   bleibt, dass der Grundsatz gilt und diese Stellen die Ausnahmen sind, nicht der neue Maßstab.
 
   **Runde 71: der bewegte Sternenhimmel auf der Startseite.** Er läuft nur dort, pausiert im
@@ -422,6 +422,13 @@ keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu. Ve
   Schmutzflecken statt als beleuchteter Staub), und die hellen Körner lagen nicht dort, wo die
   Strahlen waren — der Streifen und der Fächer wanderten unabhängig voneinander. Die Beleuchtung
   hängt jetzt am Winkel zum Sonnenort, also an dem Licht, das tatsächlich da ist.
+
+  **Runde 87: der Lidschlag der Avatare.** Er beantwortet keine Handlung und ist damit die
+  dritte Ausnahme. Der Grund, ihn trotzdem zu bauen: Eine Figur, die blinzelt, ist lebendig; eine,
+  die es nicht tut, ist ein Bild — und 96 % der Zeit passiert nichts, es gibt kein Schweben und
+  kein Wackeln. Die Verzögerung hängt am Element, damit nicht zweiundzwanzig Figuren in der
+  Auswahl im Gleichtakt blinzeln; das sähe nach Fehlfunktion aus, nicht nach Leben. Bei
+  `prefers-reduced-motion` steht er still.
 
   **Runde 62:** Der schwache, langsam atmende Schein hinter der
   Startseiten-Überschrift beantwortet keine Handlung. Er ist Zierde, wurde ausdrücklich gewünscht

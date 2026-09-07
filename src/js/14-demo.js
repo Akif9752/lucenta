@@ -60,16 +60,29 @@
     // statt von Tagen, und ein Verlauf, in dem man tatsaechlich eine Richtung sieht.
     //
     // Sieben Durchlaeufe ueber 183 Tage. Die Bewegung ist bewusst nur in ZWEI Dimensionen
-    // deutlich (C von 48 auf 56, S von 41 auf 48) und in den uebrigen klein: Ein Beispiel, in
+    // deutlich (O von 61 auf 74, S von 36 auf 48) und in den uebrigen klein: Ein Beispiel, in
     // dem sich alles bewegt, waere ein unehrliches Beispiel — so etwas sieht man in echten
     // Daten nicht.
+    //
+    // Runde 87, aus der Rueckmeldung: Im Verlauf stand siebenmal dieselbe Zeile
+    // ("Visionaer:in · warmherzig"). Das lag nicht an der Anzeige, sondern an den Zahlen — in
+    // allen sieben Durchlaeufen war O am weitesten von der Mitte entfernt und A am
+    // zweitweitesten, und genau aus diesen beiden entsteht der Titel. Eine Liste aus sieben
+    // identischen Zeilen sieht aus wie ein Fehler und macht das Beispiel wertlos: Ein Verlauf
+    // soll ja zeigen, dass sich etwas bewegt.
+    //
+    // Die Werte tragen jetzt eine Entwicklung, die die FUEHRUNG wechselt: Am Anfang ist die
+    // Vertraeglichkeit das Bestimmende und die niedrige Gelassenheit das Zweite; dann waechst
+    // die Offenheit und wird zum Zweiten; zuletzt uebernimmt sie. Drei verschiedene Titel ueber
+    // ein halbes Jahr — nicht sieben, denn ein Titel, der bei jedem Durchlauf ein anderer ist,
+    // waere die genauso unehrliche Gegenrichtung.
     var verlauf = [
-      {date: jetzt - 176*TAG_MS, scores:{O:71, C:48, E:60, A:68, S:41}},
-      {date: jetzt - 147*TAG_MS, scores:{O:70, C:49, E:59, A:69, S:43}},
-      {date: jetzt - 118*TAG_MS, scores:{O:72, C:51, E:62, A:67, S:42}},
-      {date: jetzt -  89*TAG_MS, scores:{O:73, C:52, E:61, A:70, S:45}},
-      {date: jetzt -  58*TAG_MS, scores:{O:72, C:54, E:63, A:69, S:46}},
-      {date: jetzt -  27*TAG_MS, scores:{O:75, C:55, E:62, A:71, S:47}},
+      {date: jetzt - 176*TAG_MS, scores:{O:61, C:48, E:58, A:72, S:36}},  // Brueckenbauer:in · feinfuehlig
+      {date: jetzt - 147*TAG_MS, scores:{O:63, C:49, E:59, A:71, S:38}},  // Brueckenbauer:in · neugierig
+      {date: jetzt - 118*TAG_MS, scores:{O:66, C:51, E:60, A:71, S:41}},
+      {date: jetzt -  89*TAG_MS, scores:{O:69, C:52, E:61, A:70, S:43}},
+      {date: jetzt -  58*TAG_MS, scores:{O:71, C:54, E:62, A:70, S:45}},  // ab hier Visionaer:in · warmherzig
+      {date: jetzt -  27*TAG_MS, scores:{O:73, C:55, E:62, A:71, S:47}},
       {date: jetzt -   3*TAG_MS, scores:ergebnis}
     ];
     // Tagesform ueber dasselbe halbe Jahr, aber nicht gleichmaessig: dicht in den letzten

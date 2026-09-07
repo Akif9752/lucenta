@@ -325,6 +325,55 @@
     transition:border-color .15s ease, transform .18s cubic-bezier(.2,.8,.2,1);
   }
   .figur-wahl[aria-pressed="true"]{ border-color:var(--ink); }
+
+  /* ---------- Farbmodus (Runde 87) ----------
+     Rueckmeldung: Die helle Scheibe hinter der Figur war auf dem dunklen Grund der hoechste
+     Kontrast der ganzen Ansicht. Die Figur selbst behaelt ihre Farben — ein Fuchs, der im
+     Dunkelmodus grau wird, ist kein Fuchs mehr —, die Flaeche darunter folgt dem Modus.
+     figFeldDunkel() in 13-figuren.js rechnet sie aus derselben Farbe aus.
+
+     Dazu eine leichte Daempfung der Zeichnung selbst: Volle Sattheit auf dunklem Grund wirkt
+     wie ein Aufkleber. Sechs Prozent weniger Helligkeit reichen, damit die Figur auf der
+     Flaeche LIEGT, statt darauf zu leuchten — und sind wenig genug, dass keine Farbe kippt. */
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .avatar.hat-figur,
+    :root:not([data-theme="light"]) .drawer-profile-avatar.hat-figur,
+    :root:not([data-theme="light"]) .settings-account-avatar.hat-figur,
+    :root:not([data-theme="light"]) .figur-wahl{
+      background:var(--figur-feld-dunkel, var(--surface-2));
+    }
+    :root:not([data-theme="light"]) .figur-svg{ filter:brightness(.94) saturate(.94); }
+  }
+  :root[data-theme="dark"] .avatar.hat-figur,
+  :root[data-theme="dark"] .drawer-profile-avatar.hat-figur,
+  :root[data-theme="dark"] .settings-account-avatar.hat-figur,
+  :root[data-theme="dark"] .figur-wahl{
+    background:var(--figur-feld-dunkel, var(--surface-2));
+  }
+  :root[data-theme="dark"] .figur-svg{ filter:brightness(.94) saturate(.94); }
+
+  /* ---------- Der Lidschlag ----------
+     "besser animiert": Eine Figur, die blinzelt, ist lebendig; eine, die es nicht tut, ist ein
+     Bild. Es ist die sparsamste Belebung, die es gibt — kein Schweben, kein Wackeln, nichts,
+     was Aufmerksamkeit zieht. 96 Prozent der Zeit passiert nichts.
+
+     Gestaucht wird um den Augenmittelpunkt (transform-box/transform-origin), sonst rutschen die
+     Augen beim Zusammenziehen ins Gesicht. Die Verzoegerung haengt am Element, damit nicht
+     zweiundzwanzig Figuren in der Auswahl im Gleichtakt blinzeln — das saehe nach Fehlfunktion
+     aus, nicht nach Leben. */
+  .fig-augen{
+    transform-box:fill-box; transform-origin:center;
+    animation:fig-blinzeln 6.4s infinite;
+  }
+  .figur-wahl:nth-child(3n) .fig-augen{ animation-delay:1.7s; animation-duration:7.1s; }
+  .figur-wahl:nth-child(3n+1) .fig-augen{ animation-delay:3.4s; animation-duration:5.8s; }
+  @keyframes fig-blinzeln{
+    0%, 95%, 100%{ transform:scaleY(1); }
+    97.2%        { transform:scaleY(.08); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .fig-augen{ animation:none; }
+  }
   .figur-wahl:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
   .figur-wahl:active{ transform:scale(.9); transition-duration:0s; }
   @media (prefers-reduced-motion: reduce){ .figur-wahl:active{ transform:none; } }
