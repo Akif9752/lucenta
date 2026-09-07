@@ -191,7 +191,11 @@
     if (!svg || !kreuz || !pe || !ps) return;
     var n = eintraege.length, links = 4, rechts = 4, oben = 10, unten = 18;
     var breite = 320, hoehe = 150, iw = breite - links - rechts, ih = hoehe - oben - unten;
-    var heuteE = eintraege[n-1].energy, heuteS = eintraege[n-1].valence;
+    // Runde 84: Seit die Tagesform mehrere Eintraege je Tag kennt (Runde 82), sind diese Werte
+    // MITTELWERTE und damit Bruchzahlen. Hier standen sie roh — auf dem Bildschirm erschien
+    // dadurch "3.3333333333333335" statt "3,3". tagWert() gibt eine ganze Zahl als ganze Zahl
+    // aus und alles andere mit genau einer Nachkommastelle; mehr hat die Angabe nicht her.
+    var heuteE = tagWert(eintraege[n-1].energy), heuteS = tagWert(eintraege[n-1].valence);
 
     function zeigen(ev){
       var r = svg.getBoundingClientRect();
@@ -206,8 +210,8 @@
       var y = function(v){ return oben + (1 - (v-1)/4) * ih; };
       pe.setAttribute('cx', x.toFixed(1)); pe.setAttribute('cy', y(e.energy).toFixed(1)); pe.setAttribute('opacity','1');
       ps.setAttribute('cx', x.toFixed(1)); ps.setAttribute('cy', y(e.valence).toFixed(1)); ps.setAttribute('opacity','1');
-      if (wertE) wertE.textContent = e.energy;
-      if (wertS) wertS.textContent = e.valence;
+      if (wertE) wertE.textContent = tagWert(e.energy);
+      if (wertS) wertS.textContent = tagWert(e.valence);
       if (datum){ var d = ''; try{ d = fmt.format(new Date(e.ts)); }catch(x){ d = e.day || ''; } datum.textContent = d; }
     }
     function verbergen(){
@@ -247,8 +251,8 @@
     var n = eintraege.length;
     var erst = eintraege[0], letzt = eintraege[n-1];
     return tx('js_verlauf_von') + n + tx('js_verlauf_tagen') +
-           tx('js_energie') + ' ' + erst.energy + tx('js_verlauf_bis') + letzt.energy + ', ' +
-           tx('js_stimmung') + ' ' + erst.valence + tx('js_verlauf_bis') + letzt.valence + '.';
+           tx('js_energie') + ' ' + tagWert(erst.energy) + tx('js_verlauf_bis') + tagWert(letzt.energy) + ', ' +
+           tx('js_stimmung') + ' ' + tagWert(erst.valence) + tx('js_verlauf_bis') + tagWert(letzt.valence) + '.';
   }
 
   function sparklineSVG(values, w, h){

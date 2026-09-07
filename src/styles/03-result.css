@@ -145,10 +145,45 @@
        weil alles Schnellere im Blickfeld bleibt, statt hinter dem Text zu verschwinden. */
     animation:schein-atmen 7s ease-in-out infinite;
   }
+  /* Runde 84: Strahlen im Schein, die sich ganz langsam im Uhrzeigersinn drehen.
+     Ein eigenes ::after statt eines zweiten Verlaufs im ::before, weil beide sich verschieden
+     bewegen muessen: der Schein atmet, die Strahlen drehen.
+
+     Die Groesse ist hier NICHT nach dem Aussehen gewaehlt, sondern nach der Geometrie: Ein
+     gedrehtes Quadrat beansprucht seine DIAGONALE, also das 1,41-Fache seiner Seite. Bei 64 %
+     Breite im 350 px breiten Kasten sind das 224 px Seite und 317 px Diagonale — noch innerhalb.
+     Mit den 100 %, die beim Schein daneben richtig sind, waeren es 495 px gewesen und die Seite
+     waere seitlich uebergelaufen, genau wie beim ersten Entwurf des Scheins eine Runde zuvor. */
+  #view-result .result-head::after{
+    content:''; position:absolute; z-index:0; pointer-events:none;
+    left:50%; top:54%;
+    width:min(250px, 64%); aspect-ratio:1;
+    /* Am Bild zurueckgenommen (war 15 % auf 4,5 von 20 Grad): So dicht gesetzt lasen sie sich
+       als Strahlenkranz — eine Grafik, die man ansieht. Gewollt sind Auslaeufer, die man
+       bemerkt, ohne sie zu betrachten. Weniger Strahlen, blasser, mit mehr Luft dazwischen. */
+    background:repeating-conic-gradient(from 0deg,
+      color-mix(in srgb, var(--dim-aktiv, var(--accent)) 13%, transparent) 0deg 3deg,
+      transparent 3deg 26deg);
+    /* Ohne diese Maske waere es ein Speichenrad mit harter Kante. Sie laesst die Strahlen zur
+       Mitte hin verschwinden und nach aussen ausfransen — erst dadurch werden es Auslaeufer. */
+    -webkit-mask-image:radial-gradient(closest-side, transparent 12%, #000 52%, transparent 82%);
+            mask-image:radial-gradient(closest-side, transparent 12%, #000 52%, transparent 82%);
+    opacity:.34;
+    animation:strahlen-drehen 150s linear infinite;
+  }
+  /* Eine Umdrehung in zweieinhalb Minuten. Schnell genug, dass die Bewegung da ist, langsam
+     genug, dass man sie nicht ansieht, sondern nur bemerkt, dass etwas lebt. */
+  @keyframes strahlen-drehen{
+    from{ transform:translate(-50%,-50%) rotate(0deg); }
+    to  { transform:translate(-50%,-50%) rotate(360deg); }
+  }
   @keyframes schein-atmen{
     0%, 100%{ opacity:.55; transform:translate(-50%,-50%) scale(1); }
     50%     { opacity:.85; transform:translate(-50%,-50%) scale(1.06); }
   }
   @media (prefers-reduced-motion: reduce){
     #view-result .result-head::before{ animation:none; opacity:.6; }
+    /* Die Strahlen bleiben stehen, verschwinden aber nicht: Sie sind Teil des Bildes, nur ihre
+       Drehung ist Bewegung. */
+    #view-result .result-head::after{ animation:none; transform:translate(-50%,-50%); }
   }
