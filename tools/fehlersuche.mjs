@@ -254,6 +254,118 @@ const suchUnsichtbarenText = () => {
 };
 
 
+// Runde 93, nach dem dritten "die Hellversion ist zu grell": Die Helligkeit der Flaechen ist
+// zweimal nach Augenmass verschoben worden, und beide Male stand in der Begruendung eine
+// Kontrast-Rechnung, die niemand nachgemessen hat. Sie stimmte auch nicht mehr: Die Marke
+// --muted-soft traegt im Stilblatt den Kommentar "so weit zurueckgenommen wie moeglich, ohne
+// auf irgendeinem der drei Untergruende unter 4,6:1 zu fallen" — auf --surface-2 lag sie zu
+// dem Zeitpunkt bei 4,24.
+//
+// Der Grund fuer den Irrtum ist immer derselbe: gerechnet wurde mit den Farben, die im
+// Stilblatt NEBENEINANDER stehen, nicht mit denen, die in der Oberflaeche UEBEREINANDER
+// liegen. Welche Flaeche wirklich hinter einem Text liegt, weiss nur der Browser. Deshalb
+// misst diese Pruefung am gerenderten Bild und rechnet die Deckung mit, statt die erste
+// nicht-durchsichtige Farbe fuer den Hintergrund zu halten.
+const suchSchwachenKontrast = () => {
+  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+         || document.querySelector('.view.active');
+  if (!v) return [];
+  // Der Browser antwortet nicht immer in rgb(). Sobald irgendwo im Stilblatt color-mix()
+  // steht — und das tut es an vielen Stellen —, kommt "color(srgb 0.94 0.88 0.85)" zurueck,
+  // mit Werten von 0 bis 1 statt 0 bis 255. Der erste Entwurf dieser Pruefung las die als
+  // 0,94 von 255, hielt eine helle Warnflaeche fuer fast schwarz und meldete drei Stellen mit
+  // 1,25:1, die in Wirklichkeit weit darueber liegen. Eine Pruefung, die falsch misst, ist
+  // schlimmer als keine: Sie kostet die Zeit, sie zu widerlegen.
+  const zahlen = t => {
+    const roh = (String(t).match(/-?[\d.]+(?:e-?\d+)?/gi) || []).map(Number);
+    if (roh.length < 3) return [];
+    if (/^color\(/.test(String(t).trim())){
+      const f = [roh[0]*255, roh[1]*255, roh[2]*255];
+      if (roh.length > 3) f.push(roh[3]);
+      return f;
+    }
+    return roh;
+  };
+  const kanal = c => { c /= 255; return c <= 0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); };
+  const helligkeit = ([r,g,b]) => 0.2126*kanal(r) + 0.7152*kanal(g) + 0.0722*kanal(b);
+  // Deckung mitrechnen: Eine Schrift mit rgba(...,.6) auf hellem Grund ist heller als ihr
+  // Farbwert behauptet. Genau dieser Fehler hat Runde 34 die opacity:.7 gekostet.
+  const ueber = (vorn, hinten) => {
+    const a = vorn.length > 3 ? vorn[3] : 1;
+    return [0,1,2].map(i => vorn[i]*a + hinten[i]*(1-a));
+  };
+  const kontrast = (a, b) => {
+    const la = helligkeit(a), lb = helligkeit(b);
+    return (Math.max(la,lb) + 0.05) / (Math.min(la,lb) + 0.05);
+  };
+  // Der Grund unter einem Element: alle durchscheinenden Flaechen der Kette uebereinander,
+  // von unten nach oben. Die erste deckende Farbe beendet die Suche nach unten.
+  const grund = el => {
+    const lagen = [];
+    let p = el;
+    while (p && p !== document.documentElement){
+      const f = zahlen(getComputedStyle(p).backgroundColor);
+      if (f.length >= 3 && (f.length < 4 || f[3] > 0)){
+        lagen.push(f);
+        if (f.length < 4 || f[3] >= 1) break;
+      }
+      p = p.parentElement;
+    }
+    let unten = zahlen(getComputedStyle(document.documentElement).backgroundColor);
+    if (!(unten.length >= 3) || (unten.length > 3 && unten[3] === 0)) unten = [255,255,255];
+    for (let i = lagen.length - 1; i >= 0; i--) unten = ueber(lagen[i], unten);
+    return unten;
+  };
+  const funde = [];
+  v.querySelectorAll('*').forEach(el => {
+    let hatText = false;
+    el.childNodes.forEach(n => { if (n.nodeType === 3 && n.textContent.trim()) hatText = true; });
+    if (!hatText) return;
+    const r = el.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) return;
+    const cs = getComputedStyle(el);
+    if (cs.visibility === 'hidden' || Number(cs.opacity) === 0) return;
+    // Die Deckung des Elements und seiner Eltern wirkt auf die Schrift wie eine Alpha-Angabe
+    // in der Farbe — sie ist der Grund, warum Runde 34 die opacity:.7 wieder verloren hat.
+    let deckung = 1;
+    for (let q = el; q && q !== document.documentElement; q = q.parentElement){
+      deckung *= Number(getComputedStyle(q).opacity);
+    }
+    // Text, der auf einem Bild oder Verlauf liegt, hat keinen einzelnen Hintergrundwert —
+    // dort waere jede Zahl erfunden. Solche Stellen gehoeren ins Auge, nicht in diese Reihe.
+    let bild = false;
+    for (let p = el; p && p !== document.documentElement; p = p.parentElement){
+      if (getComputedStyle(p).backgroundImage !== 'none'){ bild = true; break; }
+    }
+    if (bild) return;
+    const vorn = zahlen(cs.color);
+    if (vorn.length < 3) return;
+    const hinten = grund(el);
+    const mitDeckung = vorn.slice(0, 3);
+    mitDeckung.push((vorn.length > 3 ? vorn[3] : 1) * deckung);
+    const schrift = ueber(mitDeckung, hinten);
+    const gross = parseFloat(cs.fontSize) >= 24
+               || (parseFloat(cs.fontSize) >= 18.66 && parseInt(cs.fontWeight, 10) >= 700);
+    const noetig = gross ? 3 : 4.5;
+    const ist = kontrast(schrift, hinten);
+    if (ist + 0.005 < noetig){
+      funde.push({
+        wer: (el.id ? '#'+el.id : el.tagName.toLowerCase() + (el.className && typeof el.className === 'string' ? '.'+el.className.trim().split(/\s+/)[0] : '')),
+        ist: Math.round(ist*100)/100, noetig,
+        text: el.textContent.trim().slice(0, 28)
+      });
+    }
+  });
+  // Dieselbe Klasse taucht auf einer Seite oft zwanzigmal auf; einmal nennen reicht.
+  const gesehen = new Set();
+  return funde
+    .sort((a,b) => a.ist - b.ist)
+    .filter(f => { if (gesehen.has(f.wer)) return false; gesehen.add(f.wer); return true; })
+    .slice(0, 6)
+    .map(f => f.wer + ' hat ' + f.ist + ':1, noetig sind ' + f.noetig + ':1 ("' + f.text + '")');
+};
+
+
 // Die Wege durch die Oberflaeche. Bewusst ueber echte Klicks statt ueber einen Testzugang:
 // Eine Ansicht, die nur ein Testaufruf erreicht, ist fuer niemanden erreichbar. Faellt ein
 // Weg weg, meldet das die Pruefung — was genau der Fund waere, den man sehen will.
@@ -346,6 +458,7 @@ async function pruefeAnsicht(p, ansicht, kennung, breite){
     ['Schaltflaeche ohne Namen', suchNamenlos, null],
     ['Rest einer Ersetzung im Text', suchReste, null],
     ['unsichtbarer Text', suchUnsichtbarenText, null],
+    ['zu schwacher Kontrast', suchSchwachenKontrast, null],
   ]){
     const treffer = arg === null ? await p.evaluate(fn) : await p.evaluate(fn, arg);
     treffer.forEach(t => melde(kennung + ' / ' + ansicht + ': ' + name + ' — ' + t));

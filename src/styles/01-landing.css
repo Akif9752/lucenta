@@ -92,7 +92,10 @@
   .preview-radar .radar-axis-label,.preview-radar .radar-axis-value{display:none;}
   .preview-text{flex:1;min-width:0;}
   .preview-title{font-family:var(--serif);font-size:18px;}
-  .preview-title .sep{color:var(--accent-2);}
+  /* Runde 93: --accent-2 ist die FUELLfarbe (3,1:1) — fuer Schrift gibt es seit Runde 42
+     --accent-2-text, genau weil die Fuellfarbe als Schrift unter AA liegt. Hier stand die
+     falsche von beiden; die Kontrastpruefung hat es gefunden. */
+  .preview-title .sep{color:var(--accent-2-text);}
   .preview-text p{margin-top:8px;font-size:13px;color:var(--muted);line-height:1.55;}
   @media (max-width:420px){ .preview-body{flex-direction:column;align-items:flex-start;} .radar-wrap.preview-radar{max-width:160px;align-self:center;} }
 

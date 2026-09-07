@@ -33,6 +33,8 @@
   var farbeWarm = null, farbeKalt = null, farbeStrahl = 'transparent';
   var farbeSonne = 'transparent', sonneGezeichnet = null, sonneVerlauf = [];
   var farbeStaubLicht = 'transparent';
+  var farbeHimmel = 'transparent', himmelVerlauf = null;
+  var farbeWolke = 'transparent', farbeWolkeLicht = 'transparent', wolken = [];
 
   // ---------- Warum hier nirgends 'transparent' in einem Verlauf steht ----------
   //
@@ -81,6 +83,13 @@
       farbeWarm = (s.getPropertyValue('--stern-warm') || '').trim() || farbeStern;
       farbeKalt = (s.getPropertyValue('--stern-kalt') || '').trim() || farbeStern;
       farbeStaubLicht = (s.getPropertyValue('--staub-licht') || '').trim() || 'transparent';
+      var neuHoch = (s.getPropertyValue('--himmel-hoch') || '').trim() || 'transparent';
+      var neuWolke = (s.getPropertyValue('--wolke') || '').trim() || 'transparent';
+      var neuWolkeLicht = (s.getPropertyValue('--wolke-licht') || '').trim() || 'transparent';
+      if (neuHoch !== farbeHimmel){ farbeHimmel = neuHoch; himmelVerlauf = null; }
+      if (neuWolke !== farbeWolke || neuWolkeLicht !== farbeWolkeLicht){
+        farbeWolke = neuWolke; farbeWolkeLicht = neuWolkeLicht; wolkenBauen();
+      }
       staubToeneBauen();
     }catch(e){}
   }
@@ -158,6 +167,8 @@
     }
     schnuppen.length = 0;
     strahlenAufbauen();
+    wolkenBauen();
+    himmelVerlauf = null;
     sonneGezeichnet = null;
   }
 
@@ -173,6 +184,187 @@
       leben: 0,
       dauer: 90 + Math.random() * 40
     });
+  }
+
+  // ---------- Der Himmel des Hellmodus (Runde 93) ----------
+  //
+  // Rueckmeldung: "man erkennt im hellmodus nicht auf der startseite dass der hintergrund auch
+  // wirklich ein himmel sein soll."
+  //
+  // Das stimmte, und der Grund ist, dass bis hier nur LICHT gebaut war: ein Strahl, ein Faecher,
+  // Staub darin. Licht allein sagt aber nichts darueber, WO man steht — dasselbe Bild waere
+  // auch ein Zimmer mit einem Fenster. Was einen Himmel ausmacht, sind zwei Dinge, die beide
+  // gefehlt haben:
+  //
+  //   1. Oben ist er anders als unten. Ein Himmel wird zum Zenit hin tiefer und kuehler und
+  //      zum Horizont hin heller und waermer. Diese eine Achse ist der staerkste Hinweis, den
+  //      es gibt, und sie kostet einen Verlauf.
+  //   2. Es steht etwas darin. Ohne Wolken ist eine blaue Flaeche eine blaue Flaeche; erst ein
+  //      Gebilde mit Rand, das langsam zieht, macht daraus Entfernung.
+  //
+  // Die Wolken sind bewusst sehr blass und sehr breit. Eine erkennbare Schaefchenwolke waere
+  // eine Illustration — die Seite traegt einen Persoenlichkeitstest, keine Wetterkarte. Sie
+  // sollen im Vorbeisehen als Himmel gelesen werden und beim Hinsehen nicht ablenken.
+  //
+  // Gebaut als fertige Bilder statt als Verlaeufe je Bild: Eine Wolke besteht aus acht weichen
+  // Ballen, das waeren acht createRadialGradient pro Wolke und Bild, also ueber tausend
+  // Zuteilungen in der Sekunde fuer etwas, das sich in einer Minute um sechzig Bildpunkte
+  // bewegt. Einmal zeichnen und dann nur noch verschieben kostet nichts.
+  // Zwei Fallen stecken darin, und der erste Entwurf ist in beide gelaufen:
+  //
+  //   1. Halbdurchsichtige Ballen ADDIEREN ihre Deckung, wo sie sich ueberlappen. Aus acht
+  //      Ballen mit je 30 Prozent wurden Flaechen mit 30, 51 und 65 Prozent — und damit war
+  //      jeder einzelne Kreis als Kreis zu sehen. Im Bild sah das nach Seifenblasen aus, nicht
+  //      nach Wolke. Deshalb wird das Bild INNEN mit voller Deckung gemalt und erst beim
+  //      Aufsetzen als Ganzes durchsichtig gemacht: Ueberlappungen verschwinden dann.
+  //   2. Ballen auf einer Linie ergeben eine Raupe. Eine Haufenwolke hat einen flachen Boden
+  //      (dort endet die Feuchtigkeit) und eine unregelmaessige Kuppe. Die Ballen sitzen
+  //      deshalb mit ihrer UNTERKANTE auf einer gemeinsamen Linie, nicht mit ihrer Mitte.
+  function ohneAlpha(farbe){
+    var m = /^rgba?\(([^)]+)\)/.exec(farbe || '');
+    if (!m) return {farbe: farbe, a: 1};
+    var z = m[1].split(',');
+    return {
+      farbe: 'rgb(' + z[0].trim() + ',' + (z[1]||'0').trim() + ',' + (z[2]||'0').trim() + ')',
+      a: z.length > 3 ? Number(z[3]) : 1
+    };
+  }
+  function wolkeMalen(breite){
+    var koerper = ohneAlpha(farbeWolke), kante = ohneAlpha(farbeWolkeLicht);
+    // Der dritte Fehler war, die Bildgroesse VORHER festzulegen und die Ballen dann
+    // hineinzumalen: Wer groesser war als das Bild, wurde am Rand abgeschnitten — und eine
+    // abgeschnittene Wolke ist ein Rechteck. Erst die Form, dann das Bild darum herum.
+    // Die Zahlen haengen zusammen und sind deshalb aneinander gerechnet, nicht einzeln gewaehlt:
+    // Sieben Ballen auf 86 Prozent der Breite stehen 14,3 Prozent auseinander; der kleinste
+    // Radius liegt mit 15 Prozent darueber, also beruehren sich alle sicher. Der groesste liegt
+    // bei 22 Prozent, womit die Wolke rund dreimal so breit wird wie hoch — das Verhaeltnis
+    // einer Haufenwolke.
+    var n = 7;
+    var ballen = [], i;
+    for (i = 0; i < n; i++){
+      var t = i / (n - 1);
+      // Die Kuppe steigt zur Mitte hin an und ist dabei ungleichmaessig — der Zufall liegt auf
+      // der HOEHE, nicht auf der Lage: Eine Wolke mit Luecken darin ist keine.
+      var hoch = Math.sin(Math.PI * (0.12 + 0.76 * t));
+      var r = breite * (0.15 + hoch * (0.04 + Math.random() * 0.03));
+      // Alle Ballen sitzen mit ihrer UNTERKANTE auf derselben Linie. Das gibt der Wolke den
+      // flachen Boden, den eine Haufenwolke hat — weich, weil die Ballen weich sind, und nicht
+      // als Schnitt: Der erste Versuch hat das Bild unten abgeschnitten, und heraus kam ein
+      // Balken mit einer rasiermesserglatten Kante quer ueber den Bildschirm.
+      ballen.push({ x: breite * (0.07 + 0.86 * t), y: -r * 0.92, r: r });
+    }
+    // Umriss ausmessen, Rand fuer den weichen Auslauf dazu.
+    var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (i = 0; i < ballen.length; i++){
+      var k = ballen[i];
+      if (k.x - k.r < minX) minX = k.x - k.r;
+      if (k.x + k.r > maxX) maxX = k.x + k.r;
+      if (k.y - k.r < minY) minY = k.y - k.r;
+      if (k.y + k.r > maxY) maxY = k.y + k.r;
+    }
+    var rand = 2;
+    var wB = Math.ceil(maxX - minX) + rand * 2;
+    var wH = Math.ceil(maxY - minY) + rand * 2;
+    if (!(wB > 2 && wH > 2)) return null;
+    var w = document.createElement('canvas');
+    w.width = wB; w.height = wH;
+    var c = w.getContext('2d');
+    if (!c) return null;
+    c.translate(rand - minX, rand - minY);
+    function malen(farbe, versatzX, versatzY, schrumpf){
+      for (var j = 0; j < ballen.length; j++){
+        var k2 = ballen[j], r2 = k2.r * schrumpf;
+        if (r2 <= 0.5) continue;
+        var x = k2.x + versatzX, y = k2.y + versatzY;
+        var g = c.createRadialGradient(x, y, r2 * 0.05, x, y, r2);
+        // Voll deckend bis weit nach aussen, dann weich auslaufen. Der deckende Kern ist der
+        // Grund, warum sich Ueberlappungen nicht als einzelne Kreise zeigen.
+        g.addColorStop(0, farbe);
+        g.addColorStop(0.58, farbe);
+        g.addColorStop(1, ohneDeckung(farbe));
+        c.fillStyle = g;
+        c.beginPath();
+        c.arc(x, y, r2, 0, Math.PI * 2);
+        c.fill();
+      }
+    }
+    malen(koerper.farbe, 0, 0, 1);
+    // Die vom Licht getroffene Kante liegt oben rechts — dieselbe Sonne wie beim Faecher. Sie
+    // bleibt INNERHALB der Wolke (source-atop), sonst haette die Wolke einen zweiten Umriss.
+    c.globalCompositeOperation = 'source-atop';
+    malen(kante.farbe, breite * 0.02, -breite * 0.025, 0.78);
+    c.globalCompositeOperation = 'source-over';
+    return {bild: w, a: koerper.a, breite: wB, hoehe: wH};
+  }
+
+  function wolkenBauen(){
+    wolken.length = 0;
+    if (!staub || farbeWolke === 'transparent' || !b || !h) return;
+    // Drei Wolken. Zwei waeren zu wenig, um eine Richtung erkennen zu lassen, fuenf zu viel
+    // fuer eine Flaeche, hinter der Text steht.
+    var anzahl = 3;
+    for (var i = 0; i < anzahl; i++){
+      var gemalt = wolkeMalen(b * (0.34 + Math.random() * 0.30));
+      if (!gemalt) continue;
+      wolken.push({
+        bild: gemalt.bild,
+        deckung: gemalt.a,
+        breite: gemalt.breite,
+        hoehe: gemalt.hoehe,
+        x: (i / anzahl) * (b + gemalt.breite) - gemalt.breite * 0.5 + Math.random() * b * 0.2,
+        // Nur im oberen Drittel: Weiter unten stuenden sie hinter den Karten, wo sie niemand
+        // sieht, und der Verlauf von oben nach unten waere dahin.
+        // Nur im oberen Viertel und nie zwei auf derselben Hoehe: Uebereinander gelegt
+        // verschmelzen sie zu einer Bank, und eine Bank hat keine Richtung.
+        y: h * (0.07 + (i / anzahl) * 0.22 + Math.random() * 0.05),
+        // Sehr langsam, und die weiter oben stehende zieht langsamer: Entfernung.
+        v: 0.055 + Math.random() * 0.075
+      });
+    }
+  }
+
+  function himmelZeichnen(){
+    if (!staub) return;
+    if (farbeHimmel !== 'transparent'){
+      if (!himmelVerlauf){
+        // Nur der obere Teil traegt Farbe. Ein Verlauf ueber die ganze Hoehe wuerde die Karten
+        // unten mit einfaerben, und aus Himmel wuerde eine Tapete.
+        //
+        // Der Verlauf haelt seine volle Farbe bis 18 Prozent Hoehe, statt gleich abzufallen.
+        // Grund: Die Kopfleiste deckt die oberen rund acht Prozent ab — genau den Teil, in dem
+        // der Himmel am kraeftigsten ist. Im ersten Entwurf war deshalb auf der Seite selbst
+        // kaum Blau zu sehen, obwohl das Bild fuer sich betrachtet stimmte. Was verdeckt ist,
+        // zaehlt nicht.
+        var g = ctx.createLinearGradient(0, 0, 0, h * 0.70);
+        g.addColorStop(0, farbeHimmel);
+        g.addColorStop(0.18, farbeHimmel);
+        g.addColorStop(1, ohneDeckung(farbeHimmel));
+        himmelVerlauf = g;
+      }
+      ctx.fillStyle = himmelVerlauf;
+      ctx.fillRect(0, 0, b, h * 0.70);
+    }
+    for (var i = 0; i < wolken.length; i++){
+      var wo = wolken[i];
+      if (!wo.bild) continue;
+      // Umlaufend: Wer links hinausgezogen ist, kommt rechts wieder herein. Ohne das waere der
+      // Himmel nach zehn Minuten leer.
+      var x = wo.x;
+      ctx.globalAlpha = wo.deckung;
+      ctx.drawImage(wo.bild, x, wo.y, wo.breite, wo.hoehe);
+      if (x + wo.breite > b) ctx.drawImage(wo.bild, x - (b + wo.breite), wo.y, wo.breite, wo.hoehe);
+      if (x < 0) ctx.drawImage(wo.bild, x + b + wo.breite, wo.y, wo.breite, wo.hoehe);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function wolkenBewegen(){
+    if (wenigerBewegung) return;
+    for (var i = 0; i < wolken.length; i++){
+      var wo = wolken[i];
+      wo.x -= wo.v;
+      if (wo.x < -wo.breite) wo.x = b;
+    }
   }
 
   // Der Lichtstrahl des Hellmodus. Ein sehr weicher, schraeger Streifen, der ueber Minuten
@@ -193,7 +385,8 @@
     g.addColorStop(1, leer);
     // Gemessen am Bild zurueckgenommen (war 0,5): Darueber legt der Strahl einen sichtbaren
     // warmen Stich ueber die ganze Seite, und aus Atmosphaere wird Farbe.
-    ctx.globalAlpha = 0.24;
+    // Runde 93 auf 0,17: derselbe Grund wie beim Faecher — der Grund darunter ist dunkler.
+    ctx.globalAlpha = 0.17;
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, b, h);
     ctx.globalAlpha = 1;
@@ -248,7 +441,11 @@
         // Runde 88 halbiert (war 0,34 + 0,32). Der Fehler mit dem schwarzen Verlauf hatte die
         // Strahlen die ganze Zeit gedaempft; ohne ihn traf dieselbe Zahl viel haerter, und die
         // Seite badete in Gelb. Licht soll man bemerken, nicht ansehen.
-        a: (0.15 + 0.16 * Math.random()) * (1 - Math.abs(mitte) * 0.80),
+        // Runde 93 erneut zurueckgenommen (war 0,15 + 0,16). Nicht, weil die Strahlen sich
+        // geaendert haetten, sondern weil der Grund darunter es tat: Das Papier ist um ein
+        // Zehntel dunkler geworden, und derselbe Wert Licht darauf ist mehr Unterschied. Wer
+        // die Helligkeit einer Flaeche aendert, aendert damit alles, was darauf liegt.
+        a: (0.10 + 0.11 * Math.random()) * (1 - Math.abs(mitte) * 0.80),
         ph: Math.random() * Math.PI * 2,
         pv: 0.00035 + Math.random() * 0.00075,
         // Runde 90: "zu wenig dynamik ... und zu lang". Beides hatte dieselbe Ursache — alle
@@ -408,6 +605,9 @@
 
   function zeichnen(){
     ctx.clearRect(0, 0, b, h);
+    // Der Himmel liegt zuunterst: Strahl, Faecher und Staub gehoeren davor, sonst laege das
+    // Licht hinter den Wolken statt auf ihnen.
+    himmelZeichnen();
     strahlZeichnen();
     faecherZeichnen();
     var i, s;
@@ -531,6 +731,7 @@
     if (staub){
       strahlPhase += 0.00042;
       for (i = 0; i < faecher.length; i++){ faecher[i].ph += faecher[i].pv; faecher[i].lph += faecher[i].lpv; }
+      wolkenBewegen();
     }
     if (++farbZaehler > 60){ farbZaehler = 0; farbenLesen(); }
     zeichnen();

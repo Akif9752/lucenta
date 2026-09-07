@@ -85,7 +85,14 @@
     try{
       var a = archetypeOf(sc);
       var marke = DIM_MARKE[a.top1];
-      if (marke) el.style.setProperty('--dim-aktiv', 'var(' + marke + ')');
+      // Zwei Marken statt einer: --dim-aktiv traegt die Linien und Flaechen, --dim-aktiv-text
+      // die Schrift. Sie sind im Hellmodus nicht dieselbe Farbe — die Datenfarbe erreicht als
+      // Text die 4,5:1 nicht (Runde 93, von der Kontrastpruefung gefunden). Beide werden hier
+      // gesetzt, damit das Stilblatt die Wahl hat, ohne dass JavaScript Farben kennt.
+      if (marke){
+        el.style.setProperty('--dim-aktiv', 'var(' + marke + ')');
+        el.style.setProperty('--dim-aktiv-text', 'var(' + marke + '-text)');
+      }
     }catch(e){}
   }
 

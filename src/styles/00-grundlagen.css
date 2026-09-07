@@ -7,25 +7,47 @@
        TRENNUNG zwischen beiden exakt gleich bleibt (Verhaeltnis 1,087 wie vorher) und nur die
        absolute Helligkeit faellt — die Karte von 100 auf 94 Prozent. Der Abstand zur zweiten
        Flaeche wird dabei sogar etwas besser (1,151 auf 1,184). Alle Textstufen bleiben weit
-       ueber der Lesbarkeitsgrenze; die leiseste liegt bei 5,0 gegen geforderte 4,5. */
-    --paper:#EEF0E5;
-    --surface:#F8F9F1;
-    --surface-2:#E4E7D9;
-    --ink:#15201A;
-    --muted:#57655C;
+       ueber der Lesbarkeitsgrenze; die leiseste liegt bei 5,0 gegen geforderte 4,5.
+
+       Runde 93, dieselbe Rueckmeldung ein drittes Mal: "die hellversion ist immernoch zu grell
+       fuers auge." Der Schritt von Runde 90 war zu klein — 100 auf 94 Prozent ist keine halbe
+       Blendstufe. Jetzt 94 auf 85 Prozent, also ein anderthalbmal so grosser Schritt.
+
+       Und diesmal anders gerechnet. Runde 90 hat NUR die Flaechen verschoben und die Schrift
+       stehen lassen; damit faellt jeder Kontrast, weil Kontrast das Verhaeltnis von beiden ist.
+       Nachgemessen war die Folge, dass --muted-soft auf --surface-2 bei 4,24 lag, obwohl drei
+       Zeilen tiefer als Begruendung stand, sie liege ueber 4,6. Deshalb ruecken hier BEIDE
+       Seiten herunter, und zwar so, dass jede Schriftmarke ihren Kontrast auf --surface exakt
+       behaelt: Der Zielwert wird aus dem alten Verhaeltnis zurueckgerechnet, nicht geschaetzt.
+       Nachgerechnet ueber alle vier Flaechen: kein einziger Kontrast faellt, die meisten
+       steigen um ein Hundertstel (die Konstante 0,05 in der Formel wirkt auf dunklerem Grund
+       etwas guenstiger).
+
+       Die Datenfarben ziehen mit. Sie muessen: Bei gleichbleibendem Wert waeren --dim-a und
+       --daten-energie auf 2,90 gefallen, unter die Schwelle 3:1, die fuer Linien und Flaechen
+       gilt. Jetzt liegen sie bei 3,23 — genau wie vorher.
+
+       Ob das alles stimmt, entscheidet ab dieser Runde nicht mehr dieser Kommentar, sondern
+       eine Messung: tools/fehlersuche.mjs prueft im echten Browser jede Textstelle gegen den
+       Grund, auf dem sie tatsaechlich liegt. */
+    --paper:#E4E6DB;
+    --surface:#EDEEE6;
+    --surface-2:#DADDCF;
+    --ink:#0D1511;
+    --muted:#515E56;
     /* Feedback-Runde 42: dritte, bewusst leisere Textstufe für Fußnoten und rechtliche Hinweise.
        Ersetzt die in Runde 34 eingeführte opacity:.7 — Transparenz nimmt nicht nur die Betonung
        zurück, sondern auch den Kontrast, und zwar unter die Lesbarkeitsgrenze (gemessen 2,9–3,2:1
        im Hellmodus, nötig sind 4,5:1). Dieser Ton ist rechnerisch so weit zurückgenommen wie
        möglich, ohne auf irgendeinem der drei Untergründe unter 4,6:1 zu fallen. */
-    --muted-soft:#5F6F65;
-    --line:#DBDCCE;
-    --line-strong:#94958C;
-    --accent:#2F6F6A;
-    --accent-strong:#245854;
+    --muted-soft:#59685F;
+    --line:#D1D2C5;
+    --line-strong:#8D8E86;
+    --accent:#2C6863;
+    --accent-strong:#21524E;
     /* Runde 63: Unterkante fuer die fuehlbaren Knoepfe — dunkler als --accent-strong, damit die
        Kante als Tiefe gelesen wird und nicht als zweite Farbe. */
-    --accent-deep:#17403C;
+    --accent-deep:#133935;
     /* Runde 67: Eigene Marken fuer Datenlinien, getrennt von den Akzenten der Oberflaeche.
        Grund: --accent (#2F6F6A) hat in OKLCH die Chroma 0,066 und liegt damit unter dem Boden
        von 0,10, ab dem eine Flaeche als Farbe statt als Grau gelesen wird. In der Oberflaeche
@@ -33,18 +55,31 @@
        ein voll gesaettigtes Teal derselben Helligkeit erreicht den Boden nicht — der Ton muss
        heller werden. Gerechnet, nicht geschaetzt: beide Paare bestehen alle sechs Pruefungen
        (Helligkeitsband, Chroma, Farbfehlsichtigkeit, Normalsicht, Kontrast zur Flaeche). */
-    --daten-energie:#0E9C92;
-    --daten-stimmung:#C97A3C;
+    --daten-energie:#0D938A;
+    --daten-stimmung:#BF7438;
     /* Runde 70: Eine Farbe je Dimension. Gerechnet, nicht ausgesucht — und bewusst so
        eingesetzt, dass NIE zwei davon gleichzeitig um Unterscheidbarkeit konkurrieren.
        Der Grund steht im README: Fuenf gleichzeitig sichtbare Farbtoene sind nicht sicher
        trennbar; selbst die geprueste Referenzpalette faellt dort durch. Jede Farbe ist einzeln
        gegen Helligkeitsband, Chroma und Kontrast zur Flaeche geprueft, in beiden Modi. */
-    --dim-o:#7B5BD6;
-    --dim-c:#2A78D6;
-    --dim-e:#C4562F;
-    --dim-a:#0E9C92;
-    --dim-s:#B8447E;
+    --dim-o:#7455CA;
+    --dim-c:#2771CB;
+    --dim-e:#BA512C;
+    --dim-a:#0D938A;
+    --dim-s:#AD4077;
+    /* Runde 93, von der neuen Kontrastpruefung gefunden: Die fuenf Farben oben sind als
+       DATENfarben gerechnet — fuer Linien und Flaechen gilt die Schwelle 3:1. Zwei Stellen
+       benutzen sie aber als SCHRIFT (die Zeile ueber dem Titel auf der Ergebnisseite und die
+       Bezeichnung auf der Vorschaukarte), und dort gilt 4,5:1. Gemessen lag die Zeile bei
+       4,23:1, Blau und Orange sogar bei 3,86. Statt die Datenfarben dunkler zu machen — dann
+       waeren die Linien im Diagramm dunkler geworden, ohne dass es dort einen Grund gab —
+       bekommt jede Dimension einen Schrift-Zwilling: dieselbe Farbe, nur so weit
+       heruntergenommen, dass sie auf --paper 4,5:1 erreicht. */
+    --dim-o-text:#7052C4;
+    --dim-c-text:#2366B9;
+    --dim-e-text:#AA4927;
+    --dim-a-text:#08736C;
+    --dim-s-text:#AA3F75;
     /* Runde 71: Farben des bewegten Hintergrunds. Im Hellmodus ist ein "Sternenhimmel" ein
        Widerspruch in sich — auf hellem Papier gibt es keine leuchtenden Punkte. Deshalb dort
        dunkle, sehr zurueckhaltende Punkte: eine Andeutung von Textur, kein Nachthimmel. Im
@@ -76,20 +111,31 @@
        Strahl. Gemischt wird nicht im Stilblatt, sondern beim Zeichnen, entlang der Naehe zum
        Strahl. */
     --staub-licht:rgba(255,252,242,.95);
+    /* Runde 93, gemeldet: "man erkennt im hellmodus nicht auf der startseite dass der
+       hintergrund auch wirklich ein himmel sein soll." Bis hier war nur LICHT gebaut — ein
+       Strahl, ein Faecher, Staub darin. Dasselbe Bild waere auch ein Zimmer mit einem Fenster.
+       Was fehlte, war die Achse oben/unten und etwas, das darin steht.
+       --himmel-hoch faerbt nur die obere Haelfte und ist bewusst kuehl: Der Rest der Palette
+       ist warmes Salbeigruen, und genau der Unterschied macht oben zu Himmel. Die Deckung ist
+       so gewaehlt, dass die Farbe am oberen Rand erkennbar ist und auf halber Hoehe restlos
+       verschwunden — die Karten darunter stehen auf --paper, nicht auf Blau. */
+    --himmel-hoch:rgba(114,152,192,.40);
+    --wolke:rgba(255,255,255,.22);
+    --wolke-licht:rgba(255,246,226,.30);
     /* Nur im Fragebogen sichtbar; ausserhalb faellt die Hoehe auf 0 und die Kopfleiste rueckt
        automatisch nach, weil ihr Versatz an derselben Marke haengt. */
     --fokuslinie-hoehe:0px;
-    --kopf-links:#E7E9DD;
-    --kopf-rechts:#F1F3EA;
+    --kopf-links:#DDDFD3;
+    --kopf-rechts:#E6E8E0;
     --accent-ink:#F5FBFA;
-    --accent-2:#C97A3C;
+    --accent-2:#BF7438;
     /* minimal nachgedunkelt (war #9D5F2F): als Fettschrift auf der Amber-Fläche der Hinweisbänder
        lag der alte Wert bei 4,41:1 und damit knapp unter AA; jetzt 4,60:1, auf allen übrigen
        Untergründen ebenfalls leicht besser. */
-    --accent-2-text:#995D2E;
+    --accent-2-text:#8D552A;
     /* Fehlerfarbe als Token statt hartkodiert — im Dunkelmodus braucht sie einen eigenen Wert. */
-    --danger:#C0392B;
-    --surface-3:#DDE1D1;
+    --danger:#AF3327;
+    --surface-3:#D3D7C8;
     --shadow: 0 1px 2px rgba(21,32,25,.05), 0 12px 32px -12px rgba(21,32,25,.18);
     --shadow-sm: 0 1px 2px rgba(21,32,25,.06);
     /* Runde 69: Groessere Radien als Teil der Umstellung des Erscheinungsbilds. Die Marken
@@ -99,7 +145,7 @@
     --radius-m: 18px;
     --radius-s: 12px;
     /* Die Unterkante, die in dieser Formensprache den weichen Schatten ersetzt. */
-    --kante:#CDCFBE;
+    --kante:#C4C6B6;
     /* Runde 78, mit Japanisch dazugekommen: Fraunces, Work Sans und IBM Plex Mono bringen keine
        CJK-Zeichen mit. Ohne ausdruecklichen Rueckfall waehlt der Browser dafuer irgendeine
        Schrift — auf Windows haeufig eine, die neben der lateinischen Schrift sichtbar fremd
@@ -133,7 +179,30 @@
       --dim-e:#CE7539;
       --dim-a:#25A89D;
       --dim-s:#D06694;
-      --atmosphaere:'sterne';
+      /* Im Dunkelmodus tragen die Datenfarben als Schrift schon 5,2 bis 6,3:1 auf --paper — der
+         Zwilling ist dort dieselbe Farbe. Er steht trotzdem hier: Eine Marke, die nur in einem
+         der beiden Modi erklaert ist, faellt im anderen auf ihren Rueckfall zurueck, und der
+         waere hier die Akzentfarbe statt der Farbe der eigenen Dimension. */
+      --dim-o-text:#8E78E0;
+      --dim-c-text:#4E93E8;
+      --dim-e-text:#CE7539;
+      --dim-a-text:#25A89D;
+      --dim-s-text:#D06694;
+      /* Der Tageshimmel gehoert nicht in die Nacht. Er steht trotzdem hier, mit Deckung 0: Marken,
+         die nur im Hellmodus erklaert sind, gelten im Dunkelmodus WEITER — der Dunkelblock
+         ueberschreibt nur, was er nennt. Dass die Wolken dort trotzdem nicht erscheinen, haengt
+         sonst allein an einer Abfrage im Skript, und ein einzelnes Schloss ist keines. */
+      --himmel-hoch:rgba(0,0,0,0);
+      --wolke:rgba(0,0,0,0);
+      --wolke-licht:rgba(0,0,0,0);
+      /* Der Tageshimmel gehoert nicht in die Nacht. Er steht trotzdem hier, mit Deckung 0: Marken,
+       die nur im Hellmodus erklaert sind, gelten im Dunkelmodus WEITER — der Dunkelblock
+       ueberschreibt nur, was er nennt. Dass die Wolken dort trotzdem nicht erscheinen, haengt
+       sonst allein an einer Abfrage im Skript, und ein einzelnes Schloss ist keines. */
+    --himmel-hoch:rgba(0,0,0,0);
+    --wolke:rgba(0,0,0,0);
+    --wolke-licht:rgba(0,0,0,0);
+    --atmosphaere:'sterne';
       --stern:rgba(236,238,231,.62);
       --stern-schnuppe:rgba(160,220,214,.95);
       --stern-warm:rgba(255,232,198,.68);
@@ -172,6 +241,15 @@
     --dim-e:#CE7539;
     --dim-a:#25A89D;
     --dim-s:#D06694;
+    /* Im Dunkelmodus tragen die Datenfarben als Schrift schon 5,2 bis 6,3:1 auf --paper — der
+       Zwilling ist dort dieselbe Farbe. Er steht trotzdem hier: Eine Marke, die nur in einem
+       der beiden Modi erklaert ist, faellt im anderen auf ihren Rueckfall zurueck, und der
+       waere hier die Akzentfarbe statt der Farbe der eigenen Dimension. */
+    --dim-o-text:#8E78E0;
+    --dim-c-text:#4E93E8;
+    --dim-e-text:#CE7539;
+    --dim-a-text:#25A89D;
+    --dim-s-text:#D06694;
     --atmosphaere:'sterne';
     --stern:rgba(236,238,231,.62);
     --stern-schnuppe:rgba(160,220,214,.95);

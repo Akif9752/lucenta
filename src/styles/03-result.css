@@ -7,7 +7,9 @@
      Absatz darunter nicht durch. Jetzt 8.6vw, also 33,5px bei 390px und 27,5px bei 320px.
      text-wrap:balance, damit ein zweizeiliger Titel nicht mit einem einzelnen Wort endet. */
   .archetype{font-size:clamp(27px,8.6vw,42px);margin-top:8px;line-height:1.12;text-wrap:balance;}
-  .archetype .sep{color:var(--accent-2);font-style:normal;}
+  /* Runde 93: dieselbe Verwechslung wie auf der Startseite. Hier ist die Schrift 33 px gross,
+     also gilt die Schwelle 3:1 statt 4,5 — gemessen waren es 2,88. Auch das reichte nicht. */
+  .archetype .sep{color:var(--accent-2-text);font-style:normal;}
   .motto{margin-top:8px;font-family:var(--mono);font-size:13px;color:var(--accent-2-text);letter-spacing:.01em;}
 
   .synthesis{
@@ -82,13 +84,16 @@
      staerksten Dimension. Der Rueckfall auf --accent greift ueberall dort, wo noch kein
      Ergebnis vorliegt. Nur Akzente, nie Flaechen unter Text: Die geprueften Werte gelten fuer
      Marken auf der Flaeche, nicht als Hintergrund fuer Fliesstext. */
-  #view-result .result-head .eyebrow{ color:var(--dim-aktiv, var(--accent-strong)); }
+  /* Runde 93: Hier steht SCHRIFT in der Farbe der eigenen Dimension. Die Datenfarbe erreicht
+     auf --paper nur 4,23:1 (Blau und Orange 3,86), noetig sind 4,5. Der Schrift-Zwilling
+     traegt dieselbe Farbe, nur so weit heruntergenommen, dass sie als Text besteht. */
+  #view-result .result-head .eyebrow{ color:var(--dim-aktiv-text, var(--accent-strong)); }
   #view-result .result-head .eyebrow::before{ background:var(--dim-aktiv, var(--accent)); }
   #view-result .radar-wrap svg polygon:last-of-type{
     stroke:var(--dim-aktiv, var(--accent));
     fill:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 22%, transparent);
   }
-  #previewCard.preview-eigen .preview-label{ color:var(--dim-aktiv, var(--muted)); }
+  #previewCard.preview-eigen .preview-label{ color:var(--dim-aktiv-text, var(--muted)); }
   #previewCard.preview-eigen .radar-wrap svg polygon:last-of-type{
     stroke:var(--dim-aktiv, var(--accent));
     fill:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 22%, transparent);
@@ -142,8 +147,13 @@
        bei schmalerem Rand oder anderem Browser wegfaellt. Genau daher die Rueckmeldung, die
        Seite lasse sich seitlich schieben.
        94 Prozent sind mal 1,06 genau 99,6 Prozent: Der Schein bleibt im Kasten, auch beim
-       tiefsten Atemzug. Gerechnet, nicht geschaetzt. */
-    width:min(420px, 94%); height:min(260px, 76vw);
+       tiefsten Atemzug. Gerechnet, nicht geschaetzt.
+
+       Runde 93: Die Hoehe von 260 auf 184 (war zwischendurch 216). Der Kranz darueber liegt
+       jetzt bei 2,5 zu 1; ein Schein mit 1,3 zu 1 darunter haette wie ein Kreis unter einem
+       Oval gewirkt. Beide zusammen ergeben 1,8 beziehungsweise 2,5 — flach genug, dass sie
+       der Zeile folgen, hinter der sie liegen. */
+    width:min(420px, 94%); height:min(184px, 54vw);
     border-radius:50%;
     background:radial-gradient(ellipse at center,
       color-mix(in srgb, var(--dim-aktiv, var(--accent)) 26%, transparent) 0%,
@@ -191,9 +201,15 @@
   }
   /* Eine Umdrehung in zweieinhalb Minuten. Schnell genug, dass die Bewegung da ist, langsam
      genug, dass man sie nicht ansieht, sondern nur bemerkt, dass etwas lebt. */
+  /* Runde 93, dritte Nachfrage zur selben Stelle: "noch ovaler gezogen von links nach rechts".
+     Breiter geht nicht — die waagerechte Ausdehnung ist die DIAGONALE des gedrehten Quadrats
+     und liegt mit 317 px in einem 350 px breiten Kasten schon fast an der Kante; genau daran
+     ist Runde 91 als seitlich schiebbare Seite aufgefallen. Was bleibt, ist die Hoehe: .58 auf
+     .40. Damit steht das Verhaeltnis bei 2,5 zu 1 statt 1,7 zu 1 — aus einem leicht gestauchten
+     Kreis wird ein Oval, das der Zeile folgt, hinter der es liegt. */
   @keyframes strahlen-drehen{
-    from{ transform:translate(-50%,-50%) scaleY(.58) rotate(0deg); }
-    to  { transform:translate(-50%,-50%) scaleY(.58) rotate(360deg); }
+    from{ transform:translate(-50%,-50%) scaleY(.40) rotate(0deg); }
+    to  { transform:translate(-50%,-50%) scaleY(.40) rotate(360deg); }
   }
   @keyframes schein-atmen{
     0%, 100%{ opacity:.55; transform:translate(-50%,-50%) scale(1); }
@@ -203,5 +219,5 @@
     #view-result .result-head::before{ animation:none; opacity:.6; }
     /* Die Strahlen bleiben stehen, verschwinden aber nicht: Sie sind Teil des Bildes, nur ihre
        Drehung ist Bewegung. */
-    #view-result .result-head::after{ animation:none; transform:translate(-50%,-50%) scaleY(.58); }
+    #view-result .result-head::after{ animation:none; transform:translate(-50%,-50%) scaleY(.40); }
   }

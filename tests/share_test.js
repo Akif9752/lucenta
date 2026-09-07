@@ -93,11 +93,11 @@
     return set;
   }
   var hell = farbenVon('light'), dunkel = farbenVon('dark');
-  ok(!!hell['#eef0e5'], "hell: der Grund ist das Papier der Hellfassung (#EEF0E5)");
-  ok(!!hell['#15201a'], "hell: die Schrift ist die Tinte der Hellfassung (#15201A)");
+  ok(!!hell['#e4e6db'], "hell: der Grund ist das Papier der Hellfassung (#E4E6DB)");
+  ok(!!hell['#0d1511'], "hell: die Schrift ist die Tinte der Hellfassung (#0D1511)");
   ok(!!dunkel['#0f1613'], "dunkel: der Grund ist das Papier der Dunkelfassung (#0F1613)");
   ok(!!dunkel['#eceee7'], "dunkel: die Schrift ist die Tinte der Dunkelfassung (#ECEEE7)");
-  ok(!dunkel['#eef0e5'] && !dunkel['#15201a'],
+  ok(!dunkel['#e4e6db'] && !dunkel['#0d1511'],
      "dunkel: keine einzige Farbe der Hellfassung bleibt im Bild stehen");
   ok(!hell['#0f1613'] && !hell['#eceee7'],
      "hell: keine einzige Farbe der Dunkelfassung bleibt im Bild stehen");

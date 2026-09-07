@@ -9,7 +9,11 @@
   // Leinwand gibt es keine Transparenz gegen einen Hintergrund, den es dort nicht gibt, und die
   // Marken der App tragen an mehreren Stellen Deckungswerte. Die Werte hier sind dieselben wie
   // in 00-grundlagen.css — --paper, --ink, --muted, --line, --accent, --accent-2 — je Modus.
-  var SHARE_COLORS = { paper:'#EEF0E5', ink:'#15201A', muted:'#57655C', line:'#DBDCCE', accent:'#2F6F6A', accentFill:'rgba(47,111,106,.26)', accent2:'#C97A3C' };
+  // Runde 93 mitgezogen: Die Hellfassung der App ist um ein Zehntel dunkler geworden. Die
+  // Werte hier stehen fest verdrahtet — genau deshalb muessen sie bei jeder Aenderung der
+  // Palette von Hand nachgefuehrt werden, und genau das ist in Runde 90 einmal vergessen
+  // worden. Die Reihe "Das Bild folgt dem Farbmodus" haelt beide Seiten jetzt zusammen.
+  var SHARE_COLORS = { paper:'#E4E6DB', ink:'#0D1511', muted:'#515E56', line:'#D1D2C5', accent:'#2C6863', accentFill:'rgba(44,104,99,.26)', accent2:'#BF7438' };
   var SHARE_COLORS_DARK = { paper:'#0F1613', ink:'#ECEEE7', muted:'#96A69C', line:'#293630', accent:'#5CB4AD', accentFill:'rgba(92,180,173,.26)', accent2:'#E39A5C' };
   function shareColors(){ return dunkelAktiv() ? SHARE_COLORS_DARK : SHARE_COLORS; }
 

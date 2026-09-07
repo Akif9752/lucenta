@@ -50,6 +50,68 @@ function pruefeSyntax(name, quelltext){
 }
 pruefeSyntax('das zusammengesetzte JavaScript', js);
 
+// Die Farben des Ergebnisbildes stehen in 10-ergebnisbild.js fest verdrahtet — auf einer
+// Leinwand gibt es keine CSS-Marken. Sie MUESSEN denen der App entsprechen, sonst verschickt
+// jemand eine Karte in einer Farbe, die es in der App nicht gibt. Genau das ist in Runde 90
+// passiert: Die Palette wurde dunkler, die Karte blieb auf dem alten Wert stehen, und
+// aufgefallen ist es erst zwei Runden spaeter beim Lesen des Codes.
+//
+// Diese Pruefung vergleicht beide Quellen im Quelltext. Sie kann das, weil beide Seiten
+// dieselben sechs Marken benutzen; sie kann NICHT pruefen, ob eine Marke woanders ueberschrieben
+// wird — dafuer ist sie zu einfach, und dafuer gibt es die Fehlersuche im Browser.
+function pruefeBildfarben(css, js){
+  const MARKEN = [['paper','--paper'], ['ink','--ink'], ['muted','--muted'],
+                  ['line','--line'], ['accent','--accent'], ['accent2','--accent-2']];
+  // Der Hellblock ist alles vor der ersten Dunkel-Regel, der Dunkelblock der Abschnitt
+  // [data-theme="dark"].
+  const dunkelAb = css.indexOf('@media (prefers-color-scheme: dark)');
+  const bloecke = {
+    hell: dunkelAb > 0 ? css.slice(0, dunkelAb) : css,
+    dunkel: (function(){
+      const a = css.indexOf(':root[data-theme="dark"]');
+      if (a < 0) return '';
+      const e = css.indexOf('}', a);
+      return e < 0 ? css.slice(a) : css.slice(a, e);
+    })()
+  };
+  const ausCss = (block, marke) => {
+    const m = new RegExp('\\' + marke.slice(1) + ':\\s*(#[0-9A-Fa-f]{6})').exec(block);
+    return m ? m[1].toUpperCase() : null;
+  };
+  const ausJs = (name) => {
+    const m = new RegExp('var\\s+' + name + '\\s*=\\s*\\{([^}]*)\\}').exec(js);
+    if (!m) return null;
+    const feld = {};
+    m[1].split(',').forEach(t => {
+      const p2 = /([A-Za-z0-9_]+)\s*:\s*'([^']*)'/.exec(t);
+      if (p2) feld[p2[1]] = p2[2].toUpperCase();
+    });
+    return feld;
+  };
+  const paare = [['SHARE_COLORS', 'hell'], ['SHARE_COLORS_DARK', 'dunkel']];
+  const abweichungen = [];
+  for (const [name, block] of paare){
+    const bild = ausJs(name);
+    if (!bild){ abweichungen.push(name + ' nicht gefunden'); continue; }
+    for (const [feld, marke] of MARKEN){
+      const soll = ausCss(bloecke[block], marke);
+      if (!soll){ abweichungen.push(marke + ' im ' + block + 'block nicht gefunden'); continue; }
+      if (bild[feld] !== soll){
+        abweichungen.push('  ' + name + '.' + feld + ' = ' + bild[feld] + ', ' + marke +
+                          ' (' + block + ') = ' + soll);
+      }
+    }
+  }
+  if (abweichungen.length){
+    console.error('\nBAU ABGEBROCHEN — das Ergebnisbild benutzt andere Farben als die App:\n' +
+                  abweichungen.join('\n') +
+                  '\n\nBeides muss uebereinstimmen: SHARE_COLORS in src/js/10-ergebnisbild.js\n' +
+                  'und die Marken in src/styles/00-grundlagen.css.\n');
+    process.exit(1);
+  }
+}
+pruefeBildfarben(css, js);
+
 const html = read('index.head.html') + '<style>' + css + '</style>' +
              read('index.body.html') + '<script>' + js + '</script>' + read('index.tail.html');
 
