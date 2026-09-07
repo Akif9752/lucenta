@@ -92,6 +92,36 @@
   // Tageswert ist das Mittel. Ausdruecklich NICHT eingefuehrt: eine Aufforderung, mehrmals am
   // Tag einzutragen. Ein Tipp bleibt in sich fertig — die Grenze aus Runde 46 (kein Druck bei
   // einer Anwendung rund um Befinden) gilt weiter.
+  // ---------- Freie und gekaufte Fassung (Runde 84) ----------
+  //
+  // Die Grenze verlaeuft an EINER Linie, und sie ist keine Verhandlungssache, sondern folgt der
+  // Aussage der App selbst: Frei ist das vollstaendige Bild von heute. Gekauft ist alles, was
+  // erst aus mehreren Messungen entsteht — Verlauf, Muster, Tiefe im Vergleich.
+  //
+  // Was daraus folgt, und was NICHT verhandelbar ist:
+  //   - Niemand zahlt fuer sein Ergebnis. Wer fuenfzig Aussagen beantwortet hat, sieht das
+  //     vollstaendige Portraet, sofort und ohne Konto. Ein Ergebnis hinter eine Zahlung zu
+  //     stellen waere Erpressung, keine Preisgestaltung.
+  //   - Es wird nichts geloescht und nichts weggenommen. Die freie Fassung ZEIGT weniger; alles
+  //     Eingetragene bleibt liegen und ist wieder da, sobald jemand kauft. Daten, die jemand
+  //     selbst erzeugt hat, sind seine.
+  //   - Der Vergleich bleibt in seiner Grundform frei. Er ist die Stelle, an der eine zweite
+  //     Person dazukommt; ihn zu verschliessen kostet mehr, als er einbringt.
+  var PLUS_SCHLUESSEL = 'lucenta_plus';
+  function istPlus(){
+    try{ return localStorage.getItem(PLUS_SCHLUESSEL) === '1'; }catch(e){ return false; }
+  }
+  function plusSetzen(an){
+    try{ an ? localStorage.setItem(PLUS_SCHLUESSEL, '1') : localStorage.removeItem(PLUS_SCHLUESSEL); }catch(e){}
+  }
+  // So viele Tage der Tagesform zeigt die freie Fassung. Vierzehn ist nicht gegriffen: Der erste
+  // Befund braucht sieben Tage, der zweite vierzehn — wer die Grenze erreicht, hat also gerade
+  // gesehen, dass es hier etwas zu holen gibt.
+  var FREI_TAGE = 14;
+  // So viele Durchlaeufe zeigt die freie Fassung im Verlauf: der aktuelle und der davor. Genug,
+  // um zu sehen DASS sich etwas bewegt, zu wenig, um zu sehen WIE.
+  var FREI_DURCHLAEUFE = 2;
+
   var MAX_STATE_EINTRAEGE = 150;
   // Drei Abschnitte statt Uhrzeiten: Eine Uhrzeit im Verlauf zu zeigen waere eine Genauigkeit,
   // die die Angabe nicht hat. Die Grenzen sind bewusst grob und liegen dort, wo die meisten

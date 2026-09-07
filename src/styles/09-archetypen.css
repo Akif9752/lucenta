@@ -463,3 +463,26 @@
   /* Die aus den eigenen Daten gerechneten Karten heben sich durch eine Kante ab, nicht durch
      eine Farbe: Sie sind kein Hinweis und keine Warnung, sondern ein anderer Ursprung. */
   .understand-daten{border-left:3px solid var(--accent);}
+
+  /* ---------- Verschlossene Stellen (Runde 84) ----------
+     Ein Kasten, kein Vorhang: Er steht ANSTELLE des Inhalts, nicht darueber. Ein verwaschener
+     Inhalt dahinter waere die uebliche Loesung und die schlechtere — er zeigt her, was man
+     nicht haben kann, und das ist naeher an Reklame als an einem Hinweis. */
+  .schloss{
+    margin-top:14px; display:flex; gap:12px; align-items:flex-start;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-m);
+    padding:16px 16px;
+  }
+  .schloss > svg{ color:var(--accent-strong); flex-shrink:0; margin-top:1px; }
+  .schloss-text{ font-size:14px; color:var(--muted); line-height:1.55; }
+  .schloss-btn{ margin-top:12px; }
+
+  /* Der Entwickler-Umschalter fuer die gekaufte Fassung (Runde 84). Er benutzt .settings-row
+     weiter — die Zeile mit Text links und Schalter rechts gibt es dort schon, und eine zweite
+     Bauform fuer dieselbe Sache waere eine Bauform zu viel. */
+  /* flex:1 statt der Vorgabe: .settings-row hat flex-wrap, und ohne diese Zeile beansprucht
+     der Textblock seine volle Wunschbreite — der Schalter rutschte dadurch in die naechste
+     Zeile und stand unter dem Text statt daneben. */
+  .settings-row-text{ display:flex; flex-direction:column; gap:3px; min-width:0; flex:1; }
+  .settings-row-text strong{ font-family:var(--serif); font-weight:500; font-size:14.5px; }
+  .settings-row-desc{ font-size:12.5px; color:var(--muted); line-height:1.5; }

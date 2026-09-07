@@ -41,6 +41,29 @@
       + '<svg class="empty-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke-dasharray="2.5 3.2"></circle><path d="M12 8v4l2.3 2.3"></path></svg>'
       + '<p>'+message+'</p>'+btn+'</div>';
   }
+  // Der Baustein, der an jeder verschlossenen Stelle steht. Bewusst EINER fuer alle: Fuenf
+  // verschieden formulierte Hinweise wuerden sich wie fuenf verschiedene Verkaeufe anfuehlen.
+  // Er nennt, was dahinter liegt, und nicht, was fehlt — und er drueckt nicht: kein Countdown,
+  // keine erfundene Dringlichkeit, kein zweiter Hinweis an derselben Stelle. Die Grenze aus
+  // Runde 46 gilt hier genauso wie beim Serien-Zaehler, der damals verworfen wurde.
+  function schlossHTML(text){
+    return '<div class="schloss">'+
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
+        'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+        '<rect x="4" y="10.5" width="16" height="10.5" rx="2.4"></rect>'+
+        '<path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"></path></svg>'+
+      '<div><p class="schloss-text">'+text+'</p>'+
+      '<button type="button" class="btn btn-primary btn-sm schloss-btn" data-plus-info>'+
+      tx('plus_knopf')+'</button></div></div>';
+  }
+  // Ein Tipp auf einen dieser Knoepfe erklaert einmal, was die gekaufte Fassung umfasst. Mehr
+  // passiert hier nicht: Der Kauf selbst gehoert in die App-Store-Fassung, nicht in die Seite.
+  function schloesserVerdrahten(wurzel){
+    if (!wurzel || !wurzel.querySelectorAll) return;
+    wurzel.querySelectorAll('[data-plus-info]').forEach(function(b){
+      b.addEventListener('click', function(){ toast(tx('plus_hinweis')); });
+    });
+  }
   function historyDateFmt(){
     if (!HISTORY_DATE_FMT){
       // Runde 59: Das Gebietsschema war fest auf 'de-DE' verdrahtet, also stand im englischen
@@ -54,7 +77,12 @@
   function resetDateFmt(){ HISTORY_DATE_FMT = null; }
   function renderHistory(){
     $('historyMaxCount').textContent = MAX_HISTORY;
-    var hist = loadHistory();
+    var alle = loadHistory();
+    // Runde 84: Die freie Fassung zeigt die letzten beiden Durchlaeufe — genug, um zu sehen DASS
+    // sich etwas bewegt, zu wenig, um zu sehen WIE. Geloescht wird nichts: Sobald jemand kauft,
+    // steht der ganze Verlauf wieder da.
+    var verborgen = istPlus() ? 0 : Math.max(0, alle.length - FREI_DURCHLAEUFE);
+    var hist = verborgen ? alle.slice(-FREI_DURCHLAEUFE) : alle;
     var wrap = $('historyContent');
     if (hist.length===0){
       wrap.innerHTML = emptyStateHTML(tx('js_noch_kein_testdurchlauf_ge'));
@@ -94,7 +122,9 @@
     }).join('');
     wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
       tx('js_frühere_ergebnisse')+hist.length+'</span></h2>'+
-      '<div class="history-list">'+listRows+'</div>';
+      '<div class="history-list">'+listRows+'</div>'+
+      (verborgen ? schlossHTML(tx('plus_verlauf_a') + verborgen + tx('plus_verlauf_b')) : '');
+    schloesserVerdrahten(wrap);
   }
 
   

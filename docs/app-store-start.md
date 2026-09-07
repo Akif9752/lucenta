@@ -119,7 +119,11 @@ blockiert.
 5. **Markenrecherche zu „Lucenta" abschließen.** Der Stand steht in
    `docs/lucenta-markenrecherche.md` — eine Web-Recherche, keine Registerprüfung. Vor einem
    Store-Eintrag unter diesem Namen gehört eine echte Recherche in DPMA und EUIPO dazu.
-6. **Bildschirmfotos** in 6,7″ und 6,1″ (die anderen Größen leitet Apple ab). Sie entstehen
+6. **Den Entwickler-Umschalter entfernen.** Unter Profil steht seit Runde 84 ein Schalter
+   zwischen freier und gekaufter Fassung (`plusSchalter` in `src/js/15-profile.js`), damit
+   beide Zustände ohne Eingriff in den Speicher zu sehen sind. Er darf nicht mit in den Store;
+   an seine Stelle gehört die echte Kaufprüfung. Dasselbe gilt für die Beispielnutzerin.
+7. **Bildschirmfotos** in 6,7″ und 6,1″ (die anderen Größen leitet Apple ab). Sie entstehen
    erst auf dem Gerät; mit der Beispielnutzerin unter Profil ist die App dafür in genau dem
    Zustand, der sich zum Zeigen lohnt — fünf Wochen Verlauf statt leerer Ansichten.
 

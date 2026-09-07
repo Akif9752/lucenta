@@ -291,6 +291,12 @@ async function durchlauf({thema, demo, sprache, breite}){
     await p.waitForTimeout(300);
   }
   if (demo){
+    // Runde 84: Die Beispielnutzerin laeuft in der GEKAUFTEN Fassung. Sonst fielen mit dem
+    // Bezahlmodell genau die reichsten Ansichten aus der Pruefung heraus — Kombinationskarten,
+    // Tagesform-Befunde, die aufklappbaren Vergleichskarten —, weil die freie Fassung an ihrer
+    // Stelle einen Hinweiskasten zeigt. Die leeren Durchlaeufe bleiben frei und decken damit
+    // die Hinweiskaesten selbst ab.
+    await p.evaluate(() => { try{ localStorage.setItem('lucenta_plus','1'); }catch(e){} });
     await p.evaluate(() => { document.getElementById('btnDrawerToggle')?.click(); });
     await p.waitForTimeout(300);
     await p.evaluate(() => { document.getElementById('btnDrawerProfileRow')?.click(); });
@@ -300,6 +306,10 @@ async function durchlauf({thema, demo, sprache, breite}){
     await p.waitForTimeout(1200);
     await p.waitForLoadState('networkidle');
     await p.waitForTimeout(400);
+    // demoLaden() laedt die Seite neu; die Marke ueberlebt das, weil sie im selben Speicher
+    // liegt — geprueft wird es hier trotzdem, damit ein spaeterer Umbau es nicht still bricht.
+    const bezahlt = await p.evaluate(() => localStorage.getItem('lucenta_plus') === '1');
+    if (!bezahlt) melde(kennung + ': gekaufte Fassung nach dem Laden der Beispieldaten nicht mehr aktiv');
   }
 
   // Doppelte Kennungen und versteckte Ziele sind Eigenschaften des Dokuments, nicht der Ansicht.

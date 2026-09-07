@@ -378,6 +378,11 @@
     // geht. Die Karten hier sind bewusst DIESELBE Bauform (.trait-card): gleiche Geste,
     // gleicher Aufbau, gleiche Erwartung. Nur die Kopfzeile traegt statt einer Punktzahl
     // beide Werte, weil es hier zwei Messungen gibt.
+    // Runde 84: Die Grundform des Vergleichs bleibt frei — er ist die Stelle, an der eine
+    // zweite Person dazukommt, und ihn zu verschliessen kostet mehr, als er einbringt. Frei
+    // sind Prozentwert, Fuenfeck und der eine Satz je Dimension; die drei Lebensbereiche
+    // dahinter sind die gekaufte Tiefe.
+    var cmpPlus = istPlus();
     var lines = ORDER.map(function(f, i){
       var d = Math.abs(me[f]-other[f]);
       var isSim = d<15;
@@ -388,6 +393,17 @@
         return text ? '<div class="trait-section"><div class="trait-section-label">'+
                tx(schluessel)+'</div><p>'+text+'</p></div>' : '';
       };
+      if (!cmpPlus){
+        // Ohne Aufklappen keine Aufklapp-Geste: Eine Karte, die aussieht, als ginge sie auf,
+        // und dann nicht aufgeht, ist schlechter als eine, die gar nicht so aussieht.
+        return '<div class="trait-card compat-card compat-karte-frei" style="animation-delay:'+(i*60)+'ms">'+
+          '<div class="trait-top"><span class="trait-name">'+LABELS[f]+'</span>'+
+            '<span class="compat-paar mono"><span class="compat-wert-me">'+me[f]+'</span>'+
+            '<span class="compat-wert-sep">·</span>'+
+            '<span class="compat-wert-other">'+other[f]+'</span></span></div>'+
+          compatBalkenHTML(me[f], other[f])+
+          '<div class="trait-teaser">'+(isSim?COMPAT[f].similar:COMPAT[f].diff)+'</div></div>';
+      }
       return '<details class="trait-card compat-card"'+(i===0?' open':'')+
         ' style="animation-delay:'+(i*60)+'ms">'+
         '<summary>'+
@@ -435,10 +451,13 @@
       '<div class="field"><label for="compatSaveLabel">'+tx('js_name_optional')+'</label><input type="text" id="compatSaveLabel" maxlength="30" placeholder="'+decodeEntities(tx('ph_z_b_1a2b3c4d5e_mia'))+'"></div>'+
       '<button type="button" class="btn btn-ghost btn-sm" id="btnSaveCompat">'+tx('js_vergleich_speichern')+'</button>'+
       '</div>';
-    box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note + saveRow;
+    box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') +
+      (cmpPlus ? '' : schlossHTML(tx('plus_vergleich'))) + note +
+      (cmpPlus ? saveRow : '');
     startCompatBars(box);
+    schloesserVerdrahten(box);
     lastCompatSnapshot = { myCode: $('cmpMe').value.trim(), otherCode: $('cmpOther').value.trim(), match: match };
-    var saveBtn = $('btnSaveCompat');
+    var saveBtn = cmpPlus ? $('btnSaveCompat') : null;
     if (saveBtn){
       saveBtn.addEventListener('click', function(){
         if (!lastCompatSnapshot) return;

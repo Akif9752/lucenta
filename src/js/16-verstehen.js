@@ -20,10 +20,14 @@
           return '<div class="understand-card" style="animation-delay:'+(i*60)+'ms"><h3>'+c.title+'</h3><p>'+c.body+'</p></div>';
         }).join('');
     }).join('');
+    // Runde 84: Die zwei Dimensionskarten sind frei. Das Zusammenspiel und der Teil aus den
+    // eigenen Daten sind die gekaufte Fassung — beides entsteht erst aus mehr als einer
+    // Messung bzw. aus dem Zusammenlesen mehrerer Werte.
     wrap.innerHTML = html +
-      kombiBlock(last) +
-      eigeneDatenBlock(last) +
+      (istPlus() ? (kombiBlock(last) + eigeneDatenBlock(last))
+                 : schlossHTML(tx('plus_verstehen'))) +
       tx('js_diese_einordnungen_fassen');
+    schloesserVerdrahten(wrap);
   }
 
   // ---------- Kombinationen (Runde 82) ----------

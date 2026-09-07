@@ -230,7 +230,20 @@
     renderStateTrend();
   }
   function renderStateTrend(){
-    var eintraege = loadStateHistory();
+    var alleEintraege = loadStateHistory();
+    // Runde 84: Die freie Fassung zeigt die letzten vierzehn Tage und keine Befunde. Vierzehn
+    // ist nicht gegriffen — der erste Befund braucht sieben Tage, der zweite vierzehn. Wer die
+    // Grenze erreicht, hat also gerade gesehen, dass es hier etwas zu holen gibt. Eingetragen
+    // bleibt alles; die freie Fassung zeigt weniger, sie nimmt nichts weg.
+    var plus = istPlus();
+    var alleTage = stateTage(alleEintraege);
+    var verborgeneTage = plus ? 0 : Math.max(0, alleTage.length - FREI_TAGE);
+    var eintraege = alleEintraege;
+    if (verborgeneTage){
+      var sichtbar = {};
+      alleTage.slice(-FREI_TAGE).forEach(function(t){ sichtbar[t.day] = 1; });
+      eintraege = alleEintraege.filter(function(e){ return sichtbar[e.day]; });
+    }
     // Diagramm und Liste zeigen TAGE. Ein Tag mit drei Eintraegen ist ein Punkt auf der Linie,
     // kein dreifaches Gewicht — die Linie beschreibt den Verlauf ueber Tage, nicht ueber Tipps.
     var hist = stateTage(eintraege);
@@ -287,6 +300,19 @@
     wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
       tx('js_letzte_einträge')+hist.length+'</span></h2>'+
       '<div class="history-list">'+listRows+'</div>';
+    // Die Befunde sind der Kern der gekauften Fassung: Sie sind das, was aus mehreren Messungen
+    // entsteht, und genau daran verlaeuft die Grenze.
+    if (!plus){
+      var stelle = wrap.querySelector('.section-title-sub') || wrap.querySelector('.history-list');
+      var hinweis = schlossHTML(verborgeneTage
+        ? (tx('plus_tagesform_a') + verborgeneTage + tx('plus_tagesform_b'))
+        : tx('plus_tagesform_kurz'));
+      if (stelle) stelle.insertAdjacentHTML('beforebegin', hinweis);
+      else wrap.insertAdjacentHTML('beforeend', hinweis);
+      schloesserVerdrahten(wrap);
+      verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), fenster, fmt);
+      return;
+    }
     var befunde = tagesformBefunde(eintraege);
     if (befunde.length){
       var block = '<h2 class="section-title section-title-sub">'+tx('js_befunde_titel')+'</h2>'+

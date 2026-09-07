@@ -140,6 +140,30 @@
       '</div>';
     var b = $('btnDemo');
     if (b) b.addEventListener('click', function(){ aktiv ? demoBeenden() : demoLaden(); });
+
+    // Runde 84: Umschalter zwischen freier und gekaufter Fassung. Gehoert in denselben
+    // Entwicklerbereich wie die Beispielnutzerin und aus demselben Grund: Beide Zustaende sind
+    // sonst nur zu sehen, indem man den Speicher von Hand aendert. Er sitzt hinter allem
+    // Echten, ganz unten im Profil — er gehoert nicht in den Weg von jemandem, der die App
+    // benutzt.
+    var plusEl = document.createElement('div');
+    plusEl.className = 'plus-schalter-zeile';
+    plusEl.innerHTML =
+      '<div class="settings-row"><div class="settings-row-text">'+
+        '<strong>'+tx('plus_dev_titel')+'</strong>'+
+        '<span class="settings-row-desc">'+(istPlus() ? tx('plus_dev_an') : tx('plus_dev_aus'))+'</span>'+
+      '</div><button type="button" class="schalter" id="plusSchalter" role="switch" '+
+      'aria-checked="'+(istPlus()?'true':'false')+'" aria-label="'+tx('plus_dev_titel')+'">'+
+      '<span class="schalter-knopf"></span></button></div>';
+    el.appendChild(plusEl);
+    var ps = $('plusSchalter');
+    if (ps) ps.addEventListener('click', function(){
+      plusSetzen(!istPlus());
+      // Neu zeichnen statt neu laden: Der Umschalter aendert nur, WAS gezeigt wird, nicht den
+      // Bestand — ein Neuladen waere hier ein unnoetiger Sprung an den Seitenanfang.
+      renderProfile();
+      toast(istPlus() ? tx('plus_dev_an') : tx('plus_dev_aus'));
+    });
   }
   function handleAvatarFile(file){
     if (!file || !/^image\//.test(file.type)){ toast(tx('js_bitte_ein_bild_auswählen')); return; }
