@@ -388,7 +388,21 @@
     border-radius:100px; padding:2px 7px; line-height:1.4;
   }
   .tagline{font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:.02em;}
-  .header-right{display:flex;align-items:center;gap:12px;}
+  /* Runde 91, von der neuen Ueberlauf-Pruefung gefunden: Bei 320 Bildpunkten Breite standen im
+     Kopf 161 (Wortmarke) plus 142 (Bezeichnung und Knopf) = 303 Bildpunkte in 280 verfuegbaren.
+     Beide Kinder tragen zwar flex-shrink:1, aber min-width:auto — und die kleinstmoegliche
+     Breite eines Flex-Elements ist die seines laengsten Wortes. "EINSTELLUNGEN" ist ein Wort,
+     also schrumpfte nichts, und die rechte Gruppe wurde um 23 Bildpunkte nach draussen
+     geschoben. Sichtbar war davon nichts, weil die Verdeckung es abfing — genau die
+     Gewohnheit, die diese Runde abstellt.
+
+     min-width:0 hebt die Sperre auf, die drei Zeilen darunter kuerzen sauber mit Auslassung
+     statt hart abzuschneiden. Die Wortmarke behaelt Vorrang: Sie ist der Name, die Bezeichnung
+     daneben nur Kontext. */
+  .header-right{display:flex;align-items:center;gap:12px;min-width:0;}
+  .header-right #viewLabel{
+    min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
   .drawer-tab{
     width:36px;height:36px;border-radius:50%;flex-shrink:0;
     border:1px solid var(--line);background:var(--surface);color:var(--ink);
