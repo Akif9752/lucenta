@@ -55,12 +55,12 @@
     --stern-schnuppe:rgba(214,180,120,.5);
     --stern-warm:rgba(176,134,78,.44);
     --stern-kalt:rgba(150,142,118,.36);
-    --lichtstrahl:rgba(255,236,196,.55);
+    --lichtstrahl:rgba(255,226,158,.50);
     /* Runde 85: Der diffuse Streifen allein war zu leise — er las sich als heller Fleck, nicht
        als Tageslicht. Dazu kommt jetzt ein Faecher einzelner Strahlen aus einer Sonne oben
        rechts. Eigene Marke, weil er kraeftiger sein muss als der Streifen: Der Streifen ist die
        Luft, die Strahlen sind das Licht. */
-    --sonnenstrahl:rgba(255,244,219,.9);
+    --sonnenstrahl:rgba(255,226,138,.92);
     /* Runde 86: Beim Nachmessen im 4-fach vergroesserten Bild aufgefallen — die Koerner waren
        DUNKLER als der Grund und lasen sich dadurch als Schmutzflecken. Ein Korn im Lichtstrahl
        ist heller als seine Umgebung; das ist der ganze Grund, warum man es sieht. Deshalb zwei

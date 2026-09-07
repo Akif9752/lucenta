@@ -423,6 +423,16 @@ keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu. Ve
   Strahlen waren — der Streifen und der Fächer wanderten unabhängig voneinander. Die Beleuchtung
   hängt jetzt am Winkel zum Sonnenort, also an dem Licht, das tatsächlich da ist.
 
+  **Runde 88 fand die eigentliche Ursache dafür, dass die Strahlen „zu schwarz" wirkten** —
+  gemessen am rechten Rand: Farbe (89,89,64) bei Deckkraft 20, also ein *Abdunkeln* statt eines
+  Aufhellens. Ein Canvas-Verlauf nach `transparent` läuft nicht nach „dieselbe Farbe, nur
+  unsichtbar", sondern nach `rgba(0,0,0,0)` — nach **Schwarz** mit Deckkraft null; und weil die
+  Zeichenfläche die vier Kanäle einzeln zwischenrechnet, wandert die Farbe unterwegs durch Grau.
+  Im Stilblatt passiert das nicht (CSS rechnet mit vorher multiplizierter Deckkraft), weshalb
+  dieselbe Schreibweise dort richtig und hier falsch ist. Die Lösung ist immer dieselbe: als
+  Endpunkt dieselbe Farbe mit Deckkraft 0. Betroffen waren vier Stellen — Sonnenfächer,
+  Lichtstreifen, Sternenhöfe und Staubkörner.
+
   **Runde 87: der Lidschlag der Avatare.** Er beantwortet keine Handlung und ist damit die
   dritte Ausnahme. Der Grund, ihn trotzdem zu bauen: Eine Figur, die blinzelt, ist lebendig; eine,
   die es nicht tut, ist ein Bild — und 96 % der Zeit passiert nichts, es gibt kein Schweben und

@@ -76,20 +76,27 @@
              ' Q'+x.toFixed(2)+' '+(y-hoch).toFixed(2)+' '+(x+r*1.2).toFixed(2)+' '+(y+r*0.34).toFixed(2)+
              '" stroke="'+FIG_INK+'" stroke-width="'+(r*0.5).toFixed(2)+'" fill="none" stroke-linecap="round"/>';
     }
-    var ry = r * (art === 'weit' ? 1.26 : (art === 'halb' ? 0.78 : 1.08));
+    var ry = r * (art === 'weit' ? 1.26 : (art === 'halb' ? 0.86 : 1.08));
     var rx = r * 0.99;
     var seit = (o.seite || 0) * r * 0.30;   // Blick leicht zur Seite
-    var ix = x + seit, iy = y + (art === 'halb' ? r * 0.10 : r * 0.03);
+    var ix = x + seit, iy = y + (art === 'halb' ? r * 0.06 : r * 0.03);
     var iris = o.iris || '#4A352A';
+    // Runde 88: Die Iris hing an r und war damit beim halb geschlossenen Auge GROESSER als das
+    // Auge selbst — sie stand oben und unten heraus, und aus einem ruhigen Blick wurde ein
+    // dunkler Fleck. Sie haengt jetzt an der kleineren der beiden Halbachsen und passt damit in
+    // jede Lidstellung.
+    // Beim halben Lid etwas kleiner, damit links und rechts noch Weiss stehen bleibt: Eine
+    // Iris, die das Auge ganz ausfuellt, ist wieder der schwarze Punkt von vorher.
+    var ir = Math.min(rx, ry) * (art === 'halb' ? 0.76 : 0.86);
     return '<ellipse cx="'+x+'" cy="'+y+'" rx="'+rx.toFixed(2)+'" ry="'+ry.toFixed(2)+'" fill="#FCFAF6"/>'+
-           '<circle cx="'+ix.toFixed(2)+'" cy="'+iy.toFixed(2)+'" r="'+(r*0.80).toFixed(2)+'" fill="'+iris+'"/>'+
-           '<circle cx="'+ix.toFixed(2)+'" cy="'+iy.toFixed(2)+'" r="'+(r*0.42).toFixed(2)+'" fill="'+FIG_INK+'"/>'+
-           '<circle cx="'+(ix - r*0.30).toFixed(2)+'" cy="'+(iy - r*0.36).toFixed(2)+'" r="'+(r*0.30).toFixed(2)+'" fill="#FFFFFF" opacity=".95"/>'+
+           '<circle cx="'+ix.toFixed(2)+'" cy="'+iy.toFixed(2)+'" r="'+ir.toFixed(2)+'" fill="'+iris+'"/>'+
+           '<circle cx="'+ix.toFixed(2)+'" cy="'+iy.toFixed(2)+'" r="'+(ir*0.52).toFixed(2)+'" fill="'+FIG_INK+'"/>'+
+           '<circle cx="'+(ix - ir*0.38).toFixed(2)+'" cy="'+(iy - ir*0.44).toFixed(2)+'" r="'+(ir*0.36).toFixed(2)+'" fill="#FFFFFF" opacity=".95"/>'+
            // Wimpernkante: der dunkle Rand des Oberlids. Er liegt AUF dem Auge, nicht darueber,
            // und deckt oben so viel ab, wie die Lidstellung vorgibt.
            '<path d="M'+(x-rx*1.06).toFixed(2)+' '+(y - ry*(art==='halb'?0.06:0.55)).toFixed(2)+
            ' Q'+x+' '+(y - ry*(art==='weit'?1.55:1.32)).toFixed(2)+' '+(x+rx*1.06).toFixed(2)+' '+(y - ry*(art==='halb'?0.06:0.55)).toFixed(2)+
-           '" stroke="'+FIG_INK+'" stroke-width="'+(r*(art==='halb'?0.60:0.42)).toFixed(2)+'" fill="none" stroke-linecap="round"/>';
+           '" stroke="'+FIG_INK+'" stroke-width="'+(r*(art==='halb'?0.40:0.34)).toFixed(2)+'" fill="none" stroke-linecap="round"/>';
   }
   function figAugen(x1, x2, y, r, o){
     return '<g class="fig-augen">' + figAuge(x1, y, r, o) + figAuge(x2, y, r, o) + '</g>';
@@ -116,23 +123,67 @@
   function figMund(art, farbe, breite){
     var f = farbe || FIG_INK, w = breite || 1.25;
     var linie = function(d){ return '<path d="'+d+'" stroke="'+f+'" stroke-width="'+w+'" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'; };
-    if (art === 'laecheln')  return linie('M16.4 27.6 Q20 30.8 23.6 27.6');
-    if (art === 'breit')     return linie('M15.2 27 Q20 32 24.8 27');
-    if (art === 'sanft')     return linie('M17.2 28.2 Q20 30 22.8 28.2');
-    if (art === 'strich')    return linie('M17.4 28.6 L22.6 28.6');
-    // Runde 87 dazu. Drei Muender, die es vorher nicht gab, und ohne die sich sieben Figuren
-    // dieselben vier teilen mussten.
-    if (art === 'offen')     // Offener Mund: eine gefuellte Form, kein Strich. Das Einzige, was
-                             // an einem Gesicht dieser Groesse nach Sprechen oder Lachen aussieht.
-      return '<path d="M16.6 27.2 Q20 26.6 23.4 27.2 Q22.4 31.4 20 31.4 Q17.6 31.4 16.6 27.2 Z" fill="'+f+'"/>'+
-             '<path d="M17.6 29.4 Q20 30.6 22.4 29.4 Q21.4 31.4 20 31.4 Q18.6 31.4 17.6 29.4 Z" fill="#E4899A" opacity=".8"/>';
+    var flaeche = function(d, farbe2){ return '<path d="'+d+'" fill="'+(farbe2||f)+'"/>'; };
+    // Runde 88: Die Muender waren duenne Striche von fuenf bis sieben Einheiten Breite auf einem
+    // Gesicht von dreiundzwanzig — auf dem Telefon ein Haar. Ein Mund, der eine Miene tragen
+    // soll, muss eine FLAECHE haben, nicht eine Linie: Erst dann sieht man, ob er offen ist,
+    // und erst dann traegt er ueberhaupt etwas.
+    if (art === 'lachen')    // Weit offen, mit Zunge. Der deutlichste Ausdruck, den es hier gibt.
+      return flaeche('M14.4 26.6 Q20 25.6 25.6 26.6 Q24.6 32.8 20 32.8 Q15.4 32.8 14.4 26.6 Z') +
+             flaeche('M16.8 30 Q20 31.6 23.2 30 Q22 32.8 20 32.8 Q18 32.8 16.8 30 Z', '#E4899A');
+    if (art === 'breit')     // Breites geschlossenes Lachen: eine gefuellte Sichel.
+      return flaeche('M14.8 26.8 Q20 33.4 25.2 26.8 Q20 28.6 14.8 26.8 Z');
+    if (art === 'laecheln')  return linie('M15.8 27.4 Q20 31.4 24.2 27.4');
+    if (art === 'sanft')     return linie('M16.6 28 Q20 30.4 23.4 28');
+    if (art === 'strich')    return linie('M16.8 28.6 L23.2 28.6');
+    if (art === 'o')         // Staunen: ein kleiner offener Mund. Rund, nicht breit.
+      return '<ellipse cx="20" cy="28.8" rx="2.1" ry="2.6" fill="'+f+'"/>'+
+             '<ellipse cx="20" cy="29.6" rx="1.2" ry="1.4" fill="#E4899A" opacity=".8"/>';
     if (art === 'schief')    // Halbes Laecheln, nur auf einer Seite hochgezogen. Die Asymmetrie
                              // ist der Punkt: Ein perfekt symmetrischer Mund wirkt gedruckt.
-      return linie('M16.6 28.4 Q19.4 29.8 23.6 27.2');
-    if (art === 'klein')     return linie('M18.4 28.4 Q20 29.6 21.6 28.4');
+      return linie('M15.8 28.8 Q19.2 30.2 24.2 26.8');
+    if (art === 'klein')     return linie('M17.8 28.4 Q20 29.8 22.2 28.4');
     // Die Tierschnauze: senkrechter Strich unter der Nase, dann zwei Boegen.
-    return linie('M20 26.4 L20 28 M20 28 Q17.6 30 15.8 28.4 M20 28 Q22.4 30 24.2 28.4');
+    return linie('M20 26.4 L20 28 M20 28 Q17.4 30.2 15.4 28.4 M20 28 Q22.6 30.2 24.6 28.4');
   }
+  // ---------- Die Mienen ----------
+  //
+  // Rueckmeldung Runde 88: "haben keine expression in den gesichtsausdruecken." Das stimmte,
+  // obwohl seit Runde 87 jede Figur eigene Werte fuer Lid, Braue und Mund trug — und der Grund
+  // ist genau das: EIGENE Werte, aber unabhaengig voneinander gewaehlt.
+  //
+  // So funktioniert ein Gesicht nicht. Eine Miene ist ein Zusammenspiel: Wer lacht, kneift die
+  // Augen zusammen und hebt die Brauen; wer staunt, reisst die Augen auf UND oeffnet den Mund.
+  // Eine halbgeschlossene Lidstellung mit hochgezogenen Brauen und einem breiten Lachen ist
+  // keine Emotion, sondern drei Einstellungen — und genau so sah es aus.
+  //
+  // Deshalb gibt es jetzt zehn benannte Mienen. Eine Figur waehlt EINE davon; Lid, Braue,
+  // Blickrichtung und Mund kommen zusammen daraus. Zehn stimmige Ausdruecke sind mehr wert als
+  // hundert Kombinationen, von denen neunzig nach nichts aussehen.
+  var MIENEN = {
+    freude:       {blick:'zu',     braue:'hoch',    mund:'lachen'},
+    staunen:      {blick:'weit',   braue:'hoch',    mund:'o'},
+    neugier:      {blick:'offen',  braue:'gehoben', mund:'schief', seite:1},
+    ruhe:         {blick:'halb',   braue:'weich',   mund:'sanft'},
+    nachdenklich: {blick:'offen',  braue:'schraeg', mund:'klein',  seite:-1},
+    schelmisch:   {blick:'schmal', braue:'gehoben', mund:'schief'},
+    zufrieden:    {blick:'zu',     braue:'weich',   mund:'laecheln'},
+    warm:         {blick:'offen',  braue:'weich',   mund:'laecheln'},
+    wach:         {blick:'weit',   braue:'neutral', mund:'breit'},
+    versonnen:    {blick:'halb',   braue:'hoch',    mund:'klein',  seite:1}
+  };
+  // Setzt die vier Werte aus der Miene, ohne ausdrueckliche Angaben zu ueberschreiben: Der
+  // Dackel traegt seine Flecken statt Brauen, und das soll die Miene nicht zurueckholen.
+  function mieneAnwenden(o){
+    var m = MIENEN[o.miene];
+    if (!m) return o;
+    if (o.blick == null) o.blick = m.blick;
+    if (o.braue == null) o.braue = m.braue;
+    if (o.mund  == null) o.mund  = m.mund;
+    if (o.seite == null && m.seite != null) o.seite = m.seite;
+    return o;
+  }
+
   // ---------- Die Brauen ----------
   // Nach den Augen der zweitstaerkste Traeger der Miene, und der einzige, der ohne weitere
   // Formen auskommt. Vier Stellungen; 'gehoben' hebt nur EINE Braue — das ist die eine Stelle,
@@ -191,6 +242,7 @@
   }
   // Kopf, Schnauze, Nase — der Teil, den alle Tiere teilen.
   function figTier(o){
+    mieneAnwenden(o);
     var g = FIG_UID + 'fell';
     return '<defs>'+figVerlauf(g, figTon(o.fell, 1.10), figTon(o.fell, 0.86))+'</defs>' +
       // Ein angedeuteter Koerper unter dem Kopf, angeschnitten wie beim Menschen. Ohne ihn
@@ -206,7 +258,7 @@
       // Brauen: bei Tieren sehr fein — sie tragen fast die ganze Miene, und zu kraeftig
       // gezeichnet sieht jedes Tier boese aus.
       figBrauen(o.braue || 'keine', 15, 25, 16.4, FIG_INK, 0.9, 0.45) +
-      figAugen(15, 25, 20, o.auge || 1.9, {blick:o.blick, iris:o.iris || figTon(o.fell, 0.55), seite:o.seite}) +
+      figAugen(15, 25, 20, o.auge || 2.3, {blick:o.blick, iris:o.iris || figTon(o.fell, 0.55), seite:o.seite}) +
       '<ellipse cx="20" cy="25" rx="2.1" ry="1.5" fill="'+FIG_INK+'"/>' +
       '<ellipse cx="19.4" cy="24.6" rx="0.7" ry="0.45" fill="#FFFFFF" opacity=".45"/>' +
       figMund(o.mund, FIG_INK, 1.1) +
@@ -215,6 +267,7 @@
   // Menschen: Kopf, Haar, Gesicht. Die Haarform ist der groesste Unterschied, aber nicht mehr
   // der einzige — Brauen, Miene, Sommersprossen und Brille tragen jetzt genauso viel.
   function figMensch(o){
+    mieneAnwenden(o);
     var haar = '', haarVorn = '';
     if (o.haar === 'kurzhaar')
       haar = '<path d="M6.8 20 C6.8 10.5 12.5 5.5 20 5.5 C27.5 5.5 33.2 10.5 33.2 20 '+
@@ -281,7 +334,7 @@
       // dann auf dem Haar statt darunter.
       (o.haar === 'pony' ? '' :
         figBrauen(o.braue, 15.6, 24.4, 17.9, (o.brauenFarbe || o.haarFarbe), 1.15, 0.8)) +
-      figAugen(15.6, 24.4, 21, 1.7, {blick:o.blick, iris:o.iris || '#4A352A', seite:o.seite}) +
+      figAugen(15.6, 24.4, 20.8, 2.15, {blick:o.blick, iris:o.iris || '#4A352A', seite:o.seite}) +
       // Nase: nur ein kurzer Bogen. Mehr braucht ein Gesicht dieser Groesse nicht, und alles
       // Groessere zieht den Blick von den Augen weg.
       '<path d="M19.4 23.6 Q20.3 24.6 19.2 25" stroke="'+FIG_INK+'" stroke-width="0.9" fill="none" '+
@@ -304,51 +357,48 @@
     // die Augenfarbe (iris) kommt dazu. Vorher unterschied sie nur der Mund, und der traegt an
     // einem Gesicht die wenigste Mimik: Deshalb sahen zweiundzwanzig Figuren gleich aus,
     // obwohl sie es auf dem Papier nicht waren.
-    {id:'m1',  feld:'#F3E3D3', svg:function(){ return figMensch({haut:'#E8BE9A', haar:'kurzhaar', haarFarbe:'#3A2A20',
-                  iris:'#4A352A', kleid:'#5E7466', blick:'offen', braue:'neutral', mund:'laecheln'}); }},
-    {id:'m2',  feld:'#EFE0EA', svg:function(){ return figMensch({haut:'#F0CBAA', haar:'lang', haarFarbe:'#8A4B2A',
-                  iris:'#3E6B5A', kleid:'#8A6E82', blick:'weit', braue:'hoch', seite:-1, mund:'breit'}); }},
-    {id:'m3',  feld:'#E2E7DC', svg:function(){ return figMensch({haut:'#8D5A3B', haar:'locken', haarFarbe:'#2B1D17',
-                  iris:'#3A2A20', kleid:'#4F6B5E', blick:'offen', braue:'gehoben', seite:1, mund:'schief'}); }},
-    {id:'m4',  feld:'#DDE6EC', svg:function(){ return figMensch({haut:'#E5B98F', haar:'tuch', haarFarbe:'#3E6B74', brauenFarbe:'#4A3226',
-                  iris:'#43352C', kleid:'#3E6B74', blick:'halb', braue:'weich', mund:'sanft'}); }},
-    {id:'m5',  feld:'#EDE6DA', svg:function(){ return figMensch({haut:'#C98F62', haar:'dutt', haarFarbe:'#4A3226',
-                  iris:'#4A352A', kleid:'#7A6A52', blick:'zu', braue:'hoch', mund:'breit'}); }},
-    {id:'m6',  feld:'#E7E2F0', svg:function(){ return figMensch({haut:'#EFC9A6', haar:'kurzhaar', haarFarbe:'#6B6B6B', bart:true,
-                  iris:'#546B78', kleid:'#5A5F72', blick:'halb', braue:'schraeg', mund:'strich'}); }},
+    {id:'m1',  feld:'#F3E3D3', svg:function(){ return figMensch({miene:'warm', haut:'#E8BE9A', haar:'kurzhaar', haarFarbe:'#3A2A20',
+                  iris:'#4A352A', kleid:'#5E7466',}); }},
+    {id:'m2',  feld:'#EFE0EA', svg:function(){ return figMensch({miene:'wach', haut:'#F0CBAA', haar:'lang', haarFarbe:'#8A4B2A',
+                  iris:'#3E6B5A', kleid:'#8A6E82',}); }},
+    {id:'m3',  feld:'#E2E7DC', svg:function(){ return figMensch({miene:'neugier', haut:'#8D5A3B', haar:'locken', haarFarbe:'#2B1D17',
+                  iris:'#3A2A20', kleid:'#4F6B5E',}); }},
+    {id:'m4',  feld:'#DDE6EC', svg:function(){ return figMensch({miene:'ruhe', haut:'#E5B98F', haar:'tuch', haarFarbe:'#3E6B74', brauenFarbe:'#4A3226',
+                  iris:'#43352C', kleid:'#3E6B74',}); }},
+    {id:'m5',  feld:'#EDE6DA', svg:function(){ return figMensch({miene:'freude', haut:'#C98F62', haar:'dutt', haarFarbe:'#4A3226',
+                  iris:'#4A352A', kleid:'#7A6A52',}); }},
+    {id:'m6',  feld:'#E7E2F0', svg:function(){ return figMensch({miene:'nachdenklich', haut:'#EFC9A6', haar:'kurzhaar', haarFarbe:'#6B6B6B', bart:true,
+                  iris:'#546B78', kleid:'#5A5F72',}); }},
     // Runde 83 dazu: mehr Haarfarben und mehr Gesichter, ausdruecklich gewuenscht.
-    {id:'m7',  feld:'#F4EEDC', svg:function(){ return figMensch({haut:'#F2D3B4', haar:'lang', haarFarbe:'#DFB25F', brauenFarbe:'#B98F45',
-                  iris:'#4E7C8C', kleid:'#C79A5E', blick:'offen', braue:'weich', seite:1, mund:'laecheln'}); }},
-    {id:'m8',  feld:'#F6E4DC', svg:function(){ return figMensch({haut:'#F5D6BE', haar:'locken', haarFarbe:'#C25A2B', brauenFarbe:'#A64A22',
-                  sommersprossen:true, iris:'#4C7A46', kleid:'#A5644A', blick:'weit', braue:'hoch', mund:'offen'}); }},
-    {id:'m9',  feld:'#E4E9EF', svg:function(){ return figMensch({haut:'#D9A97C', haar:'pony', haarFarbe:'#241C18',
-                  iris:'#3A2A20', kleid:'#4A5A6B', blick:'schmal', mund:'klein'}); }},
-    {id:'m10', feld:'#EAE7DF', svg:function(){ return figMensch({haut:'#EAC49F', haar:'zopf', haarFarbe:'#7A5A3C', brille:true,
-                  iris:'#5E6B4A', kleid:'#6E6455', blick:'offen', braue:'schraeg', seite:-1, mund:'schief'}); }},
-    {id:'fuchs', feld:'#F6E6D8', svg:function(){ return figTier({ohr:'spitz', fell:'#D97A45', innen:'#F5E2D2', schnauze:'#F8EFE6',
-                  wange:'#E9A177', braue:'gehoben', blick:'schmal', iris:'#7A4520'}); }},
-    {id:'katze', feld:'#E6E4EA', svg:function(){ return figTier({ohr:'spitz', fell:'#8E8B95', innen:'#E3C8CE', schnauze:'#F1EFF3',
-                  wange:'#C7A9B2', blick:'halb', seite:-1, iris:'#7A8C4A'}); }},
-    {id:'baer',  feld:'#EFE3D6', svg:function(){ return figTier({ohr:'rund',  fell:'#A5714B', innen:'#D9A87F', schnauze:'#E7CDB2',
-                  braue:'weich', blick:'offen', mund:'sanft', iris:'#4A3220'}); }},
-    {id:'panda', feld:'#D8DAD6', svg:function(){ return figTier({ohr:'rund',  fell:'#F4F3F1', innen:'#2A211C', schnauze:'#FFFFFF', auge:2.6,
-                  blick:'weit', mund:'klein', iris:'#3A302A',
+    {id:'m7',  feld:'#F4EEDC', svg:function(){ return figMensch({miene:'zufrieden', haut:'#F2D3B4', haar:'lang', haarFarbe:'#DFB25F', brauenFarbe:'#B98F45',
+                  iris:'#4E7C8C', kleid:'#C79A5E',}); }},
+    {id:'m8',  feld:'#F6E4DC', svg:function(){ return figMensch({miene:'staunen', haut:'#F5D6BE', haar:'locken', haarFarbe:'#C25A2B', brauenFarbe:'#A64A22',
+                  sommersprossen:true, iris:'#4C7A46', kleid:'#A5644A',}); }},
+    {id:'m9',  feld:'#E4E9EF', svg:function(){ return figMensch({miene:'versonnen', haut:'#D9A97C', haar:'pony', haarFarbe:'#241C18',
+                  iris:'#3A2A20', kleid:'#4A5A6B',}); }},
+    {id:'m10', feld:'#EAE7DF', svg:function(){ return figMensch({miene:'schelmisch', haut:'#EAC49F', haar:'zopf', haarFarbe:'#7A5A3C', brille:true,
+                  iris:'#5E6B4A', kleid:'#6E6455',}); }},
+    {id:'fuchs', feld:'#F6E6D8', svg:function(){ return figTier({miene:'schelmisch', ohr:'spitz', fell:'#D97A45', innen:'#F5E2D2', schnauze:'#F8EFE6',
+                  wange:'#E9A177', iris:'#7A4520'}); }},
+    {id:'katze', feld:'#E6E4EA', svg:function(){ return figTier({miene:'ruhe', ohr:'spitz', fell:'#8E8B95', innen:'#E3C8CE', schnauze:'#F1EFF3',
+                  wange:'#C7A9B2', iris:'#7A8C4A'}); }},
+    {id:'baer',  feld:'#EFE3D6', svg:function(){ return figTier({miene:'warm', ohr:'rund',  fell:'#A5714B', innen:'#D9A87F', schnauze:'#E7CDB2', iris:'#4A3220'}); }},
+    {id:'panda', feld:'#D8DAD6', svg:function(){ return figTier({miene:'staunen', ohr:'rund',  fell:'#F4F3F1', innen:'#2A211C', schnauze:'#FFFFFF', auge:2.6, iris:'#3A302A',
                   maske:'<ellipse cx="15" cy="20" rx="4.6" ry="5.2" transform="rotate(-14 15 20)" fill="#2A211C"/>'+
                         '<ellipse cx="25" cy="20" rx="4.6" ry="5.2" transform="rotate(14 25 20)" fill="#2A211C"/>'}); }},
-    {id:'hase',  feld:'#F1E7EC', svg:function(){ return figTier({ohr:'lang',  fell:'#E4DAD3', innen:'#E7B9C4', schnauze:'#F7F1EE',
-                  wange:'#EFC3CD', blick:'offen', braue:'weich', seite:1, iris:'#8C5A66'}); }},
-    {id:'reh',   feld:'#EEE7D9', svg:function(){ return figTier({ohr:'geweih',fell:'#C99A6A', innen:'#7A5B3E', schnauze:'#EFE0CD', wange:'#DDB58C',
-                  braue:'hoch', blick:'weit', seite:1, mund:'klein', iris:'#3E2C1C',
+    {id:'hase',  feld:'#F1E7EC', svg:function(){ return figTier({miene:'wach', ohr:'lang',  fell:'#E4DAD3', innen:'#E7B9C4', schnauze:'#F7F1EE',
+                  wange:'#EFC3CD', iris:'#8C5A66'}); }},
+    {id:'reh',   feld:'#EEE7D9', svg:function(){ return figTier({miene:'neugier', ohr:'geweih',fell:'#C99A6A', innen:'#7A5B3E', schnauze:'#EFE0CD', wange:'#DDB58C', iris:'#3E2C1C',
                   maske:'<g fill="#F4E8D6" opacity=".7"><circle cx="12.4" cy="14.6" r="1.4"/><circle cx="27.6" cy="14.6" r="1.4"/>'+
                         '<circle cx="17.4" cy="12.6" r="1.1"/><circle cx="22.6" cy="12.6" r="1.1"/></g>'}); }},
     // Zwei Hunde. Beide teilen den Kopf-Bauplan und unterscheiden sich in Fell, Schnauze und
     // Miene — genau das, was sie auch in echt unterscheidet.
-    {id:'dackel', feld:'#F0E3D2', svg:function(){ return figTier({ohr:'schlapp', fell:'#8C5A33', innen:'#6B4324', schnauze:'#C08B5C',
-                  zunge:true, mund:'sanft', braue:'keine', blick:'halb', iris:'#4A2E16',
+    {id:'dackel', feld:'#F0E3D2', svg:function(){ return figTier({miene:'versonnen', braue:'keine', ohr:'schlapp', fell:'#8C5A33', innen:'#6B4324',
+                  schnauze:'#C08B5C', zunge:true, iris:'#4A2E16',
                   maske:'<ellipse cx="20" cy="19" rx="6.4" ry="4.4" fill="#A96E3F" opacity=".55"/>'+
                         '<g fill="#D9A76F" opacity=".85"><ellipse cx="14.4" cy="16.6" rx="2.2" ry="1.6"/><ellipse cx="25.6" cy="16.6" rx="2.2" ry="1.6"/></g>'}); }},
-    {id:'retriever', feld:'#F7EBD6', svg:function(){ return figTier({ohr:'schlapp', fell:'#E3B26B', innen:'#C08F4C', schnauze:'#F6E3C4',
-                  zunge:true, mund:'offen', braue:'hoch', blick:'offen', seite:-1, iris:'#6B4520'}); }},
+    {id:'retriever', feld:'#F7EBD6', svg:function(){ return figTier({miene:'freude', ohr:'schlapp', fell:'#E3B26B', innen:'#C08F4C', schnauze:'#F6E3C4',
+                  zunge:true, iris:'#6B4520'}); }},
     // Drei, die nicht in den Kopf-Bauplan passen und deshalb eigene Formen bekommen.
     {id:'eule', feld:'#E3E7E4', svg:function(){
        return '<path d="M20 30 C13.6 30 8.6 33.8 7.4 40 L32.6 40 C31.4 33.8 26.4 30 20 30 Z" fill="#8B7355"/>'+

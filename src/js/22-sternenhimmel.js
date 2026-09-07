@@ -33,6 +33,28 @@
   var farbeWarm = null, farbeKalt = null, farbeStrahl = 'transparent';
   var farbeSonne = 'transparent', sonneGezeichnet = null, sonneVerlauf = [];
   var farbeStaubLicht = 'transparent';
+
+  // ---------- Warum hier nirgends 'transparent' in einem Verlauf steht ----------
+  //
+  // Rueckmeldung Runde 88: "die sonnenstrahlen sind zu schwarz". Gemessen am rechten Rand:
+  // Farbe (89,89,64) bei Deckkraft 20 — die Strahlen DUNKELTEN dort ab, statt aufzuhellen.
+  //
+  // Der Grund ist eine Eigenheit der Zeichenflaeche: Ein Verlauf von einer Farbe nach
+  // 'transparent' laeuft nicht nach "dieselbe Farbe, nur unsichtbar", sondern nach
+  // rgba(0,0,0,0) — nach SCHWARZ mit Deckkraft null. Und weil die Zeichenflaeche die vier
+  // Kanaele einzeln zwischenrechnet, wandert die Farbe auf dem Weg dorthin durch Grau nach
+  // Schwarz. Auf einem hellen Grund ist das ein schmutziger Schleier genau dort, wo ein
+  // Strahl am weichsten auslaufen soll. (Im Stilblatt passiert das NICHT — CSS rechnet
+  // Verlaeufe mit vorher multiplizierter Deckkraft; deshalb ist dieselbe Schreibweise dort
+  // richtig und hier falsch.)
+  //
+  // Die Loesung ist immer dieselbe: als Endpunkt DIESELBE Farbe nehmen, nur mit Deckkraft 0.
+  function ohneDeckung(farbe){
+    var m = /^rgba?\(([^)]+)\)/.exec(farbe || '');
+    if (!m) return 'rgba(0,0,0,0)';
+    var z = m[1].split(',');
+    return 'rgba(' + z[0].trim() + ',' + (z[1]||'0').trim() + ',' + (z[2]||'0').trim() + ',0)';
+  }
   // Runde 83: Zwei Atmosphaeren statt einer. Welche gilt, sagt das Stilblatt ueber die Marke
   // --atmosphaere — nicht dieses Skript. Der Grund ist derselbe wie bei den Farben: Der
   // Hell-/Dunkelwechsel gehoert ins CSS, und ein Skript, das ihn selbst herleitet, geht beim
@@ -165,12 +187,13 @@
     if (!staub || farbeStrahl === 'transparent') return;
     var m = strahlMitte(), w = Math.max(150, b * 0.42);
     var g = ctx.createLinearGradient(m - w, 0, m + w, h);
-    g.addColorStop(0, 'transparent');
+    var leer = ohneDeckung(farbeStrahl);
+    g.addColorStop(0, leer);
     g.addColorStop(0.5, farbeStrahl);
-    g.addColorStop(1, 'transparent');
+    g.addColorStop(1, leer);
     // Gemessen am Bild zurueckgenommen (war 0,5): Darueber legt der Strahl einen sichtbaren
     // warmen Stich ueber die ganze Seite, und aus Atmosphaere wird Farbe.
-    ctx.globalAlpha = 0.38;
+    ctx.globalAlpha = 0.24;
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, b, h);
     ctx.globalAlpha = 1;
@@ -209,7 +232,7 @@
       faecher.push({
         // Ablage vom Mittelwinkel, mit etwas Unregelmaessigkeit: gleiche Abstaende sehen
         // gezeichnet aus.
-        ab: mitte * 0.60 + (Math.random() - 0.5) * 0.055,
+        ab: mitte * 0.74 + (Math.random() - 0.5) * 0.055,
         // Halbe Breite als Steigung (Gegenkathete je Laenge). Die schmalen sind die klaren.
         br: 0.012 + Math.random() * 0.030,
         // Die Strahlen in der Mitte des Faechers sind kraeftiger als die an den Raendern —
@@ -217,7 +240,10 @@
         // Runde 86 zurueckgenommen (war 0,44 + 0,40): Mit sechs statt drei Lagen summiert sich
         // dort, wo die Strahlen zusammenlaufen, deutlich mehr Licht als vorher. Ungeaendert waere
         // aus der Ecke ein warmer Schleier ueber dem oberen Drittel geworden.
-        a: (0.34 + Math.random() * 0.32) * (1 - Math.abs(mitte) * 0.80),
+        // Runde 88 halbiert (war 0,34 + 0,32). Der Fehler mit dem schwarzen Verlauf hatte die
+        // Strahlen die ganze Zeit gedaempft; ohne ihn traf dieselbe Zahl viel haerter, und die
+        // Seite badete in Gelb. Licht soll man bemerken, nicht ansehen.
+        a: (0.15 + 0.16 * Math.random()) * (1 - Math.abs(mitte) * 0.80),
         ph: Math.random() * Math.PI * 2,
         pv: 0.00035 + Math.random() * 0.00075
       });
@@ -238,10 +264,11 @@
       // Nicht bei 0 voll: Direkt an der Quelle wuerden sich alle sieben Strahlen zu einem
       // Fleck ueberlagern. Das Maximum liegt im ersten Drittel, dort, wo ein Strahl auch in
       // echt am deutlichsten ist.
-      g.addColorStop(0, 'transparent');
+      var leer = ohneDeckung(farbeSonne);
+      g.addColorStop(0, leer);
       g.addColorStop(0.26, farbeSonne);
       g.addColorStop(0.58, farbeSonne);
-      g.addColorStop(1, 'transparent');
+      g.addColorStop(1, leer);
       sonneVerlauf.push(g);
     }
     sonneGezeichnet = farbeSonne;
@@ -253,7 +280,11 @@
     // Mitte des oberen Randes her auf statt aus der Ecke. Jetzt liegt sie rechts NEBEN dem Bild
     // und nur knapp darueber — der Faecher kommt sichtbar aus der rechten oberen Ecke, und die
     // Strahlen laufen flacher ueber die Seite.
-    return { x: b * (1.06 + 0.10 * Math.sin(strahlPhase)), y: -h * 0.12 };
+    // Runde 88 weiter in die Ecke (war 1,06 der Breite und ein Achtel der Hoehe darueber):
+    // Bei der alten Lage lag der Punkt, aus dem die Strahlen kommen, oben am RAND und nicht in
+    // der Ecke — man sah einen Faecher von oben, nicht Licht aus der Ecke. Jetzt liegt sie
+    // knapp ausserhalb der rechten oberen Ecke; der Faecher zeigt sichtbar dorthin zurueck.
+    return { x: b * (1.02 + 0.07 * Math.sin(strahlPhase)), y: -h * 0.03 };
   }
   function faecherZeichnen(){
     if (!staub || farbeSonne === 'transparent' || !faecher.length) return;
@@ -344,7 +375,7 @@
     var g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
     g.addColorStop(0, farbe);
     g.addColorStop(s.kern, farbe);
-    g.addColorStop(1, 'transparent');
+    g.addColorStop(1, ohneDeckung(farbe));
     ctx.globalAlpha = Math.min(1, alpha);
     ctx.fillStyle = g;
     ctx.beginPath();
@@ -371,7 +402,7 @@
         // als Schein und nicht als zweiter Stern gelesen wird.
         var g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4.2);
         g.addColorStop(0, ton);
-        g.addColorStop(1, 'transparent');
+        g.addColorStop(1, ohneDeckung(ton));
         ctx.globalAlpha = s.a * funkeln * 0.22;
         ctx.fillStyle = g;
         ctx.beginPath();
