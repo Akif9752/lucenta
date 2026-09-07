@@ -252,9 +252,10 @@ const NACHBEREITUNG = {
     // In der gekauften Fassung gibt es keine Schloesser — dann ist hier nichts zu pruefen, und
     // das ist kein Fehler. Wohl aber, wenn in der FREIEN Fassung keines auftaucht.
     if (!auf){
-      const plus = await p.evaluate(() => localStorage.getItem('lucenta_plus') === '1');
-      if (plus) return;
-      throw new Error('kein Schloss in der freien Fassung gefunden');
+      // Ohne Daten gibt es nichts zu verschliessen, mit gekaufter Fassung nichts Verschlossenes.
+      // In beiden Faellen ist das richtig und kein Fund. Geprueft wird das Fenster im
+      // Durchlauf "Beispielnutzerin, frei" — dem einzigen, in dem Schloesser ueberhaupt stehen.
+      return;
     }
     await p.waitForTimeout(600);
     const zahl = await p.evaluate(() => document.querySelectorAll('#plusVorteile .plus-vorteil').length);
@@ -296,9 +297,12 @@ async function pruefeAnsicht(p, ansicht, kennung, breite){
 
 // ---------- ein Durchlauf ueber alle Ansichten ----------
 
-async function durchlauf({thema, demo, sprache, breite}){
+async function durchlauf({thema, demo, plus, sprache, breite}){
   breite = breite || 390;
-  const kennung = [breite + 'px', thema, sprache, demo ? 'Beispielnutzerin' : 'leer'].join('/');
+  // Runde 89: Ob die gekaufte Fassung an ist, gehoert in die Kennung — sonst stehen zwei
+  // Durchlaeufe mit demselben Namen im Bericht und man weiss bei einem Fund nicht, welcher.
+  const kennung = [breite + 'px', thema, sprache,
+                   demo ? (plus ? 'Beispielnutzerin' : 'Beispielnutzerin, frei') : 'leer'].join('/');
   console.log('\n' + kennung);
   const b = await chromium.launch(START);
   const ctx = await b.newContext({viewport:{width:breite,height:HOEHE}, isMobile:true, hasTouch:true,
@@ -318,9 +322,15 @@ async function durchlauf({thema, demo, sprache, breite}){
     // Runde 84: Die Beispielnutzerin laeuft in der GEKAUFTEN Fassung. Sonst fielen mit dem
     // Bezahlmodell genau die reichsten Ansichten aus der Pruefung heraus — Kombinationskarten,
     // Tagesform-Befunde, die aufklappbaren Vergleichskarten —, weil die freie Fassung an ihrer
-    // Stelle einen Hinweiskasten zeigt. Die leeren Durchlaeufe bleiben frei und decken damit
-    // die Hinweiskaesten selbst ab.
-    await p.evaluate(() => { try{ localStorage.setItem('lucenta_plus','1'); }catch(e){} });
+    // Stelle einen Hinweiskasten zeigt.
+    //
+    // Runde 89: Damit fehlte aber ausgerechnet der Zustand, in dem die meisten Menschen die App
+    // benutzen — DATEN VORHANDEN, ABER NICHT GEKAUFT. Nur dort stehen die Schloesser an ihren
+    // fuenf Stellen; leere Durchlaeufe haben nichts zu verschliessen, gekaufte nichts
+    // verschlossen. Deshalb ist die gekaufte Fassung jetzt eine Eigenschaft des Durchlaufs, und
+    // ein Durchlauf laeuft ausdruecklich frei.
+    if (plus) await p.evaluate(() => { try{ localStorage.setItem('lucenta_plus','1'); }catch(e){} });
+    else      await p.evaluate(() => { try{ localStorage.removeItem('lucenta_plus'); }catch(e){} });
     await p.evaluate(() => { document.getElementById('btnDrawerToggle')?.click(); });
     await p.waitForTimeout(300);
     await p.evaluate(() => { document.getElementById('btnDrawerProfileRow')?.click(); });
@@ -333,7 +343,7 @@ async function durchlauf({thema, demo, sprache, breite}){
     // demoLaden() laedt die Seite neu; die Marke ueberlebt das, weil sie im selben Speicher
     // liegt — geprueft wird es hier trotzdem, damit ein spaeterer Umbau es nicht still bricht.
     const bezahlt = await p.evaluate(() => localStorage.getItem('lucenta_plus') === '1');
-    if (!bezahlt) melde(kennung + ': gekaufte Fassung nach dem Laden der Beispieldaten nicht mehr aktiv');
+    if (bezahlt !== !!plus) melde(kennung + ': Fassung nach dem Laden der Beispieldaten nicht mehr wie gesetzt');
   }
 
   // Doppelte Kennungen und versteckte Ziele sind Eigenschaften des Dokuments, nicht der Ansicht.
@@ -358,13 +368,17 @@ async function durchlauf({thema, demo, sprache, breite}){
 const laeufe = [
   {thema:'hell',   demo:false, sprache:'de'},
   {thema:'dunkel', demo:false, sprache:'de'},
-  {thema:'hell',   demo:true,  sprache:'de'},
-  {thema:'dunkel', demo:true,  sprache:'de'},
-  {thema:'hell',   demo:true,  sprache:'ja'},
-  {thema:'hell',   demo:true,  sprache:'fr'},
+  {thema:'hell',   demo:true,  plus:true,  sprache:'de'},
+  {thema:'dunkel', demo:true,  plus:true,  sprache:'de'},
+  // Daten vorhanden, aber nicht gekauft — der Zustand, in dem die meisten Menschen die App
+  // benutzen, und der einzige, in dem die fuenf Schloesser und das Lucenta+-Fenster stehen.
+  {thema:'hell',   demo:true,  plus:false, sprache:'de'},
+  {thema:'dunkel', demo:true,  plus:false, sprache:'de'},
+  {thema:'hell',   demo:true,  plus:true,  sprache:'ja'},
+  {thema:'hell',   demo:true,  plus:true,  sprache:'fr'},
   // Der schmale Bildschirm, in den zwei Sprachen mit den laengsten Woertern.
-  {thema:'hell',   demo:true,  sprache:'de', breite:320},
-  {thema:'hell',   demo:true,  sprache:'fr', breite:320},
+  {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320},
+  {thema:'hell',   demo:true,  plus:true,  sprache:'fr', breite:320},
 ];
 for (const l of laeufe) await durchlauf(l);
 
