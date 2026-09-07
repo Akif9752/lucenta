@@ -32,6 +32,7 @@
 
   var farbeWarm = null, farbeKalt = null, farbeStrahl = 'transparent';
   var farbeSonne = 'transparent', sonneGezeichnet = null, sonneVerlauf = [];
+  var farbeStaubLicht = 'transparent';
   // Runde 83: Zwei Atmosphaeren statt einer. Welche gilt, sagt das Stilblatt ueber die Marke
   // --atmosphaere — nicht dieses Skript. Der Grund ist derselbe wie bei den Farben: Der
   // Hell-/Dunkelwechsel gehoert ins CSS, und ein Skript, das ihn selbst herleitet, geht beim
@@ -57,6 +58,8 @@
       // "Punkte" und "Sternen".
       farbeWarm = (s.getPropertyValue('--stern-warm') || '').trim() || farbeStern;
       farbeKalt = (s.getPropertyValue('--stern-kalt') || '').trim() || farbeStern;
+      farbeStaubLicht = (s.getPropertyValue('--staub-licht') || '').trim() || 'transparent';
+      staubToeneBauen();
     }catch(e){}
   }
 
@@ -85,7 +88,12 @@
       // Die grossen waren zu dominant; der obere Rand faellt von 2,27 auf 1,62.
       // Staub ist groesser und gleichmaessiger verteilt als Sterne: Ein Korn im Licht hat eine
       // Groesse, ein Stern eine Helligkeit.
-      var r = staub ? (0.7 + t * 1.5) : (0.45 + t * 1.17);
+      // Runde 86: Der Staub sah nicht nach Staub aus, weil er wie ein Stern gebaut war — klein,
+      // hart umrissen, hell. Ein Korn im Lichtstrahl ist das Gegenteil: Es liegt fast immer
+      // ausserhalb der Schaerfe der Linse, ist deshalb GROSS und WEICH und dabei so blass, dass
+      // man es nur bemerkt, wenn Licht darauf faellt. Der Radius steigt von 0,7-2,2 auf 1,6-6,4,
+      // und gezeichnet wird nicht mehr ein Kreis mit Rand, sondern ein Verlauf ohne Kante.
+      var r = staub ? (1.6 + t * 4.8) : (0.45 + t * 1.17);
       sterne.push({
         x: Math.random() * b,
         y: Math.random() * h,
@@ -96,7 +104,10 @@
         sv: 0.004 + Math.random() * 0.010,
         sw: 0.25 + Math.random() * 0.65,
         // Helligkeit folgt der Größe: Ein großer, blasser Stern gibt es am Himmel nicht.
-        a: staub ? (0.14 + t * 0.34 + Math.random() * 0.12)
+        // Deutlich blasser als vorher (war bis 0,60): Die Helligkeit soll aus dem Strahl kommen,
+        // nicht aus dem Korn. Ausserhalb des Strahls ist Staub praktisch unsichtbar — genau das
+        // macht ihn im Strahl erst zu Staub.
+        a: staub ? (0.05 + t * 0.16 + Math.random() * 0.06)
                  : (0.20 + t * 0.62 + Math.random() * 0.14),
         // Tempo folgt ebenfalls der Größe — größer heißt näher heißt schneller. Das ist echte
         // Parallaxe statt zufälliger Geschwindigkeit und erzeugt Tiefe.
@@ -111,7 +122,11 @@
         ton: (function(){ var z = Math.random(); return z < 0.12 ? 1 : (z > 0.88 ? 2 : 0); })(),
         // Die hellsten bekommen einen weichen Hof; darunter wäre er nur Unschärfe. Bei Staub
         // haben mehr Koerner einen: Ein Korn im Licht leuchtet diffus, ein Stern punktfoermig.
-        hof: t > (staub ? 0.55 : 0.86),
+        hof: !staub && t > 0.86,
+        // Wie weich das Korn ist: Ein Teil liegt naeher an der Schaerfeebene und hat einen
+        // erkennbaren Kern, die meisten sind reine Unschaerfe. Ohne diesen Unterschied sieht
+        // ein Feld aus weichen Flecken wieder gleichfoermig aus.
+        kern: staub ? (0.10 + Math.random() * 0.30) : 1,
         // Laenge der Spitzen als Vielfaches des Radius; 0 heisst keine. Nur die oberen rund
         // 30 Prozent bekommen welche, und je heller, desto weiter reichen sie.
         // Spitzen sind die Signatur eines Sterns. Auf einem Staubkorn waeren sie schlicht
@@ -182,7 +197,9 @@
   var faecher = [];
   // Grundrichtung: nach links unten. Nicht 45 Grad — flacher wirkt nach Nachmittag,
   // steiler nach Mittag, und der Nachmittag passt zu einer Seite, die man abends oeffnet.
-  var FAECHER_MITTE = 2.16;
+  // Runde 86 weiter abgeflacht (war 2,16): Aus einer Ecke faellt Licht schraeg ueber die
+  // Flaeche, nicht senkrecht hinunter.
+  var FAECHER_MITTE = 2.52;
   function strahlenAufbauen(){
     faecher.length = 0;
     if (!staub) return;
@@ -197,14 +214,22 @@
         br: 0.012 + Math.random() * 0.030,
         // Die Strahlen in der Mitte des Faechers sind kraeftiger als die an den Raendern —
         // so faellt das Buendel zu den Seiten hin aus, statt abgeschnitten zu wirken.
-        a: (0.44 + Math.random() * 0.40) * (1 - Math.abs(mitte) * 0.80),
+        // Runde 86 zurueckgenommen (war 0,44 + 0,40): Mit sechs statt drei Lagen summiert sich
+        // dort, wo die Strahlen zusammenlaufen, deutlich mehr Licht als vorher. Ungeaendert waere
+        // aus der Ecke ein warmer Schleier ueber dem oberen Drittel geworden.
+        a: (0.34 + Math.random() * 0.32) * (1 - Math.abs(mitte) * 0.80),
         ph: Math.random() * Math.PI * 2,
         pv: 0.00035 + Math.random() * 0.00075
       });
     }
   }
   // Innen kraeftig, aussen weich: die drei Lagen je Strahl.
-  var LAGEN = [{w:1.0, a:1.00}, {w:2.1, a:0.45}, {w:3.8, a:0.20}];
+  // Runde 86: Drei Lagen waren zu wenig — im vergroesserten Bild sah man die Kanten der
+  // einzelnen Keile als Baender. Sechs Lagen, deren Breite waechst waehrend die Deckkraft faellt,
+  // summieren sich zu einem glockenfoermigen Querschnitt: aussen laeuft der Strahl aus, statt
+  // aufzuhoeren. Mehr Lagen kosten hier nichts, weil die Verlaeufe zwischengespeichert sind.
+  var LAGEN = [{w:1.0, a:1.00}, {w:1.6, a:0.62}, {w:2.4, a:0.40},
+               {w:3.4, a:0.22}, {w:4.6, a:0.11}, {w:6.0, a:0.05}];
   function sonneAufbauen(){
     sonneVerlauf.length = 0;
     var L = (b + h) * 1.25;
@@ -214,8 +239,8 @@
       // Fleck ueberlagern. Das Maximum liegt im ersten Drittel, dort, wo ein Strahl auch in
       // echt am deutlichsten ist.
       g.addColorStop(0, 'transparent');
-      g.addColorStop(0.16, farbeSonne);
-      g.addColorStop(0.55, farbeSonne);
+      g.addColorStop(0.26, farbeSonne);
+      g.addColorStop(0.58, farbeSonne);
       g.addColorStop(1, 'transparent');
       sonneVerlauf.push(g);
     }
@@ -224,7 +249,11 @@
   function sonneOrt(){
     // Die Sonne selbst liegt ausserhalb des Bildes. Sichtbar ist nur, was von ihr kommt —
     // eine Scheibe im Bild waere eine Illustration, kein Hintergrund.
-    return { x: b * (0.86 + 0.13 * Math.sin(strahlPhase)), y: -h * 0.26 };
+    // Runde 86: Die Sonne stand zu weit in der Flaeche, dadurch faechterte das Licht von der
+    // Mitte des oberen Randes her auf statt aus der Ecke. Jetzt liegt sie rechts NEBEN dem Bild
+    // und nur knapp darueber — der Faecher kommt sichtbar aus der rechten oberen Ecke, und die
+    // Strahlen laufen flacher ueber die Seite.
+    return { x: b * (1.06 + 0.10 * Math.sin(strahlPhase)), y: -h * 0.12 };
   }
   function faecherZeichnen(){
     if (!staub || farbeSonne === 'transparent' || !faecher.length) return;
@@ -254,12 +283,73 @@
     ctx.restore();
     ctx.globalAlpha = 1;
   }
-  // Wie stark ein Korn vom Strahl getroffen wird: 1 in der Mitte, 0 ausserhalb.
-  function imStrahl(x){
-    if (!staub) return 0;
-    var w = Math.max(150, b * 0.42);
-    var d = Math.abs(x - strahlMitte()) / w;
-    return d >= 1 ? 0 : (1 - d) * (1 - d);
+  // Wie stark ein Korn beleuchtet wird — Runde 86 vom Streifen auf den FAECHER umgestellt.
+  //
+  // Vorher hing es allein an der waagerechten Entfernung zur Mitte des weichen Streifens. Der
+  // Streifen wandert aber unabhaengig vom Faecher, und im vergroesserten Bild stand das Ergebnis
+  // deutlich da: Die hellen Koerner lagen dort, wo gar kein Strahl war. Zwei Lichtquellen, die
+  // sich widersprechen — genau der Fehler, den die Strahlen selbst vermeiden sollten.
+  //
+  // Jetzt zaehlt, was tatsaechlich zaehlt: der WINKEL vom Sonnenort zum Korn. Liegt er in einem
+  // der Strahlen, ist das Korn hell, sonst nicht. Damit steht Staub genau dann im Licht, wenn
+  // dort Licht ist.
+  function imStrahl(x, y){
+    if (!staub || !faecher.length) return 0;
+    var o = sonneOrt();
+    var basis = FAECHER_MITTE + Math.sin(strahlPhase) * 0.085;
+    var d = Math.atan2(y - o.y, x - o.x) - basis;
+    while (d >  Math.PI) d -= Math.PI * 2;
+    while (d < -Math.PI) d += Math.PI * 2;
+    var summe = 0;
+    for (var i = 0; i < faecher.length; i++){
+      var f = faecher[i];
+      // Die weichen Aussenlagen reichen weiter als die Kernbreite; der Faktor bildet das ab.
+      var e = Math.abs(d - f.ab) / (f.br * 2.6 + 0.02);
+      if (e < 1) summe += (1 - e) * (1 - e) * (f.a / 0.8);
+    }
+    return summe > 1 ? 1 : summe;
+  }
+
+  // Acht vorgemischte Stufen zwischen "im Schatten" und "im Strahl".
+  var STAUB_STUFEN = 8;
+  var staubToene = null;
+  function farbeZerlegen(t){
+    var m = /rgba?\(([^)]+)\)/.exec(t || '');
+    if (!m) return null;
+    var z = m[1].split(',').map(function(v){ return parseFloat(v); });
+    return [z[0]||0, z[1]||0, z[2]||0, z.length > 3 ? z[3] : 1];
+  }
+  function staubToeneBauen(){
+    staubToene = [];
+    var a = farbeZerlegen(farbeStern), c = farbeZerlegen(farbeStaubLicht) || a;
+    if (!a){ staubToene = null; return; }
+    for (var i = 0; i < STAUB_STUFEN; i++){
+      var t = i / (STAUB_STUFEN - 1);
+      staubToene.push('rgba(' +
+        Math.round(a[0] + (c[0]-a[0])*t) + ',' +
+        Math.round(a[1] + (c[1]-a[1])*t) + ',' +
+        Math.round(a[2] + (c[2]-a[2])*t) + ',' +
+        (a[3] + (c[3]-a[3])*t).toFixed(3) + ')');
+    }
+  }
+  function staubFarbe(licht){
+    if (!staubToene) return farbeStern;
+    var i = Math.round(licht * (STAUB_STUFEN - 1));
+    return staubToene[i < 0 ? 0 : (i > STAUB_STUFEN-1 ? STAUB_STUFEN-1 : i)];
+  }
+
+  // Ein Korn: ein Verlauf ohne Kante, innen so weit dicht, wie s.kern sagt.
+  function staubKorn(s, farbe, alpha){
+    if (alpha <= 0.004) return;
+    var g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
+    g.addColorStop(0, farbe);
+    g.addColorStop(s.kern, farbe);
+    g.addColorStop(1, 'transparent');
+    ctx.globalAlpha = Math.min(1, alpha);
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
   }
 
   function zeichnen(){
@@ -272,7 +362,9 @@
       var funkeln = wenigerBewegung ? 1 : (1 - s.f + s.f * (0.5 + 0.5 * Math.sin(s.p)));
       // Im Strahl bis zu zweieinhalbmal so hell. Das ist der ganze Trick: Staub ist ueberall,
       // sichtbar wird er nur dort, wo Licht auf ihn faellt.
-      if (staub) funkeln *= 1 + imStrahl(s.x) * 1.5;
+      // Das Flackern OHNE Strahlverstaerkung: Beim Staub tragen die zwei Lagen unten die
+      // Helligkeit, sonst zaehlte der Strahl doppelt.
+      var funkelnRoh = funkeln;
       var ton = s.ton === 1 ? farbeWarm : (s.ton === 2 ? farbeKalt : farbeStern);
       if (s.hof){
         // Der Hof ist ein eigener, sehr schwacher Kreis mit Verlauf — vier Radien weit, damit er
@@ -286,11 +378,29 @@
         ctx.arc(s.x, s.y, s.r * 4.2, 0, Math.PI * 2);
         ctx.fill();
       }
-      ctx.globalAlpha = s.a * funkeln;
-      ctx.fillStyle = ton;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fill();
+      if (staub){
+        // Ein Korn ausserhalb der Schaerfe: innen etwas dichter, nach aussen restlos verlaufend.
+        // Kein arc() mit voller Deckkraft mehr — der harte Rand war der Grund, warum es wie ein
+        // Punkt aussah und nicht wie Schwebeteilchen.
+        //
+        // Zwei Lagen, und darin steckt der Unterschied zwischen Staub und Schmutz: unten das
+        // Korn im Schatten, ein Hauch dunkler als der Grund, oben dasselbe Korn im Licht, heller
+        // als der Grund — und wie stark, entscheidet allein die Naehe zum Strahl. Ein Korn, das
+        // ueberall gleich aussieht, ist ein Fleck auf dem Bildschirm.
+        // EINE Lage, nicht zwei. Der erste Versuch legte ein helles Korn auf ein dunkles —
+        // und weil beide gleich gross waren, blieb vom dunklen ein Ring stehen: aus Staub
+        // wurden Seifenblasen. Es wandert deshalb die FARBE mit dem Licht, nicht die Deckung:
+        // im Schatten ein Hauch dunkler als der Grund, im Strahl heller. Dazwischen wird
+        // gemischt, in acht Stufen, damit die Farbtexte nicht je Korn und Bild neu entstehen.
+        var licht = imStrahl(s.x, s.y);
+        staubKorn(s, staubFarbe(licht), s.a * (0.85 + 2.6 * licht) * funkelnRoh);
+      } else {
+        ctx.globalAlpha = s.a * funkeln;
+        ctx.fillStyle = ton;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
       // Runde 73: Vier feine Spitzen nach oben, unten, links und rechts — das, was ein Objektiv
       // aus einem hellen Punkt macht und was ein Stern im Bild von einem Kreis unterscheidet.
       // Nur fuer die helleren: An einem schwachen Punkt waere die Spitze laenger als der Stern
@@ -385,7 +495,10 @@
     document.documentElement.classList.toggle('sternen-an', soll);
     if (soll && !laeuft){
       laeuft = true;
-      if (wenigerBewegung){ farbenLesen(); zeichnen(); }
+      // Vor dem ersten Bild die Farben lesen, nicht erst nach 60 Bildern: Sonst zeigt das erste
+      // gezeichnete Bild nach der Rueckkehr die Atmosphaere des vorigen Farbmodus.
+      farbenLesen();
+      if (wenigerBewegung){ zeichnen(); }
       else { rafId = window.requestAnimationFrame(schritt); }
     } else if (!soll && laeuft){
       laeuft = false;
@@ -399,6 +512,30 @@
     groesseTimer = setTimeout(function(){ groesseTimer = null; aufbauen(); if (laeuft && wenigerBewegung) zeichnen(); }, 200);
   });
   document.addEventListener('visibilitychange', pruefen);
+
+  // Runde 86, im Bild gefunden: Beim Wechsel von hell auf dunkel lagen bis zu zwei Sekunden
+  // lang grelle Sonnenstrahlen ueber dem Nachthimmel. Der Grund war die Taktung — die Farben
+  // wurden nur alle 60 Bilder gelesen, und solange die Startseite nicht sichtbar war, lief gar
+  // kein Bild. Die Flaeche behielt also den zuletzt gemalten Zustand und zeigte ihn beim
+  // Zurueckkommen weiter, in den Farben des anderen Modus.
+  //
+  // Die Taktung bleibt (sie kostet nichts), aber sie ist nicht mehr die einzige Quelle: Ein
+  // Wechsel des Farbmodus meldet sich jetzt selbst. Zwei Wege, weil es zwei Arten gibt, ihn
+  // auszuloesen — die Wahl in den Einstellungen setzt data-theme, die Systemeinstellung nicht.
+  function modusGewechselt(){
+    farbenLesen();
+    if (laeuft) zeichnen();
+    else ctx.clearRect(0, 0, b, h);   // nichts stehen lassen, was zum neuen Modus nicht passt
+  }
+  try{
+    new MutationObserver(modusGewechselt).observe(document.documentElement,
+      { attributes:true, attributeFilter:['data-theme'] });
+  }catch(e){}
+  try{
+    var mm = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mm.addEventListener) mm.addEventListener('change', modusGewechselt);
+    else if (mm.addListener) mm.addListener(modusGewechselt);
+  }catch(e){}
 
   farbenLesen();
   aufbauen();

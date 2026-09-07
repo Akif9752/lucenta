@@ -51,7 +51,7 @@
        auf dem die Marke steht: Der Name heisst leuchtend, das Zeichen ist eine Oeffnung, und
        Staub im Strahl ist das, was man durch eine Oeffnung sieht. */
     --atmosphaere:'staub';
-    --stern:rgba(140,112,74,.42);
+    --stern:rgba(150,132,104,.30);
     --stern-schnuppe:rgba(214,180,120,.5);
     --stern-warm:rgba(176,134,78,.44);
     --stern-kalt:rgba(150,142,118,.36);
@@ -61,6 +61,13 @@
        rechts. Eigene Marke, weil er kraeftiger sein muss als der Streifen: Der Streifen ist die
        Luft, die Strahlen sind das Licht. */
     --sonnenstrahl:rgba(255,244,219,.9);
+    /* Runde 86: Beim Nachmessen im 4-fach vergroesserten Bild aufgefallen — die Koerner waren
+       DUNKLER als der Grund und lasen sich dadurch als Schmutzflecken. Ein Korn im Lichtstrahl
+       ist heller als seine Umgebung; das ist der ganze Grund, warum man es sieht. Deshalb zwei
+       Farben: --stern traegt das Korn im Schatten (ganz leise), --staub-licht das Korn im
+       Strahl. Gemischt wird nicht im Stilblatt, sondern beim Zeichnen, entlang der Naehe zum
+       Strahl. */
+    --staub-licht:rgba(255,252,242,.95);
     /* Nur im Fragebogen sichtbar; ausserhalb faellt die Hoehe auf 0 und die Kopfleiste rueckt
        automatisch nach, weil ihr Versatz an derselben Marke haengt. */
     --fokuslinie-hoehe:0px;
@@ -125,6 +132,7 @@
       --stern-kalt:rgba(206,226,255,.66);
       --lichtstrahl:transparent;
       --sonnenstrahl:transparent;
+      --staub-licht:transparent;
       --kopf-links:#16221D;
       --kopf-rechts:#0D1512;
       --accent-ink:#08211E;
@@ -163,6 +171,7 @@
     --stern-kalt:rgba(206,226,255,.66);
     --lichtstrahl:transparent;
     --sonnenstrahl:transparent;
+    --staub-licht:transparent;
     --kopf-links:#16221D;
     --kopf-rechts:#0D1512;
     --accent-ink:#08211E;

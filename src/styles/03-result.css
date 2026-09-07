@@ -157,6 +157,13 @@
   #view-result .result-head::after{
     content:''; position:absolute; z-index:0; pointer-events:none;
     left:50%; top:54%;
+    /* Runde 86: Die Auslaeufer standen kreisrund um die Ueberschrift und lasen sich dadurch wie
+       eine Sonne. Ein Schein hinter einer ZEILE ist aber breiter als hoch — er folgt dem, was er
+       hinterlegt. Die Stauchung steckt in der Drehung selbst (scaleY vor rotate), damit die
+       Ellipse waagerecht liegen BLEIBT, statt sich mitzudrehen: sonst waere es ein rotierendes
+       Oval, und das sieht man sofort. Die Breite bleibt bei 64 %, weil die DIAGONALE des
+       gedrehten Quadrats waagerecht voll zaehlt — mehr, und die Seite waere breiter als das
+       Fenster. */
     width:min(250px, 64%); aspect-ratio:1;
     /* Am Bild zurueckgenommen (war 15 % auf 4,5 von 20 Grad): So dicht gesetzt lasen sie sich
        als Strahlenkranz — eine Grafik, die man ansieht. Gewollt sind Auslaeufer, die man
@@ -165,17 +172,20 @@
       color-mix(in srgb, var(--dim-aktiv, var(--accent)) 13%, transparent) 0deg 3deg,
       transparent 3deg 26deg);
     /* Ohne diese Maske waere es ein Speichenrad mit harter Kante. Sie laesst die Strahlen zur
-       Mitte hin verschwinden und nach aussen ausfransen — erst dadurch werden es Auslaeufer. */
-    -webkit-mask-image:radial-gradient(closest-side, transparent 12%, #000 52%, transparent 82%);
-            mask-image:radial-gradient(closest-side, transparent 12%, #000 52%, transparent 82%);
+       Mitte hin verschwinden und nach aussen ausfransen — erst dadurch werden es Auslaeufer.
+       Runde 86: Das Loch in der Mitte von 12 auf 24 Prozent. Durch die Stauchung liegen die
+       Strahlen waagerecht dichter beieinander, und der Punkt, in dem sie zusammenlaufen, stand
+       als heller Fleck hinter der Ueberschrift. */
+    -webkit-mask-image:radial-gradient(closest-side, transparent 24%, #000 58%, transparent 86%);
+            mask-image:radial-gradient(closest-side, transparent 24%, #000 58%, transparent 86%);
     opacity:.34;
     animation:strahlen-drehen 150s linear infinite;
   }
   /* Eine Umdrehung in zweieinhalb Minuten. Schnell genug, dass die Bewegung da ist, langsam
      genug, dass man sie nicht ansieht, sondern nur bemerkt, dass etwas lebt. */
   @keyframes strahlen-drehen{
-    from{ transform:translate(-50%,-50%) rotate(0deg); }
-    to  { transform:translate(-50%,-50%) rotate(360deg); }
+    from{ transform:translate(-50%,-50%) scaleY(.58) rotate(0deg); }
+    to  { transform:translate(-50%,-50%) scaleY(.58) rotate(360deg); }
   }
   @keyframes schein-atmen{
     0%, 100%{ opacity:.55; transform:translate(-50%,-50%) scale(1); }
@@ -185,5 +195,5 @@
     #view-result .result-head::before{ animation:none; opacity:.6; }
     /* Die Strahlen bleiben stehen, verschwinden aber nicht: Sie sind Teil des Bildes, nur ihre
        Drehung ist Bewegung. */
-    #view-result .result-head::after{ animation:none; transform:translate(-50%,-50%); }
+    #view-result .result-head::after{ animation:none; transform:translate(-50%,-50%) scaleY(.58); }
   }

@@ -417,6 +417,11 @@ keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu. Ve
   (der Name heißt leuchtend, das Zeichen ist eine Öffnung). Runde 85 ergänzte den Fächer aus
   einzelnen Sonnenstrahlen: Der weiche Streifen allein wurde als heller Fleck gelesen, nicht als
   Tageslicht. Was Tag von Nacht unterscheidet, ist nicht Helligkeit, sondern Richtung und Quelle.
+  Runde 86 korrigierte drei Dinge, die erst im vergrößerten Bild sichtbar wurden: Die Sonne stand
+  zu weit in der Fläche, die Körner waren dunkler als der Grund (und lasen sich damit als
+  Schmutzflecken statt als beleuchteter Staub), und die hellen Körner lagen nicht dort, wo die
+  Strahlen waren — der Streifen und der Fächer wanderten unabhängig voneinander. Die Beleuchtung
+  hängt jetzt am Winkel zum Sonnenort, also an dem Licht, das tatsächlich da ist.
 
   **Runde 62:** Der schwache, langsam atmende Schein hinter der
   Startseiten-Überschrift beantwortet keine Handlung. Er ist Zierde, wurde ausdrücklich gewünscht
