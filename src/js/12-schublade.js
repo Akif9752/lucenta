@@ -44,10 +44,6 @@
     // Die Schublade ist die richtige Stelle dafuer: Sie ist aus jeder Ansicht erreichbar und
     // fuehrt mit einem weiteren Tipp genau dorthin, wo man den Zustand wieder verlaesst.
     if (zeile && zeile.classList) zeile.classList.toggle('ist-demo', demoAktiv());
-    var archiveCount = loadCompatArchive().length;
-    $('drawerCompatArchiveStatus').textContent = archiveCount
-      ? (archiveCount + (archiveCount===1?tx('js_gespeicherter_vergleich'):tx('js_gespeicherte_vergleiche')))
-      : tx('js_noch_keiner_gespeichert');
   }
 
   

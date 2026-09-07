@@ -53,42 +53,63 @@
 
   function demoDaten(){
     var jetzt = Date.now();
-    var ergebnis = {O:74, C:52, E:63, A:70, S:48};
-    // Drei Durchlaeufe ueber fuenf Wochen. Die Verschiebungen liegen bewusst im Bereich, den die
-    // App selbst als normale Schwankung bezeichnet (unter 5 Punkten) — ein Beispiel, das eine
-    // dramatische Entwicklung zeigt, waere ein unehrliches Beispiel.
-    var verlauf = [
-      {date: jetzt - 34*TAG_MS, scores:{O:70, C:55, E:59, A:67, S:45}},
-      {date: jetzt - 17*TAG_MS, scores:{O:72, C:53, E:61, A:69, S:47}},
-      {date: jetzt -  2*TAG_MS, scores:ergebnis}
-    ];
-    // 35 Tage Tagesform mit einer Luecke von drei Tagen — wer fuenf Wochen lang jeden Tag
-    // eintraegt, ist die Ausnahme, und die Ansicht muss auch mit Luecken stimmen.
+    var ergebnis = {O:74, C:56, E:63, A:70, S:48};
+    // Runde 83: sechs Monate statt fuenf Wochen. Der Unterschied ist nicht nur die Zahl —
+    // erst ueber ein halbes Jahr zeigt der Bestand die Dinge, fuer die die App gebaut ist:
+    // eine Verschiebung, die groesser ist als die normale Messschwankung, Luecken von Wochen
+    // statt von Tagen, und ein Verlauf, in dem man tatsaechlich eine Richtung sieht.
     //
-    // Runde 82: An jedem dritten Tag stehen zwei bis drei Eintraege zu verschiedenen Tageszeiten
-    // statt einem. Nicht als Zierde: Ohne mehrere Abschnitte je Tag gaebe es den Tageszeit-Befund
-    // nie zu sehen, und die Beispielnutzerin ist genau dafuer da — die Zustaende zu zeigen, die
-    // sonst fuenf Wochen Warten brauchen. Das Muster ist bewusst deutlich (morgens niedriger),
-    // damit sichtbar wird, was der Befund erkennt.
+    // Sieben Durchlaeufe ueber 183 Tage. Die Bewegung ist bewusst nur in ZWEI Dimensionen
+    // deutlich (C von 48 auf 56, S von 41 auf 48) und in den uebrigen klein: Ein Beispiel, in
+    // dem sich alles bewegt, waere ein unehrliches Beispiel — so etwas sieht man in echten
+    // Daten nicht.
+    var verlauf = [
+      {date: jetzt - 176*TAG_MS, scores:{O:71, C:48, E:60, A:68, S:41}},
+      {date: jetzt - 147*TAG_MS, scores:{O:70, C:49, E:59, A:69, S:43}},
+      {date: jetzt - 118*TAG_MS, scores:{O:72, C:51, E:62, A:67, S:42}},
+      {date: jetzt -  89*TAG_MS, scores:{O:73, C:52, E:61, A:70, S:45}},
+      {date: jetzt -  58*TAG_MS, scores:{O:72, C:54, E:63, A:69, S:46}},
+      {date: jetzt -  27*TAG_MS, scores:{O:75, C:55, E:62, A:71, S:47}},
+      {date: jetzt -   3*TAG_MS, scores:ergebnis}
+    ];
+    // Tagesform ueber dasselbe halbe Jahr, aber nicht gleichmaessig: dicht in den letzten
+    // Wochen, duenner je weiter zurueck, mit zwei laengeren Luecken. Wer sechs Monate lang
+    // jeden Tag eintraegt, ist die Ausnahme — und eine Ansicht, die nur mit luckenlosem
+    // Bestand stimmt, stimmt fuer fast niemanden.
+    //
+    // An manchen Tagen stehen drei Eintraege zu verschiedenen Tageszeiten statt einem. Ohne
+    // mehrere Abschnitte je Tag gaebe es den Tageszeit-Befund nie zu sehen, und die
+    // Beispielnutzerin ist genau dafuer da: die Zustaende zu zeigen, die sonst ein halbes Jahr
+    // Warten brauchen. Das Muster ist bewusst deutlich (morgens niedriger).
     var zustand = [];
     var ABSCHNITTE = [{h:8, ab:-0.7}, {h:13, ab:0.1}, {h:20, ab:0.6}];
-    for (var i = 34; i >= 0; i--){
-      if (i === 12 || i === 11 || i === 10) continue;
+    for (var i = 182; i >= 0; i--){
+      // Zwei Luecken: eine Woche im Urlaub, und ein paar Tage, an denen es untergegangen ist.
+      if (i >= 96 && i <= 103) continue;
+      if (i >= 40 && i <= 42) continue;
+      // Wie oft eingetragen wurde, haengt davon ab, wie lange es her ist: zuletzt fast taeglich,
+      // im ersten Monat nur noch alle vier Tage. So faengt jemand an und bleibt dabei.
+      // Bewusst mit Luft zum Deckel (150 Eintraege): Bei 146 haette schon eine kleine Aenderung
+      // am Muster dazu gefuehrt, dass die aeltesten Tage stillschweigend abgeschnitten werden
+      // und die Spanne kuerzer aussieht, als sie gedacht war.
+      var abstand = i < 45 ? 1 : (i < 110 ? 2 : 5);
+      if (i % abstand !== 0) continue;
       var d = new Date(jetzt - i*TAG_MS);
       var wt = d.getDay();
       // Wochentagsmuster: montags gedrueckt, freitags und samstags hoeher. Genau das Muster,
-      // das tagesformBefunde() ab 14 Eintraegen erkennen soll — sonst prueft man die Ansicht,
+      // das tagesformBefunde() ab 14 Tagen erkennen soll — sonst prueft man die Ansicht,
       // ohne je den Befund zu sehen.
       var wochen = (wt === 1 ? -0.8 : (wt === 5 ? 0.7 : (wt === 6 ? 0.6 : 0)));
+      // Ueber das halbe Jahr steigt die Grundlinie leicht an — passend zur Bewegung in S.
+      var trend = (182 - i) / 182 * 0.5;
       var tagKey = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-      // Jeder dritte Tag traegt alle drei Abschnitte, die uebrigen nur den Abend — so, wie
-      // jemand es tatsaechlich taete: meistens einmal, manchmal oefter.
-      var wieOft = (i % 3 === 0) ? 3 : 1;
-      var abschnitte = (wieOft === 3) ? ABSCHNITTE : [ABSCHNITTE[2]];
+      // Jeder dritte erfasste Tag traegt alle drei Abschnitte, die uebrigen nur den Abend — so,
+      // wie jemand es tatsaechlich taete: meistens einmal, manchmal oefter.
+      var abschnitte = (i % 3 === 0) ? ABSCHNITTE : [ABSCHNITTE[2]];
       abschnitte.forEach(function(ab, k){
         var zeit = new Date(d.getFullYear(), d.getMonth(), d.getDate(), ab.h, 0, 0);
-        var e = Math.round(Math.max(1, Math.min(5, 3.3 + wochen + ab.ab + (demoZufall(i*3+k+1) - 0.5) * 1.2)));
-        var s = Math.round(Math.max(1, Math.min(5, 3.5 + wochen*0.6 + ab.ab*0.5 + (demoZufall(i*3+k+50) - 0.5) * 1.3)));
+        var e = Math.round(Math.max(1, Math.min(5, 3.1 + trend + wochen + ab.ab + (demoZufall(i*3+k+1) - 0.5) * 1.2)));
+        var s = Math.round(Math.max(1, Math.min(5, 3.3 + trend + wochen*0.6 + ab.ab*0.5 + (demoZufall(i*3+k+50) - 0.5) * 1.3)));
         zustand.push({day: tagKey, ts: zeit.getTime(), energy: e, valence: s,
                       slot: ab.h < 11 ? 'morgen' : (ab.h < 17 ? 'mittag' : 'abend')});
       });
@@ -104,7 +125,7 @@
     var archiv = andere.map(function(a, k){
       var abw = ORDER.reduce(function(sum, f){ return sum + Math.abs(ergebnis[f] - a.sc[f]); }, 0) / ORDER.length;
       return {
-        id: 'demo'+k, ts: jetzt - (30 - k*7)*TAG_MS,
+        id: 'demo'+k, ts: jetzt - (150 - k*38)*TAG_MS,
         myCode: toCode(ergebnis), otherCode: toCode(a.sc),
         match: Math.round(100 - abw), label: a.label
       };
