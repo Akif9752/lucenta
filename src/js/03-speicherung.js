@@ -113,6 +113,14 @@
   }
   function plusSetzen(an){
     try{ an ? localStorage.setItem(PLUS_SCHLUESSEL, '1') : localStorage.removeItem(PLUS_SCHLUESSEL); }catch(e){}
+    syncWortmarke();
+  }
+  // Das "+" an der Wortmarke wird hier nachgezogen und nicht bei jedem Ansichtswechsel: Der
+  // Zustand aendert sich genau an einer Stelle — hier —, und beim Start. Es an showView() zu
+  // haengen hiesse, sechzig Mal am Tag etwas zu pruefen, das sich einmal im Leben aendert.
+  function syncWortmarke(){
+    var el = $('wortmarkePlus');
+    if (el) el.hidden = !istPlus();
   }
   // So viele Tage der Tagesform zeigt die freie Fassung. Vierzehn ist nicht gegriffen: Der erste
   // Befund braucht sieben Tage, der zweite vierzehn — wer die Grenze erreicht, hat also gerade
@@ -257,6 +265,19 @@
   // ausdrücklich hell oder dunkel, würde die Systemleiste sonst weiter der Systemeinstellung
   // folgen und farblich von der App abweichen. Ein zusätzlicher, nachgestellter Eintrag ohne
   // Medienbedingung übersteuert das; bei „System" wird er wieder entfernt.
+  // Welcher Modus ist gerade tatsaechlich zu sehen? Nicht dasselbe wie die Einstellung: Steht
+  // dort "System", sagt data-theme nichts, und die Antwort liegt allein bei der Systemvorgabe.
+  // Beides zusammen ist die einzige verlaessliche Auskunft — und sie wird an mehr als einer
+  // Stelle gebraucht, deshalb steht sie hier und nicht dort, wo sie zuerst gefehlt hat.
+  function dunkelAktiv(){
+    try{
+      var m = document.documentElement.getAttribute('data-theme');
+      if (m === 'dark') return true;
+      if (m === 'light') return false;
+      return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }catch(e){ return false; }
+  }
+
   function syncThemeColor(mode){
     try{
       var head = document.head || document.getElementsByTagName('head')[0];

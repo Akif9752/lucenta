@@ -14,6 +14,10 @@ function mkEl(id){
   var e={id:id,style:{},_cls:{},textContent:'',innerHTML:'',dataset:{},value:'',offsetParent:{},
     classList:{add(c){e._cls[c]=1},remove(c){delete e._cls[c]},contains(c){return !!e._cls[c]},toggle(c,on){on?e._cls[c]=1:delete e._cls[c]}},
     setAttribute(k,v){e['a_'+k]=v},getAttribute(k){return e['a_'+k]},removeAttribute(k){delete e['a_'+k]},
+    // Runde 92: Die Nachbildung kannte setAttribute und getAttribute, aber nicht hasAttribute —
+    // eine Luecke, die erst auffiel, als der Code danach fragte. Eine Nachbildung, die weniger
+    // kann als das Echte, prueft nicht die App, sondern die eigenen Grenzen.
+    hasAttribute(k){return Object.prototype.hasOwnProperty.call(e,'a_'+k)},
     addEventListener(){},appendChild(){},focus(){global.__focused=id},querySelectorAll(){return[]},querySelector(){return null},
     scrollIntoView(){},closest(){return null},parentNode:null};
   return e;

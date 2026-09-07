@@ -145,6 +145,11 @@
   function hideRunChoice(){
     var el = $('runChoice');
     if (el) el.style.display = 'none';
+    // Nur zuruecksetzen, wenn der Knopf gerade als Aufklapper dient: In den anderen Zustaenden
+    // ("Dein letztes Ergebnis ansehen", "Neu starten") klappt er nichts auf, und ein
+    // aria-expanded daran wuerde eine Flaeche ankuendigen, die es nicht gibt.
+    var knopf = $('btnHeroSecondary');
+    if (knopf && knopf.hasAttribute('aria-expanded')) knopf.setAttribute('aria-expanded', 'false');
   }
 
   // Läuft Lucenta bereits als eigenständige App vom Home-Bildschirm? Dann wäre der Hinweis unsinnig.
@@ -180,9 +185,24 @@
   // schützen und der Test startet ohne Zwischenfrage.
   function requestRun(){
     if (!loadResult()){ beginRun(false); return; }
-    if (currentView !== 'landing'){ showView('landing'); }
     var el = $('runChoice');
+    // Runde 92: Der Knopf klappte die Frage nur auf. Ein zweiter Druck auf denselben Knopf tat
+    // nichts — wer die Frage wieder loswerden wollte, musste den Abbrechen-Knopf darunter
+    // finden. Ein Knopf, der etwas aufklappt, klappt es auch wieder zu; das ist keine Funktion,
+    // die man lernt, sondern eine, die man erwartet. Der Abbrechen-Knopf bleibt trotzdem: er ist
+    // die Ausfahrt fuer alle, die den Blick unten in der Flaeche haben, und die einzige, die
+    // per Tastatur in Leserichtung erreichbar ist.
+    if (el && el.style.display !== 'none'){
+      hideRunChoice();
+      // Der Fokus wandert zurueck auf den Knopf, der gerade zugeklappt hat. Ohne das faellt er
+      // beim Zuklappen auf den Seitenanfang, weil das fokussierte Element verschwindet.
+      try{ $('btnHeroSecondary').focus({preventScroll:true}); }catch(e){}
+      return;
+    }
+    if (currentView !== 'landing'){ showView('landing'); }
     el.style.display = 'flex';
+    var knopf = $('btnHeroSecondary');
+    if (knopf) knopf.setAttribute('aria-expanded', 'true');
     try{ $('btnRunSelf').focus({preventScroll:true}); }catch(e){}
     el.scrollIntoView({block:'nearest', behavior:'smooth'});
   }
@@ -196,6 +216,8 @@
       btn.textContent = tx('js_weitermachen_frage')+(progress.qi+1)+'/50) →';
       btn.onclick = function(){ guestRun=false; answers=progress.answers; qi=progress.qi; renderQuestion(); showView('quiz'); };
       sec.style.display = '';
+      sec.removeAttribute('aria-expanded');
+      sec.removeAttribute('aria-controls');
       if (result){
         sec.textContent = tx('js_dein_letztes_ergebnis_anse');
         sec.onclick = function(){ guestRun=false; scores=result; renderResult(); showView('result'); };
@@ -209,6 +231,8 @@
       sec.style.display = '';
       sec.textContent = tx('js_test_erneut_machen');
       sec.onclick = requestRun;
+      sec.setAttribute('aria-expanded', 'false');
+      sec.setAttribute('aria-controls', 'runChoice');
     } else {
       btn.textContent = tx('js_test_starten');
       btn.onclick = function(){ beginRun(false); };

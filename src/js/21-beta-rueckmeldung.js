@@ -285,6 +285,7 @@
     refreshDrawerState();
     applyTheme(loadThemeMode());
     schalterAnwenden();
+    syncWortmarke();
     if ($('btnExport')) $('btnExport').addEventListener('click', datenSichern);
     if ($('btnImport')) $('btnImport').addEventListener('click', function(){
       var feld = $('importFeld');

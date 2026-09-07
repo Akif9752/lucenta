@@ -58,6 +58,12 @@ zu verschließen kostet mehr, als er einbringt.
 | **Vergleiche speichern (Archiv)** | – | ✓ |
 | **Verstehen: Zusammenspiel deiner Werte** | – | ✓ |
 | **Verstehen: was in deinen eigenen Daten steht** | – | ✓ |
+| **Das „+" an der Wortmarke in der Kopfzeile** | – | ✓ |
+
+Das „+" an der Wortmarke ist die einzige Zeile in dieser Tabelle, die nichts freischaltet.
+Sie steht trotzdem darin: Ohne sie lässt sich die Frage „habe ich das eigentlich noch?"
+nur über Umwege beantworten — den Verlauf öffnen und nachsehen, ob mehr als zwei
+Durchläufe stehen. Ein Kauf, den man suchen muss, fühlt sich nicht wie einer an.
 
 ## Warum diese Zahlen
 

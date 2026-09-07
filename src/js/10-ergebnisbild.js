@@ -1,7 +1,17 @@
 // ---------- Ergebnisbild (Canvas-Karte zum Teilen/Speichern) ----------
-  // Feste, vom aktuellen Hell-/Dunkelmodus unabhängige Markenfarben — eine geteilte Bildkarte
-  // soll immer gleich aussehen, unabhängig vom Farbmodus des Geräts, auf dem sie geöffnet wird.
-  var SHARE_COLORS = { paper:'#F5F6EF', ink:'#15201A', muted:'#57655C', line:'#DBDCCE', accent:'#2F6F6A', accentFill:'rgba(47,111,106,.26)', accent2:'#C97A3C' };
+  // Runde 92, gemeldet: Das Bild kam immer in der Hellfassung heraus, auch mitten in der Nacht
+  // aus einer durchgehend dunklen App. Bis Runde 91 stand hier als Begruendung, eine geteilte
+  // Karte solle ueberall gleich aussehen. Das ist ein Argument fuer den Empfaenger und gegen die
+  // Person, die teilt: Sie sieht in dem Moment ihre eigene App und bekommt ein Bild, das nicht
+  // dazu gehoert. Der Empfaenger vergleicht ohnehin nicht zwei Karten nebeneinander.
+  //
+  // Beide Fassungen sind fest verdrahtet und nicht aus den CSS-Marken gelesen: Auf einer
+  // Leinwand gibt es keine Transparenz gegen einen Hintergrund, den es dort nicht gibt, und die
+  // Marken der App tragen an mehreren Stellen Deckungswerte. Die Werte hier sind dieselben wie
+  // in 00-grundlagen.css — --paper, --ink, --muted, --line, --accent, --accent-2 — je Modus.
+  var SHARE_COLORS = { paper:'#EEF0E5', ink:'#15201A', muted:'#57655C', line:'#DBDCCE', accent:'#2F6F6A', accentFill:'rgba(47,111,106,.26)', accent2:'#C97A3C' };
+  var SHARE_COLORS_DARK = { paper:'#0F1613', ink:'#ECEEE7', muted:'#96A69C', line:'#293630', accent:'#5CB4AD', accentFill:'rgba(92,180,173,.26)', accent2:'#E39A5C' };
+  function shareColors(){ return dunkelAktiv() ? SHARE_COLORS_DARK : SHARE_COLORS; }
 
   function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
     var words = text.split(' ');
@@ -19,7 +29,7 @@
   }
 
   function drawShareRadar(ctx, sc, cx, cy, r){
-    var C = SHARE_COLORS;
+    var C = shareColors();
     [0.25,0.5,0.75,1].forEach(function(frac){
       ctx.beginPath();
       ORDER.forEach(function(f,i){
@@ -74,7 +84,7 @@
   var SHARE_FORMATS = { feed: {w:1080, h:1350}, story: {w:1080, h:1920} };
   function buildShareCanvas(format){
     var fmt = SHARE_FORMATS[format] || SHARE_FORMATS.feed;
-    var C = SHARE_COLORS, W = fmt.w, H = SHARE_LAYOUT_H, M = 84;
+    var C = shareColors(), W = fmt.w, H = SHARE_LAYOUT_H, M = 84;
     var canvas = document.createElement('canvas');
     canvas.width = fmt.w; canvas.height = fmt.h;
     var ctx = canvas.getContext('2d');

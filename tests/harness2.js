@@ -16,11 +16,17 @@ function mkEl(id){
   return e;
 }
 function el(id){ if(!__els[id]) __els[id]=mkEl(id); return __els[id]; }
+var __html = mkEl('html'); __html.lang = '';
+global.__html = __html;
 global.__els = __els; global.el = el;
 global.window = { addEventListener:function(){}, matchMedia:function(){ return {matches:true}; }, scrollY:0, scrollTo:function(){} };
 global.document = { getElementById:function(id){ return el(id); }, addEventListener:function(){},
   querySelector:function(){ return el('__header'); },
   querySelectorAll:function(sel){ return sel==='.view' ? ['landing','quiz','result','archetypes','state','profile','settings','compat-archive','understand'].map(function(n){return el('view-'+n);}) : []; },
-  documentElement:{ setAttribute:function(){}, removeAttribute:function(){}, lang:'' },
+  // Runde 92: Das Wurzelelement war ein Attrappen-Attrappe — setAttribute und removeAttribute
+  // taten nichts, getAttribute gab es gar nicht. dunkelAktiv() fragt danach, fing die
+  // Ausnahme ab und antwortete stumm "hell": Die Ergebnisbild-Reihe haette die Dunkelfassung
+  // nie zu Gesicht bekommen und trotzdem bestanden. Jetzt merkt es sich, was gesetzt wird.
+  documentElement:__html,
   createElement:function(){ return mkEl('tmp'); } };
 global.requestAnimationFrame=function(){}; global.setTimeout=function(){};

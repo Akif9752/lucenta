@@ -13,10 +13,10 @@
       beginPath:function(){}, closePath:function(){}, moveTo:function(x,y){ ops.push(['pt',x+st.tx,y+st.ty]); },
       lineTo:function(x,y){ ops.push(['pt',x+st.tx,y+st.ty]); },
       arc:function(x,y,r){ ops.push(['pt',x+st.tx-r,y+st.ty-r]); ops.push(['pt',x+st.tx+r,y+st.ty+r]); },
-      fill:function(){}, stroke:function(){},
-      fillRect:function(x,y,w,h){ ops.push(['pt',x+st.tx,y+st.ty]); ops.push(['pt',x+w+st.tx,y+h+st.ty]); },
+      fill:function(){ ops.push(['farbe', ctx.fillStyle]); }, stroke:function(){ ops.push(['farbe', ctx.strokeStyle]); },
+      fillRect:function(x,y,w,h){ ops.push(['pt',x+st.tx,y+st.ty]); ops.push(['pt',x+w+st.tx,y+h+st.ty]); ops.push(['farbe', ctx.fillStyle]); },
       strokeRect:function(){},
-      fillText:function(t,x,y){ ops.push(['text',x+st.tx,y+st.ty,t]); },
+      fillText:function(t,x,y){ ops.push(['text',x+st.tx,y+st.ty,t]); ops.push(['farbe', ctx.fillStyle]); },
       measureText:function(t){ return {width: String(t).length*17}; }
     };
     var canvas = {width:0, height:0, getContext:function(){ return ctx; }, toDataURL:function(){ return 'data:,'; }};
@@ -74,6 +74,48 @@
   ok(sMinY>=200, "oben bleiben mindestens 200px frei fuer die Bedienelemente der Plattform (frei: "+Math.round(sMinY)+")");
   ok(sMaxY<=1670, "unten bleiben mindestens 250px frei (Inhalt endet bei "+Math.round(sMaxY)+")");
   console.log("  frei oben: "+Math.round(sMinY)+"px, frei unten: "+Math.round(1920-sMaxY)+"px");
+
+
+  // ---------------------------------------------------------------------------------------
+  // Runde 92, gemeldet: "wenn man ergebnis teilen drueckt kommt immer die hellversion der app
+  // als bild". Die Karte war absichtlich fest hell — als Begruendung stand dort, sie solle
+  // ueberall gleich aussehen. Diese Reihe haelt jetzt fest, dass sie dem Modus folgt, UND dass
+  // die Pruefung selbst etwas sieht: Bis Runde 91 fehlte dem Ersatz-Wurzelelement getAttribute,
+  // dunkelAktiv() verschluckte die Ausnahme und antwortete stumm "hell". Eine Pruefung, die nur
+  // die Hellfassung zu Gesicht bekommt, kann die Dunkelfassung nicht bestaetigen.
+  console.log("\n=== Das Bild folgt dem Farbmodus ===");
+  function farbenVon(modus){
+    document.documentElement.setAttribute('data-theme', modus);
+    var r = record('feed');
+    document.documentElement.removeAttribute('data-theme');
+    var set = {};
+    r.ops.forEach(function(o){ if (o[0]==='farbe' && o[1]) set[String(o[1]).toLowerCase()] = 1; });
+    return set;
+  }
+  var hell = farbenVon('light'), dunkel = farbenVon('dark');
+  ok(!!hell['#eef0e5'], "hell: der Grund ist das Papier der Hellfassung (#EEF0E5)");
+  ok(!!hell['#15201a'], "hell: die Schrift ist die Tinte der Hellfassung (#15201A)");
+  ok(!!dunkel['#0f1613'], "dunkel: der Grund ist das Papier der Dunkelfassung (#0F1613)");
+  ok(!!dunkel['#eceee7'], "dunkel: die Schrift ist die Tinte der Dunkelfassung (#ECEEE7)");
+  ok(!dunkel['#eef0e5'] && !dunkel['#15201a'],
+     "dunkel: keine einzige Farbe der Hellfassung bleibt im Bild stehen");
+  ok(!hell['#0f1613'] && !hell['#eceee7'],
+     "hell: keine einzige Farbe der Dunkelfassung bleibt im Bild stehen");
+  var gemeinsam = Object.keys(hell).filter(function(f){ return dunkel[f]; });
+  ok(gemeinsam.length === 0,
+     "die beiden Fassungen teilen sich keine Farbe (gemeinsam: "+gemeinsam.join(', ')+")");
+  console.log("  hell: "+Object.keys(hell).join(', '));
+  console.log("  dunkel: "+Object.keys(dunkel).join(', '));
+
+  console.log("\n=== Die Nachbildung sieht den Modus wirklich ===");
+  // Ohne diese Pruefung waere die Reihe darueber wertlos: Antwortet dunkelAktiv() immer "hell",
+  // sind beide Durchgaenge identisch und "keine Farbe der Dunkelfassung" waere trivial erfuellt.
+  document.documentElement.setAttribute('data-theme', 'dark');
+  ok(dunkelAktiv() === true, "bei data-theme=\"dark\" meldet dunkelAktiv() true");
+  document.documentElement.setAttribute('data-theme', 'light');
+  ok(dunkelAktiv() === false, "bei data-theme=\"light\" meldet dunkelAktiv() false");
+  document.documentElement.removeAttribute('data-theme');
+  ok(dunkelAktiv() === true, "ohne eigene Wahl entscheidet die Systemvorgabe (hier: dunkel)");
 
   console.log("\n==================================================");
   console.log(fails===0 ? ("ALLE "+checks+" PRUEFUNGEN BESTANDEN") : (fails+" von "+checks+" PRUEFUNGEN FEHLGESCHLAGEN"));

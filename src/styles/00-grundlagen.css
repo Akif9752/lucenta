@@ -382,6 +382,15 @@
      nicht als Tiefe, sondern als Unsauberkeit gelesen würde. flex-shrink:0, damit das Zeichen bei
      starker Textvergrößerung nicht als Erstes nachgibt (siehe Zoom-Prüfung Runde 48). */
   .wordmark .brandmark{display:inline-flex;flex-shrink:0;line-height:0;}
+  /* Runde 92: Wer Lucenta+ hat, sieht das jetzt oben in der Leiste. Das ist keine Zierde, es ist
+     die Antwort auf eine Frage, die sich sonst nur ueber Umwege beantworten laesst — "habe ich
+     das eigentlich noch?". Das Zeichen sitzt direkt an der Wortmarke statt daneben: Der bezahlte
+     Name ist "Lucenta+", nicht "Lucenta" mit einem Abzeichen. Das negative Aussenmass hebt die
+     8px Luecke der Flexbox genau auf, sodass beide Zeichen zusammenstossen. */
+  .wordmark-plus{
+    font-family:var(--serif); font-size:19px; font-weight:600; line-height:1;
+    color:var(--accent); margin-left:-8px; flex-shrink:0;
+  }
   .wordmark-beta{
     font-family:var(--mono); font-size:9.5px; font-weight:600; letter-spacing:.04em;
     text-transform:uppercase; color:var(--muted); border:1px solid var(--line);
