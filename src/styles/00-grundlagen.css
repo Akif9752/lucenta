@@ -137,9 +137,15 @@
        Runde 93, von der Kontrastpruefung gefunden: Beide Werte waren fuer die Flaeche gerechnet,
        auf der sie NICHT stehen. Als Fettschrift stehen sie auf dem Warnband, und das ist die
        Fehlerfarbe zu 12 Prozent auf der Flaeche — also naeher an ihnen selbst. Gemessen 4,31
-       im Hellmodus und 3,35 im Dunkelmodus. Beide sind jetzt auf dem BAND gerechnet: hell
-       4,51:1, dunkel 4,52:1. */
-    --danger:#AF3327;
+       im Hellmodus und 3,35 im Dunkelmodus.
+
+       Der erste Versuch, das zu reparieren, ist in dieselbe Falle gelaufen: Das Band wird AUS
+       der Fehlerfarbe gemischt. Wer die Farbe heller macht, macht das Band mit heller, und der
+       Abstand waechst langsamer als gerechnet — gerechnet 4,52, gemessen 4,35. Erst der
+       Festpunkt beider Groessen stimmt. Im Browser nachgemessen, nicht nur gerechnet: hell
+       4,80:1, dunkel 4,82:1. Beide mit Abstand zur Grenze, damit die naechste Verschiebung der
+       Palette sie nicht sofort wieder darunter drueckt. */
+    --danger:#A83025;
     --surface-3:#D3D7C8;
     --shadow: 0 1px 2px rgba(21,32,25,.05), 0 12px 32px -12px rgba(21,32,25,.18);
     --shadow-sm: 0 1px 2px rgba(21,32,25,.06);
@@ -171,7 +177,7 @@
       --ink:#ECEEE7;
       --muted:#96A69C;
       --muted-soft:#7F9286;
-      --danger:#F75443;
+      --danger:#FF6252;
       --line:#293630;
       --line-strong:#546F62;
       --accent:#5CB4AD;
@@ -233,7 +239,7 @@
     --ink:#ECEEE7;
     --muted:#96A69C;
     --muted-soft:#7F9286;
-    --danger:#F75443;
+    --danger:#FF6252;
     --line:#293630;
     --line-strong:#546F62;
     --accent:#5CB4AD;
