@@ -31,6 +31,7 @@
   var RICHTUNG_X = -0.62, RICHTUNG_Y = 0.42;
 
   var farbeWarm = null, farbeKalt = null, farbeStrahl = 'transparent';
+  var farbeSonne = 'transparent', sonneGezeichnet = null, sonneVerlauf = [];
   // Runde 83: Zwei Atmosphaeren statt einer. Welche gilt, sagt das Stilblatt ueber die Marke
   // --atmosphaere — nicht dieses Skript. Der Grund ist derselbe wie bei den Farben: Der
   // Hell-/Dunkelwechsel gehoert ins CSS, und ein Skript, das ihn selbst herleitet, geht beim
@@ -44,6 +45,11 @@
       var neuStaub = art === 'staub';
       if (neuStaub !== staub){ staub = neuStaub; aufbauen(); }
       farbeStrahl = (s.getPropertyValue('--lichtstrahl') || '').trim() || 'transparent';
+      var neuSonne = (s.getPropertyValue('--sonnenstrahl') || '').trim() || 'transparent';
+      // Die Verlaeufe haengen nur an Farbe und Flaeche, nicht am Winkel — sie werden deshalb
+      // einmal erzeugt und je Strahl nur gedreht. Ein Verlauf pro Strahl und Bild waere bei
+      // sieben Strahlen mal drei Lagen sechzig Zuteilungen in der Sekunde.
+      if (neuSonne !== farbeSonne){ farbeSonne = neuSonne; sonneGezeichnet = null; }
       farbeStern = (s.getPropertyValue('--stern') || '').trim() || 'rgba(21,32,25,.5)';
       farbeSchnuppe = (s.getPropertyValue('--stern-schnuppe') || '').trim() || farbeStern;
       // Runde 72: Ein echter Himmel ist nicht einfarbig. Ein kleiner Teil der Sterne zieht ins
@@ -114,6 +120,8 @@
       });
     }
     schnuppen.length = 0;
+    strahlenAufbauen();
+    sonneGezeichnet = null;
   }
 
   function schnuppeStarten(){
@@ -152,6 +160,100 @@
     ctx.fillRect(0, 0, b, h);
     ctx.globalAlpha = 1;
   }
+  // ---------- Der Sonnenfaecher (Runde 85) ----------
+  //
+  // Rueckmeldung: "beim hellmodus fehlen mir auf der startseite im hintergrund die
+  // sonnenstrahlen leicht noch, man soll schon den unterschied erkennen koennen zwischen
+  // nachts bei der dunkelversion und tagsueber bei der hellversion."
+  //
+  // Der weiche Streifen allein hat das nicht geleistet: Er ist so breit und so weich, dass er
+  // als heller Fleck gelesen wird und nicht als Licht. Was einen Tag von einer Nacht
+  // unterscheidet, sind nicht Helligkeit, sondern RICHTUNG und QUELLE — Strahlen, die
+  // erkennbar von EINEM Punkt ausserhalb des Bildes kommen. Genau das ist hier gebaut: eine
+  // Sonne oberhalb der rechten oberen Ecke und ein Faecher einzelner Strahlen daraus.
+  //
+  // Drei Entscheidungen, die es bei "Lichtstrahlen auf einer Seite" leicht kippen lassen:
+  //   - Die Strahlen sind UNGLEICH breit und ungleich hell. Sieben gleiche Keile ergeben einen
+  //     Sonnenschirm, kein Licht.
+  //   - Jeder besteht aus drei Lagen: schmal und kraeftig innen, breit und schwach aussen.
+  //     Ein einzelner Keil haette eine sichtbare Kante, und eine Kante macht aus Licht Grafik.
+  //   - Sie schwingen mit derselben Phase wie der Streifen, nur schwaecher. Zwei Lichtquellen,
+  //     die unabhaengig voneinander wandern, sind physikalisch Unsinn und man sieht es.
+  var faecher = [];
+  // Grundrichtung: nach links unten. Nicht 45 Grad — flacher wirkt nach Nachmittag,
+  // steiler nach Mittag, und der Nachmittag passt zu einer Seite, die man abends oeffnet.
+  var FAECHER_MITTE = 2.16;
+  function strahlenAufbauen(){
+    faecher.length = 0;
+    if (!staub) return;
+    var n = 7;
+    for (var i = 0; i < n; i++){
+      var mitte = (i / (n - 1)) - 0.5;
+      faecher.push({
+        // Ablage vom Mittelwinkel, mit etwas Unregelmaessigkeit: gleiche Abstaende sehen
+        // gezeichnet aus.
+        ab: mitte * 0.60 + (Math.random() - 0.5) * 0.055,
+        // Halbe Breite als Steigung (Gegenkathete je Laenge). Die schmalen sind die klaren.
+        br: 0.012 + Math.random() * 0.030,
+        // Die Strahlen in der Mitte des Faechers sind kraeftiger als die an den Raendern —
+        // so faellt das Buendel zu den Seiten hin aus, statt abgeschnitten zu wirken.
+        a: (0.44 + Math.random() * 0.40) * (1 - Math.abs(mitte) * 0.80),
+        ph: Math.random() * Math.PI * 2,
+        pv: 0.00035 + Math.random() * 0.00075
+      });
+    }
+  }
+  // Innen kraeftig, aussen weich: die drei Lagen je Strahl.
+  var LAGEN = [{w:1.0, a:1.00}, {w:2.1, a:0.45}, {w:3.8, a:0.20}];
+  function sonneAufbauen(){
+    sonneVerlauf.length = 0;
+    var L = (b + h) * 1.25;
+    for (var i = 0; i < LAGEN.length; i++){
+      var g = ctx.createLinearGradient(0, 0, L, 0);
+      // Nicht bei 0 voll: Direkt an der Quelle wuerden sich alle sieben Strahlen zu einem
+      // Fleck ueberlagern. Das Maximum liegt im ersten Drittel, dort, wo ein Strahl auch in
+      // echt am deutlichsten ist.
+      g.addColorStop(0, 'transparent');
+      g.addColorStop(0.16, farbeSonne);
+      g.addColorStop(0.55, farbeSonne);
+      g.addColorStop(1, 'transparent');
+      sonneVerlauf.push(g);
+    }
+    sonneGezeichnet = farbeSonne;
+  }
+  function sonneOrt(){
+    // Die Sonne selbst liegt ausserhalb des Bildes. Sichtbar ist nur, was von ihr kommt —
+    // eine Scheibe im Bild waere eine Illustration, kein Hintergrund.
+    return { x: b * (0.86 + 0.13 * Math.sin(strahlPhase)), y: -h * 0.26 };
+  }
+  function faecherZeichnen(){
+    if (!staub || farbeSonne === 'transparent' || !faecher.length) return;
+    if (sonneGezeichnet !== farbeSonne) sonneAufbauen();
+    var o = sonneOrt(), L = (b + h) * 1.25;
+    var basis = FAECHER_MITTE + Math.sin(strahlPhase) * 0.085;
+    ctx.save();
+    ctx.translate(o.x, o.y);
+    for (var i = 0; i < faecher.length; i++){
+      var f = faecher[i];
+      var winkel = basis + f.ab + (wenigerBewegung ? 0 : Math.sin(f.ph) * 0.016);
+      ctx.save();
+      ctx.rotate(winkel);
+      for (var k = 0; k < LAGEN.length; k++){
+        var q = LAGEN[k].w * f.br * L;
+        ctx.globalAlpha = f.a * LAGEN[k].a;
+        ctx.fillStyle = sonneVerlauf[k];
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(L, -q);
+        ctx.lineTo(L, q);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
   // Wie stark ein Korn vom Strahl getroffen wird: 1 in der Mitte, 0 ausserhalb.
   function imStrahl(x){
     if (!staub) return 0;
@@ -163,6 +265,7 @@
   function zeichnen(){
     ctx.clearRect(0, 0, b, h);
     strahlZeichnen();
+    faecherZeichnen();
     var i, s;
     for (i = 0; i < sterne.length; i++){
       s = sterne[i];
@@ -261,7 +364,10 @@
 
     // Sehr langsam: eine volle Wanderung dauert rund vier Minuten. Schneller gelesen waere es
     // ein Suchscheinwerfer statt eines Nachmittags.
-    if (staub) strahlPhase += 0.00042;
+    if (staub){
+      strahlPhase += 0.00042;
+      for (i = 0; i < faecher.length; i++) faecher[i].ph += faecher[i].pv;
+    }
     if (++farbZaehler > 60){ farbZaehler = 0; farbenLesen(); }
     zeichnen();
     rafId = window.requestAnimationFrame(schritt);

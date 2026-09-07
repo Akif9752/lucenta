@@ -411,6 +411,13 @@ keine Reihe prüfen.** Attribute, Zeichenwahl und Farbkontrast gehören dazu. Ve
   nicht mit Sternzeichen." Ein Sternenhimmel hinter genau diesem Satz ist ein sichtbarer
   Widerspruch zur Kernaussage der Marke. Das wurde vor dem Bau benannt und bewusst so entschieden.
 
+  **Runde 83/85: der Hellmodus bekam eine eigene Atmosphäre.** Ein Sternenhimmel bei Tag ergab
+  keinen Sinn; an seiner Stelle steht Staub in einem Lichtstrahl &mdash; dieselbe Physik, nur
+  durch Licht sichtbar statt durch Dunkelheit, und zugleich das Bild, auf dem die Marke steht
+  (der Name heißt leuchtend, das Zeichen ist eine Öffnung). Runde 85 ergänzte den Fächer aus
+  einzelnen Sonnenstrahlen: Der weiche Streifen allein wurde als heller Fleck gelesen, nicht als
+  Tageslicht. Was Tag von Nacht unterscheidet, ist nicht Helligkeit, sondern Richtung und Quelle.
+
   **Runde 62:** Der schwache, langsam atmende Schein hinter der
   Startseiten-Überschrift beantwortet keine Handlung. Er ist Zierde, wurde ausdrücklich gewünscht
   und ist in `10-druckzustaende.css` als solche benannt. Er steht hier, damit niemand ihn später

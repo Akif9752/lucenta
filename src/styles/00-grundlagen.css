@@ -56,6 +56,11 @@
     --stern-warm:rgba(176,134,78,.44);
     --stern-kalt:rgba(150,142,118,.36);
     --lichtstrahl:rgba(255,236,196,.55);
+    /* Runde 85: Der diffuse Streifen allein war zu leise — er las sich als heller Fleck, nicht
+       als Tageslicht. Dazu kommt jetzt ein Faecher einzelner Strahlen aus einer Sonne oben
+       rechts. Eigene Marke, weil er kraeftiger sein muss als der Streifen: Der Streifen ist die
+       Luft, die Strahlen sind das Licht. */
+    --sonnenstrahl:rgba(255,244,219,.9);
     /* Nur im Fragebogen sichtbar; ausserhalb faellt die Hoehe auf 0 und die Kopfleiste rueckt
        automatisch nach, weil ihr Versatz an derselben Marke haengt. */
     --fokuslinie-hoehe:0px;
@@ -119,6 +124,7 @@
       --stern-warm:rgba(255,232,198,.68);
       --stern-kalt:rgba(206,226,255,.66);
       --lichtstrahl:transparent;
+      --sonnenstrahl:transparent;
       --kopf-links:#16221D;
       --kopf-rechts:#0D1512;
       --accent-ink:#08211E;
@@ -156,6 +162,7 @@
     --stern-warm:rgba(255,232,198,.68);
     --stern-kalt:rgba(206,226,255,.66);
     --lichtstrahl:transparent;
+    --sonnenstrahl:transparent;
     --kopf-links:#16221D;
     --kopf-rechts:#0D1512;
     --accent-ink:#08211E;
