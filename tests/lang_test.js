@@ -77,6 +77,23 @@
     // eine, stuende bei genau dieser Verteilung gar nichts — schlimmer als der eine Satz fuer
     // alle, den sie ersetzen.
     ok(pack.CMP_GESAMT && pack.CMP_GESAMT.length === 6, c+": CMP_GESAMT hat sechs Lagen");
+    // Runde 82: Die Kombinationstabelle deckt alle zehn Paare in allen vier Pol-Lagen ab.
+    // Vollstaendig und nicht als Auswahl: Eine Luecke bedeutete, dass genau die Menschen mit
+    // dieser Wertekombination in der Verstehen-Ansicht keine Karte saehen — und niemand
+    // bemerkte es, weil die eigene Kombination immer da ist.
+    var KOMBI_DIMS = ['O','E','C','A','S'], kombiFehlt = [];
+    for (var ki=0; ki<KOMBI_DIMS.length; ki++){
+      for (var kj=ki+1; kj<KOMBI_DIMS.length; kj++){
+        ['hh','hl','lh','ll'].forEach(function(lage){
+          var k = KOMBI_DIMS[ki]+KOMBI_DIMS[kj]+'_'+lage;
+          var e = pack.KOMBI && pack.KOMBI[k];
+          if (!e || !e.title || !e.body) kombiFehlt.push(k);
+        });
+      }
+    }
+    ok(kombiFehlt.length === 0, c+": KOMBI vollstaendig, fehlen: "+kombiFehlt.slice(0,4).join(', '));
+    ok(pack.KOMBI && Object.keys(pack.KOMBI).length === 40,
+       c+": KOMBI hat genau 40 Faelle ("+(pack.KOMBI?Object.keys(pack.KOMBI).length:0)+")");
     ok((pack.CMP_GESAMT||[]).every(function(t){ return typeof t === 'string' && t.length > 20; }),
        c+": jede Lage in CMP_GESAMT traegt einen Satz");
     ['E','A','C','S','O'].forEach(function(f){

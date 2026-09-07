@@ -296,6 +296,31 @@ Spanisch, Französisch, Italienisch, Portugiesisch und Japanisch. Die App sagt d
 Hinweis unter der Sprachauswahl nennt es beim Namen, statt eine Validierung zu behaupten, die es
 nicht gibt. Siehe `docs/klarsicht-produktplan.md`, Runde 54.
 
+## Was die Verstehen-Ansicht zeigt
+
+Bis Runde 82 waren es vier Karten zu den zwei stärksten Dimensionen, jede für sich. Eine
+Dimension für sich ist aber nicht das, was jemand über sich erfahren will: Hohe
+Gewissenhaftigkeit liest sich mit hoher Offenheit völlig anders als mit niedriger. Dazu kamen
+zwei Abschnitte:
+
+**Kombinationen.** Eine Tabelle über alle **zehn Paare in allen vier Pol-Lagen**, also
+vierzig Fälle je Sprache. Bewusst vollständig und nicht als Auswahl „besonders interessanter"
+Kombinationen — sonst hätten manche Menschen hier zwei Karten und andere keine, und die ohne
+wären genau die, deren Ergebnis seltener ist. Die Sprachreihe zählt die vierzig Fälle je
+Paket ab; ein Browser-Durchlauf über alle 32 Vorzeichen-Kombinationen mal zehn
+Stärkemuster hat nachgewiesen, dass **alle 40 tatsächlich erreichbar sind** und keine leer
+bleibt.
+
+**Was in den eigenen Daten steht.** Der Teil, den keine andere Persönlichkeits-App haben
+kann: Verlauf, Tagesform und Vergleichsarchiv liegen bereits auf dem Gerät. Fünf Befunde,
+jeder nennt die Zahl, auf der er beruht, keiner erscheint ohne Grundlage. Zwei davon
+brauchen nichts außer dem einen Ergebnis — sonst stünde beim allerersten Durchlauf genau
+eine Karte unter einer Überschrift im Plural.
+
+Ausdrücklich **nicht** enthalten: benannte Studien mit Jahreszahlen. Der Wunsch stand im
+Raum und ist berechtigt, aber Quellenangaben, die niemand gegengeprüft hat, wären in einer
+App mit diesem Anspruch schlimmer als keine.
+
 ## Offene Punkte
 
 - **Deutscher Fragebogen-Wortlaut ist nicht die offizielle Fassung.** 15 der 50 Items sind

@@ -453,3 +453,13 @@
   /* Der Schlusssatz haengt an der tatsaechlichen Verteilung und ist damit laenger als die Zeile
      davor — er bekommt eine eigene Zeile statt im selben Absatz weiterzulaufen. */
   .compat-gesamt-satz{margin-top:8px;color:var(--muted);}
+
+  /* Runde 82: Die zwei neuen Abschnitte der Verstehen-Ansicht.
+     Beide benutzen .understand-card weiter — sie sind derselbe Kartentyp, nur mit anderem
+     Inhalt. Eine eigene Bauform haette zwei Gestaltungen fuer eine Sache ergeben. */
+  /* Welche zwei Dimensionen die Karte behandelt, ueber der Ueberschrift. Klein und in der
+     Mono-Schrift wie alle Kennzeichnungen der App: Es ist eine Angabe, keine Aussage. */
+  .kombi-dims{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
+  /* Die aus den eigenen Daten gerechneten Karten heben sich durch eine Kante ab, nicht durch
+     eine Farbe: Sie sind kein Hinweis und keine Warnung, sondern ein anderer Ursprung. */
+  .understand-daten{border-left:3px solid var(--accent);}
