@@ -50,7 +50,13 @@ function ok(text){ console.log('  ok    ' + text); }
 // Ragt etwas seitlich heraus? Gemessen wird der sichtbare Inhalt der aktiven Ansicht.
 const suchUeberlauf = (breite) => {
   const raus = [];
-  const v = document.querySelector('.view.active');
+  // Runde 89: Ein offenes Fenster liegt UEBER der Ansicht und legt sie still (inert). Gemessen
+  // gehoert dann das Fenster, nicht die Ansicht dahinter — sonst meldet die Pruefung Knoepfe als
+  // unerreichbar, die genau deshalb unerreichbar sind, weil ein Dialog offen ist. Genau das ist
+  // beim Einhaengen des Lucenta+-Fensters passiert: sechs Funde, alle falsch, alle hinter dem
+  // Verdunkler. Gemessen wird, was jemand sieht.
+  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+         || document.querySelector('.view.active');
   if (!v) return raus;
   v.querySelectorAll('*').forEach(el => {
     const r = el.getBoundingClientRect();
@@ -85,7 +91,13 @@ const suchUeberlauf = (breite) => {
 // beantwortet nebenbei auch, ob etwas anderes davorliegt.
 const suchTippflaechen = (min) => {
   const klein = [];
-  const v = document.querySelector('.view.active');
+  // Runde 89: Ein offenes Fenster liegt UEBER der Ansicht und legt sie still (inert). Gemessen
+  // gehoert dann das Fenster, nicht die Ansicht dahinter — sonst meldet die Pruefung Knoepfe als
+  // unerreichbar, die genau deshalb unerreichbar sind, weil ein Dialog offen ist. Genau das ist
+  // beim Einhaengen des Lucenta+-Fensters passiert: sechs Funde, alle falsch, alle hinter dem
+  // Verdunkler. Gemessen wird, was jemand sieht.
+  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+         || document.querySelector('.view.active');
   if (!v) return klein;
   const halb = Math.floor(min/2) - 1;
   v.querySelectorAll('button, a[href], input, select, [role="switch"], [role="button"]').forEach(el => {
@@ -129,7 +141,13 @@ const suchTippflaechen = (min) => {
 // Schaltflaechen ohne lesbaren Namen — fuer Sprachausgabe unbenutzbar.
 const suchNamenlos = () => {
   const ohne = [];
-  const v = document.querySelector('.view.active');
+  // Runde 89: Ein offenes Fenster liegt UEBER der Ansicht und legt sie still (inert). Gemessen
+  // gehoert dann das Fenster, nicht die Ansicht dahinter — sonst meldet die Pruefung Knoepfe als
+  // unerreichbar, die genau deshalb unerreichbar sind, weil ein Dialog offen ist. Genau das ist
+  // beim Einhaengen des Lucenta+-Fensters passiert: sechs Funde, alle falsch, alle hinter dem
+  // Verdunkler. Gemessen wird, was jemand sieht.
+  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+         || document.querySelector('.view.active');
   if (!v) return ohne;
   v.querySelectorAll('button, a[href], [role="switch"]').forEach(el => {
     const r = el.getBoundingClientRect();
@@ -143,7 +161,13 @@ const suchNamenlos = () => {
 
 // Reste einer Ersetzung oder eines fehlenden Wertes im sichtbaren Text.
 const suchReste = () => {
-  const v = document.querySelector('.view.active');
+  // Runde 89: Ein offenes Fenster liegt UEBER der Ansicht und legt sie still (inert). Gemessen
+  // gehoert dann das Fenster, nicht die Ansicht dahinter — sonst meldet die Pruefung Knoepfe als
+  // unerreichbar, die genau deshalb unerreichbar sind, weil ein Dialog offen ist. Genau das ist
+  // beim Einhaengen des Lucenta+-Fensters passiert: sechs Funde, alle falsch, alle hinter dem
+  // Verdunkler. Gemessen wird, was jemand sieht.
+  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+         || document.querySelector('.view.active');
   if (!v) return [];
   const t = v.innerText || '';
   const muster = [/\{\{[^}]+\}\}/g, /\bundefined\b/g, /\bNaN\b/g, /\[object [A-Za-z]+\]/g, /@@[A-Z0-9_]+@@/g];
@@ -171,7 +195,13 @@ const suchVersteckteZiele = () => {
 // Text, dessen Farbe der eigenen Hintergrundfarbe entspricht — unsichtbar.
 const suchUnsichtbarenText = () => {
   const f = [];
-  const v = document.querySelector('.view.active');
+  // Runde 89: Ein offenes Fenster liegt UEBER der Ansicht und legt sie still (inert). Gemessen
+  // gehoert dann das Fenster, nicht die Ansicht dahinter — sonst meldet die Pruefung Knoepfe als
+  // unerreichbar, die genau deshalb unerreichbar sind, weil ein Dialog offen ist. Genau das ist
+  // beim Einhaengen des Lucenta+-Fensters passiert: sechs Funde, alle falsch, alle hinter dem
+  // Verdunkler. Gemessen wird, was jemand sieht.
+  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+         || document.querySelector('.view.active');
   if (!v) return f;
   const hinter = el => {
     let p = el;
