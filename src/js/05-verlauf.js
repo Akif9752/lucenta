@@ -56,12 +56,16 @@
       '<button type="button" class="btn btn-primary btn-sm schloss-btn" data-plus-info>'+
       tx('plus_knopf')+'</button></div></div>';
   }
-  // Ein Tipp auf einen dieser Knoepfe erklaert einmal, was die gekaufte Fassung umfasst. Mehr
-  // passiert hier nicht: Der Kauf selbst gehoert in die App-Store-Fassung, nicht in die Seite.
+  // Ein Tipp auf einen dieser Knoepfe oeffnet das Lucenta+-Fenster. Mehr passiert hier nicht:
+  // Der Kauf selbst gehoert in die App-Store-Fassung, nicht in die Seite.
+  //
+  // Runde 89: Vorher stand hier ein Kurzhinweis (toast). Der verschwindet nach ein paar
+  // Sekunden — fuer die eine Frage, die an dieser Stelle wirklich gestellt wird, die
+  // schlechteste Form.
   function schloesserVerdrahten(wurzel){
     if (!wurzel || !wurzel.querySelectorAll) return;
     wurzel.querySelectorAll('[data-plus-info]').forEach(function(b){
-      b.addEventListener('click', function(){ toast(tx('plus_hinweis')); });
+      b.addEventListener('click', openPlusModal);
     });
   }
   function historyDateFmt(){

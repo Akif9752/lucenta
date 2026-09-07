@@ -110,6 +110,9 @@
     if ($('imgModal').classList.contains('open')){
       overlayDepth = Math.max(0, overlayDepth-1); closeImgModal(true); return;
     }
+    if ($('plusModal').classList.contains('open')){
+      overlayDepth = Math.max(0, overlayDepth-1); closePlusModal(true); return;
+    }
     var st = e.state;
     var name = (st && st.lucentaView) || 'landing';
     if (!$('view-'+name)) name = 'landing';

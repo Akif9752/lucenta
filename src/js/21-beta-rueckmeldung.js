@@ -230,6 +230,8 @@
   $('btnShare').addEventListener('click', openImgModal);
   $('btnImgModalClose').addEventListener('click', closeImgModal);
   $('imgModalScrim').addEventListener('click', closeImgModal);
+  $('plusModalScrim').addEventListener('click', closePlusModal);
+  $('btnPlusModalClose').addEventListener('click', closePlusModal);
   // Runde 79: Der Text-Weg ist der Rueckfall, nicht mehr ein eigener Knopf. Wo das Geraet keine
   // Datei teilen kann (Schreibtisch-Browser), war die alte Antwort ein Hinweis und sonst nichts —
   // jetzt geht wenigstens Titel und Code hinaus, statt dass der Tipp ins Leere laeuft.

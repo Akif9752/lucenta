@@ -682,6 +682,7 @@
 </aside>
 
 <div id="imgModalScrim"></div>
+<div id="plusModalScrim"></div>
 <div id="imgModal" role="dialog" aria-modal="true" aria-label="Ergebnisbild zum Teilen oder Speichern" data-i18n-aria="aria_ergebnisbild_zum_teilen_oder" aria-hidden="true">
   <div class="img-modal-inner">
     <button type="button" class="drawer-close" id="btnImgModalClose" aria-label="Schließen" data-i18n-aria="aria_schließen" style="position:absolute;top:-6px;right:-6px;">
@@ -697,6 +698,37 @@
       <button type="button" class="btn btn-primary btn-sm" id="btnImgModalShare" data-i18n="teilen">Teilen</button>
     </div>
   </div>
+</div>
+
+<!-- ---------- Das Lucenta+-Fenster (Runde 89) ----------
+     Angefragt: "wenn man bei tagesform 'was ist lucenta+' drueckt sollte sich ein kleines
+     Fenster mit X oben rechts oeffnen wo alle Vorteile schoen verpackt von lucenta+ stehen."
+
+     Vorher lag an dieser Stelle ein Kurzhinweis (ein Toast), der nach ein paar Sekunden wieder
+     verschwand. Das ist fuer die eine Frage, die jemand an dieser Stelle wirklich hat — "was
+     bekomme ich dafuer?" — die schlechteste Form: Man kann nicht nachlesen, nicht scrollen,
+     nicht in Ruhe entscheiden.
+
+     Der Aufbau ist bewusst derselbe wie beim Bild-Dialog: gleiche Schliessen-Schaltflaeche,
+     gleicher Verdunkler, gleiche Tastensteuerung. Ein zweites, anders funktionierendes Fenster
+     waere fuer die Bedienung eine zweite Sache zum Lernen. -->
+<div id="plusModal" role="dialog" aria-modal="true" aria-labelledby="plusModalTitel" aria-hidden="true">
+  <div class="plus-modal-inner">
+    <button type="button" class="drawer-close" id="btnPlusModalClose" aria-label="Schließen" data-i18n-aria="aria_schließen" style="position:absolute;top:-4px;right:-4px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+    </button>
+    <p class="plus-modal-marke" data-i18n="plus_marke">Lucenta<span>+</span></p>
+    <h2 id="plusModalTitel" class="plus-modal-titel" data-i18n="plus_modal_titel">Alles, was aus mehreren Messungen entsteht</h2>
+    <p class="plus-modal-lead" data-i18n="plus_modal_lead">Ein einzelner Test ist eine Momentaufnahme. Was daraus über Zeit wird, ist das, was dich wirklich beschreibt &mdash; und genau das liegt hier.</p>
+    <ul class="plus-vorteile" id="plusVorteile"></ul>
+    <div class="plus-modal-fuss">
+      <p data-i18n-html="plus_modal_versprechen"><b>Dein Ergebnis bleibt frei.</b> Niemand zahlt für den Test oder sein Porträt.</p>
+      <p data-i18n-html="plus_modal_nichts_weg"><b>Es wird nichts gelöscht.</b> Was du erfasst hast, liegt gespeichert &mdash; auch das, was gerade verschlossen ist.</p>
+      <p data-i18n-html="plus_modal_preis"><b>Einmal kaufen, kein Abo.</b> Alle Daten liegen auf deinem Gerät; ein ablaufendes Abo würde dir den Blick auf deine eigene Historie wieder verschließen.</p>
+    </div>
+    <p class="plus-modal-beta" data-i18n="plus_modal_beta">In der Beta ist noch nichts käuflich &mdash; dieses Fenster zeigt, was geplant ist.</p>
+  </div>
+  <div class="plus-modal-verlauf" aria-hidden="true"></div>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

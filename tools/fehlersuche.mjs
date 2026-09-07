@@ -215,7 +215,12 @@ const WEGE = {
   // wurden — bis dahin ist der Block leer. Die Pruefung lief deshalb bisher an fuenf
   // aufklappbaren Karten, zwei Eingabefeldern und einem Messbalken vorbei, ohne sie je zu
   // sehen. Der Weg traegt seine Eingaben jetzt selbst.
-  vergleich:  ['#btnDrawerToggle', '#btnDrawerCompare']
+  vergleich:  ['#btnDrawerToggle', '#btnDrawerCompare'],
+  // Runde 89: Das Lucenta+-Fenster. Ohne diesen Weg waere ein neuer Dialog von KEINER
+  // Pruefschicht erfasst — genau die Luecke, die in Runde 84 der Bezahlschranke wegen schon
+  // einmal aufging. Er sitzt im Profil, weil dort in der freien Fassung das Verlaufs-Schloss
+  // steht; welche der fuenf Stellen es ist, spielt keine Rolle: Alle oeffnen dasselbe Fenster.
+  pluswerbung: ['#btnDrawerToggle', '#btnDrawerProfileRow']
 };
 // Ansichten, deren Kennung nicht 'view-<name>' lautet, und was nach dem Weg noch zu tun ist.
 const NACHBEREITUNG = {
@@ -235,6 +240,25 @@ const NACHBEREITUNG = {
     // eigenen Gegenstand vorbeilaufen kann, ist keine.
     const karten = await p.evaluate(() => document.querySelectorAll('.compat-card').length);
     if (karten !== 5) throw new Error('Vergleich zeigt ' + karten + ' statt 5 Karten');
+  }},
+  // Das Fenster liegt ueber der Profilansicht, die Ansicht darunter bleibt also 'profile'.
+  pluswerbung: {ansicht:'profile', tun: async (p) => {
+    const auf = await p.evaluate(() => {
+      const b = [...document.querySelectorAll('[data-plus-info]')].filter(e => e.offsetParent);
+      if (!b.length) return false;
+      b[0].click();
+      return true;
+    });
+    // In der gekauften Fassung gibt es keine Schloesser — dann ist hier nichts zu pruefen, und
+    // das ist kein Fehler. Wohl aber, wenn in der FREIEN Fassung keines auftaucht.
+    if (!auf){
+      const plus = await p.evaluate(() => localStorage.getItem('lucenta_plus') === '1');
+      if (plus) return;
+      throw new Error('kein Schloss in der freien Fassung gefunden');
+    }
+    await p.waitForTimeout(600);
+    const zahl = await p.evaluate(() => document.querySelectorAll('#plusVorteile .plus-vorteil').length);
+    if (zahl !== 4) throw new Error('Lucenta+-Fenster zeigt ' + zahl + ' statt 4 Vorteile');
   }}
 };
 

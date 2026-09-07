@@ -438,6 +438,72 @@
   @media (hover:hover){ .img-format-btn:hover{border-color:var(--accent-strong);} }
   .img-format-btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
   .img-format-btn[aria-pressed="true"]{border-color:var(--accent-strong);color:var(--accent-strong);background:var(--surface-3);}
+  /* ---------- Das Lucenta+-Fenster (Runde 89) ----------
+     Teilt Aufbau und Bewegung mit dem Bild-Dialog darueber; nur der Inhalt ist ein anderer.
+     Deshalb steht es hier daneben und nicht in einem eigenen Stilblatt: Wer das eine aendert,
+     soll das andere sehen. */
+  #plusModalScrim{
+    position:fixed;inset:0;background:rgba(8,12,10,.55);
+    opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:95;
+  }
+  #plusModalScrim.show{opacity:1;pointer-events:auto;}
+  #plusModal{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-46%);width:min(380px,88vw);
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+    box-shadow:var(--shadow);padding:22px;z-index:96;opacity:0;visibility:hidden;
+    transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+    max-height:86vh;overflow-y:auto;
+  }
+  #plusModal.open{
+    opacity:1;visibility:visible;transform:translate(-50%,-50%);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  @media (prefers-reduced-motion: reduce){ #plusModal, #plusModal.open{transition:visibility 0s;} #plusModalScrim{transition:none;} }
+  .plus-modal-inner{position:relative;}
+  /* Der Name traegt das Plus in der Akzentfarbe — das Einzige an diesem Fenster, was nach
+     Produkt aussehen darf. Alles Weitere ist Text. */
+  .plus-modal-marke{
+    font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink);
+    letter-spacing:.01em;margin:0 0 10px;
+  }
+  .plus-modal-marke span{color:var(--accent-strong);}
+  .plus-modal-titel{font-family:var(--serif);font-size:20px;line-height:1.25;margin:0 0 8px;text-wrap:balance;}
+  .plus-modal-lead{font-size:13.5px;line-height:1.6;color:var(--muted);margin:0 0 16px;}
+  .plus-vorteile{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:12px;}
+  .plus-vorteil{display:flex;gap:11px;align-items:flex-start;}
+  /* Das Haken-Zeichen steht in der Akzentfarbe auf einer eigenen Flaeche: In einer Liste aus
+     vier Punkten braucht das Auge einen Anker, sonst wird sie als Absatz gelesen. */
+  .plus-vorteil-marke{
+    flex:0 0 auto;width:22px;height:22px;border-radius:50%;margin-top:1px;
+    display:flex;align-items:center;justify-content:center;
+    background:color-mix(in srgb, var(--accent) 18%, transparent);color:var(--accent-strong);
+  }
+  .plus-vorteil-text strong{display:block;font-size:14px;line-height:1.35;color:var(--ink);margin-bottom:2px;}
+  .plus-vorteil-text span{display:block;font-size:12.5px;line-height:1.55;color:var(--muted);}
+  .plus-modal-fuss{
+    border-top:1px solid var(--line);padding-top:14px;
+    display:flex;flex-direction:column;gap:9px;
+  }
+  .plus-modal-fuss p{margin:0;font-size:12.5px;line-height:1.55;color:var(--muted);}
+  .plus-modal-fuss b{color:var(--ink);font-weight:600;}
+  .plus-modal-beta{
+    margin:14px 0 0;font-family:var(--mono);font-size:11px;line-height:1.5;
+    color:var(--accent-2-text);letter-spacing:.01em;
+  }
+  /* Der Inhalt ist hoeher als das Fenster (gemessen: 900 gegen 726 Bildpunkte), also wird
+     gescrollt. Ohne Hinweis darauf endet der Text mitten im Satz an der abgerundeten Kante —
+     das liest sich als Darstellungsfehler und nicht als "hier geht es weiter". Ein klebender
+     Verlauf am unteren Rand ist die schmalste Loesung: Er liegt IM Bildlauf, wandert also mit
+     und verschwindet von selbst, sobald man unten angekommen ist.
+
+     pointer-events:none, sonst faengt er den Tipp auf den letzten Absatz ab. Und er sitzt in
+     einem eigenen Element statt in ::after, weil ein Pseudoelement am Fenster selbst nicht
+     kleben kann — es haengt am Rahmen, nicht am Inhalt. */
+  .plus-modal-verlauf{
+    position:sticky;bottom:-22px;height:34px;margin:-34px -22px 0;pointer-events:none;
+    background:linear-gradient(to bottom, color-mix(in srgb, var(--surface) 0%, transparent), var(--surface));
+  }
+
   .img-modal-hint{font-size:12.5px;color:var(--muted);line-height:1.5;}
   .img-modal-actions{display:flex;justify-content:flex-end;}
   /* Feedback: "Mehr" über dem Profil war überflüssig — das Profil selbst ist bereits der erste,
