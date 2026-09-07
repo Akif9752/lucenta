@@ -30,10 +30,20 @@
   // Richtung: von rechts oben nach links unten. Ein flacher Winkel wirkt ruhiger als 45°.
   var RICHTUNG_X = -0.62, RICHTUNG_Y = 0.42;
 
-  var farbeWarm = null, farbeKalt = null;
+  var farbeWarm = null, farbeKalt = null, farbeStrahl = 'transparent';
+  // Runde 83: Zwei Atmosphaeren statt einer. Welche gilt, sagt das Stilblatt ueber die Marke
+  // --atmosphaere — nicht dieses Skript. Der Grund ist derselbe wie bei den Farben: Der
+  // Hell-/Dunkelwechsel gehoert ins CSS, und ein Skript, das ihn selbst herleitet, geht beim
+  // naechsten Farbmodus daneben. Gelesen wird es im selben Takt wie die Farben, ein
+  // Themawechsel kommt also von allein an.
+  var staub = false;
   function farbenLesen(){
     try{
       var s = getComputedStyle(document.documentElement);
+      var art = (s.getPropertyValue('--atmosphaere') || '').replace(/['"\s]/g, '');
+      var neuStaub = art === 'staub';
+      if (neuStaub !== staub){ staub = neuStaub; aufbauen(); }
+      farbeStrahl = (s.getPropertyValue('--lichtstrahl') || '').trim() || 'transparent';
       farbeStern = (s.getPropertyValue('--stern') || '').trim() || 'rgba(21,32,25,.5)';
       farbeSchnuppe = (s.getPropertyValue('--stern-schnuppe') || '').trim() || farbeStern;
       // Runde 72: Ein echter Himmel ist nicht einfarbig. Ein kleiner Teil der Sterne zieht ins
@@ -65,31 +75,42 @@
       // laesst genug mittlere uebrig, ohne dass ein gleichfoermiges Raster entsteht. Der
       // Mindestradius liegt jetzt ueber einem halben Bildpunkt, damit auch der schwaechste
       // Stern tatsaechlich gezeichnet wird.
-      var t = Math.pow(Math.random(), 2.1);
+      var t = Math.pow(Math.random(), staub ? 1.7 : 2.1);
       // Die grossen waren zu dominant; der obere Rand faellt von 2,27 auf 1,62.
-      var r = 0.45 + t * 1.17;
+      // Staub ist groesser und gleichmaessiger verteilt als Sterne: Ein Korn im Licht hat eine
+      // Groesse, ein Stern eine Helligkeit.
+      var r = staub ? (0.7 + t * 1.5) : (0.45 + t * 1.17);
       sterne.push({
         x: Math.random() * b,
         y: Math.random() * h,
         r: r,
+        // Staub schwebt: Er faellt langsam und schwankt dabei seitlich. Die Phase steht hier,
+        // damit nicht alle Koerner im Gleichtakt pendeln.
+        sx: Math.random() * Math.PI * 2,
+        sv: 0.004 + Math.random() * 0.010,
+        sw: 0.25 + Math.random() * 0.65,
         // Helligkeit folgt der Größe: Ein großer, blasser Stern gibt es am Himmel nicht.
-        a: 0.20 + t * 0.62 + Math.random() * 0.14,
+        a: staub ? (0.14 + t * 0.34 + Math.random() * 0.12)
+                 : (0.20 + t * 0.62 + Math.random() * 0.14),
         // Tempo folgt ebenfalls der Größe — größer heißt näher heißt schneller. Das ist echte
         // Parallaxe statt zufälliger Geschwindigkeit und erzeugt Tiefe.
         // Runde 73: Tempo weiter zurueckgenommen (vorher 0,035 + t*0,20). Die Schnuppen
         // behalten ihres — sie sollen ein Ereignis bleiben, kein Teil der Grundbewegung.
-        v: 0.022 + t * 0.125,
+        v: staub ? (0.012 + t * 0.055) : (0.022 + t * 0.125),
         // Kleine Sterne flackern stärker, große stehen ruhiger.
         f: 0.34 - t * 0.26,
         p: Math.random() * Math.PI * 2,
         pv: 0.005 + Math.random() * 0.014,
         // Ein Achtel warm, ein Achtel kalt, der Rest neutral.
         ton: (function(){ var z = Math.random(); return z < 0.12 ? 1 : (z > 0.88 ? 2 : 0); })(),
-        // Die hellsten bekommen einen weichen Hof; darunter wäre er nur Unschärfe.
-        hof: t > 0.86,
+        // Die hellsten bekommen einen weichen Hof; darunter wäre er nur Unschärfe. Bei Staub
+        // haben mehr Koerner einen: Ein Korn im Licht leuchtet diffus, ein Stern punktfoermig.
+        hof: t > (staub ? 0.55 : 0.86),
         // Laenge der Spitzen als Vielfaches des Radius; 0 heisst keine. Nur die oberen rund
         // 30 Prozent bekommen welche, und je heller, desto weiter reichen sie.
-        zacken: t > 0.68 ? (2.1 + t * 1.9) : 0
+        // Spitzen sind die Signatur eines Sterns. Auf einem Staubkorn waeren sie schlicht
+        // falsch — es leuchtet nicht selbst, es wird angeleuchtet.
+        zacken: (!staub && t > 0.68) ? (2.1 + t * 1.9) : 0
       });
     }
     schnuppen.length = 0;
@@ -109,12 +130,46 @@
     });
   }
 
+  // Der Lichtstrahl des Hellmodus. Ein sehr weicher, schraeger Streifen, der ueber Minuten
+  // langsam wandert — kein Ereignis wie eine Sternschnuppe, sondern das, was Licht im Lauf
+  // eines Nachmittags tut. Die Koerner darin werden heller: Genau das macht Staub sichtbar,
+  // und ohne diesen Unterschied waere der Streifen nur eine helle Flaeche.
+  var strahlPhase = Math.random() * Math.PI * 2;
+  function strahlMitte(){
+    return b * (0.5 + 0.34 * Math.sin(strahlPhase));
+  }
+  function strahlZeichnen(){
+    if (!staub || farbeStrahl === 'transparent') return;
+    var m = strahlMitte(), w = Math.max(150, b * 0.42);
+    var g = ctx.createLinearGradient(m - w, 0, m + w, h);
+    g.addColorStop(0, 'transparent');
+    g.addColorStop(0.5, farbeStrahl);
+    g.addColorStop(1, 'transparent');
+    // Gemessen am Bild zurueckgenommen (war 0,5): Darueber legt der Strahl einen sichtbaren
+    // warmen Stich ueber die ganze Seite, und aus Atmosphaere wird Farbe.
+    ctx.globalAlpha = 0.38;
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, b, h);
+    ctx.globalAlpha = 1;
+  }
+  // Wie stark ein Korn vom Strahl getroffen wird: 1 in der Mitte, 0 ausserhalb.
+  function imStrahl(x){
+    if (!staub) return 0;
+    var w = Math.max(150, b * 0.42);
+    var d = Math.abs(x - strahlMitte()) / w;
+    return d >= 1 ? 0 : (1 - d) * (1 - d);
+  }
+
   function zeichnen(){
     ctx.clearRect(0, 0, b, h);
+    strahlZeichnen();
     var i, s;
     for (i = 0; i < sterne.length; i++){
       s = sterne[i];
       var funkeln = wenigerBewegung ? 1 : (1 - s.f + s.f * (0.5 + 0.5 * Math.sin(s.p)));
+      // Im Strahl bis zu zweieinhalbmal so hell. Das ist der ganze Trick: Staub ist ueberall,
+      // sichtbar wird er nur dort, wo Licht auf ihn faellt.
+      if (staub) funkeln *= 1 + imStrahl(s.x) * 1.5;
       var ton = s.ton === 1 ? farbeWarm : (s.ton === 2 ? farbeKalt : farbeStern);
       if (s.hof){
         // Der Hof ist ein eigener, sehr schwacher Kreis mit Verlauf — vier Radien weit, damit er
@@ -175,11 +230,21 @@
     var i, s;
     for (i = 0; i < sterne.length; i++){
       s = sterne[i];
-      s.x += RICHTUNG_X * s.v;
-      s.y += RICHTUNG_Y * s.v;
+      if (staub){
+        // Staub zieht nicht, er schwebt: langsam abwaerts, dabei seitlich pendelnd. Eine
+        // gerade Diagonale wie bei den Sternen sieht bei einem Korn nach Wind aus, nicht nach
+        // Schwerelosigkeit.
+        s.sx += s.sv;
+        s.x += Math.sin(s.sx) * s.sw * 0.16;
+        s.y += s.v * 0.85;
+      } else {
+        s.x += RICHTUNG_X * s.v;
+        s.y += RICHTUNG_Y * s.v;
+      }
       s.p += s.pv;
       // Umlaufen statt neu erzeugen: gleichbleibende Anzahl, keine Zuteilung im Bildtakt.
       if (s.x < -4){ s.x = b + 4; s.y = Math.random() * h; }
+      if (s.x > b + 4){ s.x = -4; s.y = Math.random() * h; }
       if (s.y > h + 4){ s.y = -4; s.x = Math.random() * b; }
     }
     for (i = schnuppen.length - 1; i >= 0; i--){
@@ -189,9 +254,14 @@
       f.leben++;
       if (f.leben > f.dauer || f.x < -200 || f.y > h + 200) schnuppen.splice(i, 1);
     }
-    // Im Mittel etwa alle zwölf Sekunden eine, und nie zwei gleichzeitig.
-    if (!schnuppen.length && Math.random() < 0.0014) schnuppeStarten();
+    // Im Mittel etwa alle zwölf Sekunden eine, und nie zwei gleichzeitig. Im Hellmodus gar
+    // keine: Eine Sternschnuppe am Tageshimmel gibt es nicht, und der Lichtstrahl uebernimmt
+    // dort die Rolle des langsam Wandernden.
+    if (!staub && !schnuppen.length && Math.random() < 0.0014) schnuppeStarten();
 
+    // Sehr langsam: eine volle Wanderung dauert rund vier Minuten. Schneller gelesen waere es
+    // ein Suchscheinwerfer statt eines Nachmittags.
+    if (staub) strahlPhase += 0.00042;
     if (++farbZaehler > 60){ farbZaehler = 0; farbenLesen(); }
     zeichnen();
     rafId = window.requestAnimationFrame(schritt);

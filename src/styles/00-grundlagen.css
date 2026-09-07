@@ -41,10 +41,21 @@
        Widerspruch in sich — auf hellem Papier gibt es keine leuchtenden Punkte. Deshalb dort
        dunkle, sehr zurueckhaltende Punkte: eine Andeutung von Textur, kein Nachthimmel. Im
        Dunkelmodus tut die Flaeche das, was der Name sagt. */
-    --stern:rgba(21,32,25,.30);
-    --stern-schnuppe:rgba(47,111,106,.75);
-    --stern-warm:rgba(90,62,34,.30);
-    --stern-kalt:rgba(30,52,74,.30);
+    /* Runde 83: Der Hellmodus bekommt eine eigene Atmosphaere. Ein Sternenhimmel mit
+       Sternschnuppen auf hellem Papier war ein Widerspruch in sich — auf Papier gibt es keine
+       leuchtenden Punkte, und die Vorlage war entsprechend zu dunklen Punkten verbogen, die
+       eher nach Schmutz als nach Himmel aussahen.
+       Was hier stattdessen liegt, ist das TAGES-Gegenstueck derselben Erscheinung: Staub in
+       einem Lichtstrahl. Dieselbe Physik — kleine helle Dinge, die im Raum schweben —, nur
+       sichtbar gemacht durch Licht statt durch Dunkelheit. Das ist zugleich genau das Bild,
+       auf dem die Marke steht: Der Name heisst leuchtend, das Zeichen ist eine Oeffnung, und
+       Staub im Strahl ist das, was man durch eine Oeffnung sieht. */
+    --atmosphaere:'staub';
+    --stern:rgba(140,112,74,.42);
+    --stern-schnuppe:rgba(214,180,120,.5);
+    --stern-warm:rgba(176,134,78,.44);
+    --stern-kalt:rgba(150,142,118,.36);
+    --lichtstrahl:rgba(255,236,196,.55);
     /* Nur im Fragebogen sichtbar; ausserhalb faellt die Hoehe auf 0 und die Kopfleiste rueckt
        automatisch nach, weil ihr Versatz an derselben Marke haengt. */
     --fokuslinie-hoehe:0px;
@@ -102,10 +113,12 @@
       --dim-e:#CE7539;
       --dim-a:#25A89D;
       --dim-s:#D06694;
+      --atmosphaere:'sterne';
       --stern:rgba(236,238,231,.62);
       --stern-schnuppe:rgba(160,220,214,.95);
       --stern-warm:rgba(255,232,198,.68);
       --stern-kalt:rgba(206,226,255,.66);
+      --lichtstrahl:transparent;
       --kopf-links:#16221D;
       --kopf-rechts:#0D1512;
       --accent-ink:#08211E;
@@ -137,10 +150,12 @@
     --dim-e:#CE7539;
     --dim-a:#25A89D;
     --dim-s:#D06694;
+    --atmosphaere:'sterne';
     --stern:rgba(236,238,231,.62);
     --stern-schnuppe:rgba(160,220,214,.95);
     --stern-warm:rgba(255,232,198,.68);
     --stern-kalt:rgba(206,226,255,.66);
+    --lichtstrahl:transparent;
     --kopf-links:#16221D;
     --kopf-rechts:#0D1512;
     --accent-ink:#08211E;
@@ -178,6 +193,14 @@
   textarea:focus-visible, select:focus-visible, summary:focus-visible{
     outline:2px solid var(--accent-strong); outline-offset:2px;
   }
+  /* Runde 83, im gerenderten Bild gefunden: Die Ansichten bekommen beim Wechsel programmatisch
+     den Fokus, damit Vorleseprogramme ihn bemerken (tabindex="-1", seit Runde 45). Chromium
+     zeichnet daraufhin seinen eigenen Fokusring — einen orangen Rahmen (#E59700) um die GANZE
+     Ansicht, bei jedem Wechsel, in der Markenfarbe von niemandem.
+     Er hilft dabei keinem: Mit der Tabulatortaste ist ein tabindex="-1" gar nicht erreichbar,
+     es gibt also niemanden, der auf diesem Weg dort landet und den Ring braeuchte. Die
+     Fokusringe, die etwas sagen, stehen eine Regel darueber und bleiben unangetastet. */
+  .view:focus{ outline:none; }
 
   /* Feedback-Runde 45: Wie sich das Antippen anfühlt.
      1. Der graue Aufblitz, den mobile Browser über jede Schaltfläche legen, gehört zu den

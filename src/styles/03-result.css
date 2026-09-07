@@ -114,3 +114,41 @@
   }
   .rhythmus-text{ font-size:13.5px; line-height:1.6; color:var(--ink); margin:0; }
   .rhythmus-text b{ color:var(--ink); font-weight:600; }
+
+  /* ---------- Der Schein hinter der Überschrift (Runde 83) ----------
+     Ein weicher Lichthof hinter dem Namen des eigenen Porträts. Er trägt --dim-aktiv, also die
+     Farbe der eigenen stärksten Dimension — dadurch ist er nicht Zierde, sondern dieselbe
+     Information wie der Fokusring der Augenbraue und das Fünfeck darunter, nur als Licht.
+
+     Bewusst sehr zurückhaltend und ohne harte Kante: Ein sichtbarer Rand wäre ein Fleck, kein
+     Schein. Er liegt HINTER dem Text (eigener z-index), damit die Lesbarkeit unangetastet
+     bleibt — die geprüften Kontrastwerte gelten für Text auf --paper, und ein Farbverlauf
+     darunter würde sie verschieben. Bei 30 % der Dimensionsfarbe im Kern liegt der Untergrund
+     rechnerisch noch so nah an --paper, dass der Kontrast unter der Messgrenze bleibt. */
+  #view-result .result-head{ position:relative; }
+  #view-result .result-head > *{ position:relative; z-index:1; }
+  #view-result .result-head::before{
+    content:''; position:absolute; z-index:0; pointer-events:none;
+    left:50%; top:54%; transform:translate(-50%,-50%);
+    /* Nie breiter als der Kasten darum. Der erste Entwurf stand auf 118 %, und das waren bei
+       390 px Fensterbreite 413 px in einem 350 px breiten Kasten: Das Dokument wuchs dadurch
+       auf 402 px und lief seitlich ueber. Sichtbar war davon nichts (body hat overflow-x:hidden)
+       — gemerkt hat es die Bewegungspruefung, der die Schublade danach unter dem Finger
+       wegrutschte. Die weiche Kante des Verlaufs traegt den Schein ohnehin, nicht seine Breite. */
+    width:min(420px, 100%); height:min(260px, 76vw);
+    border-radius:50%;
+    background:radial-gradient(ellipse at center,
+      color-mix(in srgb, var(--dim-aktiv, var(--accent)) 26%, transparent) 0%,
+      color-mix(in srgb, var(--dim-aktiv, var(--accent)) 10%, transparent) 42%,
+      transparent 70%);
+    /* Das Atmen ist der Unterschied zwischen "Lichtquelle" und "Farbfleck". Sieben Sekunden,
+       weil alles Schnellere im Blickfeld bleibt, statt hinter dem Text zu verschwinden. */
+    animation:schein-atmen 7s ease-in-out infinite;
+  }
+  @keyframes schein-atmen{
+    0%, 100%{ opacity:.55; transform:translate(-50%,-50%) scale(1); }
+    50%     { opacity:.85; transform:translate(-50%,-50%) scale(1.06); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #view-result .result-head::before{ animation:none; opacity:.6; }
+  }
