@@ -133,7 +133,12 @@
        lag der alte Wert bei 4,41:1 und damit knapp unter AA; jetzt 4,60:1, auf allen übrigen
        Untergründen ebenfalls leicht besser. */
     --accent-2-text:#8D552A;
-    /* Fehlerfarbe als Token statt hartkodiert — im Dunkelmodus braucht sie einen eigenen Wert. */
+    /* Fehlerfarbe als Token statt hartkodiert — im Dunkelmodus braucht sie einen eigenen Wert.
+       Runde 93, von der Kontrastpruefung gefunden: Beide Werte waren fuer die Flaeche gerechnet,
+       auf der sie NICHT stehen. Als Fettschrift stehen sie auf dem Warnband, und das ist die
+       Fehlerfarbe zu 12 Prozent auf der Flaeche — also naeher an ihnen selbst. Gemessen 4,31
+       im Hellmodus und 3,35 im Dunkelmodus. Beide sind jetzt auf dem BAND gerechnet: hell
+       4,51:1, dunkel 4,52:1. */
     --danger:#AF3327;
     --surface-3:#D3D7C8;
     --shadow: 0 1px 2px rgba(21,32,25,.05), 0 12px 32px -12px rgba(21,32,25,.18);
@@ -166,7 +171,7 @@
       --ink:#ECEEE7;
       --muted:#96A69C;
       --muted-soft:#7F9286;
-      --danger:#D24638;
+      --danger:#F75443;
       --line:#293630;
       --line-strong:#546F62;
       --accent:#5CB4AD;
@@ -228,7 +233,7 @@
     --ink:#ECEEE7;
     --muted:#96A69C;
     --muted-soft:#7F9286;
-    --danger:#D24638;
+    --danger:#F75443;
     --line:#293630;
     --line-strong:#546F62;
     --accent:#5CB4AD;

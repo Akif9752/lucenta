@@ -331,6 +331,13 @@ const suchSchwachenKontrast = () => {
     for (let q = el; q && q !== document.documentElement; q = q.parentElement){
       deckung *= Number(getComputedStyle(q).opacity);
     }
+    // Und wenn am Ende 0 herauskommt, wird hier gerade nichts gemalt. Der erste Lauf dieser
+    // Pruefung hat daraus 50 Funde gemacht, alle mit exakt 1:1 — die Merkmalskarten der
+    // Ergebnisseite stehen auf opacity:0, bis sie beim Scrollen hereinkommen (.trait-card.defer).
+    // Eine Schrift mit Deckung 0 hat dieselbe Farbe wie ihr Grund, weil sie IHR Grund ist. Das
+    // ist kein Kontrastfehler, das ist eine Einblendung. Wirklich unsichtbaren Text findet die
+    // Pruefung eine Stelle weiter oben, ueber Farbe gleich Grund.
+    if (deckung <= 0) return;
     // Text, der auf einem Bild oder Verlauf liegt, hat keinen einzelnen Hintergrundwert —
     // dort waere jede Zahl erfunden. Solche Stellen gehoeren ins Auge, nicht in diese Reihe.
     let bild = false;
@@ -451,6 +458,22 @@ async function zu(p, ansicht){
 }
 
 async function pruefeAnsicht(p, ansicht, kennung, breite){
+  // Einmal durch die Ansicht scrollen, bevor gemessen wird. Nicht als Schoenheitsschritt:
+  // Die Merkmalskarten der Ergebnisseite stehen auf opacity:0, bis sie beim Scrollen
+  // hereinkommen. Wer nur den ersten Bildschirm misst, misst die Haelfte der App nicht — und
+  // merkt es nicht einmal, weil dort keine Funde entstehen, wo nichts gemessen wird.
+  // Zurueck nach oben, damit alle folgenden Messungen wieder denselben Ausschnitt sehen.
+  await p.evaluate(async () => {
+    const hoehe = document.documentElement.scrollHeight;
+    for (let y = 0; y < hoehe; y += Math.max(200, window.innerHeight * 0.8)){
+      window.scrollTo(0, y);
+      await new Promise(r => setTimeout(r, 90));
+    }
+    window.scrollTo(0, hoehe);
+    await new Promise(r => setTimeout(r, 260));
+    window.scrollTo(0, 0);
+    await new Promise(r => setTimeout(r, 220));
+  });
   for (const [name, fn, arg] of [
     ['ragt seitlich heraus', suchUeberlauf, breite],
     ['Seite seitlich schiebbar', suchSeitlichesSchieben, null],
