@@ -132,10 +132,18 @@
     left:50%; top:54%; transform:translate(-50%,-50%);
     /* Nie breiter als der Kasten darum. Der erste Entwurf stand auf 118 %, und das waren bei
        390 px Fensterbreite 413 px in einem 350 px breiten Kasten: Das Dokument wuchs dadurch
-       auf 402 px und lief seitlich ueber. Sichtbar war davon nichts (body hat overflow-x:hidden)
+       auf 402 px und lief seitlich ueber. Sichtbar war davon nichts (die Verdeckung fing es ab)
        — gemerkt hat es die Bewegungspruefung, der die Schublade danach unter dem Finger
        wegrutschte. Die weiche Kante des Verlaufs traegt den Schein ohnehin, nicht seine Breite. */
-    width:min(420px, 100%); height:min(260px, 76vw);
+    /* Runde 91: 100 Prozent Breite MAL 1,06 aus dem Atmen sind 106 Prozent — der Schein ragte
+       auf jeder Seite bis zu zehn Bildpunkte ueber seinen Kasten hinaus und pulsierte dabei.
+       Gemessen: 350 Bildpunkte Kasten, 371 Bildpunkte Schein am Hoehepunkt. Sichtbar wurde es
+       nur deshalb nicht, weil der Seitenrand von 20 Bildpunkten es auffing — eine Deckung, die
+       bei schmalerem Rand oder anderem Browser wegfaellt. Genau daher die Rueckmeldung, die
+       Seite lasse sich seitlich schieben.
+       94 Prozent sind mal 1,06 genau 99,6 Prozent: Der Schein bleibt im Kasten, auch beim
+       tiefsten Atemzug. Gerechnet, nicht geschaetzt. */
+    width:min(420px, 94%); height:min(260px, 76vw);
     border-radius:50%;
     background:radial-gradient(ellipse at center,
       color-mix(in srgb, var(--dim-aktiv, var(--accent)) 26%, transparent) 0%,

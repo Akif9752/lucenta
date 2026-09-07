@@ -48,6 +48,32 @@ function ok(text){ console.log('  ok    ' + text); }
 // ---------- die einzelnen Pruefungen, alle im Browser ausgefuehrt ----------
 
 // Ragt etwas seitlich heraus? Gemessen wird der sichtbare Inhalt der aktiven Ansicht.
+// Runde 91: Was die Verdeckung verbirgt.
+//
+// Anlass: "die gesamte web-app seite laesst sich von links nach rechts ueber die
+// seitengrenzen hinaus verschieben." Die Pruefung oben meldete nichts — sie geht Element fuer
+// Element durch, und Pseudoelemente stehen in querySelectorAll nicht drin. Der Taeter war
+// genau ein solches: der atmende Schein, 100 Prozent breit mal 1,06 aus der Bewegung.
+//
+// Schlimmer als der einzelne Fund war die Gewohnheit dahinter: DREI Stellen im Quelltext
+// beriefen sich auf body{overflow-x:hidden} als Freibrief ("sichtbar war davon nichts").
+// Eine Absicherung, hinter der man Fehler ablegt, ist keine mehr.
+//
+// Diese Pruefung nimmt die Verdeckung deshalb kurz ab und fragt das Dokument selbst, wie breit
+// es waere. Das braucht keine Liste von Elementen und erwischt damit auch, was keines ist:
+// Pseudoelemente, Schatten, gedrehte Formen. Danach wird sie zurueckgesetzt.
+const suchSeitlichesSchieben = () => {
+  const h = document.documentElement, b = document.body;
+  const altH = h.style.overflowX, altB = b.style.overflowX;
+  h.style.overflowX = 'visible'; b.style.overflowX = 'visible';
+  const breit = h.scrollWidth, fenster = h.clientWidth;
+  h.style.overflowX = altH; b.style.overflowX = altB;
+  // Ein Bildpunkt Spiel: Zwischenrechnungen auf gebrochenen Bildpunkten runden gern auf.
+  return breit > fenster + 1
+    ? ['die Seite waere ' + (breit - fenster) + 'px breiter als das Fenster (' + breit + ' statt ' + fenster + ')']
+    : [];
+};
+
 const suchUeberlauf = (breite) => {
   const raus = [];
   // Runde 89: Ein offenes Fenster liegt UEBER der Ansicht und legt sie still (inert). Gemessen
@@ -315,6 +341,7 @@ async function zu(p, ansicht){
 async function pruefeAnsicht(p, ansicht, kennung, breite){
   for (const [name, fn, arg] of [
     ['ragt seitlich heraus', suchUeberlauf, breite],
+    ['Seite seitlich schiebbar', suchSeitlichesSchieben, null],
     ['Tippflaeche unter ' + MIN_TIPP + 'px', suchTippflaechen, MIN_TIPP],
     ['Schaltflaeche ohne Namen', suchNamenlos, null],
     ['Rest einer Ersetzung im Text', suchReste, null],

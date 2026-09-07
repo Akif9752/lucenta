@@ -193,12 +193,35 @@
 
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
+  /* ---------- Die Seite laesst sich nicht seitlich schieben (Runde 91) ----------
+     Rueckmeldung: "es gibt einen bug in der vergleichsergebnis seite wo sich die gesamte
+     web-app seite von links nach rechts und rechts nach links ueber die seitengrenzen hinaus
+     verschieben laesst und auch der schein hinter dem portraet ... verschiebt sich dann."
+
+     Zwei Dinge waren daran falsch, und nur eines davon war die eigentliche Ursache.
+
+     ERSTENS die Absicherung selbst: overflow-x:hidden macht ein Element zum Bildlaufbehaelter.
+     Der Inhalt ist dann unsichtbar, aber die Flaeche IST scrollbar — nur eben ohne Balken. Auf
+     dem Telefon heisst das: Man kann sie schieben. Genau das beschreibt die Rueckmeldung, und
+     genau deshalb war in Chromium nichts zu messen (dort faengt es der Seitenrand ab) und auf
+     dem Geraet trotzdem etwas zu spueren. overflow-x:clip schneidet ab, OHNE einen
+     Bildlaufbehaelter zu erzeugen — es gibt dann nichts mehr zu schieben. Die y-Achse bleibt
+     dabei sichtbar: Bei clip auf einer Achse bleibt visible auf der anderen erhalten (anders
+     als bei hidden, wo visible zu auto wird und die klebende Kopfleiste braeche).
+     overscroll-behavior-x:none nimmt zusaetzlich das Gummiband am Rand.
+
+     ZWEITENS, und wichtiger: Drei Stellen im Quelltext beriefen sich auf diese Absicherung als
+     FREIBRIEF zum Ueberlaufen ("sichtbar war davon nichts, body hat overflow-x:hidden"). Eine
+     Absicherung, hinter der man Fehler ablegt, ist keine mehr. Die Fehlersuche misst deshalb
+     seit Runde 91 mit ABGENOMMENER Verdeckung — sie sieht jetzt, was diese Zeile verbirgt. */
+  html{ overflow-x:clip; overscroll-behavior-x:none; }
   body{
     background:var(--paper);
     color:var(--ink);
     font-family:var(--sans);
     -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
+    overflow-x:clip;
+    overscroll-behavior-x:none;
   }
   ::selection{background:var(--accent);color:var(--accent-ink);}
   a{color:var(--accent-strong);}

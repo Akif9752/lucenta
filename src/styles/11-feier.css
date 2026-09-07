@@ -16,7 +16,8 @@
   /* ---------- 1. Der Fragewechsel: Schub statt Einblenden ----------
      Ersetzt "q-enter" aus 02-quiz.css. Die Frage stieg dort 9px auf. Jetzt kommt sie von rechts
      herein und faengt sich mit leichtem Ueberschwung — dieselbe Richtung, in die der
-     Fragebogen laeuft. body traegt overflow-x:hidden, es entsteht also kein seitlicher Balken. */
+     Fragebogen laeuft. Die 26 Bildpunkte laufen in den Seitenrand hinein und nicht darueber
+     hinaus; seit Runde 91 wird das gemessen statt angenommen. */
   .qcard.q-in{ animation:q-schub .42s cubic-bezier(.22,1.2,.36,1) both; }
   @keyframes q-schub{
     from{ opacity:0; transform:translateX(26px) scale(.975); }

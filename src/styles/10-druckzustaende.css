@@ -210,8 +210,9 @@
 
   /* 1. Richtung im Ansichtswechsel. Bisher stieg jede Ansicht gleich auf; ob man tiefer ging
         oder zurückkam, sah identisch aus. 16px sind genug, um die Richtung zu lesen, und wenig
-        genug, dass nichts wandert — body trägt overflow-x:hidden, es entsteht also kein
-        seitlicher Balken. Dieselbe Kurve und Dauer wie "rise", damit sich die drei Varianten
+        genug, dass nichts wandert. Der Versatz läuft in den Rand hinein und nicht darüber
+        hinaus; seit Runde 91 wird das nicht mehr nur angenommen, sondern gemessen (die
+        Fehlersuche nimmt die Verdeckung dafür kurz ab). Dieselbe Kurve und Dauer wie "rise", damit sich die drei Varianten
         wie ein Übergang anfühlen und nicht wie drei. */
   .view.active.nav-vor{ animation:view-vor .45s cubic-bezier(.2,.8,.2,1) both; }
   .view.active.nav-zurueck{ animation:view-zurueck .45s cubic-bezier(.2,.8,.2,1) both; }
