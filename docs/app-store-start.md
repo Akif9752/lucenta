@@ -173,9 +173,11 @@ blockiert.
    zwischen freier und gekaufter Fassung (`plusSchalter` in `src/js/15-profile.js`), damit
    beide Zustände ohne Eingriff in den Speicher zu sehen sind. Er darf nicht mit in den Store;
    an seine Stelle gehört die echte Kaufprüfung. Dasselbe gilt für die Beispielnutzerin.
-7. **Bildschirmfotos** in 6,7″ und 6,1″ (die anderen Größen leitet Apple ab). Sie entstehen
-   erst auf dem Gerät; mit der Beispielnutzerin unter Profil ist die App dafür in genau dem
-   Zustand, der sich zum Zeigen lohnt — fünf Wochen Verlauf statt leerer Ansichten.
+7. **Die Bildschirmfotos hochladen.** Erzeugt sind sie (Runde 99, `assets/store/`, beide
+   Größen, deutsch und englisch) — hochladen kann sie nur, wer in App Store Connect angemeldet
+   ist. Sie stammen aus dem Browser, nicht vom Gerät: für die Einreichung reicht das, Apple
+   prüft die Pixelmaße, nicht die Herkunft. Wenn dir auf dem echten iPhone etwas auffällt, was
+   im Bild anders aussieht, ist `npm run store-bilder` in einer Minute noch einmal gelaufen.
 
 ## 6. Der größte offene Punkt bleibt fachlich, nicht technisch
 
