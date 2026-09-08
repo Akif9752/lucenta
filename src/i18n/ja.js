@@ -553,7 +553,7 @@
       'kopieren': 'コピー',
       'dein_ergebnis_liegt_ausschli': '結果はこの端末にだけあります。Lucentaの保存領域が消されたり端末を替えたりすると失われます &mdash; このコードがあれば、設定 &rarr; データとプライバシーから戻せます。',
       'deine_fünf_dimensionen_volle': '五つの次元 <span class="n">詳しい記述</span>',
-      'in_der_beta_kostenlos_der_vo': '<b>ベータのあいだは無料:</b> 詳しい記述はいまは全員に開かれています。今後 Lucenta+ の一部として買い切り 4,99&nbsp;€ を予定していますが &mdash; いまは何も販売していません。',
+      'in_der_beta_kostenlos_der_vo': '<b>ベータのあいだは無料:</b> 詳しい記述はいまは全員に開かれています。今後 Lucenta+ の一部として月額 4,99&nbsp;€ を予定していますが &mdash; いまは何も販売していません。',
       'kompatibilität_optional': '相性 <span class="n">任意</span>',
       'vergleiche_dein_profil_mit_d': 'あなたのプロフィールをほかの人のものと比べます &mdash; パートナー、親しい友人、家族。コードを二つ入れるだけです。',
       'dein_code': 'あなたのコード',

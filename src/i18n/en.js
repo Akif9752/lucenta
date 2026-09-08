@@ -550,7 +550,7 @@
       'kopieren': 'Copy',
       'dein_ergebnis_liegt_ausschli': 'Your result lives on this device only. If Lucenta\'s storage is cleared or you switch devices, it is gone &mdash; with this code you can bring it back under Settings &rarr; Data &amp; privacy.',
       'deine_fünf_dimensionen_volle': 'Your five dimensions <span class="n">full report</span>',
-      'in_der_beta_kostenlos_der_vo': '<b>Free during the beta:</b> the full report is currently unlocked for everyone. It is planned as part of Lucenta+ for a one-off 4.99&nbsp;€ &mdash; nothing of it is being sold at the moment.',
+      'in_der_beta_kostenlos_der_vo': '<b>Free during the beta:</b> the full report is currently unlocked for everyone. It is planned as part of Lucenta+ for 4.99&nbsp;€ a month &mdash; nothing of it is being sold at the moment.',
       'kompatibilität_optional': 'Compatibility <span class="n">optional</span>',
       'vergleiche_dein_profil_mit_d': 'Compare your profile with someone else\'s &mdash; a partner, a close friend, family. Enter both codes, that\'s it.',
       'dein_code': 'Your code',

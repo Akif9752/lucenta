@@ -549,7 +549,7 @@
       'kopieren': 'Copier',
       'dein_ergebnis_liegt_ausschli': 'Ton résultat vit uniquement sur cet appareil. Si le stockage de Lucenta est effacé ou si tu changes d’appareil, il disparaît &mdash; avec ce code tu peux le récupérer sous Réglages &rarr; Données et confidentialité.',
       'deine_fünf_dimensionen_volle': 'Tes cinq dimensions <span class="n">rapport complet</span>',
-      'in_der_beta_kostenlos_der_vo': '<b>Gratuit pendant la bêta :</b> le rapport complet est actuellement débloqué pour tout le monde. Il est prévu comme partie de Lucenta+ pour 4,99&nbsp;€ en paiement unique &mdash; rien de tout cela n’est vendu pour l’instant.',
+      'in_der_beta_kostenlos_der_vo': '<b>Gratuit pendant la bêta :</b> le rapport complet est actuellement débloqué pour tout le monde. Il est prévu comme partie de Lucenta+ pour 4,99&nbsp;€ par mois &mdash; rien de tout cela n’est vendu pour l’instant.',
       'kompatibilität_optional': 'Compatibilité <span class="n">facultatif</span>',
       'vergleiche_dein_profil_mit_d': 'Compare ton profil avec celui de quelqu’un d’autre &mdash; un ou une partenaire, une amitié proche, la famille. Saisis les deux codes, c’est tout.',
       'dein_code': 'Ton code',

@@ -281,7 +281,7 @@ CONTENT.de = {
       'kopieren': 'Kopieren',
       'dein_ergebnis_liegt_ausschli': 'Dein Ergebnis liegt ausschließlich auf diesem Gerät. Wird der Speicher von Lucenta geleert oder wechselst du das Gerät, ist es fort &mdash; mit diesem Code holst du es unter Einstellungen &rarr; Daten &amp; Datenschutz zurück.',
       'deine_fünf_dimensionen_volle': 'Deine fünf Dimensionen <span class="n">voller Bericht</span>',
-      'in_der_beta_kostenlos_der_vo': '<b>In der Beta kostenlos:</b> Der vollständige Bericht ist gerade für alle freigeschaltet. Geplant ist er als Teil von Lucenta+ für einmalig 4,99&nbsp;€ &mdash; verkauft wird davon aktuell nichts.',
+      'in_der_beta_kostenlos_der_vo': '<b>In der Beta kostenlos:</b> Der vollständige Bericht ist gerade für alle freigeschaltet. Geplant ist er als Teil von Lucenta+ für 4,99&nbsp;€ im Monat &mdash; verkauft wird davon aktuell nichts.',
       'kompatibilität_optional': 'Kompatibilität <span class="n">optional</span>',
       'vergleiche_dein_profil_mit_d': 'Vergleiche dein Profil mit dem einer anderen Person &mdash; z. B. Partner:in, beste:r Freund:in oder Familie. Beide Codes eintragen, fertig.',
       'dein_code': 'Dein Code',

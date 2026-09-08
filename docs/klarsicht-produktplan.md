@@ -1004,26 +1004,37 @@ Im Markup tragen 163 Elemente jetzt eine Sprachmarke (135 reine Textelemente, 28
 
 ## Monetarisierung
 
-**Modell:** Freemium, einmaliger Unlock (kein Abo in Phase 1).
+**Modell (Entscheidung Runde 95):** Freemium mit **Abo** statt einmaligem Kauf. **Kein eigener Server** — die Synchronisation läuft über die private CloudKit-Datenbank des Nutzers, es gibt keine E-Mail-Konten.
+
+- **Warum Abo statt Einmalkauf:** Ein einmaliger Unlock verkauft einen fertigen Bericht; danach gibt es keinen Grund mehr wiederzukommen und keine zweite Zahlung. Das Abo bindet die Zahlung an das, was die App tatsächlich fortlaufend liefert — Tagesform, wiederholtes Assessment, Verlauf über Monate. Es ist zugleich die einzige Form, in der die Einnahmen mit der Nutzerzahl wachsen statt mit der Neukundenzahl.
+- **Preise:** **4,99 €/Monat** oder **29,99 €/Jahr** (Jahrespreis = 50 % Rabatt, halbiert zugleich die Zahl der Abbruchgelegenheiten). Der Monatspreis liegt bewusst dort, wo der frühere Einmalpreis lag: Er ist als Betrag bereits geprüft und wirkt nicht als Erhöhung, sondern als andere Taktung.
+- **Warum kein eigener Server:** Die private CloudKit-Datenbank zählt gegen das iCloud-Kontingent **des Nutzers**; der Entwickler wird dafür nie zur Kasse gebeten. Damit entfallen Infrastrukturkosten, die DSGVO-Verantwortlichkeit für fremde Daten und — weil es keine Kontenanlage gibt — auch die Pflicht aus Richtlinie 5.1.1(v), eine Kontolöschung in der App anzubieten.
+- **Der Preis dafür ist keine Geldsumme, sondern Architektur:** CloudKit braucht eine native Brücke. Damit endet die Eigenschaft, dass die App eine einzige, für sich lauffähige HTML-Datei ist. Und ohne iCloud-Anmeldung des Nutzers synchronisiert nichts.
+- **Verbleibendes Apple-Risiko:** Richtlinie 3.1.2 verlangt für ein Abo *fortlaufenden* Wert und nicht das Freischalten fester Inhalte. Der bezahlte Bereich muss seinen Schwerpunkt deshalb auf Tagesform-Befunde und wiederholtes Assessment legen, nicht auf den einmaligen Fließtext. Eine Wiederherstellung gekaufter Käufe („Käufe wiederherstellen") ist Pflicht.
 
 - Kostenlos: alle 5 Trait-Scores, Radar-Chart, Archetyp-Titel, Kurz-Teaser, Sharing, Kompatibilitäts-Tool, Archetypen-Übersicht, Profil, Einstellungen.
-- Lucenta+ (**4,99 € einmalig**): vollständiger Fließtext-Bericht pro Dimension.
+- Lucenta+ (**4,99 €/Monat** oder **29,99 €/Jahr**): vollständiger Fließtext-Bericht pro Dimension, Tagesform-Verlauf, wiederholtes Assessment.
 - Aktuell in der Beta ist der volle Bericht kostenlos freigeschaltet (sichtbar markiert im UI), um zunächst Nutzerfeedback zu sammeln.
-- **Sprachregelung seit Runde 46:** Die 4,99 € dürfen im Produkt **nicht** als „regulärer" oder durchgestrichener Preis auftreten, solange nichts verkauft wird — sonst ist es ein erfundener Vergleichsanker. Sie werden als Planung benannt („Geplant ist er als Teil von Lucenta+ für einmalig 4,99 € — verkauft wird davon aktuell nichts"). Sobald Lucenta+ tatsächlich käuflich ist, darf die Formulierung angepasst werden.
+- **Sprachregelung seit Runde 46, angepasst in Runde 95:** Die 4,99 € dürfen im Produkt **nicht** als „regulärer" oder durchgestrichener Preis auftreten, solange nichts verkauft wird — sonst ist es ein erfundener Vergleichsanker. Sie werden als Planung benannt („Geplant ist er als Teil von Lucenta+ für 4,99 € im Monat — verkauft wird davon aktuell nichts"). Sobald Lucenta+ tatsächlich käuflich ist, darf die Formulierung angepasst werden. **Der Text im Produkt sagt seit dieser Runde „im Monat", nicht mehr „einmalig".**
 
-**Rechnung zum 1.000-€/Monat-Ziel:**
-- 4,99 € Einmalkauf → ca. **201 Käufe/Monat** nötig.
-- Bei 4–6 % Free-to-Paid-Konversion braucht es **3.400–5.000 Testabschlüsse/Monat**.
+**Rechnung zum 1.000-€/Monat-Ziel — hier stand bis Runde 95 eine falsche Zahl.** Die alte Fassung rechnete `1000 / 4,99 = 201` und behandelte damit den Ladenpreis als Erlös. Das ist er nicht:
+
+- Der deutsche App-Store-Preis **enthält 19 % Mehrwertsteuer**: 4,99 € → 4,19 € netto.
+- Davon behält Apple **15 %** (Small Business Program, bis 1 Mio. $ Jahresumsatz): 4,19 € → **3,56 €** Erlös.
+- 1.000 € / 3,56 € = **281 zahlende Abonnenten**, nicht 201. Die alte Zahl war um 40 % zu optimistisch.
+
+- Beim Jahresabo (29,99 €) bleiben **21,41 €** — 1.000 €/Monat entsprechen dort **561 Jahresabos**, gleichmäßig über das Jahr verteilt.
+- 281 ist eine **Bestandszahl, keine Verkaufszahl**: Bei 5 % monatlicher Abwanderung müssen davon jeden Monat rund 14 ersetzt werden, nur um den Stand zu halten. Genau das misst die Beta-Stufe 1 (D30-Bindung, Wiederholrate) — ohne diese Zahl ist jede Umsatzplanung geraten.
+- Bei 4–6 % Free-to-Paid-Konversion braucht es **4.700–7.000 Testabschlüsse/Monat**, um den Bestand aufzubauen.
 - Der virale Koeffizient aus dem Kompatibilitäts-Feature ist der Hebel dafür — muss in der Beta gemessen werden.
-- Phase-2-Option: monatliches Re-Assessment + erweiterte Kompatibilitäts-Reports als Abo (2,99–3,99 €/Monat).
 
 ## Tech-Stack & Architektur
 
 **Phase 1 (jetzt):** Reine Client-seitige Web-App (HTML/CSS/JS), kein Backend, kein Account-Zwang. Null Infrastrukturkosten. Profilbilder werden clientseitig verkleinert/komprimiert und als Data-URL im `localStorage` gehalten — kein Upload zu einem Server.
 
-**Phase 2 (nach Beta-Validierung):** Eigenes Hosting + eigene Domain (wichtig für Open-Graph-Vorschaubilder — Meta-Tags sind bereits im Code vorbereitet) + echtes PWA-Manifest/Service Worker + Backend für Stripe-Zahlung, Accounts, Analytics.
+**Phase 2 (nach Beta-Validierung, revidiert in Runde 95):** Eigenes Hosting + eigene Domain (wichtig für Open-Graph-Vorschaubilder — Meta-Tags sind bereits im Code vorbereitet) + echtes PWA-Manifest/Service Worker. **Gestrichen: eigenes Backend, Accounts, Stripe.** Synchronisation über die private CloudKit-Datenbank des Nutzers, Zahlung über StoreKit — Richtlinie 3.1.1 verlangt für digitale Inhalte ohnehin den In-App-Kauf und verbietet Stripe an dieser Stelle.
 
-**Phase 3 (bei Traktion):** Capacitor-Wrap → native iOS-App, App-Store-Launch, In-App-Purchase statt Stripe. Formale Markenrecherche (DPMA/EUIPO) spätestens hier nachholen.
+**Phase 3 (bei Traktion):** Capacitor-Wrap → native iOS-App, App-Store-Launch, Abo über StoreKit. Die native Brücke ist zugleich der Ort, an dem CloudKit angebunden wird. Formale Markenrecherche (DPMA/EUIPO) spätestens hier nachholen.
 
 ## Design-Sprache
 

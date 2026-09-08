@@ -78,20 +78,36 @@ dort, wo die Person selbst die Arbeit hineingesteckt hat.
 
 ## Preisform
 
-**Empfehlung: einmaliger Kauf, kein Abo.** Der Grund ist nicht Sympathie, sondern die
-Architektur: Alle Daten liegen auf dem Gerät. Ein Abo, das nach dem Kündigen den eigenen,
-lokal gespeicherten Verlauf wieder verschließt, ist genau die Art von Geiselnahme, die
-Punkt 2 oben ausschließt. Ein einmaliger Kauf hat dieses Problem nicht.
+**Entschieden in Runde 95: Abo, 4,99 € im Monat oder 29,99 € im Jahr.** Das ist eine
+Umkehr — an dieser Stelle stand vorher die Empfehlung eines einmaligen Kaufs zu 6,99 €.
+Der Einwand von damals ist nicht widerlegt, und er bleibt deshalb hier stehen: Alle Daten
+liegen auf dem Gerät, und ein Abo, das nach dem Kündigen den eigenen, lokal gespeicherten
+Verlauf wieder verschließt, ist genau die Art von Geiselnahme, die Punkt 2 oben ausschließt.
 
-Der Preis von 4,99 € steht im Produktplan bereits als Planung (und wurde in Runde 46
-ausdrücklich als *Planung* und nicht als Nachlass gekennzeichnet). Für einen einmaligen Kauf
-halte ich **6,99 €** für angemessener: Es ist der Bereich, in dem ein Kauf ohne Nachdenken
-passiert, und es ist mehr als das, was eine einzelne Kaffeepause kostet — was zu einem
-Produkt passt, das ein halbes Jahr begleitet.
+**Die Auflösung ist eine Regel, keine Ausnahme:** Das Abo schaltet frei, was die App
+*fortlaufend leistet* — neue Durchläufe, laufende Tagesform-Befunde, den weiterlaufenden
+Verlauf. Was während der Laufzeit bereits entstanden ist, bleibt nach dem Kündigen lesbar.
+Verschlossen wird das Neue, nie das Gewesene. Ohne diese Regel wäre der Einwand oben ein
+Grund, das Abo zu lassen; mit ihr ist er es nicht.
 
-**Was das kostet:** wiederkehrende Einnahmen. Wer die braucht, sollte die Grenze *nicht*
-verschieben, sondern später eine echte Erweiterung verkaufen (etwa den Vergleich für Gruppen
-oder einen exportierbaren Jahresbericht), statt Bestehendes hinter ein Abo zu ziehen.
+Dass das Abo überhaupt die bessere Form ist, hat zwei Gründe. Der eine ist wirtschaftlich:
+Ein einmaliger Kauf verkauft einen fertigen Bericht, und danach gibt es keinen Grund mehr
+wiederzukommen — die Einnahmen wachsen mit der Neukundenzahl statt mit der Nutzerzahl. Der
+andere ist der von Apple: Richtlinie 3.1.2 verlangt für ein Abo *fortlaufenden* Wert und
+nicht das Freischalten fester Inhalte. Beide zeigen in dieselbe Richtung, nämlich weg vom
+einmaligen Fließtext und hin zu Tagesform und wiederholtem Assessment als Mittelpunkt des
+bezahlten Bereichs. Das ist keine Anpassung an eine Regel, sondern dieselbe Bewegung, die
+Runde 79 ohnehin begonnen hat.
+
+**Zu den Zahlen:** 4,99 € ist der Betrag, der vorher als Einmalpreis geplant war. Er wird
+bewusst nicht erhöht: Als monatlicher Preis ist es derselbe geprüfte Betrag in anderer
+Taktung, nicht eine Erhöhung, die begründet werden müsste. 29,99 € im Jahr sind die Hälfte
+davon — der Rabatt kauft nicht nur Vorauszahlung, er halbiert auch die Zahl der Momente, in
+denen jemand über eine Kündigung nachdenkt. Was vom Ladenpreis übrig bleibt, steht im
+Produktplan: nach Mehrwertsteuer und Apple-Anteil 3,56 € von 4,99 €.
+
+**Pflicht, sobald verkauft wird:** ein Weg, gekaufte Käufe wiederherzustellen, und ein
+sichtbarer Hinweis darauf, dass die Kündigung in den iOS-Einstellungen läuft und nicht hier.
 
 ## Wie es im Code aussieht
 
