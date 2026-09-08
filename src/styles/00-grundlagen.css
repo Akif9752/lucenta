@@ -127,12 +127,26 @@
        Stufen, der Dunkelmodus auf 41. Der Hellmodus bekommt deshalb mehr. */
     /* Runde 98: Der Kranz hat jetzt zwei Farbwerte statt einem. --kranz-anteil ist die
        Spitze eines Strahls, --kranz-grund das, was ZWISCHEN zwei Strahlen stehen bleibt.
-       Warum, steht bei der Hintergrundangabe in 03-result.css. Die Deckkraft ist dabei
-       halbiert (war .82): Weil zwischen den Strahlen nicht mehr nichts steht, traegt die
-       Flaeche jetzt rund dreimal so viel Farbe wie vorher. */
-    --kranz-anteil:44%;
-    --kranz-grund:29%;
-    --kranz-deckung:.38;
+       Warum, steht bei der Hintergrundangabe in 03-result.css.
+
+       Die Werte sind gemessen und nicht gegriffen. Beim ersten Anlauf dieser Runde hatte ich
+       die Deckkraft von .82 auf .38 gesenkt, weil zwischen den Strahlen jetzt Farbe steht und
+       die Flaeche damit mehr Farbe traegt. Das Ergebnis war unsichtbar — gemeldet als "jetzt
+       kann man den strahlenkranz gar nicht mehr sehen". Der Denkfehler: Das Auge sieht nicht
+       die MENGE Farbe, sondern den KONTRAST. Ein gleichmaessiger Hauch ueber ein Viertel der
+       Flaeche verschwindet, wo eine kleinere Flaeche mit hoher Spitze auffaellt.
+       Deshalb sind danach sechs Einstellungen im Browser durchgemessen worden statt eine
+       geraten (groesster Unterschied zum Bild ohne Kranz, hier fuer den Hellmodus):
+           Deckung .38, 44/29 →  25 Stufen auf 27 % der Flaeche   (unsichtbar)
+           Deckung .60, 46/28 →  39 Stufen auf 37 %
+           Deckung .75, 48/26 →  51 Stufen auf 49 %   ← genommen
+           Deckung .90, 50/24 →  63 Stufen auf 49 %   (zu praesent)
+       Zum Vergleich: Runde 97, die als "zu deutlich als einzelne Strahlen" gemeldet wurde,
+       lag bei 46 Stufen auf 7 % — aehnliche Spitze, aber auf einem Siebtel der Flaeche, und
+       genau das machte sie zu Speichen statt zu einem Schein. */
+    --kranz-anteil:48%;
+    --kranz-grund:26%;
+    --kranz-deckung:.75;
     --himmel-hoch:rgba(114,152,192,.40);
     --wolke:rgba(255,255,255,.22);
     --wolke-licht:rgba(255,246,226,.30);
@@ -217,9 +231,9 @@
          die nur im Hellmodus erklaert sind, gelten im Dunkelmodus WEITER — der Dunkelblock
          ueberschreibt nur, was er nennt. Dass die Wolken dort trotzdem nicht erscheinen, haengt
          sonst allein an einer Abfrage im Skript, und ein einzelnes Schloss ist keines. */
-      --kranz-anteil:34%;
-      --kranz-grund:22%;
-      --kranz-deckung:.33;
+      --kranz-anteil:37%;
+      --kranz-grund:20%;
+      --kranz-deckung:.65;
       --himmel-hoch:rgba(0,0,0,0);
       --wolke:rgba(0,0,0,0);
       --wolke-licht:rgba(0,0,0,0);
@@ -250,9 +264,9 @@
        Himmelsfarben des HELLMODUS vererbt, und dass trotzdem keine Wolken erschienen, hing
        allein an einer Abfrage im Skript. Genau davor warnt der Kommentar, den dieselbe
        Einfuegung mitgebracht hat. */
-    --kranz-anteil:34%;
-    --kranz-grund:22%;
-    --kranz-deckung:.33;
+    --kranz-anteil:37%;
+    --kranz-grund:20%;
+    --kranz-deckung:.65;
     --himmel-hoch:rgba(0,0,0,0);
     --wolke:rgba(0,0,0,0);
     --wolke-licht:rgba(0,0,0,0);
