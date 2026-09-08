@@ -287,7 +287,9 @@ print("\n8) Anfuehrungszeichen passen zur Sprache")
 #   en, pt          " … "     doppelte Anfuehrungszeichen
 #   es, fr, it      « … »     Guillemets (im Franzoesischen mit schmalem Leerraum)
 #   ja             「 … 」     Kagi-Klammern
+#   tr              " … "     wie im Englischen (so schreibt es die TDK-Rechtschreibung)
 PAARE = {
+    'tr': (('&ldquo;', '\u201c'), ('&rdquo;', '\u201d')),
     'de': (('&bdquo;', '\u201e'), ('&ldquo;', '\u201c')),
     'en': (('&ldquo;', '\u201c'), ('&rdquo;', '\u201d')),
     'pt': (('&ldquo;', '\u201c'), ('&rdquo;', '\u201d')),

@@ -48,7 +48,7 @@ die Store-Beschreibung muss es genauso halten.
 - **Keine Verbindung nach außen.** Kein Server, kein Konto, keine Werbung, kein Tracking,
   kein Fremdabruf. Das vereinfacht die Datenschutzangaben im Store auf den kleinstmöglichen
   Fall (siehe Abschnitt 4).
-- **Sieben Sprachen** (de, en, es, fr, it, pt, ja), item-für-item durch die Testreihe
+- **Acht Sprachen** (de, en, es, fr, it, pt, tr, ja), item-für-item durch die Testreihe
   abgesichert.
 - **App-Symbol** in elf Größen unter `assets/icon/`, inklusive 1024 px für den Store.
 - **Sichere Ränder** (Aussparung, Home-Leiste), Systemleistenfarbe je Farbmodus,
@@ -145,9 +145,9 @@ blockiert.
 
 ## 6. Der größte offene Punkt bleibt fachlich, nicht technisch
 
-Sechs der sieben Sprachen tragen eine **funktionierende Übersetzung** der IPIP-Aussagen,
+Sieben der acht Sprachen tragen eine **funktionierende Übersetzung** der IPIP-Aussagen,
 keine veröffentlichte psychometrische Fassung. Die Zuordnung und die Polung sind Aussage für
 Aussage durch die Testreihe festgenagelt, eine Übersetzung kann die Messung also nicht
 verändern — aber „auf Spanisch validiert" darf nirgends behauptet werden, und die App tut es
-auch nicht. Für einen Store-Eintrag in sieben Sprachräumen ist das der Punkt, der vor der
+auch nicht. Für einen Store-Eintrag in acht Sprachräumen ist das der Punkt, der vor der
 Werbung geklärt gehört, nicht danach.

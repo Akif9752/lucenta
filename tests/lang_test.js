@@ -63,7 +63,11 @@
   // gegen die Rueckfallsprache stehen — sonst faellt ein Paket mit fehlendem Block erst im
   // Browser auf, und dort als leere Stelle statt als Fehler.
   var SPRACHEN = Object.keys(CONTENT).filter(function(c){ return c !== 'de'; }).sort();
-  ok(SPRACHEN.length === 6, "sechs Sprachen neben Deutsch: "+SPRACHEN.join(', '));
+  // Die Zahl steht ausgeschrieben da und wird bei jeder neuen Sprache von Hand erhoeht. Das ist
+  // Absicht und kein Versaeumnis: Ein Paket, das sich nicht laden laesst, verschwindet sonst
+  // lautlos aus CONTENT, und eine Pruefung, die "alle vorhandenen" gegen "alle vorhandenen"
+  // haelt, merkt davon nichts. Runde 97: sieben, mit Tuerkisch.
+  ok(SPRACHEN.length === 7, "sieben Sprachen neben Deutsch: "+SPRACHEN.join(', '));
   var kd = Object.keys(CONTENT.de).sort().join(',');
   SPRACHEN.forEach(function(c){
     var pack = CONTENT[c];

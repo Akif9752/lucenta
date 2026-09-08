@@ -3,7 +3,13 @@
 # genau dieselben Schluessel — ein vergessenes Paket faellt sonst erst dort auf.
 import sys, json, re, io
 def add(neu, anker="'analysiere_deine_antworten_h'"):
-    for code in ['de','en','es','fr','it','pt','ja']:
+    # Runde 97: Die Liste wird nicht mehr aufgezaehlt, sondern aus dem Verzeichnis gelesen.
+    # Beim Sprung auf Tuerkisch waere sie sonst die eine Stelle gewesen, an der ein neues Paket
+    # stillschweigend uebersprungen wird — und ausgerechnet dieses Skript soll ja verhindern,
+    # dass ein Paket vergessen wird.
+    import os
+    codes = sorted(f[:-3] for f in os.listdir('src/i18n') if f.endswith('.js'))
+    for code in codes:
         p = 'src/i18n/%s.js' % code
         zeilen = open(p, encoding='utf-8').read().split('\n')
         vorhanden = set(re.findall(r"^\s+'([^']+)':", '\n'.join(zeilen), re.M))

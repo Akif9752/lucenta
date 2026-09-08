@@ -48,7 +48,7 @@ zu verschließen kostet mehr, als er einbringt.
 | Ergebniscode und Ergebnisbild zum Teilen | ✓ | ✓ |
 | Archetypen-Übersicht | ✓ | ✓ |
 | Profil: Name, alle 22 Figuren, alle 10 Hintergründe | ✓ | ✓ |
-| Sieben Sprachen, Darstellung, Datenexport, Rechtliches | ✓ | ✓ |
+| Acht Sprachen, Darstellung, Datenexport, Rechtliches | ✓ | ✓ |
 | Tagesform eintragen, so oft man mag | ✓ | ✓ |
 | Vergleich: Prozentwert, Fünfeck, ein Satz je Dimension | ✓ | ✓ |
 | **Verlauf über mehr als zwei Durchläufe** | – | ✓ |

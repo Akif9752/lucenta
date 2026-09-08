@@ -255,14 +255,14 @@ Texte stehen in `src/i18n/`. Drei Arten von Marken im Markup:
 
 Dynamische Texte laufen über `tx('schluessel')`.
 
-**Sieben Sprachen:** Deutsch (Rückfallsprache), Englisch, Spanisch, Französisch, Italienisch,
-Portugiesisch, Japanisch. `src/i18n/de.js` ist der Maßstab — jedes andere Paket muss **genau
+**Acht Sprachen:** Deutsch (Rückfallsprache), Englisch, Spanisch, Französisch, Italienisch,
+Portugiesisch, Türkisch, Japanisch. `src/i18n/de.js` ist der Maßstab — jedes andere Paket muss **genau
 dieselben Schlüssel** tragen; die Reihe „Sprachwechsel" (196 Prüfungen) und Prüfung 1 des Audits
 erzwingen das von zwei Seiten.
 
 **Die Messung darf sich durch eine Übersetzung nicht ändern.** Deshalb prüft die Reihe für jede
 Sprache einzeln, dass `FACTORS` je Dimension 10 Items hat und die **Polung Zeichen für Zeichen**
-der Rückfallsprache entspricht — und dass dieselben 50 Antworten in allen sieben Sprachen
+der Rückfallsprache entspricht — und dass dieselben 50 Antworten in allen acht Sprachen
 denselben Wert ergeben. Eine vertauschte Polung wäre sonst ein stiller Messfehler: Der Text sähe
 richtig aus, das Ergebnis wäre falsch.
 
@@ -336,10 +336,13 @@ App mit diesem Anspruch schlimmer als keine.
   Ähnlichkeitsprüfung zu LUCENTIS und LUCENT steht aus.
 - **Installierbarkeit** funktioniert erst mit eigener Domain — im eingebetteten Rahmen liest iOS
   nur die äußere Seite (Runde 51).
-- **Belegte Item-Fassungen fehlen für sechs der sieben Sprachen.** Runde 78 hat Spanisch,
-  Französisch, Italienisch, Portugiesisch und Japanisch als Arbeitsübersetzung ergänzt, weil die
-  App sonst einsprachig geblieben wäre; für Spanisch existiert bei IPIP keine veröffentlichte
-  Fassung der Big-Five-Marker. Solange das so ist, ist die App in diesen Sprachen benutzbar, aber
+- **Belegte Item-Fassungen fehlen für sieben der acht Sprachen.** Runde 78 hat Spanisch,
+  Französisch, Italienisch, Portugiesisch und Japanisch als Arbeitsübersetzung ergänzt, Runde 97
+  Türkisch, weil die App sonst einsprachig geblieben wäre; für Spanisch existiert bei IPIP keine
+  veröffentlichte Fassung der Big-Five-Marker. Für Türkisch ebenso wenig: Die türkische
+  IPIP-Arbeit (Somer, Korkmaz, Tatar) hat aus 924 übersetzten Items ein **eigenes
+  220-Item-Inventar** gebaut, also ein anderes Instrument, und die publizierte Adaption des
+  IPIP-Big5 (Tatar 2017) liegt nicht als freie Item-Liste vor. Solange das so ist, ist die App in diesen Sprachen benutzbar, aber
   ihr Fragebogen nicht zitierbar. Für einen wissenschaftlichen Anspruch bleibt das der größte
   offene Punkt — vor Impressum und Markenrecherche.
 

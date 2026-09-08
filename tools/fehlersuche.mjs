@@ -569,9 +569,18 @@ const laeufe = [
   {thema:'dunkel', demo:true,  plus:false, sprache:'de'},
   {thema:'hell',   demo:true,  plus:true,  sprache:'ja'},
   {thema:'hell',   demo:true,  plus:true,  sprache:'fr'},
-  // Der schmale Bildschirm, in den zwei Sprachen mit den laengsten Woertern.
+  // Runde 97: Tuerkisch dazu, und zwar in BEIDEN Farbmodi. Es ist die einzige Sprache hier mit
+  // Buchstaben, die in den uebrigen sieben nicht vorkommen (ı, ğ, ş, ç) — ob die eingebettete
+  // Schrift sie wirklich traegt, sieht man nur im Bild, und ein fehlendes Zeichen faellt
+  // ausserdem als andere Zeilenhoehe auf.
+  {thema:'hell',   demo:true,  plus:true,  sprache:'tr'},
+  {thema:'dunkel', demo:true,  plus:true,  sprache:'tr'},
+  // Der schmale Bildschirm, in den Sprachen mit den laengsten Woertern. Tuerkisch gehoert
+  // dazu: Es haengt Endungen an, statt neue Woerter zu setzen, und kommt damit auf Laengen
+  // wie das Deutsche mit seinen Komposita.
   {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320},
   {thema:'hell',   demo:true,  plus:true,  sprache:'fr', breite:320},
+  {thema:'hell',   demo:true,  plus:true,  sprache:'tr', breite:320},
 ];
 for (const l of laeufe) await durchlauf(l);
 
