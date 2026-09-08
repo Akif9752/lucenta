@@ -80,7 +80,7 @@ npm test
 Sechs Ebenen, die sich ergänzen:
 
 1. **`node build.js`** — muss durchlaufen; ein Syntaxfehler fällt hier auf.
-2. **`node tests/run.js`** — zehn Reihen, rund 7.000 Prüfungen. Der App-Code wird bis zur Marke
+2. **`node tests/run.js`** — elf Reihen, rund 7.000 Prüfungen. Der App-Code wird bis zur Marke
    `wiring` gegen einen Ersatz-DOM ausgeführt.
 3. **`python3 tools/audit_i18n.py`** — acht statische Eigenschaften der Mehrsprachigkeit.
 4. **`npm run diff-sprachen`** — fährt im echten Browser jede Ansicht auf Deutsch ab und danach

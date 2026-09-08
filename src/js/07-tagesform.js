@@ -198,9 +198,26 @@
     return Math.abs(v - Math.round(v)) < 0.001 ? String(Math.round(v)) : zahl1(v);
   }
 
+  // Runde 96: Diese Funktion fragte, ob die Sprache Deutsch ist, und setzte nur dann ein Komma.
+  // Spanisch, Franzoesisch, Italienisch und Portugiesisch schreiben das Dezimalkomma genauso —
+  // vier von sieben Sprachen sahen also "3.9", wo "3,9" richtig ist. Statt die Liste zu
+  // verlaengern (und beim naechsten Sprachpaket wieder zu vergessen) kommt die Antwort jetzt aus
+  // derselben Quelle wie das Datumsformat: dem Gebietsschema selbst.
+  var ZAHL1_FMT = null, ZAHL1_FMT_SPRACHE = null;
   function zahl1(v){
-    var s = (Math.round(v*10)/10).toFixed(1);
-    return tx('datum_gebietsschema').indexOf('de') === 0 ? s.replace('.', ',') : s;
+    var gs = tx('datum_gebietsschema');
+    try{
+      if (ZAHL1_FMT_SPRACHE !== gs){
+        ZAHL1_FMT = new Intl.NumberFormat(gs, {minimumFractionDigits:1, maximumFractionDigits:1});
+        ZAHL1_FMT_SPRACHE = gs;
+      }
+      return ZAHL1_FMT.format(Math.round(v*10)/10);
+    }catch(e){
+      // Ohne Intl bleibt die alte Regel — falsch fuer vier Sprachen, aber immer noch besser als
+      // gar keine Zahl.
+      var s = (Math.round(v*10)/10).toFixed(1);
+      return gs.indexOf('de') === 0 ? s.replace('.', ',') : s;
+    }
   }
 
   var WOCHENTAG_FMT = null;

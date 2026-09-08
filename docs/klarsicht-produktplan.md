@@ -1029,6 +1029,30 @@ Im Markup tragen 163 Elemente jetzt eine Sprachmarke (135 reine Textelemente, 28
 - Bei 4–6 % Free-to-Paid-Konversion braucht es **4.700–7.000 Testabschlüsse/Monat**, um den Bestand aufzubauen.
 - Der virale Koeffizient aus dem Kompatibilitäts-Feature ist der Hebel dafür — muss in der Beta gemessen werden.
 
+**Die Messung dafür steht seit Runde 96 im Code** (`nutzungKennzahlen()` in `03-speicherung.js`,
+Testreihe `tests/nutzung_test.js`). Aufgeschrieben wird das Minimum, aus dem sich die beiden
+Fragen beantworten lassen: an welchen Kalendertagen die App offen war. Alles Übrige folgt aus dem,
+was ohnehin gespeichert ist — Durchläufe im Verlauf, Einträge der Tagesform. Keine Uhrzeiten,
+keine Ansichten, keine Klickwege, keine Kennung.
+
+Acht Zahlen: Tage seit dem ersten Start, Tage mit geöffneter App, davon in den letzten 30 Tagen,
+ob jemand nach Tag 30 noch einmal da war, abgeschlossene Durchläufe, Tage bis zum zweiten
+Durchlauf, Tage mit Tagesform, Tagesform-Einträge pro Woche.
+
+Drei Entscheidungen daran sind keine Details:
+
+- **„Nach Tag 30 noch einmal da" ist offen, solange es keinen Tag 30 gab** — nicht „nein". Ein
+  unbeantworteter Wert als Nein zu verbuchen macht aus einer offenen Frage eine schlechte Antwort
+  und zieht die Entscheidung in die falsche Richtung.
+- **Die Tagesform-Quote rechnet bis heute, nicht bis zum letzten Eintrag.** Sonst zeigte
+  ausgerechnet jemand, der vor zwei Monaten aufgehört hat, eine makellose Quote — der Abbruch
+  fiele aus der Rechnung heraus, statt in ihr zu stehen. Genau diese Person ist aber der Grund,
+  warum die Zahl erhoben wird.
+- **Es geht von selbst nirgendwohin.** Bei der Beta-Rückmeldung steht ein Schalter, ausgeschaltet,
+  und darunter ein Kasten mit genau dem Wortlaut, der mitginge. Ein Haken, hinter dem man erst
+  nachsehen muss, was er verschickt, wäre das Gegenteil dessen, was die App an dieser Stelle
+  sonst verspricht.
+
 ## Tech-Stack & Architektur
 
 **Phase 1 (jetzt):** Reine Client-seitige Web-App (HTML/CSS/JS), kein Backend, kein Account-Zwang. Null Infrastrukturkosten. Profilbilder werden clientseitig verkleinert/komprimiert und als Data-URL im `localStorage` gehalten — kein Upload zu einem Server.

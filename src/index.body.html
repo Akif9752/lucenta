@@ -284,6 +284,20 @@
       <div id="feedbackMore" style="display:none;">
         <label class="feedback-label" for="feedbackText" data-i18n="was_hat_gefehlt_oder_überras">Was hat gefehlt oder überrascht? (freiwillig)</label>
         <textarea id="feedbackText" rows="3" maxlength="600" placeholder="Ein Satz reicht." data-i18n-placeholder="ph_ein_satz_reicht"></textarea>
+        <!-- Runde 96: Die Rueckmeldung oben sagt, ob das Portraet gepasst hat. Das beantwortet
+             die Frage nicht, an der der Abo-Plan haengt — ob jemand nach dreissig Tagen noch da
+             ist. Diese Zeile beantwortet sie, und zwar ausgeschaltet, sichtbar und woertlich:
+             Der Kasten darunter zeigt genau den Text, der mitginge. Ein Haken, hinter dem man
+             erst nachsehen muss, was er verschickt, waere das Gegenteil dessen, was die App
+             sonst an dieser Stelle verspricht. -->
+        <div class="settings-zeile nutzung-zeile">
+          <div class="settings-zeile-text">
+            <strong data-i18n="nutzung_titel">Nutzungszahlen mitschicken</strong>
+            <span class="settings-hint" data-i18n="nutzung_hinweis">Aus wie oft die App offen war, wie oft du getestet hast und wie regelmäßig du Tagesform einträgst. Nur Anzahlen und Tage, keine Werte, kein Code, keine Uhrzeiten, keine Kennung. Standardmäßig aus — schalte es ein und du siehst genau, was mitginge.</span>
+          </div>
+          <button type="button" class="schalter" id="nutzungSchalter" role="switch" aria-checked="false" aria-label="Nutzungszahlen mitschicken" data-i18n-aria="aria_nutzung"><span class="schalter-knopf"></span></button>
+        </div>
+        <div class="nutzung-vorschau" id="nutzungVorschau" hidden></div>
         <div class="feedback-actions">
           <button type="button" class="btn btn-primary btn-sm" id="btnFeedbackSend" data-i18n="rückmeldung_weitergeben">Rückmeldung weitergeben</button>
         </div>

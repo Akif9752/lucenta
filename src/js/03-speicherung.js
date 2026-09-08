@@ -130,6 +130,107 @@
   // um zu sehen DASS sich etwas bewegt, zu wenig, um zu sehen WIE.
   var FREI_DURCHLAEUFE = 2;
 
+  // ---------- Nutzungsmessung (Runde 96) ----------
+  //
+  // Der Abo-Plan steht und faellt an EINER Zahl: Wie viele Menschen sind nach dreissig Tagen noch
+  // da? Ein Abo, dessen Gegenwert Verlauf und Tagesform sind, verkauft sich nur, wenn Verlauf und
+  // Tagesform tatsaechlich benutzt werden — und das weiss heute niemand, auch nicht ungefaehr.
+  // Solange die Zahl fehlt, ist jede Umsatzplanung geraten.
+  //
+  // Gemessen wird deshalb das Minimum, aus dem sich die Frage beantworten laesst: an WELCHEN
+  // Kalendertagen die App offen war. Keine Uhrzeiten, keine Ansichten, keine Klickwege, keine
+  // Kennung. Alles Weitere ergibt sich aus dem, was ohnehin gespeichert ist — Durchlaeufe im
+  // Verlauf, Eintraege der Tagesform. Was darueber hinausginge, waere Neugier und nicht Messung.
+  //
+  // Es bleibt auf dem Geraet, wie alles hier. Von selbst geht nichts hinaus; nur wer es bei der
+  // Beta-Rueckmeldung ausdruecklich einschaltet, schickt es mit — und sieht vorher woertlich,
+  // was dann dasteht.
+  var NUTZUNG_SCHLUESSEL = 'lucenta_nutzung';
+  // Vier Monate Tage. Mehr braucht keine der Auswertungen unten, und der erste Tag steht separat
+  // in `start` — sonst haette das Kuerzen ausgerechnet den Bezugspunkt weggeworfen, an dem die
+  // ganze Rechnung haengt.
+  var NUTZUNG_MAX_TAGE = 120;
+  // Die Monats- und Tageszahlen werden mitgeprueft und nicht nur die Form. Der Grund steht in
+  // tagAlsZahl(): Date.UTC rechnet Ueberlaeufe stillschweigend um — aus '2026-13-99' wird ein
+  // gueltiger Tag im Maerz 2027. Eine kaputte Angabe wuerde damit nicht auffallen, sondern die
+  // Spanne verlaengern und jede Quote nach unten ziehen.
+  function istTagesschluessel(t){
+    return typeof t === 'string' && /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(t);
+  }
+  function nutzungLesen(){
+    try{
+      var r = localStorage.getItem(NUTZUNG_SCHLUESSEL);
+      if (!r) return {start:'', tage:[]};
+      var n = JSON.parse(r);
+      if (!n || typeof n!=='object' || !Array.isArray(n.tage)) return {start:'', tage:[]};
+      var tage = n.tage.filter(istTagesschluessel);
+      var start = istTagesschluessel(n.start) ? n.start : (tage[0]||'');
+      return {start:start, tage:tage};
+    }catch(e){ return {start:'', tage:[]}; }
+  }
+  function nutzungTagVermerken(){
+    var n = nutzungLesen(), heute = todayKey();
+    if (!n.start) n.start = heute;
+    // Die Liste waechst nur hinten, also ist der heutige Tag entweder der letzte oder gar nicht
+    // da. Das indexOf dahinter ist trotzdem noch da: Wessen Geraeteuhr zurueckgestellt wird, soll
+    // keinen doppelten Eintrag erzeugen, der spaeter als zusaetzlicher Tag zaehlt.
+    if (n.tage[n.tage.length-1] !== heute && n.tage.indexOf(heute) < 0) n.tage.push(heute);
+    if (n.tage.length > NUTZUNG_MAX_TAGE) n.tage = n.tage.slice(n.tage.length - NUTZUNG_MAX_TAGE);
+    try{ localStorage.setItem(NUTZUNG_SCHLUESSEL, JSON.stringify(n)); }catch(e){}
+    return n;
+  }
+  function nutzungLoeschen(){
+    try{ localStorage.removeItem(NUTZUNG_SCHLUESSEL); }catch(e){}
+  }
+  // Ein Tagesschluessel als fortlaufende Zahl. Bewusst ueber Date.UTC aus den drei Zahlen im
+  // Schluessel und nicht ueber new Date('2026-09-08'): Der Schluessel entsteht in 03 aus den
+  // ORTSZEIT-Anteilen. Ihn als UTC-Zeitpunkt zu lesen und dann ortszeitlich auszuwerten waere
+  // ein Fehler von bis zu einem Tag — westlich von Greenwich taeglich einer.
+  function tagAlsZahl(key){
+    if (!istTagesschluessel(key)) return NaN;
+    var t = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key);
+    return Math.floor(Date.UTC(+t[1], +t[2]-1, +t[3]) / 86400000);
+  }
+  function nutzungKennzahlen(){
+    var n = nutzungLesen();
+    var heute = tagAlsZahl(todayKey()), start = tagAlsZahl(n.start);
+    var seitStart = (isNaN(start) || isNaN(heute)) ? 0 : Math.max(0, heute - start + 1);
+    var letzte30 = n.tage.filter(function(t){
+      var z = tagAlsZahl(t);
+      return !isNaN(z) && heute - z < 30 && heute - z >= 0;
+    }).length;
+    // Die eigentliche D30-Frage: War jemand NACH dem dreissigsten Tag noch einmal da? Sie ist
+    // erst beantwortbar, wenn es einen dreissigsten Tag gab. Vorher lautet die ehrliche Antwort
+    // "noch nicht messbar" — und ausdruecklich nicht "nein", was sie zu einer Zahl machen wuerde,
+    // die schlechter aussieht als die Wirklichkeit und die Entscheidung in die falsche Richtung
+    // zieht.
+    var d30 = seitStart < 31 ? null : n.tage.some(function(t){
+      var z = tagAlsZahl(t);
+      return !isNaN(z) && z - start >= 30;
+    });
+    var h = loadHistory();
+    // Abstand zwischen dem ersten und dem zweiten Durchlauf. Das ist die zweite Zahl, die zaehlt:
+    // Wer nie ein zweites Mal testet, hat vom Verlauf nichts — und der Verlauf ist die Haelfte
+    // dessen, wofuer das Abo bezahlt werden soll.
+    var tageBisZweiter = (h.length >= 2 && typeof h[0].date === 'number' && typeof h[1].date === 'number')
+      ? Math.max(0, Math.round((h[1].date - h[0].date) / 86400000)) : null;
+    var eintraege = loadStateHistory(), tage = stateTage(eintraege);
+    var proWoche = 0;
+    if (tage.length){
+      var erste = tagAlsZahl(tage[0].day);
+      // Die Spanne laeuft bis HEUTE, nicht bis zum letzten Eintrag. Sonst zeigte ausgerechnet
+      // jemand, der vor zwei Monaten aufgehoert hat, eine tadellose Quote — der Abbruch faellt
+      // aus der Rechnung heraus, statt in ihr zu stehen.
+      var spanne = (isNaN(erste) || isNaN(heute)) ? tage.length : Math.max(1, heute - erste + 1);
+      proWoche = tage.length / (spanne / 7);
+    }
+    return {
+      seitStart: seitStart, tageGeoeffnet: n.tage.length, letzte30: letzte30, d30: d30,
+      durchlaeufe: h.length, tageBisZweiter: tageBisZweiter,
+      tagesformTage: tage.length, tagesformEintraege: eintraege.length, tagesformProWoche: proWoche
+    };
+  }
+
   var MAX_STATE_EINTRAEGE = 150;
   // Drei Abschnitte statt Uhrzeiten: Eine Uhrzeit im Verlauf zu zeigen waere eine Genauigkeit,
   // die die Angabe nicht hat. Die Grenzen sind bewusst grob und liegen dort, wo die meisten

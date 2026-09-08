@@ -107,7 +107,17 @@ Diese Punkte sind bewusst als Liste geführt, weil jeder einzelne die Veröffent
 blockiert.
 
 1. **Apple Developer Program**, 99 USD im Jahr, mit Identitätsprüfung. Rechnet mit ein bis
-   zwei Wochen, wenn Rückfragen kommen.
+   zwei Wochen, wenn Rückfragen kommen. **Ein Mac ist vorhanden** (Stand Runde 96) — damit ist
+   Abschnitt 3 nicht mehr blockiert, sondern der nächste Schritt nach diesem Punkt.
+   Reihenfolge: erst das Programm beantragen (es dauert), währenddessen Capacitor einrichten.
+1a. **Abo statt Einmalkauf (Runde 95).** Zwei Produkte in App Store Connect anlegen:
+   `lucenta.plus.monat` zu 4,99 € und `lucenta.plus.jahr` zu 29,99 €, in derselben
+   Abo-Gruppe, damit ein Wechsel zwischen beiden möglich ist. Dazu gehören zwingend eine
+   Wiederherstellung gekaufter Käufe und ein sichtbarer Hinweis, dass die Kündigung in den
+   iOS-Einstellungen läuft. **Richtlinie 3.1.2** verlangt fortlaufenden Wert: Der bezahlte
+   Bereich sind die vier laufenden Grenzen (Verlauf, Tagesform, Vergleichskarte, „Verstehen"),
+   nicht der Bericht — der ist frei und bleibt es. **CloudKit gehört ausdrücklich NICHT
+   hierher**: Es synchronisiert Daten, nicht Berechtigungen; ob jemand zahlt, weiß StoreKit.
 2. **Die sechs Angaben im Impressum.** Sie stehen an genau einer Stelle im Code:
    `IMPRESSUM` in `src/js/17-settings.js` — Name, Straße, Ort, E-Mail, Hoster, und die
    Umsatzsteuer-ID, falls vorhanden. Solange eine fehlt, sagt die App das selbst in aller

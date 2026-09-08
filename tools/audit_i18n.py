@@ -223,8 +223,21 @@ for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
     # irgendwohin schreibt, an tx() gibt oder mit etwas verkettet, faellt aus der Ausnahme
     # heraus und der Fund bleibt bestehen. Gegengeprueft: Ein 'Fuchs' in einem textContent
     # wird weiterhin gemeldet.
-    if lit and all(re.search(r'[A-Za-z_$][\w$]*\s*(?::|===|==)\s*$', v)
-                   for v in re.split(r"'" + re.escape(lit) + r"'", rest)[:-1]):
+    #
+    # Runde 96: Eine dritte Form kam dazu — die Vorgabe, `var art = o.blick || 'offen';`. Sie ist
+    # eine Zuweisung wie die anderen beiden, faellt aber durch das Muster oben. Aufgefallen ist
+    # das erst, als ein neuer deutscher Text das Wort "offen" enthielt und damit ein seit Runde 80
+    # unveraendertes Aufzaehlungsliteral zum Fund machte.
+    #
+    # Die Vorgabe allein reicht ausdruecklich NICHT als Ausnahme: `name || 'Kein Name angegeben'`
+    # ist genau die Form, in der echter Oberflaechentext im Code landet. Verlangt wird deshalb
+    # beides — jedes Vorkommen in einer der drei Formen UND mindestens eines in der strengen.
+    # Ein Literal, das nur als Vorgabe auftaucht, ist keine Aufzaehlung, sondern ein Text.
+    STRENG  = r'[A-Za-z_$][\w$]*\s*(?::|===|==|!==|!=)\s*$'
+    VORGABE = r'[A-Za-z_$][\w$.\[\]]*\s*\|\|\s*$'
+    teile = re.split(r"'" + re.escape(lit) + r"'", rest)[:-1]
+    if lit and teile and all(re.search(STRENG, v) or re.search(VORGABE, v) for v in teile) \
+             and any(re.search(STRENG, v) for v in teile):
         continue
     w = worte(lit)
     treffer = w & NUR_DEUTSCH

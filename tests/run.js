@@ -33,6 +33,7 @@ const SUITES = [
   ['harness2.js',      'state_test.js',  'Tagesform'],
   ['harness2.js',      'anim_test.js',   'Fragewechsel'],
   ['harness2.js',      'lang_test.js',   'Sprachwechsel'],
+  ['harness2.js',      'nutzung_test.js','Nutzungsmessung'],
 ];
 
 const tmp = path.join(ROOT, '.tmp-tests');

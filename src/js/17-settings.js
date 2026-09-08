@@ -83,7 +83,7 @@
   // speichern; wo das unterbunden ist (eingebettete Ansichten unterbinden Downloads), landet
   // alles in der Zwischenablage. Ein Weg allein waere in der Haelfte der Faelle eine Sackgasse.
   var DATEN_SCHLUESSEL = ['lucenta_result','lucenta_history','lucenta_state','lucenta_profile',
-                          'lucenta_compat_archive','lucenta_progress'];
+                          'lucenta_compat_archive','lucenta_progress','lucenta_nutzung'];
 
   function datenSammeln(){
     var d = {app:'lucenta', fassung:1, ts:Date.now(), daten:{}};

@@ -181,6 +181,15 @@
   .settings-zeile-text{flex:1; min-width:180px; display:flex; flex-direction:column; gap:3px;}
   .settings-zeile-text strong{font-family:var(--serif); font-weight:500; font-size:15.5px;}
   .settings-zeile .theme-toggle{flex-shrink:0;}
+  /* Runde 96: Der Kasten mit den Nutzungszahlen. white-space:pre-line, weil der Inhalt aus
+     Zeilen besteht, die genau so auch verschickt werden — wer sie hier anders umbrochen saehe
+     als im Teilen-Text, muesste zweimal hinsehen, um dasselbe zu erkennen. */
+  .nutzung-zeile{margin-top:16px;}
+  .nutzung-vorschau{
+    margin-top:10px; padding:12px 14px; border:1px solid var(--line); border-radius:10px;
+    background:var(--surface-2); color:var(--muted); font-size:12.5px; line-height:1.75;
+    white-space:pre-line; overflow-wrap:anywhere;
+  }
 
   .settings-sub{margin-top:20px; padding-top:18px; border-top:1px solid var(--line);}
   .settings-sub h3{font-family:var(--serif); font-weight:500; font-size:15.5px; margin-bottom:4px;}

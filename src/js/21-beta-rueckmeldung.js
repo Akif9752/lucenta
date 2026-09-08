@@ -8,13 +8,52 @@
       b.setAttribute('aria-pressed', b===btn ? 'true':'false');
     });
     $('feedbackMore').style.display = '';
+    nutzungVorschauZeigen();
   });
+  // ---------- Nutzungszahlen (Runde 96) ----------
+  //
+  // Acht Zeilen, jede eine Anzahl oder ein Ja/Nein. Sie stehen bewusst als lesbarer Text da und
+  // nicht als JSON: Wer entscheiden soll, ob er das mitschickt, muss es lesen koennen.
+  var NUTZUNG_SCHALTER = 'lucenta_nutzung_teilen';
+  function nutzungTeilenAn(){
+    return schalterLesen(NUTZUNG_SCHALTER, 'aus') === 'an';
+  }
+  function nutzungZeilen(){
+    var k = nutzungKennzahlen();
+    var paare = [
+      ['nutzung_l_seitstart',   k.seitStart],
+      ['nutzung_l_geoeffnet',   k.tageGeoeffnet],
+      ['nutzung_l_letzte30',    k.letzte30],
+      ['nutzung_l_d30',         k.d30 === null ? tx('nutzung_offen') : tx(k.d30 ? 'nutzung_ja' : 'nutzung_nein')],
+      ['nutzung_l_durchlaeufe', k.durchlaeufe],
+      ['nutzung_l_zweiter',     k.tageBisZweiter === null ? tx('nutzung_keiner') : k.tageBisZweiter],
+      ['nutzung_l_tagesform',   k.tagesformTage],
+      ['nutzung_l_prowoche',    k.tagesformTage ? zahl1(k.tagesformProWoche) : tx('nutzung_keiner')]
+    ];
+    // decodeEntities, weil die Beschriftungen aus derselben Tabelle kommen wie die Oberflaeche
+    // und dort Entitaeten tragen duerfen. In einem Teilen-Text stuenden sie woertlich da.
+    return paare.map(function(z){ return decodeEntities(tx(z[0])) + ': ' + decodeEntities(String(z[1])); });
+  }
+  function nutzungVorschauZeigen(){
+    var kasten = $('nutzungVorschau');
+    if (!kasten) return;
+    var an = nutzungTeilenAn();
+    kasten.hidden = !an;
+    // Nur fuellen, wenn sichtbar: Die Zahlen sollen zum Zeitpunkt des Hinsehens stimmen, nicht
+    // zum Zeitpunkt des Startens.
+    if (an) kasten.textContent = nutzungZeilen().join('\n');
+  }
+
   $('btnFeedbackSend').addEventListener('click', function(){
     // Bewusst ohne Werte, ohne Code, ohne Namen: eine Rückmeldung zur App soll keine
     // Persönlichkeitsdaten mit sich tragen, nur weil sie gerade greifbar wären.
     var note = ($('feedbackText').value || '').trim();
     var text = tx('js_lucenta_betarückmeldungnpo') + (feedbackRating || tx('js_ohne_angabe')) +
-               (note ? (decodeEntities(tx('js_anmerkung')) + note) : '');
+               (note ? (decodeEntities(tx('js_anmerkung')) + note) : '') +
+               // Die Zahlen werden hier neu geholt und nicht aus dem Vorschaukasten gelesen. Der
+               // Kasten ist Anzeige; ihn als Datenquelle zu benutzen hiesse, dass ein Fehler in
+               // der Anzeige stillschweigend zu einem Fehler in den Daten wird.
+               (nutzungTeilenAn() ? ('\n\n' + decodeEntities(tx('nutzung_titel')) + '\n' + nutzungZeilen().join('\n')) : '');
     var done = function(){ toast(tx('js_danke__das_hilft_wirklich')); };
     if (navigator.share){
       navigator.share({text:text}).then(done).catch(function(){ copyFeedback(text, done); });
@@ -185,6 +224,10 @@
     clearHistory();
     clearStateHistory();
     clearCompatArchive();
+    // Die Nutzungstage gehoeren mit dazu. Sie sind die einzigen Daten hier, die nicht der Nutzer
+    // eingetragen hat, sondern die App selbst mitgeschrieben hat — umso weniger duerfen sie ein
+    // Zuruecksetzen ueberleben.
+    nutzungLoeschen();
     // Auch das gemerkte Wegtippen des Home-Bildschirm-Hinweises ist auf dem Gerät gespeicherte
     // Nutzungsspur und gehört deshalb in ein vollständiges Zurücksetzen — sonst wäre "alles
     // gelöscht" nicht ganz wahr.
@@ -309,6 +352,22 @@
       var el = $(z[0]);
       if (el) el.addEventListener('click', function(){ schalterUmlegen(z[1], z[0]); });
     });
+    // Der Nutzungsschalter laeuft ueber dasselbe Muster, steht aber auf 'aus' statt 'an'. Das ist
+    // der ganze Unterschied und er ist der wichtige: Haptik und Bewegung betreffen nur das
+    // Geraet, hier geht etwas hinaus.
+    schalterSetzen(NUTZUNG_SCHALTER, schalterLesen(NUTZUNG_SCHALTER, 'aus'), 'nutzungSchalter');
+    if ($('nutzungSchalter')) $('nutzungSchalter').addEventListener('click', function(){
+      // Nicht ueber schalterUmlegen: das nimmt 'an' als Vorgabe an, und dieser Schalter hat
+      // 'aus'. Solange localStorage schreibbar ist, faellt das nicht auf — ist es das nicht,
+      // startete der Schalter sichtbar auf "aus" und der erste Tipp haette ihn dorthin gestellt,
+      // wo er schon stand.
+      schalterSetzen(NUTZUNG_SCHALTER, nutzungTeilenAn() ? 'aus' : 'an', 'nutzungSchalter');
+      nutzungVorschauZeigen();
+    });
+    // Erst hier, nicht frueher: Vorher stand nicht fest, ob localStorage ueberhaupt erreichbar
+    // ist, und ein Schreibversuch in eine Ansicht hinein, die es nicht gibt, waere die falsche
+    // Reihenfolge.
+    nutzungTagVermerken();
     renderPreviewCard(); ordneStartseite();
     renderLandingUnderstandTeaser();
     renderLandingStateTeaser();
