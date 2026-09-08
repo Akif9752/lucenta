@@ -87,9 +87,47 @@
       else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
     }
   }
+  // Runde 97: Der Segmentwaehler und der Aktivierungsknopf. Die gewaehlte Laufzeit steht im
+  // Speicher, damit sie beim naechsten Oeffnen noch dort steht, wo sie stand — und damit die
+  // spaetere Kaufpruefung sie liest, statt sie erneut zu erfragen.
+  var LAUFZEIT_SCHLUESSEL = 'lucenta_laufzeit';
+  // Die gueltigen Laufzeiten stehen im Markup und werden von dort gelesen, nicht hier noch
+  // einmal aufgezaehlt. Das ist nicht Sparsamkeit: Eine dritte Laufzeit im Markup und eine
+  // Liste hier, die davon nichts weiss, waere ein Auseinanderlaufen, das erst auffiele, wenn
+  // die neue Wahl sich nicht merken laesst. Die Vorgabe traegt dieselbe Quelle.
+  function laufzeitFaecher(){
+    var gruppe = $('plusPreisWahl');
+    return gruppe ? Array.prototype.slice.call(gruppe.querySelectorAll('.segment-opt')) : [];
+  }
+  function laufzeitLesen(){
+    var faecher = laufzeitFaecher();
+    var erlaubt = faecher.map(function(b){ return b.getAttribute('data-laufzeit'); });
+    var vorgabe = faecher.filter(function(b){ return b.hasAttribute('data-standard'); })[0];
+    var w = schalterLesen(LAUFZEIT_SCHLUESSEL, '');
+    if (erlaubt.indexOf(w) >= 0) return w;
+    return vorgabe ? vorgabe.getAttribute('data-laufzeit') : (erlaubt[0] || '');
+  }
+  function laufzeitAnwenden(){
+    var wahl = laufzeitLesen();
+    laufzeitFaecher().forEach(function(b){
+      b.setAttribute('aria-checked', b.getAttribute('data-laufzeit') === wahl ? 'true' : 'false');
+    });
+  }
+  // Der Knopf traegt zwei Zustaende. Ohne den zweiten fuehrte das Fenster in eine Sackgasse:
+  // Wer Lucenta+ hat, saehe eine Aufforderung zu etwas, das er bereits hat.
+  function plusKnopfAnwenden(){
+    var b = $('btnPlusAktivieren');
+    if (!b) return;
+    b.textContent = tx(istPlus() ? 'plus_beenden' : 'plus_aktivieren');
+    b.classList.toggle('btn-primary', !istPlus());
+    b.classList.toggle('btn-ghost', istPlus());
+  }
+  function plusModalAnwenden(){ laufzeitAnwenden(); plusKnopfAnwenden(); }
+
   function openPlusModal(){
     plusModalLetzterFokus = document.activeElement;
     renderPlusVorteile();
+    plusModalAnwenden();
     $('plusModal').classList.add('open');
     $('plusModal').setAttribute('aria-hidden','false');
     $('plusModalScrim').classList.add('show');

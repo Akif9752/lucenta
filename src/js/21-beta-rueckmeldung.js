@@ -1,19 +1,13 @@
-// ---------- Beta-Rückmeldung (Backlog Runde 29, Punkt 1) ----------
-  var feedbackRating = null;
-  $('feedbackOpts').addEventListener('click', function(e){
-    var btn = e.target.closest ? e.target.closest('.feedback-opt') : null;
-    if (!btn) return;
-    feedbackRating = btn.getAttribute('data-fb');
-    Array.prototype.forEach.call($('feedbackOpts').querySelectorAll('.feedback-opt'), function(b){
-      b.setAttribute('aria-pressed', b===btn ? 'true':'false');
-    });
-    $('feedbackMore').style.display = '';
-    nutzungVorschauZeigen();
-  });
-  // ---------- Nutzungszahlen (Runde 96) ----------
+// ---------- Nutzungszahlen (Runde 96, in Runde 97 in die Einstellungen umgezogen) ----------
   //
-  // Acht Zeilen, jede eine Anzahl oder ein Ja/Nein. Sie stehen bewusst als lesbarer Text da und
-  // nicht als JSON: Wer entscheiden soll, ob er das mitschickt, muss es lesen koennen.
+  // Bis Runde 97 stand hier die Beta-Rueckmeldung: eine Frage nach dem Portraet, drei Knoepfe,
+  // ein Freitextfeld. Sie ist weg, weil eine App, die sich als fertig praesentiert, ihre Nutzer
+  // nicht nach ihrem Eindruck vom eigenen Produkt fragt — das gehoert in eine Beta und nicht in
+  // ein Produkt, das man abonniert.
+  //
+  // Was bleibt, ist die Messung. Sie steht jetzt unter Einstellungen, Daten und Datenschutz:
+  // acht Zahlen, ausgeschaltet, und darunter woertlich der Text, der mitginge. Wer entscheidet,
+  // was sein Geraet verlaesst, sucht das dort und nicht unter dem Bericht.
   var NUTZUNG_SCHALTER = 'lucenta_nutzung_teilen';
   function nutzungTeilenAn(){
     return schalterLesen(NUTZUNG_SCHALTER, 'aus') === 'an';
@@ -35,37 +29,32 @@
     return paare.map(function(z){ return decodeEntities(tx(z[0])) + ': ' + decodeEntities(String(z[1])); });
   }
   function nutzungVorschauZeigen(){
-    var kasten = $('nutzungVorschau');
+    var kasten = $('nutzungVorschau'), aktion = $('nutzungAktion');
     if (!kasten) return;
     var an = nutzungTeilenAn();
     kasten.hidden = !an;
+    if (aktion) aktion.hidden = !an;
     // Nur fuellen, wenn sichtbar: Die Zahlen sollen zum Zeitpunkt des Hinsehens stimmen, nicht
     // zum Zeitpunkt des Startens.
     if (an) kasten.textContent = nutzungZeilen().join('\n');
   }
-
-  $('btnFeedbackSend').addEventListener('click', function(){
-    // Bewusst ohne Werte, ohne Code, ohne Namen: eine Rückmeldung zur App soll keine
-    // Persönlichkeitsdaten mit sich tragen, nur weil sie gerade greifbar wären.
-    var note = ($('feedbackText').value || '').trim();
-    var text = tx('js_lucenta_betarückmeldungnpo') + (feedbackRating || tx('js_ohne_angabe')) +
-               (note ? (decodeEntities(tx('js_anmerkung')) + note) : '') +
-               // Die Zahlen werden hier neu geholt und nicht aus dem Vorschaukasten gelesen. Der
-               // Kasten ist Anzeige; ihn als Datenquelle zu benutzen hiesse, dass ein Fehler in
-               // der Anzeige stillschweigend zu einem Fehler in den Daten wird.
-               (nutzungTeilenAn() ? ('\n\n' + decodeEntities(tx('nutzung_titel')) + '\n' + nutzungZeilen().join('\n')) : '');
-    var done = function(){ toast(tx('js_danke__das_hilft_wirklich')); };
+  function nutzungWeitergeben(){
+    // Die Zahlen werden hier neu geholt und nicht aus dem Vorschaukasten gelesen. Der Kasten ist
+    // Anzeige; ihn als Datenquelle zu benutzen hiesse, dass ein Fehler in der Anzeige
+    // stillschweigend zu einem Fehler in den Daten wird.
+    var text = decodeEntities(tx('nutzung_titel')) + '\n' + nutzungZeilen().join('\n');
+    var fertig = function(){ toast(tx('js_danke__das_hilft_wirklich')); };
     if (navigator.share){
-      navigator.share({text:text}).then(done).catch(function(){ copyFeedback(text, done); });
-    } else { copyFeedback(text, done); }
-  });
-  function copyFeedback(text, done){
+      navigator.share({text:text}).then(fertig).catch(function(){ nutzungKopieren(text, fertig); });
+    } else { nutzungKopieren(text, fertig); }
+  }
+  function nutzungKopieren(text, fertig){
     if (navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(function(){ toast(tx('js_in_die_zwischenablage_kopi')); }).catch(function(){ done(); });
-    } else { done(); }
+      navigator.clipboard.writeText(text).then(function(){ toast(tx('js_in_die_zwischenablage_kopi')); }).catch(function(){ fertig(); });
+    } else { fertig(); }
   }
 
-  Array.prototype.forEach.call(document.querySelectorAll('.img-format-btn'), function(b){
+    Array.prototype.forEach.call(document.querySelectorAll('.img-format-btn'), function(b){
     b.addEventListener('click', function(){
       var f = b.getAttribute('data-fmt');
       if (f===shareFormat) return;
@@ -287,6 +276,27 @@
   $('imgModalScrim').addEventListener('click', closeImgModal);
   $('plusModalScrim').addEventListener('click', closePlusModal);
   $('btnPlusModalClose').addEventListener('click', closePlusModal);
+  // Runde 97: Laufzeit waehlen und Lucenta+ aktivieren. Der Knopf legt heute nur die lokale
+  // Marke um — an seiner Stelle steht spaeter die Kaufpruefung ueber StoreKit; der Vermerk
+  // dazu steht in docs/app-store-start.md, Punkt 6, zusammen mit dem Entwickler-Umschalter.
+  if ($('plusPreisWahl')) $('plusPreisWahl').addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('.segment-opt') : null;
+    if (!b) return;
+    schalterSetzen(LAUFZEIT_SCHLUESSEL, b.getAttribute('data-laufzeit'), null);
+    laufzeitAnwenden();
+    tapFeedback();
+  });
+  if ($('btnPlusAktivieren')) $('btnPlusAktivieren').addEventListener('click', function(){
+    var an = !istPlus();
+    plusSetzen(an);
+    plusModalAnwenden();
+    // Alles neu zeichnen, was Schloesser trägt — sonst stünde die Ergebnisseite hinter dem
+    // Fenster noch in der Fassung von vorhin, und der Unterschied wäre erst nach einem
+    // Ansichtswechsel zu sehen.
+    plusAnsichtenAuffrischen();
+    toast(tx(an ? 'plus_aktiv' : 'plus_dev_aus'));
+    closePlusModal();
+  });
   // Runde 79: Der Text-Weg ist der Rueckfall, nicht mehr ein eigener Knopf. Wo das Geraet keine
   // Datei teilen kann (Schreibtisch-Browser), war die alte Antwort ein Hinweis und sonst nichts —
   // jetzt geht wenigstens Titel und Code hinaus, statt dass der Tipp ins Leere laeuft.
@@ -356,6 +366,8 @@
     // der ganze Unterschied und er ist der wichtige: Haptik und Bewegung betreffen nur das
     // Geraet, hier geht etwas hinaus.
     schalterSetzen(NUTZUNG_SCHALTER, schalterLesen(NUTZUNG_SCHALTER, 'aus'), 'nutzungSchalter');
+    if ($('btnNutzungTeilen')) $('btnNutzungTeilen').addEventListener('click', nutzungWeitergeben);
+    nutzungVorschauZeigen();
     if ($('nutzungSchalter')) $('nutzungSchalter').addEventListener('click', function(){
       // Nicht ueber schalterUmlegen: das nimmt 'an' als Vorgabe an, und dieser Schalter hat
       // 'aus'. Solange localStorage schreibbar ist, faellt das nicht auf — ist es das nicht,

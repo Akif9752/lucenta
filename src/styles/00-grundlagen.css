@@ -644,9 +644,32 @@
   }
   .plus-modal-fuss p{margin:0;font-size:12.5px;line-height:1.55;color:var(--muted);}
   .plus-modal-fuss b{color:var(--ink);font-weight:600;}
-  .plus-modal-beta{
-    margin:14px 0 0;font-family:var(--mono);font-size:11px;line-height:1.5;
-    color:var(--accent-2-text);letter-spacing:.01em;
+  /* Runde 97: Der Segmentwaehler — die Form, in der iOS eine Wahl zwischen zwei gleichrangigen
+     Moeglichkeiten zeigt. Ein Zug, zwei Faecher, der gewaehlte gefuellt. Bewusst NICHT zwei
+     Knoepfe nebeneinander: Die sagen nicht, dass sie einander ausschliessen, und lassen den
+     Zustand "beide aus" zu, den es hier nicht gibt. */
+  .segment{
+    margin:16px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:3px;
+    background:var(--surface-3);border-radius:11px;padding:3px;
+  }
+  .segment-opt{
+    -webkit-appearance:none;appearance:none;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    min-height:52px;padding:8px 10px;border:none;border-radius:9px;
+    background:transparent;color:var(--muted);
+    transition:background .18s ease, color .18s ease, box-shadow .18s ease;
+  }
+  .segment-opt[aria-checked="true"]{
+    background:var(--surface);color:var(--ink);
+    box-shadow:0 1px 3px rgba(0,0,0,.10), 0 0 0 .5px var(--line);
+  }
+  .segment-opt:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  .segment-preis{font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:-.01em;}
+  .segment-spar{font-family:var(--mono);font-size:10.5px;color:var(--accent-2-text);letter-spacing:.02em;}
+  .segment-opt[aria-checked="true"] .segment-spar{color:var(--accent-2-text);}
+  .plus-modal-cta{margin-top:12px;width:100%;justify-content:center;}
+  .plus-modal-kuendigen{
+    margin:10px 0 0;font-size:11.5px;line-height:1.5;color:var(--muted-soft);text-align:center;
   }
   /* Der Inhalt ist hoeher als das Fenster (gemessen: 900 gegen 726 Bildpunkte), also wird
      gescrollt. Ohne Hinweis darauf endet der Text mitten im Satz an der abgerundeten Kante —

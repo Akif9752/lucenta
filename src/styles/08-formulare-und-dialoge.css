@@ -88,13 +88,6 @@
   .trait-section-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin-bottom:4px;}
   .trait-section p{font-size:14.5px;color:var(--ink);line-height:1.6;}
 
-  .unlock-ribbon{
-    margin-top:34px;display:flex;align-items:flex-start;gap:10px;
-    background:color-mix(in srgb, var(--accent-2) 14%, var(--surface));
-    border:1px solid color-mix(in srgb, var(--accent-2) 40%, var(--line));
-    border-radius:var(--radius-m);padding:12px 14px;font-size:13.5px;
-  }
-  .unlock-ribbon b{color:var(--accent-2-text);}
   /* Feedback-Runde 41: .uniform-note teilt sich die Gestaltung mit .storage-warning, weil beide
      dieselbe Rolle haben — ein echter, handlungsrelevanter Hinweis, kein bloßer Disclaimer (und
      deshalb bewusst NICHT Teil der gedämpften .acronym-note-Gruppe weiter unten). Gemeinsame
@@ -158,7 +151,6 @@
   @media (hover:hover){ .a2hs-dismiss:hover{color:var(--ink);} }
   .a2hs-dismiss:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
   .guest-note svg{flex-shrink:0;color:var(--accent-2);margin-top:2px;}
-  .unlock-ribbon svg{flex-shrink:0;color:var(--accent-2);margin-top:2px;}
 
   .radar-note{margin-top:10px;text-align:center;max-width:280px;margin-left:auto;margin-right:auto;line-height:1.5;}
 

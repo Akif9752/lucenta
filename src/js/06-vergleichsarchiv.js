@@ -45,7 +45,15 @@
     //
     // Erst ab drei Vergleichen: Bei zweien waere "typischerweise" eine Behauptung ueber einen
     // einzelnen anderen Menschen, nicht ueber ein Muster.
-    var uebersicht = archivUebersicht(list);
+    //
+    // Runde 97, die fuenfte Grenze: Die LISTE bleibt frei — was jemand gespeichert hat, gehoert
+    // ihm, und ein Archiv, dessen Eintraege verschwinden, waere genau die Wegnahme, die die App
+    // ausschliesst. Verschlossen ist die AUSWERTUNG, also der Satz darueber, worin du dich
+    // typischerweise unterscheidest. Der entsteht erst aus mehreren Vergleichen und waechst mit
+    // jedem weiteren — damit ist er fortlaufender Wert im Sinne der Apple-Richtlinie 3.1.2 und
+    // nicht ein fester Inhalt, den ein Schalter freigibt.
+    var uebersicht = istPlus() ? archivUebersicht(list)
+                   : (list.length >= 3 ? schlossHTML(tx('plus_archiv')) : '');
     var fmt = historyDateFmt();
     var rows = list.slice().reverse().map(function(e){
       var dateStr;
@@ -62,6 +70,7 @@
         '</div></div>';
     }).join('');
     wrap.innerHTML = uebersicht + '<div class="history-list">'+rows+'</div>';
+    schloesserVerdrahten(wrap);
     wrap.querySelectorAll('[data-view-archive]').forEach(function(btn){
       btn.addEventListener('click', function(){
         var id = btn.getAttribute('data-view-archive');

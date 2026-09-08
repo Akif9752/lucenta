@@ -247,16 +247,6 @@
     </div>
 
     <h2 class="section-title" data-i18n-html="deine_fünf_dimensionen_volle">Deine fünf Dimensionen <span class="n">voller Bericht</span></h2>
-    <div class="unlock-ribbon">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 7.5-2"></path></svg>
-      <!-- Feedback-Runde 46: Vorher stand hier „regulär Teil von Lucenta+ (4,99 €)". Das Wort
-           „regulär" behauptet einen bestehenden Normalpreis — Lucenta+ ist aber bislang nie
-           verkauft worden, es gibt also keinen regulären Preis, von dem hier abgewichen würde.
-           Genau so entsteht ein erfundener Vergleichsanker: Der Preis wirkt gespart, obwohl nie
-           jemand ihn zahlen musste. Die Zahl bleibt, weil sie die echte Planung ist (siehe
-           Abschnitt Monetarisierung) — aber sie wird als Absicht benannt, nicht als Nachlass. -->
-      <span data-i18n-html="in_der_beta_kostenlos_der_vo"><b>In der Beta kostenlos:</b> Der vollständige Bericht ist gerade für alle freigeschaltet. Geplant ist er als Teil von Lucenta+ für 4,99&nbsp;€ im Monat &mdash; verkauft wird davon aktuell nichts.</span>
-    </div>
     <div class="traits" id="traitsList"></div>
 
     <h2 class="section-title" id="compareAnchor" data-i18n-html="kompatibilität_optional">Kompatibilität <span class="n">optional</span></h2>
@@ -266,43 +256,6 @@
       <div class="field"><label for="cmpOther" data-i18n="code_der_anderen_person">Code der anderen Person</label><input type="text" id="cmpOther" maxlength="12" placeholder="Code einfügen" data-i18n-placeholder="ph_code_einfügen"></div>
       <button class="btn btn-primary btn-sm" id="btnCompare" style="align-self:flex-start;" data-i18n="vergleichen">Vergleichen</button>
       <div class="compat-result" id="compatResult" aria-live="polite"></div>
-    </div>
-
-    <!-- Backlog Runde 29, Punkt 1: "Echtes Feedback einholen" steht seit Runde 5 als Priorität 1 im
-         Produktplan, aber die App selbst bot dafür nie eine Stelle — Rückmeldung entstand nur, wenn
-         jemand von sich aus etwas sagte. Bewusst ganz unten platziert, nach dem gesamten Bericht:
-         Wer bis hierhin liest, hat das Produkt tatsächlich benutzt und ist die Person, deren Urteil
-         zählt. Ohne Server geht der Text nirgendwohin automatisch — das steht offen dabei, statt
-         eine Übermittlung anzudeuten, die es nicht gibt. -->
-    <div class="feedback-ask" id="feedbackAsk">
-      <p class="feedback-q" data-i18n="war_dieses_porträt_für_dich">War dieses Porträt für dich stimmig?</p>
-      <div class="feedback-opts" id="feedbackOpts" role="group" aria-label="Einschätzung wählen" data-i18n-aria="aria_einschätzung_wählen">
-        <button type="button" class="feedback-opt" data-fb="Ja, hat gepasst" data-i18n="ja">Ja</button>
-        <button type="button" class="feedback-opt" data-fb="Teilweise" data-i18n="teils">Teils</button>
-        <button type="button" class="feedback-opt" data-fb="Nicht wirklich" data-i18n="nicht_wirklich">Nicht wirklich</button>
-      </div>
-      <div id="feedbackMore" style="display:none;">
-        <label class="feedback-label" for="feedbackText" data-i18n="was_hat_gefehlt_oder_überras">Was hat gefehlt oder überrascht? (freiwillig)</label>
-        <textarea id="feedbackText" rows="3" maxlength="600" placeholder="Ein Satz reicht." data-i18n-placeholder="ph_ein_satz_reicht"></textarea>
-        <!-- Runde 96: Die Rueckmeldung oben sagt, ob das Portraet gepasst hat. Das beantwortet
-             die Frage nicht, an der der Abo-Plan haengt — ob jemand nach dreissig Tagen noch da
-             ist. Diese Zeile beantwortet sie, und zwar ausgeschaltet, sichtbar und woertlich:
-             Der Kasten darunter zeigt genau den Text, der mitginge. Ein Haken, hinter dem man
-             erst nachsehen muss, was er verschickt, waere das Gegenteil dessen, was die App
-             sonst an dieser Stelle verspricht. -->
-        <div class="settings-zeile nutzung-zeile">
-          <div class="settings-zeile-text">
-            <strong data-i18n="nutzung_titel">Nutzungszahlen mitschicken</strong>
-            <span class="settings-hint" data-i18n="nutzung_hinweis">Aus wie oft die App offen war, wie oft du getestet hast und wie regelmäßig du Tagesform einträgst. Nur Anzahlen und Tage, keine Werte, kein Code, keine Uhrzeiten, keine Kennung. Standardmäßig aus — schalte es ein und du siehst genau, was mitginge.</span>
-          </div>
-          <button type="button" class="schalter" id="nutzungSchalter" role="switch" aria-checked="false" aria-label="Nutzungszahlen mitschicken" data-i18n-aria="aria_nutzung"><span class="schalter-knopf"></span></button>
-        </div>
-        <div class="nutzung-vorschau" id="nutzungVorschau" hidden></div>
-        <div class="feedback-actions">
-          <button type="button" class="btn btn-primary btn-sm" id="btnFeedbackSend" data-i18n="rückmeldung_weitergeben">Rückmeldung weitergeben</button>
-        </div>
-        <p class="profile-note" data-i18n="lucenta_hat_keinen_server__n">Lucenta hat keinen Server — nichts davon wird verschickt oder gespeichert. Der Knopf öffnet nur das Teilen-Menü deines Geräts beziehungsweise legt den Text in die Zwischenablage, damit du ihn selbst weitergeben kannst. Deine Werte und dein Code sind darin nicht enthalten.</p>
-      </div>
     </div>
 
     <footer class="appfoot">
@@ -554,6 +507,23 @@
         </div>
         <textarea id="importFeld" rows="3" style="display:none;" placeholder="Gesicherte Daten hier einfügen" data-i18n-placeholder="ph_gesicherte_daten_hier_ein"></textarea>
       </div>
+      <!-- Runde 97: Der Schalter stand bis hierher unter der Beta-Rueckmeldung auf der
+           Ergebnisseite. Die ist weg, und das ist die bessere Stelle: Wer entscheidet, was
+           sein Geraet verlaesst, sucht das unter Daten und Datenschutz und nicht unter dem
+           Bericht. Der Kasten darunter zeigt woertlich, was mitginge. -->
+      <div class="settings-sub">
+        <h3 data-i18n="nutzung_titel">Nutzungszahlen mitschicken</h3>
+        <div class="settings-zeile nutzung-zeile">
+          <div class="settings-zeile-text">
+            <span class="settings-hint" data-i18n="nutzung_hinweis">Aus wie oft die App offen war, wie oft du getestet hast und wie regelmäßig du Tagesform einträgst. Nur Anzahlen und Tage, keine Werte, kein Code, keine Uhrzeiten, keine Kennung. Standardmäßig aus — schalte es ein und du siehst genau, was mitginge.</span>
+          </div>
+          <button type="button" class="schalter" id="nutzungSchalter" role="switch" aria-checked="false" aria-label="Nutzungszahlen mitschicken" data-i18n-aria="aria_nutzung"><span class="schalter-knopf"></span></button>
+        </div>
+        <div class="nutzung-vorschau" id="nutzungVorschau" hidden></div>
+        <div class="daten-knoepfe" id="nutzungAktion" hidden>
+          <button type="button" class="btn btn-ghost btn-sm" id="btnNutzungTeilen" data-i18n="nutzung_senden">Zahlen weitergeben</button>
+        </div>
+      </div>
       <button type="button" class="btn btn-ghost btn-sm danger-btn" id="btnResetData" aria-live="polite" style="margin-top:14px;" data-i18n="eigene_daten_zurücksetzen">Eigene Daten zurücksetzen</button>
     </div>
 
@@ -736,11 +706,24 @@
     <p class="plus-modal-lead" data-i18n="plus_modal_lead">Ein einzelner Test ist eine Momentaufnahme. Was daraus über Zeit wird, ist das, was dich wirklich beschreibt &mdash; und genau das liegt hier.</p>
     <ul class="plus-vorteile" id="plusVorteile"></ul>
     <div class="plus-modal-fuss">
-      <p data-i18n-html="plus_modal_versprechen"><b>Dein Ergebnis bleibt frei.</b> Niemand zahlt für den Test oder sein Porträt.</p>
+      <p data-i18n-html="plus_modal_versprechen"><b>Dein Ergebnis bleibt frei.</b> Niemand zahlt für den Test, sein Porträt oder den vollständigen Bericht.</p>
       <p data-i18n-html="plus_modal_nichts_weg"><b>Es wird nichts gelöscht.</b> Was du erfasst hast, liegt gespeichert &mdash; auch das, was gerade verschlossen ist.</p>
-      <p data-i18n-html="plus_modal_preis"><b>Einmal kaufen, kein Abo.</b> Alle Daten liegen auf deinem Gerät; ein ablaufendes Abo würde dir den Blick auf deine eigene Historie wieder verschließen.</p>
+      <p data-i18n-html="plus_modal_preis"><b>Was während deiner Laufzeit entsteht, bleibt lesbar.</b> Das Abo öffnet, was fortlaufend dazukommt. Es nimmt dir nie wieder weg, was du bereits gesehen hast.</p>
     </div>
-    <p class="plus-modal-beta" data-i18n="plus_modal_beta">In der Beta ist noch nichts käuflich &mdash; dieses Fenster zeigt, was geplant ist.</p>
+    <!-- Runde 97: Ein Segmentwähler statt zweier Knöpfe — die Form, in der iOS eine Wahl zwischen
+         zwei gleichrangigen Möglichkeiten zeigt. role="radiogroup" ist die Entsprechung dafür für
+         Vorleseprogramme; zwei aria-pressed-Knöpfe sagten nicht, dass sie einander ausschließen. -->
+    <div class="segment" id="plusPreisWahl" role="radiogroup" aria-label="Laufzeit wählen" data-i18n-aria="aria_plus_preis">
+      <button type="button" class="segment-opt" role="radio" aria-checked="false" data-laufzeit="monat">
+        <span class="segment-preis" data-i18n="plus_preis_monat">4,99 € im Monat</span>
+      </button>
+      <button type="button" class="segment-opt" role="radio" aria-checked="true" data-laufzeit="jahr" data-standard>
+        <span class="segment-preis" data-i18n="plus_preis_jahr">29,99 € im Jahr</span>
+        <span class="segment-spar" data-i18n="plus_preis_jahr_spar">spart die Hälfte</span>
+      </button>
+    </div>
+    <button type="button" class="btn btn-primary plus-modal-cta" id="btnPlusAktivieren" data-i18n="plus_aktivieren">Lucenta+ aktivieren</button>
+    <p class="plus-modal-kuendigen" data-i18n-html="plus_kuendigen">Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
   </div>
   <div class="plus-modal-verlauf" aria-hidden="true"></div>
 </div>

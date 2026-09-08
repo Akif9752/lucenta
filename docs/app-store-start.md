@@ -129,7 +129,13 @@ blockiert.
 5. **Markenrecherche zu „Lucenta" abschließen.** Der Stand steht in
    `docs/lucenta-markenrecherche.md` — eine Web-Recherche, keine Registerprüfung. Vor einem
    Store-Eintrag unter diesem Namen gehört eine echte Recherche in DPMA und EUIPO dazu.
-6. **Den Entwickler-Umschalter entfernen.** Unter Profil steht seit Runde 84 ein Schalter
+6. **Den Entwickler-Umschalter UND den Aktivierungsknopf im Kauffenster entfernen.**
+   Seit Runde 97 gibt es zwei Stellen, an denen die bezahlte Fassung ohne Zahlung angeht: den
+   Schalter im Profil und den Knopf „Lucenta+ aktivieren" im Kauffenster
+   (`btnPlusAktivieren` in `src/js/21-beta-rueckmeldung.js`). **Beide** müssen durch die echte
+   StoreKit-Prüfung ersetzt werden; einer allein übersehen heißt, die App verschenkt das Abo.
+   Ebenfalls dort: die gewählte Laufzeit (`lucenta_laufzeit`) ist heute nur eine Notiz und muss
+   zur Produktkennung des gekauften Abos werden. Alter Wortlaut dieses Punktes: Unter Profil steht seit Runde 84 ein Schalter
    zwischen freier und gekaufter Fassung (`plusSchalter` in `src/js/15-profile.js`), damit
    beide Zustände ohne Eingriff in den Speicher zu sehen sind. Er darf nicht mit in den Store;
    an seine Stelle gehört die echte Kaufprüfung. Dasselbe gilt für die Beispielnutzerin.

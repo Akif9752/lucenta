@@ -167,10 +167,29 @@
       plusSetzen(!istPlus());
       // Neu zeichnen statt neu laden: Der Umschalter aendert nur, WAS gezeigt wird, nicht den
       // Bestand — ein Neuladen waere hier ein unnoetiger Sprung an den Seitenanfang.
-      renderProfile();
+      plusAnsichtenAuffrischen();
       toast(istPlus() ? tx('plus_dev_an') : tx('plus_dev_aus'));
     });
   }
+  // Runde 97: Der Wechsel zwischen freier und bezahlter Fassung ist jetzt an zwei Stellen
+  // ausloesbar — im Profil und im Kauffenster. Vorher zeichnete jede Stelle das neu, was
+  // zufaellig unter ihr lag; das Ergebnis war, dass die Ergebnisseite hinter dem Fenster in
+  // der alten Fassung stehen blieb. Welche Ansicht neu zu zeichnen ist, weiss die Ansicht
+  // selbst am besten, also entscheidet das hier eine Stelle fuer alle.
+  function plusAnsichtenAuffrischen(){
+    syncWortmarke();
+    refreshDrawerState();
+    var aktiv = document.querySelector('.view.active');
+    var id = aktiv ? aktiv.id : '';
+    if (id === 'view-profile') renderProfile();
+    else if (id === 'view-understand') renderUnderstand();
+    else if (id === 'view-state') renderStateView();
+    else if (id === 'view-compat-archive') renderCompatArchive();
+    else if (id === 'view-result' && loadResult()) renderResult();
+    // Die Startseite traegt die Tagesform-Karte, und die kennt beide Fassungen.
+    renderLandingStateTeaser();
+  }
+
   function handleAvatarFile(file){
     if (!file || !/^image\//.test(file.type)){ toast(tx('js_bitte_ein_bild_auswählen')); return; }
     var reader = new FileReader();

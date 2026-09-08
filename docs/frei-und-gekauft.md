@@ -65,6 +65,26 @@ Sie steht trotzdem darin: Ohne sie lässt sich die Frage „habe ich das eigentl
 nur über Umwege beantworten — den Verlauf öffnen und nachsehen, ob mehr als zwei
 Durchläufe stehen. Ein Kauf, den man suchen muss, fühlt sich nicht wie einer an.
 
+## Die fünfte Grenze (Runde 97)
+
+Das Vergleichsarchiv hatte bis hierher keine Grenze. Die **Liste** bekommt auch keine: Was
+jemand gespeichert hat, gehört ihm, und ein Archiv, dessen Einträge verschwinden, wäre genau
+die Wegnahme, die Punkt 2 oben ausschließt. Verschlossen ist die **Auswertung** — der Satz
+darüber, worin du dich typischerweise von anderen unterscheidest. Der entsteht erst ab drei
+Vergleichen und wird mit jedem weiteren genauer. Das ist fortlaufender Wert im Sinne von
+Richtlinie 3.1.2 und nicht ein fester Inhalt, den ein Schalter freigibt.
+
+Damit stehen fünf Grenzen, und **alle fünf sind von derselben Art**: Verlauf über zwei
+Durchläufe hinaus, Tagesform über vierzehn Tage hinaus, die Vergleichskarte in der Tiefe,
+„Verstehen", die Archiv-Auswertung. Keine davon schaltet einen fertigen Text frei; jede
+öffnet etwas, das mit der Zeit wächst.
+
+**Frei ist damit ein vollständiges Produkt**, nicht eine Kostprobe: der ganze Test, das
+Porträt, der vollständige Bericht über alle fünf Dimensionen, das Ergebnisbild, der
+Vergleich mit einer anderen Person, das Archiv als Liste, Tagesform eintragen und vierzehn
+Tage sehen, die letzten zwei Durchläufe mit der Delta-Karte. Wer nie zahlt, hat kein
+beschnittenes Lucenta, sondern ein anderes: eines, das die Gegenwart zeigt statt den Verlauf.
+
 ## Warum diese Zahlen
 
 **Zwei Durchläufe frei.** Genug, um zu sehen *dass* sich etwas bewegt — die Delta-Karte auf
