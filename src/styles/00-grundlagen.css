@@ -585,17 +585,11 @@
   /* Formatwahl über der Vorschau (Backlog Runde 27, Punkt 1) — über und nicht unter dem Bild,
      weil sie bestimmt, was man darunter sieht. Das Seitenverhältnis steht als eigene, leisere
      Zeile im Knopf: "Story & Reel" sagt, wofür es ist, "9:16" prüft, ob es stimmt. */
-  .img-format-row{display:flex;gap:8px;margin-bottom:12px;}
-  .img-format-btn{
-    flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;
-    font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);
-    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);padding:9px 8px;
-    transition:border-color .15s ease, color .15s ease;
-  }
-  .img-format-btn span{font-family:var(--mono);font-size:10.5px;font-weight:400;letter-spacing:.04em;}
-  @media (hover:hover){ .img-format-btn:hover{border-color:var(--accent-strong);} }
-  .img-format-btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
-  .img-format-btn[aria-pressed="true"]{border-color:var(--accent-strong);color:var(--accent-strong);background:var(--surface-3);}
+  /* Runde 97: Das Aussehen kommt jetzt aus .segment; hier bleibt nur, was den Bildwaehler von
+     den uebrigen Segmentwaehlern unterscheidet — der Abstand nach unten und die zweite Zeile
+     mit dem Seitenverhaeltnis. */
+  .img-format-row{margin:0 0 12px;}
+  .img-format-btn span{font-family:var(--mono);font-size:10.5px;font-weight:400;letter-spacing:.04em;color:var(--muted);}
   /* ---------- Das Lucenta+-Fenster (Runde 89) ----------
      Teilt Aufbau und Bewegung mit dem Bild-Dialog darueber; nur der Inhalt ist ein anderer.
      Deshalb steht es hier daneben und nicht in einem eigenen Stilblatt: Wer das eine aendert,

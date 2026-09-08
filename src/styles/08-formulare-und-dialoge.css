@@ -192,9 +192,31 @@
      Raster selbst entscheiden, wie viele Spalten die vorhandene Breite hergibt: auf 390px sind
      es drei, auf dem Schreibtisch vier — ohne dass hier eine einzige Bildschirmbreite genannt
      wird. 96px ist die Breite, ab der auch "Portugu&ecirc;s" einzeilig bleibt. */
-  .sprach-raster{
-    margin-top:14px; display:grid; gap:8px;
-    grid-template-columns:repeat(auto-fit, minmax(96px, 1fr));
+  /* Runde 97: An die Stelle des Rasters ist eine Auswahlliste getreten — die iOS-Form fuer
+     eine Wahl aus mehr als drei Moeglichkeiten. Eine Gruppe, Trennlinien dazwischen, ein Haken
+     an der gewaehlten Zeile. Der Haken sitzt in einem ::after und nicht als eigenes Element:
+     Er gehoert zum Zustand der Zeile, nicht zu ihrem Inhalt. */
+  .wahlliste{
+    margin-top:14px; border:1px solid var(--line); border-radius:var(--radius-s);
+    overflow:hidden; background:var(--surface);
+  }
+  .wahl-zeile{
+    -webkit-appearance:none; appearance:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    width:100%; min-height:46px; padding:12px 15px; box-sizing:border-box;
+    border:none; border-top:1px solid var(--line); background:transparent;
+    font-family:inherit; font-size:15px; color:var(--ink); text-align:left;
+    transition:background .14s ease;
+  }
+  .wahl-zeile:first-child{ border-top:none; }
+  .wahl-zeile:active{ background:var(--surface-2); transition-duration:0s; }
+  @media (hover:hover){ .wahl-zeile:hover{ background:var(--surface-2); } }
+  .wahl-zeile:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:-2px; }
+  .wahl-zeile[aria-checked="true"]{ color:var(--ink); font-weight:600; }
+  .wahl-zeile[aria-checked="true"]::after{
+    content:''; flex-shrink:0; width:15px; height:9px;
+    border-left:2px solid var(--accent-strong); border-bottom:2px solid var(--accent-strong);
+    border-radius:1px; transform:rotate(-45deg) translate(1px,-2px);
   }
 
   /* ---------- Schieber (Runde 79) ----------
@@ -210,28 +232,38 @@
      Der Satz, der hier stand, behauptete das Gegenteil und war eine Schaetzung; die Messung in
      Runde 80 hat sie widerlegt. Die fehlende Hoehe kommt aus einem ::after in
      10-druckzustaende.css, wo alle diese Faelle beieinanderstehen. */
+  /* Runde 97 auf die iOS-Masse gebracht: 51x31 Punkte, Knopf 27, Weg 20. Der Rahmen ist weg
+     — ein Schieber hat auf dem Telefon keine Kontur, sondern eine gefuellte Bahn; der Rahmen
+     liess ihn wie ein Eingabefeld aussehen. Statt seiner eine Innenkante ueber box-shadow, die
+     im Ausgeschaltet-Zustand die Bahn vom Grund abhebt und beim Einschalten verschwindet. */
   .schalter{
     position:relative; flex-shrink:0; cursor:pointer;
-    width:52px; height:32px; padding:0; border-radius:100px;
-    border:1px solid var(--line-strong); background:var(--surface-2);
-    transition:background .22s ease, border-color .22s ease;
+    width:51px; height:31px; padding:0; border:none; border-radius:100px;
+    background:var(--surface-3);
+    box-shadow:inset 0 0 0 1px var(--line);
+    transition:background .24s cubic-bezier(.32,.72,0,1), box-shadow .24s ease;
   }
   .schalter-knopf{
-    position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%;
-    background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,.28);
-    transition:transform .22s cubic-bezier(.2,.8,.2,1);
+    position:absolute; top:2px; left:2px; width:27px; height:27px; border-radius:50%;
+    background:#fff;
+    box-shadow:0 3px 8px rgba(0,0,0,.15), 0 1px 1px rgba(0,0,0,.16);
+    transition:transform .24s cubic-bezier(.32,.72,0,1), width .18s ease;
   }
-  .schalter[aria-checked="true"]{ background:var(--accent); border-color:var(--accent); }
+  .schalter[aria-checked="true"]{ background:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
   .schalter[aria-checked="true"] .schalter-knopf{ transform:translateX(20px); }
   .schalter:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:3px; }
   /* Der Druck sitzt hier im Knopf, nicht in der ganzen Flaeche: Eine schrumpfende Bahn saehe
      aus, als wuerde der Schalter kleiner, statt dass man ihn drueckt. */
-  .schalter:active .schalter-knopf{ transform:scale(.9); transition-duration:0s; }
-  .schalter[aria-checked="true"]:active .schalter-knopf{ transform:translateX(20px) scale(.9); }
+  /* Auf dem Telefon wird der Knopf beim Druecken nicht kleiner, sondern BREITER — er dehnt
+     sich in die Richtung, in die er wandern wuerde. Genau das ist hier nachgebaut: mehr
+     Breite, gleiche Hoehe, und im eingeschalteten Zustand um dieselbe Strecke nach links
+     verschoben, damit er an der rechten Kante stehen bleibt und nach innen waechst. */
+  .schalter:active .schalter-knopf{ width:33px; }
+  .schalter[aria-checked="true"]:active .schalter-knopf{ width:33px; transform:translateX(14px); }
   @media (prefers-reduced-motion: reduce){
     .schalter, .schalter-knopf{ transition:none; }
-    .schalter:active .schalter-knopf{ transform:none; }
-    .schalter[aria-checked="true"]:active .schalter-knopf{ transform:translateX(20px); }
+    .schalter:active .schalter-knopf{ width:27px; }
+    .schalter[aria-checked="true"]:active .schalter-knopf{ width:27px; transform:translateX(20px); }
   }
 
   /* ---------- Rechtliches (Runde 79) ---------- */

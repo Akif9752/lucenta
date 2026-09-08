@@ -448,7 +448,7 @@
     saveThemeMode(mode);
     ['System','Light','Dark'].forEach(function(key){
       var btn = $('theme'+key);
-      if (btn) btn.setAttribute('aria-pressed', btn.dataset.mode===mode ? 'true':'false');
+      if (btn) btn.setAttribute('aria-checked', btn.dataset.mode===mode ? 'true':'false');
     });
   }
 

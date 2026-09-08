@@ -91,7 +91,7 @@
   function syncLangButtons(){
     try{
       document.querySelectorAll('[data-lang]').forEach(function(b){
-        b.setAttribute('aria-pressed', b.getAttribute('data-lang')===LANG ? 'true':'false');
+        b.setAttribute('aria-checked', b.getAttribute('data-lang')===LANG ? 'true':'false');
       });
     }catch(e){}
   }

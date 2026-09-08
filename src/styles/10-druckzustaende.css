@@ -17,14 +17,17 @@
      Der Block steht bewusst am Ende: Vorher standen die Druckzustände weit oben und wurden von
      später notierten :hover-Regeln einzelner Komponenten überschrieben (.btn-hero verschob sich
      beim Zeigen um -1px und gewann damit gegen den Druckzustand). */
-  .btn, .theme-btn, .drawer-tab, .avatar-edit, .feedback-opt, .img-format-btn,
+  /* Runde 97: .theme-btn, .feedback-opt und .img-format-btn sind hier heraus. Die ersten
+     beiden gibt es nicht mehr; der dritte ist jetzt ein Fach im Segmentwaehler, und ein
+     schrumpfendes Fach saehe aus, als loeste sich der Waehler auf. Ein Segmentwaehler
+     quittiert einen Tipp dadurch, dass die Fuellung wandert — das steht bei .segment-opt. */
+  .btn, .drawer-tab, .avatar-edit,
   .run-choice-opt, .history-row, .role-card, .drawer-profile-row, .archive-del,
   .avatar-color-swatch, .profile-remove-photo, .a2hs-dismiss, .drawer-close{
     transition:transform .24s cubic-bezier(.2,.8,.2,1), border-color .15s ease,
                background .15s ease, color .15s ease, box-shadow .15s ease;
   }
-  .btn:active, .theme-btn:active, .drawer-tab:active, .avatar-edit:active,
-  .feedback-opt:active, .img-format-btn:active, .archive-del:active,
+  .btn:active, .drawer-tab:active, .avatar-edit:active, .archive-del:active,
   .profile-remove-photo:active, .a2hs-dismiss:active, .drawer-close:active{
     transform:scale(.955); transition-duration:0s;
   }
@@ -48,8 +51,7 @@
   .trait-card > summary{ transition:transform .24s cubic-bezier(.2,.8,.2,1); }
 
   @media (prefers-reduced-motion: reduce){
-    .btn:active, .theme-btn:active, .drawer-tab:active, .avatar-edit:active,
-    .feedback-opt:active, .img-format-btn:active, .archive-del:active,
+    .btn:active, .drawer-tab:active, .avatar-edit:active, .archive-del:active,
     .profile-remove-photo:active, .a2hs-dismiss:active, .drawer-close:active,
     .btn-hero:active, .run-choice-opt:active, .history-row:active, .role-card:active,
     .drawer-profile-row:active, .avatar-color-swatch:active, .scale-btn:active,
@@ -99,8 +101,13 @@
      sitzt in der Ecke des Profilbilds), und das ist ebenso ein Bezugsrahmen fuer ein ::after.
      Ein position:relative haette es aus der Ecke in den Textfluss geholt — beim ersten Versuch
      genau so passiert. */
-  .schalter, .theme-btn, .avatar-color-swatch{ position:relative; }
-  .schalter::after, .theme-btn::after{
+  /* Runde 97: .theme-btn ist hier weggefallen. Nicht aus Aufraeumlust — die Knoepfe, die so
+     hiessen, gibt es nicht mehr: Aus der Darstellungswahl wurde ein Segmentwaehler (Faecher
+     52 Punkte hoch), aus der Sprachwahl eine Auswahlliste (Zeilen 46 Punkte hoch). Beide
+     erreichen die 44 aus eigener Hoehe und brauchen keine unsichtbare Flaeche mehr. Der
+     Schieber braucht sie weiter: Er ist 31 Punkte hoch, also dreizehn zu wenig. */
+  .schalter, .avatar-color-swatch{ position:relative; }
+  .schalter::after{
     content:''; position:absolute; top:50%; left:0; transform:translateY(-50%);
     width:100%; height:44px;
   }
@@ -166,7 +173,7 @@
         würden die Druckzustände träge machen, die absichtlich sofort sitzen. */
   html.theme-shift, html.theme-shift body,
   html.theme-shift .card, html.theme-shift .btn, html.theme-shift .stat-tile,
-  html.theme-shift .trait-card, html.theme-shift .scale-btn, html.theme-shift .theme-btn,
+  html.theme-shift .trait-card, html.theme-shift .scale-btn, html.theme-shift .segment-opt,
   html.theme-shift .state-check-card, html.theme-shift .history-row, html.theme-shift .role-card,
   html.theme-shift #drawerPanel, html.theme-shift .drawer-section, html.theme-shift .top{
     transition:background-color .28s ease, color .28s ease, border-color .28s ease !important;
@@ -197,7 +204,7 @@
   @media (prefers-reduced-motion: reduce){
     html.theme-shift, html.theme-shift body, html.theme-shift .card, html.theme-shift .btn,
     html.theme-shift .stat-tile, html.theme-shift .trait-card, html.theme-shift .scale-btn,
-    html.theme-shift .theme-btn, html.theme-shift .state-check-card, html.theme-shift .history-row,
+    html.theme-shift .segment-opt, html.theme-shift .state-check-card, html.theme-shift .history-row,
     html.theme-shift .role-card, html.theme-shift #drawerPanel, html.theme-shift .drawer-section,
     html.theme-shift .top{ transition:none !important; }
     .view.lang-shift{ animation:none; }

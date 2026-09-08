@@ -4,7 +4,7 @@
     currentShareCanvas = buildShareCanvas(shareFormat);
     $('shareImagePreview').src = currentShareCanvas.toDataURL('image/png');
     Array.prototype.forEach.call(document.querySelectorAll('.img-format-btn'), function(b){
-      b.setAttribute('aria-pressed', b.getAttribute('data-fmt')===shareFormat ? 'true':'false');
+      b.setAttribute('aria-checked', b.getAttribute('data-fmt')===shareFormat ? 'true':'false');
     });
   }
   function imgModalKeydown(e){

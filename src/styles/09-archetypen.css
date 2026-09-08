@@ -125,7 +125,9 @@
   .profile-result-card strong{font-family:var(--serif);font-size:17px;}
   .profile-result-card .l{font-size:12.5px;color:var(--muted);margin-top:2px;}
 
-  .theme-toggle{margin-top:14px;display:flex;gap:8px;}
+  /* Runde 97: .theme-toggle traegt jetzt zusaetzlich .segment und damit dessen Aussehen. Was
+     hier bleibt, ist nur der Abstand nach oben; alles Uebrige kommt aus dem Segmentwaehler. */
+  .theme-toggle{margin-top:14px;}
   .theme-btn{
     flex:1;padding:11px 8px;border-radius:var(--radius-s);border:1px solid var(--line);
     background:var(--surface);color:var(--muted);font-family:inherit;font-size:13.5px;cursor:pointer;
