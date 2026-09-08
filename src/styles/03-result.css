@@ -183,19 +183,37 @@
        gedrehten Quadrats waagerecht voll zaehlt — mehr, und die Seite waere breiter als das
        Fenster. */
     width:min(250px, 64%); aspect-ratio:1;
+    /* Runde 97: breiter gezogen. Die Begrenzung, die hier drei Runden lang stand — die
+       Diagonale des gedrehten Quadrats zaehlt waagerecht voll — gilt fuer die LAYOUTBOX, aber
+       nicht fuer das, was zu sehen ist: Die Maske darunter loescht alles jenseits von 96 % des
+       halben Durchmessers, also auch die vier Ecken, an denen die Diagonale entsteht. Statt die
+       Box zu vergroessern (die den Ueberlauf erzeugt) wird deshalb nur waagerecht gestreckt und
+       gleichzeitig senkrecht staerker gestaucht. Der Ueberlauf ist danach nachgemessen. */
     /* Am Bild zurueckgenommen (war 15 % auf 4,5 von 20 Grad): So dicht gesetzt lasen sie sich
        als Strahlenkranz — eine Grafik, die man ansieht. Gewollt sind Auslaeufer, die man
        bemerkt, ohne sie zu betrachten. Weniger Strahlen, blasser, mit mehr Luft dazwischen. */
+    /* Runde 97: weiche Strahlen. Bis hierher standen zwei harte Stopps beieinander
+       (Farbe bis 6 Grad, dann sofort nichts) — das ergibt eine Kante, und eine Kante liest sich
+       als Grafik. Jetzt hat jeder Strahl eine Mitte und laeuft nach beiden Seiten aus: Der
+       Verlauf blendet von nichts auf volle Farbe und wieder zurueck, ueber je fuenf Grad.
+       Dieselbe Zahl Strahlen, dieselbe Farbe, nur kein Rand mehr. */
     background:repeating-conic-gradient(from 0deg,
-      color-mix(in srgb, var(--dim-aktiv, var(--accent)) var(--kranz-anteil), transparent) 0deg 6deg,
-      transparent 6deg 22deg);
+      transparent 0deg,
+      color-mix(in srgb, var(--dim-aktiv, var(--accent)) var(--kranz-anteil), transparent) 5deg,
+      transparent 10deg,
+      transparent 22deg);
     /* Ohne diese Maske waere es ein Speichenrad mit harter Kante. Sie laesst die Strahlen zur
        Mitte hin verschwinden und nach aussen ausfransen — erst dadurch werden es Auslaeufer.
        Runde 86: Das Loch in der Mitte von 12 auf 24 Prozent. Durch die Stauchung liegen die
        Strahlen waagerecht dichter beieinander, und der Punkt, in dem sie zusammenlaufen, stand
        als heller Fleck hinter der Ueberschrift. */
-    -webkit-mask-image:radial-gradient(closest-side, transparent 18%, #000 52%, transparent 94%);
-            mask-image:radial-gradient(closest-side, transparent 18%, #000 52%, transparent 94%);
+    /* Runde 97, gemeldet: "sie reichen zu sehr in den mittelpunkt hinein um den sie sich
+       drehen." Genau das war zu sehen: Bei 18 Prozent Loch liefen alle Strahlen so nah
+       zusammen, dass ihre Spitzen einen hellen Fleck hinter der Ueberschrift bildeten — und
+       weil der Kranz sich dreht, flackerte dieser Fleck. Das Loch geht auf 42 Prozent; damit
+       beginnt der Kranz erst dort, wo die Strahlen einzeln stehen. */
+    -webkit-mask-image:radial-gradient(closest-side, transparent 42%, #000 68%, transparent 96%);
+            mask-image:radial-gradient(closest-side, transparent 42%, #000 68%, transparent 96%);
     /* Runde 94, gemeldet: "der strahlenkranz ist nicht mehr sichtbar." Nachgemessen, indem
        dasselbe Bild einmal mit und einmal ohne den Kranz aufgenommen und Bildpunkt fuer
        Bildpunkt verglichen wurde: groesster Unterschied 7 von 255 Stufen, und nur 0,7 Prozent
@@ -217,8 +235,8 @@
      .40. Damit steht das Verhaeltnis bei 2,5 zu 1 statt 1,7 zu 1 — aus einem leicht gestauchten
      Kreis wird ein Oval, das der Zeile folgt, hinter der es liegt. */
   @keyframes strahlen-drehen{
-    from{ transform:translate(-50%,-50%) scaleY(.40) rotate(0deg); }
-    to  { transform:translate(-50%,-50%) scaleY(.40) rotate(360deg); }
+    from{ transform:translate(-50%,-50%) scale(1.34, .30) rotate(0deg); }
+    to  { transform:translate(-50%,-50%) scale(1.34, .30) rotate(360deg); }
   }
   @keyframes schein-atmen{
     0%, 100%{ opacity:.55; transform:translate(-50%,-50%) scale(1); }
@@ -228,5 +246,5 @@
     #view-result .result-head::before{ animation:none; opacity:.6; }
     /* Die Strahlen bleiben stehen, verschwinden aber nicht: Sie sind Teil des Bildes, nur ihre
        Drehung ist Bewegung. */
-    #view-result .result-head::after{ animation:none; transform:translate(-50%,-50%) scaleY(.40); }
+    #view-result .result-head::after{ animation:none; transform:translate(-50%,-50%) scale(1.34, .30); }
   }

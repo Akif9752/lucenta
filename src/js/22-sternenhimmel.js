@@ -445,9 +445,20 @@
         // geaendert haetten, sondern weil der Grund darunter es tat: Das Papier ist um ein
         // Zehntel dunkler geworden, und derselbe Wert Licht darauf ist mehr Unterschied. Wer
         // die Helligkeit einer Flaeche aendert, aendert damit alles, was darauf liegt.
-        a: (0.10 + 0.11 * Math.random()) * (1 - Math.abs(mitte) * 0.80),
+        a: (0.11 + 0.12 * Math.random()) * (1 - Math.abs(mitte) * 0.80),
         ph: Math.random() * Math.PI * 2,
-        pv: 0.00035 + Math.random() * 0.00075,
+        // Runde 97: doppelt so schnell wie zuvor (war 0,00035 + 0,00075). Der Wert stammte aus
+        // Runde 90 und war fuer sieben gleich lange Strahlen gedacht; seit jeder seine eigene
+        // Laenge hat, deckt eine langsamere Schwingung die Bewegung eher zu, als sie zu tragen.
+        pv: 0.00070 + Math.random() * 0.00150,
+        // Runde 97: Jeder Strahl hat jetzt seine EIGENE Helligkeit, die langsam auf- und
+        // abschwillt. Das ist der Unterschied zwischen "hell" und "glaenzend": Glanz ist nicht
+        // mehr Licht, sondern Licht, das sich aendert. Sieben Strahlen mit fester Deckkraft
+        // sind eine Flaeche, sieben mit eigener Atmung sind eine Lichtquelle hinter etwas, das
+        // sich bewegt. Die Phasen liegen ausdruecklich zufaellig, nicht gekoppelt: Gemeinsames
+        // Pulsieren saehe nach Blinken aus.
+        gph: Math.random() * Math.PI * 2,
+        gpv: 0.00090 + Math.random() * 0.00190,
         // Runde 90: "zu wenig dynamik ... und zu lang". Beides hatte dieselbe Ursache — alle
         // sieben Strahlen waren gleich lang und reichten weit ueber den Bildrand hinaus. Was
         // dabei fehlt, ist das, was einen Lichtstrahl lebendig macht: dass er IRGENDWO endet.
@@ -463,7 +474,14 @@
   // einzelnen Keile als Baender. Sechs Lagen, deren Breite waechst waehrend die Deckkraft faellt,
   // summieren sich zu einem glockenfoermigen Querschnitt: aussen laeuft der Strahl aus, statt
   // aufzuhoeren. Mehr Lagen kosten hier nichts, weil die Verlaeufe zwischengespeichert sind.
-  var LAGEN = [{w:1.0, a:1.00}, {w:1.6, a:0.62}, {w:2.4, a:0.40},
+  //
+  // Runde 97, gemeldet: "die lichtstrahlen in der hellversion sind nicht dynamisch genug und
+  // koennten mehr shiny sein." Der Glanz kommt NICHT daher, die Deckkraft aller Lagen
+  // hochzudrehen — das hat Runde 88 versucht und die Seite badete in Gelb. Glanz ist ein
+  // KERN: eine schmale, deutlich hellere Mitte in einem weichen Umfeld. Genau das ist die
+  // erste Lage, halb so breit wie die bisher schmalste und ueber voller Deckkraft. Der breite
+  // Anteil des Strahls bleibt, wie er war.
+  var LAGEN = [{w:0.42, a:1.55}, {w:1.0, a:1.00}, {w:1.6, a:0.62}, {w:2.4, a:0.40},
                {w:3.4, a:0.22}, {w:4.6, a:0.11}, {w:6.0, a:0.05}];
   function sonneAufbauen(){
     sonneVerlauf.length = 0;
@@ -508,13 +526,17 @@
       // Die Laenge atmet mit. Skaliert statt neu gerechnet, damit der zwischengespeicherte
       // Verlauf mitwaechst — ein kuerzerer Strahl waere sonst nicht kuerzer, sondern
       // abgeschnitten, und ein abgeschnittener Strahl ist eine Kante.
-      var lang = f.laenge * (wenigerBewegung ? 1 : (1 + Math.sin(f.lph) * 0.16));
+      var lang = f.laenge * (wenigerBewegung ? 1 : (1 + Math.sin(f.lph) * 0.22));
+      // Die eigene Helligkeit des Strahls. Zwischen 0,74 und 1,26 des Grundwerts — genug, dass
+      // die Strahlen sichtbar ungleich hell stehen und einander abloesen, zu wenig, als dass
+      // einer je verschwaende oder aufblitzte.
+      var glanz = wenigerBewegung ? 1 : (1 + Math.sin(f.gph) * 0.26);
       ctx.save();
       ctx.rotate(winkel);
       ctx.scale(lang, lang);
       for (var k = 0; k < LAGEN.length; k++){
         var q = LAGEN[k].w * f.br * L;
-        ctx.globalAlpha = f.a * LAGEN[k].a;
+        ctx.globalAlpha = f.a * LAGEN[k].a * glanz;
         ctx.fillStyle = sonneVerlauf[k];
         ctx.beginPath();
         ctx.moveTo(0, 0);
@@ -730,7 +752,7 @@
     // ein Suchscheinwerfer statt eines Nachmittags.
     if (staub){
       strahlPhase += 0.00042;
-      for (i = 0; i < faecher.length; i++){ faecher[i].ph += faecher[i].pv; faecher[i].lph += faecher[i].lpv; }
+      for (i = 0; i < faecher.length; i++){ faecher[i].ph += faecher[i].pv; faecher[i].lph += faecher[i].lpv; faecher[i].gph += faecher[i].gpv; }
       wolkenBewegen();
     }
     if (++farbZaehler > 60){ farbZaehler = 0; farbenLesen(); }
