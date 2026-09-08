@@ -230,6 +230,14 @@
       '<path d="M'+(x-rx*1.06).toFixed(2)+' '+(y - ry*(offen<0.9?0.06:0.52)).toFixed(2)+
       ' Q'+x+' '+(y - ry*(offen>1.2?1.52:1.30)).toFixed(2)+' '+(x+rx*1.06).toFixed(2)+' '+(y - ry*(offen<0.9?0.06:0.52)).toFixed(2)+
       '" stroke="'+FIG_INK+'" stroke-width="'+(r*(offen<0.9?0.40:0.34)).toFixed(2)+'" fill="none" stroke-linecap="round"/>'+
+      // Runde 97: die Lidfalte. Der feine Bogen ueber dem Lid, an dem das bewegliche Lid
+      // endet und die Augenhoehle beginnt. Ohne sie sitzt ein noch so gut gemaltes Auge auf
+      // einer glatten Flaeche; mit ihr liegt es in einer Hoehle. Sie ist der billigste Schritt
+      // von "Auge gezeichnet" zu "Auge gebaut" — eine Linie, halb so dunkel wie die
+      // Wimpernkante und deutlich weiter oben.
+      '<path d="M'+(x-rx*0.94).toFixed(2)+' '+(y - ry*(offen<0.9?0.62:1.02)).toFixed(2)+
+      ' Q'+x+' '+(y - ry*(offen>1.2?2.05:1.82)).toFixed(2)+' '+(x+rx*0.94).toFixed(2)+' '+(y - ry*(offen<0.9?0.62:1.02)).toFixed(2)+
+      '" stroke="'+figTon(haut, 0.72)+'" stroke-width="'+(r*0.17).toFixed(2)+'" fill="none" stroke-linecap="round" opacity=".55"/>'+
       // Das Unterlid, sehr hell und sehr fein: die Kante, auf der das Auge aufliegt.
       '<path d="M'+(x-rx*0.82).toFixed(2)+' '+(y + ry*0.92).toFixed(2)+
       ' Q'+x+' '+(y + ry*1.16).toFixed(2)+' '+(x+rx*0.82).toFixed(2)+' '+(y + ry*0.92).toFixed(2)+
@@ -293,53 +301,77 @@
     var lippe = haut ? figTon(haut, 0.82) : '#C98F7E';
     var glanz = haut ? figTon(haut, 1.22) : '#FFFFFF';
     var innen = '#4A241F';
+    // Runde 97: das Philtrum — die Rinne zwischen Nase und Oberlippe. Zwei sehr blasse
+    // senkrechte Kanten mit einer helleren Mitte dazwischen. Es steht VOR jedem Mund, weil es
+    // zum Gesicht gehoert und nicht zum Mund: Es ist auch da, wenn der Mund geschlossen ist,
+    // und es ist der Grund, warum die Partie zwischen Nase und Lippe eine Form hat statt eine
+    // Flaeche zu sein. Zusammen mit dem Amorbogen weiter unten ist das die Stelle, an der ein
+    // gezeichneter Mund aufhoert, ein Symbol zu sein.
+    var rinne = haut ?
+      ('<path d="M19.25 25.9 L19.35 27.4" stroke="'+figTon(haut, 0.74)+'" stroke-width="0.34" '+
+         'fill="none" stroke-linecap="round" opacity=".30"/>'+
+       '<path d="M20.75 25.9 L20.65 27.4" stroke="'+figTon(haut, 0.70)+'" stroke-width="0.34" '+
+         'fill="none" stroke-linecap="round" opacity=".26"/>'+
+       '<path d="M20 26.0 L20 27.3" stroke="'+figTon(haut, 1.16)+'" stroke-width="0.5" '+
+         'fill="none" stroke-linecap="round" opacity=".24"/>') : '';
+    // Der Amorbogen: die doppelte Wellung der Oberlippenkante. Nur bei geschlossenen Muendern —
+    // bei einem offenen liegt dort die Zahnreihe, und beides uebereinander waere Matsch.
+    var bogen = function(y){
+      return '<path d="M17.9 '+y+' Q19.1 '+(y-0.34).toFixed(2)+' 20 '+(y-0.06).toFixed(2)+
+             ' Q20.9 '+(y-0.34).toFixed(2)+' 22.1 '+y+'" stroke="'+lippe+'" stroke-width="0.46" '+
+             'fill="none" stroke-linecap="round" opacity=".62"/>';
+    };
     if (art === 'lachen')
       // Weit offen. Der Rachen ist nicht schwarz, sondern sehr dunkelrot; oben stehen die
       // Zaehne als heller Bogen, unten liegt die Zunge. Ohne die Zaehne ist ein offener Mund
       // ein Loch.
-      return flaeche('M14.4 26.6 Q20 25.4 25.6 26.6 Q24.6 33.0 20 33.0 Q15.4 33.0 14.4 26.6 Z', innen) +
+      return rinne + flaeche('M14.4 26.6 Q20 25.4 25.6 26.6 Q24.6 33.0 20 33.0 Q15.4 33.0 14.4 26.6 Z', innen) +
              flaeche('M15.4 26.8 Q20 25.9 24.6 26.8 Q20 28.6 15.4 26.8 Z', '#FBF6EF') +
              flaeche('M16.8 30.2 Q20 31.8 23.2 30.2 Q22 33.0 20 33.0 Q18 33.0 16.8 30.2 Z', '#D9707F') +
              linie('M14.4 26.6 Q20 25.4 25.6 26.6', lippe, 0.9, 0.9);
     if (art === 'breit')
       // Breites geschlossenes Lachen: die Zaehne stehen, die Unterlippe faengt Licht.
-      return flaeche('M14.8 26.8 Q20 33.2 25.2 26.8 Q20 28.4 14.8 26.8 Z', innen) +
+      return rinne + flaeche('M14.8 26.8 Q20 33.2 25.2 26.8 Q20 28.4 14.8 26.8 Z', innen) +
              flaeche('M15.6 27.1 Q20 28.0 24.4 27.1 Q20 29.4 15.6 27.1 Z', '#FBF6EF') +
              linie('M15.2 30.6 Q20 33.0 24.8 30.6', glanz, 0.7, 0.55);
     if (art === 'laecheln')
       // Die Oberlippe traegt die Linie, die Unterlippe das Licht — und zwar DICHT darunter.
       // Im ersten Entwurf lag der Glanz zwei Einheiten tiefer und las sich als zweites Kinn.
-      return linie('M15.8 27.6 Q20 31.2 24.2 27.6', f, w * 0.82) +
+      return rinne + bogen(27.5) +
+             linie('M15.8 27.6 Q20 31.2 24.2 27.6', f, w * 0.82) +
              linie('M17.0 29.6 Q20 31.4 23.0 29.6', glanz, 0.85, 0.6);
     if (art === 'sanft')
-      return linie('M16.6 28.1 Q20 30.3 23.4 28.1', f, w * 0.8) +
+      return rinne + bogen(28.0) +
+             linie('M16.6 28.1 Q20 30.3 23.4 28.1', f, w * 0.8) +
              linie('M17.4 29.3 Q20 30.6 22.6 29.3', glanz, 0.75, 0.55);
     if (art === 'strich')
-      return linie('M16.8 28.6 L23.2 28.6', f, w) +
+      return rinne + bogen(28.5) +
+             linie('M16.8 28.6 L23.2 28.6', f, w) +
              linie('M17.4 29.6 L22.6 29.6', glanz, 0.6, 0.4);
     if (art === 'o')
       // Staunen: ein kleiner offener Mund. Rund, nicht breit, mit Lippenrand.
-      return '<ellipse cx="20" cy="28.8" rx="2.1" ry="2.6" fill="'+innen+'"/>'+
+      return rinne + '<ellipse cx="20" cy="28.8" rx="2.1" ry="2.6" fill="'+innen+'"/>'+
              '<ellipse cx="20" cy="29.7" rx="1.2" ry="1.4" fill="#D9707F" opacity=".85"/>'+
              '<ellipse cx="20" cy="28.8" rx="2.1" ry="2.6" fill="none" stroke="'+lippe+'" stroke-width="0.8" opacity=".85"/>';
     if (art === 'schief')
       // Halbes Laecheln, nur auf einer Seite hochgezogen. Die Asymmetrie ist der Punkt.
-      return linie('M15.8 28.8 Q19.2 30.2 24.2 26.8', f, w) +
+      return rinne + linie('M15.8 28.8 Q19.2 30.2 24.2 26.8', f, w) +
              linie('M16.6 29.9 Q19.4 31.0 23.2 28.3', glanz, 0.7, 0.45);
     if (art === 'klein')
-      return linie('M17.8 28.4 Q20 29.8 22.2 28.4', f, w) +
+      return rinne + bogen(28.3) +
+             linie('M17.8 28.4 Q20 29.8 22.2 28.4', f, w) +
              linie('M18.2 29.3 Q20 30.3 21.8 29.3', glanz, 0.6, 0.4);
     if (art === 'schmollen')
       // Zurueckgenommen. Der erste Entwurf zog die Mundwinkel um 1,8 Einheiten nach unten, und
       // im Bild sah die Figur nicht skeptisch aus, sondern veraergert — derselbe Fehler wie bei
       // den Brauen in Runde 88, nur eine Zeile tiefer. Jetzt fast waagerecht, mit einem
       // hoeheren Mundwinkel auf einer Seite: Das ist Zweifel, nicht Aerger.
-      return linie('M16.4 29.0 Q19.4 29.9 23.6 28.5', f, w * 0.85) +
+      return rinne + linie('M16.4 29.0 Q19.4 29.9 23.6 28.5', f, w * 0.85) +
              flaeche('M17.2 29.7 Q19.6 31.0 22.8 29.4 Q19.8 30.2 17.2 29.7 Z', lippe, 0.55);
     if (art === 'zahn')
       // Ein schiefes Grinsen, bei dem auf einer Seite die Zaehne blitzen. Der erste Entwurf
       // setzte EINEN Zahn in die Mitte, und der las sich als Zahnluecke.
-      return flaeche('M15.6 27.6 Q20.4 31.4 24.4 27.0 Q20 28.6 15.6 27.6 Z', innen) +
+      return rinne + flaeche('M15.6 27.6 Q20.4 31.4 24.4 27.0 Q20 28.6 15.6 27.6 Z', innen) +
              flaeche('M16.6 27.9 Q20.2 29.2 23.4 27.4 Q20 28.6 16.6 27.9 Z', '#FBF6EF') +
              linie('M16.4 29.6 Q20.2 31.6 23.6 28.9', glanz, 0.7, 0.5);
     // Die Tierschnauze: senkrechter Strich unter der Nase, dann zwei Boegen.
@@ -489,63 +521,164 @@
   }
   // Menschen: Kopf, Haar, Gesicht. Die Haarform ist der groesste Unterschied, aber nicht mehr
   // der einzige — Brauen, Miene, Sommersprossen und Brille tragen jetzt genauso viel.
+  // ---------- Haar (Runde 97) ----------
+  //
+  // Rueckmeldung: die Frisuren sollen realistischer aussehen. Der Grund, warum sie es nicht
+  // taten, liess sich benennen: Jede Frisur war EINE Flaeche in EINER Farbe mit einem weissen
+  // Strich darauf. Haar ist aber nie einfarbig — es ist am Ansatz dunkel, faengt oben Licht
+  // und besteht aus Straehnen, die man einzeln sieht.
+  //
+  // Drei Dinge dagegen, in dieser Reihenfolge, weil jedes auf dem vorigen liegt:
+  //   1. Ein Verlauf statt der flachen Fuellung. Oben links hell (dort steht das Licht der
+  //      ganzen Zeichnung), unten rechts deutlich dunkler.
+  //   2. Straehnen: feine Boegen in einem dunkleren Ton, die dem Rund des Kopfes folgen.
+  //      Sie liegen auf dem Verlauf und machen aus der Flaeche eine Oberflaeche.
+  //   3. Ein Glanz, der ein BAND ist und kein Strich. Ein Strich auf Haar liest sich als
+  //      Kratzer — genau der Fehler, der in Runde 94 an den Wangen behoben wurde.
+  var FIG_HAAR_LAUF = 0;
+  function figHaarVerlauf(farbe){
+    var id = FIG_UID + 'hh' + (FIG_HAAR_LAUF++);
+    return {id: id, defs:
+      '<linearGradient id="'+id+'" x1="0.18" y1="0" x2="0.86" y2="1">'+
+        // Am Bild zurueckgenommen (war 1,30 oben und 0,66 unten). So weit gespreizt sah das
+        // Haar nicht beleuchtet aus, sondern staubig — besonders die dunklen Frisuren bekamen
+        // graubraune Flecken. Ein Verlauf im Haar soll man nicht sehen, man soll ihn merken.
+        '<stop offset="0" stop-color="'+figTon(farbe, 1.12)+'"/>'+
+        '<stop offset="0.38" stop-color="'+figTon(farbe, 1.03)+'"/>'+
+        '<stop offset="0.74" stop-color="'+farbe+'"/>'+
+        '<stop offset="1" stop-color="'+figTon(farbe, 0.80)+'"/>'+
+      '</linearGradient>'};
+  }
+  // Die Straehnen liegen auf dem Scheitelbogen — der Stelle, die JEDE Frisur bedeckt. Sie
+  // ausserhalb der Haarform zu zeichnen und dann zu beschneiden waere sauberer, kostet aber je
+  // Figur einen weiteren clipPath; hier reicht es, sie dort zu setzen, wo in allen sieben
+  // Frisuren Haar ist.
+  function figStraehnen(farbe){
+    var dunkel = figTon(farbe, 0.70), hell = figTon(farbe, 1.34);
+    var s = function(d, f, w, deck){
+      return '<path d="'+d+'" stroke="'+f+'" stroke-width="'+w+'" fill="none" stroke-linecap="round" opacity="'+deck+'"/>';
+    };
+    return s('M10.4 18.2 Q13.0 10.4 20.6 8.4', dunkel, 0.55, 0.42) +
+           s('M12.4 16.0 Q15.8 9.6 22.8 8.6', dunkel, 0.45, 0.32) +
+           s('M14.6 13.6 Q18.0 9.2 24.0 9.0', dunkel, 0.40, 0.24) +
+           s('M27.4 9.6 Q31.6 12.4 32.6 19.0', dunkel, 0.55, 0.42) +
+           s('M25.2 8.8 Q29.8 11.4 31.2 16.4', dunkel, 0.45, 0.32) +
+           s('M22.8 8.4 Q27.6 10.4 29.6 14.2', dunkel, 0.40, 0.24) +
+           s('M15.6 10.8 Q18.8 9.0 22.4 9.2', hell, 0.5, 0.34);
+  }
+
+  // Welche Muender lachen. Als Tabelle und nicht als Aufzaehlung im Code: Beim naechsten neuen
+  // Mund steht die Frage "laechelt der?" genau an einer Stelle.
+  var FIG_LACHT = {laecheln:1, breit:1, lachen:1, sanft:1, schief:1, zahn:1, klein:1};
+  // Die glatten Frisuren — die einzigen, auf denen Straehnenboegen richtig liegen.
+  var FIG_GLATT = {kurzhaar:1, lang:1, dutt:1, pony:1, zopf:1};
+
   function figMensch(o){
     mieneAnwenden(o);
     var haar = '', haarVorn = '';
+    var hv = figHaarVerlauf(o.haarFarbe || '#3A2A20');
+    // Die Frisuren unten sind unveraendert geblieben; nur ihre Fuellung ist von der flachen
+    // Farbe auf den Verlauf umgestellt. Deshalb steht hier eine Variable und nicht sieben Mal
+    // dieselbe Aenderung — sieben Stellen waeren sieben Gelegenheiten, eine zu vergessen.
+    var haarFuell = 'url(#' + hv.id + ')';
     if (o.haar === 'kurzhaar')
       haar = '<path d="M6.8 20 C6.8 10.5 12.5 5.5 20 5.5 C27.5 5.5 33.2 10.5 33.2 20 '+
-             'C33.2 15.5 27 13.5 20 13.5 C13 13.5 6.8 15.5 6.8 20 Z" fill="'+o.haarFarbe+'"/>';
+             'C33.2 15.5 27 13.5 20 13.5 C13 13.5 6.8 15.5 6.8 20 Z" fill="'+haarFuell+'"/>';
     else if (o.haar === 'lang')
       haar = '<path d="M5.6 34 C5.6 20 6.4 5.5 20 5.5 C33.6 5.5 34.4 20 34.4 34 '+
              'C34.4 34 31.5 33 30.6 26 C29 15.5 26 14 20 14 C14 14 11 15.5 9.4 26 '+
-             'C8.5 33 5.6 34 5.6 34 Z" fill="'+o.haarFarbe+'"/>';
+             'C8.5 33 5.6 34 5.6 34 Z" fill="'+haarFuell+'"/>';
     else if (o.haar === 'locken')
-      haar = '<circle cx="11" cy="13" r="6" fill="'+o.haarFarbe+'"/><circle cx="20" cy="9.5" r="6.6" fill="'+o.haarFarbe+'"/>'+
-             '<circle cx="29" cy="13" r="6" fill="'+o.haarFarbe+'"/><circle cx="8.6" cy="19.5" r="4.4" fill="'+o.haarFarbe+'"/>'+
-             '<circle cx="31.4" cy="19.5" r="4.4" fill="'+o.haarFarbe+'"/>';
+      haar = '<circle cx="11" cy="13" r="6" fill="'+haarFuell+'"/><circle cx="20" cy="9.5" r="6.6" fill="'+haarFuell+'"/>'+
+             '<circle cx="29" cy="13" r="6" fill="'+haarFuell+'"/><circle cx="8.6" cy="19.5" r="4.4" fill="'+haarFuell+'"/>'+
+             '<circle cx="31.4" cy="19.5" r="4.4" fill="'+haarFuell+'"/>';
     else if (o.haar === 'tuch')
       haar = '<path d="M5.8 22 C5.8 11 12 5 20 5 C28 5 34.2 11 34.2 22 C34.2 26 32 29 32 29 '+
              'L28.5 20 C27 15 24 13.5 20 13.5 C16 13.5 13 15 11.5 20 L8 29 C8 29 5.8 26 5.8 22 Z" '+
-             'fill="'+o.haarFarbe+'"/>';
+             'fill="'+haarFuell+'"/>';
     else if (o.haar === 'dutt')
-      haar = '<circle cx="20" cy="4.6" r="4" fill="'+o.haarFarbe+'"/>'+
+      haar = '<circle cx="20" cy="4.6" r="4" fill="'+haarFuell+'"/>'+
              '<path d="M6.8 20 C6.8 10.5 12.5 6 20 6 C27.5 6 33.2 10.5 33.2 20 '+
-             'C33.2 15.5 27 13.5 20 13.5 C13 13.5 6.8 15.5 6.8 20 Z" fill="'+o.haarFarbe+'"/>';
+             'C33.2 15.5 27 13.5 20 13.5 C13 13.5 6.8 15.5 6.8 20 Z" fill="'+haarFuell+'"/>';
     else if (o.haar === 'pony')
       // Bob mit geradem Pony: Die Straehnen fallen seitlich bis aufs Kinn. Die Unterkante der
       // Fransen liegt bei 16,4 und damit ueber den Brauen — im ersten Entwurf lag sie auf ihnen,
       // und das Gesicht sah aus, als waeren die Brauen ins Haar gerutscht.
       haar = '<path d="M5.9 30 C5.9 12 11 5 20 5 C29 5 34.1 12 34.1 30 C34.1 30 31.4 29 30.8 24 '+
              'L30.8 14.2 C30.8 14.2 26 16.4 20 16.4 C14 16.4 9.2 14.2 9.2 14.2 L9.2 24 '+
-             'C8.6 29 5.9 30 5.9 30 Z" fill="'+o.haarFarbe+'"/>';
+             'C8.6 29 5.9 30 5.9 30 Z" fill="'+haarFuell+'"/>';
     else if (o.haar === 'zopf')
       // Hoher Zopf. Er ragt deutlich ueber den Kopfumriss hinaus (der endet bei x=31,6) — im
       // ersten Entwurf lag er innerhalb und verschmolz mit der Frisur zu einer Kappe. Dazu ein
       // Band an der Ansatzstelle: Ohne das liest sich der Zopf als abstehende Straehne.
       haar = '<path d="M29.5 11 Q38.5 13.5 37 23.5 Q36 30 32.6 32.5 Q36.2 24 33.6 17.5 '+
-             'Q31.8 13.4 28.4 12.2 Z" fill="'+o.haarFarbe+'"/>'+
+             'Q31.8 13.4 28.4 12.2 Z" fill="'+haarFuell+'"/>'+
              '<path d="M6.8 20 C6.8 10.5 12.5 5.5 20 5.5 C27.5 5.5 33.2 10.5 33.2 20 '+
-             'C33.2 15.5 27 13.5 20 13.5 C13 13.5 6.8 15.5 6.8 20 Z" fill="'+o.haarFarbe+'"/>'+
+             'C33.2 15.5 27 13.5 20 13.5 C13 13.5 6.8 15.5 6.8 20 Z" fill="'+haarFuell+'"/>'+
              '<ellipse cx="30.6" cy="13.4" rx="2.5" ry="1.9" transform="rotate(-28 30.6 13.4)" '+
              'fill="'+FIG_INK+'" opacity=".22"/>';
-    // Ein Glanzstreifen im Haar. Er kostet eine Linie und nimmt der Frisur das Aufgeklebte.
-    if (haar) haarVorn = '<path d="M12.6 12.2 Q16 8.6 21 8.2" stroke="#FFFFFF" stroke-width="1.3" '+
-                         'fill="none" stroke-linecap="round" opacity=".22"/>';
-    var gh = FIG_UID + 'haut', gk = FIG_UID + 'kern', gs = FIG_UID + 'nase';
-    var KOPF = 'M20 8.2 C27.2 8.2 31.6 13.2 31.6 20.4 C31.6 25.6 29.8 29.6 27 32 '+
-               'C25 33.7 22.6 34.6 20 34.6 C17.4 34.6 15 33.7 13 32 C10.2 29.6 8.4 25.6 8.4 20.4 '+
+    // Runde 97: Straehnen, dann ein Glanz als BAND. Vorher stand hier ein weisser Strich von
+    // 1,3 Breite — bei dieser Groesse ist das eine harte Kante auf einer weichen Flaeche, und
+    // sie las sich als Kratzer. Jetzt zwei weiche Boegen uebereinander: der breitere blass, der
+    // schmalere darauf etwas heller. Zusammen ergeben sie einen Schimmer mit Rand statt einer
+    // Linie mit Enden.
+    // Am Bild dreimal korrigiert und am Ende gestrichen.
+    //
+    // Hier lag seit Runde 87 ein Glanzstreifen im Haar. Er stand auf JEDER Figur an derselben
+    // Stelle, in derselben Form, mit runden Enden — auf dem Bob, auf der Afrofrisur, auf dem
+    // Kopftuch. Zwei Versuche, ihn besser zu machen (breiter und blasser, dann in der
+    // Haarfarbe statt in Weiss), haben beide nichts geholfen, und im vergroesserten Bild war
+    // auch klar warum: Eine Strichform mit runden Enden ist bei dieser Groesse eine Kapsel,
+    // und eine Kapsel auf Locken ist kein Licht, sondern ein Fremdkoerper.
+    //
+    // Was Haar glaenzen laesst, ist nicht ein Streifen darauf, sondern dass es an einer Stelle
+    // heller ist als an der anderen. Genau das leistet der Verlauf, und die Straehnen geben
+    // ihm die Oberflaeche. Der Streifen ist damit ersatzlos weg — die dritte Fassung eines
+    // Details, das nicht funktioniert, ist teurer als sein Fehlen.
+    //
+    // Nicht auf jeder Frisur. Die Straehnen sind Boegen, die dem Rund des Kopfes folgen — auf
+    // glattem Haar ist das richtig, auf Locken laufen sie quer zur Locke, und auf einem
+    // KOPFTUCH haben Haarstraehnen ueberhaupt nichts zu suchen. Beides war im vergroesserten
+    // Bild zu sehen.
+    if (haar && FIG_GLATT[o.haar]) haarVorn = figStraehnen(o.haarFarbe || '#3A2A20');
+    var gh = FIG_UID + 'haut', gk = FIG_UID + 'kern', gs = FIG_UID + 'nase', gf = FIG_UID + 'falte';
+    // Runde 97: Das Kinn ist schmaler geworden. Der Umriss lief bis hierher fast senkrecht
+    // hinunter und bog erst ganz unten ein — im Bild ist das ein Ei mit Augen. Ein Gesicht
+    // verjuengt sich AB DEN WANGENKNOCHEN, also ab etwa zwei Dritteln der Hoehe. Die beiden
+    // Kontrollpunkte auf Kinnhoehe sind entsprechend nach innen gerueckt.
+    var KOPF = 'M20 8.2 C27.2 8.2 31.6 13.2 31.6 20.4 C31.6 25.4 29.4 29.4 26.2 31.9 '+
+               'C24.4 33.6 22.4 34.6 20 34.6 C17.6 34.6 15.6 33.6 13.8 31.9 C10.6 29.4 8.4 25.4 8.4 20.4 '+
                'C8.4 13.2 12.8 8.2 20 8.2 Z';
-    return '<defs>'+figKugel(gh, o.haut)+figKern(gk)+
+    return '<defs>'+figKugel(gh, o.haut)+figKern(gk)+hv.defs+
       '<radialGradient id="'+gs+'"><stop offset="0" stop-color="'+FIG_INK+'" stop-opacity="0.13"/>'+
-      '<stop offset="1" stop-color="'+FIG_INK+'" stop-opacity="0"/></radialGradient>'+'</defs>' +
+      '<stop offset="1" stop-color="'+FIG_INK+'" stop-opacity="0"/></radialGradient>'+
+      // Die Falte verlaeuft nach beiden Enden ins Nichts. Ein Verlauf ENTLANG der Linie, nicht
+      // quer dazu: Sie soll oben an der Nase anfangen und unten am Mundwinkel aufhoeren, ohne
+      // dass man sagen kann, wo genau.
+      '<linearGradient id="'+gf+'" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="'+figTon(o.haut, 0.62)+'" stop-opacity="0"/>'+
+        '<stop offset="0.45" stop-color="'+figTon(o.haut, 0.62)+'" stop-opacity="0.30"/>'+
+        '<stop offset="1" stop-color="'+figTon(o.haut, 0.62)+'" stop-opacity="0"/>'+
+      '</linearGradient>'+'</defs>' +
       figSchultern(o.haut, o.kleid || '#6E7F73') +
       // Der Schatten, den der Kopf auf die Schulter wirft. Ohne ihn liegt der Kopf nicht auf
       // dem Koerper, er steht davor.
       '<ellipse cx="20" cy="35.4" rx="7.4" ry="2.6" fill="'+FIG_INK+'" opacity=".22"/>' +
       // Die Ohren liegen HINTER dem Kopf: Sichtbar bleibt nur, was seitlich hervorsteht.
       // Davor standen sie darauf und sahen aus wie angeklebte Knoepfe.
+      // Runde 97: Ein Ohr ist keine Ellipse. Was es zum Ohr macht, ist die INNENWINDUNG — der
+      // Bogen, der von oben nach innen laeuft und unten im Laeppchen endet. Zwei Linien je
+      // Ohr, und aus dem Knopf wird ein Ohr.
       '<ellipse cx="9.2" cy="22.8" rx="2.1" ry="2.9" fill="'+figTon(o.haut, 0.90)+'"/>'+
+      '<path d="M9.9 20.9 Q8.4 22.4 9.2 24.4" stroke="'+figTon(o.haut, 0.66)+'" stroke-width="0.55" '+
+        'fill="none" stroke-linecap="round" opacity=".8"/>'+
+      '<path d="M9.4 24.8 Q8.9 25.2 9.6 25.4" stroke="'+figTon(o.haut, 0.70)+'" stroke-width="0.45" '+
+        'fill="none" stroke-linecap="round" opacity=".6"/>'+
       '<ellipse cx="30.8" cy="22.8" rx="2.1" ry="2.9" fill="'+figTon(o.haut, 0.84)+'"/>'+
+      '<path d="M30.1 20.9 Q31.6 22.4 30.8 24.4" stroke="'+figTon(o.haut, 0.62)+'" stroke-width="0.55" '+
+        'fill="none" stroke-linecap="round" opacity=".8"/>'+
+      '<path d="M30.6 24.8 Q31.1 25.2 30.4 25.4" stroke="'+figTon(o.haut, 0.66)+'" stroke-width="0.45" '+
+        'fill="none" stroke-linecap="round" opacity=".6"/>'+
       figSaum(KOPF, 'url(#'+gh+')', figTon(o.haut, 1.30)) +
       // Der Kopf ist keine Ellipse mehr, sondern eine Form mit Kinn: oben breit, zur Mitte
       // leicht eingezogen, unten gerundet auslaufend. Eine reine Ellipse hat kein Gesicht,
@@ -574,8 +707,20 @@
       // Keine Brauen unter Fransen: Ein Pony bedeckt die Stirn, und gezeichnete Brauen laegen
       // dann auf dem Haar statt darunter.
       (o.haar === 'pony' ? '' :
-        figBrauen(o.braue, 15.6, 24.4, 17.9, (o.brauenFarbe || o.haarFarbe), 1.15, 0.8)) +
-      figAugen(15.6, 24.4, 20.8, o.augeR || 2.15, {blick:o.blick, iris:o.iris || '#4A352A', seite:o.seite, hoehe:o.hoehe, oeffnung:o.oeffnung, haut:o.haut}) +
+        figBrauen(o.braue, 20 - (4.4 + (o.augenAb || 0)), 20 + (4.4 + (o.augenAb || 0)),
+                  17.9 + (o.augenY || 0), (o.brauenFarbe || o.haarFarbe), 1.15, 0.8)) +
+      // Runde 97: Augenabstand und Augenhoehe sind jetzt je Figur verschieden. Bis hierher sass
+      // bei ALLEN zehn Menschen jedes Auge auf demselben Punkt, mit demselben Radius — und
+      // damit unterschied zwei Gesichter nur noch, was DARIN steht (Miene, Iris, Frisur), nie
+      // der Bau des Gesichts selbst. Menschen unterscheiden sich aber genau daran zuerst:
+      // Augenabstand und Augengroesse sind das, woran man jemanden auf zwanzig Meter erkennt,
+      // lange bevor man seinen Gesichtsausdruck sieht.
+      //
+      // Die Ausschlaege sind klein gehalten (hoechstens 0,7 Einheiten bei 23 Einheiten
+      // Kopfbreite). Groesser wird daraus keine Vielfalt, sondern eine Karikatur.
+      figAugen(20 - (4.4 + (o.augenAb || 0)), 20 + (4.4 + (o.augenAb || 0)),
+               20.8 + (o.augenY || 0), o.augeR || 2.15,
+               {blick:o.blick, iris:o.iris || '#4A352A', seite:o.seite, hoehe:o.hoehe, oeffnung:o.oeffnung, haut:o.haut}) +
       // Nase: nur ein kurzer Bogen. Mehr braucht ein Gesicht dieser Groesse nicht, und alles
       // Groessere zieht den Blick von den Augen weg.
       // Die Nase traegt jetzt beides: den Schatten auf ihrer rechten Seite (das Licht kommt von
@@ -585,15 +730,39 @@
       // wieder eine Zeichnung; hier soll nur die rechte Seite der Nase etwas dunkler stehen,
       // weil das Licht von links kommt.
       '<ellipse cx="21.3" cy="23.8" rx="1.5" ry="2.2" fill="url(#'+gs+')"/>' +
-      '<path d="M19.4 23.6 Q20.3 24.6 19.2 25" stroke="'+FIG_INK+'" stroke-width="0.9" fill="none" '+
-        'stroke-linecap="round" opacity=".45"/>' +
+      // Runde 97: Was die Nase bisher war — ein Haken. Was eine Nase hat und der Haken nicht:
+      // zwei Fluegel, zwei Loecher und einen Lichtpunkt auf der Spitze. Alles sehr klein
+      // gehalten; bei 40 Einheiten Kopfhoehe ist ein sichtbares Nasenloch sofort zu viel.
+      '<path d="M19.4 23.6 Q20.3 24.8 19.1 25.2" stroke="'+FIG_INK+'" stroke-width="0.85" fill="none" '+
+        'stroke-linecap="round" opacity=".42"/>' +
+      '<path d="M18.7 25.3 Q19.5 25.9 20.3 25.5" stroke="'+figTon(o.haut, 0.60)+'" stroke-width="0.5" '+
+        'fill="none" stroke-linecap="round" opacity=".7"/>' +
+      '<path d="M21.4 25.4 Q20.9 25.9 20.2 25.6" stroke="'+figTon(o.haut, 0.56)+'" stroke-width="0.5" '+
+        'fill="none" stroke-linecap="round" opacity=".6"/>' +
+      '<ellipse cx="19.15" cy="25.45" rx="0.30" ry="0.20" fill="'+FIG_INK+'" opacity=".42" '+
+        'transform="rotate(-16 19.15 25.45)"/>' +
+      '<ellipse cx="20.95" cy="25.5" rx="0.28" ry="0.19" fill="'+FIG_INK+'" opacity=".36" '+
+        'transform="rotate(16 20.95 25.5)"/>' +
+      '<ellipse cx="19.75" cy="24.5" rx="0.62" ry="0.46" fill="#FFFFFF" opacity=".22"/>' +
+      // Runde 97: die Lachfalte. Sie ist das staerkste Signal dafuer, dass ein Gesicht wirklich
+      // laechelt — ohne sie sitzt der Mund auf einer glatten Wange. Sie steht deshalb NUR bei
+      // den laechelnden Muendern; bei einem neutralen waere sie kein Ausdruck, sondern Alter.
+      //
+      // Und sie ist eine weiche FLAECHE, kein Strich. Genau daran ist Runde 94 an derselben
+      // Stelle gescheitert: Eine Linie mit wenigen Prozent Deckung ist bei dieser Groesse
+      // immer noch eine Linie und liest sich als Kratzer.
+      (FIG_LACHT[o.mund || 'laecheln'] ?
+        '<path d="M16.4 24.6 Q14.9 27.4 16.2 30.1" stroke="url(#'+gf+')" stroke-width="1.5" '+
+          'fill="none" stroke-linecap="round"/>'+
+        '<path d="M23.6 24.6 Q25.1 27.4 23.8 30.1" stroke="url(#'+gf+')" stroke-width="1.5" '+
+          'fill="none" stroke-linecap="round"/>' : '') +
       figMund(o.mund || 'laecheln', FIG_INK, 1.35, o.haut) +
       (o.brille ? '<g fill="none" stroke="'+(o.brilleFarbe || '#4A4038')+'" stroke-width="1.1">'+
          '<circle cx="15.6" cy="21" r="3.9"/><circle cx="24.4" cy="21" r="3.9"/>'+
          '<path d="M19.5 20.6 Q20 20.1 20.5 20.6" stroke-linecap="round"/>'+
          '<path d="M11.7 20.2 L9.2 19.6 M28.3 20.2 L30.8 19.6" stroke-linecap="round"/></g>' : '') +
       (o.bart ? '<path d="M12.6 24 C12.6 32 16 34.6 20 34.6 C24 34.6 27.4 32 27.4 24 '+
-                'C27.4 28 24 29.6 20 29.6 C16 29.6 12.6 28 12.6 24 Z" fill="'+o.haarFarbe+'"/>' : '');
+                'C27.4 28 24 29.6 20 29.6 C16 29.6 12.6 28 12.6 24 Z" fill="'+haarFuell+'"/>' : '');
   }
 
   // Die Figuren. Reihenfolge: erst Menschen, dann Tiere — wer sich selbst sucht, sucht nicht
@@ -605,26 +774,26 @@
     // die Augenfarbe (iris) kommt dazu. Vorher unterschied sie nur der Mund, und der traegt an
     // einem Gesicht die wenigste Mimik: Deshalb sahen zweiundzwanzig Figuren gleich aus,
     // obwohl sie es auf dem Papier nicht waren.
-    {id:'m1',  feld:'#F3E3D3', svg:function(){ return figMensch({miene:'warm', haut:'#E8BE9A', haar:'kurzhaar', haarFarbe:'#3A2A20',
+    {id:'m1',  feld:'#F3E3D3', svg:function(){ return figMensch({augenAb:-0.35, augenY:0.0, augeR:2.1, miene:'warm', haut:'#E8BE9A', haar:'kurzhaar', haarFarbe:'#3A2A20',
                   iris:'#4A352A', kleid:'#5E7466',}); }},
-    {id:'m2',  feld:'#EFE0EA', svg:function(){ return figMensch({miene:'begeistert', haut:'#F0CBAA', haar:'lang', haarFarbe:'#8A4B2A',
+    {id:'m2',  feld:'#EFE0EA', svg:function(){ return figMensch({augenAb:0.3, augenY:-0.3, augeR:2.24, miene:'begeistert', haut:'#F0CBAA', haar:'lang', haarFarbe:'#8A4B2A',
                   iris:'#3E6B5A', kleid:'#8A6E82',}); }},
-    {id:'m3',  feld:'#E2E7DC', svg:function(){ return figMensch({miene:'neugier', haut:'#8D5A3B', haar:'locken', haarFarbe:'#2B1D17',
+    {id:'m3',  feld:'#E2E7DC', svg:function(){ return figMensch({augenAb:0.55, augenY:0.2, augeR:2.3, miene:'neugier', haut:'#8D5A3B', haar:'locken', haarFarbe:'#2B1D17',
                   iris:'#3A2A20', kleid:'#4F6B5E',}); }},
-    {id:'m4',  feld:'#DDE6EC', svg:function(){ return figMensch({miene:'traeumerisch', haut:'#E5B98F', haar:'tuch', haarFarbe:'#3E6B74', brauenFarbe:'#4A3226',
+    {id:'m4',  feld:'#DDE6EC', svg:function(){ return figMensch({augenAb:-0.2, augenY:0.3, augeR:2.06, miene:'traeumerisch', haut:'#E5B98F', haar:'tuch', haarFarbe:'#3E6B74', brauenFarbe:'#4A3226',
                   iris:'#43352C', kleid:'#3E6B74',}); }},
-    {id:'m5',  feld:'#EDE6DA', svg:function(){ return figMensch({miene:'freude', haut:'#C98F62', haar:'dutt', haarFarbe:'#4A3226',
+    {id:'m5',  feld:'#EDE6DA', svg:function(){ return figMensch({augenAb:0.15, augenY:0.0, augeR:2.2, miene:'freude', haut:'#C98F62', haar:'dutt', haarFarbe:'#4A3226',
                   iris:'#4A352A', kleid:'#7A6A52',}); }},
-    {id:'m6',  feld:'#E7E2F0', svg:function(){ return figMensch({miene:'entschlossen', haut:'#EFC9A6', haar:'kurzhaar', haarFarbe:'#6B6B6B', bart:true,
+    {id:'m6',  feld:'#E7E2F0', svg:function(){ return figMensch({augenAb:-0.55, augenY:-0.2, augeR:2.0, miene:'entschlossen', haut:'#EFC9A6', haar:'kurzhaar', haarFarbe:'#6B6B6B', bart:true,
                   iris:'#546B78', kleid:'#5A5F72',}); }},
     // Runde 83 dazu: mehr Haarfarben und mehr Gesichter, ausdruecklich gewuenscht.
-    {id:'m7',  feld:'#F4EEDC', svg:function(){ return figMensch({miene:'stolz', haut:'#F2D3B4', haar:'lang', haarFarbe:'#DFB25F', brauenFarbe:'#B98F45',
+    {id:'m7',  feld:'#F4EEDC', svg:function(){ return figMensch({augenAb:0.4, augenY:0.2, augeR:2.26, miene:'stolz', haut:'#F2D3B4', haar:'lang', haarFarbe:'#DFB25F', brauenFarbe:'#B98F45',
                   iris:'#4E7C8C', kleid:'#C79A5E',}); }},
-    {id:'m8',  feld:'#F6E4DC', svg:function(){ return figMensch({miene:'staunen', haut:'#F5D6BE', haar:'locken', haarFarbe:'#C25A2B', brauenFarbe:'#A64A22',
+    {id:'m8',  feld:'#F6E4DC', svg:function(){ return figMensch({augenAb:-0.1, augenY:-0.3, augeR:2.12, miene:'staunen', haut:'#F5D6BE', haar:'locken', haarFarbe:'#C25A2B', brauenFarbe:'#A64A22',
                   sommersprossen:true, iris:'#4C7A46', kleid:'#A5644A',}); }},
-    {id:'m9',  feld:'#E4E9EF', svg:function(){ return figMensch({miene:'skeptisch', haut:'#D9A97C', haar:'pony', haarFarbe:'#241C18',
+    {id:'m9',  feld:'#E4E9EF', svg:function(){ return figMensch({augenAb:0.65, augenY:0.1, augeR:2.32, miene:'skeptisch', haut:'#D9A97C', haar:'pony', haarFarbe:'#241C18',
                   iris:'#3A2A20', kleid:'#4A5A6B',}); }},
-    {id:'m10', feld:'#EAE7DF', svg:function(){ return figMensch({miene:'verschmitzt', haut:'#EAC49F', haar:'zopf', haarFarbe:'#7A5A3C', brille:true,
+    {id:'m10', feld:'#EAE7DF', svg:function(){ return figMensch({augenAb:-0.45, augenY:0.3, augeR:2.04, miene:'verschmitzt', haut:'#EAC49F', haar:'zopf', haarFarbe:'#7A5A3C', brille:true,
                   iris:'#5E6B4A', kleid:'#6E6455',}); }},
     {id:'fuchs', feld:'#F6E6D8', svg:function(){ return figTier({miene:'schelmisch', ohr:'spitz', fell:'#D97A45', innen:'#F5E2D2', schnauze:'#F8EFE6',
                   wange:'#E9A177', iris:'#7A4520'}); }},
