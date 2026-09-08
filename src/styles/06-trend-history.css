@@ -28,6 +28,16 @@
   .vl-stimmung{background:var(--daten-stimmung);}
   .vl-eintrag b{color:var(--ink); font-weight:600; font-size:14px; font-variant-numeric:tabular-nums;}
 
+  /* Runde 97: Der Zeitraumwaehler ueber der Kurve. Er benutzt .segment wie ueberall sonst,
+     nur schmaler — hier stehen Zahlen, keine Preise. Ein abgeschaltetes Fach bleibt sichtbar
+     und wird blass: Es verschwinden zu lassen hiesse, dass der Waehler beim naechsten Eintrag
+     seine Breite aendert, und ein Waehler, dessen Faecher wandern, ist keiner. */
+  .tf-fenster{ margin-top:12px; grid-template-columns:repeat(3, 1fr); }
+  .tf-fenster .segment-opt{ min-height:46px; gap:0; }
+  .tf-fenster .segment-preis{ font-size:15px; }
+  .tf-fenster .segment-spar{ color:var(--muted); letter-spacing:.03em; }
+  .tf-fenster .segment-opt[disabled]{ opacity:.38; cursor:default; }
+  .verlauf-hinweis{ margin:8px 0 0; font-size:12px; line-height:1.5; color:var(--muted); }
   .verlauf-flaeche{position:relative; margin-top:14px; display:flex; gap:8px; align-items:stretch;}
   /* preserveAspectRatio="none" lässt das Diagramm die volle Breite annehmen; die Höhe steht
      hier, damit sie nicht vom Seitenverhältnis abhängt. */

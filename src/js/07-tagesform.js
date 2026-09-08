@@ -188,7 +188,77 @@
                 zahl1(aHoch.mittel - aTief.mittel) + tx('js_befund_tageszeit_d')});
       }
     }
+    // 4) Richtung ueber die Zeit (Runde 97). Der Befund, fuer den ein langer Verlauf ueberhaupt
+    //    da ist: Nicht wie es heute steht, sondern wohin es geht. Ueber die Steigung einer
+    //    Ausgleichsgeraden durch die Tage — nicht ueber "erste Haelfte gegen zweite Haelfte",
+    //    weil dabei ein einzelner Ausreisser an einem Rand die ganze Aussage kippt.
+    //
+    //    Ab 21 Tagen, und nur wenn die Gerade ueber den Zeitraum mindestens einen halben
+    //    Skalenpunkt zurueckliegt. Darunter ist die Steigung kleiner als das, was zwei
+    //    aufeinanderfolgende Tage ohnehin auseinanderliegen.
+    if (tage.length >= 21){
+      var basis = tagAlsZahl(tage[0].day);
+      var richtung = ['energy','valence'].map(function(feld){
+        var punkte = tage.map(function(t){ return {x: tagAlsZahl(t.day) - basis, y: t[feld]}; })
+                         .filter(function(pk){ return !isNaN(pk.x); });
+        return {feld:feld, steigung: steigungVon(punkte),
+                spanne: punkte.length ? (punkte[punkte.length-1].x - punkte[0].x) : 0};
+      });
+      var staerkste = richtung.sort(function(a,b){
+        return Math.abs(b.steigung * b.spanne) - Math.abs(a.steigung * a.spanne);
+      })[0];
+      var gesamt = staerkste.steigung * staerkste.spanne;
+      if (Math.abs(gesamt) >= 0.5){
+        teile.push({titel: tx('js_befund_titel_richtung'),
+          text: tx('js_befund_richtung_a') + staerkste.spanne + tx('js_befund_richtung_b') +
+                tx(staerkste.feld === 'energy' ? 'js_energie' : 'js_stimmung') +
+                tx(gesamt > 0 ? 'js_befund_richtung_auf' : 'js_befund_richtung_ab') +
+                zahl1(Math.abs(gesamt)) + tx('js_befund_richtung_c')});
+      }
+    }
+
+    // 5) Erholung (Runde 97). Wie es nach einem schwachen Tag weitergeht. Das ist die Frage,
+    //    die eine Kurve ueber Monate beantworten kann und ein einzelner Tag nie — und sie ist
+    //    naeher an dem, was jemand ueber sich wissen will, als jede Schwankungsbreite.
+    //
+    //    Ein schwacher Tag ist einer unter dem eigenen Median, nicht unter der Skalenmitte. Wer
+    //    nie unter 3 geht, haette sonst keinen einzigen.
+    if (tage.length >= 15){
+      var med = tage.map(function(t){ return t.energy; }).sort(function(a,b){ return a-b; });
+      var mitte = med.length % 2 ? med[(med.length-1)/2] : (med[med.length/2-1] + med[med.length/2]) / 2;
+      var folgen = [];
+      for (var j = 0; j < tage.length - 1; j++){
+        if (tage[j].energy >= mitte) continue;
+        // Nur, wenn der naechste Eintrag auch der naechste TAG ist. Sonst waere "am Tag darauf"
+        // in Wahrheit "beim naechsten Mal, das kann auch eine Woche spaeter sein".
+        if (tagAlsZahl(tage[j+1].day) - tagAlsZahl(tage[j].day) !== 1) continue;
+        folgen.push(tage[j+1].energy - tage[j].energy);
+      }
+      if (folgen.length >= 5){
+        var schnell = folgen.filter(function(d){ return d > 0; }).length;
+        var anteil = Math.round(schnell / folgen.length * 100);
+        teile.push({titel: tx('js_befund_titel_erholung'),
+          text: tx('js_befund_erholung_a') + folgen.length + tx('js_befund_erholung_b') + anteil +
+                tx('js_befund_erholung_c') +
+                (anteil >= 70 ? tx('js_befund_erholung_schnell')
+                              : (anteil <= 45 ? tx('js_befund_erholung_zaeh') : tx('js_befund_erholung_mittel')))});
+      }
+    }
+
     return teile;
+  }
+  // Steigung der Ausgleichsgeraden (kleinste Quadrate). Steht hier und nicht in einer der
+  // Befundstellen, weil zwei davon sie brauchen und eine zweite Fassung derselben Formel die
+  // Stelle waere, an der eine von beiden spaeter falsch wird.
+  function steigungVon(punkte){
+    var n = punkte.length;
+    if (n < 2) return 0;
+    var mx = 0, my = 0;
+    punkte.forEach(function(pk){ mx += pk.x; my += pk.y; });
+    mx /= n; my /= n;
+    var oben = 0, unten = 0;
+    punkte.forEach(function(pk){ oben += (pk.x-mx)*(pk.y-my); unten += (pk.x-mx)*(pk.x-mx); });
+    return unten === 0 ? 0 : oben / unten;
   }
 
   // Ein Tag mit einem Eintrag ist eine ganze Zahl und soll auch so dastehen: "4/5", nicht
@@ -246,6 +316,61 @@
     renderStateRows();
     renderStateTrend();
   }
+  // ---------- Das Zeitfenster der Kurve (Runde 97) ----------
+  //
+  // Drei Laengen, als Segmentwaehler wie ueberall sonst in der App. Die Wahl steht im Speicher:
+  // Wer den langen Blick gewaehlt hat, will ihn beim naechsten Oeffnen wiederfinden und nicht
+  // jedes Mal neu einstellen.
+  var FENSTER_SCHLUESSEL = 'lucenta_tf_fenster';
+  var FENSTER = [14, 30, 90];
+  function fensterLesen(){
+    var w = parseInt(schalterLesen(FENSTER_SCHLUESSEL, ''), 10);
+    return FENSTER.indexOf(w) >= 0 ? w : 30;
+  }
+  function fensterWahlHTML(vorhanden){
+    var wahl = fensterLesen();
+    return '<div class="segment tf-fenster" role="radiogroup" aria-label="'+tx('aria_tf_fenster')+'">'+
+      FENSTER.map(function(n){
+        // Eine Laenge, fuer die noch keine Daten da sind, waere ein Knopf, der nichts tut.
+        // Sie bleibt sichtbar, aber abgeschaltet — verschwinden wuerde sie beim naechsten
+        // Eintrag wieder auftauchen, und ein Waehler, dessen Faecher wandern, ist keiner.
+        var moeglich = vorhanden > n * 0.5 || n === 14;
+        return '<button type="button" class="segment-opt" role="radio" data-fenster="'+n+'" '+
+               'aria-checked="'+(n===wahl?'true':'false')+'"'+(moeglich?'':' disabled')+'>'+
+               '<span class="segment-preis">'+n+'</span>'+
+               '<span class="segment-spar">'+tx('js_tagen_kurz')+'</span></button>';
+      }).join('')+'</div>';
+  }
+  function fensterWahlVerdrahten(wurzel){
+    var g = wurzel ? wurzel.querySelector('.tf-fenster') : null;
+    if (!g) return;
+    g.addEventListener('click', function(e){
+      var b = e.target.closest ? e.target.closest('.segment-opt') : null;
+      if (!b || b.disabled) return;
+      schalterSetzen(FENSTER_SCHLUESSEL, b.getAttribute('data-fenster'), null);
+      tapFeedback();
+      renderStateTrend();
+    });
+  }
+  // Tage zu Wochen zusammenfassen. Der Zeitstempel der Woche ist der ihres LETZTEN Tages, damit
+  // das Ablesen im Diagramm ein Datum nennt, das es wirklich gab.
+  function zuWochen(tage){
+    var wochen = [], puffer = [];
+    for (var i = 0; i < tage.length; i++){
+      puffer.push(tage[i]);
+      if (puffer.length === 7 || i === tage.length - 1){
+        var n = puffer.length;
+        wochen.push({
+          day: puffer[n-1].day, ts: puffer[n-1].ts, anzahl: n,
+          energy: puffer.reduce(function(a,t){ return a+t.energy; },0)/n,
+          valence: puffer.reduce(function(a,t){ return a+t.valence; },0)/n
+        });
+        puffer = [];
+      }
+    }
+    return wochen;
+  }
+
   function renderStateTrend(){
     var alleEintraege = loadStateHistory();
     // Runde 84: Die freie Fassung zeigt die letzten vierzehn Tage und keine Befunde. Vierzehn
@@ -283,9 +408,18 @@
       return;
     }
     var lastE = tagWert(hist[hist.length-1].energy), lastV = tagWert(hist[hist.length-1].valence);
-    // Höchstens 30 Tage: Darüber hinaus wird der Abstand zwischen zwei Tagen so klein, dass die
-    // Linie zur Textur wird und die einzelne Angabe nicht mehr ablesbar ist.
-    var fenster = hist.slice(-30);
+    // Runde 97: Das Fenster war fest auf 30 Tage begrenzt, mit einer richtigen Begruendung —
+    // darueber hinaus wird der Abstand zwischen zwei Tagen so klein, dass die Linie zur Textur
+    // wird. Falsch war die Schlussfolgerung: Der lange Verlauf ist genau das, wofuer bezahlt
+    // wird, und ihn dann abzuschneiden nimmt dem Abo seinen Gegenstand.
+    //
+    // Statt der Grenze steht jetzt eine Wahl, und ueber 35 Tagen fasst das Diagramm zu WOCHEN
+    // zusammen. Damit bleibt der Punktabstand lesbar, egal wie lang der Zeitraum ist — das
+    // Problem war nie die Zahl der Tage, sondern die Zahl der Punkte.
+    var fensterTage = fensterLesen();
+    var fenster = hist.slice(-fensterTage);
+    var proWoche = fenster.length > 35;
+    var kurve = proWoche ? zuWochen(fenster) : fenster;
     var tage = fenster.length;
     // Legende bei zwei Reihen immer, damit die Zuordnung nie allein an der Farbe hängt — ein
     // farbiges Plättchen NEBEN dem Wort, nicht das Wort in der Farbe.
@@ -299,14 +433,18 @@
       '</div>';
     var trendRows =
       legende +
+      (plus ? fensterWahlHTML(hist.length) : '') +
       '<div class="verlauf-flaeche">'+
         '<div class="verlauf-skala"><span>5</span><span>1</span></div>'+
-        verlaufDiagrammSVG(fenster, 320, 150)+
+        verlaufDiagrammSVG(kurve, 320, 150)+
       '</div>'+
       '<div class="verlauf-achse"><span>'+(tage>1 ? (tx('js_vor_tagen')+(tage-1)+tx('js_tagen')) : '')+
-        '</span><span>'+tx('js_heute')+'</span></div>';
+        '</span><span>'+tx('js_heute')+'</span></div>'+
+      (proWoche ? '<p class="verlauf-hinweis">'+tx('js_verlauf_wochen')+'</p>' : '');
     var fmt = historyDateFmt();
-    var listRows = hist.slice().reverse().slice(0,14).map(function(e){
+    // Die Liste folgt dem Fenster. Vierzehn Zeilen unter einer Kurve ueber neunzig Tage waeren
+    // ein Beleg fuer etwas anderes als das, was darueber steht.
+    var listRows = fenster.slice().reverse().slice(0, Math.min(60, Math.max(14, fenster.length))).map(function(e){
       var dateStr;
       try{ dateStr = fmt.format(new Date(e.ts)); }catch(ex){ dateStr = e.day; }
       return '<div class="history-row"><div class="history-date">'+dateStr+
@@ -327,7 +465,7 @@
       if (stelle) stelle.insertAdjacentHTML('beforebegin', hinweis);
       else wrap.insertAdjacentHTML('beforeend', hinweis);
       schloesserVerdrahten(wrap);
-      verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), fenster, fmt);
+      verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), kurve, fmt);
       return;
     }
     var befunde = tagesformBefunde(eintraege);
@@ -347,7 +485,8 @@
       if (ziel) ziel.insertAdjacentHTML('beforebegin', block);
       else wrap.insertAdjacentHTML('beforeend', block);
     }
-    verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), fenster, fmt);
+    fensterWahlVerdrahten(wrap);
+    verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), kurve, fmt);
   }
 
   
