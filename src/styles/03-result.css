@@ -167,76 +167,73 @@
      Ein eigenes ::after statt eines zweiten Verlaufs im ::before, weil beide sich verschieden
      bewegen muessen: der Schein atmet, die Strahlen drehen.
 
-     Die Groesse ist hier NICHT nach dem Aussehen gewaehlt, sondern nach der Geometrie: Ein
-     gedrehtes Quadrat beansprucht seine DIAGONALE, also das 1,41-Fache seiner Seite. Bei 64 %
-     Breite im 350 px breiten Kasten sind das 224 px Seite und 317 px Diagonale — noch innerhalb.
-     Mit den 100 %, die beim Schein daneben richtig sind, waeren es 495 px gewesen und die Seite
-     waere seitlich uebergelaufen, genau wie beim ersten Entwurf des Scheins eine Runde zuvor. */
+     ---- Runde 98: der Aufbau ist ausgetauscht, und das ist der Kern dieser Runde. ----
+
+     Gemeldet: "die strahlen vom strahlenkranz sind zu deutlich als einzelne strahlen
+     erkennbar." Ich habe zuerst am Verlauf gedreht — weichere Kanten, dichtere Strahlen, Farbe
+     zwischen den Strahlen statt Leere — und das Winkelprofil dazu gemessen. Die Zahlen wurden
+     besser und das Bild nicht. Erst der Blick auf die vergroesserte Aufnahme hat gezeigt,
+     warum: Es waren gar keine STRAHLEN, die man sah, sondern waagerechte STREIFEN, uebereinander
+     gestapelt wie eine Jalousie.
+
+     Die Ursache ist die Stauchung, mit der der Kranz seit Runde 86 oval gemacht wurde. Ein
+     Kegelverlauf teilt den Kreis in gleiche Winkel; wird er dann auf 30 Prozent Hoehe gedrueckt,
+     draengt sich ein weiter Winkelbereich in ein schmales Band nahe der Waagerechten. Genau
+     dort stapeln sich die Strahlen zu Streifen. Je ovaler, desto schlimmer — und um genau
+     "ovaler" ist in Runde 93 und 97 zweimal gebeten worden. Die Stauchung konnte nie beides.
+
+     Deshalb jetzt umgekehrt: Die Box ist selbst breit und flach, und es wird NICHT mehr
+     gestaucht. Damit behalten die Strahlen ihre echten Winkel und faechern wie ein Faecher,
+     statt sich zu stapeln. Oval wird der Kranz durch die MASKE, die in einer breiten Box von
+     allein eine Ellipse ist (closest-side misst je Achse) — sie schneidet oben und unten frueh
+     ab und laesst waagerecht viel stehen.
+
+     Und gedreht wird nicht mehr das Element, sondern der Verlauf IN ihm: ueber eine
+     registrierte Winkel-Eigenschaft. Das Element zu drehen wuerde die Maske mitdrehen, und ein
+     rotierendes Oval sieht man sofort — genau der Grund, aus dem Runde 86 die Stauchung in die
+     Drehung gelegt hatte. Diese Loesung braucht den Umweg nicht mehr.
+
+     Nebenbei faellt damit die Rechnung weg, die hier drei Runden lang stand: Eine nicht
+     gedrehte Box beansprucht keine Diagonale, also begrenzt auch nichts mehr die Breite ausser
+     der Seite selbst. */
+  @property --kranz-winkel{ syntax:'<angle>'; inherits:false; initial-value:0deg; }
   #view-result .result-head::after{
     content:''; position:absolute; z-index:0; pointer-events:none;
-    left:50%; top:54%;
-    /* Runde 86: Die Auslaeufer standen kreisrund um die Ueberschrift und lasen sich dadurch wie
-       eine Sonne. Ein Schein hinter einer ZEILE ist aber breiter als hoch — er folgt dem, was er
-       hinterlegt. Die Stauchung steckt in der Drehung selbst (scaleY vor rotate), damit die
-       Ellipse waagerecht liegen BLEIBT, statt sich mitzudrehen: sonst waere es ein rotierendes
-       Oval, und das sieht man sofort. Die Breite bleibt bei 64 %, weil die DIAGONALE des
-       gedrehten Quadrats waagerecht voll zaehlt — mehr, und die Seite waere breiter als das
-       Fenster. */
-    width:min(250px, 64%); aspect-ratio:1;
-    /* Runde 97: breiter gezogen. Die Begrenzung, die hier drei Runden lang stand — die
-       Diagonale des gedrehten Quadrats zaehlt waagerecht voll — gilt fuer die LAYOUTBOX, aber
-       nicht fuer das, was zu sehen ist: Die Maske darunter loescht alles jenseits von 96 % des
-       halben Durchmessers, also auch die vier Ecken, an denen die Diagonale entsteht. Statt die
-       Box zu vergroessern (die den Ueberlauf erzeugt) wird deshalb nur waagerecht gestreckt und
-       gleichzeitig senkrecht staerker gestaucht. Der Ueberlauf ist danach nachgemessen. */
-    /* Am Bild zurueckgenommen (war 15 % auf 4,5 von 20 Grad): So dicht gesetzt lasen sie sich
-       als Strahlenkranz — eine Grafik, die man ansieht. Gewollt sind Auslaeufer, die man
-       bemerkt, ohne sie zu betrachten. Weniger Strahlen, blasser, mit mehr Luft dazwischen. */
-    /* Runde 97: weiche Strahlen. Bis hierher standen zwei harte Stopps beieinander
-       (Farbe bis 6 Grad, dann sofort nichts) — das ergibt eine Kante, und eine Kante liest sich
-       als Grafik. Jetzt hat jeder Strahl eine Mitte und laeuft nach beiden Seiten aus: Der
-       Verlauf blendet von nichts auf volle Farbe und wieder zurueck, ueber je fuenf Grad.
-       Dieselbe Zahl Strahlen, dieselbe Farbe, nur kein Rand mehr. */
-    background:repeating-conic-gradient(from 0deg,
-      transparent 0deg,
-      color-mix(in srgb, var(--dim-aktiv, var(--accent)) var(--kranz-anteil), transparent) 5deg,
-      transparent 10deg,
-      transparent 22deg);
-    /* Ohne diese Maske waere es ein Speichenrad mit harter Kante. Sie laesst die Strahlen zur
-       Mitte hin verschwinden und nach aussen ausfransen — erst dadurch werden es Auslaeufer.
-       Runde 86: Das Loch in der Mitte von 12 auf 24 Prozent. Durch die Stauchung liegen die
-       Strahlen waagerecht dichter beieinander, und der Punkt, in dem sie zusammenlaufen, stand
-       als heller Fleck hinter der Ueberschrift. */
-    /* Runde 97, gemeldet: "sie reichen zu sehr in den mittelpunkt hinein um den sie sich
-       drehen." Genau das war zu sehen: Bei 18 Prozent Loch liefen alle Strahlen so nah
-       zusammen, dass ihre Spitzen einen hellen Fleck hinter der Ueberschrift bildeten — und
-       weil der Kranz sich dreht, flackerte dieser Fleck. Das Loch geht auf 42 Prozent; damit
-       beginnt der Kranz erst dort, wo die Strahlen einzeln stehen. */
-    -webkit-mask-image:radial-gradient(closest-side, transparent 42%, #000 68%, transparent 96%);
-            mask-image:radial-gradient(closest-side, transparent 42%, #000 68%, transparent 96%);
-    /* Runde 94, gemeldet: "der strahlenkranz ist nicht mehr sichtbar." Nachgemessen, indem
-       dasselbe Bild einmal mit und einmal ohne den Kranz aufgenommen und Bildpunkt fuer
-       Bildpunkt verglichen wurde: groesster Unterschied 7 von 255 Stufen, und nur 0,7 Prozent
-       der Flaeche wichen ueberhaupt um mehr als 2 Stufen ab. Das ist keine leise Andeutung,
-       das ist nichts.
-       Die Ursache lag nicht an der Stauchung der Runde davor, sondern an der Rechnung
-       dahinter: 13 Prozent Farbe mal 0,34 Deckung ergeben 4,4 Prozent — bei einem Farbabstand
-       von 112 Stufen sind das eben jene 5 Stufen. Der Wert war seit Runde 86 zu klein und ist
-       nur nie nachgemessen worden. Jetzt 26 Prozent mal 0,62, also 16 Prozent. */
+    left:50%; top:54%; transform:translate(-50%,-50%);
+    /* Breit und flach, ohne Stauchung. Das Verhaeltnis 3,8 zu 1 entspricht dem, was die
+       Stauchung zuletzt erzeugt hat — nur eben als Form der Maske statt als Verzerrung der
+       Strahlen. */
+    width:min(340px, 94%); aspect-ratio:3.8;
+    /* Die Strahlen. Zwischen ihnen bleibt Farbe stehen (--kranz-grund) statt Leere: Der Verlauf
+       geht nicht auf Null, sondern auf einen Grundwert, und aus getrennten Strahlen wird ein
+       durchgehender Schein, durch den eine Welle laeuft. Die Periode ist 26 Grad, also
+       vierzehn Strahlen — in einer ungestauchten Box duerfen es wieder wenige und breite sein,
+       weil sie sich nirgends draengen. */
+    /* Der Rueckfallwert im var() ist nicht Zierde: OHNE @property ist die Eigenschaft
+       ungesetzt, var() liefert nichts, und dann faellt die GANZE Hintergrundangabe als
+       ungueltig aus — es gaebe gar keinen Kranz mehr. Mit dem Rueckfall steht er still, und
+       das ist der Ausfall, den diese Stelle haben darf. */
+    background:repeating-conic-gradient(from var(--kranz-winkel, 0deg),
+      color-mix(in srgb, var(--dim-aktiv, var(--accent)) var(--kranz-grund), transparent) 0deg,
+      color-mix(in srgb, var(--dim-aktiv, var(--accent)) var(--kranz-anteil), transparent) 13deg,
+      color-mix(in srgb, var(--dim-aktiv, var(--accent)) var(--kranz-grund), transparent) 26deg);
+    /* In der breiten Box ist closest-side je Achse verschieden — die Maske ist damit von allein
+       eine flache Ellipse. Das Loch in der Mitte bleibt: Ohne es liefen alle Strahlen im
+       Mittelpunkt zusammen und bildeten einen hellen Fleck hinter der Ueberschrift, der beim
+       Drehen flackert (Runde 97, gemeldet). */
+    -webkit-mask-image:radial-gradient(closest-side, transparent 34%, #000 62%, transparent 97%);
+            mask-image:radial-gradient(closest-side, transparent 34%, #000 62%, transparent 97%);
     opacity:var(--kranz-deckung);
     animation:strahlen-drehen 150s linear infinite;
   }
   /* Eine Umdrehung in zweieinhalb Minuten. Schnell genug, dass die Bewegung da ist, langsam
-     genug, dass man sie nicht ansieht, sondern nur bemerkt, dass etwas lebt. */
-  /* Runde 93, dritte Nachfrage zur selben Stelle: "noch ovaler gezogen von links nach rechts".
-     Breiter geht nicht — die waagerechte Ausdehnung ist die DIAGONALE des gedrehten Quadrats
-     und liegt mit 317 px in einem 350 px breiten Kasten schon fast an der Kante; genau daran
-     ist Runde 91 als seitlich schiebbare Seite aufgefallen. Was bleibt, ist die Hoehe: .58 auf
-     .40. Damit steht das Verhaeltnis bei 2,5 zu 1 statt 1,7 zu 1 — aus einem leicht gestauchten
-     Kreis wird ein Oval, das der Zeile folgt, hinter der es liegt. */
+     genug, dass man sie nicht ansieht, sondern nur bemerkt, dass etwas lebt.
+     Gedreht wird der Winkel des Verlaufs, nicht das Element. Ohne @property waere eine
+     Winkel-Eigenschaft nicht animierbar — dann stehen die Strahlen still und der Rest bleibt
+     wie er ist, was der schadloseste Ausfall ist, den diese Stelle haben kann. */
   @keyframes strahlen-drehen{
-    from{ transform:translate(-50%,-50%) scale(1.34, .30) rotate(0deg); }
-    to  { transform:translate(-50%,-50%) scale(1.34, .30) rotate(360deg); }
+    from{ --kranz-winkel:0deg; }
+    to  { --kranz-winkel:360deg; }
   }
   @keyframes schein-atmen{
     0%, 100%{ opacity:.55; transform:translate(-50%,-50%) scale(1); }
@@ -246,5 +243,7 @@
     #view-result .result-head::before{ animation:none; opacity:.6; }
     /* Die Strahlen bleiben stehen, verschwinden aber nicht: Sie sind Teil des Bildes, nur ihre
        Drehung ist Bewegung. */
-    #view-result .result-head::after{ animation:none; transform:translate(-50%,-50%) scale(1.34, .30); }
+    /* Runde 98: Die Stauchung ist weg, also bleibt hier nur, die Drehung anzuhalten. Der
+       Kranz selbst bleibt stehen — er ist Teil des Bildes, nur seine Drehung ist Bewegung. */
+    #view-result .result-head::after{ animation:none; }
   }

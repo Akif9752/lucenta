@@ -125,8 +125,14 @@
        Unterschied als auf dunklem. Gemessen im Bildvergleich (dasselbe Bild mit und ohne
        Kranz, Bildpunkt fuer Bildpunkt): Bei gleichen Werten kam der Hellmodus auf 29 von 255
        Stufen, der Dunkelmodus auf 41. Der Hellmodus bekommt deshalb mehr. */
+    /* Runde 98: Der Kranz hat jetzt zwei Farbwerte statt einem. --kranz-anteil ist die
+       Spitze eines Strahls, --kranz-grund das, was ZWISCHEN zwei Strahlen stehen bleibt.
+       Warum, steht bei der Hintergrundangabe in 03-result.css. Die Deckkraft ist dabei
+       halbiert (war .82): Weil zwischen den Strahlen nicht mehr nichts steht, traegt die
+       Flaeche jetzt rund dreimal so viel Farbe wie vorher. */
     --kranz-anteil:44%;
-    --kranz-deckung:.82;
+    --kranz-grund:29%;
+    --kranz-deckung:.38;
     --himmel-hoch:rgba(114,152,192,.40);
     --wolke:rgba(255,255,255,.22);
     --wolke-licht:rgba(255,246,226,.30);
@@ -212,7 +218,8 @@
          ueberschreibt nur, was er nennt. Dass die Wolken dort trotzdem nicht erscheinen, haengt
          sonst allein an einer Abfrage im Skript, und ein einzelnes Schloss ist keines. */
       --kranz-anteil:34%;
-      --kranz-deckung:.70;
+      --kranz-grund:22%;
+      --kranz-deckung:.33;
       --himmel-hoch:rgba(0,0,0,0);
       --wolke:rgba(0,0,0,0);
       --wolke-licht:rgba(0,0,0,0);
@@ -244,7 +251,8 @@
        allein an einer Abfrage im Skript. Genau davor warnt der Kommentar, den dieselbe
        Einfuegung mitgebracht hat. */
     --kranz-anteil:34%;
-    --kranz-deckung:.70;
+    --kranz-grund:22%;
+    --kranz-deckung:.33;
     --himmel-hoch:rgba(0,0,0,0);
     --wolke:rgba(0,0,0,0);
     --wolke-licht:rgba(0,0,0,0);
