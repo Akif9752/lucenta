@@ -319,6 +319,11 @@
       });
     } else { inAblage(); }
   }
+  if ($('btnImgModalSichern')) $('btnImgModalSichern').addEventListener('click', function(){
+    var bild = $('shareImagePreview');
+    bildSichern(bild ? bild.src : '', decodeEntities(tx('js_dateiname_ergebnis')) +
+      new Date().toISOString().slice(0,10) + '.png');
+  });
   $('btnImgModalShare').addEventListener('click', function(){
     if (!currentShareCanvas){ teilenAlsText(); return; }
     currentShareCanvas.toBlob(function(blob){
@@ -380,6 +385,15 @@
     // ist, und ein Schreibversuch in eine Ansicht hinein, die es nicht gibt, waere die falsche
     // Reihenfolge.
     nutzungTagVermerken();
+    // Runde 99: die native Bruecke verdrahten. Alles darin prueft selbst, ob es nativ laeuft.
+    erinnerungAnwenden();
+    if ($('erinnerungSchalter')) $('erinnerungSchalter').addEventListener('click', erinnerungUmschalten);
+    if ($('erinnerungZeit')) $('erinnerungZeit').addEventListener('change', function(){
+      erinnerungZeitGesetzt($('erinnerungZeit').value);
+    });
+    if ($('btnPlusWiederherstellen')) $('btnPlusWiederherstellen').addEventListener('click', kaeufeWiederherstellen);
+    if ($('btnAboVerwalten')) $('btnAboVerwalten').addEventListener('click', aboVerwalten);
+    plusStandAnwenden();
     renderPreviewCard(); ordneStartseite();
     renderLandingUnderstandTeaser();
     renderLandingStateTeaser();

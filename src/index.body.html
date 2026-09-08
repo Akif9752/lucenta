@@ -15,7 +15,7 @@
          Homescreen, und tauchte in der App nie wieder auf; es konnte gar nicht wiedererkannt
          werden. Jetzt steht das Fenster-Zeichen selbst hier, in jeder der neun Ansichten. Die
          Farben kommen aus den Token, das Zeichen dreht sich im Dunkelmodus also mit. -->
-    <button type="button" class="wordmark" id="btnHome"><span class="brandmark" aria-hidden="true"><svg viewBox="0 0 24 24" width="21" height="21"><rect x="0" y="0" width="24" height="24" rx="5.4" fill="var(--accent)"></rect><polygon points="12,5.26 19.09,10.41 16.38,18.74 7.62,18.74 4.91,10.41" fill="var(--paper)" stroke="var(--paper)" stroke-width="1.7" stroke-linejoin="round"></polygon></svg></span>Lucenta<span class="wordmark-plus" id="wortmarkePlus" hidden>+</span><span class="wordmark-beta" data-i18n="beta">Beta</span></button>
+    <button type="button" class="wordmark" id="btnHome"><span class="brandmark" aria-hidden="true"><svg viewBox="0 0 24 24" width="21" height="21"><rect x="0" y="0" width="24" height="24" rx="5.4" fill="var(--accent)"></rect><polygon points="12,5.26 19.09,10.41 16.38,18.74 7.62,18.74 4.91,10.41" fill="var(--paper)" stroke="var(--paper)" stroke-width="1.7" stroke-linejoin="round"></polygon></svg></span>Lucenta<span class="wordmark-plus" id="wortmarkePlus" hidden>+</span></button>
     <div class="header-right">
       <div class="tagline" id="viewLabel"></div>
       <button type="button" class="drawer-tab" id="btnDrawerToggle" aria-haspopup="dialog" aria-expanded="false" aria-controls="drawerPanel" aria-label="Weitere Funktionen: Profil, Verstehen, Archetypen, Vergleichen, Vergleichsarchiv, Einstellungen" data-i18n-aria="aria_weitere_funktionen_profil_ve">
@@ -468,6 +468,23 @@
         </div>
         <button type="button" class="schalter" id="bewegungSchalter" role="switch" aria-checked="true" aria-label="Bewegung" data-i18n-aria="aria_bewegung"><span class="schalter-knopf"></span></button>
       </div>
+      <!-- Runde 99: die taegliche Erinnerung an die Tagesform. Sie ist die erste von zwei
+           Funktionen, die es im Browser nicht gibt — und damit das, was Apples Richtlinie 4.2
+           von einer App verlangt, die sonst eine verpackte Webseite waere. Im Browser steht
+           der Schalter abgeschaltet da und sagt warum, statt so zu tun, als taete er etwas. -->
+      <div class="settings-zeile">
+        <div class="settings-zeile-text">
+          <strong data-i18n="erinnerung_titel">Tägliche Erinnerung</strong>
+          <span class="settings-hint" id="erinnerungHinweis" data-i18n="erinnerung_hinweis">Einmal am Tag eine Mitteilung, die an die Tagesform erinnert. Genau eine — kein Nachfassen.</span>
+        </div>
+        <button type="button" class="schalter" id="erinnerungSchalter" role="switch" aria-checked="false" aria-label="Tägliche Erinnerung" data-i18n-aria="aria_erinnerung"><span class="schalter-knopf"></span></button>
+      </div>
+      <div class="settings-zeile">
+        <div class="settings-zeile-text">
+          <label class="settings-hint" for="erinnerungZeit" data-i18n="erinnerung_uhrzeit">Uhrzeit</label>
+        </div>
+        <input type="time" id="erinnerungZeit" class="zeit-feld" value="20:00" disabled aria-label="Uhrzeit der Erinnerung" data-i18n-aria="aria_erinnerung_zeit">
+      </div>
     </div>
 
     <div class="settings-group">
@@ -488,6 +505,20 @@
         <div class="l" id="settingsTestStatus">Gerade kein unterbrochener Test.</div>
         <button type="button" class="btn btn-ghost btn-sm" id="btnDiscardProgress" style="display:none;" data-i18n="verwerfen">Verwerfen</button>
       </div>
+    </div>
+
+    <!-- Runde 99: Richtlinie 3.1.2 verlangt bei einem Abo einen Weg, gekaufte Käufe auf einem
+         neuen Gerät wiederherzustellen — ohne Konto und ohne Kaufbeleg. Und die Kündigung liegt
+         bei Apple, nicht bei uns: Eine App darf gar keinen eigenen Kündigungsweg anbieten,
+         deshalb führt der zweite Knopf in die Systemeinstellungen. -->
+    <div class="settings-group">
+      <h2 data-i18n="plus_marke_klar">Lucenta+</h2>
+      <p class="settings-group-desc" id="plusStand" data-i18n="plus_stand_frei">Du benutzt die freie Fassung: der Test, dein Porträt und der volle Bericht.</p>
+      <div class="daten-knoepfe">
+        <button type="button" class="btn btn-ghost btn-sm" id="btnPlusWiederherstellen" data-i18n="plus_wiederherstellen">Käufe wiederherstellen</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnAboVerwalten" data-i18n="plus_verwalten">Abo verwalten</button>
+      </div>
+      <p class="settings-hint" data-i18n-html="plus_kuendigen">Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
     </div>
 
     <div class="settings-group">
@@ -690,6 +721,10 @@
     <p class="img-modal-hint" data-i18n="zum_speichern_lange_auf_das">Zum Speichern lange auf das Bild tippen.</p>
     <div class="img-modal-actions">
       <button type="button" class="btn btn-primary btn-sm" id="btnImgModalShare" data-i18n="teilen">Teilen</button>
+      <!-- Die zweite Funktion, die es im Browser nicht gibt: das Bild in die Foto-Mediathek.
+           Sie erscheint nur, wenn eine native Bruecke da ist — ein Knopf, der nichts tun kann,
+           gehoert nicht in die Oberflaeche. -->
+      <button type="button" class="btn btn-ghost btn-sm" id="btnImgModalSichern" hidden data-i18n="in_fotos_sichern">In Fotos sichern</button>
     </div>
   </div>
 </div>

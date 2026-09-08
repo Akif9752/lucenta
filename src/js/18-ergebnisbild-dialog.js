@@ -21,6 +21,7 @@
   function openImgModal(){
     imgModalLastFocus = document.activeElement;
     renderShareImage();
+    bildSichernAnwenden();
     $('imgModal').classList.add('open');
     $('imgModal').setAttribute('aria-hidden','false');
     $('imgModalScrim').classList.add('show');
@@ -123,6 +124,15 @@
     b.classList.toggle('btn-ghost', istPlus());
   }
   function plusModalAnwenden(){ laufzeitAnwenden(); plusKnopfAnwenden(); }
+
+  // Runde 99: Der Knopf "In Fotos sichern" erscheint nur mit nativer Bruecke. Er wird bei
+  // jedem Oeffnen des Bildfensters neu gesetzt und nicht einmal beim Start: Ob eine Bruecke da
+  // ist, steht zwar fest — aber die Stelle, an der es geprueft wird, soll dieselbe sein, an der
+  // es gebraucht wird.
+  function bildSichernAnwenden(){
+    var b = $('btnImgModalSichern');
+    if (b) b.hidden = !bildSichernMoeglich();
+  }
 
   function openPlusModal(){
     plusModalLetzterFokus = document.activeElement;

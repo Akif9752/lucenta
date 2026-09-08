@@ -176,8 +176,16 @@
   // zufaellig unter ihr lag; das Ergebnis war, dass die Ergebnisseite hinter dem Fenster in
   // der alten Fassung stehen blieb. Welche Ansicht neu zu zeichnen ist, weiss die Ansicht
   // selbst am besten, also entscheidet das hier eine Stelle fuer alle.
+  // Die Zeile in den Einstellungen, die sagt, welche Fassung gerade laeuft. Sie steht dort und
+  // nicht nur im Profil, weil "Kaeufe wiederherstellen" daneben liegt: Wer den Knopf drueckt,
+  // will unmittelbar daneben sehen, was er bewirkt hat.
+  function plusStandAnwenden(){
+    var el = $('plusStand');
+    if (el) el.innerHTML = tx(istPlus() ? 'plus_stand_plus' : 'plus_stand_frei');
+  }
   function plusAnsichtenAuffrischen(){
     syncWortmarke();
+    plusStandAnwenden();
     refreshDrawerState();
     var aktiv = document.querySelector('.view.active');
     var id = aktiv ? aktiv.id : '';

@@ -11,7 +11,20 @@
     "diff-sprachen": "node tools/diff_sprachen.mjs",
     "pruef-bewegung": "node tools/pruef_bewegung.mjs",
     "fehlersuche": "node tools/fehlersuche.mjs",
-    "schriften": "node tools/schriften_holen.mjs"
+    "schriften": "node tools/schriften_holen.mjs",
+    "pruef-nativ": "node tools/pruef_nativ.mjs",
+    "ios:sync": "node build.js && npx cap sync ios",
+    "store-bilder": "node tools/store_bilder.mjs",
+    "pruef-store": "python3 tools/pruef_store_texte.py"
   },
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/ios": "^6.1.2",
+    "@capacitor/app": "^6.0.1",
+    "@capacitor/filesystem": "^6.0.1",
+    "@capacitor/local-notifications": "^6.1.0",
+    "@capacitor/share": "^6.0.2"
+  }
 }

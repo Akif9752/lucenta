@@ -83,7 +83,6 @@
   /* Feedback-Runde 42: alle einzeiligen Mono-Versal-Mikrolabels liegen jetzt einheitlich auf 11px.
      Zuvor waren es vier Größen für dieselbe Rolle (10,5 / 11 / 11,5 px), deren Unterschiede zu
      klein sind, um als Hierarchie gelesen zu werden — sie wirkten nur unruhig. Bewusst
-     ausgenommen bleiben .stat-label und .wordmark-beta bei 9,5px: beide sitzen in engen Rastern
      bzw. in einem Badge, wo die Größe eine Platzentscheidung ist, keine Hierarchieentscheidung. */
   .trait-section-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin-bottom:4px;}
   .trait-section p{font-size:14.5px;color:var(--ink);line-height:1.6;}
@@ -173,6 +172,18 @@
   .settings-zeile-text{flex:1; min-width:180px; display:flex; flex-direction:column; gap:3px;}
   .settings-zeile-text strong{font-family:var(--serif); font-weight:500; font-size:15.5px;}
   .settings-zeile .theme-toggle{flex-shrink:0;}
+  /* Runde 99: das Uhrzeitfeld der Erinnerung. iOS zeigt fuer type="time" seinen eigenen
+     Waehler; hier steht nur das Feld darum, damit es wie die uebrigen Bedienelemente aussieht
+     statt wie ein Fremdkoerper. -webkit-appearance:none nimmt ihm die graue Systemhuelle. */
+  .zeit-feld{
+    -webkit-appearance:none; appearance:none;
+    flex-shrink:0; min-height:44px; padding:8px 12px; box-sizing:border-box;
+    border:1px solid var(--line); border-radius:10px;
+    background:var(--surface-2); color:var(--ink);
+    font-family:var(--mono); font-size:15px; letter-spacing:.02em;
+  }
+  .zeit-feld:disabled{ opacity:.45; }
+  .zeit-feld:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
   /* Runde 96: Der Kasten mit den Nutzungszahlen. white-space:pre-line, weil der Inhalt aus
      Zeilen besteht, die genau so auch verschickt werden — wer sie hier anders umbrochen saehe
      als im Teilen-Text, muesste zweimal hinsehen, um dasselbe zu erkennen. */

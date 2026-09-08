@@ -30,8 +30,22 @@ nicht gibt. Drei, die zu Lucenta passen und die Ablehnung praktisch ausschließe
 | **Sperre per Face ID** | Ein Persönlichkeitsprofil auf einem geteilten Gerät. Es gibt bereits einen Gastdurchlauf — das ist die konsequente Fortsetzung. | mittel |
 | **Widget mit der Tagesform-Kurve** | Sichtbar nativ, aber ein eigenes Stück SwiftUI außerhalb der Weboberfläche. | groß |
 
-**Empfehlung:** Die ersten beiden vor der ersten Einreichung. Sie sind zusammen ein Tag
-Arbeit auf einem Mac und nehmen dem häufigsten Ablehnungsgrund die Grundlage.
+**Stand Runde 99: die ersten beiden sind gebaut.** Sie liegen in `src/js/19b-native.js` und
+sind über eine nachgestellte Capacitor-Umgebung geprüft (`npm run pruef-nativ`, 23 Prüfungen):
+
+- **Tägliche Erinnerung** — Einstellungen → Bedienung. Genau eine Mitteilung am Tag zur
+  gewählten Uhrzeit, kein Nachfassen; die Erlaubnis wird erst beim Einschalten erfragt, nicht
+  beim Start. Geprüft ist auch, dass ein Umstellen der Uhrzeit die alte Mitteilung **absagt**,
+  bevor es die neue setzt — sonst sammeln sie sich an und die App meldet sich nach einer Woche
+  Herumprobieren fünfmal am Abend.
+- **Ergebnisbild in die Foto-Mediathek** — im Bildfenster, sichtbar nur mit nativer Brücke.
+
+Im Browser stehen beide abgeschaltet da und sagen warum. Das ist Absicht: Ein Knopf, der nichts
+tun kann, gehört nicht in die Oberfläche, und ein Knopf, der Erfolg meldet ohne etwas zu tun,
+ist schlimmer als keiner (der Grund steht in `17-settings.js` beim blockierten Download).
+
+**Bleibt für den Mac:** die Plugins tatsächlich installieren und `npx cap sync ios`. Der Code
+dafür steht, die Abhängigkeiten sind in `package.json` eingetragen.
 
 Zweiter Punkt, der zu prüfen ist: **Richtlinie 5.1.1 und 1.4.1**. Lucenta misst
 Persönlichkeit, nicht Gesundheit. Die App darf nirgends klingen, als stelle sie eine
@@ -56,12 +70,22 @@ die Store-Beschreibung muss es genauso halten.
 - **Impressum und Datenschutzerklärung** in der App, unter Einstellungen → Rechtliches.
 - **Barrierefreiheit**: Trefferflächen ab 44 px, jede Schaltfläche mit Namen, reduzierte
   Bewegung durchgehend beachtet, 200-%-Zoom geprüft.
+- **Bildschirmfotos für den Store** in beiden von Apple verlangten Größen (1290 × 2796 und
+  1179 × 2556), fünf Ansichten je Größe und Sprache: `npm run store-bilder`. Sie entstehen aus
+  der Beispielnutzerin in der gekauften Fassung — nur dort sind die Ansichten gefüllt.
+- **Die Store-Texte** in allen acht Sprachen: `docs/store-eintrag.md`. Zeichenzahlen von
+  `npm run pruef-store` gezählt, nicht geschätzt.
+- **Der Weg für Käufe wiederherstellen und Abo verwalten** (Richtlinie 3.1.2) steht unter
+  Einstellungen → Lucenta+.
+- **Die BETA-Marke in der Kopfzeile ist raus** (Runde 99). Sie war das letzte Sichtbare, das die
+  App als unfertig auswies, und im Store-Bildschirmfoto stand sie neben dem Namen.
 
 ## 3. Vorbereitet — braucht einen Mac mit Xcode
 
 Nichts davon lässt sich ohne Apple-Hardware abschließen. Die Schritte in Reihenfolge:
 
-1. `npm i -D @capacitor/cli @capacitor/core @capacitor/ios`
+1. `npm install` — die Abhängigkeiten stehen seit Runde 99 in `package.json`:
+   `@capacitor/cli`, `core`, `ios`, dazu `app`, `filesystem`, `local-notifications`, `share`.
 2. **Kein `npx cap init`** — `capacitor.config.json` liegt bereits im Repo, mit Kennung
    `app.lucenta.ios`, `webDir: dist` und drei Einstellungen, die hier begründet sind:
    `limitsNavigationsToAppBoundDomains: true` (die App ruft nichts nach außen, also darf
@@ -73,7 +97,10 @@ Nichts davon lässt sich ohne Apple-Hardware abschließen. Die Schritte in Reihe
    die gerundete Fassung ist für andere Zwecke).
 5. In `Info.plist`: `UIRequiresFullScreen` nicht setzen, Ausrichtung auf Hochformat,
    `NSPhotoLibraryAddUsageDescription` sobald das Ergebnisbild gesichert werden kann.
-6. Die zwei Funktionen aus Abschnitt 1 ergänzen.
+6. ~~Die zwei Funktionen aus Abschnitt 1 ergänzen.~~ Erledigt in Runde 99 — hier bleibt nur,
+   `NSUserNotificationsUsageDescription` ist **nicht** nötig (lokale Mitteilungen brauchen
+   keinen Info.plist-Eintrag, nur die Laufzeit-Abfrage, die der Code stellt), und
+   `NSPhotoLibraryAddUsageDescription` **ist** nötig, sobald das Ergebnisbild gesichert wird.
 7. Auf einem echten iPhone durchlaufen — nicht nur im Simulator. Was der Simulator nicht
    zeigt: Haptik, echte Scrollträgheit, die Tastatur über dem Namensfeld, Face ID.
 
@@ -135,7 +162,14 @@ blockiert.
    (`btnPlusAktivieren` in `src/js/21-beta-rueckmeldung.js`). **Beide** müssen durch die echte
    StoreKit-Prüfung ersetzt werden; einer allein übersehen heißt, die App verschenkt das Abo.
    Ebenfalls dort: die gewählte Laufzeit (`lucenta_laufzeit`) ist heute nur eine Notiz und muss
-   zur Produktkennung des gekauften Abos werden. Alter Wortlaut dieses Punktes: Unter Profil steht seit Runde 84 ein Schalter
+   zur Produktkennung des gekauften Abos werden.
+
+   **Und der Name `StoreKit` in `19b-native.js` ist ein PLATZHALTER.** Für
+   LocalNotifications, Filesystem und App gibt es offizielle Capacitor-Module, die genau so
+   heißen; für Käufe gibt es keins von Apple oder Ionic. Wer das umsetzt, schreibt entweder
+   eine eigene kleine Brücke in Swift und meldet sie unter diesem Namen an, oder nimmt ein
+   Gemeinschaftsmodul und passt **diesen einen Aufruf** an. Der Name ist bewusst nicht
+   versteckt: Er steht im Code direkt darüber und hier. Alter Wortlaut dieses Punktes: Unter Profil steht seit Runde 84 ein Schalter
    zwischen freier und gekaufter Fassung (`plusSchalter` in `src/js/15-profile.js`), damit
    beide Zustände ohne Eingriff in den Speicher zu sehen sind. Er darf nicht mit in den Store;
    an seine Stelle gehört die echte Kaufprüfung. Dasselbe gilt für die Beispielnutzerin.
