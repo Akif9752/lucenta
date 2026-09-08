@@ -285,13 +285,11 @@
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-  ::-webkit-scrollbar{width:10px;}
-  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:100px;}
-
-  /* Das Druck-Stylesheet (@media print, Feedback-Runde 32) ist raus: Drucken über Strg/Cmd+P ist ein
-     Browser-/Desktop-Konzept, das im Bild einer reinen iPhone-App keine Rolle spielt — eine native
-     App würde, falls überhaupt, über eine eigene Teilen-/Druck-Funktion gehen, nicht über eine
-     CSS-Druckansicht. */
+  /* Runde 95: Hier stand die Gestaltung der Bildlaufleiste (::-webkit-scrollbar). Sie ist raus,
+     und zwar nicht als Geschmacksfrage: iOS Safari zeichnet überhaupt keine dauerhafte
+     Bildlaufleiste, die Regeln haben auf dem Zielgerät also nie etwas bewirkt. Zusammen mit dem
+     schon in Runde 32 entfernten Druck-Stylesheet ist das dieselbe Sorte Rest — Bedienelemente
+     eines Fensters, das diese App nicht hat. */
 
   /* Skip-Link (Feedback-Runde 32): Tastatur- und Screenreader-Nutzung mussten bislang immer erst
      durch die Top-Bar (Logo, Drawer-Button) tabben, bevor der eigentliche Inhalt erreichbar war.

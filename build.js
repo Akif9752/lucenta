@@ -143,6 +143,71 @@ function pruefeDunkelbloecke(css){
 }
 pruefeDunkelbloecke(css);
 
+// Runde 95: "jegliche desktop referenzen sollen raus weil die app ja ausschliesslich fuer
+// iphone ist." Entfernt waren sie damit — aber sie kommen zurueck, wenn niemand hinsieht: Ein
+// Hinweistext, der beilaeufig "oder rechtsklicken" ergaenzt, faellt beim Lesen nicht auf, und
+// bei sieben Sprachen faellt er siebenmal nicht auf.
+//
+// Diese Pruefung haelt eine kurze Liste von Woertern und Regeln, die es auf einem iPhone
+// schlicht nicht gibt. Sie ist bewusst KURZ: Jeder Eintrag muss auf dem Zielgeraet nachweislich
+// wirkungslos oder falsch sein. "Maus", "klicken" oder "Browser" stehen deshalb NICHT darin —
+// ein Browser ist auf dem iPhone durchaus vorhanden, und die Datenschutzerklaerung muss ihn
+// nennen duerfen.
+// Kommentare zaehlen nicht. Der erste Lauf dieser Pruefung hat den Kommentar getroffen, der
+// die Entfernung der Bildlaufleiste ERKLAERT — ein Text, der beschreibt, was nicht mehr da ist,
+// ist kein Rueckfall. Gemessen wird, was die App tut und anzeigt.
+//
+// Bewusst einfach gehalten: Blockkommentare ganz, Zeilenkommentare nur dort, wo sie eine Zeile
+// beginnen. Ein "//" mitten in einer Zeichenkette (etwa in einer Adresse) bleibt damit stehen —
+// das kann hoechstens einen Fund verschlucken, nie einen erfinden, und in dieser Richtung ist
+// der Fehler der harmlosere.
+function ohneKommentare(text){
+  return String(text)
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/^[ \t]*\/\/.*$/gm, ' ')
+    .replace(/<!--[\s\S]*?-->/g, ' ');
+}
+function pruefeIphoneOnly(rohtext, was){
+  const text = ohneKommentare(rohtext);
+  const VERBOTEN = [
+    // Bedienung, die es ohne Maus und Hardwaretastatur nicht gibt
+    ['Rechtsklick', 'Rechtsklick'], ['rechtsklicken', 'rechtsklicken'],
+    ['right-click', 'right-click'], ['clic derecho', 'clic derecho'],
+    ['clic droit', 'clic droit'], ['clic destro', 'clic destro'],
+    ['bot\u00e3o direito', 'botao direito'], ['\u53f3\u30af\u30ea\u30c3\u30af', 'Rechtsklick (ja)'],
+    // Geraetebezeichnungen, die eine zweite Zielplattform behaupten
+    ['Desktop', 'Desktop'], ['desktop', 'desktop'],
+    ['escritorio', 'escritorio'], ['ordinateur', 'ordinateur'],
+    ['\u30d1\u30bd\u30b3\u30f3', 'Rechner (ja)'],
+    // Fensterschmuck, den iOS Safari gar nicht zeichnet
+    ['::-webkit-scrollbar', '::-webkit-scrollbar'],
+    ['@media print', '@media print']
+  ];
+  const funde = [];
+  for (const [muster, name] of VERBOTEN){
+    const wort = muster.replace(/\\u([0-9a-f]{4})/gi, (m, h) => String.fromCharCode(parseInt(h, 16)));
+    let i = text.indexOf(wort);
+    if (i >= 0){
+      const zeile = text.slice(0, i).split('\n').length;
+      funde.push('  ' + name + ' (' + was + ', Zeile ' + zeile + ')');
+    }
+  }
+  return funde;
+}
+{
+  const funde = pruefeIphoneOnly(css, 'CSS')
+    .concat(pruefeIphoneOnly(js, 'JavaScript'))
+    .concat(pruefeIphoneOnly(read('index.body.html'), 'index.body.html'));
+  if (funde.length){
+    console.error('\nBAU ABGEBROCHEN — es steht wieder etwas drin, das es auf einem iPhone nicht gibt:\n' +
+                  funde.join('\n') +
+                  '\n\nLucenta ist ausschliesslich fuer das iPhone. Bedienung ueber Maus oder\n' +
+                  'Hardwaretastatur, Geraetenamen anderer Plattformen und Fensterschmuck gehoeren\n' +
+                  'nicht hinein.\n');
+    process.exit(1);
+  }
+}
+
 const html = read('index.head.html') + '<style>' + css + '</style>' +
              read('index.body.html') + '<script>' + js + '</script>' + read('index.tail.html');
 

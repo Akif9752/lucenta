@@ -212,11 +212,23 @@
     inp.addEventListener('keydown', function(e){ if (e.key==='Enter'){ renderCompat(); } });
   });
   $('restoreCodeInput').addEventListener('keydown', function(e){ if (e.key==='Enter'){ $('btnRestoreCode').click(); } });
-  document.addEventListener('keydown', function(e){
-    if (!$('view-quiz').classList.contains('active')) return;
-    if (e.key>='1' && e.key<='5'){ selectAnswer(parseInt(e.key,10)); }
-    else if (e.key==='Backspace' || e.key==='ArrowLeft'){ if (qi>0){ qi--; renderQuestion(); animateQuestionIn(); saveProgress(); } }
-  });
+  // Runde 95: Hier lag die Bedienung des Fragebogens ueber die Zifferntasten 1 bis 5 und
+  // Rueckschritt/Pfeil-links. Auf einem iPhone gibt es diese Tasten nicht — die Bildschirm-
+  // tastatur erscheint im Fragebogen ueberhaupt nicht, weil dort kein Textfeld steht. Die
+  // Funktion war damit fuer alle unerreichbar, fuer die diese App gebaut ist.
+  //
+  // Der sichtbare Hinweis darauf war schon in Runde 54 entfernt worden, mit genau dieser
+  // Begruendung; die Bedienung selbst ist damals stehen geblieben. Das ist die haeufigere
+  // Haelfte des Fehlers: Ein Hinweis verschwindet, die Sache dahinter bleibt und wird zu
+  // totem Code, den beim naechsten Lesen niemand mehr einordnen kann.
+  //
+  // BEWUSST GEBLIEBEN sind die Tastenbehandlungen an anderer Stelle, und zwar aus zwei
+  // Gruenden, die nichts mit Schreibtischrechnern zu tun haben:
+  //   - Eingabetaste in den Textfeldern: Die Bildschirmtastatur des iPhones HAT eine
+  //     Eingabetaste, und dort ist sie der erwartete Weg zum Absenden.
+  //   - Escape und Tabulator in den Fenstern: Das ist Bedienbarkeit ohne Blick, nicht
+  //     Schreibtisch. iOS kennt vollstaendige Tastaturbedienung und Schaltersteuerung, und
+  //     die Fokusfalle in einem Dialogfenster ist dort ausdruecklich vorgesehen.
   $('btnCopyCode').addEventListener('click', function(){
     var code = $('myCode').textContent;
     if (navigator.clipboard && navigator.clipboard.writeText){
