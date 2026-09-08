@@ -71,69 +71,144 @@
     return '<div class="understand-group-label">'+tx('js_verstehen_kombi_titel')+'</div>'+karten;
   }
 
-  // ---------- Was in den eigenen Daten steht (Runde 82) ----------
+  // ---------- Was in den eigenen Daten steht (Runde 82, neu gefasst in Runde 97) ----------
   //
-  // Der Teil, den keine andere Persoenlichkeits-App haben kann: Lucenta hat den Verlauf, die
-  // Tagesform und das Vergleichsarchiv bereits auf dem Geraet. Hier wird daraus gelesen statt
-  // erklaert — und zwar ausschliesslich das, was tatsaechlich vorliegt. Jeder Befund nennt die
-  // Zahl, auf der er beruht; keiner erscheint, solange die Grundlage fehlt.
+  // Rueckmeldung Runde 97: "zu generisch und nichtsaussagend". Sie war berechtigt, und der
+  // Grund liess sich benennen: Von fuenf Befunden lasen DREI dieselben fuenf Zahlen noch
+  // einmal vor — der deutlichste Wert, die Werte nahe der Mitte, der Abstand zwischen
+  // hoechstem und niedrigstem. Alles drei steht bereits auf der Ergebnisseite, nur in anderen
+  // Worten. Wer sie liest, erfaehrt nichts, was er nicht schon wusste, und "was in deinen
+  // eigenen Daten steht" verspricht genau das Gegenteil.
+  //
+  // Was diese Ansicht tatsaechlich kann und keine andere Persoenlichkeits-App: Sie hat vier
+  // verschiedene Quellen auf dem Geraet liegen — das Ergebnis, den Verlauf ueber Monate, die
+  // Tagesform mit Uhrzeit und die gespeicherten Vergleiche. Ein Befund ist genau dann etwas
+  // wert, wenn er ZWEI davon zusammenbringt. Danach sind die Karten jetzt gebaut.
+  //
+  // Ausdruecklich NICHT hierher gehoeren Wochentags- und Tageszeitmuster: Die stehen bereits
+  // in der Tagesform-Ansicht, und derselbe Satz an zwei Stellen ist keine zweite Erkenntnis.
+  function mittel(w){ return w.reduce(function(a,b){ return a+b; }, 0) / w.length; }
+  function medianVon(w){
+    var s = w.slice().sort(function(a,b){ return a-b; });
+    var m = Math.floor(s.length/2);
+    return s.length % 2 ? s[m] : (s[m-1] + s[m]) / 2;
+  }
+  function streuung(w){
+    var m = mittel(w);
+    return Math.sqrt(mittel(w.map(function(v){ return (v-m)*(v-m); })));
+  }
   function eigeneDatenBlock(sc){
     var teile = [];
+    var hist = [];   try{ hist = loadHistory(); }catch(e){}
+    var eintraege = []; try{ eintraege = loadStateHistory(); }catch(e){}
+    var tage = eintraege.length ? stateTage(eintraege) : [];
+    var archiv = []; try{ archiv = loadCompatArchive(); }catch(e){}
 
-    // 1) Wie deutlich ist das Ergebnis ueberhaupt? Ohne Bevoelkerungsnorm kann die App NICHT
-    //    sagen, wie du im Vergleich zu anderen liegst — nur, wie weit die Werte von der Mitte
-    //    der Skala weg sind. Genau so steht es da.
-    var weit = ORDER.map(function(f){ return {f:f, d:Math.abs(sc[f]-50)}; })
-                    .sort(function(a,b){ return b.d - a.d; });
-    teile.push({titel: tx('js_ed_titel_deutlichkeit'),
-      text: tx('js_ed_deutlich_a') + LABELS[weit[0].f] + tx('js_ed_deutlich_b') + sc[weit[0].f] +
-            tx('js_ed_deutlich_c') + Math.round(weit[0].d) + tx('js_ed_deutlich_d')});
-
-    // 2) Werte nahe der Mitte. Der haeufigste Lesefehler eines Big-Five-Ergebnisses: einen Wert
-    //    um 50 fuer "nichts davon" zu halten. Er ist eine eigene Aussage, keine fehlende.
-    var mitte = ORDER.filter(function(f){ return Math.abs(sc[f]-50) <= 10; });
-    if (mitte.length){
-      teile.push({titel: tx('js_ed_titel_mitte'),
-        text: tx('js_ed_mitte_a') + mitte.map(function(f){ return LABELS[f]; }).join(', ') +
-              tx('js_ed_mitte_b')});
-    }
-
-    // 3) Wie weit das Profil auseinanderliegt. Braucht nichts ausser dem einen Ergebnis und ist
-    //    deshalb die Karte, die auch beim allerersten Durchlauf schon etwas sagt — ohne sie
-    //    stuende hier bei manchen Menschen genau EINE Karte unter einer Ueberschrift im Plural.
+    // 1) Die Form des Profils. Eine Karte statt der bisherigen drei, und sie sagt nicht, WAS
+    //    dasteht, sondern was daraus fuer das Lesen des Restes folgt. Das ist der Unterschied
+    //    zwischen einer Wiederholung und einer Einordnung.
     var hoch = ORDER.reduce(function(a,f){ return sc[f] > sc[a] ? f : a; }, ORDER[0]);
     var tief = ORDER.reduce(function(a,f){ return sc[f] < sc[a] ? f : a; }, ORDER[0]);
     var spanne = sc[hoch] - sc[tief];
-    teile.push({titel: tx('js_ed_titel_spanne'),
-      text: tx('js_ed_spanne_a') + LABELS[hoch] + tx('js_ed_spanne_b') + LABELS[tief] +
-            tx('js_ed_spanne_c') + spanne + tx('js_ed_spanne_d') +
-            (spanne >= 40 ? tx('js_ed_spanne_weit') : (spanne <= 20 ? tx('js_ed_spanne_eng') : tx('js_ed_spanne_mittel')))});
+    var deutlich = ORDER.filter(function(f){ return Math.abs(sc[f]-50) > 10; }).length;
+    teile.push({titel: tx('js_ed_titel_form'),
+      text: tx('js_ed_form_a') + spanne + tx('js_ed_form_b') + LABELS[hoch] + tx('js_ed_form_c') +
+            LABELS[tief] + tx('js_ed_form_d') + deutlich + tx('js_ed_form_e') +
+            (spanne >= 40 ? tx('js_ed_form_weit') : (spanne <= 20 ? tx('js_ed_form_eng') : tx('js_ed_form_mittel')))});
 
-    // 4) Bewegung ueber die Durchlaeufe. Erst ab zwei, sonst gibt es nichts zu vergleichen.
-    var hist = [];
-    try{ hist = loadHistory(); }catch(e){}
-    if (hist.length >= 2){
-      var erst = hist[0].scores, letzt = hist[hist.length-1].scores;
-      var beweg = ORDER.map(function(f){ return {f:f, d: letzt[f]-erst[f]}; })
-                       .sort(function(a,b){ return Math.abs(b.d) - Math.abs(a.d); })[0];
-      var tageDazwischen = Math.max(1, Math.round((hist[hist.length-1].date - hist[0].date) / 86400000));
-      var satz = tx('js_ed_bewegung_a') + hist.length + tx('js_ed_bewegung_b') + tageDazwischen + tx('js_ed_bewegung_c');
-      satz += Math.abs(beweg.d) < 5
-        ? tx('js_ed_bewegung_ruhig')
-        : (tx('js_ed_bewegung_d') + LABELS[beweg.f] + tx('js_ed_bewegung_e') + erst[beweg.f] +
-           tx('js_ed_bewegung_f') + letzt[beweg.f] + tx('js_ed_bewegung_g'));
-      teile.push({titel: tx('js_ed_titel_bewegung'), text: satz});
+    // 2) Haengen Energie und Stimmung bei dir zusammen? Zwei Angaben, die dieselbe Person an
+    //    denselben Tagen gemacht hat — daraus laesst sich etwas sagen, was in keiner der
+    //    beiden allein steht. Verglichen wird an der eigenen Mitte und nicht an der
+    //    Skalenmitte: Wer nie unter 3 geht, haette sonst nur "hohe" Tage.
+    //
+    //    Zehn Tage sind die Untergrenze. Darunter entscheidet ein einzelner Tag ueber mehr als
+    //    zehn Prozentpunkte, und eine Zahl, die so wackelt, ist keine Aussage.
+    if (tage.length >= 10){
+      var me = medianVon(tage.map(function(t){ return t.energy; }));
+      var mv = medianVon(tage.map(function(t){ return t.valence; }));
+      var gleich = tage.filter(function(t){ return (t.energy >= me) === (t.valence >= mv); }).length;
+      var anteil = Math.round(gleich / tage.length * 100);
+      var se = streuung(tage.map(function(t){ return t.energy; }));
+      var sv = streuung(tage.map(function(t){ return t.valence; }));
+      var satz = tx('js_ed_kopplung_a') + anteil + tx('js_ed_kopplung_b') + tage.length + tx('js_ed_kopplung_c') +
+        (anteil >= 78 ? tx('js_ed_kopplung_eng') : (anteil <= 58 ? tx('js_ed_kopplung_lose') : tx('js_ed_kopplung_teils')));
+      // Nur benennen, wenn der Unterschied gross genug ist, um ihn zu behaupten. Ein Zehntel
+      // Skalenpunkt Abstand zwischen zwei Streuungen ist kein "schwankt staerker".
+      if (Math.abs(se - sv) >= 0.25){
+        satz += tx('js_ed_kopplung_d') + tx(se > sv ? 'js_ed_kopplung_energie' : 'js_ed_kopplung_stimmung') +
+                tx('js_ed_kopplung_e') + zahl1(Math.max(se,sv)) + tx('js_ed_kopplung_f') + zahl1(Math.min(se,sv)) +
+                tx('js_ed_kopplung_g');
+      }
+      teile.push({titel: tx('js_ed_titel_kopplung'), text: satz});
     }
 
-    // 5) Aus dem Vergleichsarchiv. Erst ab drei — dieselbe Untergrenze, die das Archiv selbst
-    //    fuer seine Auswertung setzt.
-    var archiv = [];
-    try{ archiv = loadCompatArchive(); }catch(e){}
+    // 3) An was fuer Tagen hast du eigentlich getestet? Der Befund, den ich in keiner anderen
+    //    App gesehen habe, und der einzige hier, der das Ergebnis selbst in Frage stellt: Wer
+    //    seine Durchlaeufe regelmaessig an guten Tagen macht, misst nicht sich, sondern seine
+    //    guten Tage.
+    //
+    //    Zugeordnet wird mit einem Tag Spielraum in beide Richtungen. Genau am Testtag einen
+    //    Eintrag zu haben ist zu selten, als dass daraus je etwas wuerde; zwei Tage waeren zu
+    //    weit, weil dazwischen ein Wochenende liegen kann.
+    if (hist.length >= 2 && tage.length >= 8){
+      var proTag = {};
+      tage.forEach(function(t){ proTag[t.day] = t; });
+      var nah = [];
+      hist.forEach(function(h){
+        var beste = null;
+        for (var d = -1; d <= 1; d++){
+          var k = tagSchluesselVersetzt(h.date, d);
+          if (proTag[k] && (!beste || Math.abs(d) < beste.abstand)) beste = {tag:proTag[k], abstand:Math.abs(d)};
+        }
+        if (beste) nah.push(beste.tag.energy);
+      });
+      if (nah.length >= 2){
+        var mNah = mittel(nah), mAlle = mittel(tage.map(function(t){ return t.energy; }));
+        var ab = mNah - mAlle;
+        teile.push({titel: tx('js_ed_titel_testtage'),
+          text: tx('js_ed_testtage_a') + nah.length + tx('js_ed_testtage_b') + zahl1(mNah) +
+                tx('js_ed_testtage_c') + zahl1(mAlle) + tx('js_ed_testtage_d') +
+                (Math.abs(ab) < 0.35 ? tx('js_ed_testtage_neutral')
+                                     : tx(ab > 0 ? 'js_ed_testtage_hoch' : 'js_ed_testtage_tief'))});
+      }
+    }
+
+    // 4) Was steht fest, was wandert. Erst ab DREI Durchlaeufen: Bei zweien ist jede Differenz
+    //    ein einzelner Vergleich, und "am stabilsten" waere ein Superlativ ueber eine einzige
+    //    Zahl. Genannt werden beide Enden, weil das eine ohne das andere nichts wiegt.
+    if (hist.length >= 3){
+      var weite = ORDER.map(function(f){
+        var w = hist.map(function(h){ return h.scores[f]; });
+        return {f:f, d: Math.max.apply(null, w) - Math.min.apply(null, w)};
+      }).sort(function(a,b){ return b.d - a.d; });
+      var beweglich = weite[0], fest = weite[weite.length-1];
+      var tageDazwischen = Math.max(1, Math.round((hist[hist.length-1].date - hist[0].date) / 86400000));
+      teile.push({titel: tx('js_ed_titel_fest'),
+        text: tx('js_ed_fest_a') + hist.length + tx('js_ed_fest_b') + tageDazwischen + tx('js_ed_fest_c') +
+              LABELS[fest.f] + tx('js_ed_fest_d') + fest.d + tx('js_ed_fest_e') +
+              LABELS[beweglich.f] + tx('js_ed_fest_f') + beweglich.d + tx('js_ed_fest_g') +
+              (beweglich.d <= 8 ? tx('js_ed_fest_ruhig') : tx('js_ed_fest_bewegt'))});
+    }
+
+    // 5) Wo du anderen am NAECHSTEN bist. Die Archiv-Ansicht nennt die Dimension, in der du am
+    //    weitesten entfernt liegst; hier steht das andere Ende. Zwei Ansichten, die dieselbe
+    //    Zahl aus derselben Richtung vorlesen, waeren eine zu viel.
     if (archiv.length >= 3){
-      var mittel = Math.round(archiv.reduce(function(a,e){ return a + (e.match||0); }, 0) / archiv.length);
-      teile.push({titel: tx('js_ed_titel_vergleiche'),
-        text: tx('js_ed_vergleiche_a') + archiv.length + tx('js_ed_vergleiche_b') + mittel +
-              tx('js_ed_vergleiche_c')});
+      var summe = {}, n = 0;
+      ORDER.forEach(function(f){ summe[f] = 0; });
+      archiv.forEach(function(e){
+        var andere = null;
+        try{ andere = fromCode(e.otherCode); }catch(x){}
+        if (!andere) return;
+        n++;
+        ORDER.forEach(function(f){ summe[f] += Math.abs(sc[f] - andere[f]); });
+      });
+      if (n >= 3){
+        var naechst = ORDER.slice().sort(function(a,b){ return summe[a] - summe[b]; })[0];
+        teile.push({titel: tx('js_ed_titel_naehe'),
+          text: tx('js_ed_naehe_a') + LABELS[naechst] + tx('js_ed_naehe_b') + Math.round(summe[naechst]/n) +
+                tx('js_ed_naehe_c') + n + tx('js_ed_naehe_d')});
+      }
     }
 
     return '<div class="understand-group-label">'+tx('js_verstehen_daten_titel')+'</div>'+
@@ -142,5 +217,14 @@
                '<h3>'+t.titel+'</h3><p>'+t.text+'</p></div>';
       }).join('');
   }
-
-  
+  // Der Tagesschluessel zu einem Zeitpunkt, um d Tage versetzt. Ueber setDate() und nicht ueber
+  // Millisekunden: An einer Zeitumstellung hat ein Tag nicht 24 Stunden, und ein Aufschlag von
+  // d*86400000 landet dann auf dem falschen Datum — genau an den zwei Tagen im Jahr, an denen
+  // niemand nachsieht.
+  function tagSchluesselVersetzt(ts, d){
+    try{
+      var x = new Date(ts);
+      x.setDate(x.getDate() + d);
+      return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
+    }catch(e){ return ''; }
+  }
