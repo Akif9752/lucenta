@@ -98,6 +98,11 @@ Darin steht vor allem die Falle, die sonst Arbeit kostet: `ios/App/public/` ist 
 `dist/`, das selbst eine Kopie von `src/` ist. Drei Staende derselben Oberflaeche, und nur
 `src/` ist echt.
 
+Was die Xcode-Sitzung tut, steht in `docs/ios-huelle-journal.md` — dort traegt sie jede Aenderung
+ein (Fehler, Fix, Begruendung), damit diese Sitzung es nachvollziehen kann. Besonders relevant:
+Stellen, an denen die Xcode-Seite ausnahmsweise `src/` angefasst hat, und offene Bitten an die
+App-Seite (z. B. `build.js` soll `dist/index.html` miterzeugen).
+
 ## Git
 
 Entwickelt wird auf `claude/lucenta-setup-browser-test-j6hn7f`. Kein Pull Request ohne

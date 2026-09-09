@@ -40,6 +40,12 @@ Die vollstaendigen Regeln des Projekts stehen in der `CLAUDE.md` im Wurzelverzei
 (zwei Ebenen ueber diesem Ordner) — Bauregeln, die acht Pruefbefehle, die Fallen. Lies sie,
 bevor du etwas ausserhalb von `ios/` anfasst.
 
+**Fuehre ein Journal.** Jede Aenderung dieser Sitzung gehoert nach `docs/ios-huelle-journal.md`
+(zwei Ebenen ueber diesem Ordner): was war der Fehler, was wurde geaendert, warum, und was die
+App-Seite davon wissen/tun muss. Neueste Eintraege oben. Das ist der einzige Ort, an dem die
+parallele App-Sitzung nachvollziehen kann, was auf der iOS-Seite passiert — vor allem, wenn hier
+ausnahmsweise `src/` angefasst wurde. Lies es zu Beginn, schreib es am Ende fort.
+
 ## Was als Naechstes ansteht
 
 1. **`NSPhotoLibraryAddUsageDescription` in `Info.plist`.** Ohne den Eintrag stuerzt die App

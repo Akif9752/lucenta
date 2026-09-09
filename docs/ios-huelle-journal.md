@@ -1,0 +1,58 @@
+# Journal der Xcode-/iOS-Sitzung
+
+Dieses Journal fuehrt die **Xcode-Sitzung** (die an `ios/` arbeitet). Es ist der Ort, an dem die
+parallele **App-Sitzung** (die an `src/` arbeitet) nachlesen kann, was auf der iOS-Seite passiert
+ist — besonders dort, wo die Xcode-Seite ausnahmsweise `src/` beruehrt hat oder wo ein Fix in der
+Huelle einen Fehler betrifft, der aus der App kommt.
+
+Regel fuer die Xcode-Sitzung: **Jede Aenderung hier eintragen** — was war der Fehler, was wurde
+geaendert, warum, und was die App-Seite davon wissen/tun muss. Neueste Eintraege oben.
+
+---
+
+## 2026-09-09 — iOS-Huelle startbar gemacht + Scroll-/Safe-Area-Darstellung korrigiert
+
+### 1. Huelle startbar gemacht (nur iOS-Seite, kein `src/`)
+- **Fehler:** `xcodebuild -list -workspace` meldete „There are no schemes in workspace App".
+- **Ursache:** CocoaPods war nicht installiert, daher lief nie `pod install`; ohne das fehlt
+  `ios/App/App.xcworkspace/contents.xcworkspacedata`, und der Workspace kennt kein Projekt/Schema.
+- **Behebung:** CocoaPods per Homebrew, `pod install` (mit `LANG=en_US.UTF-8`), iOS-Huelle
+  eingecheckt. Commit `55985c0`.
+
+### 2. `dist/index.html` fehlt — betrifft die App-Seite  ⚠️
+- **Fehler:** `npx cap sync ios` bricht ab mit „The web assets directory (./dist) must contain an
+  index.html file". Damit bleibt `ios/App/App/public/` leer und der Xcode-Build scheitert.
+- **Ursache:** `build.js` erzeugt nur `dist/lucenta.html`, Capacitor (`webDir: "dist"`) laedt aber
+  zwingend `index.html`.
+- **Behelf (Xcode-Seite):** nach jedem Build `cp dist/lucenta.html dist/index.html` vor dem Sync.
+- **Bitte an die App-Seite:** `build.js` soll `dist/index.html` dauerhaft miterzeugen (oder ein
+  Redirect anlegen). `npm run ios:sync` deckt das derzeit NICHT ab. Solange das fehlt, muss die
+  Xcode-Seite es bei jedem Sync von Hand nachziehen.
+
+### 3. Zwei WebKit-Scroll-/Safe-Area-Fehler — jetzt **nativ** in der Huelle geloest
+- **Symptome (nur auf dem Geraet/WebKit, nicht im Chromium der Pruefungen):**
+  (a) der per `position:sticky` gepinnte Kopf („Lucenta") wanderte beim Ueberscrollen mit;
+  (b) oben, neben der Dynamic Island, erschien im Dunkelmodus ein heller Streifen.
+- **Ursache:** der native `UIScrollView` der WKWebView. Sein Overscroll-Bounce verschiebt beim
+  Ueberdehnen den ganzen Inhalt inkl. Sticky-Kopf und legt die helle WebView-Grundflaeche frei;
+  zusaetzlich schob `ios.contentInset: "always"` (capacitor.config) den Inhalt unter die Safe Area.
+- **Behebung (Huelle):** neue Unterklasse `ios/App/App/MainViewController.swift`
+  (`bounces=false`, `contentInsetAdjustmentBehavior=.never`), im Main.storyboard als Klasse gesetzt,
+  in `project.pbxproj` aufgenommen. Commit `55985c0`.
+- **Bitte an die App-Seite:** Diese zwei Fehler sind **nativ** erledigt. Bitte **nicht** erneut in
+  CSS „reparieren"; `overscroll-behavior` unterbindet den nativen Bounce ohnehin nicht.
+
+### 4. Ausnahme: `src/` von der Xcode-Seite geaendert (auf ausdruecklichen Wunsch)  ⚠️
+- **Datei:** `src/styles/00-grundlagen.css`, Commit `4d11e0c` (bewusst getrennt vom iOS-Commit).
+- **Was:** `overscroll-behavior-y:none` auf `html`+`body`; `background:var(--paper)` zusaetzlich auf
+  `html` (fuellt den Safe-Area-Streifen, scrollt nicht weg).
+- **Warum getrennt:** damit die App-Seite es sauber uebernehmen oder zuruecknehmen kann.
+- **Hinweis:** `background:var(--paper)` auf `html` ist weiterhin sinnvoll (statischer
+  Safe-Area-Streifen). `overscroll-behavior-y:none` ist durch den nativen Fix (Punkt 3) inzwischen
+  **redundant**, aber harmlos — kann bleiben oder weg. **Konfliktrisiko:** dieselbe Datei/Region.
+
+### Git / Sonstiges
+- Zwei Commits auf `claude/lucenta-setup-browser-test-j6hn7f` gepusht (`4d11e0c`, `55985c0`).
+- `origin` auf SSH umgestellt (`git@github.com:Akif9752/lucenta.git`), SSH-Key beim Konto hinterlegt.
+- `package-lock.json` bewusst **nicht** committet (npm-Nebenprodukt, gehoert eher zur App-Seite).
+</content>
