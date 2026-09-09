@@ -1,14 +1,28 @@
 # Journal der Xcode-/iOS-Sitzung
 
-Dieses Journal fuehrt die **Xcode-Sitzung** (die an `ios/` arbeitet). Es ist der Ort, an dem die
-parallele **App-Sitzung** (die an `src/` arbeitet) nachlesen kann, was auf der iOS-Seite passiert
-ist — besonders dort, wo die Xcode-Seite ausnahmsweise `src/` beruehrt hat oder wo ein Fix in der
-Huelle einen Fehler betrifft, der aus der App kommt.
-
-Regel fuer die Xcode-Sitzung: **Jede Aenderung hier eintragen** — was war der Fehler, was wurde
-geaendert, warum, und was die App-Seite davon wissen/tun muss. Neueste Eintraege oben.
+Dieses Journal fuehrt die **fuehrende Sitzung** (Xcode/Mac). Seit Runde 102 ist es der **Bericht an
+den Inhaber**, nicht mehr die Uebergabe an eine zweite Sitzung: was war der Fehler, warum behebt die
+Aenderung ihn, und was daran unsicher blieb. Eine Pruefung, die auf diesem Rechner nicht lief,
+gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintraege oben.
 
 ---
+
+## 2026-09-09 (Runde 102) — neuer Auftrag; Info.plist Fotorechte
+
+**Auftrag geaendert:** Die Aufteilung iOS-/App-Seite ist weg; diese Sitzung fuehrt und darf alles
+aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden hier behoben. Die
+Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
+Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
+
+### NSPhotoLibraryAddUsageDescription in Info.plist
+- **Fehler:** Ohne den Eintrag stuerzt die App beim ersten „In Fotos sichern" ab, statt zu fragen
+  (iOS verlangt fuer Schreibzugriff auf die Fotomediathek eine Zweckbeschreibung).
+- **Aenderung:** `NSPhotoLibraryAddUsageDescription` in `ios/App/App/Info.plist` mit deutschem Text,
+  der zum Datenschutzversprechen passt („Es wird nichts gelesen und nichts gesendet.").
+- **Warum es behebt:** Der `PHPhotoLibrary`-Add-Zugriff findet die verlangte Beschreibung, der
+  System-Dialog erscheint statt eines Absturzes. Verifiziert: Build SUCCEEDED. Unsicher: der echte
+  Sichern-Ablauf haengt an der `Filesystem`/Foto-Bruecke in `src/js/19b-native.js` und wurde noch
+  nicht end-to-end im Simulator ausgeloest.
 
 ## 2026-09-09 — iOS-Huelle startbar gemacht + Scroll-/Safe-Area-Darstellung korrigiert
 
