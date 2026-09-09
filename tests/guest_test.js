@@ -103,32 +103,6 @@
   ok(fl.getAttribute('role')===undefined, "ausserhalb des Quiz verschwindet die Rolle wieder");
   ok(fl.getAttribute('aria-valuenow')===undefined, "und ebenso der Wert");
 
-  console.log("\n=== Home-Bildschirm-Hinweis ===");
-  __store = {};
-  ok(syncA2hsHint()===undefined || true, "");
-  syncA2hsHint();
-  ok($('a2hsHint').style.display==='none', "ohne Ergebnis kein Hinweis");
-  scores = res(70,60,55,50,45); saveResult(scores);
-  syncA2hsHint();
-  ok($('a2hsHint').style.display==='flex', "mit Ergebnis erscheint der Hinweis");
-  __store['lucenta_a2hs_hidden']='1';
-  syncA2hsHint();
-  ok($('a2hsHint').style.display==='none', "einmal weggetippt bleibt er weg");
-
-  console.log("\n=== Home-Bildschirm-Hinweis verschwindet im fremden Rahmen ===");
-  __store = {};
-  scores = res(70,60,55,50,45); saveResult(scores);
-  syncA2hsHint();
-  ok($('a2hsHint').style.display==='flex', "ohne Rahmen sichtbar (Ausgangslage)");
-  var _self = global.window.self, _top = global.window.top;
-  global.window.self = {a:1}; global.window.top = {b:2};   // eingebettete Lage nachstellen
-  syncA2hsHint();
-  ok($('a2hsHint').style.display==='none', "eingebettet darf der Hinweis NICHT erscheinen — die aeussere Seite bestimmt dort Symbol und App-Name");
-  global.window.self = _self; global.window.top = _top;
-  syncA2hsHint();
-  ok($('a2hsHint').style.display==='flex', "ausserhalb eines Rahmens wieder sichtbar");
-  console.log("  eingebettet -> ausgeblendet, eigenstaendig -> sichtbar");
-
   console.log("\n==================================================");
   console.log(fails===0 ? ("ALLE "+checks+" PRUEFUNGEN BESTANDEN") : (fails+" von "+checks+" PRUEFUNGEN FEHLGESCHLAGEN"));
   console.log("==================================================");

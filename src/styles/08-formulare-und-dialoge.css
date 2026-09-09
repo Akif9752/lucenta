@@ -132,23 +132,6 @@
   }
   .guest-note b{color:var(--accent-2-text);}
 
-  /* Home-Bildschirm-Hinweis (Backlog Runde 29, Punkt 6). Bewusst OHNE die Amber-Fläche von
-     .storage-warning: das ist kein Problem, das gelöst werden muss, sondern eine Möglichkeit —
-     ruhige Oberfläche, kleinere Schrift, und ein Wegtipp-Kreuz, das ihn endgültig verschwinden
-     lässt. Ein zweites Mal wird nicht gefragt. */
-  .a2hs-hint{
-    margin-top:20px;display:flex;align-items:flex-start;gap:10px;text-align:left;
-    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);
-    padding:11px 12px 11px 14px;font-size:12.5px;line-height:1.5;color:var(--muted);
-  }
-  .a2hs-hint > svg{flex-shrink:0;color:var(--accent-strong);margin-top:2px;}
-  .a2hs-hint > span{flex:1;min-width:0;}
-  .a2hs-dismiss{
-    flex-shrink:0;background:transparent;border:0;padding:2px;margin:-2px -2px 0 0;cursor:pointer;
-    color:var(--muted);border-radius:var(--radius-s);line-height:0;
-  }
-  @media (hover:hover){ .a2hs-dismiss:hover{color:var(--ink);} }
-  .a2hs-dismiss:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
   .guest-note svg{flex-shrink:0;color:var(--accent-2);margin-top:2px;}
 
   .radar-note{margin-top:10px;text-align:center;max-width:280px;margin-left:auto;margin-right:auto;line-height:1.5;}

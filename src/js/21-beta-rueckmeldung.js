@@ -67,11 +67,6 @@
     b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
   });
 
-  $('btnA2hsDismiss').addEventListener('click', function(){
-    try{ localStorage.setItem('lucenta_a2hs_hidden','1'); }catch(e){}
-    $('a2hsHint').style.display = 'none';
-  });
-
   $('btnRunSelf').addEventListener('click', function(){ beginRun(false); });
   $('btnRunGuest').addEventListener('click', function(){ beginRun(true); });
   $('btnRunCancel').addEventListener('click', function(){
@@ -217,10 +212,6 @@
     // eingetragen hat, sondern die App selbst mitgeschrieben hat — umso weniger duerfen sie ein
     // Zuruecksetzen ueberleben.
     nutzungLoeschen();
-    // Auch das gemerkte Wegtippen des Home-Bildschirm-Hinweises ist auf dem Gerät gespeicherte
-    // Nutzungsspur und gehört deshalb in ein vollständiges Zurücksetzen — sonst wäre "alles
-    // gelöscht" nicht ganz wahr.
-    try{ localStorage.removeItem('lucenta_a2hs_hidden'); }catch(e){}
     scores = null; answers = new Array(50).fill(0); qi = 0; guestRun = false;
     refreshDrawerState();
     renderSettings();

@@ -14,6 +14,38 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Browser-/Web-Referenz entfernt: „Zum Home-Bildschirm hinzufügen"-Hinweis (a2hs)
+- **Fehler:** In der nativen App erschien nach dem ersten abgeschlossenen Test der Banner „Lucenta
+  lässt sich zum Home-Bildschirm hinzufügen … über das Teilen-Symbol". Das ist ein reiner
+  PWA-/Browser-Hinweis und in einer App-Store-App sinnlos (sie IST bereits installiert). Er wurde
+  gezeigt, weil `isStandalone()` in der Capacitor-WKWebView false liefert.
+- **Aenderung:** Das a2hs-Feature komplett entfernt — Markup `#a2hsHint` (index.body.html), die
+  Logik `syncA2hsHint()/isStandalone()/isFramed()/a2hsDismissed()` samt Aufruf (02-state.js), der
+  Dismiss-Handler und der Reset-Eintrag `lucenta_a2hs_hidden` (21-beta-rueckmeldung.js), die CSS
+  `.a2hs-hint/.a2hs-dismiss` (08-formulare + Sammelselektoren in 10-druckzustaende), die zugehoerige
+  Testreihe (tests/guest_test.js) und die zwei i18n-Keys `lucenta_lässt_sich_zum_homeb` +
+  `aria_hinweis_ausblenden` in allen acht Sprachen.
+- **Warum es behebt:** Der Banner existiert nicht mehr; keine „Home-Bildschirm/Teilen-Symbol"-
+  Formulierung mehr in der Oberflaeche.
+- **Geprueft:** Alle acht Pruefungen bestanden (tests 11 Reihen, i18n, diff-sprachen, pruef-store,
+  pruef-bewegung, pruef-nativ 27/27, fehlersuche KEINE FUNDE); der gebaute Build rendert in
+  Playwright-WebKit vollstaendig ohne Konsolenfehler; `dist/index.html` == `dist/lucenta.html`.
+- **Unsicher / offen:** Der iOS-**Simulator** war an diesem Tag unzuverlässig — die App startete, zeigte
+  aber ueber mehrere Reinstalls/Reboots hinweg mal schwarz, mal nur den Paper-Hintergrund ohne
+  Inhalt. Da derselbe Build in Playwright-WebKit sauber rendert und die reale Geraete-App zuvor lief,
+  werte ich das als Simulator-/CoreSimulator-Zustand, nicht als Regression. **Bitte am echten iPhone
+  bestaetigen**, dass die Startseite normal erscheint und der Home-Bildschirm-Hinweis weg ist.
+
+### Noch offen (an den Inhaber): Web-Texte im Datenschutz
+Zwei sichtbare Web-Bezuege bleiben bewusst unangetastet, weil sie rechtlich/inhaltlich sind und
+davon abhaengen, ob es weiter eine Web-Version gibt:
+- `datenschutz` (i18n) enthaelt die Sektion „Aufruf der Seite" (Hoster, IP-Adresse, Browserkennung)
+  und die Loesch-Anweisung ueber „Einstellungen → Apps → **Safari** → Website-Daten". Fuer eine
+  App-Store-App ohne Server ist beides unzutreffend.
+- `erinnerung_nur_app`: „Mitteilungen gibt es nur in der App aus dem App Store, **nicht im Browser**"
+  — ein Browser-Fallback-Text, in der App nie sichtbar.
+Frage an den Inhaber, bevor ich Rechtstext aendere.
+
 ### Haptik auf dem iPhone (native Taptic Engine statt navigator.vibrate)
 - **Fehler:** Auf dem echten iPhone kam beim Antippen im Fragebogen keine haptische Rueckmeldung.
 - **Ursache:** `tapFeedback()` in `src/js/11-rendering.js` rief nur `navigator.vibrate(8)`. iOS-

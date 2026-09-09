@@ -23,12 +23,12 @@
      quittiert einen Tipp dadurch, dass die Fuellung wandert — das steht bei .segment-opt. */
   .btn, .drawer-tab, .avatar-edit,
   .run-choice-opt, .history-row, .role-card, .drawer-profile-row, .archive-del,
-  .avatar-color-swatch, .profile-remove-photo, .a2hs-dismiss, .drawer-close{
+  .avatar-color-swatch, .profile-remove-photo, .drawer-close{
     transition:transform .24s cubic-bezier(.2,.8,.2,1), border-color .15s ease,
                background .15s ease, color .15s ease, box-shadow .15s ease;
   }
   .btn:active, .drawer-tab:active, .avatar-edit:active, .archive-del:active,
-  .profile-remove-photo:active, .a2hs-dismiss:active, .drawer-close:active{
+  .profile-remove-photo:active, .drawer-close:active{
     transform:scale(.955); transition-duration:0s;
   }
   /* Breite Flächen: derselbe Prozentsatz wirkt dort deutlich stärker. */
@@ -52,7 +52,7 @@
 
   @media (prefers-reduced-motion: reduce){
     .btn:active, .drawer-tab:active, .avatar-edit:active, .archive-del:active,
-    .profile-remove-photo:active, .a2hs-dismiss:active, .drawer-close:active,
+    .profile-remove-photo:active, .drawer-close:active,
     .btn-hero:active, .run-choice-opt:active, .history-row:active, .role-card:active,
     .drawer-profile-row:active, .avatar-color-swatch:active, .scale-btn:active,
     .trait-card > summary:active{ transform:none; }
@@ -72,8 +72,8 @@
      wären damit knapp unter dem Ziel — aber sie stehen zu fünft in einer Reihe, und eine
      vergrößerte Trefferfläche würde dort die Nachbarn überlappen und Fehlgriffe erzeugen.
      42px bei fünf gleich großen, direkt benachbarten Zielen ist die bessere Abwägung. */
-  .drawer-tab, .wordmark, .btn-sm, .drawer-close, .a2hs-dismiss{ position:relative; }
-  .drawer-tab::after, .wordmark::after, .btn-sm::after, .drawer-close::after, .a2hs-dismiss::after{
+  .drawer-tab, .wordmark, .btn-sm, .drawer-close{ position:relative; }
+  .drawer-tab::after, .wordmark::after, .btn-sm::after, .drawer-close::after{
     content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     width:max(100%, 44px); height:max(100%, 44px);
     /* Nur Trefferfläche, keine Erscheinung. */

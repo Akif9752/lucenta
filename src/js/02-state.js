@@ -94,7 +94,7 @@
     // umgekehrt nach "Eigene Daten zurücksetzen" fälschlich weiter sichtbar). Jetzt Teil derselben
     // Landing-Aktualisierung wie syncHeroState()/renderLandingStateTeaser(), die aus genau diesem
     // Grund schon bei jedem showView('landing') statt nur einmalig laufen.
-    if (name==='landing'){ syncHeroState(); syncA2hsHint(); renderLandingStateTeaser(); renderLandingUnderstandTeaser(); renderPreviewCard(); ordneStartseite(); }
+    if (name==='landing'){ syncHeroState(); renderLandingStateTeaser(); renderLandingUnderstandTeaser(); renderPreviewCard(); ordneStartseite(); }
     if (!opts.fromHistory) pushViewState(name);
     // Fokus an den Anfang der neuen Ansicht setzen, damit Vorleseprogramme den Wechsel überhaupt
     // bemerken — ohne das bleibt der Fokus auf der angetippten Schaltfläche der alten Ansicht.
@@ -152,34 +152,6 @@
     if (knopf && knopf.hasAttribute('aria-expanded')) knopf.setAttribute('aria-expanded', 'false');
   }
 
-  // Läuft Lucenta bereits als eigenständige App vom Home-Bildschirm? Dann wäre der Hinweis unsinnig.
-  function isStandalone(){
-    try{
-      if (window.navigator.standalone === true) return true;
-      return !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
-    }catch(e){ return false; }
-  }
-  function a2hsDismissed(){
-    try{ return localStorage.getItem('lucenta_a2hs_hidden') === '1'; }catch(e){ return true; }
-  }
-  // Läuft Lucenta in einem fremden Rahmen (eingebettet in eine andere Seite)? Dann liest das
-  // Betriebssystem beim „Zum Home-Bildschirm hinzufügen" ausschließlich die Angaben der ÄUSSEREN
-  // Seite — Symbol, App-Name, Vollbild-Kennzeichnung und Leistenfarbe von Lucenta erreichen es
-  // nie. Nachgemessen an der ausgelieferten Seite: Titel und Symbol werden von der äußeren Seite
-  // übernommen, das Symbol allerdings als eingebettete Daten-Adresse, die iOS für App-Symbole
-  // nicht akzeptiert; apple-mobile-web-app-capable, der App-Name und theme-color fehlen dort ganz.
-  // Ergebnis wäre ein fremdes Platzhalter-Symbol und ein Start im Browser statt als App.
-  // Deshalb wird der Hinweis in dieser Lage nicht gezeigt: Er würde etwas versprechen, das die
-  // Umgebung nicht einlösen kann. Auf einer eigenen Domain (Phase 2) greift er automatisch wieder.
-  function isFramed(){
-    try{ return window.self !== window.top; }catch(e){ return true; }
-  }
-  function syncA2hsHint(){
-    var el = $('a2hsHint');
-    if (!el) return;
-    var show = !!loadResult() && !isStandalone() && !isFramed() && !a2hsDismissed();
-    el.style.display = show ? 'flex' : 'none';
-  }
   // Wird statt beginRun() aufgerufen, wenn bereits ein Ergebnis auf dem Gerät liegt: dann ist erst
   // die Frage zu klären, wessen Durchlauf das wird. Liegt noch kein Ergebnis vor, gibt es nichts zu
   // schützen und der Test startet ohne Zwischenfrage.
