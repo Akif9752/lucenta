@@ -500,7 +500,10 @@
   #focusline{
     margin-left:calc(-1 * var(--rand-links));
     margin-right:calc(-1 * var(--rand-rechts));
-    position:sticky; top:env(safe-area-inset-top, 0px); z-index:30;
+    /* z-index 31: eine Stufe ueber der Kopfleiste (30). Seit Runde 102 fuellt die Kopfleiste den
+       Safe-Area-Streifen bis unter die Dynamic Island (top:0 + padding-top), liegt also unter der
+       Fortschrittslinie — diese muss darueber liegen, sonst verschwaende sie hinter der Leiste. */
+    position:sticky; top:env(safe-area-inset-top, 0px); z-index:31;
     /* Kein width:100% — das bezieht sich auf die INHALTSBREITE des Elternelements und haette
        den Balken trotz der negativen Aussenabstaende bei 350px festgehalten (gemessen: links 0,
        rechts 40). Ein Block fuellt die verfuegbare Breite von selbst. */
@@ -530,7 +533,13 @@
      die Leiste randlos, ähnlich wie native iOS-Navigationsleisten. */
   header.top{
     display:flex; align-items:center; justify-content:space-between;
-    padding:16px 0 14px;
+    /* Runde 102, vom Geraet gemeldet: Ueber der Leiste war ein Streifen frei, in dem der
+       Seitenhintergrund (im Dunkelmodus der Sternenhimmel) durchschien — die Leiste hing nicht an
+       der Dynamic Island. Sie beginnt jetzt am oberen Rand (top:0) und schiebt ihren Inhalt ueber
+       padding-top unter die Island; die Balkenflaeche reicht damit nahtlos bis an die Island. Der
+       fruehere top-Versatz (--fokuslinie-hoehe fuer den Fortschrittsbalken) steckt jetzt in der
+       oberen Polsterung. */
+    padding:calc(16px + var(--fokuslinie-hoehe) + env(safe-area-inset-top, 0px)) 0 14px;
     /* Runde 73: Der Versatz stand auf 3px — der Hoehe des Fortschrittsbalkens, BEVOR er in
        Runde 69 auf 10px wuchs. Die Leiste ueberlappte ihn beim Scrollen seither um 7px. Die
        Marke haelt beide jetzt zusammen, damit sich das nicht wiederholt. */
@@ -540,7 +549,7 @@
     margin-right:calc(-1 * var(--rand-rechts));
     padding-left:var(--rand-links);
     padding-right:var(--rand-rechts);
-    position:sticky; top:calc(var(--fokuslinie-hoehe) + env(safe-area-inset-top, 0px)); z-index:30;
+    position:sticky; top:0; z-index:30;
     /* Der Hintergrund war exakt --paper und damit nicht von der Seite zu unterscheiden — vor
        einem bewegten Sternenhimmel sah die Leiste aus wie ein Stueck Himmel, in dem zufaellig
        keine Sterne fliegen. Ein flacher Verlauf von links nach rechts gibt ihr eine eigene
