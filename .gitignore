@@ -3,3 +3,18 @@ dist/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Runde 100, auf dem Mac aufgefallen: Xcode bot node_modules und den halben
+# ios-Ordner zum Einchecken an. In dieser Pruefumgebung entsteht node_modules nie,
+# deshalb hat die Luecke 99 Runden lang nicht gestoert.
+node_modules/
+
+# Die iOS-Huelle wird BEHALTEN — dort liegen Info.plist, Signierung, Asset-Katalog
+# und spaeter die StoreKit-Bruecke in Swift. Ausgenommen sind nur die Teile, die
+# beim naechsten Befehl ohnehin neu entstehen:
+ios/App/Pods/
+ios/App/public/
+ios/App/CLAUDE.md
+ios/App/App/capacitor.config.json
+**/xcuserdata/
+*.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
