@@ -364,7 +364,16 @@
      FREIBRIEF zum Ueberlaufen ("sichtbar war davon nichts, body hat overflow-x:hidden"). Eine
      Absicherung, hinter der man Fehler ablegt, ist keine mehr. Die Fehlersuche misst deshalb
      seit Runde 91 mit ABGENOMMENER Verdeckung — sie sieht jetzt, was diese Zeile verbirgt. */
-  html{ overflow-x:clip; overscroll-behavior-x:none; }
+  /* overscroll-behavior-y:none nimmt zusaetzlich das vertikale Gummiband (Runde 101): In der
+     iOS-Huelle liess sich sonst ueber den oberen Rand hinausziehen, und in dem Streifen — auch
+     neben der Dynamic Island — blitzte die WKWebView-Grundflaeche durch, weil der Body-Inhalt
+     beim Ueberdehnen wegwandert. Im Browser faellt das nicht auf, auf dem Geraet schon. */
+  /* background gehoert auf die Wurzel, nicht nur auf den body (Runde 101): In der iOS-Huelle
+     malt der body beim Scrollen den obersten Safe-Area-Streifen nicht, und darunter blitzte die
+     native WKWebView-Grundfarbe durch (capacitor.config ios.backgroundColor #F5F6EF, hell). In
+     Hell faellt das nicht auf, im Dunkelmodus erschien ein weisser Balken oben. Die Wurzel fuellt
+     den ganzen Viewport inkl. Safe Area und scrollt nicht weg; --paper loest pro Thema auf. */
+  html{ overflow-x:clip; overscroll-behavior-x:none; overscroll-behavior-y:none; background:var(--paper); }
   body{
     background:var(--paper);
     color:var(--ink);
@@ -372,6 +381,7 @@
     -webkit-font-smoothing:antialiased;
     overflow-x:clip;
     overscroll-behavior-x:none;
+    overscroll-behavior-y:none;
   }
   ::selection{background:var(--accent);color:var(--accent-ink);}
   a{color:var(--accent-strong);}
