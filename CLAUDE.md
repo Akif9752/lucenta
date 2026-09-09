@@ -86,22 +86,29 @@ braucht, was nur der Inhaber erledigen kann. Kurz die Fallen:
 - **„Data Not Collected"** ist die richtige und einzige Datenschutzangabe — solange nichts
   hinzukommt, das sendet.
 
-## Die iOS-Huelle
+## Zwei Sitzungen, eine fuehrend
 
-`ios/` entsteht erst durch `npx cap add ios` und gehoert der Xcode-Seite; von hier wird es
-nicht angefasst. Der Claude-Agent in Xcode sucht seine Anweisungen **neben der `.xcodeproj`**
-und findet diese Datei hier deshalb nicht. Was er stattdessen liest, steht in
-`tools/xcode-CLAUDE.md` und wird von `npm run ios:claude` nach `ios/App/CLAUDE.md` kopiert —
-automatisch bei jedem `npm run ios:sync`. Geaendert wird die Vorlage, nie die Kopie.
+Seit Runde 102 auf ausdruecklichen Wunsch des Inhabers: **Die Sitzung in Xcode fuehrt und darf
+alles aendern** — `ios/`, `src/`, `docs/`, `tools/`, `tests/`. Sie hat den Mac, das Geraet und
+WebKit; sie sieht damit Dinge, die im Chromium dieser Umgebung prinzipiell unsichtbar sind.
 
-Darin steht vor allem die Falle, die sonst Arbeit kostet: `ios/App/public/` ist eine Kopie von
+**Diese Sitzung im Browser arbeitet ab jetzt auf Anfrage.** Sie schaut sich Meilensteine an,
+prueft mit, beantwortet Fragen — und fasst von sich aus nichts an. Wer hier ungefragt in `src/`
+schreibt, waehrend drueben gearbeitet wird, erzeugt Konflikte in einer 1,5-MB-Datei, die
+niemand von Hand aufloest. Vor jeder Aenderung hier deshalb: `git pull`, und im Zweifel fragen.
+
+Was die Xcode-Sitzung getan hat, steht in `docs/ios-huelle-journal.md` — Fehler, Aenderung,
+Begruendung, neueste Eintraege oben. Das ist der erste Ort, den diese Sitzung liest, wenn sie
+nach einer Pause wieder dazukommt.
+
+Ihre Anweisungen stehen in `tools/xcode-CLAUDE.md` und werden von `npm run ios:claude` nach
+`ios/App/CLAUDE.md` kopiert (automatisch bei jedem `npm run ios:sync`) — der Agent in Xcode
+sucht sie **neben der `.xcodeproj`** und findet diese Datei hier nicht. Geaendert wird die
+Vorlage, nie die Kopie.
+
+Die Falle, die dort zuerst steht und sonst Arbeit kostet: `ios/App/public/` ist eine Kopie von
 `dist/`, das selbst eine Kopie von `src/` ist. Drei Staende derselben Oberflaeche, und nur
 `src/` ist echt.
-
-Was die Xcode-Sitzung tut, steht in `docs/ios-huelle-journal.md` — dort traegt sie jede Aenderung
-ein (Fehler, Fix, Begruendung), damit diese Sitzung es nachvollziehen kann. Besonders relevant:
-Stellen, an denen die Xcode-Seite ausnahmsweise `src/` angefasst hat, und offene Bitten an die
-App-Seite (z. B. `build.js` soll `dist/index.html` miterzeugen).
 
 ## Git
 
