@@ -214,6 +214,21 @@ const html = read('index.head.html') + '<style>' + css + '</style>' +
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 fs.writeFileSync(OUT, html);
 
+// Runde 101, gemeldet von der Xcode-Sitzung (docs/ios-huelle-journal.md, Punkt 2):
+// "npx cap sync ios" bricht ab mit "The web assets directory (./dist) must contain an
+// index.html file". Capacitor laedt aus webDir zwingend index.html; hier hiess die Datei nur
+// lucenta.html. Die Huelle musste das bei JEDEM Sync von Hand nachkopieren — ein Schritt, den
+// man einmal vergisst und dann eine leere App im Simulator hat, ohne dass irgendwo ein Fehler
+// steht. Deshalb schreibt der Bau beide Namen.
+//
+// Bewusst dieselbe Datei zweimal statt einer Weiterleitung: Eine Weiterleitung waere ein
+// zweiter Ladevorgang und muesste sich mit limitsNavigationsToAppBoundDomains vertragen. Der
+// doppelte Platz faellt nicht ins Gewicht — dist/ ist erzeugt und nicht versioniert.
+//
+// lucenta.html bleibt der Hauptname: Alle Werkzeuge und der lokale Vorschau-Server zeigen
+// darauf, und die Datei wird auch einzeln verschickt und als Artefakt veroeffentlicht.
+fs.writeFileSync(path.join(path.dirname(OUT), 'index.html'), html);
+
 const gz = require('zlib').gzipSync(Buffer.from(html), { level: 9 }).length;
 console.log('dist/lucenta.html  %s KB roh, %s KB gzip  (%d CSS-, %d JS-Teile, %d Sprachen)',
   (Buffer.byteLength(html) / 1024).toFixed(1), (gz / 1024).toFixed(1), man.css.length, man.js.length,
