@@ -86,6 +86,18 @@ braucht, was nur der Inhaber erledigen kann. Kurz die Fallen:
 - **„Data Not Collected"** ist die richtige und einzige Datenschutzangabe — solange nichts
   hinzukommt, das sendet.
 
+## Die iOS-Huelle
+
+`ios/` entsteht erst durch `npx cap add ios` und gehoert der Xcode-Seite; von hier wird es
+nicht angefasst. Der Claude-Agent in Xcode sucht seine Anweisungen **neben der `.xcodeproj`**
+und findet diese Datei hier deshalb nicht. Was er stattdessen liest, steht in
+`tools/xcode-CLAUDE.md` und wird von `npm run ios:claude` nach `ios/App/CLAUDE.md` kopiert —
+automatisch bei jedem `npm run ios:sync`. Geaendert wird die Vorlage, nie die Kopie.
+
+Darin steht vor allem die Falle, die sonst Arbeit kostet: `ios/App/public/` ist eine Kopie von
+`dist/`, das selbst eine Kopie von `src/` ist. Drei Staende derselben Oberflaeche, und nur
+`src/` ist echt.
+
 ## Git
 
 Entwickelt wird auf `claude/lucenta-setup-browser-test-j6hn7f`. Kein Pull Request ohne

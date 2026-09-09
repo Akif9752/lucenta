@@ -13,7 +13,8 @@
     "fehlersuche": "node tools/fehlersuche.mjs",
     "schriften": "node tools/schriften_holen.mjs",
     "pruef-nativ": "node tools/pruef_nativ.mjs",
-    "ios:sync": "node build.js && npx cap sync ios",
+    "ios:claude": "node -e \"const f=require('fs');f.mkdirSync('ios/App',{recursive:true});f.copyFileSync('tools/xcode-CLAUDE.md','ios/App/CLAUDE.md');console.log('ios/App/CLAUDE.md geschrieben')\"",
+    "ios:sync": "node build.js && npx cap sync ios && npm run ios:claude",
     "store-bilder": "node tools/store_bilder.mjs",
     "pruef-store": "python3 tools/pruef_store_texte.py"
   },
