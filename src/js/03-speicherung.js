@@ -379,22 +379,40 @@
     }catch(e){ return false; }
   }
 
+  // Runde 100, im iOS-Simulator gefunden. Der alte Weg — einen zusätzlichen theme-color-Eintrag
+  // ohne Medienbedingung hinten an den Kopf hängen — kann nicht funktionieren, und zwar in
+  // keinem Browser. Die Regel lautet: Es gilt der ERSTE Eintrag in Dokumentreihenfolge, dessen
+  // media-Bedingung zutrifft. Von den beiden Einträgen im Kopf trifft immer genau einer zu, und
+  // beide stehen vor dem angehängten. Der Übersteuerungs-Eintrag kam also nie zum Zug.
+  //
+  // Sichtbar wird das nur, wenn App-Wahl und Systemvorgabe auseinanderlaufen: Wer die App auf
+  // Hell stellt, während das iPhone auf Dunkel steht, bekam eine schwarze Systemleiste über
+  // einer hellen App — und umgekehrt. Im Prüfbrowser gibt es keine Systemleiste, deshalb ist
+  // das 25 Runden lang niemandem aufgefallen, mir zuerst nicht.
+  //
+  // Jetzt werden die vorhandenen Einträge selbst umgeschrieben statt einen weiteren daneben zu
+  // stellen. Damit spielt die Reihenfolge keine Rolle mehr. Die Ausgangswerte werden beim ersten
+  // Aufruf gesichert, damit „System" sie unverfälscht zurückbekommt.
+  var themeColorOriginal = null;
+  function themeColorEintraege(){
+    try{ return [].slice.call(document.querySelectorAll('meta[name="theme-color"]')); }
+    catch(e){ return []; }
+  }
   function syncThemeColor(mode){
     try{
-      var head = document.head || document.getElementsByTagName('head')[0];
-      if (!head) return;
-      var el = document.getElementById('themeColorNow');
+      var metas = themeColorEintraege();
+      if (!metas.length) return;
+      if (themeColorOriginal === null){
+        themeColorOriginal = metas.map(function(m){ return m.getAttribute('content'); });
+      }
       if (mode!=='dark' && mode!=='light'){
-        if (el && el.parentNode) el.parentNode.removeChild(el);
+        metas.forEach(function(m, i){
+          if (themeColorOriginal[i] != null) m.setAttribute('content', themeColorOriginal[i]);
+        });
         return;
       }
-      if (!el){
-        el = document.createElement('meta');
-        el.id = 'themeColorNow';
-        el.setAttribute('name','theme-color');
-        head.appendChild(el);
-      }
-      el.setAttribute('content', mode==='dark' ? '#0F1613' : '#F5F6EF');
+      var farbe = mode==='dark' ? '#0F1613' : '#F5F6EF';
+      metas.forEach(function(m){ m.setAttribute('content', farbe); });
     }catch(e){}
   }
   var themeShiftTimer = null;

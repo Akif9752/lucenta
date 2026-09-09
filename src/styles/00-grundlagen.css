@@ -408,7 +408,30 @@
   h1, h2, h3, p, li, summary, label, .btn, td, th{
     overflow-wrap:break-word;
   }
-  h1, h2, h3, p, li{ hyphens:auto; }
+  /* Runde 100, im iOS-Simulator aufgefallen — und zwar nur dort. hyphens:auto war oben
+     ausdrücklich als Notnagel für den 200-%-Fall gedacht: bei 195px Layoutbreite sollen die
+     dann unvermeidlichen Brüche an Silbengrenzen liegen. Bei normaler Breite sollte die Regel
+     gar nicht zum Zug kommen.
+
+     Auf WebKit kommt sie sehr wohl zum Zug. In einer einzigen Berichtskarte standen „The-men",
+     „Ge-spräch", „dei-ne" und „tat-sächlich", in „Verstehen" fünf Trennungen in einem Absatz.
+     Gesehen habe ich das nie, weil das Chromium in meiner Prüfumgebung keine deutschen
+     Trennmuster mitbringt und hyphens:auto dort stillschweigend nichts tut. Nicht WebKit war
+     der Ausreißer, sondern meine Messumgebung — jede Beurteilung von Zeilenumbrüchen aus 99
+     Runden erging über eine Einstellung, die im Bild gar nicht wirkte.
+
+     Die Grenzen holen die ursprüngliche Absicht zurück: erst ab acht Zeichen trennen, und nie
+     mit weniger als vier Zeichen davor. Das entfernt „The-men" (zu kurz), „Ge-spräch" und
+     „au-ßerhalb" (zu wenig davor) und behält „Offen-heit" und „außer-halb", also genau die
+     Brüche, für die die Regel gedacht war. Die -webkit-Eigenschaften stehen daneben, weil
+     hyphenate-limit-chars erst ab Safari 17 gilt; limit-lines verhindert Trennleitern. */
+  h1, h2, h3, p, li{
+    hyphens:auto;
+    hyphenate-limit-chars:8 4 3;
+    -webkit-hyphenate-limit-before:4;
+    -webkit-hyphenate-limit-after:3;
+    -webkit-hyphenate-limit-lines:2;
+  }
   p{margin:0;line-height:1.6;}
   .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
 

@@ -171,6 +171,38 @@ ok(!!schrieb && /\.png$/.test(schrieb.arg.path), 'mit Dateiendung: '+schrieb?.ar
 ok(!!schrieb && schrieb.arg.laenge > 5000, 'und mit echten Bilddaten ('+schrieb?.arg?.laenge+' Zeichen)');
 ok(!!schrieb && !/^data:/.test(String(schrieb.arg.laenge)), 'der Datenkopf ist abgeschnitten');
 
+// ---------------------------------------------------------------------------------------
+// Runde 100: Die Systemleistenfarbe. Gefunden im iOS-Simulator, wo App-Wahl und Systemvorgabe
+// auseinanderliefen — schwarze Leiste ueber heller App. Ursache war die Reihenfolge: Es gilt
+// der ERSTE passende theme-color-Eintrag, der frueher angehaengte Uebersteuerungs-Eintrag kam
+// nie zum Zug. Hier steht der Nachweis, dass jetzt ALLE Eintraege dieselbe Farbe tragen —
+// deshalb ist die Reihenfolge gleichgueltig geworden.
+async function themeFarben(){
+  return await seite.evaluate(() =>
+    [].slice.call(document.querySelectorAll('meta[name="theme-color"]'))
+      .map(m => (m.getAttribute('content') || '').toUpperCase()));
+}
+const farbenVorher = await themeFarben();
+ok(farbenVorher.length >= 2, 'es gibt mehrere theme-color-Eintraege ('+farbenVorher.length+')');
+
+await seite.evaluate(() => document.getElementById('themeLight')?.click());
+await seite.waitForTimeout(200);
+const hell = await themeFarben();
+ok(hell.every(f => f === '#F5F6EF'),
+   'bei Wahl "hell" tragen alle Eintraege die helle Farbe: ' + hell.join(' '));
+
+await seite.evaluate(() => document.getElementById('themeDark')?.click());
+await seite.waitForTimeout(200);
+const dunkel = await themeFarben();
+ok(dunkel.every(f => f === '#0F1613'),
+   'bei Wahl "dunkel" tragen alle Eintraege die dunkle Farbe: ' + dunkel.join(' '));
+
+await seite.evaluate(() => document.getElementById('themeSystem')?.click());
+await seite.waitForTimeout(200);
+const zurueck = await themeFarben();
+ok(zurueck.join(' ') === farbenVorher.join(' '),
+   'bei "System" stehen die Ausgangswerte wieder da: ' + zurueck.join(' '));
+
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 
 await browser.close();
