@@ -36,15 +36,25 @@ Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit
   werte ich das als Simulator-/CoreSimulator-Zustand, nicht als Regression. **Bitte am echten iPhone
   bestaetigen**, dass die Startseite normal erscheint und der Home-Bildschirm-Hinweis weg ist.
 
-### Noch offen (an den Inhaber): Web-Texte im Datenschutz
-Zwei sichtbare Web-Bezuege bleiben bewusst unangetastet, weil sie rechtlich/inhaltlich sind und
-davon abhaengen, ob es weiter eine Web-Version gibt:
-- `datenschutz` (i18n) enthaelt die Sektion „Aufruf der Seite" (Hoster, IP-Adresse, Browserkennung)
-  und die Loesch-Anweisung ueber „Einstellungen → Apps → **Safari** → Website-Daten". Fuer eine
-  App-Store-App ohne Server ist beides unzutreffend.
-- `erinnerung_nur_app`: „Mitteilungen gibt es nur in der App aus dem App Store, **nicht im Browser**"
-  — ein Browser-Fallback-Text, in der App nie sichtbar.
-Frage an den Inhaber, bevor ich Rechtstext aendere.
+### Web-Texte im Datenschutz an die App angepasst (Inhaber gab „nur iOS-App" frei)
+- **Fehler:** `datenschutz` und `erinnerung_nur_app` beschrieben eine Website: Sektion „Aufruf der
+  Seite" (Hoster `{{hoster}}`, IP-Adresse, Browserkennung, Art. 6 DSGVO), Loeschen ueber
+  „Einstellungen → Apps → Safari → Website-Daten", und „Mitteilungen … nicht im Browser". Fuer eine
+  App-Store-App ohne Server ist das unzutreffend.
+- **Entscheidung:** Der Inhaber bestaetigte: keine Web-Version mehr, Wortlaut vorab freigegeben.
+- **Aenderung:** (1) Sektion „Aufruf der Seite" komplett entfernt (kein Server, kein Seitenabruf,
+  keine Hoster-Protokolle). (2) Loeschanweisung → „… oder indem du Lucenta vom Gerät löschst".
+  (3) `erinnerung_nur_app` in allen acht Sprachen ohne Browser-Bezug neu („Tägliche Erinnerungen
+  sind auf diesem Gerät nicht verfügbar." + Uebersetzungen). (4) `hoster` aus den Impressum-
+  Pflichtfeldern und aus `IMPRESSUM` in `src/js/17-settings.js` entfernt — ohne Server gibt es
+  keinen Hoster, sonst haette die Einstellungen-Ansicht das Impressum faelschlich als „unvollstaendig"
+  gemeldet. `datenschutz` ist real nur in de/en/tr uebersetzt; es/fr/it/ja/pt tragen denselben
+  englischen Text — die englische Aenderung deckt sie mit ab.
+- **Warum es behebt:** Die Angaben stimmen jetzt fuer die App (keine Server-Protokolle; Loeschung
+  ueber App-Entfernung bzw. den In-App-Reset). Keine „Safari/{{hoster}}"-Reste (geprueft: 0).
+- **Geprueft:** alle acht Pruefungen bestanden (audit_i18n, diff-sprachen, fehlersuche KEINE FUNDE,
+  pruef-nativ 27/27 u.a.). **Unsicher:** die juristische Verantwortung fuer den Wortlaut liegt beim
+  Inhaber (vorab freigegeben); die Uebersetzung der zwei geaenderten Saetze stammt von mir.
 
 ### Haptik auf dem iPhone (native Taptic Engine statt navigator.vibrate)
 - **Fehler:** Auf dem echten iPhone kam beim Antippen im Fragebogen keine haptische Rueckmeldung.

@@ -164,13 +164,12 @@
     land:    'Deutschland',
     email:   '',   // erreichbare E-Mail-Adresse
     ust:     '',   // Umsatzsteuer-Identifikationsnummer, falls vorhanden — sonst leer lassen
-    hoster:  '',   // Name und Sitz des Hosters
     stand:   '2026-09'
   };
 
   function impressumLuecken(){
     var fehlt = [];
-    ['name','strasse','ort','email','hoster'].forEach(function(k){
+    ['name','strasse','ort','email'].forEach(function(k){
       if (!IMPRESSUM[k]) fehlt.push(k);
     });
     return fehlt;
