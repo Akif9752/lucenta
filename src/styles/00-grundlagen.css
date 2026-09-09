@@ -143,7 +143,31 @@
            Deckung .90, 50/24 →  63 Stufen auf 49 %   (zu praesent)
        Zum Vergleich: Runde 97, die als "zu deutlich als einzelne Strahlen" gemeldet wurde,
        lag bei 46 Stufen auf 7 % — aehnliche Spitze, aber auf einem Siebtel der Flaeche, und
-       genau das machte sie zu Speichen statt zu einem Schein. */
+       genau das machte sie zu Speichen statt zu einem Schein.
+
+       Runde 100, nach dem ersten Blick auf ein echtes Geraet: "strahlenkranz kannst du machen"
+       — im DUNKELmodus zu leise. Der Messlauf ist diesmal ein Werkzeug (tools/mess_kranz.mjs)
+       statt eines Wegwerfskripts, weil die Zahl sonst beim naechsten Mal wieder Behauptung
+       waere. Sein Bildausschnitt ist ein anderer als der von Runde 98, deshalb sind seine
+       Flaechenzahlen mit der Tabelle darueber NICHT vergleichbar — nur hell gegen dunkel im
+       selben Lauf:
+           hell, wie oben eingestellt          47 Stufen auf 10 %
+           dunkel .65, 37/20 (bisher)          45 Stufen auf  9 %
+           dunkel .75, 42/23                   59 Stufen auf  9 %
+           dunkel .80, 44/24                   66 Stufen auf 10 %
+           dunkel .82, 45/24                   69 Stufen auf 10 %   <- genommen
+           dunkel .85, 46/25                   73 Stufen auf 10 %
+           dunkel .95, 50/27                   90 Stufen auf 10 %
+
+       Der Befund dabei ist unbequem: Die bisherige Dunkeleinstellung lag mit 45 Stufen
+       praktisch gleichauf mit dem Hellmodus (47). Nach der Zahl war nichts zu beanstanden,
+       gesehen wurde trotzdem zu wenig. Der Bildpunktunterschied ist also auch hier nicht die
+       Groesse, die das Auge liest: Auf hellem Grund VERDUNKELT der Kranz, auf dunklem Grund
+       hellt er auf, und ein Aufhellen von Fast-Schwarz traegt bei gleicher Stufenzahl weniger.
+       Die Messung sagt deshalb nicht, OB etwas zu leise ist — das sagt das Auge —, sondern nur,
+       WIE WEIT ein Schritt geht. Genommen ist das rund Anderthalbfache des Hellmodus bei
+       unveraenderter Flaeche: kraeftigere Spitze, gleiche Ausdehnung, also weiter ein Schein
+       und keine Speichen. Das Verhaeltnis Grund/Anteil bleibt bei 0,53 wie im Hellmodus. */
     --kranz-anteil:48%;
     --kranz-grund:26%;
     --kranz-deckung:.75;
@@ -231,9 +255,9 @@
          die nur im Hellmodus erklaert sind, gelten im Dunkelmodus WEITER — der Dunkelblock
          ueberschreibt nur, was er nennt. Dass die Wolken dort trotzdem nicht erscheinen, haengt
          sonst allein an einer Abfrage im Skript, und ein einzelnes Schloss ist keines. */
-      --kranz-anteil:37%;
-      --kranz-grund:20%;
-      --kranz-deckung:.65;
+      --kranz-anteil:45%;
+      --kranz-grund:24%;
+      --kranz-deckung:.82;
       --himmel-hoch:rgba(0,0,0,0);
       --wolke:rgba(0,0,0,0);
       --wolke-licht:rgba(0,0,0,0);
@@ -264,9 +288,9 @@
        Himmelsfarben des HELLMODUS vererbt, und dass trotzdem keine Wolken erschienen, hing
        allein an einer Abfrage im Skript. Genau davor warnt der Kommentar, den dieselbe
        Einfuegung mitgebracht hat. */
-    --kranz-anteil:37%;
-    --kranz-grund:20%;
-    --kranz-deckung:.65;
+    --kranz-anteil:45%;
+    --kranz-grund:24%;
+    --kranz-deckung:.82;
     --himmel-hoch:rgba(0,0,0,0);
     --wolke:rgba(0,0,0,0);
     --wolke-licht:rgba(0,0,0,0);
