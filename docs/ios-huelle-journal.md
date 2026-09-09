@@ -14,6 +14,24 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Haptik auf dem iPhone (native Taptic Engine statt navigator.vibrate)
+- **Fehler:** Auf dem echten iPhone kam beim Antippen im Fragebogen keine haptische Rueckmeldung.
+- **Ursache:** `tapFeedback()` in `src/js/11-rendering.js` rief nur `navigator.vibrate(8)`. iOS-
+  WKWebView/Safari kennt `navigator.vibrate` nicht — der Aufruf laeuft ins Leere. (Der Kommentar an
+  der Stelle sagte genau das voraus: wirkungslos „bis die App als Capacitor-Huelle laeuft".)
+- **Aenderung:** `@capacitor/haptics` installiert (Pod `CapacitorHaptics`, jetzt 5 iOS-Plugins).
+  `tapFeedback()` ruft in der nativen Huelle `window.Capacitor.Plugins.Haptics.impact({style:'LIGHT'})`
+  ueber die vorhandenen Helfer `nativVorhanden()`/`nativModul()` (geteilte IIFE, hoisted).
+  `navigator.vibrate(8)` bleibt Fallback fuer Browser/Android-Web.
+- **Warum es behebt:** Der native Taptic-Aufruf wirkt in der WKWebView, wo `navigator.vibrate`
+  gar nicht existiert; der Impuls kommt jetzt aus der Taptic Engine.
+- **Geprueft:** Achtfach-Pruefung komplett bestanden (fehlersuche KEINE FUNDE, pruef-nativ 27/27);
+  Simulator-Build mit neuem Pod SUCCEEDED. **Unsicher:** Ob es sich richtig anfuehlt, laesst sich
+  nur am Geraet fuehlen (Simulator/Playwright spueren nichts) — bitte auf dem iPhone gegenpruefen.
+- **Randnotiz:** `npm i` hat Playwright mitaktualisiert; die Browser mussten per
+  `npx playwright install chromium webkit` neu geladen werden, sonst brach `diff-sprachen` ab
+  („Executable doesn't exist"). Fuer die naechste Sitzung im Blick behalten.
+
 ### Kopfleiste an die Dynamic Island angesetzt (durchsichtiger Streifen weg)
 - **Fehler:** Ueber dem „Lucenta"-Balken war ein Streifen frei, in dem der Seitenhintergrund
   durchschien (im Dunkelmodus der Sternenhimmel); die Leiste hing nicht an der Dynamic Island.

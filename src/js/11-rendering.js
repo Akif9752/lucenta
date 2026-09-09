@@ -70,14 +70,22 @@
   }
 
   // Haptik: Auf Android beantwortet das Gerät den Tipp sofort mit einem kurzen Impuls. iOS Safari
-  // kennt navigator.vibrate nicht — dort bleibt es wirkungslos, bis die App als Capacitor-Hülle
-  // läuft; der Aufrufpunkt ist damit aber schon an der richtigen Stelle (README: "Der lohnendste
-  // native Zugewinn ist Haptik im Fragebogen").
+  // kennt navigator.vibrate nicht — dort bleibt es wirkungslos. In der Capacitor-Hülle (iOS wie
+  // Android) läuft es deshalb über das native Haptics-Plugin (Taptic Engine); nur so kommt auf dem
+  // iPhone überhaupt eine Rückmeldung an. Der navigator.vibrate-Weg bleibt als Fallback für den
+  // Browser und Android-Web (README: "Der lohnendste native Zugewinn ist Haptik im Fragebogen").
   //
-  // 8 ms sind ein Tick, kein Brummen. Bei reduzierter Bewegung bleibt es aus: Wer visuelle
-  // Reize zurückdreht, will in aller Regel auch keine körperlichen.
+  // Ein Tick, kein Brummen: nativ der leichteste Impuls (LIGHT), im Web 8 ms. Bei reduzierter
+  // Bewegung bleibt es aus: Wer visuelle Reize zurückdreht, will in aller Regel auch keine
+  // körperlichen.
   function tapFeedback(){
     if (haptikAbgeschaltet() || prefersReducedMotion()) return;
+    try{
+      if (nativVorhanden()){
+        var h = nativModul('Haptics');
+        if (h && h.impact){ h.impact({ style: 'LIGHT' }); return; }
+      }
+    }catch(e){}
     try{ if (navigator.vibrate) navigator.vibrate(8); }catch(e){}
   }
 
