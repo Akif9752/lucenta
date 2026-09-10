@@ -3,10 +3,17 @@ require_relative '../../node_modules/@capacitor/ios/scripts/pods_helpers'
 platform :ios, '13.0'
 use_frameworks!
 
-# workaround to avoid Xcode caching of Pods that requires
-# Product -> Clean Build Folder after new Cordova plugins installed
-# Requires CocoaPods 1.6 or newer
-install! 'cocoapods', :disable_input_output_paths => true
+# Runde 102: Warnungen der Dritt-Pods (Capacitor Filesystem, CapacitorCordova/WKProcessPool)
+# unterdruecken — Fremdcode in node_modules, den wir nicht patchen. Haelt den Xcode-Issue-Navigator
+# sauber, ohne unsere eigenen Warnungen zu verstecken.
+inhibit_all_warnings!
+
+# Runde 102: war ":disable_input_output_paths => true" (Capacitor-Vorlage, als Workaround gegen
+# Pods-Caching nach dem Nachziehen neuer Cordova-Plugins). Ohne Output-Pfade meldet Xcode aber
+# "[CP] Embed Pods Frameworks laeuft bei jedem Build". Mit false schreibt CocoaPods die Output-Pfade
+# und die Warnung entfaellt. Falls nach dem Hinzufuegen eines Cordova-Plugins mal alte Staende
+# haengen: einmal Product -> Clean Build Folder.
+install! 'cocoapods', :disable_input_output_paths => false
 
 def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
@@ -25,4 +32,20 @@ end
 
 post_install do |installer|
   assertDeploymentTarget(installer)
+  # Runde 102: Warnungen der Dritt-Pods hart abschalten (Clang + Swift), damit auch die
+  # WKProcessPool-Deprecation aus CapacitorCordova nicht mehr im Issue-Navigator steht. Betrifft
+  # ausschliesslich die Pod-Targets in node_modules, nicht unser App-Target.
+  installer.pods_project.targets.each do |t|
+    t.build_configurations.each do |c|
+      c.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
+      c.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
+      c.build_settings['GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS'] = 'NO'
+      # Der letzte Rest ist ein Swift-Pod (Capacitor), der den deprecated ObjC-Header importiert;
+      # SWIFT_SUPPRESS_WARNINGS deckt Clang-Importer-Diagnosen nicht ab. -Xcc reicht die
+      # Deprecation-Unterdrueckung an den Clang-Importer durch.
+      osf = c.build_settings['OTHER_SWIFT_FLAGS'] || '$(inherited)'
+      osf = osf.join(' ') if osf.is_a?(Array)
+      c.build_settings['OTHER_SWIFT_FLAGS'] = osf + ' -Xcc -Wno-deprecated-declarations'
+    end
+  end
 end

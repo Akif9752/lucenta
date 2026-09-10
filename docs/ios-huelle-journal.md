@@ -14,6 +14,28 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Xcode-Warnungen bereinigt (Dritt-Pods + App-Target)
+- **Fehler:** Xcode zeigte Warnungen: Capacitor Filesystem (ungenutzte Variablen), „[CP] Embed Pods
+  Frameworks laeuft bei jedem Build", und `WKProcessPool` deprecated (CapacitorCordova-Header, iOS 15+).
+- **Aenderung (`ios/App/Podfile` + `project.pbxproj`, alles iOS-Huelle, kein `src/`):**
+  - `inhibit_all_warnings!` und `:disable_input_output_paths => false` (Letzteres schreibt die
+    Output-Pfade zurueck -> „laeuft bei jedem Build" entfaellt).
+  - `post_install` setzt auf **jedem Pod-Target** `GCC_WARN_INHIBIT_ALL_WARNINGS=YES`,
+    `SWIFT_SUPPRESS_WARNINGS=YES`, `GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS=NO` und haengt
+    `-Xcc -Wno-deprecated-declarations` an `OTHER_SWIFT_FLAGS` (fuer die Swift-Pods, die den
+    deprecated ObjC-Header importieren — `SWIFT_SUPPRESS_WARNINGS` deckt Clang-Importer-Diagnosen
+    nicht ab).
+  - Das **App-Target** (Debug+Release) bekam `-Xcc -Wno-deprecated-declarations` in
+    `OTHER_SWIFT_FLAGS`. Das unterdrueckt **nur** Deprecations aus importierten C/ObjC-Headern, nicht
+    unsere eigenen Swift-Warnungen.
+- **Warum so:** Die Warnungen stammen ausnahmslos aus `node_modules` (Fremdcode, den man nicht
+  patcht — beim naechsten `npm install` weg). Unterdruecken ist der dauerhafte Weg.
+- **Ergebnis:** Sauberer Build ohne echte Warnungen. Uebrig bleibt nur die belanglose Build-Tool-Info
+  „appintentsmetadataprocessor: No AppIntents.framework dependency found" — kein echter Warnhinweis
+  im Issue-Navigator, nicht abstellbar (wir nutzen AppIntents nicht).
+- **Nebeneffekt:** Mit `disable_input_output_paths=false` kann es nach dem Hinzufuegen eines neuen
+  Cordova-Plugins noetig sein, einmal Product -> Clean Build Folder zu machen.
+
 ### Startluecke schwarz -> Papierfarbe (WKWebView-Hintergrund)
 - **Fehler (vom Geraet gemeldet):** Beim Start ein paar Sekunden schwarz, dann erscheint die App.
 - **Ursache:** Nicht die LaunchScreen (die zeigt das weisse Capacitor-Standard-Splashbild), sondern
