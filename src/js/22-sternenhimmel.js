@@ -814,9 +814,22 @@
     else if (mm.addListener) mm.addListener(modusGewechselt);
   }catch(e){}
 
-  farbenLesen();
-  aufbauen();
-  pruefen();
-  // Der Ansichtswechsel loest kein Ereignis aus; ein Blick pro Sekunde genuegt und kostet nichts.
-  setInterval(pruefen, 1000);
+  // Runde 102: Der Sternenhimmel baut beim Start mehrere Offscreen-Canvases (Wolken, Strahlen) auf.
+  // Das lief bisher noch beim Parsen und konkurrierte mit dem ersten Zeichnen der Startseite. Der
+  // Aufbau wartet jetzt auf das erste Bild — die Oberflaeche erscheint dadurch frueher, der
+  // Hintergrund folgt ein, zwei Bilder spaeter (unmerklich). Zwei verschachtelte
+  // requestAnimationFrame stellen sicher, dass mindestens ein Bild gezeichnet wurde; der
+  // 1-Sekunden-Takt startet erst danach, damit pruefen() nicht vor dem Aufbau laeuft.
+  function starten(){
+    farbenLesen();
+    aufbauen();
+    pruefen();
+    // Der Ansichtswechsel loest kein Ereignis aus; ein Blick pro Sekunde genuegt und kostet nichts.
+    setInterval(pruefen, 1000);
+  }
+  if (window.requestAnimationFrame){
+    window.requestAnimationFrame(function(){ window.requestAnimationFrame(starten); });
+  } else {
+    starten();
+  }
 })();

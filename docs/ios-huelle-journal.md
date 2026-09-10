@@ -14,6 +14,20 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Aufraeumen Schritt 2: Sternenhimmel-Aufbau hinter das erste Bild (Micro-Opt)
+- **Befund vorweg:** Die `@font-face`-Regeln haben schon `font-display:swap` — Schriften blockieren
+  das erste Zeichnen nicht. Die mehrsekuendige Startzeit kommt aus WKWebView-Kaltstart + Parsen der
+  1,5-MB-Datei + Debug-Build, nicht aus JS. Dem Inhaber offen gesagt; er wollte den sauberen
+  Micro-Fix trotzdem.
+- **Aenderung (`src/js/22-sternenhimmel.js`):** Der initiale `farbenLesen()/aufbauen()/pruefen()` +
+  der 1-Sekunden-Takt laufen jetzt erst nach zwei `requestAnimationFrame` (also nach dem ersten
+  Bild). `aufbauen()` baut mehrere Offscreen-Canvases (Wolken/Strahlen) — das konkurrierte bisher
+  beim Parsen mit dem ersten Zeichnen der Startseite.
+- **Ehrlich zum Effekt:** spart Millisekunden, gegen mehrere Sekunden Kaltstart **nicht fuehlbar**.
+  Der echte Hebel bleibt der **Release-Build** und (gefuehlt) der **Splashscreen** (naechster Schritt).
+- **Geprueft:** alle acht Pruefungen bestanden (u.a. pruef-bewegung, fehlersuche KEINE FUNDE). Am
+  Geraet unkritisch, aber noch nicht gegengesehen.
+
 ### Aufraeumen Schritt 1: nachweislich toter Code entfernt (kosmetisch)
 - **Auftrag:** Der Inhaber empfand die Dateien als zu lang/unuebersichtlich. Messung vorweg: nur 16 %
   der 1,5-MB-Datei sind Schriften; 84 % sind echter Inhalt (8 Sprachen, Figuren/Sternenhimmel-Code,
