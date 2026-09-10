@@ -22,14 +22,11 @@
     margin:22px auto 0;max-width:400px;background:var(--surface);border:1px solid var(--line);
     border-radius:var(--radius-m);padding:16px 18px;
   }
-  .delta-head{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
   .delta-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px;border-top:1px solid var(--line);}
-  .delta-head + .delta-row{border-top:none;margin-top:8px;}
   .delta-move{font-family:var(--mono);font-size:12.5px;}
   .delta-up, .delta-down{color:var(--ink);font-weight:600;}
   .delta-flat{color:var(--muted);}
   .delta-note{margin-top:10px;line-height:1.5;}
-  .compat-note{margin-top:2px;line-height:1.5;padding:0 2px;}
 
   .radar-wrap{margin:26px auto 0;max-width:320px;}
   .radar-wrap svg{width:100%;height:auto;overflow:visible;}
@@ -76,7 +73,6 @@
   /* Bewusst NICHT Teil der gedämpften Fußnoten-Gruppe: handlungsrelevanter Hinweis in normaler
      Lesegröße, wie .storage-warning — nur ohne Warnfarbe, weil hier nichts schiefgegangen ist. */
   .code-lead{margin-top:10px;font-size:13.5px;color:var(--muted);line-height:1.55;position:relative;}
-  .code-note{margin-top:6px;line-height:1.5;font-family:var(--sans);}
 
   
   /* ---------- Dimensionsfarbe (Runde 70) ----------

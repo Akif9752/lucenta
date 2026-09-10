@@ -86,7 +86,6 @@
   /* flex-wrap, weil die Zeile aus Bezeichnung und „Beispiel"-Chip bei 200 % Zoom breiter war als
      die Karte und der Chip rechts heraushing. */
   .preview-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-  .preview-tag{font-family:var(--sans);text-transform:none;letter-spacing:0;background:var(--surface-2);color:var(--accent-strong);border-radius:100px;padding:2px 9px;font-size:11px;font-weight:600;}
   .preview-body{display:flex;align-items:center;gap:18px;margin-top:14px;}
   .radar-wrap.preview-radar{max-width:130px;flex-shrink:0;margin:0;}
   .preview-radar .radar-axis-label,.preview-radar .radar-axis-value{display:none;}

@@ -146,12 +146,6 @@
      ueberlagern. In der Fusszeile ueberdeckt eine groessere Flaeche nur Text, der nichts tut —
      dort ist die Ueberlappung ohne Folge, der Abstand waechst trotzdem mit, damit die zwei
      Verweise sich nicht gegenseitig verdecken. */
-  .feedback-opts{ gap:10px; }
-  .feedback-opt{ position:relative; }
-  .feedback-opt::after{
-    content:''; position:absolute; top:50%; left:0; transform:translateY(-50%);
-    width:100%; height:44px;
-  }
   footer.appfoot{ gap:16px; }
   .fuss-link, footer.appfoot a{ position:relative; display:inline-block; }
   .fuss-link::after, footer.appfoot a::after{

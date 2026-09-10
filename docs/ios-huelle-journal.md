@@ -14,6 +14,25 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Aufraeumen Schritt 1: nachweislich toter Code entfernt (kosmetisch)
+- **Auftrag:** Der Inhaber empfand die Dateien als zu lang/unuebersichtlich. Messung vorweg: nur 16 %
+  der 1,5-MB-Datei sind Schriften; 84 % sind echter Inhalt (8 Sprachen, Figuren/Sternenhimmel-Code,
+  bewusste Doku-Kommentare). Die Datei ist **nicht** aufgeblaeht; „Aufraeumen" bringt **kein** Tempo
+  (Ladezeit = Parsen + Font-Dekodierung + Debug-Build). Ausdruecklich nur „sicherer toter Code".
+- **Entfernt (10 nachweislich ungenutzte CSS-Klassen + 1 tote JS-Funktion):** `.theme-btn`,
+  `.feedback-opt`/`.feedback-opts` (in Runde 97 entfernte Features), `.compat-legend`, `.compat-note`,
+  `.code-note`, `.delta-head`, `.befund-grenze`, `.preview-tag`, `.ring-label`; JS-Funktion
+  `figVerlauf` (nur definiert, nie aufgerufen). Verteilt ueber 7 CSS-Dateien + `13-figuren.js`.
+- **Sicherheitsnachweis:** Jede Klasse gegen HTML **und** JS geprueft, inkl. dynamischer
+  Zusammensetzung (`'hg-'+id`, `'role-tag-'+pole`, `'dot-'+…`). Was dynamisch gebaut wird, blieb
+  unangetastet. Da die entfernten Selektoren auf **kein** Element passten, aendert das Entfernen
+  optisch nichts.
+- **Bewusst NICHT angefasst:** die ausfuehrlichen „Runde X"-Kommentare (Projektwissen, laut CLAUDE.md
+  gewollt) und die i18n-Schluessel (136 wirkten „ungenutzt", sind aber groesstenteils dynamisch
+  ueber `tx(var)` referenziert — automatisches Loeschen waere gefaehrlich).
+- **Geprueft:** alle acht Pruefungen bestanden (tests 11 Reihen, audit_i18n, diff-sprachen,
+  pruef-store, pruef-bewegung, pruef-nativ 27/27, fehlersuche KEINE FUNDE).
+
 ### Xcode-Warnungen bereinigt (Dritt-Pods + App-Target)
 - **Fehler:** Xcode zeigte Warnungen: Capacitor Filesystem (ungenutzte Variablen), „[CP] Embed Pods
   Frameworks laeuft bei jedem Build", und `WKProcessPool` deprecated (CapacitorCordova-Header, iOS 15+).

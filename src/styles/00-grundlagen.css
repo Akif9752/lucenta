@@ -418,7 +418,7 @@
         Doppeltippen zum Zoomen gemeint war — Tippen wirkt dadurch unmittelbar.
      3. Beschriftungen von Bedienelementen lassen sich nicht mehr versehentlich markieren, wenn
         man beim Tippen minimal wischt. Fließtext bleibt bewusst markierbar. */
-  button, summary, .scale-btn, .theme-btn, .avatar-color-swatch, .drawer-tab{
+  button, summary, .scale-btn, .avatar-color-swatch, .drawer-tab{
     -webkit-tap-highlight-color:transparent;
     touch-action:manipulation;
     -webkit-user-select:none; user-select:none;

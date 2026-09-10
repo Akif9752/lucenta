@@ -70,10 +70,6 @@
   // Verlaeufe brauchen eindeutige Namen: In der Figurenauswahl stehen alle Figuren gleichzeitig
   // im Dokument, und zwei Verlaeufe mit demselben Namen waeren einer.
   var FIG_LAUF = 0, FIG_UID = 'f0';
-  function figVerlauf(id, hell, dunkel, x2, y2){
-    return '<linearGradient id="'+id+'" x1="0" y1="0" x2="'+(x2 == null ? 0.35 : x2)+'" y2="'+(y2 == null ? 1 : y2)+'">'+
-           '<stop offset="0" stop-color="'+hell+'"/><stop offset="1" stop-color="'+dunkel+'"/></linearGradient>';
-  }
 
   // ---------- Licht (Runde 94) ----------
   //
