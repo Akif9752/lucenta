@@ -554,9 +554,28 @@
        einem bewegten Sternenhimmel sah die Leiste aus wie ein Stueck Himmel, in dem zufaellig
        keine Sterne fliegen. Ein flacher Verlauf von links nach rechts gibt ihr eine eigene
        Flaeche, ohne sie als Kasten abzusetzen. */
-    background:linear-gradient(96deg, var(--kopf-links) 0%, var(--kopf-rechts) 68%, var(--kopf-rechts) 100%);
+    /* Runde 102: Liquid Glass (iOS 26). Die Kopfleiste ist die funktionale Navigations-Schicht und
+       schwebt ueber dem Inhalt — durchscheinend mit Unschaerfe, sodass Inhalt (und der Sternenhimmel)
+       darunter durchscheint, waehrend die Leiste lesbar bleibt (regular-Variante: blur + saturate
+       heben die Helligkeit an). Der Tint bleibt bewusst recht deckend (74 %), damit die Wortmarke den
+       Kontrast haelt. Der fruehere volldeckende Verlauf bleibt als Fallback, wenn die WebView kein
+       backdrop-filter kann oder die Person "Transparenz reduzieren" gewaehlt hat. */
+    background:linear-gradient(96deg, color-mix(in srgb, var(--kopf-links) 74%, transparent) 0%, color-mix(in srgb, var(--kopf-rechts) 74%, transparent) 68%, color-mix(in srgb, var(--kopf-rechts) 74%, transparent) 100%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    backdrop-filter:blur(20px) saturate(160%);
     border-bottom:1px solid transparent;
     transition:border-color .2s ease;
+  }
+  /* Ohne backdrop-filter (oder bei "Transparenz reduzieren") waere eine durchscheinende Leiste ohne
+     Unschaerfe unlesbar — dann die volldeckende Leiste. */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    header.top{ background:linear-gradient(96deg, var(--kopf-links) 0%, var(--kopf-rechts) 68%, var(--kopf-rechts) 100%); }
+  }
+  @media (prefers-reduced-transparency: reduce){
+    header.top{
+      background:linear-gradient(96deg, var(--kopf-links) 0%, var(--kopf-rechts) 68%, var(--kopf-rechts) 100%);
+      -webkit-backdrop-filter:none; backdrop-filter:none;
+    }
   }
   header.top.scrolled{border-bottom-color:var(--line);}
   .wordmark{
