@@ -392,5 +392,19 @@
     renderQuestion();
     syncHeroState();
     syncHeaderScrollState();
+    // Runde 102: Splashscreen ausblenden, sobald die Oberflaeche steht. launchAutoHide ist aus
+    // (capacitor.config), damit der Marken-Splash bis hierher bleibt, statt vorher wegzublitzen und
+    // die schwarze/leere Ladeluecke zu zeigen. Zwei requestAnimationFrame blenden erst nach dem
+    // ersten gezeichneten Bild aus; der setTimeout ist die Sicherung, falls beim Kaltstart Bilder
+    // ausbleiben (sonst bliebe der Splash bei launchAutoHide:false stehen). Nur nativ vorhanden.
+    try{
+      var sp = nativVorhanden() && nativModul('SplashScreen');
+      if (sp && sp.hide){
+        var splashWeg = false;
+        var splashAusblenden = function(){ if (splashWeg) return; splashWeg = true; try{ sp.hide({ fadeOutDuration: 250 }); }catch(e){} };
+        requestAnimationFrame(function(){ requestAnimationFrame(splashAusblenden); });
+        setTimeout(splashAusblenden, 4000);
+      }
+    }catch(e){}
   })();
 })();

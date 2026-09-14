@@ -14,6 +14,29 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Splashscreen: Marken-Ladebild bis die Seite bereit ist
+- **Ziel:** Die Startluecke (paar Sekunden, bis die 1,5-MB-Seite gezeichnet ist) zu einem bewussten
+  Marken-Ladebild machen statt einer leeren Flaeche.
+- **Aenderung:**
+  - `@capacitor/splash-screen` installiert (Pod `CapacitorSplashScreen`, jetzt 6 iOS-Plugins).
+  - `capacitor.config.json` -> `plugins.SplashScreen`: `launchAutoHide:false` (Splash bleibt, bis das
+    JS ihn ausblendet), `backgroundColor:#E4E6DB`, `showSpinner:false`.
+  - Splash-Grafik neu: `Splash.imageset` traegt jetzt **erscheinungsabhaengige** Bilder
+    (`splash-light.png` / `splash-dark.png`, 2732²) — Lucenta-Zeichen + „Lucenta" in der echten
+    Fraunces-Schrift, zentriert auf Papierfarbe (hell/dunkel). Gerendert mit Playwright-WebKit aus
+    der geladenen Seite, damit die Schrift exakt zur App passt. Das verbessert zugleich die
+    System-LaunchScreen (nutzt dasselbe „Splash") -> nahtloser Uebergang, kein weisses Standardbild.
+  - `src/js/21-beta-rueckmeldung.js`: am Ende von `init()` `SplashScreen.hide({fadeOutDuration:250})`
+    nach zwei requestAnimationFrame (also nach dem ersten Bild), plus `setTimeout(…,4000)` als
+    Sicherung, falls beim Kaltstart Bilder ausbleiben (sonst bliebe der Splash bei
+    launchAutoHide:false stehen). Nur nativ; im Browser passiert nichts.
+- **Warum es hilft:** Die Ladezeit selbst bleibt, aber sie wirkt jetzt wie ein bewusster
+  Ladebildschirm statt einer schwarzen/leeren Luecke.
+- **Geprueft:** alle acht Pruefungen bestanden (fehlersuche KEINE FUNDE, pruef-nativ 27/27);
+  iOS-Build mit dem neuen Pod SUCCEEDED; beide Splash-PNGs visuell kontrolliert (markengetreu).
+  **Am Geraet zu bestaetigen:** ⌘R — beim Start sollte das Lucenta-Logo als Ladebild stehen und
+  weich in die App uebergehen (hell + dunkel).
+
 ### Aufraeumen Schritt 2: Sternenhimmel-Aufbau hinter das erste Bild (Micro-Opt)
 - **Befund vorweg:** Die `@font-face`-Regeln haben schon `font-display:swap` — Schriften blockieren
   das erste Zeichnen nicht. Die mehrsekuendige Startzeit kommt aus WKWebView-Kaltstart + Parsen der

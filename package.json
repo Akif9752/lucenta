@@ -30,6 +30,7 @@
     "playwright": "^1.63.0"
   },
   "dependencies": {
-    "@capacitor/haptics": "^6.0.3"
+    "@capacitor/haptics": "^6.0.3",
+    "@capacitor/splash-screen": "^6.0.4"
   }
 }

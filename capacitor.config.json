@@ -10,5 +10,12 @@
   },
   "server": {
     "iosScheme": "lucenta"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#E4E6DB",
+      "showSpinner": false
+    }
   }
 }
