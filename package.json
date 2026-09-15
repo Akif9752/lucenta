@@ -18,7 +18,8 @@
     "store-bilder": "node tools/store_bilder.mjs",
     "pruef-store": "python3 tools/pruef_store_texte.py",
     "ios:schlank": "node tools/ios_public_entschlacken.mjs",
-    "mac:entlasten": "node tools/mac_entlasten.mjs"
+    "mac:entlasten": "node tools/mac_entlasten.mjs",
+    "pruef-app": "node tools/pruef_appfassung.mjs"
   },
   "license": "UNLICENSED",
   "devDependencies": {
@@ -29,6 +30,7 @@
     "@capacitor/ios": "^6.1.2",
     "@capacitor/local-notifications": "^6.1.0",
     "@capacitor/share": "^6.0.2",
+    "esbuild": "^0.28.2",
     "playwright": "^1.63.0"
   },
   "dependencies": {

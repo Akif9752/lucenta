@@ -245,6 +245,40 @@ fs.writeFileSync(OUT, html);
 // Vorschau-Server zeigen ebenfalls auf lucenta.html und messen damit weiter die vollstaendige
 // Fassung. Nur die App-Huelle (Capacitor laedt index.html aus dem Bundle, wo die Schriften
 // daneben liegen) bekommt die aufgeteilte Fassung.
+// ---------- Runde 102: Die App-Fassung traegt keine Kommentare ----------
+//
+// Gemessen an der App-Datei (1233 KB): 246 KB sind Kommentare — 42 % des JavaScripts und 52 % des
+// CSS. Das ist kein Ballast, sondern das Projektgedaechtnis ("Runde 74, gemeldet vom iPhone: …"),
+// und es bleibt in `src/` und in `lucenta.html` vollstaendig erhalten. Nur die Fassung, die im
+// App-Bundle liegt und beim Start geparst werden muss, braucht es nicht: Dort liest sie niemand.
+//
+// Bewusst esbuild und kein eigener Regex: Ein Regex ueber `//` und `/* */` zerschneidet Strings mit
+// `https://`, Regex-Literale und `content:"/*"` im CSS — ein Fehler, der erst auf dem Geraet
+// auffaellt. esbuild parst richtig.
+//
+// Ebenso bewusst NUR Whitespace und Kommentare: `minifyIdentifiers` (Namen kuerzen) und
+// `minifySyntax` (Code umformen) bleiben AUS. Die acht Pruefungen messen `lucenta.html`, also die
+// unminifizierte Fassung — eine umgeformte App-Fassung waere ungeprueft unterwegs. Kommentare zu
+// entfernen kann die Bedeutung des Codes nicht aendern; Namen zu kuerzen kann es.
+const esbuild = require('esbuild');
+function fuerAppEntschlacken(quelle, art) {
+  try {
+    return esbuild.transformSync(quelle, {
+      loader: art,
+      minifyWhitespace: true,
+      minifyIdentifiers: false,
+      minifySyntax: false,
+      legalComments: 'none',
+      charset: 'utf8'
+    }).code;
+  } catch (e) {
+    console.error(`\nBau abgebrochen: esbuild konnte das ${art.toUpperCase()} der App-Fassung nicht\n` +
+                  `verarbeiten: ${e.message}\n` +
+                  `Die Ein-Datei-Fassung (dist/lucenta.html) ist davon unberuehrt.\n`);
+    process.exit(1);
+  }
+}
+
 const SCHRIFT_ORDNER = 'schriften';
 const schriftZiel = path.join(path.dirname(OUT), SCHRIFT_ORDNER);
 fs.mkdirSync(schriftZiel, { recursive: true });
@@ -252,8 +286,16 @@ for (const alt of fs.existsSync(schriftZiel) ? fs.readdirSync(schriftZiel) : [])
   if (alt.endsWith('.woff2')) fs.unlinkSync(path.join(schriftZiel, alt));   // Reste vom letzten Bau
 }
 
+// Die App-Fassung wird aus den EINZELNEN Teilen neu gesetzt, nicht aus dem fertigen HTML: So
+// bekommt esbuild das CSS als CSS und das JavaScript als JavaScript. Ueber die fertige Seite
+// koennte es nicht unterscheiden.
+const cssApp = fuerAppEntschlacken(css, 'css');
+const jsApp  = fuerAppEntschlacken(js, 'js');
+const htmlRoh = read('index.head.html') + '<style>' + cssApp + '</style>' +
+                read('index.body.html') + '<script>' + jsApp + '</script>' + read('index.tail.html');
+
 let schriftNr = 0, schriftBytes = 0;
-const htmlApp = html.replace(
+const htmlApp = htmlRoh.replace(
   /url\(data:font\/woff2;base64,([A-Za-z0-9+/=]+)\)/g,
   (_treffer, b64) => {
     schriftNr++;

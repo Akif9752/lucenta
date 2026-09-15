@@ -14,6 +14,56 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### App-Fassung ohne Kommentare: 1523 -> 932 KB, und eine neunte Pruefung dafuer
+- **Gemeldet:** „es hat immernoch zu lange gedauert und in diesem terminal hier sind gelbe und rote
+  error meldungen."
+- **Die Meldungen zuerst, gemessen:** Mit dem neuen Fehler-Logger steht im Log **kein**
+  `[Lucenta]`-Eintrag — unser JavaScript wirft also keinen Fehler. Der `JS Eval error` kommt aus
+  Capacitor selbst. Die uebrigen gelben/roten Zeilen sind Simulator-Interna
+  (`Networking process took 1.26 seconds`, `WebContent 1.03 s`, `cfprefsd`, `UIKBRenderingLog`).
+  Aus dem Log auch die echte Startzeit: `Loading app` -> `WebView loaded` = **4,2 s** im Debug-Bau,
+  davon nur 1,3 s WebKit-Prozessstart. Es blieben also ~2,9 s fuer Laden und Parsen.
+- **Woraus die Datei besteht** (gemessen, nicht geschaetzt): von 1233 KB waren **246 KB Kommentare**
+  (42 % des JavaScripts, 52 % des CSS) und **677 KB die acht Sprachpakete** (55 %).
+- **Aenderung:** Die App-Fassung (`dist/index.html`) wird jetzt ohne Kommentare gebaut — mit
+  **esbuild** und ausschliesslich `minifyWhitespace`. `minifyIdentifiers` und `minifySyntax` bleiben
+  bewusst **aus**: Kommentare zu entfernen kann die Bedeutung des Codes nicht aendern, Namen zu
+  kuerzen oder Code umzuformen kann es, und die acht Pruefungen messen `lucenta.html`, nicht diese
+  Fassung. Ebenso bewusst esbuild statt Regex: ein Regex ueber `//` und `/* */` zerschneidet
+  `https://` in Strings, Regex-Literale und `content:"/*"` im CSS.
+  `dist/lucenta.html` bleibt unveraendert vollstaendig — Projektgedaechtnis und Ein-Datei-Prinzip.
+- **Ergebnis:** App-Fassung **931,8 KB** statt 1233 KB (−24 %); zusammen mit den ausgelagerten
+  Schriften **von 1523 KB auf 932 KB (−39 %)**. Gemessen in Playwright-WebKit (3 Laeufe):
+  | Fassung | FCP | DOMContentLoaded |
+  |---|---|---|
+  | Referenz (`lucenta.html`) | 232 / 75 / 76 ms | 128 / 32 / 33 ms |
+  | App (`index.html`) | **72 / 61 / 61 ms** | **33 / 25 / 24 ms** |
+  Kalt ist das erste Bild **69 %** frueher da, das DOM **74 %** frueher fertig.
+- **Neue Pruefung `npm run pruef-app`** (`tools/pruef_appfassung.mjs`, 10 Pruefungen): Die acht
+  Pruefungen messen alle `lucenta.html` — die Fassung im Bundle war damit als einzige **ungeprueft**
+  unterwegs. Die neue Pruefung laedt `dist/index.html` in WebKit und fragt genau, was beim Umbau
+  kaputtgehen kann: keine Ausnahme, Schriftdateien werden geholt und antworten ohne Fehler,
+  Startansicht steht, Ueberschrift traegt Fraunces, drei Schriftfamilien geladen, Sprachwahl bietet
+  acht Sprachen, und die Datei traegt alle acht `CONTENT.xx`-Pakete.
+  Zwei eigene Fehlgriffe dabei, beide in der Pruefung und nicht in der App: „alle fuenf Schriften"
+  war zu streng (mit `font-display:swap` holt WebKit nur die vier gebrauchten Schnitte), und
+  `CONTENT` ist nicht global, sondern liegt in der gemeinsamen IIFE — der erste Sprachtest griff
+  ins Leere und meldete mit einem zu losen Muster (`fr:{`) vier Sprachen als vorhanden, die es so
+  gar nicht gab. Jetzt geprueft ueber die Sprachknoepfe im DOM **und** `CONTENT.xx=` im Quelltext.
+- **Geprueft:** alle acht Pruefungen bestanden (fehlersuche KEINE FUNDE, pruef-nativ 27/27) plus
+  pruef-app 10/10; Debug- und Release-Build SUCCEEDED; Huelle traegt 954 KB.
+- **Was ich NICHT belegen kann:** Eine belastbare Startzeit-Zahl **im Simulator** nach der
+  Aenderung. Die Log-Erfassung ueber `simctl launch --console-pty` liefert umgeleitet nicht alle
+  Zeilen (auch nicht ueber `script`), und der Bildvergleich ist zu langsam und zu varianzbehaftet —
+  ein erster Versuch lieferte widerspruechliche Werte (Release 12,5 s gegen vorher 3,4 s), weil die
+  Erkennungsschwelle schon beim Splash ansprach. Belegt ist die Verbesserung ueber die Dateigroesse
+  und die WebKit-Messung; das Urteil am Geraet gehoert dem Inhaber.
+- **Groesster verbleibender Hebel:** Die acht Sprachpakete sind jetzt ~620 KB von 932 KB = **66 %**
+  der App-Datei. Nur die gewaehlte Sprache zu laden (Deutsch inline, die uebrigen sieben bei Bedarf)
+  wuerde die Datei etwa halbieren — ist aber ein Eingriff in `01-sprachpakete.js` und beruehrt die
+  Regel aus der CLAUDE.md, dass die Zahl acht in `tests/lang_test.js` bewusst ausgeschrieben
+  dasteht. Dem Inhaber vorgelegt, nicht eigenmaechtig gemacht.
+
 ### Schriften aus der HTML geloest (nur die App-Fassung) + Fehler werden endlich protokolliert
 - **Auftrag:** „das zuende machen und die schriften."
 
