@@ -7,6 +7,41 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
+## ÜBERGABE an die naechste Sitzung (Stand 2026-09-15)
+
+**Als Naechstes, in dieser Reihenfolge — so mit dem Inhaber verabredet:**
+1. **Sprachpakete aufteilen.** Der groesste verbleibende Startzeit-Hebel: Die acht Sprachpakete
+   sind ~620 KB von 932 KB = **66 %** der App-Fassung. Gedacht ist: Deutsch (die Rueckfallsprache)
+   bleibt inline, die uebrigen sieben werden bei Bedarf geladen — das halbiert die Datei etwa.
+   Betrifft `src/js/01-sprachpakete.js` und `build.js`. **Achtung:** Die Zahl acht steht in
+   `tests/lang_test.js` und in `tools/pruef_appfassung.mjs` bewusst ausgeschrieben da, damit ein
+   Paket, das nicht laedt, nicht lautlos aus `CONTENT` verschwindet (Regel aus der Wurzel-CLAUDE.md).
+   Beide Pruefungen muessen die Aufteilung also kennen, nicht umgangen werden.
+2. **Liquid Glass Schritt 2:** Schublade und Dialoge als Glass, mit denselben Rueckfaellen wie die
+   Kopfleiste (`@supports not (backdrop-filter)` und `prefers-reduced-transparency`). Schritt 1
+   (Kopfleiste) ist erledigt und am Geraet bestaetigt. Danach die Bedienelemente
+   (Knoepfe/Segmentwaehler/Schalter/Listen).
+
+**Arbeitsweise, die Kontingent spart (vom Inhaber ausdruecklich gewuenscht):** Lange Pruefläufe in
+**einem** Durchgang starten und nur das **Endergebnis** lesen, statt im Minutentakt den
+Zwischenstand abzufragen; Bildschirmfotos sparsam und moeglichst als Ausschnitt. Der fertige
+Sammelbefehl steht in `tools/xcode-CLAUDE.md` unter „Pruefungen buendeln, nicht pollen". Grund:
+Jede Zwischenabfrage verarbeitet den ganzen Verlauf erneut — beim Inhaber waren das 40–50 % des
+5-Stunden-Kontingents, verbraucht fuer Vorgeschichte statt fuer Arbeit.
+
+**Stand der Umgebung:** Simulatorziel ist **iPhone 18 Pro** (iOS 27.0, id
+B55215E2-9318-4732-9132-F2D7FFFC18EC); die iOS-26.5-Runtime wurde geloescht. Deployment Target 15.0,
+`ENABLE_USER_SCRIPT_SANDBOXING = NO` — in Xcode **nicht** „Update to recommended settings"
+akzeptieren, das hat beides schon einmal gebrochen. Neun Pruefungen statt acht (`pruef-app` kam
+dazu). `npm run mac:entlasten` nach jedem `npm install`/`pod install`, sonst indexiert Spotlight
+`node_modules` und `Pods` und der Mac haengt.
+
+**Offen geblieben:** Capacitors `JS Eval error A JavaScript exception occurred` beim Laden. Unser
+JavaScript ist es nicht — der neue Fehler-Logger in `00-start.js` schreibt nichts ins Log. Genauer
+lokalisieren braucht den Safari-Web-Inspector am laufenden Simulator.
+
+---
+
 ## 2026-09-09 (Runde 102) — neuer Auftrag; Info.plist Fotorechte
 
 **Auftrag geaendert:** Die Aufteilung iOS-/App-Seite ist weg; diese Sitzung fuehrt und darf alles

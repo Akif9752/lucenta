@@ -49,11 +49,36 @@ der `src/` beruehrt:
     npm run pruef-nativ            # 27 Pruefungen, stellt Capacitor im Browser nach
     npm run fehlersuche            # 13 Browserkonfigurationen, misst Kontrast im echten Browser
     npm run pruef-store            # Zeichenzahlen der Store-Texte
+    npm run pruef-app              # 10 Pruefungen an dist/index.html (die Fassung im App-Bundle)
 
-Die letzten vier brauchen Playwright und einen lokalen Server auf Port 8017
+Die letzten fuenf brauchen Playwright und einen lokalen Server auf Port 8017
 (`cd dist && python3 -m http.server 8017 --bind 127.0.0.1`). Fehlt Playwright:
-`npm i -D playwright && npx playwright install chromium`. Laesst sich eine Pruefung auf diesem
-Rechner nicht ausfuehren, gehoert das ins Journal — nicht stillschweigend uebersprungen.
+`npm i -D playwright && npx playwright install chromium webkit`. Laesst sich eine Pruefung auf
+diesem Rechner nicht ausfuehren, gehoert das ins Journal — nicht stillschweigend uebersprungen.
+
+**`pruef-app` ist neu (Runde 102) und schliesst eine Luecke:** Seit dieser Runde gibt es ZWEI
+gebaute Fassungen. `dist/lucenta.html` ist die Ein-Datei-Fassung mit eingebetteten Schriften und
+vollstaendigen Kommentaren — darauf zeigen alle anderen Pruefungen. `dist/index.html` ist die
+Fassung im App-Bundle: Schriften als Dateien in `dist/schriften/`, Kommentare von esbuild entfernt,
+932 statt 1523 KB. Genau die laedt das iPhone, und genau die war als einzige ungeprueft.
+
+### Pruefungen buendeln, nicht pollen
+
+Die letzten fuenf Pruefungen brauchen zusammen rund 20 Minuten. Sie **in einem Durchgang** starten
+und nur das **Endergebnis** lesen — nicht im Minutentakt nach dem Zwischenstand fragen:
+
+    cd dist && python3 -m http.server 8017 --bind 127.0.0.1 &
+    cd .. && for p in diff-sprachen pruef-bewegung pruef-nativ fehlersuche pruef-app; do
+      echo "== $p =="; npm run $p 2>&1 | tail -5
+    done > /tmp/pruefungen.log 2>&1
+
+Der Grund ist nicht Bequemlichkeit: Jede Zwischenabfrage ist ein eigener Durchgang, in dem der
+ganze bisherige Verlauf erneut verarbeitet wird. Auf dem 5-Stunden-Kontingent des Inhabers waren
+das messbar 40–50 %, verbraucht fuer Vorgeschichte statt fuer Arbeit. Dasselbe gilt fuer
+**Bildschirmfotos**: Ein Simulator-Bild in voller Auflaesung (1206×2622) kostet so viel wie mehrere
+Seiten Text und bleibt im Verlauf. Deshalb sparsam damit — `clip` auf den fraglichen Ausschnitt,
+und nur wenn wirklich etwas zu SEHEN ist. „Laeuft die App?" beantwortet
+`xcrun simctl spawn <id> launchctl list | grep lucenta` ohne ein einziges Bild.
 
 Und ein Vorteil, den nur diese Sitzung hat: **Sie kann auf WebKit messen.** Die Browsersitzung
 hat ausschliesslich Chromium; der Download von WebKit ist dort gesperrt. Zwei der bisher
