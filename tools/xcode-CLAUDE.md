@@ -17,9 +17,9 @@ Und `dist/` ist selbst erzeugt: `node build.js` setzt es aus `src/` zusammen. Es
 
     src/            <- hier wird geaendert
       |  node build.js
-    dist/lucenta.html
+    dist/index.html + dist/schriften/ + dist/sprachen/   (und dist/lucenta.html als Ein-Datei-Fassung)
       |  npx cap sync ios
-    ios/App/public/lucenta.html
+    ios/App/App/public/
 
 Wer einen Fehler in der Oberflaeche findet, aendert `src/` und laesst dann laufen:
 
@@ -49,7 +49,7 @@ der `src/` beruehrt:
     npm run pruef-nativ            # 27 Pruefungen, stellt Capacitor im Browser nach
     npm run fehlersuche            # 13 Browserkonfigurationen, misst Kontrast im echten Browser
     npm run pruef-store            # Zeichenzahlen der Store-Texte
-    npm run pruef-app              # 10 Pruefungen an dist/index.html (die Fassung im App-Bundle)
+    npm run pruef-app              # 18 Pruefungen an dist/index.html (die Fassung im App-Bundle)
 
 Die letzten fuenf brauchen Playwright und einen lokalen Server auf Port 8017
 (`cd dist && python3 -m http.server 8017 --bind 127.0.0.1`). Fehlt Playwright:
@@ -57,10 +57,17 @@ Die letzten fuenf brauchen Playwright und einen lokalen Server auf Port 8017
 diesem Rechner nicht ausfuehren, gehoert das ins Journal — nicht stillschweigend uebersprungen.
 
 **`pruef-app` ist neu (Runde 102) und schliesst eine Luecke:** Seit dieser Runde gibt es ZWEI
-gebaute Fassungen. `dist/lucenta.html` ist die Ein-Datei-Fassung mit eingebetteten Schriften und
-vollstaendigen Kommentaren — darauf zeigen alle anderen Pruefungen. `dist/index.html` ist die
-Fassung im App-Bundle: Schriften als Dateien in `dist/schriften/`, Kommentare von esbuild entfernt,
-932 statt 1523 KB. Genau die laedt das iPhone, und genau die war als einzige ungeprueft.
+gebaute Fassungen. `dist/lucenta.html` ist die Ein-Datei-Fassung mit eingebetteten Schriften,
+allen acht Sprachpaketen und vollstaendigen Kommentaren — darauf zeigen alle anderen Pruefungen.
+`dist/index.html` ist die Fassung im App-Bundle: Schriften als Dateien in `dist/schriften/`,
+Kommentare von esbuild entfernt, und seit Runde 103 nur noch **Deutsch** eingebettet — die uebrigen
+sieben Sprachen liegen in `dist/sprachen/` und werden beim Umstellen geholt. 394 statt 1523 KB.
+Genau die laedt das iPhone, und genau die war als einzige ungeprueft.
+
+Daraus folgt eine Falle fuer jede Pruefung, die den **Quelltext** der App-Fassung durchsucht: Was
+in `lucenta.html` steht, muss dort **nicht** stehen. Die alte Suche nach acht `CONTENT.xx =` waere
+ab Runde 103 falsch gewesen — `pruef-app` fragt deshalb den Weg ab (umstellen und nachsehen, ob die
+Sprache ankommt), nicht den Text.
 
 ### Pruefungen buendeln, nicht pollen
 

@@ -7,20 +7,16 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-09-15)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-09-16)
 
-**Als Naechstes, in dieser Reihenfolge — so mit dem Inhaber verabredet:**
-1. **Sprachpakete aufteilen.** Der groesste verbleibende Startzeit-Hebel: Die acht Sprachpakete
-   sind ~620 KB von 932 KB = **66 %** der App-Fassung. Gedacht ist: Deutsch (die Rueckfallsprache)
-   bleibt inline, die uebrigen sieben werden bei Bedarf geladen — das halbiert die Datei etwa.
-   Betrifft `src/js/01-sprachpakete.js` und `build.js`. **Achtung:** Die Zahl acht steht in
-   `tests/lang_test.js` und in `tools/pruef_appfassung.mjs` bewusst ausgeschrieben da, damit ein
-   Paket, das nicht laedt, nicht lautlos aus `CONTENT` verschwindet (Regel aus der Wurzel-CLAUDE.md).
-   Beide Pruefungen muessen die Aufteilung also kennen, nicht umgangen werden.
-2. **Liquid Glass Schritt 2:** Schublade und Dialoge als Glass, mit denselben Rueckfaellen wie die
+**Als Naechstes:**
+1. **Liquid Glass Schritt 2:** Schublade und Dialoge als Glass, mit denselben Rueckfaellen wie die
    Kopfleiste (`@supports not (backdrop-filter)` und `prefers-reduced-transparency`). Schritt 1
    (Kopfleiste) ist erledigt und am Geraet bestaetigt. Danach die Bedienelemente
    (Knoepfe/Segmentwaehler/Schalter/Listen).
+2. **Das Urteil am Geraet zur Aufteilung der Sprachpakete** (siehe Eintrag unten): Startet die App
+   spuerbar schneller, und sieht jemand, der auf eine andere Sprache gestellt hat, beim Start
+   kurz Deutsch? Beides laesst sich nur dort beantworten, nicht in einer Messung.
 
 **Arbeitsweise, die Kontingent spart (vom Inhaber ausdruecklich gewuenscht):** Lange Pruefläufe in
 **einem** Durchgang starten und nur das **Endergebnis** lesen, statt im Minutentakt den
@@ -39,6 +35,85 @@ dazu). `npm run mac:entlasten` nach jedem `npm install`/`pod install`, sonst ind
 **Offen geblieben:** Capacitors `JS Eval error A JavaScript exception occurred` beim Laden. Unser
 JavaScript ist es nicht — der neue Fehler-Logger in `00-start.js` schreibt nichts ins Log. Genauer
 lokalisieren braucht den Safari-Web-Inspector am laufenden Simulator.
+
+---
+
+## 2026-09-16 (Runde 103) — Sprachpakete aufgeteilt: App-Fassung 932 -> 394 KB
+
+**Auftrag:** Punkt 1 der Uebergabe. Die acht Sprachpakete waren ~620 KB der 932 KB grossen
+App-Fassung — zwei Drittel dessen, was WebKit beim Start parsen muss. Gelesen wird davon immer
+genau **eines**. Die anderen sieben lagen mit im Parser, damit jemand die Sprache umstellen kann,
+was fast niemand tut und niemand beim ersten Start tut.
+
+**Was geaendert wurde.** Wie bei den Schriften in Runde 102 betrifft es **nur die App-Fassung**:
+
+- `dist/index.html` traegt jetzt allein **Deutsch** eingebettet. Deutsch bleibt drin, weil es die
+  Rueckfallsprache ist — `tx()` greift darauf zurueck, wenn ein Schluessel in der gewaehlten
+  Sprache fehlt. Ohne eingebettetes Deutsch koennte die App ohne Nachladen gar nicht anlaufen.
+- Die uebrigen sieben liegen als `dist/sprachen/<code>-<marke>.js` daneben (540 KB zusammen).
+  Dateiname aus dem Inhalts-Hash, aus demselben Grund wie bei den Schriften: Ein alter Stand im
+  WebView-Zwischenspeicher kann nicht stillschweigend weiterverwendet werden.
+- `dist/lucenta.html` ist **unveraendert** und traegt weiter alle acht Pakete im Quelltext. Sie
+  wird einzeln verschickt und ohne Server geoeffnet; nachgeladene Dateien zeigten dort ins Leere.
+  Alle Pruefungen ausser `pruef-app` messen diese Fassung — die Aufteilung aendert also nichts
+  daran, was sie sehen.
+
+**Die Stelle, die nicht offensichtlich war:** Die nachgeladenen Dateien laufen im **globalen**
+Bereich, `CONTENT` liegt aber in der gemeinsamen IIFE und ist von dort unerreichbar. `build.js`
+huellt jedes Paket deshalb in eine Funktion mit eigenem `CONTENT` und uebergibt es am Ende an
+`window.__lucentaSprachpaket` — eine Bruecke, die nur **entgegennimmt**. Die Quelldateien in
+`src/i18n/` bleiben dadurch unveraendert fuer beide Fassungen brauchbar.
+
+**Zwei Wege in `src/js/01-sprachpakete.js`:**
+- `setLang(code)` holt ein fehlendes Paket nach und ruft sich danach selbst erneut auf; der zweite
+  Durchlauf findet es vor und geht den gewohnten, synchronen Weg. Alle Aufrufstellen bleiben
+  unveraendert. Ein unbekanntes Kuerzel ist wie bisher wirkungslos (`setLang('xx')`).
+- Beim **Start** ist die gemerkte Sprache nicht da. Die App laeuft dann auf Deutsch an und stellt
+  still um, sobald die Datei da ist — ohne das Aufblenden (`markLangShift`), das einen bewussten
+  Sprachwechsel beantwortet: Hier hat niemand getippt. Das Umstellen passiert zwangslaeufig erst,
+  nachdem der ganze eingebettete Code durchgelaufen ist (ein nachgeladenes Skript kann nicht
+  mitten hinein), die Ansichten sind also aufgebaut.
+- Ein Fehlschlag beim Laden laesst die App auf Deutsch stehen und wird **nicht** gemerkt: Ein
+  zweiter Tipp darf es erneut versuchen. Lesbar ist besser als leer.
+
+**Ergebnis, gemessen:**
+
+| | vorher | nachher |
+|---|---|---|
+| Datei im Bundle, die beim Start geparst wird | 932 KB | **394 KB** (−58 %) |
+| zusammen mit den Schriften beim Start | 1108 KB | **570 KB** (−49 %) |
+| DOMContentLoaded (WebKit, kalt, 3 Laeufe) | 33 / 25 / 24 ms | **17 / 16 / 17 ms** |
+| First Contentful Paint | 72 / 61 / 61 ms | 76 / 60 / 59 ms |
+
+**Ehrlich dazu:** Das **Bundle** wird nicht kleiner (394 + 176 + 540 = 1110 KB, vorher 1108 KB) —
+es wird nur nicht mehr vollstaendig beim Start gelesen. Und der Gewinn liegt im **Parsen** (DCL
+halbiert), nicht im ersten Bild: FCP ist unveraendert, der wird von anderem bestimmt. Auf dem
+Geraet, wo Parsen teurer ist als auf diesem Rechner, sollte mehr davon ankommen — **belegen kann
+ich das nicht**, aus demselben Grund wie in Runde 102 (`simctl launch --console-pty` liefert
+umgeleitet nicht alle Zeilen, der Bildvergleich ist zu varianzbehaftet). Das Urteil gehoert dem
+Inhaber.
+
+**Die Regel „die Zahl acht steht ausgeschrieben da" ist nicht umgangen, sondern verschaerft.**
+`tests/lang_test.js` ist **unberuehrt**: Es misst `dist/lucenta.html`, wo alle acht Pakete inline
+stehen — 324 Pruefungen, unveraendert bestanden. In `tools/pruef_appfassung.mjs` waere die alte
+Quelltextsuche nach acht `CONTENT.xx =` ab jetzt **falsch** gewesen (steht Franzoesisch noch drin,
+ist die Aufteilung nicht passiert). Sie fragt jetzt stattdessen den ganzen Weg ab, in WebKit:
+Deutsch ist eingebettet; die sieben sind **nicht** eingebettet; sieben Dateien liegen da; der
+**Start holt kein einziges** Paket; jede der sieben laedt nach und stellt sich ein
+(`document.documentElement.lang`); keine Datei antwortet mit Fehler; mit der Sprache wechselt auch
+der **sichtbare Text** (eine Bruecke, die das Paket entgegennimmt und wegwirft, faellt sonst nicht
+auf); und der gefaehrlichste Fall zuletzt — Start **mit** gemerkter Sprache `ja`, per
+`addInitScript` in den localStorage geschrieben, muss auf Japanisch enden. `pruef-app` hat
+damit **18 statt 10** Pruefungen.
+
+**Geprueft:** `node build.js`, `tests/run.js` 11/11 Reihen, `audit_i18n.py` bestanden,
+`diff-sprachen`, `pruef-bewegung`, `pruef-nativ` 27/27, `pruef-store` 32/32, `pruef-app` 18/18,
+`fehlersuche` (13 Konfigurationen).
+
+**Offen geblieben:** Der eine Wimpernschlag Deutsch beim Start in einer anderen Sprache. Die Datei
+liegt im Bundle daneben, nicht im Netz, und das Umstellen passiert innerhalb eines Aufgabenwechsels
+— in WebKit war nie ein Zwischenzustand zu sehen. Ob das auf dem Geraet hinter dem Splash bleibt,
+sieht man nur dort.
 
 ---
 

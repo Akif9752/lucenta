@@ -4,7 +4,58 @@
   // Variablennamen werden daraus abgeleitet, damit KEINE einzige Zeile der uebrigen Logik
   // angefasst werden musste — der Umbau ist damit ein reines Verschieben, kein Umschreiben.
   var CONTENT = {};
+  // Runde 103: Sprachpakete, die NICHT in der Datei stehen, sondern daneben liegen.
+  //
+  // In der Ein-Datei-Fassung (dist/lucenta.html) bleibt diese Tabelle LEER — dort stehen alle acht
+  // Pakete weiterhin im Quelltext, und daran darf sich nichts aendern: Diese Datei wird einzeln
+  // verschickt und ohne Server geoeffnet, ein Nachladen von der Platte ginge dort ins Leere.
+  //
+  // Nur die App-Fassung (dist/index.html, die Capacitor aus dem Bundle laedt) traegt hier
+  // {en:'sprachen/en-<marke>.js', …} — sieben Eintraege, von build.js eingesetzt. Grund: Die acht
+  // Pakete sind ~620 KB von 932 KB, also zwei Drittel der Datei, die beim Start geparst werden
+  // muss. Gelesen wird davon immer genau EINES.
+  var SPRACHQUELLEN = {};
   @@I18N@@
+  // Die nachgeladenen Dateien laufen im globalen Bereich; CONTENT liegt in der gemeinsamen IIFE
+  // und ist von dort aus unerreichbar. Diese Bruecke ist der einzige Weg hinein — sie nimmt
+  // entgegen, statt herauszugeben, damit von aussen nichts an den Paketen geaendert werden kann.
+  try{
+    if (typeof window !== 'undefined') window.__lucentaSprachpaket = function(code, paket){
+      if (code && paket) CONTENT[code] = paket;
+    };
+  }catch(e){}
+
+  // Holt ein fehlendes Paket nach und ruft danach `danach(erfolg)`. Ist es schon da (oder gibt es
+  // keine Quelle dafuer), antwortet sie sofort — die Ein-Datei-Fassung laeuft damit unveraendert
+  // synchron durch, ohne je ein Skript anzufassen.
+  var _imZulauf = {};
+  function ladeSprachpaket(code, danach){
+    if (CONTENT[code]) { danach(true); return; }
+    var quelle = SPRACHQUELLEN[code];
+    if (!quelle || typeof document === 'undefined') { danach(false); return; }
+    // Zwei Tipps auf dieselbe Sprache duerfen die Datei nicht zweimal holen.
+    if (_imZulauf[code]) { _imZulauf[code].push(danach); return; }
+    _imZulauf[code] = [danach];
+    function fertig(erfolg){
+      var wartende = _imZulauf[code];
+      // Beim Fehlschlag geloescht statt auf false gesetzt: Ein zweiter Versuch soll es erneut
+      // versuchen duerfen, sonst bliebe die Sprache bis zum Neustart der App gesperrt.
+      delete _imZulauf[code];
+      for (var i=0;i<wartende.length;i++){ try{ wartende[i](erfolg); }catch(e){} }
+    }
+    try{
+      var s = document.createElement('script');
+      s.src = quelle;
+      s.async = true;
+      // Nicht dem onload trauen, sondern nachsehen, ob das Paket wirklich angekommen ist: Eine
+      // Datei, die laedt und dabei wirkungslos bleibt, meldet sonst Erfolg und die App wechselt
+      // in eine Sprache ohne Texte.
+      s.onload = function(){ fertig(!!CONTENT[code]); };
+      s.onerror = function(){ fertig(false); };
+      document.head.appendChild(s);
+    }catch(e){ fertig(false); }
+  }
+
   // Aktive Sprache. Faellt auf Deutsch zurueck, solange keine andere gewaehlt oder vorhanden ist.
   var LANG = 'de';
   try{
@@ -37,7 +88,15 @@
   // werden. Ein Neuladen der Seite waere einfacher, wuerde aber den ungespeicherten Zustand
   // (laufender Testdurchlauf, offene Ansicht) verwerfen.
   function setLang(code){
-    if (!CONTENT[code] || code === LANG) return;
+    if (code === LANG) return;
+    // Runde 103: Fehlt das Paket, liegt es in der App-Fassung als eigene Datei daneben. Dann erst
+    // holen und danach denselben Aufruf wiederholen — der zweite Durchlauf findet es vor und geht
+    // den gewohnten, synchronen Weg. Ein unbekanntes Kuerzel bleibt wie bisher wirkungslos.
+    if (!CONTENT[code]){
+      if (!SPRACHQUELLEN[code]) return;
+      ladeSprachpaket(code, function(erfolg){ if (erfolg) setLang(code); });
+      return;
+    }
     LANG = code;
     try{ localStorage.setItem('lucenta_lang', code); }catch(e){}
     L = CONTENT[LANG];
@@ -74,6 +133,9 @@
   }
   function markLangShift(){
     if (prefersReducedMotion()) return;
+    // Beim Nachholen der gespeicherten Sprache hat niemand getippt — ein Aufblenden beantwortet
+    // dort eine Frage, die keiner gestellt hat.
+    if (_stillerWechsel) return;
     try{
       var views = document.querySelectorAll('.view');
       for (var i=0;i<views.length;i++){
@@ -175,6 +237,29 @@
     }
   }
   rebuildItems();
+
+  // Runde 103: Die gemerkte Sprache nachholen, wenn ihr Paket nicht in der Datei steht.
+  //
+  // Die App laeuft dann zuerst auf Deutsch an und stellt um, sobald die Datei da ist. Das ist die
+  // Gegenrechnung zur Aufteilung: Wer auf Japanisch gestellt hat, sieht unter Umstaenden einen
+  // Wimpernschlag Deutsch — dafuer startet die App fuer alle mit zwei Dritteln weniger Text im
+  // Parser. Die Datei liegt im Bundle daneben, nicht im Netz.
+  //
+  // Das Umstellen passiert erst, nachdem der ganze eingebettete Code durchgelaufen ist (ein
+  // nachgeladenes Skript kann nicht mitten hinein) — die Ansichten, die setLang() neu aufbaut,
+  // sind zu diesem Zeitpunkt also aufgebaut.
+  var _stillerWechsel = false;
+  try{
+    var _gemerkt = localStorage.getItem('lucenta_lang');
+    if (_gemerkt && _gemerkt !== LANG && !CONTENT[_gemerkt] && SPRACHQUELLEN[_gemerkt]){
+      ladeSprachpaket(_gemerkt, function(erfolg){
+        if (!erfolg) return;   // bleibt auf Deutsch — lesbar ist besser als leer
+        _stillerWechsel = true;
+        try{ setLang(_gemerkt); }
+        finally{ _stillerWechsel = false; }
+      });
+    }
+  }catch(e){}
 
 
 

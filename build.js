@@ -28,7 +28,8 @@ const i18nDateien = fs.readdirSync(path.join(SRC, 'i18n'))
   .filter(f => f.endsWith('.js'))
   .sort((a, b) => (a === 'de.js' ? -1 : b === 'de.js' ? 1 : a.localeCompare(b)));
 const i18n = i18nDateien.map(f => read('i18n', f)).join('');
-const js = man.js.map(f => read('js', f)).join('').replace('@@I18N@@\n', i18n);
+const jsRoh = man.js.map(f => read('js', f)).join('');
+const js = jsRoh.replace('@@I18N@@\n', i18n);
 
 // ---------- Der Bau prueft, ob das Ergebnis ueberhaupt laeuft (Runde 90) ----------
 //
@@ -286,11 +287,67 @@ for (const alt of fs.existsSync(schriftZiel) ? fs.readdirSync(schriftZiel) : [])
   if (alt.endsWith('.woff2')) fs.unlinkSync(path.join(schriftZiel, alt));   // Reste vom letzten Bau
 }
 
+// ---------- Runde 103: Die App-Fassung traegt nur Deutsch, die uebrigen sieben liegen daneben ----
+//
+// Gemessen: Die acht Sprachpakete sind ~620 KB der 932 KB grossen App-Datei — zwei Drittel dessen,
+// was WebKit beim Start parsen muss, und davon liest die App immer genau EINES. Deutsch bleibt
+// eingebettet, weil es die Rueckfallsprache ist (tx() greift darauf zurueck, wenn ein Schluessel
+// fehlt) und weil die App ohne jede Nachladerei anlaufen koennen muss.
+//
+// Die sieben uebrigen werden einzelne Dateien, die `ladeSprachpaket()` in 01-sprachpakete.js bei
+// Bedarf holt. Sie laufen im GLOBALEN Bereich — CONTENT liegt in der gemeinsamen IIFE und ist von
+// dort unerreichbar. Deshalb die Huelle unten: eigenes CONTENT, am Ende an die Bruecke uebergeben.
+// So bleibt die Quelldatei in src/i18n unveraendert brauchbar fuer beide Fassungen.
+//
+// Wie bei den Schriften nur die App-Fassung: dist/lucenta.html traegt weiter alle acht Pakete im
+// Quelltext. Sie wird einzeln verschickt und ohne Server geoeffnet; nachgeladene Dateien zeigten
+// dort ins Leere. Alle Pruefungen ausser pruef-app messen genau diese Fassung.
+const SPRACH_ORDNER = 'sprachen';
+const sprachZiel = path.join(path.dirname(OUT), SPRACH_ORDNER);
+fs.mkdirSync(sprachZiel, { recursive: true });
+for (const alt of fs.readdirSync(sprachZiel)) {
+  if (alt.endsWith('.js')) fs.unlinkSync(path.join(sprachZiel, alt));   // Reste vom letzten Bau
+}
+
+if (!/var\s+SPRACHQUELLEN\s*=\s*\{\s*\}/.test(jsRoh)) {
+  console.error('\nBau abgebrochen: `var SPRACHQUELLEN = {}` steht nicht mehr in\n' +
+                'src/js/01-sprachpakete.js. Dort setzt dieser Schritt die sieben nachladbaren\n' +
+                'Pakete ein — ohne die Stelle traege die App-Fassung stillschweigend nur Deutsch,\n' +
+                'und sieben Sprachen waeren nicht mehr erreichbar.\n');
+  process.exit(1);
+}
+
+const sprachQuellen = {};
+let sprachBytes = 0;
+for (const datei of i18nDateien) {
+  const code = path.basename(datei, '.js');
+  if (code === 'de') continue;
+  const gehuellt = '(function(){var reg=(typeof window!=="undefined")&&window.__lucentaSprachpaket;' +
+                   'if(!reg)return;var CONTENT={};\n' + read('i18n', datei) +
+                   '\nfor(var k in CONTENT)reg(k,CONTENT[k]);})();';
+  const inhalt = fuerAppEntschlacken(gehuellt, 'js');
+  // Name aus dem Inhalt, genau wie bei den Schriften: Ein alter Stand im WebView-Zwischenspeicher
+  // kann so nicht stillschweigend weiterverwendet werden.
+  const marke = require('crypto').createHash('sha256').update(inhalt).digest('hex').slice(0, 10);
+  const name = `${code}-${marke}.js`;
+  fs.writeFileSync(path.join(sprachZiel, name), inhalt);
+  sprachBytes += Buffer.byteLength(inhalt);
+  sprachQuellen[code] = `${SPRACH_ORDNER}/${name}`;
+}
+if (Object.keys(sprachQuellen).length !== i18nDateien.length - 1) {
+  console.error('\nBau abgebrochen: es wurden ' + Object.keys(sprachQuellen).length +
+                ' Sprachdateien geschrieben, erwartet waren ' + (i18nDateien.length - 1) + '.\n');
+  process.exit(1);
+}
+
+const i18nApp = read('i18n', 'de.js') +
+                '\n  SPRACHQUELLEN = ' + JSON.stringify(sprachQuellen) + ';\n';
+
 // Die App-Fassung wird aus den EINZELNEN Teilen neu gesetzt, nicht aus dem fertigen HTML: So
 // bekommt esbuild das CSS als CSS und das JavaScript als JavaScript. Ueber die fertige Seite
 // koennte es nicht unterscheiden.
 const cssApp = fuerAppEntschlacken(css, 'css');
-const jsApp  = fuerAppEntschlacken(js, 'js');
+const jsApp  = fuerAppEntschlacken(jsRoh.replace('@@I18N@@\n', i18nApp), 'js');
 const htmlRoh = read('index.head.html') + '<style>' + cssApp + '</style>' +
                 read('index.body.html') + '<script>' + jsApp + '</script>' + read('index.tail.html');
 
@@ -325,3 +382,5 @@ console.log('dist/lucenta.html  %s KB roh, %s KB gzip  (%d CSS-, %d JS-Teile, %d
   i18nDateien.length);
 console.log('dist/index.html    %s KB (App-Fassung) + %d Schriften als Dateien (%s KB)',
   (Buffer.byteLength(htmlApp) / 1024).toFixed(1), schriftNr, (schriftBytes / 1024).toFixed(1));
+console.log('dist/sprachen/     %d Pakete zum Nachladen (%s KB), Deutsch bleibt eingebettet',
+  Object.keys(sprachQuellen).length, (sprachBytes / 1024).toFixed(1));
