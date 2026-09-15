@@ -227,9 +227,59 @@ fs.writeFileSync(OUT, html);
 //
 // lucenta.html bleibt der Hauptname: Alle Werkzeuge und der lokale Vorschau-Server zeigen
 // darauf, und die Datei wird auch einzeln verschickt und als Artefakt veroeffentlicht.
-fs.writeFileSync(path.join(path.dirname(OUT), 'index.html'), html);
+//
+// ---------- Runde 102: Die App-Fassung traegt die Schriften ALS DATEIEN ----------
+//
+// Gemessen auf dem iPhone-18-Pro-Simulator (iOS 27): Startseite sichtbar nach 7,6 s im
+// Debug-Bau, 3,4 s im Release-Bau. Von den 1,5 MB der Datei sind 240 KB base64-Schriften
+// (fuenf Schnitte), und die stehen in einer CSS-Regel im <style> — der Parser muss sie also
+// mitten im Aufbau der Seite dekodieren, bevor irgendetwas erscheint.
+//
+// Als eigene Dateien holt WebKit sie NEBEN dem Aufbau, und `font-display:swap` (steht bereits in
+// 00-schriften.css) laesst den Text sofort in der Rueckfallschrift erscheinen. Die Schriften
+// tauschen sich danach still ein.
+//
+// Warum nur index.html und nicht auch lucenta.html: Das Projekt liefert bewusst EINE Datei —
+// lucenta.html wird einzeln verschickt, als Artefakt veroeffentlicht und direkt im Browser
+// geoeffnet; extern verlinkte Schriften wuerden dort ins Leere zeigen. Die acht Pruefungen und der
+// Vorschau-Server zeigen ebenfalls auf lucenta.html und messen damit weiter die vollstaendige
+// Fassung. Nur die App-Huelle (Capacitor laedt index.html aus dem Bundle, wo die Schriften
+// daneben liegen) bekommt die aufgeteilte Fassung.
+const SCHRIFT_ORDNER = 'schriften';
+const schriftZiel = path.join(path.dirname(OUT), SCHRIFT_ORDNER);
+fs.mkdirSync(schriftZiel, { recursive: true });
+for (const alt of fs.existsSync(schriftZiel) ? fs.readdirSync(schriftZiel) : []) {
+  if (alt.endsWith('.woff2')) fs.unlinkSync(path.join(schriftZiel, alt));   // Reste vom letzten Bau
+}
+
+let schriftNr = 0, schriftBytes = 0;
+const htmlApp = html.replace(
+  /url\(data:font\/woff2;base64,([A-Za-z0-9+/=]+)\)/g,
+  (_treffer, b64) => {
+    schriftNr++;
+    const daten = Buffer.from(b64, 'base64');
+    // Der Name kommt aus dem Inhalt, nicht aus der Reihenfolge: So aendert sich der Dateiname nur,
+    // wenn sich die Schrift aendert, und ein alter Stand im WebView-Zwischenspeicher kann nicht
+    // stillschweigend weiterverwendet werden.
+    const marke = require('crypto').createHash('sha256').update(daten).digest('hex').slice(0, 10);
+    const name = `s${schriftNr}-${marke}.woff2`;
+    fs.writeFileSync(path.join(schriftZiel, name), daten);
+    schriftBytes += daten.length;
+    return `url(${SCHRIFT_ORDNER}/${name})`;
+  }
+);
+if (schriftNr === 0) {
+  console.error('\nBau abgebrochen: keine eingebetteten Schriften gefunden.\n' +
+                'Erwartet wurde url(data:font/woff2;base64,...) in src/styles/00-schriften.css.\n' +
+                'Wurde die Einbettung geaendert, muss dieser Schritt mitgeaendert werden — sonst\n' +
+                'traegt die App-Fassung stillschweigend keine Schriften mehr.\n');
+  process.exit(1);
+}
+fs.writeFileSync(path.join(path.dirname(OUT), 'index.html'), htmlApp);
 
 const gz = require('zlib').gzipSync(Buffer.from(html), { level: 9 }).length;
 console.log('dist/lucenta.html  %s KB roh, %s KB gzip  (%d CSS-, %d JS-Teile, %d Sprachen)',
   (Buffer.byteLength(html) / 1024).toFixed(1), (gz / 1024).toFixed(1), man.css.length, man.js.length,
   i18nDateien.length);
+console.log('dist/index.html    %s KB (App-Fassung) + %d Schriften als Dateien (%s KB)',
+  (Buffer.byteLength(htmlApp) / 1024).toFixed(1), schriftNr, (schriftBytes / 1024).toFixed(1));

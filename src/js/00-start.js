@@ -9,7 +9,22 @@
   // Fehlerkaskade nicht denselben Hinweis im Sekundentakt wiederholt. Ersetzt keine echte
   // Fehlerbehandlung an der jeweiligen Stelle, sondern ist bewusst nur das letzte Sicherheitsnetz.
   var lastGlobalErrorToast = 0;
-  function notifyUnexpectedError(){
+  function notifyUnexpectedError(ereignis){
+    // Runde 102: Das Netz zeigte nur den Hinweis und verschwieg, WAS schiefging. In der
+    // Capacitor-Huelle ist das teuer — dort gibt es keine Entwicklerkonsole zum Nachsehen, und im
+    // Xcode-Log stand nur Capacitors nichtssagendes "JS Eval error A JavaScript exception
+    // occurred". console.error landet ueber Capacitors Console-Bruecke im Xcode-Log und macht den
+    // Fehler damit ueberhaupt erst auffindbar. Geht nicht nach aussen: console.error schreibt in
+    // die Konsole, nicht ins Netz.
+    try{
+      // Bewusst ohne deutschen Klartext: tools/audit_i18n.py verbietet deutsche Literale im
+      // JavaScript, damit kein sichtbarer Text an der Uebersetzung vorbeigeht. Die Marke und der
+      // Fehler selbst genuegen — mehr Worte braucht ein Protokolleintrag nicht.
+      var grund = ereignis && (ereignis.reason || ereignis.error || ereignis.message);
+      console.error('[Lucenta]',
+                    (grund && (grund.stack || grund.message)) || grund || (ereignis && ereignis.type),
+                    ereignis && ereignis.filename ? '@' + ereignis.filename + ':' + ereignis.lineno : '');
+    }catch(e){}
     var now = Date.now();
     if (now - lastGlobalErrorToast < 4000) return;
     lastGlobalErrorToast = now;

@@ -14,6 +14,48 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Schriften aus der HTML geloest (nur die App-Fassung) + Fehler werden endlich protokolliert
+- **Auftrag:** „das zuende machen und die schriften."
+
+**1. Schriften als Dateien — nur fuer die App.** Von den 1,5 MB der Seite waren 240 KB
+base64-Schriften (fuenf Schnitte) in einer CSS-Regel im `<style>`; der Parser musste sie mitten im
+Seitenaufbau dekodieren. `build.js` schreibt jetzt **zwei** Fassungen:
+- `dist/lucenta.html` — **unveraendert eine einzige Datei** mit eingebetteten Schriften. Das
+  Projektprinzip bleibt gewahrt: Diese Datei wird einzeln verschickt, als Artefakt veroeffentlicht
+  und direkt im Browser geoeffnet; extern verlinkte Schriften wuerden dort ins Leere zeigen. Alle
+  acht Pruefungen und der Vorschau-Server zeigen weiter hierauf und messen die vollstaendige Fassung.
+- `dist/index.html` (1288 KB statt 1523 KB) + `dist/schriften/*.woff2` (5 Dateien, 176 KB) — die
+  Fassung, die Capacitor aus dem Bundle laedt. Dateinamen tragen einen Inhalts-Hash, damit ein alter
+  Stand im WebView-Zwischenspeicher nicht stillschweigend weiterverwendet wird. Bricht der Bau ab,
+  wenn kein `url(data:font/woff2;base64,…)` mehr gefunden wird — sonst traegt die App-Fassung
+  irgendwann lautlos keine Schriften.
+- **Gemessen** (Playwright-WebKit, 3 Laeufe je Fassung, ueber den lokalen Server — bewusst dort statt
+  im Simulator, weil dessen Prozessstart-Rauschen die Zahlen unbrauchbar macht):
+  | Fassung | First Contentful Paint | DOMContentLoaded |
+  |---|---|---|
+  | inline (base64) | 622 / 283 / 271 ms | 320 / 137 / 113 ms |
+  | extern (Dateien) | **235 / 225 / 269 ms** | **88 / 86 / 109 ms** |
+  Beim **kalten** ersten Laden — dem App-Start-Fall — ist das erste Bild 62 % frueher da.
+  `font-display:swap` stand schon im CSS, der Text erscheint also sofort in der Rueckfallschrift.
+- **Ehrlich zur Groessenordnung:** Das sind ~100–380 ms. Gegen den WebKit-Prozessstart (3–4,5 s im
+  Simulator) und den Debug-Overhead (7,6 s vs. 3,4 s Release) ist das der kleinere Posten. Auf dem
+  Geraet, wo der Prozessstart kuerzer ist, faellt es entsprechend mehr ins Gewicht.
+- **Geprueft:** alle acht Pruefungen bestanden (fehlersuche KEINE FUNDE, pruef-nativ 27/27);
+  im Simulator laufen die Schriften sichtbar korrekt (Fraunces in der Ueberschrift, Work Sans im
+  Text, IBM Plex Mono in den Marken); Build ohne Warnungen.
+
+**2. Unerwartete Fehler werden jetzt protokolliert.** Das globale Auffangnetz in `00-start.js`
+zeigte nur den Hinweis-Toast und verschwieg, WAS schiefging — in der Huelle gibt es keine
+Entwicklerkonsole, und im Xcode-Log stand nur Capacitors nichtssagendes „JS Eval error A JavaScript
+exception occurred". Jetzt schreibt es zusaetzlich `console.error('[Lucenta]', stack…)`, was ueber
+Capacitors Console-Bruecke im Xcode-Log landet. **Bewusst ohne deutschen Klartext:**
+`tools/audit_i18n.py` verbietet deutsche Literale im JavaScript (Pruefung 6 schlug beim ersten
+Versuch genau darauf an) — die Marke und der Fehler selbst genuegen.
+- **Offen:** Der `JS Eval error` selbst ist damit noch nicht erklaert; er trat im Log **vor**
+  `WebView loaded` auf, also bevor unser Auffangnetz haengt. Verdacht bleibt Capacitors eigenes
+  Bridge-Injection-Timing. Beim naechsten Start sollte im Log stehen, ob zusaetzlich ein eigener
+  Fehler dahintersteckt.
+
 ### Startzeit gemessen: Debug 7,6 s vs. Release 3,4 s — und woher die gelben Meldungen kommen
 - **Gemeldet:** „gibt es hier wieder paar gelbe meldungen und sie braucht zu lange beim starten."
 - **Gelbe Meldungen — gemessen, nicht geraten.** Der Build hat **keine** Warnungen (sauberer Build:
