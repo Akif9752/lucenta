@@ -14,6 +14,35 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Blackscreen beim Start: iOS 27 verlangt den Scene-Lifecycle  ⚠️ WICHTIG
+- **Fehler:** „die app haengt und zeigt nur blackscreen beim oeffnen." Die App startete und war
+  Sekunden spaeter weg (Prozess nicht mehr gelistet).
+- **Diagnose:** Kein JS-Fehler in der Konsole -> nativer Absturz. Der Crash-Report
+  (`~/Library/Logs/DiagnosticReports/App-*.ips`) zeigte `EXC_BREAKPOINT` / `SIGTRAP` und als
+  oberster Frame: **`__UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption`**.
+- **Ursache:** Die Capacitor-Vorlage startet im **alten App-Lifecycle** (`UIMainStoryboardFile`,
+  kein Scene-Manifest, kein SceneDelegate). **Ab iOS 27 bricht UIKit so eine App beim Start
+  absichtlich ab.** Das fiel 100 Runden nicht auf, weil der Simulator auf iOS **26.5** lief — erst
+  seit die 26.5-Runtime geloescht ist (nur noch 27.0), stirbt die App. Auf dem iPhone des Inhabers
+  (iOS 26) lief sie deshalb noch.
+- **Aenderung (zwei Teile, beides noetig):**
+  1. `Info.plist`: `UIApplicationSceneManifest` mit einer einzigen Fenster-Szene
+     (`UIApplicationSupportsMultipleScenes=false`), `UISceneStoryboardFile=Main` und
+     `UISceneDelegateClassName=$(PRODUCT_MODULE_NAME).SceneDelegate`. `UIMainStoryboardFile` bleibt
+     als Rueckfall fuer aeltere iOS-Fassungen.
+  2. Neu `ios/App/App/SceneDelegate.swift` (in `project.pbxproj` aufgenommen): legt das Fenster zur
+     Szene an, setzt den Anfangs-Controller aus `Main.storyboard` (unseren `MainViewController`) ein
+     und macht es sichtbar.
+  **Das Manifest allein genuegt nicht** — damit startete die App zwar (kein Crash mehr), aber der
+  Bildschirm blieb **schwarz**, weil niemand das Fenster erzeugt. Genau so beobachtet.
+- **Bewusst nicht angefasst:** Capacitors `ApplicationDelegateProxy` (URL-Aufrufe, Universal Links)
+  bleibt im `AppDelegate`; in Capacitor 6 haengen diese Aufrufe dort, und sie zusaetzlich im
+  SceneDelegate zu bedienen wuerde sie doppelt ausloesen. Kommt Deep-Linking dazu, gehoert es in
+  `scene(_:openURLContexts:)` und `scene(_:continue:)`.
+- **Geprueft:** BUILD SUCCEEDED; App laeuft im iPhone-18-Pro-Simulator (iOS 27.0) stabil weiter und
+  zeigt die Startseite mit der Glass-Kopfleiste an der Dynamic Island. **Falle:** Ein erneutes
+  `npx cap add ios` wuerde Info.plist und SceneDelegate verlieren — dann beides neu anlegen.
+
 ### Mac/Simulator hingen, mobilecal stuerzte ab — Spotlight + Simulator-Erstboot
 Gemeldet: „mobilecal stuerzt staendig ab, der simulator haengt, mein gesamter mac haengt auch."
 Gemessen (leichtgewichtig, um die Last nicht zu erhoehen):

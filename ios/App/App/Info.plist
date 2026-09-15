@@ -26,6 +26,37 @@
 	<string>Lucenta sichert dein Ergebnisbild in deiner Fotomediathek, wenn du „In Fotos sichern“ antippst. Es wird nichts gelesen und nichts gesendet.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	<!-- Runde 102, vom Geraet gemeldet: "die app haengt und zeigt nur blackscreen beim oeffnen."
+	     Ursache war ein absichtlicher UIKit-Abbruch (EXC_BREAKPOINT/SIGTRAP im Frame
+	     __UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption): Die Capacitor-Vorlage
+	     startet ueber UIMainStoryboardFile im alten App-Lifecycle, und ab iOS 27 verlangt UIKit
+	     die Adoption des Scene-Lifecycles. Solange der Simulator auf iOS 26.5 lief, fiel das nicht
+	     auf; mit der 27.0-Runtime stirbt die App beim Start.
+	     Das Manifest adoptiert den Scene-Lifecycle mit einer einzigen Fenster-Szene, die dasselbe
+	     Main.storyboard laedt (dort steckt der MainViewController). Bewusst OHNE eigenen
+	     SceneDelegate: Die Bruecke kommt weiterhin aus dem Storyboard, und Capacitors
+	     ApplicationDelegateProxy im AppDelegate bleibt unberuehrt.
+	     UIMainStoryboardFile bleibt als Rueckfall fuer aeltere iOS-Fassungen stehen; sobald das
+	     Manifest da ist, gewinnt UISceneStoryboardFile. -->
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
