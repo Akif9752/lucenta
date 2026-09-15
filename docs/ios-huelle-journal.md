@@ -14,6 +14,36 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Mac/Simulator hingen, mobilecal stuerzte ab — Spotlight + Simulator-Erstboot
+Gemeldet: „mobilecal stuerzt staendig ab, der simulator haengt, mein gesamter mac haengt auch."
+Gemessen (leichtgewichtig, um die Last nicht zu erhoehen):
+
+**1. Spotlight-Sturm — teils vom Projekt verursacht, behoben.** Spitzenlast: `corespotlightd` 92 %,
+`mds_stores` 27 %, `spotlightknowledged` 8 %, Xcode 79 %. Spotlight indexierte den Projektordner:
+`node_modules` + `ios/App/Pods` (zehntausende kleine Dateien), `dist/` und `public/` (je eine
+1,5-MB-HTML mit 240 KB base64 in sehr langen Zeilen), `DerivedData` (schreibt bei jedem Build
+tausende Dateien neu). Behebung: `.metadata_never_index` in diesen Ordnern — ohne sudo, ohne
+Loeschen, umkehrbar. **Wirkung gemessen:** corespotlightd/mds_stores/Siri AI aus der Top-Liste
+verschwunden, Xcode 79 % -> 22 %, Load 3,75. Als `tools/mac_entlasten.mjs` + `npm run mac:entlasten`
+festgehalten, weil die Ordner gitignored sind und die Marker nach `npm install`/`pod install`/
+frischem Checkout fehlen wuerden.
+
+**2. mobilecal-Abstuerze + Simulator-Haenger: Simulator-Erstboot, kein Projektfehler.** Nur **ein**
+mobilecal-Crash-Report vorhanden (kein Crash-Loop). Beim ersten Start eines frisch zurueckgesetzten
+Simulators fahren Dutzende System-Apps gleichzeitig hoch; gemessen waehrend des Boots:
+`KaleidoscopePoster` 99 %, `PassbookWidgetsExtension` 60 %, `PhotosReliveWidget` 59 %, `NewsTag` 58 %
+— alles Simulator-interne Widgets. Unter der Last stuerzen einzelne System-Apps ab. Legt sich nach
+einigen Minuten.
+
+**3. Platte war knapp (88 % belegt).** Die alte **iOS-26.5-Runtime belegte 16 GB**, obwohl die zu
+Xcode 26.6 passende iOS 27.0 installiert war. Nach Rueckfrage beim Inhaber geloescht; Geraete
+21 -> 11 (weniger CoreSimulator-/Xcode-Discovery-Last). **Folge fuer die Pruefungen: Das Standard-
+Simulatorziel ist jetzt `iPhone 17` (iOS 27.0, id E9AC672C-…), nicht mehr iPhone 17 Pro (26.5).**
+Build dagegen verifiziert: SUCCEEDED ohne Warnungen (Deployment Target 15.0 deckt beides).
+
+**Nicht vom Projekt und nicht behebbar:** `Siri AI` (95 %) und `appstoreagent` (95 %) sind
+macOS-Systemdienste. Dagegen hilft nur ein Neustart des Macs — dem Inhaber so gesagt.
+
 ### Xcode/Simulator hingen — vier Ursachen, alle projektseitig  ⚠️ WICHTIG
 Gemeldet: „Xcode und der Simulator haengen sehr stark." Gemessen statt geraten (keine Streu-Prozesse,
 kein gebooteter Simulator, 69 % Speicher frei, aber Xcode dauerhaft ~17 % CPU). Vier Funde:
