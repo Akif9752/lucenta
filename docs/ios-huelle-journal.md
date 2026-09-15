@@ -14,6 +14,38 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Startzeit gemessen: Debug 7,6 s vs. Release 3,4 s — und woher die gelben Meldungen kommen
+- **Gemeldet:** „gibt es hier wieder paar gelbe meldungen und sie braucht zu lange beim starten."
+- **Gelbe Meldungen — gemessen, nicht geraten.** Der Build hat **keine** Warnungen (sauberer Build:
+  leer), und Xcodes Issue-Navigator ist leer (`XcodeListNavigatorIssues`: 0). Die gelben Zeilen
+  stehen in der **Konsole** und kommen fast alle aus der **Simulator-Runtime**, nicht aus unserem
+  Code:
+  - `Networking process took 4.54 seconds to launch` / `WebContent process took 4.15 s` /
+    `GPU process took 3.05 s` — WebKit-Hilfsprozesse, im Simulator notorisch langsam (als `fault`
+    geloggt, daher auffaellig).
+  - Dutzende `cfprefsd … Couldn't open … No such file or directory` (fehlende Preference-Dateien in
+    der Simulator-Runtime) und `UIKBRenderingLog …` (Tastatur-Rendering) — beides
+    Simulator-Interna, nicht abstellbar.
+  - **Ein echter Fund:** `⚡️ JS Eval error A JavaScript exception occurred` beim Laden. Die App
+    laeuft trotzdem durch (`WebView loaded` -> `To Native -> SplashScreen hide` -> Startseite), und
+    weder `pruef-nativ` (27/27, Capacitor nachgestellt) noch Playwright-WebKit zeigen einen
+    Seitenfehler. Verdacht: Capacitors eigenes Bridge-Injection-Timing. **Offen** — genauer
+    lokalisieren braucht den Safari-Web-Inspector am laufenden Simulator (Safari -> Entwickler ->
+    Simulator -> index.html).
+- **Startzeit gemessen** (Zeit von `simctl launch` bis die Startseite gezeichnet ist, iPhone 18 Pro,
+  iOS 27.0, je nach Neuinstallation):
+  - **Debug: 7,6 s**
+  - **Release: 3,4 s**
+  Der Debug-Build ist also **mehr als doppelt so langsam** — und `⌘R` in Xcode baut Debug. Das
+  erklaert den Eindruck „zu lange"; die Fassung, die im App Store landet, ist die schnelle.
+  Vom Rest geht ein grosser Teil auf den WebKit-Prozessstart (3–4,5 s laut Log), der im Simulator
+  deutlich langsamer ist als auf dem Geraet.
+- **Was das fuer weitere Optimierung heisst:** Die frueheren Micro-Fixes (Sternenhimmel verzoegern)
+  waren gegen diese Groessenordnungen wirkungslos, wie damals schon vermerkt. Der naechste echte
+  Hebel waere, die **240 KB base64-Schriften** aus der HTML in eigene Dateien zu loesen (der Parser
+  muss sie sonst inline dekodieren) — das beruehrt aber `build.js`, das „eine einzige Datei"-Prinzip
+  und alle acht Pruefungen. Vorher lohnt die Messung am **echten Geraet** im Release-Build.
+
 ### Blackscreen beim Start: iOS 27 verlangt den Scene-Lifecycle  ⚠️ WICHTIG
 - **Fehler:** „die app haengt und zeigt nur blackscreen beim oeffnen." Die App startete und war
   Sekunden spaeter weg (Prozess nicht mehr gelistet).
