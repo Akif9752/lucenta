@@ -14,9 +14,10 @@
     "schriften": "node tools/schriften_holen.mjs",
     "pruef-nativ": "node tools/pruef_nativ.mjs",
     "ios:claude": "node -e \"const f=require('fs');f.mkdirSync('ios/App',{recursive:true});f.copyFileSync('tools/xcode-CLAUDE.md','ios/App/CLAUDE.md');console.log('ios/App/CLAUDE.md geschrieben')\"",
-    "ios:sync": "node build.js && npx cap sync ios && npm run ios:claude",
+    "ios:sync": "node build.js && npx cap sync ios && npm run ios:schlank && npm run ios:claude",
     "store-bilder": "node tools/store_bilder.mjs",
-    "pruef-store": "python3 tools/pruef_store_texte.py"
+    "pruef-store": "python3 tools/pruef_store_texte.py",
+    "ios:schlank": "node tools/ios_public_entschlacken.mjs"
   },
   "license": "UNLICENSED",
   "devDependencies": {

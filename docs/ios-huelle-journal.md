@@ -14,6 +14,42 @@ aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`). Oberflaechenfehler werden
 Pruefpflicht (acht Durchgaenge vor jedem `src/`-Commit) liegt jetzt hier; Playwright + WebKit +
 Chromium sind installiert (`npm i -D playwright`, `npx playwright install webkit chromium`).
 
+### Xcode/Simulator hingen — vier Ursachen, alle projektseitig  ⚠️ WICHTIG
+Gemeldet: „Xcode und der Simulator haengen sehr stark." Gemessen statt geraten (keine Streu-Prozesse,
+kein gebooteter Simulator, 69 % Speicher frei, aber Xcode dauerhaft ~17 % CPU). Vier Funde:
+
+**1. Xcodes „Update to recommended settings" hatte das Projekt gebrochen.** Beim Einrichten der
+Signierung in der GUI wurden zwei Werte gesetzt, die ein CocoaPods-/Capacitor-Projekt zerlegen:
+- `IPHONEOS_DEPLOYMENT_TARGET = 27.0` im App-Target (Projekt-Ebene + Podfile sagten 13.0). Alle
+  Simulator-Geraete laufen auf iOS 26.5 -> **kein** Ziel passte mehr; jeder Build/Start lief in eine
+  unloesbare Ziel-Auflaesung. Nebenwirkung: Die App haette nur auf iOS 27+ installiert werden koennen.
+- `ENABLE_USER_SCRIPT_SANDBOXING = YES`. Die CocoaPods-Skriptphase darf damit nicht schreiben
+  (`Sandbox: rsync deny file-write-create … Capacitor.framework`) -> Build bricht ab.
+**Lehre: In Xcode bei diesem Projekt NICHT „Update to recommended settings" akzeptieren.**
+
+**2. Deployment Target 13.0 ist fuer Xcode 26 zu alt** („range of supported deployment target
+versions is 15.0 to 27.0.x"). Jetzt ueberall konsistent **15.0**: Podfile, alle vier
+pbxproj-Konfigurationen, und im `post_install` auch fuer die Pod-Targets — die Capacitor-Podspecs
+deklarieren 13.0, und CocoaPods nimmt den Podspec-Wert, nicht die Podfile-Plattform.
+
+**3. Die 1,5-MB-Seite lag ZWEIMAL im App-Bundle.** `dist/` traegt `lucenta.html` (Name, auf den alle
+Werkzeuge zeigen) und `index.html` (Name, den Capacitor laedt); `cap sync` kopiert `dist/`
+vollstaendig. Folge: 3,1 MB statt 1,5 MB im Bundle, jeder Build kopiert beide, jede Installation
+schiebt beide — und **Xcode indexiert beide** (public/ ist ein Ordnerverweis im Projekt). Eine
+1,5-MB-HTML mit 240 KB base64-Schriften in sehr langen Zeilen ist fuer den Indexer teuer, doppelt
+doppelt so teuer. Behebung: neues `tools/ios_public_entschlacken.mjs` + `npm run ios:schlank`,
+eingehaengt in `ios:sync` (nach dem Sync wird das Duplikat aus der Huelle entfernt; in `dist/` bleibt
+es, dort brauchen es die Pruefungen).
+
+**4. Der Simulator-Container war aufgeblaeht:** iPhone 17 Pro allein **2,4 GB** (die anderen 21
+Geraete je 17 MB) — 1,4 GB davon in `data/private`. `simctl erase` -> 17 MB. Ausserdem
+DerivedData 392 MB -> 20 MB (Projekt-Cache + ModuleCache, beides regenerierbar).
+
+**Ergebnis:** Build SUCCEEDED ohne Warnungen, App-Bundle mit nur `index.html`, Simulator reagiert
+wieder normal; App startet, Splash blendet weg, Startseite mit Glass-Kopfleiste an der Island.
+Zugleich damit **verifiziert**: Splashscreen und Liquid-Glass-Kopfleiste funktionieren auf dem Geraet
+(vorher nur in Playwright gesehen).
+
 ### Splashscreen: Marken-Ladebild bis die Seite bereit ist
 - **Ziel:** Die Startluecke (paar Sekunden, bis die 1,5-MB-Seite gezeichnet ist) zu einem bewussten
   Marken-Ladebild machen statt einer leeren Flaeche.

@@ -1,6 +1,6 @@
 require_relative '../../node_modules/@capacitor/ios/scripts/pods_helpers'
 
-platform :ios, '13.0'
+platform :ios, '15.0'
 use_frameworks!
 
 # Runde 102: Warnungen der Dritt-Pods (Capacitor Filesystem, CapacitorCordova/WKProcessPool)
@@ -38,6 +38,11 @@ post_install do |installer|
   # ausschliesslich die Pod-Targets in node_modules, nicht unser App-Target.
   installer.pods_project.targets.each do |t|
     t.build_configurations.each do |c|
+      # Runde 102: Die Capacitor-Podspecs deklarieren ios 13.0. Xcode 26 unterstuetzt aber erst ab
+      # 15.0 und bricht den Build mit "range of supported deployment target versions is 15.0 to
+      # 27.0.x" ab — CocoaPods nimmt den Podspec-Wert, nicht die Plattform aus der Podfile. Deshalb
+      # hier nachziehen, passend zum App-Target.
+      c.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
       c.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
       c.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
       c.build_settings['GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS'] = 'NO'
