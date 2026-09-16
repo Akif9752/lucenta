@@ -802,7 +802,6 @@
       'plus_preis_jahr_spar': '半額になります',
       'plus_aktivieren': 'Lucenta+を有効にする',
       'plus_aktiv': 'Lucenta+は有効です',
-      'plus_beenden': '無料版に戻す',
       'plus_kuendigen': '解約はiPhoneの設定で、ご自身の名前 &rarr;「サブスクリプション」からいつでも。',
       'plus_archiv': 'あなたが他の人とどこで違いやすいか &mdash; Lucenta+が保存された比較から読み取ります。',
       'aria_plus_preis': '期間を選ぶ',

@@ -798,7 +798,6 @@
       'plus_preis_jahr_spar': 'costa la metà',
       'plus_aktivieren': 'Attiva Lucenta+',
       'plus_aktiv': 'Lucenta+ è attivo',
-      'plus_beenden': 'Torna all’edizione gratuita',
       'plus_kuendigen': 'Disdici quando vuoi nelle impostazioni dell’iPhone, sotto il tuo nome &rarr; Abbonamenti.',
       'plus_archiv': 'In che cosa ti distingui di solito dagli altri: Lucenta+ lo ricava dai tuoi confronti salvati.',
       'aria_plus_preis': 'Scegli la durata',

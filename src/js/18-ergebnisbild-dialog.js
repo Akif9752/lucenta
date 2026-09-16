@@ -121,8 +121,9 @@
   // zum Entwickler-Umschalter, den es dort gab — nicht zu einem bezahlten Abo. Eine App darf ein
   // Abo gar nicht selbst beenden, sie fuehrt zur Verwaltung bei Apple. Der Knopf traegt deshalb
   // jetzt "Abo verwalten", einen Text, den es in allen acht Sprachen schon gibt (`plus_verwalten`,
-  // bisher nur in den Einstellungen benutzt). `plus_beenden` bleibt in den Paketen stehen: Ihn aus
-  // acht Dateien zu entfernen waere mehr Risiko als ein unbenutzter Schluessel wert ist.
+  // bisher nur in den Einstellungen benutzt). `plus_beenden` stand danach unbenutzt in allen acht
+  // Paketen und ist in Runde 105 aus allen acht entfernt — gleichzeitig, denn Pruefung 1 des
+  // i18n-Audits vergleicht die Schluesselmengen und schlaegt bei einer halben Loeschung an.
   function plusKnopfAnwenden(){
     var b = $('btnPlusAktivieren');
     if (!b) return;

@@ -802,7 +802,6 @@
       'plus_preis_jahr_spar': 'yarı fiyatına',
       'plus_aktivieren': 'Lucenta+&rsquo;ı etkinleştir',
       'plus_aktiv': 'Lucenta+ etkin',
-      'plus_beenden': 'Ücretsiz sürüme dön',
       'plus_kuendigen': 'İstediğin an iPhone ayarlarında adının altından &rarr; Abonelikler bölümünden iptal edebilirsin.',
       'plus_archiv': 'Başkalarından tipik olarak nerede ayrıldığın — Lucenta+ bunu kaydettiğin karşılaştırmalardan okur.',
       'aria_plus_preis': 'Süre seç',

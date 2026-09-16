@@ -205,6 +205,59 @@ async function durchlauf(reduziert){
            'abgewiesener Code schuettelt das Feld', `(${schuettel.name})`);
   }
 
+  // --- Druckzustaende (Runde 105)
+  // Warum hier: In Runde 105 blieb am Simulator jeder Druckzustand stumm — die Glasbahn aus
+  // Runde 104 ebenso wie der `transform:scale`-Druck eines gewoehnlichen Knopfs, der seit vielen
+  // Runden im Code steht. Ursache war die synthetische Beruehrung, nicht das Stilblatt; belegt
+  // ueber einen gehaltenen Mausdruck auf WebKit UND Chromium, der alle drei Regeln greifen liess.
+  // Das ist genau die Fehlerart, fuer die diese Datei gebaut wurde (gueltige Regel, nie zu sehen)
+  // — nur umgekehrt: Die Regel ist gesund, und damit sie es bleibt, wird sie jetzt gemessen.
+  // Gemessen wird der gehaltene MAUSDRUCK, weil das der einzige echte Eingabeweg ist, den
+  // Playwright anhalten kann: `touchscreen.tap()` gibt es nur als Ganzes, und von Hand
+  // verschickte Beruehrungsereignisse setzen `:active` grundsaetzlich nicht.
+  const imDruck = async (wahl, lies) => {
+    const el = await p.$(wahl);
+    if (!el) return null;
+    await el.scrollIntoViewIfNeeded(); await p.waitForTimeout(120);
+    const k = await el.boundingBox();
+    const ruhe = await el.evaluate(lies);
+    await p.mouse.move(k.x + k.width/2, k.y + k.height/2);
+    await p.mouse.down(); await p.waitForTimeout(200);
+    const gedrueckt = await el.evaluate(lies);
+    await p.mouse.up(); await p.waitForTimeout(200);
+    return { ruhe, gedrueckt };
+  };
+  const bahn = await imDruck('#haptikSchalter', el => ({
+    glas: getComputedStyle(el).webkitBackdropFilter || getComputedStyle(el).backdropFilter,
+    knopf: getComputedStyle(el.querySelector('.schalter-knopf')).width,
+  }));
+  if (!bahn){
+    pruefe(false, 'Schieber fuer den Druckzustand gefunden');
+  } else {
+    pruefe(bahn.ruhe.glas === 'none' && /blur\(8px\)/.test(bahn.gedrueckt.glas),
+           'Schieberbahn wird beim Druck glaesern', `(${bahn.ruhe.glas} -> ${bahn.gedrueckt.glas})`);
+    // Die Unschaerfe bleibt auch bei reduzierter Bewegung: Sie ist Material, keine Bewegung.
+    // Der Knopf dagegen dehnt sich dann NICHT — dafuer steht ein eigener Block im Stilblatt.
+    if (reduziert){
+      pruefe(bahn.ruhe.knopf === '27px' && bahn.gedrueckt.knopf === '27px',
+             'Schieberknopf bleibt bei reduzierter Bewegung ruhig',
+             `(${bahn.ruhe.knopf} -> ${bahn.gedrueckt.knopf})`);
+    } else {
+      pruefe(bahn.ruhe.knopf === '27px' && bahn.gedrueckt.knopf === '33px',
+             'Schieberknopf dehnt sich beim Druck',
+             `(${bahn.ruhe.knopf} -> ${bahn.gedrueckt.knopf})`);
+    }
+  }
+  const fach = await imDruck('#themeSystem', el => ({
+    glas: getComputedStyle(el).webkitBackdropFilter || getComputedStyle(el).backdropFilter,
+  }));
+  if (!fach){
+    pruefe(false, 'Segmentfach fuer den Druckzustand gefunden');
+  } else {
+    pruefe(fach.ruhe.glas === 'none' && /blur\(8px\)/.test(fach.gedrueckt.glas),
+           'Segmentfach wird beim Druck glaesern', `(${fach.ruhe.glas} -> ${fach.gedrueckt.glas})`);
+  }
+
   pruefe(!abstuerze.length, 'keine Ausnahme in der Konsole', abstuerze.join(' | '));
   await b.close();
 }

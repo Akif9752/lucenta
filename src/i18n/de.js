@@ -530,7 +530,6 @@ CONTENT.de = {
       'plus_preis_jahr_spar': 'spart die Hälfte',
       'plus_aktivieren': 'Lucenta+ aktivieren',
       'plus_aktiv': 'Lucenta+ ist aktiv',
-      'plus_beenden': 'Zur freien Fassung zurück',
       'plus_kuendigen': 'Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.',
       'plus_archiv': 'Woran du dich von anderen typischerweise unterscheidest — das liest Lucenta+ aus deinen gespeicherten Vergleichen heraus.',
       'aria_plus_preis': 'Laufzeit wählen',

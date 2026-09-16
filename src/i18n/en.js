@@ -799,7 +799,6 @@
       'plus_preis_jahr_spar': 'saves you half',
       'plus_aktivieren': 'Activate Lucenta+',
       'plus_aktiv': 'Lucenta+ is active',
-      'plus_beenden': 'Back to the free edition',
       'plus_kuendigen': 'Cancel any time in your iPhone settings under your name &rarr; Subscriptions.',
       'plus_archiv': 'Where you typically differ from other people — Lucenta+ reads that out of your saved comparisons.',
       'aria_plus_preis': 'Choose a term',

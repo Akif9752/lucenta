@@ -41,8 +41,10 @@ Aus Runde 103:
    das Abo verschenkten**, sind erledigt. Angemeldet in `MainViewController.capacitorDidLoad()` —
    **nie** in `capacitor.config.json`, die ist erzeugt.
 
-Stand der Pruefungen: `pruef-alles` ALLE 9 BESTANDEN, `fehlersuche` KEINE FUNDE auf beiden Motoren,
-`pruef-nativ` 45/45, `pruef-app` 20/20, `diff-sprachen` 127 (unveraendert).
+Stand der Pruefungen (nach Runde 105, 9,2 Minuten): `pruef-alles` ALLE 9 BESTANDEN, `fehlersuche`
+KEINE FUNDE auf beiden Motoren, `pruef-nativ` 45/45, `pruef-app` 20/20, `pruef-store` 32/32,
+`pruef-bewegung` einschliesslich der sechs neuen Druckzustands-Pruefungen, `diff-sprachen` 127
+(unveraendert).
 
 ### Als Naechstes, in dieser Reihenfolge
 
@@ -50,17 +52,20 @@ Stand der Pruefungen: `pruef-alles` ALLE 9 BESTANDEN, `fehlersuche` KEINE FUNDE 
    Simulator (iPhone 18 Pro, iOS 27) bestaetigt: **Darstellung** (drei Faecher in einer Zeile, je
    103x45 Punkte), **Sprache** (Trennlinien eingerueckt, gewaehlte Zeile nicht fett, Haekchen
    statt Fettung), **Kopfzeile** (`EINSTELLUNGEN` klein und Monospace neben der Wortmarke).
-   **Der Druckzustand blieb ungemessen** — nicht weil er fehlt, sondern weil er sich mit
-   synthetischen Beruehrungen nicht einfangen laesst. Begruendung im Eintrag „Runde 105"
-   darunter; die Beurteilung steht jetzt unter „Was nur der Inhaber kann".
-2. **Ungemessen geblieben, wenn jemand es genau wissen will:** `prefers-reduced-transparency`
-   laesst sich ueber Playwright auf **keinem** der beiden Motoren emulieren (nachgesehen:
-   `matchMedia` meldet `false`, obwohl gesetzt). Der `prefers-contrast: more`-Zweig **derselben**
-   Regel greift messbar, und der Regelinhalt ist fuer beide identisch — der Rest ist am Gerät zu
-   sehen (Bedienungshilfen > Anzeige & Textgroesse > Transparenz reduzieren).
-3. **Kleinigkeit, wenn Zeit ist:** `plus_beenden` ist seit Runde 103 ein unbenutzter Schluessel in
-   allen acht Paketen (der Knopf traegt jetzt `plus_verwalten`). Entfernen heisst: in **allen acht**
-   Dateien, sonst schlaegt Pruefung 1 des i18n-Audits an.
+   Der **Druckzustand** liess sich am Simulator nicht einfangen, ist aber inzwischen auf anderem
+   Weg geklaert: Ein gehaltener Mausdruck auf **WebKit** laesst alle drei Regeln greifen (Glasbahn,
+   Knopfbreite 27->33px, `scale(.955)` am Knopf). Das CSS ist gesund; stumm blieb die synthetische
+   Beruehrung. Seit Runde 105 messen das **sechs** Pruefungen in `pruef_bewegung.mjs`, damit es
+   nicht zurueckdriftet.
+2. **ERLEDIGT in Runde 105, mit einem Befund:** `prefers-reduced-transparency` kennt **WebKit auf
+   iOS 27 gar nicht** — am Geraet gemessen, nicht geraten (`reduce` UND `no-preference` melden
+   beide `false`; ein unterstuetztes Merkmal muesste genau eines bejahen). Der Zweig ist auf dem
+   iPhone also **toter Code**. `prefers-contrast: more` dagegen kommt an, sofort und ohne
+   Neustart. **Folge, noch offen:** Wer nur „Transparenz reduzieren" einschaltet, bekommt das Glas
+   NICHT weg — der Rueckfall, der genau fuer diesen Menschen geschrieben wurde, feuert nicht.
+   Naechster Schritt steht im Eintrag „Runde 105, Teil 2".
+3. **ERLEDIGT in Runde 105:** `plus_beenden` ist aus allen acht Paketen entfernt, der Kommentar in
+   `18-ergebnisbild-dialog.js`, der das Gegenteil behauptete, ist nachgezogen.
 
 ### Was nur der Inhaber kann — und was davon blockiert
 
@@ -74,11 +79,17 @@ Stand der Pruefungen: `pruef-alles` ALLE 9 BESTANDEN, `fehlersuche` KEINE FUNDE 
   aufloest, ist **ungeprueft**. Im Zweifel: Product > Scheme > Edit > Run > Options > StoreKit
   Configuration.
 - **Die App auf einem echten iPhone** (freie Apple-ID genuegt, 7-Tage-Signatur).
-- **Der Druckzustand, mit einem echten Finger** (Runde 105): Leuchtet die Bahn des Schiebers beim
-  Antippen auf und wird der Knopf breiter? Dasselbe am Segmentwaehler. Mit synthetischen
-  Beruehrungen ist das nicht zu sehen (siehe Eintrag „Runde 105"), und es betrifft **nicht nur**
-  die Glasarbeit aus Runde 104, sondern alle `:active`-Zustaende des Projekts. Ein Fingertipp
-  beantwortet in zwei Sekunden, was hier eine Stunde Messen nicht beantwortet hat.
+- **Der Druckzustand, mit einem echten Finger** (Runde 105): Die Regel greift auf WebKit
+  nachweislich — offen ist nur, ob iOS sie bei einem echten, kurzen Tipp auch zeigt. Mit
+  synthetischen Beruehrungen ist das grundsaetzlich nicht messbar (Begruendung im Eintrag
+  „Runde 105, Teil 2"). Ein Fingertipp auf einen Schieber beantwortet es.
+- **Eine Entscheidung: „Transparenz reduzieren" nativ nachbauen — ja oder nein?** (Runde 105)
+  WebKit auf iOS kennt das Merkmal nicht, der Rueckfall ist auf dem iPhone unerreichbar. Wer die
+  Einstellung nutzt und „Kontrast erhoehen" nicht, behaelt das Glas. Nachbauen heisst:
+  `UIAccessibility.isReduceTransparencyEnabled` in Swift lesen, auf Aenderungen hoeren, ein
+  Attribut an `:root` setzen und es in die drei Rueckfallregeln aufnehmen — Swift, zwei
+  Stilblaetter, eine Pruefung. Es ginge auch der billige Weg: den Zweig als unerreichbar
+  kommentieren und es bei „Kontrast erhoehen" lassen.
 - **Das Urteil zu zwei Aenderungen aus Runde 103**, das keine Messung ersetzt: Startet die App
   spuerbar schneller (Sprachaufteilung)? Sieht jemand mit anderer Sprache beim Start kurz Deutsch?
   Und: Faehrt die Schublade mit dem `backdrop-filter` noch geschmeidig ein? Ruckelt es, sind die
@@ -104,6 +115,87 @@ Xcode **nicht** „Update to recommended settings" akzeptieren, das hat beides s
 `node_modules` und `Pods` und der Mac haengt. Xcode legt den Code eines Debug-Baus in
 `App.debug.dylib`, nicht in `App` — wer dort nach einem Symbol sucht, findet nichts und zieht den
 falschen Schluss (in Runde 103 genau so passiert).
+
+---
+
+## 2026-09-16 (Runde 105, Teil 2) — der Druckzustand ist gesund, und ein Rueckfall ist toter Code
+
+**Auftrag des Inhabers:** die drei offenen Punkte des Uebergabe-Blocks in dieser Reihenfolge,
+`pruef-alles` am Ende, ein Commit.
+
+### 1. `:active` greift — auf WebKit nachgemessen, und jetzt festgenagelt
+
+Teil 1 dieser Runde endete mit einer offenen Frage: Am Simulator blieb jeder Druckzustand stumm.
+Die Frage war, ob die CSS-Regel nicht greift oder die synthetische Beruehrung kein `:active`
+erzeugt. Playwright kann das trennen, weil ein **gehaltener Mausdruck** ein echter Eingabeweg ist:
+
+    Schieber:        Bahn deckend -> 62 % Deckkraft + blur(8px) saturate(1.8) brightness(1.06)
+                     Knopf 27px   -> 33px
+    Segmentwaehler:  deckend      -> 58 % Deckkraft + dieselbe Unschaerfe
+    Knopf (.btn)     transform:none -> scale(.955)
+
+`:active` meldet in allen drei Faellen `true`, auf **WebKit und Chromium mit identischen Werten**.
+Das CSS ist also gesund, und die Stille am Simulator war die Messung, nicht die App.
+
+Ein gehaltener **Beruehrungs**druck bleibt unmessbar, und zwar grundsaetzlich: `touchscreen.tap()`
+gibt es nur als Ganzes, und von Hand verschickte `TouchEvent`s setzen `:active` nicht — diesen
+Zustand setzt allein der echte Eingabeweg des Browsers. (`new Touch(...)` ist in WebKit ausserdem
+kein erlaubter Konstruktor.) Der Fingertipp bleibt damit Sache des Inhabers, aber er entscheidet
+jetzt nur noch eine kleine Restfrage statt der ganzen.
+
+Nach der Projektregel gehoert eine solche Messung ins Repository, sonst driftet sie zurueck.
+Sie sitzt in `tools/pruef_bewegung.mjs` — dieselbe Fehlerart, fuer die diese Datei gebaut wurde
+(gueltige Regel, nie zu sehen), nur umgekehrt. **Sechs neue Pruefungen**, drei je Durchlauf; der
+Durchlauf mit `prefers-reduced-motion` erwartet ausdruecklich, dass die Unschaerfe bleibt (sie ist
+Material, keine Bewegung) und der Knopf sich NICHT dehnt (27px -> 27px). `pruef-bewegung` laeuft in
+`pruef-alles` mit, die Zahl der neun Pruefungen bleibt unveraendert.
+
+### 2. `prefers-reduced-transparency` kennt WebKit auf dem iPhone nicht
+
+Der Uebergabe-Block fuehrte das als „ungemessen, weil Playwright es nicht emulieren kann". Am
+Geraet geht es — nur anders als erwartet.
+
+`simctl ui <id> increase_contrast enabled|disabled` setzt „Kontrast erhoehen" direkt.
+Fuer „Transparenz reduzieren" gibt es **keinen** `simctl`-Schalter, und `defaults write
+com.apple.Accessibility ReduceTransparencyEnabled -bool true` **wirkt nicht** (der Wert steht
+danach da, die Systemmeldung fehlt) — es bleibt der Weg durch die Einstellungen-App:
+Bedienungshilfen > Anzeige & Textgroesse > „Transparenz reduzieren" (`identifier:
+REDUCE_TRANSPARENCY`; „Kontrast erhoehen" heisst dort `TEXT_COLORS_DARKEN`).
+
+Gemessen wurde mit einer Prueflseite in mobilem Safari — `simctl openurl` auf einen kleinen
+Server, die Seite zeigt `matchMedia` in grosser Schrift und hoert auf Aenderungen. Ergebnis:
+
+| Einstellung im iOS | Merkmal in WebKit | Antwort |
+|---|---|---|
+| Kontrast erhoehen: ein | `prefers-contrast: more` | **JA**, sofort, ohne Neustart |
+| Transparenz reduzieren: ein | `prefers-reduced-transparency: reduce` | nein |
+| Transparenz reduzieren: ein | `prefers-reduced-transparency: no-preference` | **auch nein** |
+
+Die dritte Zeile ist der Beweis: Ein **unterstuetztes** Merkmal muss genau einen der beiden Werte
+bejahen. Beide `nein` heisst, dass WebKit auf iOS 27 das Merkmal nicht kennt. Der Zweig
+`@media (prefers-reduced-transparency: reduce)` ist auf dem iPhone damit **toter Code** — nicht
+kaputt (in einer Kommaliste macht ein unbekanntes Merkmal nur diesen einen Zweig falsch, der
+`prefers-contrast`-Zweig daneben greift weiter), aber unerreichbar.
+
+**Was daraus folgt und noch offen ist:** Wer „Transparenz reduzieren" einschaltet und „Kontrast
+erhoehen" NICHT, behaelt das Glas. Der Rueckfall, der genau fuer diesen Menschen geschrieben
+wurde, feuert nie. Zu beheben waere das nur nativ: `UIAccessibility.isReduceTransparencyEnabled`
+lesen, auf `reduceTransparencyStatusDidChangeNotification` hoeren und das Ergebnis als Attribut
+an `:root` setzen, das die drei Rueckfallregeln zusaetzlich annehmen. Das ist ein echter Eingriff
+(Swift + zwei Stilblaetter + eine Pruefung) und **eine Entscheidung des Inhabers**, kein
+Aufraeumen — deshalb hier nur der Befund.
+
+**Eine Falle nebenbei, die eine Viertelstunde gekostet hat:** Der Zustand der Schublade laesst
+sich **nicht** ueber Bildvergleiche messen. Drei Aufnahmen desselben Zustands, je eine Sekunde
+auseinander, sind alle verschieden — der Sternenhimmel laeuft. Wer hier Hashes vergleicht,
+vergleicht Sterne. Die Media-Query direkt zu fragen ist der richtige Weg.
+
+### 3. `plus_beenden` ist weg
+
+Aus allen acht Paketen gleichzeitig entfernt (eine halbe Loeschung laesst Pruefung 1 des
+i18n-Audits anschlagen, die die Schluesselmengen vergleicht). Der Kommentar in
+`18-ergebnisbild-dialog.js` behauptete danach das Gegenteil („bleibt in den Paketen stehen") und
+ist nachgezogen — ein Kommentar, der die Vergangenheit beschreibt, ist schlimmer als keiner.
 
 ---
 
