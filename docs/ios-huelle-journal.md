@@ -7,34 +7,87 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-09-16)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-09-16, nach Runde 103)
 
-**Als Naechstes:**
-1. **Liquid Glass Schritt 2:** Schublade und Dialoge als Glass, mit denselben Rueckfaellen wie die
-   Kopfleiste (`@supports not (backdrop-filter)` und `prefers-reduced-transparency`). Schritt 1
-   (Kopfleiste) ist erledigt und am Geraet bestaetigt. Danach die Bedienelemente
-   (Knoepfe/Segmentwaehler/Schalter/Listen).
-2. **Das Urteil am Geraet zur Aufteilung der Sprachpakete** (siehe Eintrag unten): Startet die App
-   spuerbar schneller, und sieht jemand, der auf eine andere Sprache gestellt hat, beim Start
-   kurz Deutsch? Beides laesst sich nur dort beantworten, nicht in einer Messung.
+**Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
+sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
+`ios/App/CLAUDE.md` neben der `.xcodeproj` und wird von Xcode ohnehin geladen).
 
-**Arbeitsweise, die Kontingent spart (vom Inhaber ausdruecklich gewuenscht):** Lange Pruefläufe in
-**einem** Durchgang starten und nur das **Endergebnis** lesen, statt im Minutentakt den
-Zwischenstand abzufragen; Bildschirmfotos sparsam und moeglichst als Ausschnitt. Der fertige
-Sammelbefehl steht in `tools/xcode-CLAUDE.md` unter „Pruefungen buendeln, nicht pollen". Grund:
-Jede Zwischenabfrage verarbeitet den ganzen Verlauf erneut — beim Inhaber waren das 40–50 % des
-5-Stunden-Kontingents, verbraucht fuer Vorgeschichte statt fuer Arbeit.
+### Was Runde 103 erledigt hat — nicht erneut anfassen
 
-**Stand der Umgebung:** Simulatorziel ist **iPhone 18 Pro** (iOS 27.0, id
-B55215E2-9318-4732-9132-F2D7FFFC18EC); die iOS-26.5-Runtime wurde geloescht. Deployment Target 15.0,
-`ENABLE_USER_SCRIPT_SANDBOXING = NO` — in Xcode **nicht** „Update to recommended settings"
-akzeptieren, das hat beides schon einmal gebrochen. Neun Pruefungen statt acht (`pruef-app` kam
-dazu). `npm run mac:entlasten` nach jedem `npm install`/`pod install`, sonst indexiert Spotlight
-`node_modules` und `Pods` und der Mac haengt.
+1. **Sprachpakete aufgeteilt.** App-Fassung 932 -> 394 KB; Deutsch eingebettet, sieben Pakete in
+   `dist/sprachen/`, nachgeladen ueber `SPRACHQUELLEN` in `src/js/01-sprachpakete.js`.
+2. **Pruefablauf.** `npm run pruef-alles` (alle neun, ~9 min, Server kommt selbst mit),
+   `npm run pruef-schnell` (~40 s). `fehlersuche` laeuft auf **WebKit + Chromium** (26 Durchlaeufe,
+   vier gleichzeitig).
+3. **Kein Querformat, kein iPad.** Nur `Portrait`, `TARGETED_DEVICE_FAMILY = 1`, `arm64`.
+4. **Liquid Glass Schritt 2.** Schublade 82 %, Bild- und Plus-Fenster 86 %, drei Rueckfaelle
+   (kein `backdrop-filter`, `prefers-reduced-transparency`, `prefers-contrast: more`).
+5. **Die StoreKit-Bruecke** (`ios/App/App/LucentaKaeufePlugin.swift`) und **die zwei Stellen, die
+   das Abo verschenkten**, sind erledigt. Angemeldet in `MainViewController.capacitorDidLoad()` —
+   **nie** in `capacitor.config.json`, die ist erzeugt.
 
-**Offen geblieben:** Capacitors `JS Eval error A JavaScript exception occurred` beim Laden. Unser
-JavaScript ist es nicht — der neue Fehler-Logger in `00-start.js` schreibt nichts ins Log. Genauer
-lokalisieren braucht den Safari-Web-Inspector am laufenden Simulator.
+Stand der Pruefungen: `pruef-alles` ALLE 9 BESTANDEN, `fehlersuche` KEINE FUNDE auf beiden Motoren,
+`pruef-nativ` 45/45, `pruef-app` 20/20, `diff-sprachen` 127 (unveraendert).
+
+### Als Naechstes, in dieser Reihenfolge
+
+1. **Der `JS Eval error A JavaScript exception occurred`** beim Laden. Steht seit Runde 102 offen
+   und ist der aelteste ungeklaerte Punkt. **Unser** JavaScript ist es nicht — der Fehler-Logger in
+   `00-start.js` schreibt nichts ins Log, und der Fehler erscheint **vor** `WebView loaded`, also
+   bevor unser Auffangnetz haengt. Verdacht: Capacitors eigenes Bridge-Injection-Timing.
+   Naechster Schritt: Safari-Web-Inspector am laufenden Simulator (Entwickler > Simulator >
+   index.html), Konsole beim Start mitlesen. Das ist der einzige Weg, der noch nicht versucht wurde.
+2. **Liquid Glass Schritt 3 — aber selektiv.** Die Bedienelemente. **Achtung, das ist NICHT
+   „dasselbe fuer alle Knoepfe":** Apples Leitlinie sagt ausdruecklich, dass Liquid Glass **nicht in
+   die Inhaltsschicht** gehoert („Don't use Liquid Glass in the content layer"), mit genau einer
+   Ausnahme — Bedienelemente mit einem kurzlebigen interaktiven Zustand (Schalter, Schieber) duerfen
+   beim Antippen die Glasdarstellung annehmen. Fuer Lucenta heisst das: die Schalter
+   (`role="switch"`) und allenfalls der Segmentwaehler, **nicht** die Karten, nicht die Listen,
+   nicht jeder Knopf. „Use Liquid Glass effects sparingly" steht dort woertlich.
+   Vorlage: `src/styles/00-grundlagen.css`, Suchwort `Liquid Glass`. Die drei Rueckfaelle
+   mitnehmen, sonst ist es eine halbe Aenderung.
+3. **Kleinigkeit, wenn Zeit ist:** `plus_beenden` ist seit Runde 103 ein unbenutzter Schluessel in
+   allen acht Paketen (der Knopf traegt jetzt `plus_verwalten`). Entfernen heisst: in **allen acht**
+   Dateien, sonst schlaegt Pruefung 1 des i18n-Audits an.
+
+### Was nur der Inhaber kann — und was davon blockiert
+
+- **Die zwei Abo-Produkte in App Store Connect anlegen:** `lucenta.plus.monat` (4,99 EUR) und
+  `lucenta.plus.jahr` (29,99 EUR), **genau so geschrieben**, in **derselben** Abo-Gruppe. Ohne das
+  findet `Product.products(for:)` nichts, und **ein echter Kauf ist damit noch nie gelaufen**.
+  Belegt ist der Weg bis in StoreKit hinein (Simulator: „Kaeufe wiederherstellen" oeffnet den
+  Apple-Account-Dialog aus `AppStore.sync()`), nicht der Kauf selbst.
+- **Lokal testen geht trotzdem:** `ios/App/App/Lucenta.storekit` traegt beide Produkte, das Schema
+  verweist per Pfad darauf. Das greift aber **nur beim Start aus Xcode**, und ob der Pfad richtig
+  aufloest, ist **ungeprueft**. Im Zweifel: Product > Scheme > Edit > Run > Options > StoreKit
+  Configuration.
+- **Die App auf einem echten iPhone** (freie Apple-ID genuegt, 7-Tage-Signatur).
+- **Das Urteil zu zwei Aenderungen aus Runde 103**, das keine Messung ersetzt: Startet die App
+  spuerbar schneller (Sprachaufteilung)? Sieht jemand mit anderer Sprache beim Start kurz Deutsch?
+  Und: Faehrt die Schublade mit dem `backdrop-filter` noch geschmeidig ein? Ruckelt es, sind die
+  20px Unschaerfe der erste Hebel.
+- Der Rest der Einreichung steht in `docs/app-store-start.md` (Datenschutz-URL, Support-Adresse,
+  Markenrecherche, Bildschirmfotos hochladen).
+
+### Arbeitsweise, die Kontingent spart (vom Inhaber ausdruecklich gewuenscht)
+
+Lange Pruefläufe in **einem** Durchgang starten und nur das **Endergebnis** lesen, nicht im
+Minutentakt den Zwischenstand abfragen. Bildschirmfotos sparsam: In Runde 103 liess sich die
+Anmeldung der Kauf-Bruecke am Simulator vollstaendig ueber die **Bedienhilfen-Hierarchie als Text**
+belegen (`DeviceInteractionSynthesize` liefert Pfade, kein Bild im Verlauf) — das ist der billige
+Weg und beantwortet dieselbe Frage. Grund: Jede Zwischenabfrage verarbeitet den ganzen Verlauf
+erneut; beim Inhaber waren das 40–50 % des 5-Stunden-Kontingents.
+
+### Stand der Umgebung
+
+Simulatorziel **iPhone 18 Pro** (iOS 27.0, id `B55215E2-9318-4732-9132-F2D7FFFC18EC`), die
+iOS-26.5-Runtime ist geloescht. Deployment Target 15.0, `ENABLE_USER_SCRIPT_SANDBOXING = NO` — in
+Xcode **nicht** „Update to recommended settings" akzeptieren, das hat beides schon einmal gebrochen.
+`npm run mac:entlasten` nach jedem `npm install`/`pod install`, sonst indexiert Spotlight
+`node_modules` und `Pods` und der Mac haengt. Xcode legt den Code eines Debug-Baus in
+`App.debug.dylib`, nicht in `App` — wer dort nach einem Symbol sucht, findet nichts und zieht den
+falschen Schluss (in Runde 103 genau so passiert).
 
 ---
 
