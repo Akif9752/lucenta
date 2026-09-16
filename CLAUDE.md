@@ -33,14 +33,20 @@ Vier weitere Abbruchprüfungen laufen mit: `pruefeSyntax`, `pruefeBildfarben`,
 
 ## Prüfen — vollständig, vor jedem Commit
 
-    node build.js
-    node tests/run.js              # 11 Reihen
-    python3 tools/audit_i18n.py    # 8 statische Prüfungen über alle 8 Sprachen
-    npm run diff-sprachen
-    npm run pruef-bewegung
-    npm run pruef-nativ            # 23 Prüfungen, stellt Capacitor im Browser nach
-    npm run fehlersuche            # 13 Browserkonfigurationen
-    npm run pruef-store            # Zeichenzahlen der Store-Texte
+    npm run pruef-alles       # alle neun, ~8 Minuten, bringt den Server auf 8017 selbst mit
+    npm run pruef-schnell     # Bau, Testreihen, i18n-Audit, App-Fassung — unter einer Minute
+
+Seit Runde 103 ein Befehl statt neun (`tools/pruef_alles.mjs`): Der Server wird selbst gestartet
+(oder ein laufender mitbenutzt), die Prüfungen laufen billig vor teuer, jede bekommt eine Zeile,
+die vollständige Ausgabe liegt in `.pruef-log/<name>.log`. Bricht der Bau ab, hört es auf.
+
+**In dieser Umgebung fehlt WebKit**, und zwei der neun brauchen es:
+
+    LUCENTA_MOTOREN=chromium npm run pruef-alles
+
+Ohne das meldet `fehlersuche` die WebKit-Hälfte laut als **ungemessen** (sie bricht nicht ab) und
+`pruef-app` schlägt fehl, weil es nur WebKit kennt — beides gehört dann so ins Protokoll, nicht
+stillschweigend übersprungen. Die einzelnen neun Befehle stehen in `tools/xcode-CLAUDE.md`.
 
 Acht Sprachen: de, en, es, fr, it, pt, tr, ja. Wer eine neunte ergänzt, ändert **nicht**
 `tools/_addkeys.py` von Hand — es liest `src/i18n` selbst. Die Zahl in `tests/lang_test.js`
@@ -49,11 +55,12 @@ sonst lautlos aus `CONTENT`.
 
 ## Was diese Umgebung nicht kann — und ein Mac schon
 
-Die Prüfungen laufen alle auf **Chromium**. Safari auf dem iPhone ist **WebKit**. Im
+Die Prüfungen laufen hier alle auf **Chromium**. Safari auf dem iPhone ist **WebKit**. Im
 Container lässt sich WebKit nicht nachinstallieren (die Netzwerkregeln blockieren den
 Download). Auf einem Mac ist genau das der wertvollste Beitrag:
 
-- `npm run fehlersuche` gegen WebKit laufen lassen
+- `npm run fehlersuche` läuft seit Runde 103 von sich aus auf **beiden** Motoren, WebKit zuerst —
+  auf dem Mac also ohne Zutun. Hier bleibt diese Hälfte ungemessen und wird als solche gemeldet.
 - Xcode-Simulator öffnen und `dist/lucenta.html` in Safari prüfen — braucht **keinen**
   bezahlten Developer-Account
 - besonders ansehen: `@property` (3×, trägt die Drehung des Strahlenkranzes; Safari ab 16.4),

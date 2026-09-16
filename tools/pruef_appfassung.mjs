@@ -23,7 +23,8 @@
 import { webkit } from 'playwright';
 import { existsSync, readdirSync } from 'node:fs';
 
-const BASIS = 'http://127.0.0.1:8017';
+// Runde 103: Der Port kommt von pruef_alles.mjs, wenn es den Server selbst mitbringt.
+const BASIS = process.env.LUCENTA_BASIS || 'http://127.0.0.1:8017';
 let fehler = 0, gepruft = 0;
 const ok = (bedingung, text, zusatz = '') => {
   gepruft++;

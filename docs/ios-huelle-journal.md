@@ -38,6 +38,95 @@ lokalisieren braucht den Safari-Web-Inspector am laufenden Simulator.
 
 ---
 
+## 2026-09-16 (Runde 103) — Pruefablauf: ein Befehl, halbe Zeit, und WebKit endlich dabei
+
+**Auftrag:** „muessten bzw sollten wir die app architektur optimieren bzw verbessern damit
+arbeitsablaeufe smoother laufen?" — Antwort war: die **Architektur** nicht (die 24 Teile in einer
+IIFE sind nicht das, was bremst; ein Umbau auf Module traefe `build.js`, die vier
+Abbruchpruefungen, `tests/run.js` und alle neun Pruefungen gleichzeitig, ohne etwas zu gewinnen),
+der **Pruefablauf** sehr wohl. Drei Aenderungen, alle in `tools/`, `src/` unberuehrt.
+
+### 1. Die Fehlersuche lief auf der falschen Maschine
+
+`tools/fehlersuche.mjs` mass ausschliesslich **Chromium**. Das iPhone benutzt WebKit. Das war in
+der Browsersitzung unvermeidlich (dort ist der Download gesperrt) und ist auf diesem Rechner
+schlicht ein Loch gewesen — die Wurzel-`CLAUDE.md` nennt „`npm run fehlersuche` gegen WebKit
+laufen lassen" seit Runden den wertvollsten Beitrag eines Macs, und getan hat es niemand.
+
+Jetzt laufen **beide**, WebKit zuerst, der Motor steht in der Kennung jedes Fundes
+(`webkit/320px/hell/tr/…`). 26 Durchlaeufe statt 13. **Ergebnis: KEINE FUNDE, auch auf WebKit** —
+das ist der eigentliche Gewinn dieser Aenderung, denn diese Antwort gab es 103 Runden lang nicht.
+
+Fehlt ein Motor (Browsersitzung), bricht die Pruefung **nicht** ab, sondern meldet laut, wie viele
+Durchlaeufe ungemessen blieben. Eine uebersprungene Messung, die man nicht sieht, ist schlimmer
+als keine.
+
+### 2. Dreizehn Browserstarts nacheinander
+
+Jeder Durchlauf startete einen **eigenen** Browser, alle nacheinander. Jetzt ein Browser je
+Motor, je Durchlauf nur ein eigener Kontext (Speicher, Farbschema, Breite bleiben getrennt), vier
+gleichzeitig: **26 Durchlaeufe in 4:00**, gemessen.
+
+Zum Vorher-Wert bin ich ehrlich: Eine genaue Zahl habe ich vom alten Stand **nicht**. Der erste
+Sammellauf dieser Sitzung wurde nach zehn Minuten abgeschnitten, waehrend die Fehlersuche noch
+lief; sie brauchte danach losgeloest noch mehrere Minuten. Belegt ist also „13 Durchlaeufe,
+deutlich ueber acht Minuten" gegen „26 Durchlaeufe, 4:00" — nicht mehr.
+
+Dasselbe bei `diff-sprachen`, das dadurch zum neuen Engpass wurde (6:22): Es fuhr acht Rundgaenge
+nacheinander auf einer Seite, obwohl sie unabhaengig sind — sie brauchen nur denselben
+Datenbestand, und der liegt vollstaendig im localStorage. Jetzt wird der Bestand **einmal**
+erzeugt (der Fragebogen muss dafuer wirklich durchlaufen werden) und jeder Sprache als eigener
+Kontext mitgegeben. **2:03 statt 6:22.**
+
+**Der Beleg, dass dabei nichts verlorenging, sind die Zahlen:** vorher 32/19/24/15/14/10/13,
+Summe 127 — nachher identisch, Zeichen fuer Zeichen. Ein Rundgang, der unter Last eine Ansicht
+verpasst, waere genau daran aufgefallen.
+
+Was die Parallelitaet kostet, steht im Kopf der Datei: Beide Werkzeuge warten an vielen Stellen
+feste Zeiten ab. Unter Last koennen die knapp werden — das ergaebe einen **falschen** Fund, nicht
+einen verschwiegenen, also die Richtung, in der ein Fehler auffaellt. Vier ist deshalb bewusst
+niedrig; `LUCENTA_PARALLEL=1` und `LUCENTA_NUR="320px/hell/tr"` fahren einen einzelnen Fund nach.
+
+### 3. Neun Befehle und ein Server von Hand
+
+    npm run pruef-alles       # alle neun, bringt den Server selbst mit
+    npm run pruef-schnell     # Bau, Testreihen, Audit, App-Fassung — unter einer Minute
+
+`tools/pruef_alles.mjs` startet den Server auf 8017 selbst (oder benutzt einen laufenden mit),
+fuehrt billig vor teuer aus, zeigt **eine Zeile je Pruefung** und legt die vollstaendige Ausgabe
+in `.pruef-log/<name>.log`. Bricht der Bau ab, hoert es auf — alles Weitere wuerde einen Stand
+messen, den es nicht gibt. Der Exit-Code passt zum Ergebnis.
+
+Der Server ist bewusst ein eigener kleiner Node-Server und nicht `python3 -m http.server`: Er
+endet mit dem Prozess. Ein verwaister Server auf 8017 war bisher eine wiederkehrende Stolperfalle.
+
+**Ein eigener Fehler dabei, gefunden bevor er schadete:** Der erste Entwurf behandelte
+`diff-sprachen` als „Bericht" und setzte sein Ergebnis pauschal auf bestanden — womit ein
+**Absturz** dieses Werkzeugs (es wirft bei „Fragebogen nicht durchgelaufen") lautlos als gruen
+durchgegangen waere. Jetzt zaehlt auch dort der Exit-Code; nur die angezeigte Zeile ist eine Zahl
+statt eines Urteils.
+
+### Ergebnis
+
+| | vorher | nachher |
+|---|---|---|
+| Befehle vor einem Commit | 9 + Server von Hand | **1** |
+| `fehlersuche` | 13 Durchlaeufe, nur Chromium, >8 min | **26 (WebKit + Chromium), 4:00** |
+| `diff-sprachen` | 6:22 | **2:03** |
+| ganze Pflichtrunde | ~20 Minuten (geschaetzt) | **7,8 Minuten** (gemessen) |
+
+**Geprueft:** `npm run pruef-alles` — ALLE 9 BESTANDEN, darunter `fehlersuche` mit KEINE FUNDE
+ueber beide Motoren und `diff-sprachen` mit unveraenderten 127. Die Zahlen oben sind gemessen,
+nicht geschaetzt.
+
+**Was ich NICHT geaendert habe, und warum:** Die App-Architektur. Die gemeinsame IIFE sieht nach
+Umbaubedarf aus, ist aber nicht der Engpass — die App-Datei ist nach der Sprachaufteilung 394 KB,
+und der Start wird vom WebKit-Prozessstart bestimmt (1,3–4,5 s im Simulator), nicht von unserem
+Text. Ein Modulumbau waere hohes Risiko fuer nichts, solange StoreKit-Bruecke, die zwei
+Freischaltstellen und die Info.plist-Punkte offen sind.
+
+---
+
 ## 2026-09-16 (Runde 103) — Sprachpakete aufgeteilt: App-Fassung 932 -> 394 KB
 
 **Auftrag:** Punkt 1 der Uebergabe. Die acht Sprachpakete waren ~620 KB der 932 KB grossen

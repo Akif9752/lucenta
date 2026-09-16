@@ -38,23 +38,47 @@ committet, hat das letzte Wort.
 
 Was damit auf diese Sitzung uebergeht, ist die **Pruefpflicht**. Sie stand bisher drueben und
 ist kein Formalismus: Die Oberflaeche traegt acht Sprachen, zwei Farbmodi, Bildschirmbreiten
-von 320 bis 430 Punkten und einen Bau, der bei vier Verstoessen abbricht. Vor jedem Commit,
-der `src/` beruehrt:
+von 320 bis 430 Punkten und einen Bau, der bei vier Verstoessen abbricht.
+
+**Vor jedem Commit, der `src/` beruehrt — ein Befehl:**
+
+    npm run pruef-alles       # alle neun, ~8 Minuten, bringt den Server selbst mit
+
+**Waehrend der Arbeit, fuer den Zwischenstand:**
+
+    npm run pruef-schnell     # Bau, Testreihen, i18n-Audit, App-Fassung — unter einer Minute
+
+`pruef-alles` (Runde 103, `tools/pruef_alles.mjs`) startet den Server auf Port 8017 selbst,
+benutzt einen bereits laufenden mit, fuehrt billig vor teuer aus, zeigt eine Zeile je Pruefung
+und legt die vollstaendige Ausgabe in `.pruef-log/<name>.log`. Bricht der Bau ab, hoert es auf —
+alles Weitere wuerde einen Stand messen, den es nicht gibt. Der Exit-Code passt zum Ergebnis.
+
+Die neun einzeln, falls eine davon nachzufahren ist:
 
     node build.js
     node tests/run.js              # 11 Reihen
     python3 tools/audit_i18n.py    # 8 statische Pruefungen ueber alle 8 Sprachen
-    npm run diff-sprachen
-    npm run pruef-bewegung
-    npm run pruef-nativ            # 27 Pruefungen, stellt Capacitor im Browser nach
-    npm run fehlersuche            # 13 Browserkonfigurationen, misst Kontrast im echten Browser
     npm run pruef-store            # Zeichenzahlen der Store-Texte
     npm run pruef-app              # 18 Pruefungen an dist/index.html (die Fassung im App-Bundle)
+    npm run pruef-nativ            # 27 Pruefungen, stellt Capacitor im Browser nach
+    npm run pruef-bewegung
+    npm run diff-sprachen          # ein BERICHT, kein Bestanden/Durchgefallen
+    npm run fehlersuche            # 26 Durchlaeufe: 13 Konfigurationen x WebKit + Chromium
 
-Die letzten fuenf brauchen Playwright und einen lokalen Server auf Port 8017
-(`cd dist && python3 -m http.server 8017 --bind 127.0.0.1`). Fehlt Playwright:
-`npm i -D playwright && npx playwright install chromium webkit`. Laesst sich eine Pruefung auf
-diesem Rechner nicht ausfuehren, gehoert das ins Journal — nicht stillschweigend uebersprungen.
+Die letzten fuenf brauchen Playwright und den Server auf Port 8017
+(`cd dist && python3 -m http.server 8017 --bind 127.0.0.1` — oder eben `pruef-alles`). Fehlt
+Playwright: `npm i -D playwright && npx playwright install chromium webkit`. Laesst sich eine
+Pruefung auf diesem Rechner nicht ausfuehren, gehoert das ins Journal — nicht stillschweigend
+uebersprungen.
+
+**Die `fehlersuche` laeuft seit Runde 103 auf BEIDEN Motoren**, WebKit zuerst. Vorher war sie
+reines Chromium — die Maschine, die das iPhone nicht benutzt. Zum Nachfahren eines einzelnen
+Fundes:
+
+    LUCENTA_MOTOREN=webkit LUCENTA_PARALLEL=1 LUCENTA_NUR="320px/hell/tr" npm run fehlersuche
+
+`LUCENTA_PARALLEL=1` ist dabei wichtig: Vier gleichzeitige Durchlaeufe koennen eine feste
+Wartezeit knapp werden lassen, und ein knapp gemessener Fund ist ein falscher Fund.
 
 **`pruef-app` ist neu (Runde 102) und schliesst eine Luecke:** Seit dieser Runde gibt es ZWEI
 gebaute Fassungen. `dist/lucenta.html` ist die Ein-Datei-Fassung mit eingebetteten Schriften,
@@ -71,13 +95,14 @@ Sprache ankommt), nicht den Text.
 
 ### Pruefungen buendeln, nicht pollen
 
-Die letzten fuenf Pruefungen brauchen zusammen rund 20 Minuten. Sie **in einem Durchgang** starten
-und nur das **Endergebnis** lesen — nicht im Minutentakt nach dem Zwischenstand fragen:
+Dafuer ist `npm run pruef-alles` da. Es laeuft rund acht Minuten; wenn die Umgebung einen Befehl
+nach zehn Minuten abschneidet, losgeloest starten und **einmal** nachsehen:
 
-    cd dist && python3 -m http.server 8017 --bind 127.0.0.1 &
-    cd .. && for p in diff-sprachen pruef-bewegung pruef-nativ fehlersuche pruef-app; do
-      echo "== $p =="; npm run $p 2>&1 | tail -5
-    done > /tmp/pruefungen.log 2>&1
+    nohup npm run pruef-alles > /tmp/pruef.log 2>&1 &
+    # spaeter, ein einziges Mal:
+    tail -20 /tmp/pruef.log
+
+Nicht im Minutentakt nach dem Zwischenstand fragen.
 
 Der Grund ist nicht Bequemlichkeit: Jede Zwischenabfrage ist ein eigener Durchgang, in dem der
 ganze bisherige Verlauf erneut verarbeitet wird. Auf dem 5-Stunden-Kontingent des Inhabers waren

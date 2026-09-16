@@ -12,6 +12,33 @@
 //
 //   python3 -m http.server 8017 --directory dist &
 //   node tools/fehlersuche.mjs
+//
+// ---------- Runde 103: zwei Motoren, und mehrere Durchlaeufe gleichzeitig ----------
+//
+// Zwei Dinge waren hier falsch, beide vom Anfang an:
+//
+// 1. Gemessen wurde ausschliesslich auf CHROMIUM. Das iPhone benutzt WebKit. Die Browsersitzung
+//    hatte keine Wahl (der Download von WebKit ist dort gesperrt), aber auf dem Mac ist er da —
+//    und zwei der teuersten Fehler des Projekts (die Silbentrennung, die beiden
+//    Scroll-/Safe-Area-Fehler) waren 99 Runden lang genau deshalb unentdeckt. Jetzt laufen
+//    standardmaessig BEIDE: WebKit als Schiedsrichter, Chromium weiterhin mit, weil es in
+//    hundert Runden reale Funde geliefert hat. Der Motor steht in der Kennung jedes Fundes.
+//    Einschraenken mit LUCENTA_MOTOREN=webkit (oder =chromium).
+//
+// 2. Jeder Durchlauf startete einen EIGENEN Browser, und alle liefen nacheinander — 13 Starts,
+//    ueber zehn Minuten. Jetzt wird je Motor ein Browser gestartet und jeder Durchlauf bekommt
+//    nur einen eigenen Kontext (eigener Speicher, eigenes Farbschema, eigene Breite — daran
+//    aendert sich nichts). Vier laufen gleichzeitig; LUCENTA_PARALLEL setzt die Zahl.
+//
+// Was die Parallelitaet kostet, und warum es vertretbar ist: Die Messungen warten an vielen
+// Stellen feste Zeiten ab (Animationen, das Neuladen der Beispieldaten). Unter Last koennen die
+// knapp werden, und eine knappe Wartezeit ergibt einen FALSCHEN Fund, nicht einen verschwiegenen
+// — die Richtung, in der ein Fehler auffaellt statt sich zu verstecken. Vier ist deshalb bewusst
+// niedrig gewaehlt. Wer einen Fund nicht glaubt, faehrt ihn mit LUCENTA_PARALLEL=1 nach.
+//
+// Die AUSGABE bleibt trotzdem in der Reihenfolge der Durchlaeufe: Jeder Durchlauf sammelt seine
+// Zeilen selbst, gemeldet wird am Ende in der Reihenfolge der Liste. Sonst waere der Bericht bei
+// jedem Lauf anders sortiert, und "derselbe Fund wie gestern?" nicht mehr beantwortbar.
 
 import { createRequire } from 'module';
 import { execSync } from 'child_process';
@@ -24,9 +51,17 @@ if (!pkg) {
   try { pkg = require_(execSync('npm root -g', {encoding:'utf8'}).trim() + '/playwright'); }
   catch (e) { console.error('Playwright nicht gefunden.'); process.exit(2); }
 }
-const { chromium } = pkg;
+const { chromium, webkit } = pkg;
 const URL = process.env.LUCENTA_URL || 'http://127.0.0.1:8017/lucenta.html';
 const START = process.env.CHROMIUM_PFAD ? {executablePath: process.env.CHROMIUM_PFAD} : {};
+// WebKit zuerst: Ist etwas grundsaetzlich kaputt, steht es im Bericht oben — und zwar in der
+// Maschine, die das iPhone wirklich benutzt.
+const MOTOREN = (process.env.LUCENTA_MOTOREN || 'webkit,chromium').split(',').map(s => s.trim()).filter(Boolean);
+const GLEICHZEITIG = Math.max(1, Number(process.env.LUCENTA_PARALLEL || 4));
+const STARTER = { webkit: () => webkit.launch(), chromium: () => chromium.launch(START) };
+for (const m of MOTOREN){
+  if (!STARTER[m]){ console.error('Unbekannter Motor: ' + m + ' (moeglich: webkit, chromium)'); process.exit(2); }
+}
 
 // Die kleinste Flaeche, die Apple in den Richtlinien fuer eine Schaltflaeche nennt.
 const MIN_TIPP = 44;
@@ -35,15 +70,14 @@ const MIN_TIPP = 44;
 // franzoesische Umschreibungen brauchen dort mehr Platz, als da ist.
 const HOEHE = 844;
 
-const fehler = [];
-const gesehen = new Set();
-function melde(text){
-  if (gesehen.has(text)) return;   // derselbe Fund in zwei Durchlaeufen ist ein Fund
-  gesehen.add(text);
-  fehler.push(text);
-  console.log('  FUND  ' + text);
+// Runde 103: Jeder Durchlauf sammelt seine Funde selbst, statt in eine gemeinsame Liste zu
+// schreiben. Bei mehreren gleichzeitig waere sonst nicht mehr vorhersagbar, WELCHER Durchlauf
+// einen doppelten Fund zuerst meldet — und der Bericht saehe bei jedem Lauf anders aus.
+// Zusammengefasst und entdoppelt wird am Ende, in der Reihenfolge der Liste.
+function sammler(){
+  const funde = [];
+  return { funde, melde: (text) => { funde.push(text) } };
 }
-function ok(text){ console.log('  ok    ' + text); }
 
 // ---------- die einzelnen Pruefungen, alle im Browser ausgefuehrt ----------
 
@@ -457,7 +491,7 @@ async function zu(p, ansicht){
   return true;
 }
 
-async function pruefeAnsicht(p, ansicht, kennung, breite){
+async function pruefeAnsicht(p, ansicht, kennung, breite, melde){
   // Einmal durch die Ansicht scrollen, bevor gemessen wird. Nicht als Schoenheitsschritt:
   // Die Merkmalskarten der Ergebnisseite stehen auf opacity:0, bis sie beim Scrollen
   // hereinkommen. Wer nur den ersten Bildschirm misst, misst die Haelfte der App nicht — und
@@ -490,15 +524,21 @@ async function pruefeAnsicht(p, ansicht, kennung, breite){
 
 // ---------- ein Durchlauf ueber alle Ansichten ----------
 
-async function durchlauf({thema, demo, plus, sprache, breite}){
-  breite = breite || 390;
-  // Runde 89: Ob die gekaufte Fassung an ist, gehoert in die Kennung — sonst stehen zwei
-  // Durchlaeufe mit demselben Namen im Bericht und man weiss bei einem Fund nicht, welcher.
-  const kennung = [breite + 'px', thema, sprache,
-                   demo ? (plus ? 'Beispielnutzerin' : 'Beispielnutzerin, frei') : 'leer'].join('/');
-  console.log('\n' + kennung);
-  const b = await chromium.launch(START);
-  const ctx = await b.newContext({viewport:{width:breite,height:HOEHE}, isMobile:true, hasTouch:true,
+// Runde 89: Ob die gekaufte Fassung an ist, gehoert in die Kennung — sonst stehen zwei
+// Durchlaeufe mit demselben Namen im Bericht und man weiss bei einem Fund nicht, welcher.
+// Runde 103: Der Motor ebenso, aus demselben Grund. Als eigene Funktion, weil die Kennung auch
+// gebraucht wird, um mit LUCENTA_NUR einen einzelnen Durchlauf nachzufahren.
+function kennungVon(l, motor){
+  return [motor, (l.breite || 390) + 'px', l.thema, l.sprache,
+          l.demo ? (l.plus ? 'Beispielnutzerin' : 'Beispielnutzerin, frei') : 'leer'].join('/');
+}
+
+async function durchlauf(lauf, motor, browser){
+  const { thema, demo, plus, sprache } = lauf;
+  const breite = lauf.breite || 390;
+  const kennung = kennungVon(lauf, motor);
+  const { funde, melde } = sammler();
+  const ctx = await browser.newContext({viewport:{width:breite,height:HOEHE}, isMobile:true, hasTouch:true,
     colorScheme: thema === 'dunkel' ? 'dark' : 'light'});
   const p = await ctx.newPage();
   const abstuerze = [];
@@ -544,18 +584,26 @@ async function durchlauf({thema, demo, plus, sprache, breite}){
   (await p.evaluate(suchVersteckteZiele)).forEach(t => melde(kennung + ': ' + t));
 
   for (const ansicht of Object.keys(WEGE)){
-    const angekommen = await zu(p, ansicht);
-    if (!angekommen){
-      // Ohne Bestand gibt es kein Ergebnis und damit richtigerweise keinen Weg dorthin.
-      if (!((ansicht === 'result' || ansicht === 'vergleich') && !demo)) melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar');
-      continue;
+    try {
+      const angekommen = await zu(p, ansicht);
+      if (!angekommen){
+        // Ohne Bestand gibt es kein Ergebnis und damit richtigerweise keinen Weg dorthin.
+        if (!((ansicht === 'result' || ansicht === 'vergleich') && !demo)) melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar');
+        continue;
+      }
+      await pruefeAnsicht(p, ansicht, kennung, breite, melde);
+    } catch (e) {
+      // Runde 103: Bisher riss eine Ausnahme hier den GANZEN Lauf ab. Die NACHBEREITUNG wirft
+      // absichtlich (fuenf Karten, vier Vorteile) — damit blieb bei einem einzigen solchen Fehler
+      // alles Uebrige ungemessen, und man sah einen Absturz statt einer Fundliste. Ein Abbruch
+      // ist ein Fund, nicht das Ende der Pruefung.
+      melde(kennung + ': Weg durch "' + ansicht + '" abgebrochen — ' + ((e && e.message) || e));
     }
-    await pruefeAnsicht(p, ansicht, kennung, breite);
   }
 
   abstuerze.forEach(a => melde(kennung + ': Ausnahme — ' + a));
-  if (!abstuerze.length) ok(kennung + ': keine Ausnahme');
-  await b.close();
+  await ctx.close();
+  return { kennung, funde };
 }
 
 const laeufe = [
@@ -582,11 +630,86 @@ const laeufe = [
   {thema:'hell',   demo:true,  plus:true,  sprache:'fr', breite:320},
   {thema:'hell',   demo:true,  plus:true,  sprache:'tr', breite:320},
 ];
-for (const l of laeufe) await durchlauf(l);
+// ---------- Runde 103: je Motor ein Browser, vier Durchlaeufe gleichzeitig ----------
+
+const NUR = process.env.LUCENTA_NUR || '';
+const aufgaben = [];
+for (const motor of MOTOREN) for (const l of laeufe){
+  if (NUR && !kennungVon(l, motor).includes(NUR)) continue;
+  aufgaben.push({ motor, lauf: l });
+}
+if (!aufgaben.length){ console.error('LUCENTA_NUR="' + NUR + '" passt auf keinen Durchlauf.'); process.exit(2); }
+
+console.log(`\n${aufgaben.length} Durchlaeufe (${MOTOREN.join(' + ')}), ${GLEICHZEITIG} gleichzeitig` +
+            (NUR ? `, gefiltert auf "${NUR}"` : ''));
+console.log(URL + '\n');
+
+// Ein Motor, der sich nicht starten laesst, ist nur dann ein Fehler, wenn er ausdruecklich
+// verlangt wurde. Die Browsersitzung im Container hat KEIN WebKit (der Download ist dort
+// gesperrt) — dieselbe Datei muss dort weiterlaufen und darf nicht mit "Executable doesn't
+// exist" abbrechen. Sie sagt dann laut, was sie NICHT gemessen hat: eine uebersprungene Messung,
+// die man nicht sieht, ist schlimmer als keine.
+const browser = {};
+for (const motor of MOTOREN){
+  try { browser[motor] = await STARTER[motor](); }
+  catch (e){
+    if (process.env.LUCENTA_MOTOREN){
+      console.error(`Motor "${motor}" laesst sich nicht starten: ${(e && e.message) || e}`);
+      process.exit(2);
+    }
+    console.log(`  ACHTUNG: Motor "${motor}" ist auf diesem Rechner nicht installiert — ` +
+                `${aufgaben.filter(a => a.motor === motor).length} Durchlaeufe UNGEMESSEN.`);
+    console.log(`  Nachholen mit: npx playwright install ${motor}\n`);
+  }
+}
+const uebrig = MOTOREN.filter(m => browser[m]);
+if (!uebrig.length){ console.error('Kein Motor verfuegbar. npx playwright install webkit chromium'); process.exit(2); }
+for (let i = aufgaben.length - 1; i >= 0; i--) if (!browser[aufgaben[i].motor]) aufgaben.splice(i, 1);
+
+const ergebnisse = new Array(aufgaben.length);
+let fertig = 0;
+let naechste = 0;
+async function arbeiter(){
+  while (true){
+    const i = naechste++;
+    if (i >= aufgaben.length) return;
+    const { motor, lauf } = aufgaben[i];
+    try {
+      ergebnisse[i] = await durchlauf(lauf, motor, browser[motor]);
+    } catch (e) {
+      // Ein Durchlauf, der abstuerzt, darf die 25 anderen nicht mitnehmen — aber er verschwindet
+      // auch nicht: Der Abbruch selbst ist der Fund.
+      const kennung = kennungVon(lauf, motor);
+      const text = kennung + ': Durchlauf abgebrochen — ' + ((e && e.message) || e);
+      ergebnisse[i] = { kennung, funde: [text] };
+    }
+    fertig++;
+    const eig = ergebnisse[i];
+    console.log(`  ${String(fertig).padStart(2)}/${aufgaben.length}  ` +
+                (eig.funde.length ? `${eig.funde.length} FUNDE  ` : 'ok        ') + eig.kennung);
+  }
+}
+await Promise.all(Array.from({ length: Math.min(GLEICHZEITIG, aufgaben.length) }, arbeiter));
+for (const motor of uebrig) await browser[motor].close();
+
+// Zusammenfassen in der Reihenfolge der Liste, nicht in der des Fertigwerdens. Derselbe Fund in
+// zwei Durchlaeufen ist ein Fund — aber der Motor steht in der Kennung, ein Fund in WebKit und
+// derselbe in Chromium sind also zwei Zeilen. Das ist gewollt: Ob ein Fehler beide Maschinen
+// betrifft oder nur die des iPhones, ist die erste Frage bei der Behebung.
+const gesehen = new Set();
+const fehler = [];
+for (const e of ergebnisse){
+  for (const f of (e ? e.funde : [])){
+    if (gesehen.has(f)) continue;
+    gesehen.add(f);
+    fehler.push(f);
+  }
+}
 
 console.log('\n======================================================');
 if (fehler.length){
-  console.log(fehler.length + ' FUNDE');
+  for (const f of fehler) console.log('  FUND  ' + f);
+  console.log('\n' + fehler.length + ' FUNDE');
   process.exit(1);
 } else {
   console.log('KEINE FUNDE');

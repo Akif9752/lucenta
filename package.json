@@ -19,7 +19,9 @@
     "pruef-store": "python3 tools/pruef_store_texte.py",
     "ios:schlank": "node tools/ios_public_entschlacken.mjs",
     "mac:entlasten": "node tools/mac_entlasten.mjs",
-    "pruef-app": "node tools/pruef_appfassung.mjs"
+    "pruef-app": "node tools/pruef_appfassung.mjs",
+    "pruef-alles": "node tools/pruef_alles.mjs",
+    "pruef-schnell": "node tools/pruef_alles.mjs --schnell"
   },
   "license": "UNLICENSED",
   "devDependencies": {
