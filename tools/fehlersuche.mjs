@@ -429,7 +429,14 @@ const WEGE = {
   // Pruefschicht erfasst — genau die Luecke, die in Runde 84 der Bezahlschranke wegen schon
   // einmal aufging. Er sitzt im Profil, weil dort in der freien Fassung das Verlaufs-Schloss
   // steht; welche der fuenf Stellen es ist, spielt keine Rolle: Alle oeffnen dasselbe Fenster.
-  pluswerbung: ['#btnDrawerToggle', '#btnDrawerProfileRow']
+  pluswerbung: ['#btnDrawerToggle', '#btnDrawerProfileRow'],
+  // Runde 103: Der Ergebnisbild-Dialog. Er war von KEINER Pruefschicht je geoeffnet — dieselbe
+  // Luecke, die Runde 89 fuer das Lucenta+-Fenster geschlossen hat, nur eine Tuer weiter. Aufgefallen
+  // ist sie erst, als das Fenster in dieser Runde durchscheinend wurde: eine Aenderung am Aussehen
+  // eines Dialogs, den keine Messung sieht, ist eine unbelegte Aenderung.
+  // Steht bewusst ZULETZT, wie pluswerbung: Beide lassen ihre Ueberlagerung offen stehen, damit
+  // gemessen wird, was jemand sieht. zu() raeumt sie vor dem naechsten Weg mit Escape weg.
+  bilddialog:  ['#btnDrawerToggle', '#btnDrawerProfileRow', '#btnProfileViewResult']
 };
 // Ansichten, deren Kennung nicht 'view-<name>' lautet, und was nach dem Weg noch zu tun ist.
 const NACHBEREITUNG = {
@@ -449,6 +456,23 @@ const NACHBEREITUNG = {
     // eigenen Gegenstand vorbeilaufen kann, ist keine.
     const karten = await p.evaluate(() => document.querySelectorAll('.compat-card').length);
     if (karten !== 5) throw new Error('Vergleich zeigt ' + karten + ' statt 5 Karten');
+  }},
+  // Runde 103: Der Ergebnisbild-Dialog liegt ueber der Ergebnisansicht, die Ansicht darunter
+  // bleibt also 'result'. Geoeffnet wird er ueber #btnShare — den Weg, den auch ein Mensch nimmt.
+  bilddialog: {ansicht:'result', tun: async (p) => {
+    await p.evaluate(() => { document.getElementById('btnShare')?.click(); });
+    // Auf den Zustand warten, nicht auf die Uhr: Das Ergebnisbild wird auf eine Leinwand gemalt,
+    // und wie lange das dauert, haengt vom Geraet und von der Last ab.
+    await p.waitForFunction(() => !!document.querySelector('#imgModal.open'), null, {timeout:6000})
+      .catch(() => { throw new Error('Ergebnisbild-Dialog laesst sich ueber #btnShare nicht oeffnen'); });
+    await p.waitForTimeout(500);
+    // Und dass er auch etwas ZEIGT. Ohne diese Zeile waere ein leerer Dialog eine bestandene
+    // Pruefung — dieselbe Falle wie beim leeren Vergleichsergebnis darueber.
+    const vorschau = await p.evaluate(() => {
+      const i = document.getElementById('shareImagePreview');
+      return !!i && i.src.indexOf('data:image/png') === 0 && i.naturalWidth > 0;
+    });
+    if (!vorschau) throw new Error('Ergebnisbild-Dialog zeigt keine Vorschau');
   }},
   // Das Fenster liegt ueber der Profilansicht, die Ansicht darunter bleibt also 'profile'.
   pluswerbung: {ansicht:'profile', tun: async (p) => {
@@ -473,6 +497,13 @@ const NACHBEREITUNG = {
 };
 
 async function zu(p, ansicht){
+  // Runde 103: Zuerst eine etwaige Ueberlagerung wegraeumen. Die Wege "pluswerbung" und
+  // "bilddialog" lassen ihr Fenster bewusst OFFEN stehen, damit gemessen wird, was jemand sieht —
+  // der naechste Weg beginnt dann aber hinter einem Verdunkler, und #shell traegt inert. Escape
+  // schliesst alle drei Ueberlagerungen (Schublade, Bild-, Plus-Fenster); zweimal, falls zwei
+  // uebereinanderliegen. Auf einer Seite ohne Ueberlagerung ist der Tastendruck wirkungslos.
+  await p.keyboard.press('Escape'); await p.waitForTimeout(150);
+  await p.keyboard.press('Escape'); await p.waitForTimeout(250);
   // Immer erst zurueck auf die Startseite, damit jeder Weg von derselben Stelle beginnt.
   await p.evaluate(() => { document.getElementById('btnDrawerClose')?.click(); });
   await p.waitForTimeout(200);
@@ -588,7 +619,8 @@ async function durchlauf(lauf, motor, browser){
       const angekommen = await zu(p, ansicht);
       if (!angekommen){
         // Ohne Bestand gibt es kein Ergebnis und damit richtigerweise keinen Weg dorthin.
-        if (!((ansicht === 'result' || ansicht === 'vergleich') && !demo)) melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar');
+        // Runde 103: Der Bilddialog gehoert in diese Liste — er haengt am Ergebnis.
+        if (!(['result', 'vergleich', 'bilddialog'].includes(ansicht) && !demo)) melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar');
         continue;
       }
       await pruefeAnsicht(p, ansicht, kennung, breite, melde);

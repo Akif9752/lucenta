@@ -180,6 +180,43 @@ ok(gemerkteSprache, 'die gemerkte Sprache wird beim Start nachgeholt',
 ok(ausnahmen2.length === 0, 'auch der Start mit gemerkter Sprache wirft keine Ausnahme',
    ausnahmen2.join(' | '));
 
+// ---------- Runde 103: Rendert das Glas wirklich? ----------
+//
+// Liquid Glass Schritt 2 hat Schublade und Dialoge durchscheinend gemacht. Die Kontrastmessung in
+// `fehlersuche` liest berechnete FARBEN — ob `backdrop-filter` tatsaechlich eine Unschaerfe malt,
+// sieht sie nicht. Genau das ist auf WebKit die wacklige Stelle: eine verschobene (translateX),
+// scrollende Flaeche mit backdrop-filter. Faellt die Unschaerfe aus, bleibt eine zu 82 %
+// durchscheinende Flaeche ueber einem bewegten Sternenhimmel — unlesbar, und keine Pruefung
+// merkte es.
+//
+// Gemessen wird deshalb am Bild, mit einer Gegenprobe: dieselbe Schublade einmal wie gebaut und
+// einmal mit abgeschaltetem backdrop-filter. Sind beide Aufnahmen gleich, hat der Filter nichts
+// getan. Das ist unabhaengig davon, WIE stark die Unschaerfe ist — nur davon, DASS sie wirkt.
+async function schubladeAufnehmen(ohneGlas) {
+  const c = await browser.newContext({ viewport: { width: 393, height: 852 } });
+  const s = await c.newPage();
+  await s.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
+  await s.evaluate(() => document.fonts.ready);
+  if (ohneGlas) {
+    await s.addStyleTag({ content:
+      '#drawerPanel{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}' });
+  }
+  await s.evaluate(() => { document.getElementById('btnDrawerToggle')?.click(); });
+  await s.waitForFunction(() => !!document.querySelector('#drawerPanel.open'), null, { timeout: 4000 })
+         .catch(() => {});
+  await s.waitForTimeout(700);   // die Schublade faehrt in .32s ein
+  const offen = await s.evaluate(() => !!document.querySelector('#drawerPanel.open'));
+  const bild = offen ? await s.locator('#drawerPanel').screenshot() : null;
+  await c.close();
+  return bild;
+}
+const mitGlas = await schubladeAufnehmen(false);
+const ohneGlas = await schubladeAufnehmen(true);
+ok(!!mitGlas && !!ohneGlas, 'die Schublade laesst sich oeffnen und aufnehmen');
+ok(!!mitGlas && !!ohneGlas && !mitGlas.equals(ohneGlas),
+   'das Glas rendert: mit und ohne backdrop-filter sieht die Schublade verschieden aus',
+   mitGlas && ohneGlas ? `${mitGlas.length} gegen ${ohneGlas.length} Byte` : '(keine Aufnahme)');
+
 await browser.close();
 
 console.log('\n======================================================');

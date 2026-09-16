@@ -38,6 +38,86 @@ lokalisieren braucht den Safari-Web-Inspector am laufenden Simulator.
 
 ---
 
+## 2026-09-16 (Runde 103) — Liquid Glass Schritt 2: Schublade und Dialoge
+
+**Auftrag:** Punkt 1 der Uebergabe. Schritt 1 (Kopfleiste) war Runde 102 und am Geraet bestaetigt.
+
+**Was Apple dazu sagt, nachgelesen statt geraten** (HIG, „Materials: Liquid Glass"): Das Material
+ist die **funktionale Schicht** fuer Steuerung und Navigation, die ueber dem Inhalt schwebt — und
+im Inhalt selbst hat es ausdruecklich nichts zu suchen („Don't use Liquid Glass in the content
+layer"). Deshalb betrifft Schritt 2 genau drei Flaechen: die Schublade und die zwei Fenster.
+Karten, Ansichten und Formulare bleiben unberuehrt.
+
+Zwei Varianten gibt es: **regular** (unscharf, hebt die Helligkeit an) und **clear** (stark
+durchscheinend, fuer Fotos und Videos). Fuer diesen Fall ist regular die richtige, wortwoertlich:
+„Use the regular variant when background content might create legibility issues, or when
+components have a significant amount of text, such as alerts, sidebars, or popovers."
+
+**Geaendert** (`src/styles/00-grundlagen.css`):
+- `#drawerPanel`: `color-mix(in srgb, var(--surface) 82%, transparent)` + `blur(20px)
+  saturate(150%)`. **Deckender als die Kopfleiste** (82 gegen 74 %) — auch das steht so in der
+  Leitlinie: „Liquid Glass appears more opaque in larger elements like sidebars to preserve
+  legibility over complex backgrounds". Die Schublade traegt viel Text auf 340px Breite und volle
+  Hoehe, und dahinter laeuft der Sternenhimmel.
+- `#imgModal` und `#plusModal`: 86 %, gleiche Unschaerfe. Noch etwas deckender, weil im
+  Bild-Fenster die **Vorschau des Ergebnisbildes** steht — ein Bild hinter Glas zu beurteilen
+  ginge nicht. Die Verdunkler darunter (55 %) bleiben unveraendert; Apple nennt genau so eine
+  Unterlage als richtig fuer durchscheinende Flaechen.
+- **Keine neuen Farbmarken.** Bewusst `color-mix()` an der Stelle statt eines Tokens: Jede neue
+  Marke braeuchte drei Bloecke (`:root`, `@media dark`, `[data-theme=dark]`), sonst bricht der Bau
+  ab — und hier gibt es nichts zu variieren, was `--surface` nicht schon traegt.
+- **Drei Rueckfaelle, gesammelt an einer Stelle**, damit wer einen aendert die anderen sieht:
+  kein `backdrop-filter` (volldeckend — eine durchscheinende Flaeche OHNE Unschaerfe ist nicht
+  weniger schoen, sondern unlesbar), `prefers-reduced-transparency` (abbestellt ist abbestellt),
+  und **neu** `prefers-contrast: more`. Den dritten Fall gab es in Runde 102 nicht; Apple nennt
+  beide Einstellungen in einem Atemzug, und eine durchscheinende Flaeche senkt den Kontrast des
+  Textes darauf zwangslaeufig. Die **Kopfleiste ist dabei mitgenommen** — dort fehlte er bisher.
+
+### Zwei Luecken, die erst durch diese Aenderung sichtbar wurden
+
+**1. Den Ergebnisbild-Dialog hat nie eine Pruefung geoeffnet.** `fehlersuche` faehrt zwoelf Wege
+ab; `#imgModal` war keiner davon, obwohl die Messung ihn kennt (er steht in der Liste „messe das
+Fenster, nicht die Ansicht dahinter"). Dieselbe Luecke wie Runde 89 beim Lucenta+-Fenster, eine
+Tuer weiter. Aufgefallen ist sie erst hier: **eine Aenderung am Aussehen eines Dialogs, den keine
+Messung sieht, ist eine unbelegte Aenderung.**
+Jetzt gibt es den Weg `bilddialog` (ueber `#btnShare`, den Weg eines Menschen), er prueft auch,
+dass der Dialog eine **Vorschau zeigt** — ohne das waere ein leeres Fenster eine bestandene
+Pruefung —, und er wartet auf den Zustand statt auf die Uhr, weil das Bild auf eine Leinwand
+gemalt wird.
+Dazu ein Nebenfund: Zwei Wege lassen ihr Fenster bewusst offen stehen (damit gemessen wird, was
+jemand sieht), und `#shell` traegt dann `inert`. Der naechste Weg begann also hinter einem
+Verdunkler. `zu()` raeumt jetzt mit **Escape** auf — alle drei Ueberlagerungen hoeren darauf.
+Bisher ging das nur gut, weil `pluswerbung` zufaellig der letzte Eintrag war.
+
+**2. Ob die Unschaerfe RENDERT, konnte keine Pruefung sagen.** Die Kontrastmessung liest
+berechnete **Farben**. `backdrop-filter` auf einer verschobenen (`translateX`), scrollenden
+Flaeche ist auf WebKit genau die wacklige Stelle — faellt der Filter aus, bleibt eine zu 82 %
+durchscheinende Flaeche ueber einem bewegten Sternenhimmel, und niemand merkt es.
+`pruef-app` hat deshalb zwei neue Pruefungen (jetzt **20 statt 18**): Es nimmt die offene
+Schublade zweimal auf — einmal wie gebaut, einmal mit abgeschaltetem `backdrop-filter` — und
+vergleicht die Bilder. Sind sie gleich, hat der Filter nichts getan. Gemessen wird damit nicht,
+wie STARK die Unschaerfe ist, sondern DASS sie wirkt; das ist die Eigenschaft, die still
+zurueckdriften kann. Ergebnis auf WebKit: 163867 gegen 162656 Byte — sie wirkt.
+
+**Geprueft:** `npm run pruef-alles` — ALLE 9 BESTANDEN in 8,8 Minuten. `fehlersuche` KEINE FUNDE
+ueber **26 Durchlaeufe auf WebKit und Chromium**, jetzt mit dem Bilddialog in jedem einzelnen;
+`pruef-app` 20/20; `diff-sprachen` unveraendert 127. Build erfolgreich, die App-Fassung im Bundle
+traegt 20 `backdrop-filter`-Stellen und den `prefers-contrast`-Rueckfall.
+
+**Was NUR am Geraet zu beurteilen ist — und dem Inhaber gehoert:**
+1. **Wie es aussieht.** Dass das Glas rendert, ist gemessen; ob 82 % ueber dem Sternenhimmel
+   schoen sind, ist es nicht. Schiedsrichter ist die vergroesserte Darstellung, nicht die Kennzahl.
+2. **Ob die Schublade noch geschmeidig einfaehrt.** Sie faehrt mit `transform` ueber .32s ein, und
+   jetzt liegt ein `backdrop-filter` auf derselben Flaeche — das ist die teuerste Kombination, die
+   WebKit kennt. `pruef-bewegung` meldet nichts, aber es messt im Browser auf einem Mac, nicht auf
+   einem Telefon. Ruckelt es dort, ist die Unschaerfe von 20px der erste Hebel.
+
+Bildschirmfotos habe ich dafuer bewusst **keine** gemacht: Der Pixelvergleich auf WebKit beweist
+das Rendern guenstiger, und ein Simulator-Bild haette das Urteil ueber das Aussehen ohnehin nicht
+ersetzt.
+
+---
+
 ## 2026-09-16 (Runde 103) — kein Querformat, kein iPad; und eine Liste, die zwei Drittel log
 
 **Auftrag:** „ok weiter", danach ausdruecklich bestaetigt: „kein querformat und kein ipad."

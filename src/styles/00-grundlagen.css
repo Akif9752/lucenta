@@ -641,9 +641,25 @@
     opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:90;
   }
   #drawerScrim.show{opacity:1;pointer-events:auto;}
+  /* ---------- Runde 103: Liquid Glass Schritt 2 — die Schublade ----------
+     Schritt 1 (Runde 102) war die Kopfleiste. Die Schublade ist der zweite Teil derselben
+     Schicht: Sie schwebt UEBER dem Inhalt und ist Navigation, nicht Inhalt. Genau dafuer ist das
+     Material gedacht ("Liquid Glass forms a distinct functional layer for controls and navigation
+     elements ... that floats above the content layer"); im Inhalt selbst hat es ausdruecklich
+     nichts zu suchen, deshalb bleiben Karten, Ansichten und Formulare unberuehrt.
+
+     Deckender als die Kopfleiste (82 % gegen 74 %), und das ist keine Willkuer: Apples Leitlinie
+     sagt fuer grosse Flaechen genau das — "Liquid Glass appears more opaque in larger elements
+     like sidebars to preserve legibility over complex backgrounds and accommodate richer content
+     on the material's surface". Die Schublade traegt viel Text auf 340px Breite und volle Hoehe;
+     dahinter laeuft der Sternenhimmel. Die regular-Variante (blur + saturate heben die
+     Helligkeit an) ist hier die richtige, die clear-Variante ist fuer Fotos und Videos. */
   #drawerPanel{
     position:fixed;top:0;right:0;height:100%;width:min(340px,86vw);
-    background:var(--surface);border-left:1px solid var(--line);
+    background:color-mix(in srgb, var(--surface) 82%, transparent);
+    -webkit-backdrop-filter:blur(20px) saturate(150%);
+    backdrop-filter:blur(20px) saturate(150%);
+    border-left:1px solid var(--line);
     box-shadow:-16px 0 40px -16px rgba(0,0,0,.3);
     transform:translateX(100%); visibility:hidden;
     transition:transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear .32s;
@@ -672,9 +688,18 @@
     opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:95;
   }
   #imgModalScrim.show{opacity:1;pointer-events:auto;}
+  /* Runde 103, Liquid Glass Schritt 2: dieselbe Ueberlegung wie bei der Schublade daneben.
+     Ein Dialog ist die oberste funktionale Schicht und traegt viel Text — also die
+     regular-Variante, und noch etwas deckender als die Schublade (86 %): Hier steht die Vorschau
+     des Ergebnisbildes drin, und ein Bild hinter Glas zu beurteilen ginge nicht.
+     Der Verdunkler darunter (#imgModalScrim, 55 %) bleibt unveraendert — Apple nennt genau das
+     als die richtige Unterlage fuer durchscheinende Flaechen. */
   #imgModal{
     position:fixed;top:50%;left:50%;transform:translate(-50%,-46%);width:min(380px,88vw);
-    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+    background:color-mix(in srgb, var(--surface) 86%, transparent);
+    -webkit-backdrop-filter:blur(20px) saturate(150%);
+    backdrop-filter:blur(20px) saturate(150%);
+    border:1px solid var(--line);border-radius:var(--radius-l);
     box-shadow:var(--shadow);padding:22px;z-index:96;opacity:0;visibility:hidden;
     transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
     max-height:88vh;overflow-y:auto;
@@ -707,7 +732,11 @@
   #plusModalScrim.show{opacity:1;pointer-events:auto;}
   #plusModal{
     position:fixed;top:50%;left:50%;transform:translate(-50%,-46%);width:min(380px,88vw);
-    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+    /* Runde 103, Liquid Glass Schritt 2 — wie das Bild-Fenster darueber. */
+    background:color-mix(in srgb, var(--surface) 86%, transparent);
+    -webkit-backdrop-filter:blur(20px) saturate(150%);
+    backdrop-filter:blur(20px) saturate(150%);
+    border:1px solid var(--line);border-radius:var(--radius-l);
     box-shadow:var(--shadow);padding:22px;z-index:96;opacity:0;visibility:hidden;
     transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
     max-height:86vh;overflow-y:auto;
@@ -717,6 +746,40 @@
     transition:opacity .25s ease, transform .25s ease;
   }
   @media (prefers-reduced-motion: reduce){ #plusModal, #plusModal.open{transition:visibility 0s;} #plusModalScrim{transition:none;} }
+
+  /* ---------- Die Rueckfaelle fuer Schritt 2, gesammelt ----------
+     Dieselben drei Faelle wie bei der Kopfleiste in Runde 102, plus einer, der dort fehlte.
+     Alle drei Flaechen stehen zusammen: Wer eine aendert, sieht die anderen.
+
+     1. Kein backdrop-filter (aeltere WebView): Eine durchscheinende Flaeche OHNE Unschaerfe ist
+        nicht "etwas weniger schoen", sondern unlesbar — der Sternenhimmel laeuft dann roh hinter
+        dem Text. Also volldeckend.
+     2. "Transparenz reduzieren" (prefers-reduced-transparency): Die Person hat genau das
+        abbestellt. Volldeckend, und die Unschaerfe ausdruecklich aus.
+     3. NEU gegenueber Runde 102: "Kontrast erhoehen" (prefers-contrast: more). Apple nennt beide
+        Einstellungen in einem Atemzug ("accessibility settings that reduce transparency or
+        increase contrast"), und eine durchscheinende Flaeche senkt den Kontrast des Textes
+        darauf zwangslaeufig. Wer mehr Kontrast bestellt, bekommt die deckende Flaeche.
+        Die Kopfleiste ist hier mitgenommen — dort fehlte der Fall bisher. */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    #drawerPanel, #imgModal, #plusModal{ background:var(--surface); }
+  }
+  @media (prefers-reduced-transparency: reduce){
+    #drawerPanel, #imgModal, #plusModal{
+      background:var(--surface);
+      -webkit-backdrop-filter:none; backdrop-filter:none;
+    }
+  }
+  @media (prefers-contrast: more){
+    #drawerPanel, #imgModal, #plusModal{
+      background:var(--surface);
+      -webkit-backdrop-filter:none; backdrop-filter:none;
+    }
+    header.top{
+      background:linear-gradient(96deg, var(--kopf-links) 0%, var(--kopf-rechts) 68%, var(--kopf-rechts) 100%);
+      -webkit-backdrop-filter:none; backdrop-filter:none;
+    }
+  }
   .plus-modal-inner{position:relative;}
   /* Der Name traegt das Plus in der Akzentfarbe — das Einzige an diesem Fenster, was nach
      Produkt aussehen darf. Alles Weitere ist Text. */
