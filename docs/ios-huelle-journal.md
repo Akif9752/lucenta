@@ -38,6 +38,65 @@ lokalisieren braucht den Safari-Web-Inspector am laufenden Simulator.
 
 ---
 
+## 2026-09-16 (Runde 103) — kein Querformat, kein iPad; und eine Liste, die zwei Drittel log
+
+**Auftrag:** „ok weiter", danach ausdruecklich bestaetigt: „kein querformat und kein ipad."
+
+**Zuerst der Befund, dass die Aufgabenliste falsch war.** `tools/xcode-CLAUDE.md` fuehrte unter
+„Was als Naechstes ansteht" vier Punkte. Nachgesehen statt geglaubt:
+
+- Punkt 1, `NSPhotoLibraryAddUsageDescription`: **stand schon in der Info.plist** (Runde 102).
+- Punkt 2, das Symbol: **lag schon im Asset-Katalog** — und zwar das richtige. Nachgemessen ueber
+  den PNG-Kopf: color-type 2, also **ohne** Alphakanal, byte-identisch mit
+  `assets/icon/lucenta-icon-1024.png`. (Die Datei `…-gerundet.png` hat color-type 6, also Alpha,
+  und darf dort nicht hin.)
+- Punkt 3, Hochformat: **offen**, und zwar als echter Fehler (siehe unten).
+- Punkt 4, echtes iPhone: kann nur der Inhaber.
+
+Zwei von vier Punkten waren erledigt, aber nicht abgehakt. Das kostet jede Sitzung, die die Liste
+liest, die Zeit, es nachzusehen — die Liste ist deshalb jetzt eine **Stands**beschreibung mit den
+Befehlen, die den Stand nachpruefen, keine Aufgabenliste mehr.
+
+**Der Fehler:** `Info.plist` erlaubte dem iPhone `LandscapeLeft` und `LandscapeRight`, und
+`TARGETED_DEVICE_FAMILY` war `1,2` — die App wurde also fuer iPhone **und iPad** gebaut. Beides
+aus der Capacitor-Vorlage, beides nie angefasst.
+
+Das ist keine Formalie. Das Stilblatt ist auf 320 bis 430 Punkte Breite gebaut, der Bau bricht bei
+Desktop-Bezuegen ab (`pruefeIphoneOnly`), und die Fehlersuche messt ausschliesslich
+Hochformat-Breiten. Querformat und iPad waren damit Zustaende, die **nie jemand entworfen und
+keine der neun Pruefungen je gesehen** hat — erreichbar durch Drehen des Telefons. Bei erklaerter
+iPad-Unterstuetzung prueft Apple die App ausserdem auf dem iPad.
+
+**Geaendert:**
+- `UISupportedInterfaceOrientations` traegt nur noch `UIInterfaceOrientationPortrait`.
+  `PortraitUpsideDown` bewusst nicht — iPhones bieten es nicht an.
+- Der `UISupportedInterfaceOrientations~ipad`-Block ist entfallen.
+- `TARGETED_DEVICE_FAMILY = 1`.
+- `UIRequiredDeviceCapabilities` von `armv7` auf `arm64`. Das war eine Angabe, die nicht stimmt:
+  Deployment Target 15.0, und kein Geraet mit iOS 15 hat einen 32-Bit-Prozessor; `ARCHS` ist
+  ohnehin nur arm64. Eine Anforderung, die kein Zielgeraet erfuellen kann, ist im schlimmsten Fall
+  ein leerer Kompatibilitaetsbereich im Store.
+- `UIRequiresFullScreen` bleibt ungesetzt, wie vorgesehen.
+
+**Geprueft am gebauten Bundle, nicht an der Quelle** — denn eine Build-Einstellung kann die Plist
+ueberstimmen (hier nicht: `GENERATE_INFOPLIST_FILE = NO`, und alle `INFOPLIST_KEY_*` sind leer,
+aber das wusste ich vorher nicht und habe es nachgesehen):
+
+| | Wert im `App.app/Info.plist` |
+|---|---|
+| `UISupportedInterfaceOrientations` | `UIInterfaceOrientationPortrait` |
+| `UIDeviceFamily` | `1` |
+| `UIRequiredDeviceCapabilities` | `arm64` |
+| `UISupportedInterfaceOrientations~ipad` | nicht vorhanden |
+
+Build erfolgreich. `src/` ist unberuehrt, die neun Pruefungen sind davon also nicht betroffen.
+
+**Was unsicher bleibt:** Dass das Drehen am **Geraet** wirklich nichts tut, habe ich nicht
+gesehen — nur die Angabe im Bundle, die es steuert. Das ist der Punkt, an dem der Inhaber es in
+zwei Sekunden beantwortet.
+
+---
+
 ## 2026-09-16 (Runde 103) — Pruefablauf: ein Befehl, halbe Zeit, und WebKit endlich dabei
 
 **Auftrag:** „muessten bzw sollten wir die app architektur optimieren bzw verbessern damit

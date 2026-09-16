@@ -59,22 +59,27 @@
 	</dict>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<!-- Runde 103: stand hier als "armv7" aus der Capacitor-Vorlage. Das ist eine Angabe, die nicht
+	     stimmt: Das Deployment Target ist 15.0, und kein Geraet mit iOS 15 hat einen 32-Bit-Prozessor;
+	     gebaut wird ausschliesslich arm64 (ARCHS = arm64). Eine Anforderung, die das Geraet gar nicht
+	     erfuellen KANN, ist im schlimmsten Fall ein leerer Kompatibilitaetsbereich im Store — und in
+	     jedem Fall eine Behauptung ueber die App, die falsch ist. -->
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
+	<!-- Runde 103: Hier stand Querformat, aus der Capacitor-Vorlage uebernommen. Lucenta ist
+	     ausschliesslich eine Hochformat-App fuers iPhone, und zwar nicht als Geschmacksfrage:
+	     Das ganze Stilblatt ist auf 320 bis 430 Punkte Breite gebaut (der Bau bricht bei
+	     Desktop-Bezuegen ab, `pruefeIphoneOnly`), und die Fehlersuche messt ausschliesslich
+	     Hochformat-Breiten. Querformat hiesse also: ein Layout, das nie jemand entworfen und keine
+	     Pruefung je gesehen hat — beim ersten Drehen des Telefons.
+	     PortraitUpsideDown steht bewusst NICHT dabei; iPhones bieten es ohnehin nicht an.
+	     Der ~ipad-Block ist entfallen: Die App ist mit TARGETED_DEVICE_FAMILY = 1 keine
+	     iPad-App mehr, und eine Angabe fuer ein Geraet, auf dem sie nicht laeuft, verwirrt nur. -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>

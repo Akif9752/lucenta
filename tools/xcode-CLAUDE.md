@@ -135,19 +135,36 @@ Ebenen ueber diesem Ordner): die gemeinsame IIFE, die drei Farbbloecke, die vier
 Abbruchpruefungen des Baus, und zwei Lehren, die je dreimal bezahlt wurden. Lies sie zuerst —
 sie erklaeren, warum der Bau abbricht, bevor du raetst.
 
-## Was als Naechstes ansteht
+## Die Huelle: was erledigt ist
 
-1. **`NSPhotoLibraryAddUsageDescription` in `Info.plist`.** Ohne den Eintrag stuerzt die App
-   beim ersten Antippen von "In Fotos sichern" ab, statt zu fragen. Das ist der
-   wahrscheinlichste erste Stolperstein.
-   Fuer lokale Mitteilungen ist **kein** Info.plist-Eintrag noetig — nur die
-   Laufzeit-Abfrage, die der Code in `src/js/19b-native.js` bereits stellt.
-2. **Symbole aus `assets/icon/`** in den Asset-Katalog. Die 1024er ohne Alphakanal
-   (`lucenta-icon-1024.png`); Apple weist PNG mit Transparenz zurueck.
-3. **Ausrichtung auf Hochformat**, `UIRequiresFullScreen` nicht setzen.
-4. **Auf einem echten iPhone laufen lassen**, nicht nur im Simulator. Eine freie Apple-ID
-   genuegt dafuer (7-Tage-Signatur); der bezahlte Account wird erst fuer TestFlight,
-   App Store Connect und die Abo-Produkte gebraucht.
+Diese Liste war bis Runde 103 eine Aufgabenliste und zu zwei Dritteln veraltet — erledigt, aber
+nicht abgehakt. Jetzt steht hier der **Stand**, damit niemand zweimal dasselbe sucht:
+
+- **`NSPhotoLibraryAddUsageDescription`** steht in `Info.plist` (Runde 102). Ohne den Eintrag
+  stuerzt die App beim ersten "In Fotos sichern" ab, statt zu fragen.
+  Fuer lokale Mitteilungen ist **kein** Info.plist-Eintrag noetig — nur die Laufzeit-Abfrage,
+  die `src/js/19b-native.js` bereits stellt.
+- **Das Symbol** liegt im Asset-Katalog: `AppIcon-512@2x.png`, unser 1024er **ohne** Alphakanal
+  (nachgemessen: PNG color-type 2). `assets/icon/lucenta-icon-1024-gerundet.png` hat einen
+  Alphakanal und darf **nicht** dorthin — Apple weist PNG mit Transparenz zurueck.
+- **Hochformat und iPhone, nichts sonst** (Runde 103, auf ausdrueckliche Bestaetigung des
+  Inhabers: "kein querformat und kein ipad"). `UISupportedInterfaceOrientations` traegt nur noch
+  `Portrait`, `TARGETED_DEVICE_FAMILY` ist `1`, der `~ipad`-Block ist entfallen.
+  Der Grund ist kein Geschmack: Das Stilblatt ist auf 320–430 Punkte gebaut und die Fehlersuche
+  messt ausschliesslich Hochformat-Breiten — Querformat oder iPad waere ein Layout, das nie
+  jemand entworfen und keine Pruefung je gesehen hat. `UIRequiresFullScreen` bleibt ungesetzt.
+  Nachgeprueft wird das am **gebauten** Bundle, nicht an der Quelle:
+
+      plutil -extract UISupportedInterfaceOrientations xml1 -o - <App.app>/Info.plist
+      plutil -extract UIDeviceFamily xml1 -o - <App.app>/Info.plist
+
+- **`UIRequiredDeviceCapabilities`** ist `arm64` statt des `armv7` aus der Capacitor-Vorlage:
+  Deployment Target ist 15.0, kein Geraet mit iOS 15 hat einen 32-Bit-Prozessor, und gebaut wird
+  ohnehin nur arm64.
+
+**Offen und nur vom Inhaber zu erledigen:** die App auf einem **echten iPhone** laufen lassen.
+Eine freie Apple-ID genuegt (7-Tage-Signatur); der bezahlte Account wird erst fuer TestFlight,
+App Store Connect und die Abo-Produkte gebraucht.
 
 ## Die StoreKit-Bruecke — der eigentliche Auftrag hier
 
