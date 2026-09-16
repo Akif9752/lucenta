@@ -194,19 +194,37 @@
     margin-top:14px; border:1px solid var(--line); border-radius:var(--radius-s);
     overflow:hidden; background:var(--surface);
   }
+  /* Runde 104, zwei Abweichungen von der Form, die hier nachgebaut werden soll:
+
+     1. Die Trennlinie lief ueber die ganze Breite. In einer gruppierten Liste auf iOS beginnt
+        sie an der Textkante und laeuft bis zum Rand — sie trennt EINTRAEGE, und der Einzug
+        zeigt, dass beide zur selben Gruppe gehoeren. Eine Linie von Kante zu Kante zerlegt die
+        Gruppe stattdessen in einzelne Streifen. Sie liegt jetzt in einem ::before mit
+        `left:15px`, also genau auf der Polsterung der Zeile; die erste Zeile hat keine.
+        Das ::after war schon vom Haken belegt, deshalb ::before.
+
+     2. Die gewaehlte Zeile war fett. iOS macht das nicht — die Wahl steht im Haken, und zwar
+        allein. Fett dazu ist doppelt gesagt, und es hat einen messbaren Preis: Beim Umschalten
+        aendert die Zeile ihre Textbreite und alles darunter rueckt, was bei acht Sprachen als
+        Zucken zu sehen ist. Der Haken traegt den Zustand; die Zeile bleibt, wie sie ist. */
   .wahl-zeile{
+    position:relative;
     -webkit-appearance:none; appearance:none; cursor:pointer;
     display:flex; align-items:center; justify-content:space-between; gap:12px;
     width:100%; min-height:46px; padding:12px 15px; box-sizing:border-box;
-    border:none; border-top:1px solid var(--line); background:transparent;
+    border:none; background:transparent;
     font-family:inherit; font-size:15px; color:var(--ink); text-align:left;
     transition:background .14s ease;
   }
-  .wahl-zeile:first-child{ border-top:none; }
+  .wahl-zeile::before{
+    content:''; position:absolute; top:0; left:15px; right:0; height:1px;
+    background:var(--line);
+  }
+  .wahl-zeile:first-child::before{ content:none; }
   .wahl-zeile:active{ background:var(--surface-2); transition-duration:0s; }
   @media (hover:hover){ .wahl-zeile:hover{ background:var(--surface-2); } }
   .wahl-zeile:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:-2px; }
-  .wahl-zeile[aria-checked="true"]{ color:var(--ink); font-weight:600; }
+  .wahl-zeile[aria-checked="true"]{ color:var(--ink); }
   .wahl-zeile[aria-checked="true"]::after{
     content:''; flex-shrink:0; width:15px; height:9px;
     border-left:2px solid var(--accent-strong); border-bottom:2px solid var(--accent-strong);
@@ -254,6 +272,44 @@
      verschoben, damit er an der rechten Kante stehen bleibt und nach innen waechst. */
   .schalter:active .schalter-knopf{ width:33px; }
   .schalter[aria-checked="true"]:active .schalter-knopf{ width:33px; transform:translateX(14px); }
+  /* ---------- Runde 104: Liquid Glass Schritt 3 ----------
+     Der Schieber ist der Fall, den Apples Leitlinie woertlich nennt. Glas gehoert nicht in die
+     Inhaltsschicht — mit genau einer Ausnahme: "controls in the content layer with a transient
+     interactive element like sliders and TOGGLES; in these cases, the element takes on a Liquid
+     Glass appearance to emphasize its interactivity when a person activates it."
+     Ein Schieber in den Einstellungen ist ein Toggle in der Inhaltsschicht, und "when a person
+     activates it" ist :active. Deshalb hier und nicht am Ruhezustand.
+
+     Die Bahn wird beim Druck durchscheinend, nicht der Knopf: Der Knopf ist auf dem Telefon
+     weiss und deckend, und ein glaeserner Knopf auf 27 Punkten waere ein grauer Fleck. Die Bahn
+     ist die Flaeche, die den Zustand traegt — sie hellt unter dem Finger auf und laesst die Karte
+     darunter durchscheinen. Beide Zustaende ausdruecklich, weil `[aria-checked="true"]` und
+     `:active` gleich spezifisch sind.
+
+     Zusammen mit dem breiter werdenden Knopf darueber ergibt das eine Rueckmeldung aus zwei
+     Teilen — Form und Material —, die beide nur so lange dauern, wie der Finger liegt. */
+  .schalter:active{
+    background:color-mix(in srgb, var(--surface-3) 55%, transparent);
+    -webkit-backdrop-filter:blur(8px) saturate(180%) brightness(1.06);
+    backdrop-filter:blur(8px) saturate(180%) brightness(1.06);
+  }
+  .schalter[aria-checked="true"]:active{
+    background:color-mix(in srgb, var(--accent) 62%, transparent);
+    -webkit-backdrop-filter:blur(8px) saturate(180%) brightness(1.06);
+    backdrop-filter:blur(8px) saturate(180%) brightness(1.06);
+  }
+  /* Die drei Rueckfaelle, am Bedienelement statt gesammelt (siehe die Begruendung beim
+     Segmentwaehler in 00-grundlagen.css): ohne Unschaerfe, bei "Transparenz reduzieren" und bei
+     "Kontrast erhoehen" bleibt die Bahn deckend. Sonst verliert der eingeschaltete Schieber
+     beim Druecken genau den Farbkontrast, an dem man ihn erkennt. */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    .schalter:active{ background:var(--surface-3); }
+    .schalter[aria-checked="true"]:active{ background:var(--accent); }
+  }
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more){
+    .schalter:active{ background:var(--surface-3); -webkit-backdrop-filter:none; backdrop-filter:none; }
+    .schalter[aria-checked="true"]:active{ background:var(--accent); -webkit-backdrop-filter:none; backdrop-filter:none; }
+  }
   @media (prefers-reduced-motion: reduce){
     .schalter, .schalter-knopf{ transition:none; }
     .schalter:active .schalter-knopf{ width:27px; }

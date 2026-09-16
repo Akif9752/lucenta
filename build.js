@@ -51,6 +51,68 @@ function pruefeSyntax(name, quelltext){
 }
 pruefeSyntax('das zusammengesetzte JavaScript', js);
 
+// ---------- Verwaiste Deklarationen im CSS (Runde 104) ----------
+//
+// Anlass: In Runde 99 wurde das Beta-Abzeichen entfernt und dabei NUR die Zeile
+// `.wordmark-beta{` geloescht, ihre vier Deklarationen blieben stehen. Fuenf Runden lang kam
+// das durch alle Pruefungen — die Klammern waren ausgeglichen, `pruefeSyntax` liest nur
+// JavaScript, und im Browser gab es keine Fehlermeldung.
+//
+// Harmlos ist es nicht. Ein CSS-Parser, der aufraeumt, sammelt Zeichen fuer einen Selektor, bis
+// die naechste `{` kommt — und das war die von `.tagline`. Die Waise samt Nachbarregel wurde
+// dadurch EINE ungueltige Regel, und die ganze Regel fiel weg. Gemessen auf WebKit und
+// Chromium: `.tagline` existierte im geparsten Stilblatt nicht. Die Folge war unsichtbar falsch
+// statt sichtbar kaputt, und genau das ist die teure Sorte.
+//
+// Erkannt wird es am Semikolon an einer Stelle, an der REGELN stehen muessen und keine
+// Deklarationen: im Dateirumpf und in `@media`/`@supports`-Bloecken. Deshalb der Stapel — ein
+// `;` in einem Regelblock oder in `@font-face`/`@keyframes`/`@property` ist voellig in Ordnung,
+// im Regel-Rumpf darueber nicht. Geprueft wird je Datei, damit die Meldung Datei und Zeile
+// nennen kann; das zusammengesetzte CSS hat Zeilennummern, die niemandem helfen.
+const GRUPPEN_AT = /^@(media|supports|layer|container|scope|document)\b/;
+
+function pruefeWaisen(quelltext, datei){
+  // Kommentare heraus, sonst zaehlt ein Semikolon in einer Erklaerung mit. Sie werden durch
+  // Leerzeichen ersetzt und NICHT entfernt: Die Zeilenumbrueche muessen stehen bleiben, sonst
+  // verrutscht jede gemeldete Zeilennummer um die Hoehe aller Kommentare darueber. Beim ersten
+  // Versuch waren das 290 Zeilen — eine Meldung, die auf die falsche Stelle zeigt, kostet mehr
+  // Zeit als keine.
+  const t = quelltext.replace(/\/\*[\s\S]*?\*\//g, m => m.replace(/[^\n]/g, ' '));
+  // true = dieser Block enthaelt Regeln, ein Semikolon direkt darin ist ein Fehler.
+  // false = dieser Block enthaelt Deklarationen, Semikolons gehoeren dazu.
+  const stapel = [true];
+  const funde = [];
+  let vorlauf = '', zeile = 1, vorlaufZeile = 1, zitat = null;
+
+  for (let i = 0; i < t.length; i++){
+    const c = t[i];
+    if (c === '\n') zeile++;
+    if (zitat){ if (c === zitat && t[i-1] !== '\\') zitat = null; vorlauf += c; continue; }
+    if (c === '"' || c === "'"){ zitat = c; vorlauf += c; continue; }
+    if (c === '{'){ stapel.push(GRUPPEN_AT.test(vorlauf.trim())); vorlauf = ''; vorlaufZeile = zeile; continue; }
+    if (c === '}'){ if (stapel.length > 1) stapel.pop(); vorlauf = ''; vorlaufZeile = zeile; continue; }
+    if (c === ';'){
+      const v = vorlauf.trim();
+      if (stapel[stapel.length-1] && v && v[0] !== '@'){
+        funde.push('  ' + datei + ':' + vorlaufZeile + '  ' + v.replace(/\s+/g, ' ').slice(0, 64));
+      }
+      vorlauf = ''; vorlaufZeile = zeile; continue;
+    }
+    if (!vorlauf.trim() && /\S/.test(c)) vorlaufZeile = zeile;
+    vorlauf += c;
+  }
+  return funde;
+}
+
+const waisen = man.css.reduce((alle, f) => alle.concat(pruefeWaisen(read('styles', f), 'src/styles/' + f)), []);
+if (waisen.length){
+  console.error('\nBAU ABGEBROCHEN — im CSS steht eine Deklaration ohne Selektor:\n' +
+                waisen.join('\n') +
+                '\n\nDas reisst die NAECHSTE Regel mit ins Nichts, nicht nur diese Zeilen.' +
+                '\nFehlt eine Selektor-Zeile, oder gehoeren die Zeilen geloescht?\n');
+  process.exit(1);
+}
+
 // Die Farben des Ergebnisbildes stehen in 10-ergebnisbild.js fest verdrahtet — auf einer
 // Leinwand gibt es keine CSS-Marken. Sie MUESSEN denen der App entsprechen, sonst verschickt
 // jemand eine Karte in einer Farbe, die es in der App nicht gibt. Genau das ist in Runde 90

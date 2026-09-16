@@ -7,13 +7,27 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-09-16, nach Runde 103)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-09-16, nach Runde 105)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
 `ios/App/CLAUDE.md` neben der `.xcodeproj` und wird von Xcode ohnehin geladen).
 
-### Was Runde 103 erledigt hat — nicht erneut anfassen
+### Was erledigt ist — nicht erneut anfassen
+
+0. **Der `JS Eval error` ist geklaert** (Runde 104) und **kein Fehler von uns**: Capacitor feuert
+   beim Kaltstart ein `resume`-Ereignis in einen WebView, der noch bei 10 % laedt. Upstream,
+   harmlos, im Release-Bau nicht einmal sichtbar. **Nichts zu tun** — Begruendung im Eintrag
+   „Runde 104" darunter. Bitte nicht erneut suchen.
+0b. **Liquid Glass Schritt 3 ist gebaut** (Runde 104): Glas nur BEIM DRUECKEN, an den drei
+   Schaltern und am Segmentwaehler, mit Rueckfaellen. Kein Glas im Ruhezustand — Begruendung
+   im Eintrag darunter.
+0c. **Zwei Fehler nebenbei behoben** (Runde 104), beide seit mehreren Runden blind mitgelaufen:
+   eine verwaiste CSS-Deklaration, die `.tagline` mitverschluckte, und ein Segmentwaehler mit
+   zwei festen Spalten fuer drei Faecher. `pruefeWaisen` in `build.js` bricht jetzt beim ersten
+   ab.
+
+Aus Runde 103:
 
 1. **Sprachpakete aufgeteilt.** App-Fassung 932 -> 394 KB; Deutsch eingebettet, sieben Pakete in
    `dist/sprachen/`, nachgeladen ueber `SPRACHQUELLEN` in `src/js/01-sprachpakete.js`.
@@ -32,21 +46,18 @@ Stand der Pruefungen: `pruef-alles` ALLE 9 BESTANDEN, `fehlersuche` KEINE FUNDE 
 
 ### Als Naechstes, in dieser Reihenfolge
 
-1. **Der `JS Eval error A JavaScript exception occurred`** beim Laden. Steht seit Runde 102 offen
-   und ist der aelteste ungeklaerte Punkt. **Unser** JavaScript ist es nicht — der Fehler-Logger in
-   `00-start.js` schreibt nichts ins Log, und der Fehler erscheint **vor** `WebView loaded`, also
-   bevor unser Auffangnetz haengt. Verdacht: Capacitors eigenes Bridge-Injection-Timing.
-   Naechster Schritt: Safari-Web-Inspector am laufenden Simulator (Entwickler > Simulator >
-   index.html), Konsole beim Start mitlesen. Das ist der einzige Weg, der noch nicht versucht wurde.
-2. **Liquid Glass Schritt 3 — aber selektiv.** Die Bedienelemente. **Achtung, das ist NICHT
-   „dasselbe fuer alle Knoepfe":** Apples Leitlinie sagt ausdruecklich, dass Liquid Glass **nicht in
-   die Inhaltsschicht** gehoert („Don't use Liquid Glass in the content layer"), mit genau einer
-   Ausnahme — Bedienelemente mit einem kurzlebigen interaktiven Zustand (Schalter, Schieber) duerfen
-   beim Antippen die Glasdarstellung annehmen. Fuer Lucenta heisst das: die Schalter
-   (`role="switch"`) und allenfalls der Segmentwaehler, **nicht** die Karten, nicht die Listen,
-   nicht jeder Knopf. „Use Liquid Glass effects sparingly" steht dort woertlich.
-   Vorlage: `src/styles/00-grundlagen.css`, Suchwort `Liquid Glass`. Die drei Rueckfaelle
-   mitnehmen, sonst ist es eine halbe Aenderung.
+1. **ERLEDIGT in Runde 105: Runde 104 ist jetzt ANGESEHEN.** Drei der vier Stellen sind am
+   Simulator (iPhone 18 Pro, iOS 27) bestaetigt: **Darstellung** (drei Faecher in einer Zeile, je
+   103x45 Punkte), **Sprache** (Trennlinien eingerueckt, gewaehlte Zeile nicht fett, Haekchen
+   statt Fettung), **Kopfzeile** (`EINSTELLUNGEN` klein und Monospace neben der Wortmarke).
+   **Der Druckzustand blieb ungemessen** — nicht weil er fehlt, sondern weil er sich mit
+   synthetischen Beruehrungen nicht einfangen laesst. Begruendung im Eintrag „Runde 105"
+   darunter; die Beurteilung steht jetzt unter „Was nur der Inhaber kann".
+2. **Ungemessen geblieben, wenn jemand es genau wissen will:** `prefers-reduced-transparency`
+   laesst sich ueber Playwright auf **keinem** der beiden Motoren emulieren (nachgesehen:
+   `matchMedia` meldet `false`, obwohl gesetzt). Der `prefers-contrast: more`-Zweig **derselben**
+   Regel greift messbar, und der Regelinhalt ist fuer beide identisch — der Rest ist am Gerät zu
+   sehen (Bedienungshilfen > Anzeige & Textgroesse > Transparenz reduzieren).
 3. **Kleinigkeit, wenn Zeit ist:** `plus_beenden` ist seit Runde 103 ein unbenutzter Schluessel in
    allen acht Paketen (der Knopf traegt jetzt `plus_verwalten`). Entfernen heisst: in **allen acht**
    Dateien, sonst schlaegt Pruefung 1 des i18n-Audits an.
@@ -63,6 +74,11 @@ Stand der Pruefungen: `pruef-alles` ALLE 9 BESTANDEN, `fehlersuche` KEINE FUNDE 
   aufloest, ist **ungeprueft**. Im Zweifel: Product > Scheme > Edit > Run > Options > StoreKit
   Configuration.
 - **Die App auf einem echten iPhone** (freie Apple-ID genuegt, 7-Tage-Signatur).
+- **Der Druckzustand, mit einem echten Finger** (Runde 105): Leuchtet die Bahn des Schiebers beim
+  Antippen auf und wird der Knopf breiter? Dasselbe am Segmentwaehler. Mit synthetischen
+  Beruehrungen ist das nicht zu sehen (siehe Eintrag „Runde 105"), und es betrifft **nicht nur**
+  die Glasarbeit aus Runde 104, sondern alle `:active`-Zustaende des Projekts. Ein Fingertipp
+  beantwortet in zwei Sekunden, was hier eine Stunde Messen nicht beantwortet hat.
 - **Das Urteil zu zwei Aenderungen aus Runde 103**, das keine Messung ersetzt: Startet die App
   spuerbar schneller (Sprachaufteilung)? Sieht jemand mit anderer Sprache beim Start kurz Deutsch?
   Und: Faehrt die Schublade mit dem `backdrop-filter` noch geschmeidig ein? Ruckelt es, sind die
@@ -88,6 +104,308 @@ Xcode **nicht** „Update to recommended settings" akzeptieren, das hat beides s
 `node_modules` und `Pods` und der Mac haengt. Xcode legt den Code eines Debug-Baus in
 `App.debug.dylib`, nicht in `App` — wer dort nach einem Symbol sucht, findet nichts und zieht den
 falschen Schluss (in Runde 103 genau so passiert).
+
+---
+
+## 2026-09-16 (Runde 105) — Runde 104 angesehen: drei Stellen bestaetigt, eine nicht messbar
+
+**Auftrag des Inhabers:** nur den Uebergabe-Block lesen und mit Punkt 1 anfangen — die Aenderungen
+aus Runde 104 am Simulator ANSEHEN, erst den Simulator, keine Pruefläufe nebenher.
+
+Der Grund fuer diese Reihenfolge stand im Uebergabe-Block: In Runde 104 hatte der Simulator zweimal
+`applicationState: "Hanging"` gemeldet, weil `pruef-alles` gleichzeitig vier Browser fuhr. Diesmal
+lief nichts daneben, und die App war sofort bedienbar.
+
+### Was bestaetigt ist
+
+`LANG=en_US.UTF-8 npm run ios:sync`, Bau, Start, Schublade > Einstellungen. Drei der vier Stellen
+sind am vergroesserten Ausschnitt geprueft — nicht am Zahlenwert, sondern am Bild:
+
+- **Darstellung:** drei Faecher in EINER Zeile, je 103x45 Punkte (der Uebergabe-Block schrieb
+  99x44 — die Breite ergibt sich aus 320 Punkten Karte minus Innenabstand, die 45 Punkte Hoehe
+  liegen ueber der Mindesttrefferflaeche). Gewaehltes Fach als erhoehte Pille mit fetterem Text,
+  wie ein `UISegmentedControl`.
+- **Sprache:** Trennlinien links eingerueckt und rechts bis an die Kante — die iOS-Form. Die
+  gewaehlte Zeile ist **nicht** fett, sondern traegt ein Haekchen in der Akzentfarbe.
+- **Kopfzeile:** `EINSTELLUNGEN` steht wieder klein, in Monospace und gedaempft neben der
+  Wortmarke. Das ist der Beleg, dass die verwaiste CSS-Deklaration die `.tagline` tatsaechlich
+  mitverschluckt hatte: Auf dem Startbildschirm ist `#viewLabel` leer, erst eine Ansicht fuellt
+  ihn — wer nur die Startseite ansieht, sieht den Fehler nicht und die Behebung auch nicht.
+
+### Was NICHT gemessen werden konnte — und warum das kein Befund ist
+
+Die vierte Stelle, der Druckzustand („leuchtet die Bahn unter dem Finger auf?"), liess sich mit
+den Mitteln dieser Sitzung nicht einfangen. Der Weg dorthin gehoert hierher, damit ihn niemand
+zweimal geht:
+
+1. **Erster Anlauf, falsch gemessen.** `DeviceInteractionSynthesize` mit langem Halten und
+   parallel ein `simctl io screenshot` — alle Bilder bytegleich mit dem Ruhezustand. Der
+   Zeitstempel der Aufrufe hat es verraten: Die MCP-Aufrufe laufen **nicht** gleichzeitig mit
+   Bash, sondern davor. Meine Bilder entstanden alle **nach** dem Loslassen. Eine Messung, die
+   sich auf die falsche Groesse bezieht — genau die Lehre, die dieses Projekt dreimal bezahlt hat.
+2. **Zweiter Anlauf, richtig gemessen.** Bilderserie per `nohup ... &` im Hintergrund starten,
+   dann druecken. Die Serie deckte das Halten nachweislich ab (Zeitstempel geprueft). Ergebnis:
+   20 Bilder, alle bytegleich. Keine Glasbahn, kein breiterer Knopf.
+3. **Gegenprobe, die das Ergebnis einordnet.** Dasselbe an „Profil bearbeiten", einem
+   gewoehnlichen `.btn` — dessen `transform:scale(.978)`-Druck steht seit vielen Runden im Code
+   und ist nicht Teil von Runde 104. **Auch dort kein Unterschied.** Damit ist es keine Regression
+   der Glasarbeit, sondern eine Eigenschaft der synthetischen Beruehrung: Ein stehendes,
+   sekundenlanges Halten erzeugt in diesem WebView kein `:active`. Ein echter Fingertipp ist
+   kuerzer als ein `simctl`-Bildschirmfoto, also auch so nicht zu fangen.
+
+`mt [x y] <dauer>` liefert uebrigens **gar keine** Beruehrung — belegt daran, dass ein 12 Sekunden
+langes „Halten" auf dem Haptik-Schieber ihn nicht umgelegt hat, ein einfaches `t x y` dagegen
+sofort. Wer Haltezustaende messen will, nimmt `t x y <dauer>`.
+
+Was am Geraet umgelegt wurde, steht wieder wie vorher: Haptik ein, Bewegung ein, Erinnerung aus,
+Darstellung dunkel. Das Umlegen war Teil der Messung, nicht deren Ergebnis.
+
+### Gefunden, aber nicht angefasst
+
+Der Druckzustand haengt an `:active` — und ob `:active` auf dem iPhone bei einem echten Tipp
+sichtbar wird, ist damit fuer **das ganze Projekt** offen, nicht nur fuer Runde 104. Geaendert
+wurde hier nichts: Eine Aenderung an einem Zustand, den man nicht messen kann, ist ein Rateschritt.
+Die Frage steht jetzt unter „Was nur der Inhaber kann" — ein Fingertipp entscheidet sie.
+
+**Pruefungen vor dem Commit:** `pruef-schnell` ALLE 4 BESTANDEN (Bau, 11 Testreihen, i18n-Audit
+ueber alle acht Sprachen, `pruef-app` 20/20). Die vollen neun liefen in Runde 104 auf **genau
+diesem** Stand gruen (der Arbeitsbaum war unveraendert); sie wurden nicht wiederholt, weil sie
+dasselbe zweimal gemessen haetten.
+
+---
+
+## 2026-09-16 (Runde 104, Teil 2) — Liquid Glass Schritt 3, und zwei Fehler auf dem Weg dorthin
+
+**Auftrag des Inhabers:** „nicht nur liquid glass an sich sondern generell auch soll es ja wie
+apple betriebssystem sein, also zb bei sprachauswahl oder dunkel-hell version auswahl usw."
+
+Beim Ansehen dieser beiden Stellen kamen zwei Fehler heraus, die keine Pruefung je gemeldet hat.
+Sie stehen zuerst, weil sie mehr wert sind als die Glasarbeit.
+
+### Fehler 1: eine CSS-Deklaration ohne Selektor — und was sie mitgenommen hat
+
+In `00-grundlagen.css` standen vier Deklarationen ohne Selektor davor. Ursache per `git log -L`
+gefunden: In Runde 99 (`6e92520`) wurde das Beta-Abzeichen entfernt und dabei **nur die Zeile
+`.wordmark-beta{` geloescht**, ihr Rumpf blieb stehen.
+
+Das ist nicht kosmetisch. Ein CSS-Parser sammelt beim Aufraeumen Zeichen fuer einen Selektor, bis
+die naechste `{` kommt — und das war die von `.tagline`. Waise und Nachbarregel wurden dadurch
+**eine** ungueltige Regel, und die ganze Regel fiel weg. Gemessen auf **WebKit und Chromium**, in
+**beiden** gebauten Fassungen:
+
+    taglineRegel: null          <- die Regel existiert im geparsten Stilblatt nicht
+    font-size: 16px             <- statt 12px
+    font-family: Work Sans …    <- statt var(--mono)
+
+Betroffen waren `#viewLabel` (die Bezeichnung der Ansicht oben in der Kopfleiste) und `#qHint`
+(„Tippe eine Antwort an" im Fragebogen) — **fuenf Runden lang**, in jeder Sprache, in beiden
+Farbmodi. Unsichtbar falsch statt sichtbar kaputt, und das ist die teure Sorte: Die Klammern waren
+ausgeglichen, `pruefeSyntax` liest nur JavaScript, und der Browser meldet nichts.
+
+Deshalb neben dem Loeschen der vier Zeilen eine fuenfte Abbruchpruefung im Bau, **`pruefeWaisen`**
+in `build.js`: Sie sucht das Semikolon an einer Stelle, an der Regeln stehen muessen und keine
+Deklarationen — im Dateirumpf und in `@media`/`@supports`. Ein Stapel unterscheidet dabei
+Regelbloecke von Deklarationsbloecken, sonst waere jedes `;` in `@font-face` oder `@property` ein
+Fehlalarm. Geprueft je Datei, damit die Meldung Datei und Zeile nennt.
+
+**Gegenprobe gemacht, nicht angenommen:** Waise wieder eingesetzt -> Bau bricht ab, Exit-Code 1,
+gemeldete Zeile 614 fuer eine Waise vor Zeile 616. Beim **ersten** Versuch zeigte die Meldung auf
+Zeile 320 statt 614 — die Kommentare wurden durch ein Leerzeichen ersetzt und damit deren
+Zeilenumbrueche gefressen, was jede Zeilennummer um die Hoehe aller Kommentare darueber
+verschiebt. Jetzt werden sie durch Leerzeichen **gleicher Zeilenzahl** ersetzt. Eine Meldung, die
+auf die falsche Stelle zeigt, kostet mehr Zeit als keine.
+
+### Fehler 2: der Darstellungs-Waehler war ein 2x2-Raster mit einem Loch
+
+`.segment` setzte `grid-template-columns:1fr 1fr` — zwei Spalten, fest. Zwei der Waehler haben
+aber **drei** Faecher. Nachgemessen auf 390 Punkten, vorher:
+
+    System  x=44  y=1345        Hell  x=197 y=1345
+    Dunkel  x=44  y=1400        <- zweite Zeile, rechts daneben 150 Punkte Loch
+    Waehler: 113 Punkte hoch statt 58
+
+Betroffen: **Darstellung** (System/Hell/Dunkel) in den Einstellungen und der **Zeitraum** der
+Tagesform (14/30/90). Seit Runde 97. Keine Pruefung sieht das, weil die Ueberlaufpruefung Elemente
+sucht, die HERAUSstehen — nicht Loecher darin.
+
+Behoben mit `grid-auto-flow:column` + `grid-auto-columns:1fr`: Die Spaltenzahl kommt jetzt aus der
+Zahl der Faecher. Damit ist auch ein kuenftiger Waehler mit vier Faechern richtig, bevor ihn jemand
+baut, und die drei mit zwei Faechern sehen aus wie vorher. Nachher gemessen:
+
+    System x=44  Hell x=146  Dunkel x=247   — alle y=1345, je 99x44, Waehler 50 hoch
+
+Dazu `.theme-toggle .segment-opt{min-height:44px}`: Die 52 Punkte aus `.segment-opt` sind fuer
+zwei Zeilen gemacht (Preis und Ersparnis im Kauffenster). Auf 99 Punkten Breite ist das ein Kasten
+statt eines Fachs. 44 ist Apples Mindestmass fuer eine Trefferflaeche, also das Kleinste, das hier
+erlaubt ist.
+
+### Liquid Glass Schritt 3 — enger gefasst als die Uebergabe es notiert hatte
+
+Die Uebergabe schrieb „die Schalter und **allenfalls der Segmentwaehler**". Die Leitlinie
+(`DocumentationSearch`, HIG *Materials: Liquid Glass*) ist praeziser, und der Unterschied
+entscheidet:
+
+> Don't use Liquid Glass in the content layer. […] An exception to this is for controls in the
+> content layer with a transient interactive element like sliders and toggles; in these cases, the
+> element takes on a Liquid Glass appearance to emphasize its interactivity **when a person
+> activates it**.
+
+„When a person activates it" heisst `:active`. Daraus folgt, was hier bewusst **nicht** gebaut
+wurde: **Das gewaehlte Fach des Segmentwaehlers bekommt im Ruhezustand kein Glas.** Ein dauerhaft
+glaesernes Fach ist kein fluechtiger Zustand, sondern ein stehender — das waere Glas in der
+Inhaltsschicht und damit genau der Satz davor. Gebaut ist also:
+
+- `.schalter:active` und `.schalter[aria-checked="true"]:active` — die **Bahn** wird
+  durchscheinend (55 % bzw. 62 %) und bekommt `blur(8px) saturate(180%) brightness(1.06)`. Nicht
+  der Knopf: Der ist auf dem Telefon weiss und deckend, ein glaeserner Knopf auf 27 Punkten waere
+  ein grauer Fleck.
+- `.segment-opt:active` und `.segment-opt[aria-checked="true"]:active` — dasselbe, 58 %.
+
+Beide Zustaende stehen **ausdruecklich** da, weil `[aria-checked="true"]` und `:active` dieselbe
+Spezifitaet haben und sonst die Reihenfolge entscheidet — derselbe Mechanismus, der in
+Feedback-Runde 32 schon zweimal einen Zustand still ueberschrieben hat.
+
+Die drei Rueckfaelle sind mitgenommen (kein `backdrop-filter`, „Transparenz reduzieren",
+„Kontrast erhoehen"), aber **nicht** im gesammelten Block aus Runde 103, sondern je am
+Bedienelement. Das folgt der Entscheidung, die in derselben Datei fuer die `:hover`-Regeln schon
+begruendet steht: „jeweils einzeln an ihrer bisherigen Stelle eingefasst, statt sie an einer
+Stelle zu sammeln und den Kontext zu ihren jeweiligen Komponenten zu verlieren."
+
+**Ehrlich zur Wirkung:** Der Waehler liegt auf einer deckenden Karte. Die Unschaerfe hat dort wenig
+zu verwischen; der sichtbare Anteil kommt aus `saturate` und `brightness`. Das ist ein Aufleuchten
+unter dem Finger, kein Durchblick — und so ist es gemeint. Wer mehr erwartet, erwartet Glas in der
+Inhaltsschicht.
+
+### Die Sprachliste: zwei Abweichungen von der Form, die sie nachbaut
+
+1. **Trennlinien eingerueckt.** Sie liefen von Kante zu Kante. In einer gruppierten Liste auf iOS
+   beginnen sie an der **Textkante** — sie trennen Eintraege, und der Einzug zeigt, dass beide zur
+   selben Gruppe gehoeren. Von Kante zu Kante zerlegt die Gruppe stattdessen in Streifen. Jetzt
+   ein `::before` mit `left:15px`, also genau auf der Polsterung der Zeile (`::after` war vom
+   Haken belegt). Gemessen: `left: 15px`.
+2. **Die gewaehlte Zeile war fett — jetzt nicht mehr.** iOS macht das nicht; die Wahl steht im
+   Haken, und zwar allein. Fett dazu ist doppelt gesagt und hat einen Preis: Beim Umschalten
+   aendert die Zeile ihre Textbreite, und bei acht Sprachen ist das als Zucken zu sehen. Gemessen:
+   `font-weight: 400`.
+
+### Was ausdruecklich NICHT geaendert wurde
+
+Die Gruppenkoepfe (`.settings-group h2`) bleiben Serifenschrift auf 17px **innerhalb** der Karte,
+statt kleiner grauer Grossbuchstaben **ueber** der Karte wie in Einstellungen.app. Das waere nicht
+mehr Bedienelement-Treue, sondern der Austausch der Markenstimme von Lucenta — die Serifenschrift
+ist die Stimme der App. Der Auftrag nannte die Sprachauswahl und die Hell-Dunkel-Wahl, also die
+Bedienelemente; den ganzen Bildschirm zu Einstellungen.app umzubauen war nicht gefragt und waere
+schwer zurueckzunehmen.
+
+### Messungen und Pruefungen
+
+`npm run pruef-alles`: **ALLE 9 BESTANDEN**, 9,1 Minuten. `fehlersuche` **KEINE FUNDE** auf beiden
+Motoren (26 Durchlaeufe), `pruef-nativ` 45/45, `pruef-app` 20/20, `audit-i18n` bestanden,
+`pruef-store` 32/32, `diff-sprachen` 127 (unveraendert).
+
+Jede Aenderung einzeln auf WebKit nachgemessen (Zahlen oben). Beim Druckzustand hat die **erste**
+Messung „kein Glas" gemeldet — und war falsch: Der Schalter lag bei y=964 in einem 844 Punkte hohen
+Fenster, der synthetische Klick landete ausserhalb, `:active` traf nie zu. Erkennbar war das daran,
+dass auch die **bestehende** Regel (`width:33px` am Knopf) nicht griff. Mit
+`scrollIntoViewIfNeeded()` dann: `blur(8px) saturate(1.8) brightness(1.06)` im Druck, `none` im
+Ruhezustand, fuer Schalter und beide Segment-Zustaende. Eine Messung, die sich auf die falsche
+Groesse bezieht — zum vierten Mal in diesem Projekt.
+
+### Unsicher geblieben
+
+- **Nicht angesehen.** Kein Bildschirmfoto, kein Blick aufs Gerät: Der Simulator meldete zweimal
+  `applicationState: "Hanging"`, weil `pruef-alles` gleichzeitig vier Browser fuhr. Das ist der
+  erste Punkt der Uebergabe oben, und es ist der wichtigste offene Punkt dieser Runde.
+- **`prefers-reduced-transparency` ist ungemessen.** Playwright nimmt die Einstellung an, aber
+  `matchMedia` meldet auf **beiden** Motoren `false` — nicht emulierbar. Der
+  `prefers-contrast: more`-Zweig derselben Regel greift messbar (deckend, `filter:none`).
+- **Der `@supports not (backdrop-filter)`-Zweig ist ungemessen**, weil beide Motoren
+  `backdrop-filter` koennen. Gleiches gilt fuer die Rueckfaelle aus Runde 103.
+- **Nicht committet.** Die Aenderungen liegen im Arbeitsbaum.
+
+---
+
+## 2026-09-16 (Runde 104) — Der `JS Eval error` nach drei Runden: Capacitor ruft ins Leere
+
+**Auftrag:** Punkt 1 der Uebergabe — der `⚡️  JS Eval error A JavaScript exception occurred` beim
+Start. Stand seit Runde 102 offen, der aelteste ungeklaerte Punkt. Die Uebergabe schlug den
+Safari-Web-Inspector vor. Der war nicht noetig: Der Fehler laesst sich mit einem Haltepunkt
+**eindeutig** zuordnen, und das liefert etwas, was die Konsole nicht liefert — die Rueckverfolgung.
+
+### Die Eingrenzung, bevor geraten wurde
+
+Die Zeichenkette `JS Eval error` steht in Capacitor an genau **zwei** Stellen
+(`CapacitorBridge.swift:611` und `:627`), also in `evalWithPlugin(_:js:)` und `eval(js:)`. Alles
+andere protokolliert ohne dieses Praefix. Damit war die Menge der Verdaechtigen klein und
+abzaehlbar: Wer ruft beim Start `eval` auf?
+
+- In Capacitor selbst nur **einer**: die beiden Beobachter in `setupCordovaCompatibility()`
+  (Zeile 257–262), die `resume` und `pause` als Dokument-Ereignis weitergeben.
+- In den sechs eingebauten Plugins (`@capacitor/haptics`, `app`, `filesystem`,
+  `local-notifications`, `share`, `splash-screen`): **keiner**. Nachgesehen, nicht vermutet.
+
+Die `else`-Zweig-Bedingung stimmte auch: `injectCordovaFiles` wird nur `true`, wenn
+`packageClassList` `CDVPlugin` enthaelt — unsere Liste enthaelt sechs Capacitor-Plugins und kein
+Cordova. Also lief genau der Zweig mit den Beobachtern.
+
+### Der Beleg
+
+Haltepunkt auf `triggerDocumentJSEvent`, Kaltstart, Treffer nach ~2 s. Die Rueckverfolgung:
+
+    frame #0  CapacitorBridge.triggerDocumentJSEvent(eventName="resume")   CapacitorBridge.swift:650
+    frame #1  closure #1 in CapacitorBridge.setupCordovaCompatibility      CapacitorBridge.swift:258
+    frame #3  __CFNOTIFICATIONCENTER_IS_CALLING_OUT_TO_AN_OBSERVER__
+    frame #8  -[UIApplication _sendWillEnterForegroundCallbacks]
+    frame #22 -[UIApplication workspace:didCreateScene:withTransitionContext:completion:]
+
+Und der Zustand des WebViews in genau diesem Augenblick, am Haltepunkt abgefragt:
+
+    url=Optional(lucenta://localhost)  loading=Optional(true)  progress=Optional(0.1)
+
+Damit ist die Kette geschlossen: UIKit stellt beim **Kaltstart** die erste Szene her und sendet
+dabei `willEnterForeground` — das ist kein Rueckkehren aus dem Hintergrund, sondern Teil des
+normalen Starts (`didCreateScene` im Rahmen #22). Capacitors Beobachter haengt zu diesem Zeitpunkt
+schon (er wird in `viewDidLoad` gesetzt), der Seitenaufbau steht aber erst bei **10 %**. Also wird
+
+    window.Capacitor.triggerEvent('resume', 'document')
+
+in ein Dokument geschickt, in dem `window.Capacitor` noch **nicht existiert** — das Skript, das es
+anlegt, wird bei `documentStart` eingespielt, und der ist noch nicht erreicht. `triggerEvent` selbst
+kann nicht werfen (`native-bridge.js:222`, es verschickt nur ein `CustomEvent`); der Fehler ist der
+`TypeError` auf dem undefinierten Empfaenger. WebKit meldet das als `WKError` 4, und dessen
+`localizedDescription` lautet woertlich „A JavaScript exception occurred". Genau eine Zeile, genau
+einmal, immer **vor** `WebView loaded` — wie beobachtet.
+
+### Was daraus folgt: nichts tun, und warum das die Antwort ist
+
+**Es ist kein Fehler von uns**, und die verlorene Nachricht ist bedeutungslos:
+
+1. Das Ereignis heisst `resume`, wird aber beim **Start** gesendet — es gibt nichts
+   fortzusetzen. Es ist ein Cordova-Kompatibilitaetsereignis fuer Apps, die es erwarten.
+2. **Lucenta hoert nicht darauf.** Nachgesehen: kein `resume`- oder `pause`-Hoerer in `src/js/`.
+3. Im **Release-Bau ist die Zeile nicht einmal sichtbar.** `loggingBehavior` ist standardmaessig
+   `debug`, und `CAPInstanceConfiguration.m:24` setzt `loggingEnabled = debug` — `CAPLog.print`
+   schweigt dann. Der Inhaber und die Nutzer sehen das nie; es war immer nur die Xcode-Konsole.
+
+Die naheliegenden „Behebungen" sind alle schlechter als der Fehler:
+
+- **Capacitor patchen** hiesse in `node_modules`/`Pods` schreiben — erzeugt, beim naechsten
+  `pod install` weg, dieselbe Falle wie `capacitor.config.json` in Runde 103.
+- **`loggingBehavior: "none"`** setzen wuerde die Zeile verstecken und mit ihr jede kuenftige
+  echte Meldung der Bruecke. Ein Fehler, den man nicht mehr sieht, ist nicht behoben.
+
+Deshalb steht der Punkt jetzt als **geklaert** in der Uebergabe und nicht mehr als Aufgabe. Der
+Wert der Runde ist nicht eine Aenderung, sondern dass die naechste Sitzung nicht ein viertes Mal
+danach sucht.
+
+### Unsicher geblieben
+
+Nur Debug-Bau, nur Simulator (iPhone 18 Pro, iOS 27.0). Dass die Zeile im Release-Bau ausbleibt,
+ist aus `CAPInstanceConfiguration.m` **gelesen**, nicht an einem Release-Bau **gemessen** — das
+waere mit einem Archiv-Bau nachzuholen, wenn der Inhaber ohnehin einen macht.
+
+Keine Pruefung gelaufen: Diese Runde hat **keine Datei** in `src/`, `dist/` oder `ios/` geaendert,
+nur dieses Journal. `pruef-alles` haette denselben Stand gemessen wie in Runde 103.
 
 ---
 

@@ -602,10 +602,15 @@
     font-family:var(--serif); font-size:19px; font-weight:600; line-height:1;
     color:var(--accent); margin-left:-8px; flex-shrink:0;
   }
-    font-family:var(--mono); font-size:9.5px; font-weight:600; letter-spacing:.04em;
-    text-transform:uppercase; color:var(--muted); border:1px solid var(--line);
-    border-radius:100px; padding:2px 7px; line-height:1.4;
-  }
+  /* Runde 104: Hier standen vier Deklarationen OHNE Selektor. In Runde 99 wurde das
+     Beta-Abzeichen entfernt und dabei nur die Zeile `.wordmark-beta{` geloescht, nicht ihr
+     Rumpf. Das ist kein Schoenheitsfehler: Ein CSS-Parser sammelt beim Aufraeumen so lange
+     Zeichen fuer einen Selektor, bis die naechste `{` kommt — und das war die von `.tagline`.
+     Die verwaisten Zeilen samt `.tagline`-Selektor wurden dadurch EINE ungueltige Regel, und
+     die ganze Regel fiel weg. Gemessen auf WebKit und Chromium: `.tagline` existierte im
+     geparsten Stilblatt nicht, die Bezeichnung im Kopf und der Hinweis im Fragebogen standen
+     seit fuenf Runden auf 16px Grotesk statt 12px Monospace. `pruefeWaisen` in `build.js`
+     bricht jetzt ab, bevor das ein zweites Mal ungesehen durchgeht. */
   .tagline{font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:.02em;}
   /* Runde 91, von der neuen Ueberlauf-Pruefung gefunden: Bei 320 Bildpunkten Breite standen im
      Kopf 161 (Wortmarke) plus 142 (Bezeichnung und Knopf) = 303 Bildpunkte in 280 verfuegbaren.
@@ -811,8 +816,19 @@
      Moeglichkeiten zeigt. Ein Zug, zwei Faecher, der gewaehlte gefuellt. Bewusst NICHT zwei
      Knoepfe nebeneinander: Die sagen nicht, dass sie einander ausschliessen, und lassen den
      Zustand "beide aus" zu, den es hier nicht gibt. */
+  /* Runde 104: Hier stand `grid-template-columns:1fr 1fr` — zwei Spalten, fest. Zwei der
+     Waehler haben aber DREI Faecher (Darstellung: System/Hell/Dunkel; Zeitraum der Tagesform:
+     14/30/90), und das dritte rutschte jeweils in eine zweite Zeile, mit einem leeren Fach
+     daneben. Nachgemessen auf 390 Punkten: "Dunkel" stand allein auf y=1400, rechts davon 150
+     Punkte Loch, der Waehler 113 statt 58 Punkte hoch. Unentdeckt seit Runde 97, weil keine
+     Pruefung ein Raster auf Luecken ansieht — die Ueberlaufpruefung sucht Elemente, die
+     HERAUSstehen, nicht Loecher darin.
+
+     `grid-auto-flow:column` mit `grid-auto-columns:1fr` leitet die Spaltenzahl aus der Zahl der
+     Faecher ab. Damit ist ein Waehler mit vier Faechern richtig, bevor ihn jemand baut; die
+     drei mit zwei Faechern sehen aus wie vorher. */
   .segment{
-    margin:16px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:3px;
+    margin:16px 0 0;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:3px;
     background:var(--surface-3);border-radius:11px;padding:3px;
   }
   .segment-opt{
@@ -827,6 +843,55 @@
     box-shadow:0 1px 3px rgba(0,0,0,.10), 0 0 0 .5px var(--line);
   }
   .segment-opt:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
+  /* ---------- Runde 104: Liquid Glass Schritt 3 — nur beim Druecken ----------
+     Schritt 1 war die Kopfleiste, Schritt 2 Schublade und Fenster. Alle drei liegen in der
+     funktionalen Schicht, fuer die das Material gedacht ist. Ein Segmentwaehler in den
+     Einstellungen liegt dagegen IM INHALT, und dort hat Glas laut Leitlinie nichts zu suchen
+     ("Don't use Liquid Glass in the content layer").
+
+     Die Ausnahme, die es hier erlaubt, ist woertlich eng gefasst: "controls in the content layer
+     with a transient interactive element like sliders and toggles; in these cases, the element
+     takes on a Liquid Glass appearance to emphasize its interactivity WHEN A PERSON ACTIVATES
+     IT." Also beim Druecken — und nur dann.
+
+     Daraus folgt, was hier bewusst NICHT steht: Das gewaehlte Fach bekommt im Ruhezustand kein
+     Glas. Die Uebergabe hatte "allenfalls der Segmentwaehler" notiert; gemeint sein kann damit
+     nur der fluechtige Zustand, denn ein dauerhaft glaesernes Fach ist kein fluechtiger, sondern
+     ein stehender. Es bleibt deckend wie bisher.
+
+     Die regular-Variante, nicht clear: Das Fach traegt Text, und clear ist fuer Flaechen ueber
+     Fotos und Videos. Der Waehler liegt auf einer deckenden Karte — die Unschaerfe hat dort
+     wenig zu verwischen, und der sichtbare Anteil kommt aus saturate und brightness. Das ist
+     ein Aufleuchten unter dem Finger, kein Durchblick, und genau so ist es gemeint.
+
+     Beide Zustaende stehen ausdruecklich da (gewaehlt und nicht gewaehlt), weil
+     `.segment-opt[aria-checked="true"]` und `.segment-opt:active` dieselbe Spezifitaet haben und
+     sonst die Reihenfolge entscheidet — derselbe Mechanismus, der in Feedback-Runde 32 schon
+     zweimal einen Zustand still ueberschrieben hat. */
+  .segment-opt:active,
+  .segment-opt[aria-checked="true"]:active{
+    background:color-mix(in srgb, var(--surface) 58%, transparent);
+    -webkit-backdrop-filter:blur(8px) saturate(180%) brightness(1.06);
+    backdrop-filter:blur(8px) saturate(180%) brightness(1.06);
+    box-shadow:0 1px 3px rgba(0,0,0,.10), 0 0 0 .5px var(--line);
+    transition-duration:0s;
+  }
+  /* Der Rueckfall steht hier am Bedienelement und nicht im gesammelten Block weiter oben —
+     dieselbe Entscheidung wie bei den :hover-Regeln in dieser Datei: Wer die Regel aendert,
+     soll ihren Rueckfall sehen, ohne ihn zu suchen.
+
+     Ohne backdrop-filter waere ein zu 58 % durchscheinendes Fach ohne Unschaerfe einfach ein
+     blasses Fach; "Transparenz reduzieren" und "Kontrast erhoehen" haben beide ausdruecklich
+     abbestellt, was diese Regel tut. In allen drei Faellen dasselbe: deckend druecken. */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    .segment-opt:active, .segment-opt[aria-checked="true"]:active{ background:var(--surface); }
+  }
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more){
+    .segment-opt:active, .segment-opt[aria-checked="true"]:active{
+      background:var(--surface);
+      -webkit-backdrop-filter:none; backdrop-filter:none;
+    }
+  }
   .segment-preis{font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:-.01em;}
   .segment-spar{font-family:var(--mono);font-size:10.5px;color:var(--accent-2-text);letter-spacing:.02em;}
   .segment-opt[aria-checked="true"] .segment-spar{color:var(--accent-2-text);}
