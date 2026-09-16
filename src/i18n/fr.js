@@ -850,6 +850,8 @@
       'js_recht_luecke_titel': 'Pas encore rempli :',
       'js_recht_luecke_text': 'Ces informations manquent et doivent être renseignées avant toute publication (dans l’app, sous IMPRESSUM) :',
       'js_recht_keine_ust': 'Pas de numéro d’identification à la TVA.',
+      'plus_kauf_fehler': 'L&rsquo;achat n&rsquo;a pas abouti. Rien n&rsquo;a &eacute;t&eacute; d&eacute;bit&eacute;.',
+      'plus_kauf_wartet': 'L&rsquo;achat attend une autorisation. Lucenta+ s&rsquo;active d&egrave;s qu&rsquo;elle arrive.',
       'analysiere_deine_antworten_h': 'Analyse de tes réponses &hellip;'
     }
   };

@@ -59,8 +59,8 @@ Die neun einzeln, falls eine davon nachzufahren ist:
     node tests/run.js              # 11 Reihen
     python3 tools/audit_i18n.py    # 8 statische Pruefungen ueber alle 8 Sprachen
     npm run pruef-store            # Zeichenzahlen der Store-Texte
-    npm run pruef-app              # 18 Pruefungen an dist/index.html (die Fassung im App-Bundle)
-    npm run pruef-nativ            # 27 Pruefungen, stellt Capacitor im Browser nach
+    npm run pruef-app              # 20 Pruefungen an dist/index.html (die Fassung im App-Bundle)
+    npm run pruef-nativ            # 45 Pruefungen, stellt Capacitor im Browser nach
     npm run pruef-bewegung
     npm run diff-sprachen          # ein BERICHT, kein Bestanden/Durchgefallen
     npm run fehlersuche            # 26 Durchlaeufe: 13 Konfigurationen x WebKit + Chromium
@@ -166,31 +166,53 @@ nicht abgehakt. Jetzt steht hier der **Stand**, damit niemand zweimal dasselbe s
 Eine freie Apple-ID genuegt (7-Tage-Signatur); der bezahlte Account wird erst fuer TestFlight,
 App Store Connect und die Abo-Produkte gebraucht.
 
-## Die StoreKit-Bruecke — der eigentliche Auftrag hier
+## Die Kauf-Bruecke — steht seit Runde 103
 
-In `src/js/19b-native.js` ruft die App ein Capacitor-Modul namens `StoreKit` auf. **Dieses
-Modul gibt es nicht.** Der Name ist ein Platzhalter: Fuer `LocalNotifications`, `Filesystem`
-und `App` existieren offizielle Module, die genau so heissen; fuer Kaeufe gibt es keins von
-Apple oder Ionic.
+`ios/App/App/LucentaKaeufePlugin.swift`, StoreKit 2, angemeldet unter dem Namen `StoreKit`, weil
+`src/js/19b-native.js` ihn so ruft. Drei Aufrufe:
 
-Zu bauen ist ein kleines Capacitor-Plugin in Swift, das sich unter diesem Namen anmeldet und
-zwei Aufrufe bedient:
+- `stand()` -> `{aktiv, produkt}` — fragt nur das Geraet, zeigt keinen Dialog. Laeuft beim Start.
+- `kaufen({produkt})` -> `{aktiv, produkt}` bzw. `{abgebrochen}` / `{wartet}` / `{unbestaetigt}`
+- `restorePurchases()` -> `{aktiv, produkt}` — ruft `AppStore.sync()` (Richtlinie 3.1.2)
 
-- `restorePurchases()` -> `{ aktiv: Bool }`
-- der Kauf selbst, fuer die Produkte `lucenta.plus.monat` (4,99 EUR) und
-  `lucenta.plus.jahr` (29,99 EUR), in derselben Abo-Gruppe
+Produkte: `lucenta.plus.monat` (4,99 EUR) und `lucenta.plus.jahr` (29,99 EUR), dieselbe
+Abo-Gruppe. Die Liste steht **zweimal** — in der Swift-Datei und in `19b-native.js`. Das ist
+Absicht: Die Swift-Seite weist eine Kennung ab, die sie nicht kennt, statt sie an den Store zu
+geben.
 
-**Zwei Stellen schalten die bezahlte Fassung heute ohne Zahlung frei** und muessen vor der
-Einreichung durch die echte Kaufpruefung ersetzt werden:
+**Vier Dinge daran, die man sonst neu lernt:**
 
-- `plusSchalter` in `src/js/15-profile.js`
-- `btnPlusAktivieren` in `src/js/21-beta-rueckmeldung.js`
+1. **Die Anmeldung gehoert in `MainViewController.capacitorDidLoad()`, nicht in die
+   `packageClassList`.** Capacitor 6 registriert Plugins nicht mehr ueber die ObjC-Laufzeit,
+   sondern aus `capacitor.config.json` — und die Datei in `ios/App/App/` ist **erzeugt**. Ein
+   Eintrag dort ist beim naechsten `npx cap sync ios` weg, und die App faellt still auf "gibt es
+   nur in der App" zurueck. Deshalb `registerPluginInstance()` und `CAPInstancePlugin`.
+2. **Die Klasse heisst nicht `StoreKit`** (Namenskonflikt mit Apples Framework), nach aussen
+   schon.
+3. **Weggenommen wird nur bei einer klaren Antwort.** `plusStandPruefen()` richtet sich beim Start
+   nach dem Store: abgelaufen -> Lucenta+ zurueck, laufend -> frei. Antwortet der Store nicht oder
+   mit einem Fehler, bleibt alles wie es war. Sonst nimmt eine Stoerung jemandem weg, wofuer er
+   bezahlt hat.
+4. **Kein Beleg-Server, und das muss so bleiben.** StoreKit 2 prueft die Signatur auf dem Geraet.
+   Ein eigener Server waere die erste Stelle, an der Lucenta etwas nach aussen sendet — und damit
+   waere "Data Not Collected" falsch.
 
-Eine allein uebersehen heisst: Die App verschenkt das Abo. Beide liegen in `src/` und sind
-seit Runde 102 **hier** zu erledigen, zusammen mit der Swift-Seite — das ist der Punkt, an dem
-die frueher getrennten Haelften ohnehin zusammengehoeren. Ebenfalls dort: die gewaehlte
-Laufzeit (`lucenta_laufzeit`) ist heute nur eine Notiz und muss zur Produktkennung des
-gekauften Abos werden.
+**Die zwei Stellen, die das Abo verschenkten, sind zu** (frueher der Hauptauftrag hier):
+`btnPlusAktivieren` loest den echten Kauf aus; `plusSchalter` im Profil erscheint nur noch **ohne**
+native Bruecke, also nur beim Entwickeln im Browser. Die gekaufte Kennung steht in
+`lucenta_plus_produkt` — getrennt von `lucenta_laufzeit`, das die im Waehler gewaehlte Laufzeit
+merkt. Eine Notiz und ein Beleg sind zwei verschiedene Dinge.
+
+**Geprueft wird das ohne Store:** `npm run pruef-nativ` (45 Pruefungen) stellt die Bruecke nach und
+misst alle vier Ausgaenge des Kaufs, das Nachziehen beim Start (einschliesslich "Stoerung nimmt
+nichts weg") und dass es in der App **keinen** Entwickler-Umschalter gibt.
+
+**Lokal mit echtem StoreKit testen:** `ios/App/App/Lucenta.storekit` traegt beide Produkte, das
+Schema `App` verweist darauf. Im Simulator laufen Kauf, Abbruch und Wiederherstellen damit ohne
+App-Store-Connect-Konto und ohne Sandbox-Anmeldung.
+
+**Offen und nur vom Inhaber zu erledigen:** die zwei Produkte in App Store Connect anlegen, genau
+mit diesen Kennungen und in derselben Abo-Gruppe.
 
 ## Was die App verspricht und der Code halten muss
 

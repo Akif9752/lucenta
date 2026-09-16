@@ -850,6 +850,8 @@
       'js_recht_luecke_titel': 'Aún sin completar:',
       'js_recht_luecke_text': 'Faltan estos datos y deben introducirse antes de publicar (en la app, en IMPRESSUM):',
       'js_recht_keine_ust': 'Sin número de identificación fiscal (IVA).',
+      'plus_kauf_fehler': 'La compra no se ha completado. No se ha cobrado nada.',
+      'plus_kauf_wartet': 'La compra espera aprobaci&oacute;n. Lucenta+ se activar&aacute; en cuanto llegue.',
       'analysiere_deine_antworten_h': 'Analizando tus respuestas &hellip;'
     }
   };

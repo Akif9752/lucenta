@@ -40,6 +40,14 @@ seite.on('pageerror', e => ausnahmen.push(e.message));
 // genau wie auf dem Geraet.
 await seite.addInitScript(() => {
   window.__nativLog = [];
+  // Runde 103: Die Standpruefung beim Start laesst sich nur ueber ein NEULADEN pruefen — und ein
+  // Neuladen wirft alles weg, was per evaluate() gesetzt wurde. Der gewuenschte Zustand des
+  // nachgestellten Stores kommt deshalb aus dem localStorage, den das Neuladen ueberlebt.
+  // Die spaeteren Zuweisungen per evaluate() ueberschreiben das weiterhin.
+  try {
+    window.__aboAktiv = localStorage.getItem('__pruef_abo') === '1';
+    window.__standFehler = localStorage.getItem('__pruef_standfehler') === '1';
+  } catch (e) {}
   const merke = (was, arg) => { window.__nativLog.push({was, arg}); };
   window.Capacitor = {
     isNativePlatform: () => true,
@@ -52,8 +60,21 @@ await seite.addInitScript(() => {
       Filesystem: {
         writeFile: (o) => { merke('schreiben', {path:o.path, laenge:(o.data||'').length, dir:o.directory}); return Promise.resolve(); }
       },
+      // Runde 103: Die Bruecke kann jetzt drei Dinge, und alle drei werden hier nachgestellt.
+      // `window.__kaufAntwort` bestimmt, WAS der Store antwortet — das ist der Punkt der ganzen
+      // Uebung: Kauf, Abbruch, Warten und Fehlschlag sind vier verschiedene Ausgaenge, und nur
+      // der erste darf etwas freischalten.
       StoreKit: {
-        restorePurchases: () => { merke('wiederherstellen'); return Promise.resolve({aktiv: !!window.__aboAktiv}); }
+        restorePurchases: () => { merke('wiederherstellen');
+          return Promise.resolve({aktiv: !!window.__aboAktiv, produkt: window.__aboAktiv ? 'lucenta.plus.jahr' : ''}); },
+        stand: () => { merke('stand');
+          return window.__standFehler
+            ? Promise.reject(new Error('Store nicht erreichbar'))
+            : Promise.resolve({aktiv: !!window.__aboAktiv, produkt: window.__aboAktiv ? 'lucenta.plus.jahr' : ''}); },
+        kaufen: (o) => { merke('kaufen', o);
+          return window.__kaufFehler
+            ? Promise.reject(new Error('Kauf fehlgeschlagen'))
+            : Promise.resolve(window.__kaufAntwort || {aktiv: true, produkt: o.produkt}); }
       },
       App: { openUrl: (o) => { merke('oeffnen', o); return Promise.resolve(); } }
     }
@@ -135,6 +156,128 @@ await seite.waitForTimeout(500);
 ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'), 'mit Abo wird Lucenta+ wieder aktiv');
 ok(/Lucenta\+/.test(await seite.evaluate(() => document.getElementById('plusStand')?.textContent || '')),
    'und die Zeile daneben sagt es: '+(await seite.evaluate(() => document.getElementById('plusStand')?.textContent || '')).slice(0,60));
+
+// ---------------------------------------------------------------------------------------
+// Runde 103: Der Kauf. Bis zu dieser Runde schaltete der Knopf im Kauffenster Lucenta+ ohne
+// Zahlung frei — eine der zwei Stellen, die "die App verschenkt das Abo" bedeuteten. Dahinter
+// liegt jetzt die echte Bruecke, und hier steht der Nachweis, dass der Code das Richtige ruft
+// und die vier Ausgaenge unterscheidet. Der Knopf wird programmatisch getippt; er liegt im
+// Kauffenster, das dafuer nicht offen sein muss.
+console.log('\n=== Der Kauf ruft die richtige Produktkennung ===');
+const zurueckgesetzt = () => seite.evaluate(() => {
+  window.__nativLog = []; window.__kaufAntwort = null; window.__kaufFehler = false;
+  localStorage.removeItem('lucenta_plus'); localStorage.removeItem('lucenta_plus_produkt');
+  const t = document.getElementById('toast'); if (t) { t.classList.remove('show'); t.textContent = ''; }
+});
+await zurueckgesetzt();
+await seite.evaluate(() => { localStorage.setItem('lucenta_laufzeit', 'monat'); });
+await seite.evaluate(() => document.getElementById('btnPlusAktivieren').click());
+await seite.waitForTimeout(500);
+const kauf = (await seite.evaluate(() => window.__nativLog)).filter(e => e.was === 'kaufen')[0];
+ok(!!kauf, 'der Knopf loest einen Kauf aus, statt die Marke umzulegen');
+ok(kauf?.arg?.produkt === 'lucenta.plus.monat',
+   'mit der Kennung der gewaehlten Laufzeit: ' + kauf?.arg?.produkt);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'),
+   'ein gelungener Kauf schaltet frei');
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus_produkt') === 'lucenta.plus.monat'),
+   'und die GEKAUFTE Kennung wird gemerkt, getrennt von der gewaehlten Laufzeit');
+
+await zurueckgesetzt();
+await seite.evaluate(() => { localStorage.setItem('lucenta_laufzeit', 'jahr'); });
+await seite.evaluate(() => document.getElementById('btnPlusAktivieren').click());
+await seite.waitForTimeout(500);
+ok((await seite.evaluate(() => window.__nativLog)).filter(e => e.was === 'kaufen')[0]?.arg?.produkt === 'lucenta.plus.jahr',
+   'die andere Laufzeit kauft das andere Produkt');
+
+console.log('\n=== Nur ein gelungener Kauf schaltet frei — die drei anderen Ausgaenge nicht ===');
+// Gemessen wird der TEXT des Hinweises, nicht seine Klasse 'show'. Erster Versuch war die
+// Klasse, und zwei Pruefungen schlugen fehl: toast() nimmt sie nach 1800ms selbst zurueck, und
+// der Zeitgeber eines VORHERIGEN Hinweises fiel mitten ins Messfenster. Ein Fehlschlag, der von
+// der Uhr abhaengt, ist kein Befund. Der Text wird in zurueckgesetzt() geleert; steht danach
+// wieder etwas da, ist etwas gesagt worden.
+const etwasGesagt = () => seite.evaluate(() => (document.getElementById('toast')?.textContent || '').trim().length > 0);
+await zurueckgesetzt();
+await seite.evaluate(() => { window.__kaufAntwort = {aktiv: false, abgebrochen: true}; });
+await seite.evaluate(() => document.getElementById('btnPlusAktivieren').click());
+await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') !== '1'), 'ein Abbruch schaltet NICHT frei');
+ok(!(await etwasGesagt()), 'und sagt auch nichts — wer abbricht, weiss es');
+
+await zurueckgesetzt();
+await seite.evaluate(() => { window.__kaufAntwort = {aktiv: false, wartet: true}; });
+await seite.evaluate(() => document.getElementById('btnPlusAktivieren').click());
+await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') !== '1'),
+   'ein wartender Kauf ("Bitten um Erlaubnis") schaltet nicht frei');
+ok(await etwasGesagt(), 'sagt aber, dass er wartet — sonst kauft jemand zweimal');
+
+await zurueckgesetzt();
+await seite.evaluate(() => { window.__kaufFehler = true; });
+await seite.evaluate(() => document.getElementById('btnPlusAktivieren').click());
+await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') !== '1'), 'ein Fehlschlag schaltet nicht frei');
+ok(await etwasGesagt(), 'und wird gemeldet');
+
+console.log('\n=== Wer Lucenta+ hat, kommt vom selben Knopf zur Verwaltung bei Apple ===');
+await zurueckgesetzt();
+await seite.evaluate(() => { localStorage.setItem('lucenta_plus', '1'); });
+await seite.evaluate(() => document.getElementById('btnPlusAktivieren').click());
+await seite.waitForTimeout(400);
+const verwaltung = (await seite.evaluate(() => window.__nativLog)).filter(e => e.was === 'oeffnen')[0];
+ok(/account\/subscriptions$/.test(verwaltung?.arg?.url || ''),
+   'der Knopf fuehrt in die Abo-Verwaltung: ' + (verwaltung?.arg?.url || '(nichts)'));
+ok(!(await seite.evaluate(() => window.__nativLog)).some(e => e.was === 'kaufen'),
+   'und kauft nichts ein zweites Mal');
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'),
+   'Lucenta+ bleibt dabei aktiv — eine App beendet kein Abo selbst');
+
+console.log('\n=== In der App gibt es keinen Entwickler-Umschalter ===');
+await seite.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+await seite.waitForTimeout(300);
+await seite.evaluate(() => document.getElementById('btnDrawerProfileRow')?.click());
+await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => !document.getElementById('plusSchalter')),
+   'kein #plusSchalter mit nativer Bruecke — er verschenkte das Abo');
+
+console.log('\n=== Beim Start gilt, was der Store sagt ===');
+// Nur ueber ein Neuladen zu pruefen: plusStandPruefen() laeuft beim Start.
+await seite.evaluate(() => {
+  localStorage.setItem('lucenta_plus', '1');        // Marke steht noch
+  localStorage.setItem('__pruef_abo', '0');          // Abo ist aber weg
+  localStorage.setItem('__pruef_standfehler', '0');
+});
+await seite.reload({waitUntil: 'networkidle'});
+await seite.waitForTimeout(700);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') !== '1'),
+   'ein abgelaufenes Abo nimmt Lucenta+ beim Start zurueck');
+
+await seite.evaluate(() => {
+  localStorage.removeItem('lucenta_plus');           // Marke fehlt
+  localStorage.setItem('__pruef_abo', '1');          // Abo laeuft aber
+});
+await seite.reload({waitUntil: 'networkidle'});
+await seite.waitForTimeout(700);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'),
+   'ein laufendes Abo schaltet beim Start von sich aus frei');
+
+// Der wichtigste der drei Faelle: Eine Stoerung darf NICHTS wegnehmen.
+await seite.evaluate(() => {
+  localStorage.setItem('lucenta_plus', '1');
+  localStorage.setItem('__pruef_standfehler', '1');
+});
+await seite.reload({waitUntil: 'networkidle'});
+await seite.waitForTimeout(700);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'),
+   'antwortet der Store gar nicht, bleibt Lucenta+ stehen — eine Stoerung nimmt nichts weg');
+
+// Zustand fuer die folgenden Pruefungen wieder herstellen.
+await seite.evaluate(() => {
+  localStorage.removeItem('__pruef_standfehler');
+  localStorage.setItem('__pruef_abo', '1');
+  localStorage.removeItem('lucenta_plus');
+});
+await seite.reload({waitUntil: 'networkidle'});
+await seite.waitForTimeout(600);
 
 console.log('\n=== Abo verwalten fuehrt in die Systemeinstellungen ===');
 await seite.evaluate(() => { window.__nativLog = []; });

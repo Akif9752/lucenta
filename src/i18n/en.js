@@ -851,6 +851,8 @@
       'js_recht_luecke_titel': 'Not filled in yet:',
       'js_recht_luecke_text': 'These details are missing and must be entered before publication (in the app under IMPRESSUM):',
       'js_recht_keine_ust': 'No VAT identification number.',
+      'plus_kauf_fehler': 'The purchase didn&rsquo;t go through. Nothing was charged.',
+      'plus_kauf_wartet': 'The purchase is awaiting approval. Lucenta+ unlocks as soon as it arrives.',
       'analysiere_deine_antworten_h': 'Analysing your answers &hellip;'
     }
   };

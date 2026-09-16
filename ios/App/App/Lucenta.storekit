@@ -1,0 +1,86 @@
+{
+  "identifier" : "A1B2C3D4",
+  "nonRenewingSubscriptions" : [
+  ],
+  "products" : [
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6740000000",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 0,
+    "_locale" : "de_DE",
+    "_storefront" : "DEU",
+    "_storeKitErrors" : [
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21500001",
+      "localizations" : [
+        {
+          "description" : "Lucenta+ zeigt den vollen Verlauf, die Tagesform ohne Grenze und die Kombinationskarten.",
+          "displayName" : "Lucenta+",
+          "locale" : "de_DE"
+        }
+      ],
+      "name" : "Lucenta Plus",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+          ],
+          "codeOffers" : [
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "21500002",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Monatlich, jederzeit kuendbar.",
+              "displayName" : "Lucenta+ monatlich",
+              "locale" : "de_DE"
+            }
+          ],
+          "productID" : "lucenta.plus.monat",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Lucenta+ Monat",
+          "subscriptionGroupID" : "21500001",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+          ]
+        },
+        {
+          "adHocOffers" : [
+          ],
+          "codeOffers" : [
+          ],
+          "displayPrice" : "29.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "21500003",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Jaehrlich, guenstiger als monatlich.",
+              "displayName" : "Lucenta+ jaehrlich",
+              "locale" : "de_DE"
+            }
+          ],
+          "productID" : "lucenta.plus.jahr",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Lucenta+ Jahr",
+          "subscriptionGroupID" : "21500001",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

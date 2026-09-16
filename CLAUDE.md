@@ -82,13 +82,15 @@ danach als Werkzeug ins Repository, damit die Zahl nicht zurückdriftet.
 `docs/app-store-start.md` ist die verbindliche Liste: was erledigt ist, was einen Mac
 braucht, was nur der Inhaber erledigen kann. Kurz die Fallen:
 
-- **`StoreKit` in `src/js/19b-native.js` ist ein Platzhalter.** Für LocalNotifications,
-  Filesystem und App gibt es offizielle Capacitor-Module; für Käufe gibt es keins. Dort
-  gehört eine eigene Swift-Brücke hin.
-- **Zwei Stellen schalten die bezahlte Fassung ohne Zahlung frei:** `plusSchalter`
-  (`src/js/15-profile.js`) und `btnPlusAktivieren` (`src/js/21-beta-rueckmeldung.js`).
-  Beide müssen vor der Einreichung durch die echte Kaufprüfung ersetzt werden — eine allein
-  übersehen heißt, die App verschenkt das Abo.
+- **Die Kauf-Brücke steht** (Runde 103): `ios/App/App/LucentaKaeufePlugin.swift`, StoreKit 2,
+  angemeldet als `StoreKit` über `MainViewController.capacitorDidLoad()` — **nicht** über
+  `packageClassList` in `capacitor.config.json`, die ist erzeugt und wird bei jedem
+  `npx cap sync ios` überschrieben. Die zwei Stellen, die das Abo verschenkten
+  (`btnPlusAktivieren`, `plusSchalter`), sind zu; der Umschalter im Profil erscheint nur noch
+  ohne native Brücke. Geprüft über `npm run pruef-nativ` (45 Prüfungen, alle vier Ausgänge des
+  Kaufs). **Offen und nur vom Inhaber zu erledigen:** die zwei Produkte in App Store Connect
+  anlegen — `lucenta.plus.monat` und `lucenta.plus.jahr`, genau so geschrieben, in derselben
+  Abo-Gruppe.
 - **Keine Diagnosesprache.** Richtlinie 1.4.1. Lucenta beschreibt, es befundet nicht.
 - **„Data Not Collected"** ist die richtige und einzige Datenschutzangabe — solange nichts
   hinzukommt, das sendet.

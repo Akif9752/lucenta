@@ -38,6 +38,119 @@ lokalisieren braucht den Safari-Web-Inspector am laufenden Simulator.
 
 ---
 
+## 2026-09-16 (Runde 103) — Die StoreKit-Bruecke, und zwei Stellen, die das Abo verschenkten
+
+**Auftrag:** der eigentliche Einreichungs-Blocker. `src/js/19b-native.js` rief seit Runde 99 ein
+Capacitor-Modul namens `StoreKit` auf — **das es nicht gibt**, weder von Apple noch von Ionic. Der
+Name war ein ehrlich vermerkter Platzhalter. Und zwei Stellen schalteten Lucenta+ ohne Zahlung
+frei.
+
+### Die Swift-Seite
+
+`ios/App/App/LucentaKaeufePlugin.swift`, **StoreKit 2** (`Product`, `Transaction`), drei Aufrufe:
+`stand()`, `kaufen({produkt})`, `restorePurchases()`. Produkte `lucenta.plus.monat` (4,99 EUR) und
+`lucenta.plus.jahr` (29,99 EUR).
+
+**StoreKit 2 und nicht `SKPaymentQueue`** aus einem Grund, der zum Projekt gehoert: Es prueft den
+Kaufbeleg kryptografisch signiert **auf dem Geraet**. Es braucht keinen Beleg-Server — und ein
+solcher Server waere die erste Stelle, an der Lucenta etwas nach aussen sendet. Damit waere
+„Data Not Collected" falsch.
+
+**Die Falle, die mich fast erwischt hat:** Capacitor 6 registriert Plugins **nicht** mehr ueber
+die ObjC-Laufzeit, sondern liest `packageClassList` aus `capacitor.config.json`
+(`CapacitorBridge.registerPlugins()`, nachgelesen im Pod). Die naheliegende Loesung waere, die
+Klasse dort einzutragen — und `ios/App/App/capacitor.config.json` ist **erzeugt** und beim
+naechsten `npx cap sync ios` ueberschrieben. Die Anmeldung waere spurlos weg, und die App faellt
+dann still auf „gibt es nur in der App" zurueck: kein Fehler, keine Warnung, nur kein Kaufweg.
+Deshalb `MainViewController.capacitorDidLoad()` + `registerPluginInstance()`, und die Klasse erbt
+von `CAPInstancePlugin` — der Sorte, die die automatische Registrierung ueberspringt und damit
+auch nicht doppelt registriert werden kann.
+
+**Zwei eigene Irrtuemer beim Pruefen, beide gemeldet und beide harmlos ausgegangen:**
+1. Ich suchte den Klassennamen im App-Binaer und fand **nichts** — und haette daraus fast
+   geschlossen, die Datei sei nicht mitkompiliert. Falsche Datei: Xcode legt den Code eines
+   Debug-Baus in `App.debug.dylib` und laesst im eigentlichen `App` nur einen 40-KB-Starter. Im
+   Dylib steht der Name 120 Mal.
+2. Die `Lucenta.storekit`-Testkonfiguration landete durch `XcodeWrite` in den **Ressourcen** und
+   damit im App-Bundle. Testdaten in der ausgelieferten App gehoeren dort nicht hin; die Datei ist
+   jetzt aus dem Projekt entfernt (auf der Platte bleibt sie), und das Schema verweist per Pfad
+   darauf. Nachgemessen: Sie ist nicht mehr im Bundle, das Plugin weiterhin kompiliert.
+
+### Die zwei Stellen, die das Abo verschenkten
+
+- **`btnPlusAktivieren`** (der Knopf „Lucenta+ aktivieren") legte `plusSetzen(!istPlus())` um.
+  Jetzt loest er den echten Kauf aus. Und wer Lucenta+ schon hat, kommt vom selben Knopf zur
+  **Verwaltung bei Apple** — eine App darf ein Abo nicht selbst beenden. Der Knopf traegt dort
+  „Abo verwalten" statt „Zur freien Fassung zurueck"; den Text gab es in allen acht Sprachen
+  schon (`plus_verwalten`).
+- **`plusSchalter`** (der Entwickler-Umschalter im Profil) erscheint nur noch **ohne** native
+  Bruecke, also nur beim Entwickeln im Browser. Festgemacht an `nativVorhanden()` und nicht an
+  einer Debug-Marke: Eine Marke, die man setzen muss, ist eine, die man vergisst — und dieses
+  Vergessen kostet hier Geld.
+
+### Drei Dinge, die vorher niemand verlangt hatte und die dazugehoeren
+
+1. **Beim Start gilt, was der Store sagt** (`plusStandPruefen()`). Vorher stand der bezahlte
+   Zustand allein in `localStorage`: Ein gekuendigtes Abo haette Lucenta+ dort **fuer immer**
+   stehengelassen. Sobald Geld im Spiel ist, ist das ein Fehler.
+   **Die Vorsichtsregel dabei ist wichtiger als die Sache selbst:** Weggenommen wird nur bei einer
+   klaren Antwort. Keine Bruecke, ein Fehler, ein unerwartetes Ergebnis — dann bleibt alles wie es
+   war. Sonst nimmt eine Stoerung im Store jemandem weg, wofuer er bezahlt hat.
+2. **Vier Ausgaenge statt zwei.** Gelungen, abgebrochen, wartend („Bitten um Erlaubnis"),
+   fehlgeschlagen. Ein Abbruch erzeugt **keine** Meldung — wer abbricht, weiss es; ihn zu
+   benachrichtigen waere Gezeter. Ein wartender Kauf als Fehlschlag gemeldet hiesse, jemanden
+   zweimal kaufen zu lassen. Dafuer zwei neue Texte in allen acht Sprachen (`plus_kauf_fehler`,
+   `plus_kauf_wartet`, ueber `tools/_addkeys.py`).
+3. **Die gekaufte Kennung steht in `lucenta_plus_produkt`** — getrennt von `lucenta_laufzeit`.
+   Die Uebergabe verlangte, `lucenta_laufzeit` „zur Produktkennung des gekauften Abos" zu machen;
+   ich habe das **bewusst anders** gemacht: `lucenta_laufzeit` ist die im Segmentwaehler gewaehlte
+   Laufzeit und soll beim naechsten Oeffnen noch dort stehen, wo sie stand. Eine Notiz und ein
+   Beleg sind zwei verschiedene Dinge, und `laufzeitLesen()` prueft gegen die Werte im Markup —
+   eine Produktkennung im selben Schluessel haette den Waehler seine Wahl vergessen lassen.
+
+### Geprueft
+
+**Ohne echten Store, in `pruef-nativ` (jetzt 45 statt 27 Pruefungen):** die richtige
+Produktkennung je Laufzeit; alle vier Ausgaenge (nur der gelungene schaltet frei, der Abbruch sagt
+nichts); der Knopf fuehrt bei aktivem Abo zur Verwaltung und kauft nicht doppelt; **kein
+`#plusSchalter` mit nativer Bruecke**; und die drei Startfaelle einschliesslich „eine Stoerung
+nimmt nichts weg" (ueber ein echtes Neuladen gemessen — der gewuenschte Store-Zustand kommt dafuer
+aus dem `localStorage`, weil ein Neuladen alles per `evaluate` Gesetzte wegwirft).
+
+Ein eigener Fehlgriff dabei: Die ersten zwei Pruefungen der Hinweistexte schlugen fehl, weil ich
+die Klasse `show` des Hinweises gemessen habe — `toast()` nimmt sie nach 1800 ms selbst zurueck,
+und der Zeitgeber eines **vorherigen** Hinweises fiel mitten ins Messfenster. Ein Fehlschlag, der
+von der Uhr abhaengt, ist kein Befund. Gemessen wird jetzt der **Text**.
+
+**Am Simulator, und das ist der Teil, den nur diese Sitzung kann:** Die Anmeldung der Bruecke war
+die eine Frage, die keine Pruefung hier beantwortet — ein Plugin, das sich nicht registriert,
+sieht im JavaScript genauso aus wie ein Browser. Tippen auf „Kaeufe wiederherstellen" hat den
+System-Dialog **„Bei Apple Account anmelden"** geoeffnet (das ist `AppStore.sync()` aus der
+Swift-Datei), und nach dem Abbrechen stand in der App **„Kein aktives Abo fuer diese Apple-ID
+gefunden."** Damit ist die ganze Kette belegt: Plugin registriert, JS ruft es, StoreKit 2
+antwortet, und der abgebrochene Anmeldedialog wird — wie vorgesehen — **nicht** als Fehler
+gemeldet. Gelesen habe ich dafuer die Bedienhilfen-Hierarchie als Text; **kein Bildschirmfoto**.
+
+**Pflichtrunde:** `npm run pruef-alles` ALLE 9 BESTANDEN in 8,9 Minuten (`fehlersuche` KEINE FUNDE
+ueber 26 Durchlaeufe auf beiden Motoren, `pruef-nativ` 45/45, `audit-i18n` bestanden mit den zwei
+neuen Schluesseln, `diff-sprachen` unveraendert 127).
+
+### Was offen bleibt
+
+1. **Die zwei Produkte in App Store Connect anlegen** — `lucenta.plus.monat` und
+   `lucenta.plus.jahr`, genau so geschrieben, in **derselben** Abo-Gruppe. Das kann nur der
+   Inhaber, und ohne das findet `Product.products(for:)` nichts.
+2. **Ein echter Kauf ist NICHT gelaufen.** Belegt ist der Weg bis in StoreKit hinein, nicht der
+   Kauf selbst. `ios/App/App/Lucenta.storekit` traegt beide Produkte und das Schema verweist
+   darauf; damit laeuft der Kauf im Simulator ohne Konto — **aber nur, wenn aus Xcode heraus
+   gestartet wird** (ich habe ueber `simctl` gestartet, deshalb kam der Apple-Account-Dialog).
+   Ob der Pfad im Schema richtig aufgeloest wird, ist damit **ungeprueft**; im Zweifel
+   Product > Scheme > Edit > Run > Options > StoreKit Configuration.
+3. **`plus_beenden` ist jetzt ein unbenutzter Schluessel** in allen acht Paketen. Ihn aus acht
+   Dateien zu entfernen waere mehr Risiko als ein unbenutzter Text wert ist.
+
+---
+
 ## 2026-09-16 (Runde 103) — Liquid Glass Schritt 2: Schublade und Dialoge
 
 **Auftrag:** Punkt 1 der Uebergabe. Schritt 1 (Kopfleiste) war Runde 102 und am Geraet bestaetigt.

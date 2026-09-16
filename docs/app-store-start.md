@@ -156,23 +156,35 @@ blockiert.
 5. **Markenrecherche zu „Lucenta" abschließen.** Der Stand steht in
    `docs/lucenta-markenrecherche.md` — eine Web-Recherche, keine Registerprüfung. Vor einem
    Store-Eintrag unter diesem Namen gehört eine echte Recherche in DPMA und EUIPO dazu.
-6. **Den Entwickler-Umschalter UND den Aktivierungsknopf im Kauffenster entfernen.**
-   Seit Runde 97 gibt es zwei Stellen, an denen die bezahlte Fassung ohne Zahlung angeht: den
-   Schalter im Profil und den Knopf „Lucenta+ aktivieren" im Kauffenster
-   (`btnPlusAktivieren` in `src/js/21-beta-rueckmeldung.js`). **Beide** müssen durch die echte
-   StoreKit-Prüfung ersetzt werden; einer allein übersehen heißt, die App verschenkt das Abo.
-   Ebenfalls dort: die gewählte Laufzeit (`lucenta_laufzeit`) ist heute nur eine Notiz und muss
-   zur Produktkennung des gekauften Abos werden.
+6. **Die Abo-Produkte in App Store Connect anlegen** — `lucenta.plus.monat` (4,99 €) und
+   `lucenta.plus.jahr` (29,99 €), **in derselben Abo-Gruppe**, mit Beschreibung, Preis und
+   Prüfhinweis. Genau diese zwei Kennungen stehen im Code (`src/js/19b-native.js` und
+   `ios/App/App/LucentaKaeufePlugin.swift`); eine dritte Kennung im Store bleibt unerreichbar,
+   eine abweichende Schreibweise lässt den Kauf ins Leere laufen. Das kann nur der Inhaber.
 
-   **Und der Name `StoreKit` in `19b-native.js` ist ein PLATZHALTER.** Für
-   LocalNotifications, Filesystem und App gibt es offizielle Capacitor-Module, die genau so
-   heißen; für Käufe gibt es keins von Apple oder Ionic. Wer das umsetzt, schreibt entweder
-   eine eigene kleine Brücke in Swift und meldet sie unter diesem Namen an, oder nimmt ein
-   Gemeinschaftsmodul und passt **diesen einen Aufruf** an. Der Name ist bewusst nicht
-   versteckt: Er steht im Code direkt darüber und hier. Alter Wortlaut dieses Punktes: Unter Profil steht seit Runde 84 ein Schalter
-   zwischen freier und gekaufter Fassung (`plusSchalter` in `src/js/15-profile.js`), damit
-   beide Zustände ohne Eingriff in den Speicher zu sehen sind. Er darf nicht mit in den Store;
-   an seine Stelle gehört die echte Kaufprüfung. Dasselbe gilt für die Beispielnutzerin.
+   **Der Code selbst ist seit Runde 103 fertig** — was hier früher stand, ist erledigt:
+   - Der Name `StoreKit` war ein Platzhalter (es gibt kein solches Modul von Apple oder Ionic).
+     Jetzt gibt es unser eigenes: `ios/App/App/LucentaKaeufePlugin.swift`, StoreKit 2, angemeldet
+     unter genau diesem Namen über `MainViewController.capacitorDidLoad()`. **Nicht** über
+     `packageClassList` in `capacitor.config.json` — die Datei ist erzeugt und beim nächsten
+     `npx cap sync ios` überschrieben.
+   - Die **zwei Stellen, die das Abo verschenkten**, sind zu: Der Knopf „Lucenta+ aktivieren"
+     (`btnPlusAktivieren`) löst den echten Kauf aus; der Entwickler-Umschalter im Profil
+     (`plusSchalter`) erscheint nur noch **ohne** native Brücke, also nur beim Entwickeln im
+     Browser.
+   - Die gekaufte Produktkennung steht in `lucenta_plus_produkt`. Sie ist bewusst **getrennt**
+     von `lucenta_laufzeit`, das weiterhin die im Segmentwähler gewählte Laufzeit merkt — eine
+     Notiz und ein Beleg sind zwei verschiedene Dinge.
+   - Beim Start fragt die App `stand()` und richtet sich danach: Ein abgelaufenes Abo nimmt
+     Lucenta+ zurück, ein laufendes schaltet frei. Antwortet der Store **nicht**, bleibt alles
+     wie es war — eine Störung darf niemandem wegnehmen, wofür er bezahlt hat.
+   - Geprüft ohne echten Store: `npm run pruef-nativ` (45 Prüfungen) stellt die Brücke nach und
+     misst alle vier Ausgänge des Kaufs — nur der gelungene schaltet frei.
+
+   **Lokal testen, ohne App Store Connect:** `ios/App/App/Lucenta.storekit` enthält beide
+   Produkte, und das Schema `App` verweist darauf. Im Simulator laufen Kauf, Abbruch und
+   Wiederherstellen damit ohne Konto. Für die Einreichung ersetzt der echte Store diese Datei;
+   sie gehört **nicht** ins App-Bundle.
 7. **Die Bildschirmfotos hochladen.** Erzeugt sind sie (Runde 99, `assets/store/`, beide
    Größen, deutsch und englisch) — hochladen kann sie nur, wer in App Store Connect angemeldet
    ist. Sie stammen aus dem Browser, nicht vom Gerät: für die Einreichung reicht das, Apple

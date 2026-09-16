@@ -116,10 +116,17 @@
   }
   // Der Knopf traegt zwei Zustaende. Ohne den zweiten fuehrte das Fenster in eine Sackgasse:
   // Wer Lucenta+ hat, saehe eine Aufforderung zu etwas, das er bereits hat.
+  //
+  // Runde 103: Der zweite Zustand hiess "Zur freien Fassung zurueck" (`plus_beenden`). Das passte
+  // zum Entwickler-Umschalter, den es dort gab — nicht zu einem bezahlten Abo. Eine App darf ein
+  // Abo gar nicht selbst beenden, sie fuehrt zur Verwaltung bei Apple. Der Knopf traegt deshalb
+  // jetzt "Abo verwalten", einen Text, den es in allen acht Sprachen schon gibt (`plus_verwalten`,
+  // bisher nur in den Einstellungen benutzt). `plus_beenden` bleibt in den Paketen stehen: Ihn aus
+  // acht Dateien zu entfernen waere mehr Risiko als ein unbenutzter Schluessel wert ist.
   function plusKnopfAnwenden(){
     var b = $('btnPlusAktivieren');
     if (!b) return;
-    b.textContent = tx(istPlus() ? 'plus_beenden' : 'plus_aktivieren');
+    b.textContent = tx(istPlus() ? 'plus_verwalten' : 'plus_aktivieren');
     b.classList.toggle('btn-primary', !istPlus());
     b.classList.toggle('btn-ghost', istPlus());
   }

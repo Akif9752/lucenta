@@ -854,6 +854,8 @@
       'js_recht_luecke_titel': 'Henüz doldurulmadı:',
       'js_recht_luecke_text': 'Bu bilgiler eksik ve yayından önce girilmeli (uygulamada IMPRESSUM altında):',
       'js_recht_keine_ust': 'KDV kimlik numarası yok.',
+      'plus_kauf_fehler': 'Sat&#305;n alma tamamlanamad&#305;. Hi&ccedil;bir &uuml;cret al&#305;nmad&#305;.',
+      'plus_kauf_wartet': 'Sat&#305;n alma onay bekliyor. Onay geldi&#287;inde Lucenta+ a&ccedil;&#305;l&#305;r.',
       'analysiere_deine_antworten_h': 'Yanıtların inceleniyor &hellip;'
     }
   };

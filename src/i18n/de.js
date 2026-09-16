@@ -582,6 +582,8 @@ CONTENT.de = {
       'js_recht_luecke_titel': 'Noch nicht ausgefüllt:',
       'js_recht_luecke_text': 'Diese Angaben fehlen und müssen vor einer Veröffentlichung eingetragen werden (in der App unter IMPRESSUM):',
       'js_recht_keine_ust': 'Keine Umsatzsteuer-Identifikationsnummer vorhanden.',
+      'plus_kauf_fehler': 'Der Kauf hat nicht geklappt. Es wurde nichts abgebucht.',
+      'plus_kauf_wartet': 'Der Kauf wartet noch auf Freigabe. Lucenta+ schaltet sich frei, sobald sie da ist.',
       'analysiere_deine_antworten_h': 'Analysiere deine Antworten &hellip;'
     },
     LABELS: {E:'Extraversion', A:'Verträglichkeit', C:'Gewissenhaftigkeit', S:'Emotionale Stabilität', O:'Offenheit'},

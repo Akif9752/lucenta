@@ -152,24 +152,36 @@
     // sonst nur zu sehen, indem man den Speicher von Hand aendert. Er sitzt hinter allem
     // Echten, ganz unten im Profil — er gehoert nicht in den Weg von jemandem, der die App
     // benutzt.
-    var plusEl = document.createElement('div');
-    plusEl.className = 'plus-schalter-zeile';
-    plusEl.innerHTML =
-      '<div class="settings-row"><div class="settings-row-text">'+
-        '<strong>'+tx('plus_dev_titel')+'</strong>'+
-        '<span class="settings-row-desc">'+(istPlus() ? tx('plus_dev_an') : tx('plus_dev_aus'))+'</span>'+
-      '</div><button type="button" class="schalter" id="plusSchalter" role="switch" '+
-      'aria-checked="'+(istPlus()?'true':'false')+'" aria-label="'+tx('plus_dev_titel')+'">'+
-      '<span class="schalter-knopf"></span></button></div>';
-    el.appendChild(plusEl);
-    var ps = $('plusSchalter');
-    if (ps) ps.addEventListener('click', function(){
-      plusSetzen(!istPlus());
-      // Neu zeichnen statt neu laden: Der Umschalter aendert nur, WAS gezeigt wird, nicht den
-      // Bestand — ein Neuladen waere hier ein unnoetiger Sprung an den Seitenanfang.
-      plusAnsichtenAuffrischen();
-      toast(istPlus() ? tx('plus_dev_an') : tx('plus_dev_aus'));
-    });
+    //
+    // Runde 103: Er erscheint jetzt NUR OHNE native Bruecke, also nur beim Entwickeln im
+    // Browser. Das war eine der zwei Stellen, die Lucenta+ ohne Zahlung freischalteten — in der
+    // App aus dem App Store ein Schalter, der das Abo verschenkt, und zwar dort, wo ohnehin jeder
+    // nachsieht. Die zweite Stelle war der Knopf im Kauffenster; die ist jetzt der echte Kauf.
+    //
+    // Bewusst an der Bruecke festgemacht und nicht an einer Debug-Marke: Ob es die App ist, weiss
+    // `nativVorhanden()` von sich aus — eine Marke, die man setzen muss, ist eine, die man
+    // vergisst, und dieses Vergessen kostet hier Geld. Beim Entwickeln bleibt der Umschalter
+    // vollstaendig erhalten; die Pruefungen setzen 'lucenta_plus' ohnehin direkt.
+    if (!nativVorhanden()){
+      var plusEl = document.createElement('div');
+      plusEl.className = 'plus-schalter-zeile';
+      plusEl.innerHTML =
+        '<div class="settings-row"><div class="settings-row-text">'+
+          '<strong>'+tx('plus_dev_titel')+'</strong>'+
+          '<span class="settings-row-desc">'+(istPlus() ? tx('plus_dev_an') : tx('plus_dev_aus'))+'</span>'+
+        '</div><button type="button" class="schalter" id="plusSchalter" role="switch" '+
+        'aria-checked="'+(istPlus()?'true':'false')+'" aria-label="'+tx('plus_dev_titel')+'">'+
+        '<span class="schalter-knopf"></span></button></div>';
+      el.appendChild(plusEl);
+      var ps = $('plusSchalter');
+      if (ps) ps.addEventListener('click', function(){
+        plusSetzen(!istPlus());
+        // Neu zeichnen statt neu laden: Der Umschalter aendert nur, WAS gezeigt wird, nicht den
+        // Bestand — ein Neuladen waere hier ein unnoetiger Sprung an den Seitenanfang.
+        plusAnsichtenAuffrischen();
+        toast(istPlus() ? tx('plus_dev_an') : tx('plus_dev_aus'));
+      });
+    }
   }
   // Runde 97: Der Wechsel zwischen freier und bezahlter Fassung ist jetzt an zwei Stellen
   // ausloesbar — im Profil und im Kauffenster. Vorher zeichnete jede Stelle das neu, was

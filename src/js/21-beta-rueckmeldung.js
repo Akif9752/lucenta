@@ -267,9 +267,9 @@
   $('imgModalScrim').addEventListener('click', closeImgModal);
   $('plusModalScrim').addEventListener('click', closePlusModal);
   $('btnPlusModalClose').addEventListener('click', closePlusModal);
-  // Runde 97: Laufzeit waehlen und Lucenta+ aktivieren. Der Knopf legt heute nur die lokale
-  // Marke um — an seiner Stelle steht spaeter die Kaufpruefung ueber StoreKit; der Vermerk
-  // dazu steht in docs/app-store-start.md, Punkt 6, zusammen mit dem Entwickler-Umschalter.
+  // Runde 97: Laufzeit waehlen und Lucenta+ aktivieren.
+  // Runde 103: Der Knopf legte bis hierher nur die lokale Marke um. Jetzt steht dahinter der
+  // echte Kauf ueber die StoreKit-Bruecke (ios/App/App/LucentaKaeufePlugin.swift).
   if ($('plusPreisWahl')) $('plusPreisWahl').addEventListener('click', function(e){
     var b = e.target.closest ? e.target.closest('.segment-opt') : null;
     if (!b) return;
@@ -278,16 +278,26 @@
     tapFeedback();
   });
   if ($('btnPlusAktivieren')) $('btnPlusAktivieren').addEventListener('click', function(){
-    var an = !istPlus();
-    plusSetzen(an);
-    plusModalAnwenden();
-    // Alles neu zeichnen, was Schloesser trägt — sonst stünde die Ergebnisseite hinter dem
-    // Fenster noch in der Fassung von vorhin, und der Unterschied wäre erst nach einem
-    // Ansichtswechsel zu sehen.
-    plusAnsichtenAuffrischen();
-    toast(tx(an ? 'plus_aktiv' : 'plus_dev_aus'));
-    closePlusModal();
+    // Runde 103: Hier stand `plusSetzen(!istPlus())` — die zweite der zwei Stellen, die Lucenta+
+    // ohne Zahlung freischalteten, und die schlimmere von beiden: der Knopf, auf dem
+    // "Lucenta+ aktivieren" steht. Dahinter liegt jetzt der echte Kauf.
+    //
+    // Und wer Lucenta+ schon hat, kommt zur Verwaltung bei Apple, statt es hier "beenden" zu
+    // koennen. Das ist keine Feinheit, sondern Vorschrift: Eine App darf keinen eigenen
+    // Kuendigungsweg anbieten — gekuendigt wird in den iPhone-Einstellungen, und genau dorthin
+    // fuehrt aboVerwalten().
+    if (istPlus()){ aboVerwalten(); return; }
+    plusKaufen(function(erfolg){
+      // Nur bei Erfolg zu. Wer abbricht, will vielleicht die andere Laufzeit — ihm das Fenster
+      // zuzuwerfen hiesse, ihn den Weg neu suchen zu lassen. Das Neuzeichnen aller Ansichten mit
+      // Schloessern erledigt plusKaufen() selbst.
+      if (erfolg){ plusModalAnwenden(); closePlusModal(); }
+    });
   });
+  // Runde 103: Beim Start nachsehen, was wirklich gilt. Steht hier und nicht in der Verdrahtung
+  // oben, weil es die Bruecke braucht — und weil die Testreihen den Code nur bis zur Marke
+  // "wiring" ausfuehren und diesen Aufruf damit nicht anfassen.
+  plusStandPruefen();
   // Runde 79: Der Text-Weg ist der Rueckfall, nicht mehr ein eigener Knopf. Wo das Geraet keine
   // Datei teilen kann (Schreibtisch-Browser), war die alte Antwort ein Hinweis und sonst nichts —
   // jetzt geht wenigstens Titel und Code hinaus, statt dass der Tipp ins Leere laeuft.

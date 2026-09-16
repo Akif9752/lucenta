@@ -137,19 +137,90 @@
     }catch(e){ toast(tx('js_bild_konnte_nicht_gespeich')); }
   }
 
+  // ---------- Der Kauf (Runde 103) ----------
+  //
+  // Bis hierher stand an dieser Stelle ein ehrlicher Vermerk: 'StoreKit' sei ein Platzhalter, es
+  // gebe kein solches Capacitor-Modul, und der Kauf fehle. Beides ist jetzt eingeloest — die
+  // Bruecke liegt in ios/App/App/LucentaKaeufePlugin.swift und meldet sich unter genau diesem
+  // Namen an. Die Aufrufe hier sind die Gegenseite davon.
+  //
+  // Die Produktkennungen stehen an ZWEI Stellen, hier und in der Swift-Datei. Das ist kein
+  // Versehen: Die Swift-Seite weist eine Kennung ab, die sie nicht kennt, statt sie an den Store
+  // weiterzureichen. Eine Tabelle, die nur eine Seite kennt, waere genau die Stelle, an der ein
+  // Tippfehler zu einem Kauf von irgendetwas fuehrt.
+  var PLUS_PRODUKT = 'lucenta_plus_produkt';
+  var PRODUKTE = { monat: 'lucenta.plus.monat', jahr: 'lucenta.plus.jahr' };
+  function produktKennung(laufzeit){
+    return PRODUKTE[laufzeit] || PRODUKTE.jahr;
+  }
+  // Runde 103: Die gekaufte Produktkennung wird getrennt von der GEWAEHLTEN Laufzeit gemerkt.
+  // Zwei verschiedene Dinge: 'lucenta_laufzeit' ist, was im Segmentwaehler steht (und stehen
+  // bleiben soll, wenn jemand das Fenster wieder oeffnet), 'lucenta_plus_produkt' ist, was
+  // tatsaechlich bezahlt wurde. Beides in einen Schluessel zu legen hiesse, dass der Waehler nach
+  // einem Kauf seine Wahl vergisst — und dass man einer Notiz ansieht, sie sei ein Beleg.
+  function plusKaufen(fertig){
+    var sk = nativModul('StoreKit');
+    if (!sk || !sk.kaufen){ toast(tx('plus_wieder_nur_app')); if (fertig) fertig(false); return; }
+    var kennung = produktKennung(laufzeitLesen());
+    var antwort = function(r){
+      if (r && r.aktiv){
+        plusSetzen(true);
+        schalterSetzen(PLUS_PRODUKT, (r.produkt || kennung), null);
+        plusAnsichtenAuffrischen();
+        toast(tx('plus_aktiv'));
+        if (fertig) fertig(true);
+        return;
+      }
+      // Ein Abbruch ist eine Entscheidung, keine Stoerung — dafuer gibt es KEINEN Hinweis. Wer
+      // "Abbrechen" tippt, weiss, was er getan hat; ihm das zu melden waere Gezeter.
+      if (r && r.abgebrochen){ if (fertig) fertig(false); return; }
+      // "Bitten um Erlaubnis": Der Kauf ist gestellt und wartet auf die Freigabe eines Elternteils.
+      // Das als Fehlschlag zu melden hiesse, jemanden ein zweites Mal kaufen zu lassen.
+      if (r && r.wartet){ toast(tx('plus_kauf_wartet')); if (fertig) fertig(false); return; }
+      toast(tx('plus_kauf_fehler'));
+      if (fertig) fertig(false);
+    };
+    try{
+      sk.kaufen({produkt: kennung})
+        .then(antwort)
+        .catch(function(){ toast(tx('plus_kauf_fehler')); if (fertig) fertig(false); });
+    }catch(e){ toast(tx('plus_kauf_fehler')); if (fertig) fertig(false); }
+  }
+
+  // Beim Start nachsehen, was WIRKLICH gilt.
+  //
+  // Der Grund ist kein Feinschliff: Bis Runde 103 stand der bezahlte Zustand allein in
+  // localStorage. Ein gekuendigtes oder abgelaufenes Abo haette Lucenta+ dort fuer immer
+  // stehenlassen — sobald Geld im Spiel ist, ist das ein Fehler und keine Grosszuegigkeit. Und
+  // umgekehrt: Wer auf einem neuen Geraet schon zahlt, soll nicht erst einen Knopf suchen muessen.
+  //
+  // Die Vorsichtsregel dabei ist wichtiger als die Sache selbst: **Weggenommen wird nur bei einer
+  // klaren Antwort.** Keine Bruecke, ein Fehler, ein unerwartetes Ergebnis — dann bleibt alles,
+  // wie es war. Sonst nimmt eine Stoerung im Store jemandem weg, wofuer er bezahlt hat.
+  function plusStandPruefen(){
+    var sk = nativModul('StoreKit');
+    if (!sk || !sk.stand) return;
+    try{
+      sk.stand().then(function(r){
+        if (!r || typeof r.aktiv !== 'boolean') return;
+        if (r.aktiv && r.produkt) schalterSetzen(PLUS_PRODUKT, r.produkt, null);
+        if (r.aktiv === istPlus()) return;
+        plusSetzen(r.aktiv);
+        plusAnsichtenAuffrischen();
+      }).catch(function(){});
+    }catch(e){}
+  }
+
   // ---------- Kaeufe wiederherstellen (Richtlinie 3.1.2) ----------
   //
   // Apple verlangt bei einem Abo einen Weg, bereits gekaufte Kaeufe auf einem neuen Geraet
-  // wiederherzustellen — ohne Konto und ohne Kaufbeleg. Der Knopf steht deshalb schon hier,
-  // auch wenn der Kauf selbst noch fehlt: Wer ihn spaeter einbaut, findet die Stelle, statt sie
-  // anzulegen. Solange keine Bruecke da ist, sagt er das, statt Erfolg zu melden.
+  // wiederherzustellen — ohne Konto und ohne Kaufbeleg.
   //
-  // ACHTUNG, ehrlicher Vermerk: 'StoreKit' ist hier ein PLATZHALTER. Fuer
-  // LocalNotifications, Filesystem und App gibt es offizielle Capacitor-Module, die genau so
-  // heissen; fuer Kaeufe gibt es keins von Apple oder Ionic. Wer das umsetzt, schreibt entweder
-  // eine eigene kleine Bruecke in Swift und meldet sie unter diesem Namen an, oder nimmt ein
-  // Gemeinschaftsmodul und passt DIESEN Aufruf an. Der Name ist bewusst nicht erfunden
-  // versteckt, sondern steht hier und in docs/app-store-start.md, Punkt 6.
+  // Runde 103: Hier stand der Vermerk, 'StoreKit' sei ein Platzhalter und es gebe kein solches
+  // Capacitor-Modul. Das gilt fuer Apple und Ionic weiterhin — es gibt jetzt aber unser eigenes:
+  // ios/App/App/LucentaKaeufePlugin.swift meldet sich unter diesem Namen an und beantwortet
+  // `stand`, `kaufen` und `restorePurchases`. Ohne Bruecke (im Browser) sagt der Knopf weiterhin,
+  // dass es das nur in der App gibt, statt Erfolg zu melden.
   function kaeufeWiederherstellen(){
     var sk = nativModul('StoreKit');
     if (!sk || !sk.restorePurchases){ toast(tx('plus_wieder_nur_app')); return; }
@@ -158,6 +229,7 @@
         .then(function(r){
           var hat = !!(r && r.aktiv);
           plusSetzen(hat);
+          if (hat && r.produkt) schalterSetzen(PLUS_PRODUKT, r.produkt, null);
           plusAnsichtenAuffrischen();
           toast(tx(hat ? 'plus_wieder_gefunden' : 'plus_wieder_nichts'));
         })

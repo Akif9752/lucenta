@@ -47,6 +47,19 @@ class MainViewController: CAPBridgeViewController {
         faerbeLadeluecke()
     }
 
+    /// Runde 103: Die Kauf-Bruecke anmelden.
+    ///
+    /// `capacitorDidLoad()` ist der vorgesehene Haken dafuer — er laeuft, wenn die Bruecke steht,
+    /// aber bevor die Seite geladen wird. Die Alternative waere, `LucentaKaeufePlugin` in die
+    /// `packageClassList` von `capacitor.config.json` einzutragen, und das ist die Falle: Diese
+    /// Datei ist von `npx cap sync ios` erzeugt und beim naechsten Sync ueberschrieben. Die
+    /// Anmeldung waere dann spurlos weg, und die App faellt still auf "gibt es nur in der App"
+    /// zurueck — ohne Fehler, ohne Warnung, nur ohne Kaufweg.
+    override func capacitorDidLoad() {
+        super.capacitorDidLoad()
+        bridge?.registerPluginInstance(LucentaKaeufePlugin())
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // Doppelt gesetzt, falls Capacitor die WebView erst nach viewDidLoad bereitstellt.
