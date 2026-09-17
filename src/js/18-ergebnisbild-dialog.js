@@ -1,11 +1,11 @@
 // ---------- Ergebnisbild-Dialog ----------
-  var imgModalLastFocus = null, currentShareCanvas = null, shareFormat = 'feed';
+  var imgModalLastFocus = null, currentShareCanvas = null;
+  // Runde 109: Hier stand zusaetzlich das Nachziehen der aria-checked-Zustaende des
+  // Formatwaehlers. Es gibt nur noch ein Format (Begruendung bei SHARE_FORMAT in
+  // 10-ergebnisbild.js), also keinen Waehler und nichts nachzuziehen.
   function renderShareImage(){
-    currentShareCanvas = buildShareCanvas(shareFormat);
+    currentShareCanvas = buildShareCanvas();
     $('shareImagePreview').src = currentShareCanvas.toDataURL('image/png');
-    Array.prototype.forEach.call(document.querySelectorAll('.img-format-btn'), function(b){
-      b.setAttribute('aria-checked', b.getAttribute('data-fmt')===shareFormat ? 'true':'false');
-    });
   }
   function imgModalKeydown(e){
     if (e.key==='Escape'){ closeImgModal(); return; }

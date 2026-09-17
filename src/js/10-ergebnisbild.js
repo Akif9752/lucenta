@@ -90,27 +90,35 @@
     ctx.textAlign = 'left';
   }
 
-  // Backlog Runde 27, Punkt 1: Das Ergebnisbild gab es nur im Feed-Format 1080×1350 (4:5). Der
-  // eigene Wachstumsplan setzt aber auf TikTok/Reels und Stories — durchgehend 9:16. Ein 4:5-Bild
-  // dort einzusetzen heißt Balken oder Beschnitt, ausgerechnet beim Baustein, der den viralen
-  // Kreislauf tragen soll.
+  // Runde 109, auf ausdrueckliche Ansage des Inhabers: "auf EIN Teilformat einigen."
   //
-  // Umgesetzt bewusst NICHT als zweites, eigenes Layout: die 1080×1350-Komposition ist über
-  // mehrere Runden austariert (Zeilenumbrüche des Titels, Radar-Radius, zweispaltige Werteliste),
-  // ein paralleles Story-Layout würde bei jeder künftigen Änderung auseinanderlaufen. Stattdessen
-  // bleibt die Komposition unverändert bei 1350 Höhe und wird im 1920er Bild vertikal zentriert
-  // eingesetzt — der freie Raum oben und unten liegt damit genau dort, wo Instagram und TikTok
-  // ihre eigenen Bedienelemente über das Bild legen.
+  // Bis hierher gab es zwei, mit Umschalter: Beitrag 1080x1350 (4:5) und Story 1080x1920 (9:16).
+  // Beides war dieselbe Komposition — Runde 27 hat bewusst KEIN zweites Layout gebaut, sondern
+  // die austarierte 1350er Komposition im 1920er Bild vertikal zentriert. Die Wahl war damit
+  // eine Wahl zwischen "ohne Leerraum" und "mit 285px Leerraum oben und unten".
+  //
+  // **Geblieben ist 4:5**, und der Grund ist nicht Geschmack, sondern wie die beiden Formate
+  // ausserhalb ihres Zielorts aussehen:
+  //   - 4:5 in einer Story: Die Plattform stellt es mittig auf einen eigenen Grund. Sieht
+  //     absichtsvoll aus.
+  //   - 9:16 in Nachrichten, WhatsApp oder der Foto-Mediathek: ein hohes Bild mit zwei leeren
+  //     Baendern. Sieht nach Fehler aus.
+  // Die Ziele der zweiten Art sind die haeufigeren — die Teilen-Leiste von iOS fuehrt zuerst
+  // dorthin. Ein Format, das ueberall ordentlich aussieht, ist mehr wert als eines, das an einer
+  // Stelle exakt passt und an den uebrigen auffaellt.
+  //
+  // SHARE_LAYOUT_H ist damit dieselbe Zahl wie die Bildhoehe. Es bleibt eine eigene Marke, weil
+  // die Komposition unten mit ihr rechnet; sie zu ersetzen hiesse, 1350 an ein Dutzend Stellen
+  // zu verteilen. Die vertikale Zentrierung ist entfallen — sie waere jetzt immer 0 und damit
+  // eine Rechnung, die aussieht, als taete sie etwas.
   var SHARE_LAYOUT_H = 1350;
-  var SHARE_FORMATS = { feed: {w:1080, h:1350}, story: {w:1080, h:1920} };
-  function buildShareCanvas(format){
-    var fmt = SHARE_FORMATS[format] || SHARE_FORMATS.feed;
-    var C = shareColors(), W = fmt.w, H = SHARE_LAYOUT_H, M = 84;
+  var SHARE_FORMAT = { w:1080, h:1350 };
+  function buildShareCanvas(){
+    var C = shareColors(), W = SHARE_FORMAT.w, H = SHARE_LAYOUT_H, M = 84;
     var canvas = document.createElement('canvas');
-    canvas.width = fmt.w; canvas.height = fmt.h;
+    canvas.width = SHARE_FORMAT.w; canvas.height = SHARE_FORMAT.h;
     var ctx = canvas.getContext('2d');
-    ctx.fillStyle = C.paper; ctx.fillRect(0,0,fmt.w,fmt.h);
-    ctx.translate(0, Math.round((fmt.h - SHARE_LAYOUT_H)/2));
+    ctx.fillStyle = C.paper; ctx.fillRect(0,0,SHARE_FORMAT.w,SHARE_FORMAT.h);
     ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
 
     ctx.fillStyle = C.accent2;

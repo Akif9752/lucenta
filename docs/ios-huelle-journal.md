@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-09-17, nach Runde 108)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-09-17, nach Runde 109)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -22,15 +22,20 @@ Zeichnen/Achse, dann das Grosse. Runde 107 hat Punkte 1–6 erledigt, **Runde 10
 Gestaltungspunkte aus Batch 3** (Aussagen-Box, Fragebogen-Hintergrund, Verlauf, Archetypen,
 Uebergaenge).
 
+**Runde 109 hat die drei zurueckgestellten Punkte umgesetzt** — auf ausdrueckliche Ansage des
+Inhabers („die drei punkte"): Doppeltipp-Zoom, Textmarkierung, ein Teilformat. Der Abschnitt „Was
+nur der Inhaber entscheiden kann" ist entsprechend kuerzer geworden; was dort noch steht, steht
+dort weiter aus gutem Grund.
+
 **Der naechste Schritt ist eine Frage, keine Aufgabe** — siehe „Was als Naechstes zu tun ist".
 
 Eine Bitte des Inhabers stand ueber Runde 107 und gilt weiter: **nichts stillschweigend
-gegen eine dokumentierte Entscheidung aendern.** Drei Punkte der Liste sind genau das und liegen
-deshalb bei ihm (Abschnitt „Was nur der Inhaber entscheiden kann").
+gegen eine dokumentierte Entscheidung aendern.** Sie ist nicht dadurch erledigt, dass er drei
+solche Punkte freigegeben hat — sie ist genau der Grund, warum er gefragt wurde.
 
 ### Was als Naechstes zu tun ist
 
-Aus Batch 3 sind zwei Punkte offen, und **keiner davon ist ein Stilblatt-Auftrag**:
+Offen sind zwei Punkte, und **keiner davon ist ein Stilblatt-Auftrag**:
 
 1. **Punkt 6, „die App insgesamt visuell verschoenern"** — der Sammelpunkt der Liste. Ohne eine
    engere Frage nicht messbar abzuarbeiten. Die konkrete Frage an den Inhaber lautet: **welche
@@ -65,6 +70,27 @@ Licht, die Iris als einfarbige Scheibe, den Mund als Strich und zehn Mienen auf 
 **Grundsatzentscheidung des Inhabers** — Konstruktion behalten oder durch etwas anderes ersetzen —,
 und sie gehoert gefragt, nicht geraten. Es ist die Lehre „eine Messung kann sich auf die falsche
 Groesse beziehen" in ihrer teuren Form.
+
+### Was Runde 109 erledigt hat — nicht erneut anfassen
+
+Die drei Punkte stehen oben unter „Was nur der Inhaber entscheiden kann", weil sie dort seit
+Runde 107 standen. Dazu drei Dinge, die sonst Arbeit kosten:
+
+1. **`touch-action` und `user-select` stehen jetzt an der WURZEL**, nicht mehr auf den
+   Bedienelementen. Die drei Zeilen dort sind entfernt; `button, summary, .scale-btn, …` traegt nur
+   noch `-webkit-tap-highlight-color`. Wer eine der beiden Eigenschaften sucht, sucht bei `html{}`.
+2. **Der Formatwaehler des Ergebnisbildes ist weg** — Markup, zwei CSS-Regeln, Verdrahtung,
+   `aria-checked`-Nachziehen und **drei i18n-Schluessel in allen acht Paketen**. Die vertikale
+   Zentrierung im Canvas ist ebenfalls heraus, weil sie jetzt immer 0 waere.
+3. **Zwei Fallen dieser Art sind an zwei Tagen zweimal zugeschlagen:** `input, textarea` beim
+   `user-select` war wirkungslos (der Browser erzwingt `text` auf editierbaren Elementen), so wie
+   `q-enter` in Runde 108 wirkungslos war (von `11-feier.css` ersetzt). **Vor dem Aendern einer
+   CSS-Regel pruefen, ob sie ueberhaupt greift** — das Stilblatt ist in 13 Teile zerlegt, die
+   spaeteren ueberschreiben die frueheren bewusst, und der Browser hat eigene Vorgaben.
+
+`pruef-app` ist dadurch von 20 auf **25** Pruefungen gewachsen, `tests/share_test.js` von 22 auf
+15 (drei Abschnitte zum Story-Format sind entfallen, dafuer sind die Masse des einen Formats jetzt
+Zahlen in der Reihe).
 
 ### Was Runde 108 erledigt hat — nicht erneut anfassen
 
@@ -181,22 +207,27 @@ man den alten Zustand nachstellt):
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 108: **ALLE 9 BESTANDEN** (9,4 Minuten), `fehlersuche` KEINE FUNDE
-auf **beiden** Motoren, `pruef-nativ` 45/45, `pruef-app` 20/20, `pruef-store` 32/32,
-`pruef-bewegung` beide Durchlaeufe einschliesslich der vier neuen Messungen, `diff-sprachen` 130
+`npm run pruef-alles` nach Runde 109: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
+auf **beiden** Motoren, `pruef-nativ` 45/45, `pruef-app` **25/25**, `pruef-store` 32/32,
+`pruef-bewegung` beide Durchlaeufe einschliesslich der vier Messungen aus Runde 108,
+`tests` alle 11 Reihen. Nach Runde 108 dasselbe Bild (9,4 Minuten, `pruef-app` damals 20/20).
+`diff-sprachen` 130
 verdaechtige Zeilen (127 in Runde 105–107; die drei neuen sind **keine** neuen Texte, sondern die
 drei Zeilen, in denen `verlaufZeileHTML()` jetzt Markup zusammensetzt — `diff-sprachen` ist ein
 Bericht, kein Bestanden/Durchgefallen).
 
-**iOS-Bau: SUCCEEDED.** Unter `ios/` wurde nichts von Hand geaendert — alle Aenderungen liegen in
-`src/`, `tools/` und `docs/`. Gelaufen ist trotzdem
-`LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 npm run ios:sync`, damit `ios/App/public/` nicht auf dem alten
-Stand stehen bleibt, und danach ein Bau. **Nachgeprueft am gebauten Bundle**, nicht an der Quelle
-(der Bau lief in 0,9 s durch, was fuer sich genommen auch „nichts kopiert" heissen koennte):
-`sternen-still` und `arch-gruppe` stehen in
-`DerivedData/.../App.app/public/index.html`.
+**iOS-Bau: SUCCEEDED** (Runde 108 und 109). Unter `ios/` wurde in beiden Runden nichts von Hand
+geaendert — alle Aenderungen liegen in `src/`, `tools/`, `tests/` und `docs/`. Gelaufen ist
+trotzdem jedes Mal `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 npm run ios:sync`, damit
+`ios/App/public/` nicht auf dem alten Stand stehen bleibt, und danach ein Bau.
 
-**Der erste Sammellauf dieser Runde ist NICHT durchgegangen** (30 Funde, alle derselbe
+**Nachgeprueft am gebauten Bundle**, nicht an der Quelle — der Bau laeuft in unter einer Sekunde
+durch, was fuer sich genommen auch „nichts kopiert" heissen koennte. In
+`DerivedData/.../App.app/public/index.html`: `sternen-still` und `arch-gruppe` vorhanden
+(Runde 108), `touch-action:manipulation` vorhanden und `img-format` wie `h:1920` **nicht mehr**
+vorhanden (Runde 109).
+
+**Der erste Sammellauf der Runde 108 ist NICHT durchgegangen** (30 Funde, alle derselbe
 Kontrastfehler an einem neu eingefuehrten Element). Das gehoert hierher, weil es der eigentliche
 Wert des Sammellaufs ist: Der Fehler war im Stilblatt nicht zu sehen, weil die Farbe die
 dokumentiert richtige war — nur der Untergrund ein anderer. Einzelheiten im Eintrag „Runde 108".
@@ -219,22 +250,25 @@ ein falscher Fund — hier war es ein knapp gemessener Abbruch.
 
 ### Was nur der Inhaber entscheiden kann
 
-**Drei Punkte der Rueckmeldungsliste widersprechen dokumentierten Entscheidungen.** Sie sind
-bewusst NICHT umgesetzt; wer sie umsetzt, soll es auf seine ausdrueckliche Ansage tun:
+**Die drei Punkte, die dokumentierten Entscheidungen widersprachen, sind in Runde 109 umgesetzt** —
+auf ausdrueckliche Ansage des Inhabers. Einzelheiten im Eintrag „Runde 109"; kurz, weil es die
+Punkte sind, die am ehesten „zurueckreparieren" wird, wer die Begruendung nicht kennt:
 
-- **Doppeltipp-Zoom abschalten.** `src/index.head.html:25-27` verzichtet ausdruecklich auf
-  `maximum-scale`/`user-scalable=no`, mit der Begruendung, dass Zoom zu unterbinden „eine der
-  haeufigsten Barrierefreiheits-Verfehlungen mobiler Weboberflaechen" ist.
-- **Textmarkierung unterbinden.** `src/styles/00-grundlagen.css:423-426` setzt `user-select:none`
-  bewusst nur auf Bedienelemente (`button, summary, .scale-btn, .avatar-color-swatch,
-  .drawer-tab`); „Fliesstext bleibt bewusst markierbar".
-- **Auf EIN Teilformat einigen.** `SHARE_FORMATS` in `src/js/10-ergebnisbild.js` traegt Feed
-  (1080x1350) und Story (1080x1920) als **bewusste Wahl mit Umschalter** (`.img-format-btn`); die
-  Story-Fassung ist dieselbe Komposition in mehr Leerraum. Ein einheitliches Format ist damit eine
-  Streichung, kein Umbau — und die Begruendung dort nennt TikTok/Reels als Grund fuer 9:16.
-- Dazu die kleine Geschmacksfrage aus Punkt 8: Soll der **eine** Fusszeilen-Link „Impressum &
-  Datenschutz" auf der Ergebnisseite bleiben, wo es den zentralen Zugang in den Einstellungen
-  ohnehin gibt?
+- **Doppeltipp-Zoom ist abgeschaltet, das Aufziehen NICHT.** `touch-action:manipulation` an der
+  Wurzel schaltet genau die eine Geste ab. Der Viewport in `index.head.html` ist **unveraendert**
+  und muss es bleiben: `user-scalable=no` waere WCAG 1.4.4 und ist ausdruecklich **nicht**
+  bestellt. `pruef-app` schlaegt fehl, wenn es doch hineingeraet.
+- **Fliesstext ist nicht mehr markierbar**, mit **einer** Ausnahme: dem eigenen Code (`#myCode`).
+  Sein Verlust ist endgueltig, und der Kopierknopf ist ein Weg, nicht der einzige. Fuer
+  Eingabefelder steht bewusst KEINE Regel — der Browser erzwingt dort `text`, das war gemessen.
+- **Es gibt genau EIN Teilbild-Format: 1080x1350 (4:5).** Warum, steht bei `SHARE_FORMAT` in
+  `src/js/10-ergebnisbild.js`. Die Masse stehen als Zahlen in `tests/share_test.js` — eine
+  Rueckkehr zu 9:16 laesst also nicht stillschweigend die Komposition verrutschen.
+
+**Offen und weiter beim Inhaber** — die Geschmacksfrage aus Punkt 8: Soll der **eine**
+Fusszeilen-Link „Impressum & Datenschutz" auf der Ergebnisseite bleiben, wo es den zentralen Zugang
+in den Einstellungen ohnehin gibt? Runde 109 hat ihn **gelassen** (Begruendung im Eintrag); zu
+entfernen waere er in einer Zeile.
 
 **Und was nur am Geraet oder mit einem Konto geht:**
 
@@ -311,6 +345,132 @@ ausdrueckliche Bitte. Runde 108 ist **ein** Commit: `7c49c74` (Batch 3, fuenf Pu
 beiden aus Runde 107: `7eabcc0` (die vier kleinen Ursachen) und `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 109 — die drei zurueckgestellten Punkte, auf Ansage des Inhabers
+
+Diese drei Punkte lagen seit Runde 107 beim Inhaber, weil jeder einer **im Code begruendeten
+Entscheidung** widersprach. Er hat sie ausdruecklich angefordert („die drei punkte"). Damit sind
+sie umgesetzt — und weil das Journal der Bericht an ihn ist, steht hier bei jedem, was die alte
+Begruendung war und was von ihr erhalten blieb.
+
+### 1. Doppeltipp-Zoom abschalten — ohne das Aufziehen mitzunehmen
+
+**Die alte Begruendung** stand in `index.head.html`: bewusst kein `maximum-scale`/`user-scalable=no`,
+weil „Zoom zu unterbinden eine der haeufigsten Barrierefreiheits-Verfehlungen mobiler
+Weboberflaechen" ist. Das ist keine Geschmacksfrage, sondern WCAG 1.4.4.
+
+**Der Auftrag lautet aber nicht „Zoom abschalten", sondern „Doppeltipp-Zoom abschalten"** — und das
+sind zwei verschiedene Gesten. `touch-action:manipulation` ist genau dafuer definiert: „Schieben
+und Aufziehen erlaubt, zusaetzliche Gesten wie Doppeltipp-Zoom nicht." Der Viewport bleibt deshalb
+**unveraendert**; Aufziehen mit zwei Fingern funktioniert weiter.
+
+Die Regel steht an der **Wurzel**, nicht auf den Bedienelementen — dort stand sie seit Runde 60
+schon, und genau deshalb war der Doppeltipp auf Fliesstext und Karten noch aktiv. `touch-action`
+wird **nicht vererbt**; dass ein Wert an der Wurzel trotzdem ueberall wirkt, folgt daraus, dass die
+erlaubte Geste der Durchschnitt der Werte bis zur Wurzel ist.
+
+**Das ist genau die Sorte Annahme, die hier gemessen gehoert** — und sie wurde gemessen, weil der
+Knopf gerechnet weiterhin `auto` meldet und damit aussieht wie eine Regression. Zwei schnelle
+Beruehrungen, `visualViewport.scale` davor und danach, auf **beiden** Motoren:
+
+| Ziel | scale vorher → nachher |
+|---|---|
+| Fliesstext (`.sub`) | 1 → 1 (kein Zoom) |
+| Knopf (`#btnStart`) | 1 → 1 (kein Zoom) |
+
+Die drei Zeilen, die vorher auf den Bedienelementen doppelt standen (`touch-action`,
+`user-select`), sind dort **entfernt**. Zwei Stellen, die dasselbe sagen, driften auseinander,
+sobald jemand eine davon aendert.
+
+### 2. Textmarkierung unterbinden — mit einer Ausnahme, und einer, die es nicht braucht
+
+**Die alte Begruendung:** `user-select:none` lag bewusst nur auf Bedienelementen, „Fliesstext
+bleibt bewusst markierbar". Das Argument des Inhabers dagegen ist gut: Lucenta ist eine App, und in
+einer iOS-App laesst sich Beschriftungstext nicht durch langes Druecken markieren. Die Lupe, die
+beim Wischen ueber einer Aussage aufging, war das deutlichste verbliebene Zeichen „das hier ist
+eine Webseite".
+
+Die Regel steht jetzt an der Wurzel. Gemessen auf beiden Motoren: eine echte `Range` ueber den
+Einleitungsabsatz ergibt **0 Zeichen**.
+
+**Eine Ausnahme bleibt: der eigene Code.** Er ist die einzige Angabe der App, deren Verlust
+endgueltig ist. Es gibt einen Kopierknopf daneben — aber wenn der einmal nicht greift, muss der
+Code mit der Hand herauszuholen sein.
+
+**Und eine Ausnahme, die ich zuerst falsch geschrieben hatte:** Die Regel lautete
+`input, textarea, #myCode`. In der Gegenprobe — Ausnahme heraus, Wurzelregel behalten — blieb das
+Namensfeld auf **beiden** Motoren markierbar, waehrend der Code sofort auf `none` fiel. Der Grund
+steht in CSS-UI: Auf editierbaren Elementen ist der benutzte Wert von `user-select` immer `text`,
+unabhaengig von der Vererbung. `input, textarea` war damit **wirkungslos** — dieselbe Falle wie
+`q-enter` in Runde 108, nur einen Tag spaeter. Die Angabe ist heraus; dass Felder editierbar
+bleiben, prueft `pruef-app` weiter, dort als **Ergebnis** und nicht als Regel.
+
+Nachgemessen im Namensfeld, beide Motoren: tippen ergibt „Testname", markieren ergibt 8 Zeichen.
+
+### 3. Auf EIN Teilformat einigen — geblieben ist 4:5
+
+**Die alte Begruendung:** Beitrag 1080x1350 und Story 1080x1920 waren eine bewusste Wahl mit
+Umschalter; Runde 27 nannte TikTok/Reels als Grund fuer 9:16. Wichtig fuer das Verstaendnis: Es war
+**kein zweites Layout**, sondern dieselbe austarierte 1350er Komposition, im 1920er Bild vertikal
+zentriert (`SHARE_LAYOUT_H = 1350`, gemessen 285px Leerraum oben und unten). Die Wahl war also eine
+zwischen „ohne Leerraum" und „mit Leerraum".
+
+**Geblieben ist 4:5**, und der Grund ist nicht Geschmack, sondern wie sich die Formate ausserhalb
+ihres Zielorts verhalten:
+
+- **4:5 in einer Story:** Die Plattform stellt es mittig auf einen eigenen Grund. Sieht
+  absichtsvoll aus.
+- **9:16 in Nachrichten, WhatsApp oder der Foto-Mediathek:** ein hohes Bild mit zwei leeren
+  Baendern. Sieht nach Fehler aus.
+
+Die Ziele der zweiten Art sind die haeufigeren — die Teilen-Leiste von iOS fuehrt zuerst dorthin.
+Ein Format, das ueberall ordentlich aussieht, ist mehr wert als eines, das an einer Stelle exakt
+passt und an den uebrigen auffaellt. **Sollte der Inhaber es anders sehen, ist es eine Zahl**
+(`SHARE_FORMAT.h` in `src/js/10-ergebnisbild.js`) plus die Zentrierung, die dann wieder gebraucht
+wird — die Testreihe sagt dann genau das.
+
+Mitgegangen sind: der Segmentwaehler im Markup, seine zwei CSS-Regeln, die Verdrahtung in
+`21-beta-rueckmeldung.js`, das Nachziehen der `aria-checked`-Zustaende in
+`18-ergebnisbild-dialog.js`, **drei i18n-Schluessel in allen acht Paketen** (`beitrag`,
+`story_amp_reel`, `aria_bildformat_wählen` — 24 Zeilen) und die vertikale Zentrierung im Canvas,
+die jetzt immer 0 waere.
+
+Die Formatkennung im Dateinamen (`lucenta-ergebnis-feed.png`) ist durch das **Datum** ersetzt —
+dieselbe Form, die das Sichern in die Foto-Mediathek schon benutzt. Mit nur einem Format waere die
+Kennung eine Angabe ohne Gegenstueck.
+
+### Sechs neue Pruefungen, alle gegengeprueft
+
+Fuenf in `tools/pruef_appfassung.mjs` (`pruef-app`, jetzt 25 statt 20) und drei geaenderte in
+`tests/share_test.js`. Gegen den nachgestellten alten Zustand:
+
+| Pruefung | gegen den alten Zustand |
+|---|---|
+| Wurzel traegt `touch-action:manipulation` | FEHL (`auto`) |
+| Fliesstext laesst sich nicht markieren | FEHL (242 Zeichen auswaehlbar) |
+| kein `user-scalable=no`, kein `maximum-scale` | FEHL |
+| der eigene Code bleibt markierbar | FEHL (`none`), gegen „Ausnahme entfernt" |
+| im Eingabefeld bleibt Markieren moeglich | besteht — misst eine Zusage des Browsers |
+| Bild ist 1080x1350, ohne vertikalen Versatz | FEHL (3 von 15), gegen 1920 + Zentrierung |
+
+Die Formatentscheidung steht damit als **Zahl in einer Testreihe** und nicht nur als Marke im
+Quelltext. Das ist der Unterschied zwischen einer Entscheidung, die sich versehentlich
+zurueckdrehen laesst, und einer, die dabei meckert.
+
+Die Pruefung fuer das Eingabefeld ist die einzige, die im alten Zustand nicht fehlschlaegt, und sie
+bleibt trotzdem: Sie misst eine Zusage, auf die sich das Stilblatt **verlaesst, ohne sie selbst
+auszusprechen**.
+
+### Was offen bleibt
+
+Die Geschmacksfrage aus Punkt 8 ist **nicht** entschieden und liegt weiter beim Inhaber: Soll der
+eine Fusszeilen-Link „Impressum & Datenschutz" auf der Ergebnisseite bleiben, wo es den zentralen
+Zugang in den Einstellungen ohnehin gibt? Ich habe ihn **gelassen** — es gibt im ganzen Dokument
+genau einen, er steht nur in `view-result`, und Erreichbarkeit eines Impressums ist der Fall, in
+dem ein Link zu viel billiger ist als einer zu wenig. Zu entfernen waere er in einer Zeile
+(`src/index.body.html`, `<footer class="appfoot">`).
 
 ---
 

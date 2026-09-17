@@ -54,14 +54,8 @@
     } else { fertig(); }
   }
 
-    Array.prototype.forEach.call(document.querySelectorAll('.img-format-btn'), function(b){
-    b.addEventListener('click', function(){
-      var f = b.getAttribute('data-fmt');
-      if (f===shareFormat) return;
-      shareFormat = f;
-      renderShareImage();
-    });
-  });
+  // Runde 109: Hier wurde der Formatwaehler des Ergebnisbildes verdrahtet. Es gibt nur noch ein
+  // Format — die Begruendung steht bei SHARE_FORMAT in 10-ergebnisbild.js.
 
   document.querySelectorAll('[data-lang]').forEach(function(b){
     b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
@@ -330,7 +324,11 @@
     currentShareCanvas.toBlob(function(blob){
       if (!blob){ teilenAlsText(); return; }
       var file;
-      try{ file = new File([blob], tx('js_dateiname_ergebnis')+shareFormat+'.png', {type:'image/png'}); }
+      // Runde 109: Hier stand die Formatkennung im Dateinamen ("lucenta-ergebnis-feed.png"). Mit
+      // nur einem Format waere das eine Angabe ohne Gegenstueck; es steht jetzt dasselbe Datum
+      // darin wie beim Sichern in die Foto-Mediathek ein paar Zeilen darueber.
+      try{ file = new File([blob], decodeEntities(tx('js_dateiname_ergebnis')) +
+        new Date().toISOString().slice(0,10) + '.png', {type:'image/png'}); }
       catch(e){ teilenAlsText(); return; }
       if (navigator.canShare && navigator.canShare({files:[file]})){
         navigator.share({files:[file], title:'Lucenta', text:tx('js_mein_lucentaergebnis')}).catch(function(err){

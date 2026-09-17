@@ -373,7 +373,26 @@
      native WKWebView-Grundfarbe durch (capacitor.config ios.backgroundColor #F5F6EF, hell). In
      Hell faellt das nicht auf, im Dunkelmodus erschien ein weisser Balken oben. Die Wurzel fuellt
      den ganzen Viewport inkl. Safe Area und scrollt nicht weg; --paper loest pro Thema auf. */
-  html{ overflow-x:clip; overscroll-behavior-x:none; overscroll-behavior-y:none; background:var(--paper); }
+  /* Runde 109, auf ausdrueckliche Ansage des Inhabers: "Doppeltipp-Zoom abschalten."
+     Der Punkt lag seit Runde 107 bei ihm, weil die naheliegende Umsetzung —
+     `user-scalable=no`/`maximum-scale=1` im Viewport — eine der haeufigsten
+     Barrierefreiheits-Verfehlungen mobiler Oberflaechen ist. Die steht deshalb NICHT hier: Der
+     Viewport in `index.head.html` ist unveraendert, Aufziehen mit zwei Fingern funktioniert
+     weiter.
+     `touch-action:manipulation` schaltet genau die eine Geste ab, die gemeint war. Der Wert ist
+     als "Schieben und Aufziehen erlaubt, zusaetzliche Gesten wie Doppeltipp-Zoom nicht"
+     definiert — er trifft also die Bitte woertlich und nichts darueber hinaus.
+     An der Wurzel, weil die wirksame Geste der Durchschnitt der Werte von der beruehrten
+     Stelle bis zur Wurzel ist: Ein Wert hier gilt fuer das ganze Dokument. Auf den
+     Bedienelementen stand er seit Runde 60 schon (siehe weiter unten) — nur auf Fliesstext und
+     Karten nicht, und genau dort wurde der Doppeltipp ausgeloest.
+     Nebeneffekt, der hier willkommen ist: Die Wartezeit, mit der WebKit auf einen moeglichen
+     zweiten Tipp wartet, faellt damit ueberall weg statt nur auf Knoepfen. */
+  html{
+    overflow-x:clip; overscroll-behavior-x:none; overscroll-behavior-y:none;
+    background:var(--paper);
+    touch-action:manipulation;
+  }
   body{
     background:var(--paper);
     color:var(--ink);
@@ -383,6 +402,27 @@
     overscroll-behavior-x:none;
     overscroll-behavior-y:none;
   }
+  /* Runde 109, auf ausdrueckliche Ansage des Inhabers: "Textmarkierung unterbinden."
+     Auch dieser Punkt lag bei ihm, weil bis hierher bewusst das Gegenteil galt: markierbar war
+     alles ausser den Bedienelementen, mit der Begruendung "Fliesstext bleibt bewusst
+     markierbar". Der Inhaber hat entschieden, und das Argument dafuer ist ein gutes: Lucenta ist
+     eine App, keine Webseite, und in einer iOS-App laesst sich Beschriftungstext nicht durch
+     langes Druecken markieren. Die Lupe, die beim Wischen ueber einer Aussage aufging, war das
+     deutlichste verbliebene Zeichen "das hier ist eine Webseite".
+     EINE Ausnahme steht hier, und sie ist keine Unschaerfe: der eigene Code. Er ist die einzige
+     Angabe der App, deren Verlust endgueltig ist (die Begruendung steht bei .code-box in
+     index.body.html). Es gibt einen Kopierknopf daneben, aber wenn der einmal nicht greift, muss
+     der Code mit der Hand herauszuholen sein. Eine Sackgasse an dieser Stelle waere teurer als
+     die gewonnene Anmutung.
+     EINGABEFELDER brauchen KEINE Ausnahme, und das ist gemessen statt angenommen: Hier stand
+     zuerst `input, textarea, #myCode`. In der Gegenprobe — Ausnahme heraus, Wurzelregel behalten —
+     blieb das Namensfeld auf WebKit UND Chromium markierbar, waehrend der Code sofort auf `none`
+     fiel. Der Grund steht in CSS-UI: Auf editierbaren Elementen ist der benutzte Wert von
+     user-select immer `text`, unabhaengig von der Vererbung. Die Angabe war damit wirkungslos und
+     ist heraus — dass das Feld tatsaechlich markierbar bleibt, prueft `pruef-app` weiter, dort
+     als ERGEBNIS und nicht als Regel. */
+  html{ -webkit-user-select:none; user-select:none; }
+  #myCode{ -webkit-user-select:text; user-select:text; }
   ::selection{background:var(--accent);color:var(--accent-ink);}
   a{color:var(--accent-strong);}
   button{font-family:inherit;}
@@ -409,19 +449,17 @@
      Fokusringe, die etwas sagen, stehen eine Regel darueber und bleiben unangetastet. */
   .view:focus{ outline:none; }
 
-  /* Feedback-Runde 45: Wie sich das Antippen anfühlt.
-     1. Der graue Aufblitz, den mobile Browser über jede Schaltfläche legen, gehört zu den
-        deutlichsten Merkmalen, an denen man eine Webseite von einer App unterscheidet. Er ist
-        hier abgeschaltet — aber nur, weil unmittelbar darunter ein eigener Druckzustand
-        definiert wird. Ohne Ersatz wegzunehmen wäre eine Verschlechterung, keine Politur.
-     2. touch-action:manipulation nimmt die Wartezeit heraus, mit der Browser prüfen, ob ein
-        Doppeltippen zum Zoomen gemeint war — Tippen wirkt dadurch unmittelbar.
-     3. Beschriftungen von Bedienelementen lassen sich nicht mehr versehentlich markieren, wenn
-        man beim Tippen minimal wischt. Fließtext bleibt bewusst markierbar. */
+  /* Feedback-Runde 45: Wie sich das Antippen anfühlt. Der graue Aufblitz, den mobile Browser über
+     jede Schaltfläche legen, gehört zu den deutlichsten Merkmalen, an denen man eine Webseite von
+     einer App unterscheidet. Er ist hier abgeschaltet — aber nur, weil unmittelbar darunter ein
+     eigener Druckzustand definiert wird. Ohne Ersatz wegzunehmen wäre eine Verschlechterung,
+     keine Politur.
+     Runde 109: Hier standen zusaetzlich `touch-action:manipulation` und `user-select:none`. Beide
+     gelten seit dieser Runde an der Wurzel fuer das ganze Dokument (Begruendung dort) und sind
+     hier nur noch Wiederholung. Sie sind entfernt und nicht stehen gelassen: Zwei Stellen, die
+     dasselbe sagen, driften auseinander, sobald jemand eine davon aendert. */
   button, summary, .scale-btn, .avatar-color-swatch, .drawer-tab{
     -webkit-tap-highlight-color:transparent;
-    touch-action:manipulation;
-    -webkit-user-select:none; user-select:none;
   }
   /* Die Druckzustände selbst stehen gesammelt am Ende dieses Stylesheets (Abschnitt
      „Druckzustände"), damit sie nicht von später notierten :hover-Regeln einzelner Komponenten
@@ -739,14 +777,10 @@
   @media (prefers-reduced-motion: reduce){ #imgModal, #imgModal.open{transition:visibility 0s;} #imgModalScrim{transition:none;} }
   .img-modal-inner{display:flex;flex-direction:column;gap:12px;position:relative;}
   #shareImagePreview{width:100%;border-radius:var(--radius-m);border:1px solid var(--line);display:block;background:var(--surface-2);}
-  /* Formatwahl über der Vorschau (Backlog Runde 27, Punkt 1) — über und nicht unter dem Bild,
-     weil sie bestimmt, was man darunter sieht. Das Seitenverhältnis steht als eigene, leisere
-     Zeile im Knopf: "Story & Reel" sagt, wofür es ist, "9:16" prüft, ob es stimmt. */
-  /* Runde 97: Das Aussehen kommt jetzt aus .segment; hier bleibt nur, was den Bildwaehler von
-     den uebrigen Segmentwaehlern unterscheidet — der Abstand nach unten und die zweite Zeile
-     mit dem Seitenverhaeltnis. */
-  .img-format-row{margin:0 0 12px;}
-  .img-format-btn span{font-family:var(--mono);font-size:10.5px;font-weight:400;letter-spacing:.04em;color:var(--muted);}
+  /* Runde 109: Hier stand die Formatwahl ueber der Vorschau (.img-format-row,
+     .img-format-btn span). Es gibt nur noch ein Format — warum 4:5, steht bei SHARE_FORMAT in
+     src/js/10-ergebnisbild.js. Die Regeln sind entfernt und nicht stehen gelassen: Der Bau
+     bricht bei verwaisten Klassen ab (pruefeWaisen), und genau dafuer ist diese Pruefung da. */
   /* ---------- Das Lucenta+-Fenster (Runde 89) ----------
      Teilt Aufbau und Bewegung mit dem Bild-Dialog darueber; nur der Inhalt ist ein anderer.
      Deshalb steht es hier daneben und nicht in einem eigenen Stilblatt: Wer das eine aendert,

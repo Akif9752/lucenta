@@ -217,6 +217,63 @@ ok(!!mitGlas && !!ohneGlas && !mitGlas.equals(ohneGlas),
    'das Glas rendert: mit und ohne backdrop-filter sieht die Schublade verschieden aus',
    mitGlas && ohneGlas ? `${mitGlas.length} gegen ${ohneGlas.length} Byte` : '(keine Aufnahme)');
 
+// --- Anmutung wie eine App, und was dabei NICHT verloren gehen darf (Runde 109)
+//
+// Zwei Entscheidungen des Inhabers stehen seit dieser Runde als je eine Zeile an der Wurzel des
+// Stilblatts: kein Doppeltipp-Zoom, keine Textmarkierung. Beide haben eine AUSNAHME, deren
+// Verlust ein echter Defekt waere und nicht eine Geschmacksfrage — und Ausnahmen sind das, was
+// beim naechsten Aufraeumen zuerst wegfaellt:
+//
+//   - Ein Eingabefeld, in dem man nicht markieren kann, laesst sich nicht korrigieren. Das
+//     GARANTIERT der Browser (CSS-UI: auf editierbaren Elementen ist user-select immer `text`) —
+//     im Stilblatt steht dafuer bewusst keine Regel mehr, weil sie gemessen wirkungslos war.
+//     Geprueft wird es hier trotzdem, und genau deshalb: Es ist eine Zusage, auf die sich das
+//     Stilblatt VERLAESST, ohne sie selbst auszusprechen.
+//   - Der eigene Code ist die einzige Angabe der App, deren Verlust endgueltig ist. Es gibt
+//     einen Kopierknopf daneben; wenn der einmal nicht greift, muss der Code mit der Hand
+//     herauszuholen sein. Dafuer steht eine eigene Regel, und die faellt beim Aufraeumen zuerst.
+//   - Und das Aufziehen mit zwei Fingern muss bleiben. Der Auftrag hiess "Doppeltipp-Zoom
+//     abschalten". `user-scalable=no` im Viewport schaltet BEIDES ab und ist die naheliegende
+//     Art, diese Aenderung spaeter "zu vollenden" — diese Pruefung sagt Nein dazu.
+//
+// Gefragt wird nach dem Ergebnis, nicht nach der Regel: Beim Fliesstext wird eine echte Auswahl
+// versucht. Vererbung und Spezifitaet koennen dazwischenkommen, das Ergebnis nicht.
+const anmutungCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+const anmutungSeite = await anmutungCtx.newPage();
+await anmutungSeite.goto(`${BASIS}/index.html`, { waitUntil: 'networkidle' });
+await anmutungSeite.waitForTimeout(400);
+const anmutung = await anmutungSeite.evaluate(() => {
+  const wahl = (el) => el ? (getComputedStyle(el).webkitUserSelect || getComputedStyle(el).userSelect) : null;
+  const meta = document.querySelector('meta[name="viewport"]');
+  const ziel = document.querySelector('#view-landing .sub') || document.querySelector('#view-landing h1');
+  let zeichen = -1;
+  try {
+    const r = document.createRange(); r.selectNodeContents(ziel);
+    const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    zeichen = String(s).length; s.removeAllRanges();
+  } catch (e) {}
+  return {
+    touch: getComputedStyle(document.documentElement).touchAction,
+    fliesstext: zeichen,
+    feld: wahl(document.getElementById('profileName')),
+    code: wahl(document.getElementById('myCode')),
+    viewport: meta ? meta.getAttribute('content') : ''
+  };
+});
+ok(anmutung.touch === 'manipulation',
+   'kein Doppeltipp-Zoom: die Wurzel traegt touch-action:manipulation', anmutung.touch);
+ok(anmutung.fliesstext === 0,
+   'Fliesstext laesst sich nicht markieren', `${anmutung.fliesstext} Zeichen auswaehlbar`);
+ok(anmutung.feld === 'text',
+   'der Browser haelt sein Versprechen: im Eingabefeld bleibt Markieren moeglich',
+   String(anmutung.feld));
+ok(anmutung.code === 'text',
+   'AUSNAHME: der eigene Code bleibt markierbar (sein Verlust ist endgueltig)', String(anmutung.code));
+ok(!/user-scalable\s*=\s*no|maximum-scale/.test(anmutung.viewport),
+   'Aufziehen mit zwei Fingern bleibt erlaubt: kein user-scalable=no, kein maximum-scale',
+   anmutung.viewport);
+await anmutungCtx.close();
+
 await browser.close();
 
 console.log('\n======================================================');

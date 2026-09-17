@@ -698,12 +698,9 @@
     <button type="button" class="drawer-close" id="btnImgModalClose" aria-label="Schließen" data-i18n-aria="aria_schließen" style="position:absolute;top:-6px;right:-6px;">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
     </button>
-    <!-- Runde 97: derselbe Segmentwaehler wie bei Darstellung und Laufzeit. Zwei Formate,
-         genau eines gilt — die Form muss das zeigen, nicht nur die Farbe. -->
-    <div class="segment img-format-row" role="radiogroup" aria-label="Bildformat wählen" data-i18n-aria="aria_bildformat_wählen">
-      <button type="button" class="segment-opt img-format-btn" role="radio" data-fmt="feed" aria-checked="true" data-i18n-html="beitrag">Beitrag <span>4:5</span></button>
-      <button type="button" class="segment-opt img-format-btn" role="radio" data-fmt="story" aria-checked="false" data-i18n-html="story_amp_reel">Story &amp; Reel <span>9:16</span></button>
-    </div>
+    <!-- Runde 109: Hier stand der Segmentwaehler zwischen Beitrag (4:5) und Story (9:16). Auf
+         ausdrueckliche Ansage des Inhabers gilt jetzt genau ein Format; warum 4:5, steht bei
+         SHARE_FORMAT in src/js/10-ergebnisbild.js. Ein Waehler mit einem Fach ist kein Waehler. -->
     <img id="shareImagePreview" alt="Ergebniskarte mit Archetyp-Titel und Radar-Chart zum Teilen oder Speichern">
     <p class="img-modal-hint" data-i18n="zum_speichern_lange_auf_das">Zum Speichern lange auf das Bild tippen.</p>
     <div class="img-modal-actions">
