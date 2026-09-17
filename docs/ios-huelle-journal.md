@@ -42,8 +42,19 @@ Aus Batch 3 sind zwei Punkte offen, und **keiner davon ist ein Stilblatt-Auftrag
    plus eine Messung am **Geraet**, nicht am Stilblatt — es gehoert in dieselbe Runde wie „die App
    auf einem echten iPhone". In Runde 108 **ungemessen** geblieben.
 
-Danach folgt der Rest der Liste ab Gruppe 7. Was in Runde 108 an Zahlen gemessen wurde, steht im
-Eintrag „Runde 108" weiter unten — die Werte nicht neu erheben, sondern dort nachlesen.
+**Es gibt keinen „Rest der Liste" dahinter.** Ein frueherer Stand dieser Uebergabe versprach einen,
+und das war falsch — nachgezaehlt gehen die 18 Punkte vollstaendig auf: 2 waren schon vorher
+erledigt (Overscroll, Impressum), 6 in Runde 107, 5 in Runde 108, **3 liegen beim Inhaber** (Zoom,
+Textmarkierung, ein Teilformat), und offen bleiben genau **drei**: die zwei oben genannten plus die
+**Avatare**, die eine Grundsatzentscheidung sind und keine Aufgabe.
+
+Die **woertliche Liste liegt nicht im Repository** — nur ihre Auswertung in den Eintraegen 107 und
+108. Wer sie braucht, muss den Inhaber danach fragen; aus dem Journal laesst sie sich nicht
+rekonstruieren. (Das ist eine Luecke und keine Absicht: Beim naechsten Mal gehoert eine solche
+Liste woertlich nach `docs/`, bevor daran gearbeitet wird.)
+
+Was in Runde 108 an Zahlen gemessen wurde, steht im Eintrag „Runde 108" weiter unten — die Werte
+nicht neu erheben, sondern dort nachlesen.
 
 **Und ein Punkt, der KEIN weiterer Nachschliff sein darf:** „Die Avatare sehen zu unrealistisch
 aus, bitte komplett ueberarbeiten." Das ist die **dritte** Rueckmeldung dieser Art. Runde 87 hat
