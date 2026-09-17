@@ -289,10 +289,10 @@ Xcode **nicht** „Update to recommended settings" akzeptieren, das hat beides s
 falschen Schluss (in Runde 103 genau so passiert).
 
 Entwickelt wird auf `claude/lucenta-setup-browser-test-j6hn7f`. Kein Pull Request ohne
-ausdrueckliche Bitte. Die beiden Commits der Runde 107: `7eabcc0` (die vier kleinen Ursachen) und
-`03f60b7` (Einzeichnen + Achse). Der Arbeitsbaum ist sauber — bis auf
-`ios/App/App.xcworkspace/xcshareddata/`, das schon vor dieser Runde unversioniert dalag und
-absichtlich nicht mitcommittet wurde.
+ausdrueckliche Bitte. Runde 108 ist **ein** Commit: `7c49c74` (Batch 3, fuenf Punkte). Davor die
+beiden aus Runde 107: `7eabcc0` (die vier kleinen Ursachen) und `03f60b7` (Einzeichnen + Achse).
+Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
+mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
 
 ---
 
