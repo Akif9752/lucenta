@@ -543,7 +543,7 @@
       'neushyroshytishycism': '',
       'das_akronym_ocean_ist_der_in': '<b>OCEAN</b> is the internationally used name for the model &mdash; each letter is the first letter of one dimension. For <b>N</b> we deliberately depart from the usual term &ldquo;neuroticism&rdquo; and call the dimension &ldquo;emotional stability&rdquo; &mdash; the same scale, just without the deficit-framed language.',
       'abbrechen_2': '← Cancel',
-      'trifft_gar_nicht_zutrifft_vo': '<span>strongly disagree</span><span></span><span></span><span></span><span>strongly agree</span>',
+      'trifft_gar_nicht_zutrifft_vo': '<span>strongly disagree</span><span>disagree</span><span>neutral</span><span>agree</span><span>strongly agree</span>',
       'zurück': '← Back',
       'tippe_eine_antwort_an': 'Tap an answer',
       'start': '← Home',

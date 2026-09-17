@@ -17,6 +17,23 @@
   var SHARE_COLORS_DARK = { paper:'#0F1613', ink:'#ECEEE7', muted:'#96A69C', line:'#293630', accent:'#5CB4AD', accentFill:'rgba(92,180,173,.26)', accent2:'#E39A5C' };
   function shareColors(){ return dunkelAktiv() ? SHARE_COLORS_DARK : SHARE_COLORS; }
 
+  // Runde 107. Hier stand an vier Stellen 'Georgia, serif' — auf einem Bild, das weitergegeben
+  // wird und damit das einzige ist, was Fremde von Lucenta sehen. Die Zahlen und die Fusszeile
+  // liefen dabei richtig in "IBM Plex Mono" und "Work Sans"; nur die Ueberschriften, also
+  // Wortmarke, Titel und Motto, kamen in einer Systemschrift heraus, die in der App nirgends
+  // vorkommt. Eine geteilte Karte mit fremder Ueberschrift ist kein Geschmacksfehler, sondern
+  // eine falsche Marke.
+  //
+  // Zwei Dinge daran, die man sonst neu lernt:
+  //   1. Fraunces liegt als VARIABLE Schrift mit dem Band 400-600 in der Datei (00-schriften.css).
+  //      Eine 700 anzufordern liefert keine fettere Schrift, sondern eine vom Browser
+  //      nachgerechnete — deshalb steht hier 600, wo vorher 700 stand. Die Kursive gibt es nur
+  //      in 500; das Motto hatte diesen Wert schon.
+  //   2. Der Rueckfall endet nicht bei serif. Fraunces traegt nur Latin (unicode-range in
+  //      00-schriften.css) — auf Japanisch greift sonst irgendeine Systemschrift statt der
+  //      Mincho, die die App dort im Fliesstext benutzt. Die Kette ist dieselbe wie in --serif.
+  var SHARE_SERIF = "Fraunces, ui-serif, Georgia, 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif";
+
   function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
     var words = text.split(' ');
     var line = '', curY = y;
@@ -67,7 +84,7 @@
       ctx.textAlign = Math.abs(Math.cos(ang))<0.2 ? 'center' : (Math.cos(ang)>0 ? 'left':'right');
       ctx.fillStyle = C.muted; ctx.font = '600 21px "IBM Plex Mono", monospace';
       ctx.fillText(RADAR_LABELS[f], lx, ly-6);
-      ctx.fillStyle = C.ink; ctx.font = '700 32px Georgia, serif';
+      ctx.fillStyle = C.ink; ctx.font = '600 32px '+SHARE_SERIF;
       ctx.fillText(String(sc[f]), lx, ly+30);
     });
     ctx.textAlign = 'left';
@@ -98,7 +115,7 @@
 
     ctx.fillStyle = C.accent2;
     ctx.beginPath(); ctx.arc(M+8, M-4, 9, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = C.ink; ctx.font = '700 46px Georgia, serif';
+    ctx.fillStyle = C.ink; ctx.font = '600 46px '+SHARE_SERIF;
     ctx.fillText('Lucenta', M+30, M+8);
     ctx.fillStyle = C.muted; ctx.font = '600 21px "IBM Plex Mono", monospace';
     // Canvas-Text steht in keinem DOM: weder die zehn Reihen noch ein Vergleich der
@@ -109,9 +126,9 @@
     var arch = archetypeOf(scores);
     var pole1 = scores[arch.top1]>=50?'high':'low', pole2 = scores[arch.top2]>=50?'high':'low';
     var titleText = NOUN[arch.top1][pole1] + ' · ' + ADJ[arch.top2][pole2];
-    ctx.fillStyle = C.ink; ctx.font = '600 60px Georgia, serif';
+    ctx.fillStyle = C.ink; ctx.font = '600 60px '+SHARE_SERIF;
     var afterTitleY = wrapCanvasText(ctx, titleText, M, M+188, W-2*M, 68);
-    ctx.fillStyle = C.accent2; ctx.font = 'italic 500 30px Georgia, serif';
+    ctx.fillStyle = C.accent2; ctx.font = 'italic 500 30px '+SHARE_SERIF;
     ctx.fillText(MOTTO[arch.top1][pole1], M, afterTitleY + 52);
 
     drawShareRadar(ctx, scores, W/2, 700, 220);

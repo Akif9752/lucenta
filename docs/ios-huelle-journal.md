@@ -7,6 +7,195 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
+## Runde 107 — Rueckmeldungsliste des Inhabers, erste vier Punkte
+
+Der Inhaber hat eine Liste mit 18 Punkten in acht Gruppen vorgelegt und zuerst gefragt, **was davon
+schon umgesetzt ist**. Der Befund vorweg, weil er den Rest der Runde erklaert:
+
+- **Zwei Punkte waren erledigt.** Der Overscroll-Bounce ist nativ abgeschaltet
+  (`MainViewController.swift`, `bounces = false`). Und das Impressum steht **nicht** „auf vielen
+  Seiten ganz unten": Es gibt im ganzen Dokument genau **einen** `<footer class="appfoot">`, und
+  der liegt nur in `view-result`. Dazu der zentrale Zugang in den Einstellungen und die eigene
+  Ansicht `view-recht`. Der gewuenschte Zustand war also schon fast da — offen ist nur die
+  Geschmacksfrage, ob der eine Fusszeilen-Link auf der Ergebnisseite bleibt.
+- **Fuenf Punkte waren angefangen** (Ladebildschirm, Fluessigkeit, Avatare, X-Achse, Animationen).
+  Bei den **Avataren** ist das wichtig fuers Protokoll: Die Rueckmeldung „zu unrealistisch,
+  komplett ueberarbeiten" ist die **dritte** dieser Art (Runde 87, Runde 94, jetzt). Die beiden
+  Ueberarbeitungen davor haben je einen echten Grund behoben (Runde 87: schwebender Kopf, flaechige
+  Farben, kreisrundes Auge, Symmetrie — Runde 94: kein Licht, Iris als einfarbige Scheibe, Mund als
+  Strich, zehn Mienen auf 22 Figuren). Wenn das Ergebnis weiterhin nicht ueberzeugt, ist der
+  naechste Schritt **kein vierter Nachschliff** an derselben Konstruktion, sondern eine
+  Grundsatzentscheidung des Inhabers: 40x40-Einheiten-SVG aus Parametern beibehalten oder durch
+  etwas anderes ersetzen. Das ist die Lehre „eine Messung kann sich auf die falsche Groesse
+  beziehen" in ihrer teuren Form.
+- **Drei Punkte widersprechen dokumentierten Entscheidungen** und sind deshalb nicht
+  stillschweigend umgesetzt worden: Doppeltipp-Zoom (`index.head.html` verzichtet ausdruecklich auf
+  `user-scalable=no`), Textmarkierung (`user-select:none` liegt bewusst nur auf Bedienelementen,
+  nicht auf Fliesstext) und die zwei Teilformate (Feed 1080x1350 und Story 1080x1920 sind eine
+  bewusste Wahl mit Umschalter). Sie liegen beim Inhaber.
+
+Umgesetzt sind in dieser Runde die vier Punkte mit **kleiner, klarer Ursache**, in dieser
+Reihenfolge auf ausdrueckliche Zustimmung des Inhabers („ja guter vorschlag so").
+
+### 1. Die Benachrichtigungen folgten dem Farbmodus nicht
+
+**Fehler:** Gemeldet als „in der Dark Version weiss und in der Light Version schwarz, das passt
+nicht zum jeweiligen Design". Die Ursache stand woertlich im Stilblatt: `.toast` trug
+`background:var(--ink); color:var(--paper)` — die **Umkehrung** des Farbmodus. Im Hellmodus wurde
+daraus eine schwarze Pille auf hellem Papier, im Dunkelmodus eine weisse auf dunklem. Das war die
+einzige Flaeche der ganzen App, die nicht zum Modus gehoerte.
+
+**Aenderung:** `src/styles/09-archetypen.css` — der Hinweis ist jetzt eine Karte wie jede andere:
+`--surface` als Grund, `--ink` als Schrift, `--line-strong` als Rand, derselbe Schatten wie
+`.qcard`. Keine neuen Farbmarken, also auch keine neuen Dunkelbloecke.
+
+**Warum der Rand dazukommt:** `--surface` liegt nur um den Faktor 1,087 ueber `--paper`. Ohne Rand
+waere die Pille eine Ahnung statt eines Hinweises — die Abgrenzung tragen jetzt Rand und Schatten
+statt der Umkehrung.
+
+### 2. Nur zwei von fuenf Antwortoptionen waren beschriftet
+
+**Fehler:** Die drei mittleren `<span>` waren im HTML vorhanden, aber **leer** — und zusaetzlich per
+`display:none` ausgeblendet. Wer eine Skala nur an den Enden beschriftet, laesst die Deutung der
+Mitte offen: Ist die 3 „unentschieden" oder „trifft halb zu"? Das sind zwei verschiedene Antworten
+auf dieselbe Aussage.
+
+**Aenderung:** Texte in **allen acht Sprachen** (`src/i18n/*.js`, Schluessel
+`trifft_gar_nicht_zutrifft_vo`), die drei `display:none`-Regeln entfernt, und die Zeile von
+`justify-content:space-between` auf `flex:1` mit denselben 8px Abstand wie `.scale-row` umgestellt.
+Nur so steht jede Beschriftung **unter** ihrem Knopf statt irgendwo dazwischen.
+
+**Die Texte sind kurz, und das ist gerechnet:** Bei 320px Geraetebreite bleiben je Spalte 49,6px
+(gemessen). „trifft gar nicht zu" waere dort vierzeilig. Also „gar nicht / eher nicht / teils /
+eher ja / voll". Der vollstaendige Wortlaut steht weiter im `aria-label` der Zeile — fuer
+Screenreader aendert sich nichts.
+
+**Was daran keine Geschmacksfrage ist:** Eine Beschriftung, die einen halben Knopf versetzt steht,
+ordnet die Bedeutung dem **falschen Wert** zu, und auf einem Bildschirmfoto sieht „ungefaehr
+darunter" genauso aus wie „darunter". Deshalb ist die Messung als Pruefung ins Repository gewandert:
+`suchSkalaVersatz` in `tools/fehlersuche.mjs` vergleicht die Mittelpunkte von Knopf und
+Beschriftung paarweise und meldet leere, ausgeblendete und aus ihrer Spalte laufende
+Beschriftungen. Sie laeuft damit automatisch ueber alle 13 Konfigurationen und **beide** Motoren.
+
+**Gegengeprueft** — das ist der Punkt, an dem eine neue Pruefung sonst blind bleibt: Im gesunden
+Zustand KEINE FUNDE; mit nachgestelltem alten Zustand (Mitte ausgeblendet, `space-between`) sechs
+Funde, darunter „Beschriftung 3 steht -160,0px neben ihrem Knopf". Zusaetzlich einmalig ueber
+3 Breiten x 8 Sprachen auf **WebKit** gemessen: 24 Durchlaeufe, kein Ueberlauf, alle Mittelpunkte
+deckungsgleich.
+
+### 3. Der Ladebildschirm nahm 82 % der Bildschirmbreite ein
+
+**Fehler:** Gemeldet als „zu haesslich und zu gross". Die Groesse war **messbar**, nicht Geschmack.
+`LaunchScreen.storyboard` hatte als Wurzelansicht den `UIImageView` selbst, mit
+`contentMode="scaleAspectFill"` und dem 2732x2732 grossen „Splash". Bei aspectFill skaliert ein
+Quadrat nach der **groesseren** Bildschirmkante, also nach der Hoehe: auf 402x874 Punkten mit dem
+Faktor 874/2732 = 0,32. Der Logo-Block im Bild ist 1028 Bildpunkte breit — nachgemessen am
+Bildpunkt (eigener PNG-Dekoder, weil PIL auf diesem Rechner fehlt), nicht geschaetzt: 37,6 % der
+Bildbreite, der Rest ist Papierfarbe. Auf dem Schirm kam er damit bei 329 von 402 Punkten heraus,
+also **82 % der Breite**. Nebenbei wurde das Bild links und rechts beschnitten, weil aspectFill ein
+Quadrat auf einem 19,5:9-Schirm zwangslaeufig ueberfuellt.
+
+**Aenderung:** Eine gewoehnliche `UIView` traegt den Hintergrund, das Bild liegt mittig darin mit
+`scaleAspectFit` und einer Breite von **0,85 der Ansichtsbreite**. Der Logo-Block landet damit bei
+0,85 x 37,6 % = **32 %** der Bildschirmbreite. Dazu die neue Farbe `Papier.colorset` im
+Asset-Katalog (#E4E6DB hell, #0F1613 dunkel — dieselben zwei Werte, die `MainViewController.swift`
+schon als `papierfarbe` fuehrt).
+
+**Nachgemessen statt geschaetzt**, ueber `RunCodeSnippet` mit dem instanzierten Storyboard:
+
+| Geraet | Schirm | Bildrahmen | Logo-Block | Anteil |
+|---|---|---|---|---|
+| iPhone SE | 320x568 | 272,0 | 102,3 pt | 32,0 % |
+| iPhone 17 | 393x852 | 334,3 | 125,8 pt | 32,0 % |
+| 17 Pro Max | 440x956 | 374,0 | 140,7 pt | 32,0 % |
+
+Auf allen drei Groessen derselbe Anteil, Bild exakt zentriert, Grund loest in beiden Modi zu
+#E4E6DB bzw. #0F1613 auf. Der Wert ist ein **Anteil** und kein Punktmass — deshalb gilt er auch auf
+Geraeten, die es noch nicht gibt.
+
+**Drei Dinge daran, die man sonst neu lernt:**
+
+1. **Die Grafik musste nicht neu gerendert werden.** Der Hintergrund der beiden PNG ist **exakt**
+   das CSS-Token `paper` (am Bildpunkt gemessen). Weil `Papier.colorset` dieselben Werte traegt, ist
+   die Kante des quadratischen Bildes auf der Flaeche unsichtbar.
+2. **Die Groesse wirkt an ZWEI Stellen.** `@capacitor/splash-screen` baut seine Anzeige nicht
+   selbst, sondern **instanziert dieses Storyboard** (`SplashScreen.swift`, `buildViews()`:
+   `UIStoryboard(name: UILaunchStoryboardName)`). System-Startbild und Plugin-Splash sind dieselbe
+   Datei; eine Aenderung hier wirkt auf beide, und der Uebergang bleibt nahtlos. Haette ich nur das
+   Storyboard geaendert und das Plugin fuer eine eigene Zeichnung gehalten, waere ein Sprung
+   zwischen zwei Groessen entstanden.
+3. **`plugins.SplashScreen.backgroundColor` musste weg** (`capacitor.config.json`). Das Plugin setzt
+   diesen Wert auf die Wurzelansicht des Storyboards. Solange die Wurzel der deckende `UIImageView`
+   war, blieb das wirkungslos — jetzt waere es sichtbar, und der Wert war eine **feste** Farbe
+   (#E4E6DB), also die Hellfassung auch im Dunkelmodus. Ohne den Eintrag bleibt die dynamische
+   Farbe stehen.
+
+**Zwei Sackgassen beim handgeschriebenen Storyboard**, beide vom Bau gefunden und hier notiert,
+damit sie niemand zweimal sucht: Ein Kommentar **vor** `<document>` laesst Interface Builder den
+Dateityp nicht mehr erkennen („can't determine the type… may be due to a missing SDK") — er muss
+**hinein**. Und ein XML-Kommentar darf kein `--` enthalten, was bei einem Projekt, das seine
+CSS-Marken mit zwei Strichen benennt, sofort zuschlaegt.
+
+### 4. Das geteilte Bild trug eine fremde Schrift
+
+**Fehler:** `src/js/10-ergebnisbild.js` setzte an vier Stellen `'Georgia, serif'` — auf dem einen
+Bild, das weitergegeben wird und damit das Einzige ist, was Fremde von Lucenta sehen. Zahlen und
+Fusszeile liefen richtig in „IBM Plex Mono" und „Work Sans"; nur Wortmarke, Titel und Motto kamen
+in einer Systemschrift heraus, die in der App nirgends vorkommt.
+
+**Aenderung:** Eine Marke `SHARE_SERIF` mit derselben Rueckfallkette wie `--serif`. Zwei Details,
+bei denen nicht geraten werden sollte:
+
+- **Fraunces liegt als variable Schrift mit dem Band 400–600 in der Datei.** Eine 700 anzufordern
+  liefert keine fettere Schrift, sondern eine vom Browser nachgerechnete — deshalb steht jetzt 600,
+  wo vorher 700 stand.
+- **Der Rueckfall endet nicht bei `serif`.** Fraunces traegt nur Latin (`unicode-range` in
+  `00-schriften.css`); auf Japanisch greift sonst eine beliebige Systemschrift statt der Mincho,
+  die die App dort im Fliesstext benutzt.
+
+### Was daran unsicher bleibt
+
+- **Der Ladebildschirm ist gerechnet, nicht angesehen.** 32 % ist ein begruendeter Wert (Apples
+  eigene Startbilder liegen im Bereich 25–40 % der Breite), aber ob der Block jetzt „richtig" wirkt,
+  entscheidet das Auge. Der Wert steht als **eine Zahl** im Storyboard (`multiplier="0.85"`) und ist
+  damit in einem Schritt zu aendern.
+- **Die neue Toast-Flaeche ist gemessen, nicht beurteilt.** Kontrast und Lesbarkeit deckt
+  `suchSchwachenKontrast` ab; ob eine Karte an dieser Stelle ebenso deutlich „Hinweis" sagt wie die
+  bisherige Umkehrung, ist eine Frage ans Auge. Falls nicht: Der naechste Hebel ist nicht die
+  Umkehrung zurueck, sondern ein Akzentpunkt links im Text.
+- **Das Teilbild ist nicht als Bild geprueft.** Dass Fraunces auf der Leinwand ankommt, haengt
+  daran, dass die Schrift beim Oeffnen des Dialogs bereits geladen ist. Das ist hier gegeben — der
+  Dialog ist nur von der Ergebnisseite aus erreichbar, die durchgehend in Fraunces setzt —, aber
+  belegt ist es nicht. Ein Blick auf ein echtes geteiltes Bild beantwortet es.
+
+### Stand der Pruefungen
+
+`npm run pruef-alles`: **8 von 9 bestanden**, darunter `fehlersuche` **KEINE FUNDE auf beiden
+Motoren** (WebKit und Chromium, 26 Durchlaeufe, einschliesslich der neuen Skalenpruefung),
+`pruef-nativ` 45/45, `pruef-app` 20/20, `pruef-store` 32/32, `pruef-bewegung` vollstaendig,
+`audit_i18n` alle acht Sprachen. Der iOS-Bau: SUCCEEDED.
+
+**`diff-sprachen` ist im Sammellauf abgebrochen** — `elementHandle.click: Timeout 30000ms` beim
+Oeffnen der Schublade, an einem Element, das laut Protokoll bereits „visible, enabled and stable"
+war und nur noch ins Bild gerollt werden sollte. Das ist kein Logikfehler, sondern eine
+ausgehungerte Maschine: Derselbe Lauf hat fuer `fehlersuche` 22547 s und fuer `diff-sprachen`
+4054 s gebraucht, wo sonst rund 800 s und 100 s stehen. **Einzeln nachgefahren laeuft es durch**,
+mit 127 verdaechtigen Zeilen — genau dem Wert aus Runde 105, also unveraendert.
+
+Die Lehre daraus fuer die naechste Runde: `pruef-alles` nicht parallel zu anderer schwerer Arbeit
+auf demselben Rechner starten. Ein knapp gemessener Fund ist ein falscher Fund — hier war es ein
+knapp gemessener Abbruch.
+
+### Was als Naechstes ansteht (aus derselben Liste, in vereinbarter Reihenfolge)
+
+1. Tagesform-Graphen von links nach rechts einzeichnen; X-Achse mit Datumsangaben statt nur
+   „vor N Tagen / heute".
+2. Fragebogen: Aussagen-Box hoeher (heute `justify-content:safe center`), Hintergrund gestalten
+   (der Sternenhimmel laeuft nur auf `view-landing`).
+3. Verlauf im Profil und der Archetypen-Bereich, beide visuell.
+
+---
+
 ## ÜBERGABE an die naechste Sitzung (Stand 2026-09-17, nach Runde 106)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter

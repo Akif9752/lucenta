@@ -546,7 +546,7 @@
       'neushyroshytishycism': 'Neu&shy;ro&shy;ti&shy;cism',
       'das_akronym_ocean_ist_der_in': '<b>OCEAN</b> はこのモデルの国際的な呼び名です &mdash; それぞれの文字が各次元の英語の頭文字です。<b>N</b> については、通例の「神経症傾向」という語をあえて避け、この次元を「情緒安定性」と呼びます &mdash; 尺度は同じで、欠陥を思わせる言い方をしないだけです。',
       'abbrechen_2': '← やめる',
-      'trifft_gar_nicht_zutrifft_vo': '<span>まったく当てはまらない</span><span></span><span></span><span></span><span>とても当てはまる</span>',
+      'trifft_gar_nicht_zutrifft_vo': '<span>全くない</span><span>あまり</span><span>どちらとも</span><span>やや</span><span>とても</span>',
       'zurück': '← もどる',
       'tippe_eine_antwort_an': '答えをタップ',
       'start': '← ホーム',

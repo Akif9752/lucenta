@@ -546,7 +546,7 @@
       'neushyroshytishycism': '',
       'das_akronym_ocean_ist_der_in': '<b>OCEAN</b> modelin uluslararası kullanılan adıdır &mdash; her harf bir boyutun İngilizce baş harfidir. <b>N</b> için alışılmış &ldquo;nevrotiklik&rdquo; teriminden bilinçli olarak ayrılıyor ve boyutu &ldquo;duygusal denge&rdquo; diye adlandırıyoruz &mdash; aynı ölçek, yalnızca eksiklik diliyle kurulmadan.',
       'abbrechen_2': '← Vazgeç',
-      'trifft_gar_nicht_zutrifft_vo': '<span>hiç uymuyor</span><span></span><span></span><span></span><span>tamamen uyuyor</span>',
+      'trifft_gar_nicht_zutrifft_vo': '<span>hiç</span><span>az</span><span>kısmen</span><span>çoğunlukla</span><span>tamamen</span>',
       'zurück': '← Geri',
       'tippe_eine_antwort_an': 'Bir yanıta dokun',
       'start': '← Başlangıç',

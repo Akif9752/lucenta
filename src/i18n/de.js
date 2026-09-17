@@ -274,7 +274,7 @@ CONTENT.de = {
       'neushyroshytishycism': 'Neu&shy;ro&shy;ti&shy;cism',
       'das_akronym_ocean_ist_der_in': 'Das Akronym <b>OCEAN</b> ist der international gebräuchliche Name des Modells &mdash; die Buchstaben folgen den englischen Fachbegriffen (klein darunter). Bei <b>N</b> weichen wir bewusst von der deutschen Direktübersetzung &bdquo;Neurotizismus&ldquo; ab und nennen die Dimension &bdquo;Emotionale Stabilität&ldquo; &mdash; gleiche Skala, nur ohne die defizitorientierte Sprache.',
       'abbrechen_2': '← Abbrechen',
-      'trifft_gar_nicht_zutrifft_vo': '<span>trifft gar nicht zu</span><span></span><span></span><span></span><span>trifft voll zu</span>',
+      'trifft_gar_nicht_zutrifft_vo': '<span>gar nicht</span><span>eher nicht</span><span>teils</span><span>eher ja</span><span>voll</span>',
       'zurück': '← Zurück',
       'tippe_eine_antwort_an': 'Tippe eine Antwort an',
       'start': '← Start',

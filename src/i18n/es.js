@@ -542,7 +542,7 @@
       'neushyroshytishycism': 'Neu&shy;ro&shy;ti&shy;cism',
       'das_akronym_ocean_ist_der_in': '<b>OCEAN</b> es el nombre internacional del modelo &mdash; cada letra es la inicial de una dimensión en inglés. Para la <b>N</b> nos apartamos a propósito del término habitual &laquo;neuroticismo&raquo; y llamamos a la dimensión &laquo;estabilidad emocional&raquo; &mdash; la misma escala, solo que sin el lenguaje del déficit.',
       'abbrechen_2': '← Cancelar',
-      'trifft_gar_nicht_zutrifft_vo': '<span>nada de acuerdo</span><span></span><span></span><span></span><span>muy de acuerdo</span>',
+      'trifft_gar_nicht_zutrifft_vo': '<span>nada</span><span>poco</span><span>en parte</span><span>bastante</span><span>mucho</span>',
       'zurück': '← Atrás',
       'tippe_eine_antwort_an': 'Toca una respuesta',
       'start': '← Inicio',

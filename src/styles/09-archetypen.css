@@ -249,9 +249,21 @@
   .state-teaser-copy{margin-top:2px;font-size:13.5px;color:var(--muted);line-height:1.5;}
 
   footer.appfoot{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  /* Runde 107, gemeldet: "die Benachrichtigungen sind in der Dark Version weiss und in der Light
+     Version schwarz. Das passt nicht zum jeweiligen Design."
+     Zutreffend, und die Ursache stand woertlich hier: --ink als Grund und --paper als Schrift ist
+     die UMKEHRUNG des Farbmodus. Im Hellmodus wurde daraus eine schwarze Pille auf hellem Papier,
+     im Dunkelmodus eine weisse auf dunklem — in beiden Faellen die einzige Flaeche der ganzen App,
+     die nicht zum Modus gehoert.
+     Der Hinweis erscheint im Fragebogen an den Meilensteinen, also mitten in einer Ansicht aus
+     Karten. Also wird er eine: dieselbe Flaeche, dieselbe Schriftfarbe, derselbe Schatten wie
+     .qcard. Getragen wird die Abgrenzung zum Papier jetzt von Rand und Schatten statt von der
+     Umkehrung — --surface liegt nur 1,087 ueber --paper, ohne Rand waere die Pille eine Ahnung.
+     --line-strong statt --line, weil der Rand hier die einzige Kante ist, die die Form haelt. */
   .toast{
     position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
-    background:var(--ink);color:var(--paper);font-size:13.5px;padding:10px 16px;border-radius:100px;
+    background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);
+    font-size:13.5px;padding:10px 16px;border-radius:100px;
     box-shadow:var(--shadow);opacity:0;transition:all .25s ease;pointer-events:none;z-index:50;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
