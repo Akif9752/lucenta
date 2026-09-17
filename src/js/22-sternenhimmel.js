@@ -760,33 +760,75 @@
     rafId = window.requestAnimationFrame(schritt);
   }
 
+  // Runde 108, gemeldet: "Der Hintergrund im Fragebogen ist leer, bitte gestalten."
+  //
+  // Zutreffend, und es war nicht nur leer, sondern ein Bruch: Mit dem Antippen von "Test starten"
+  // verschwand die Atmosphaere fuer fuenfzig Fragen und kam auf der Ergebnisseite nicht wieder.
+  //
+  // Sie liegt dort jetzt mit — aber STILL: ein einziges gezeichnetes Bild, danach kein
+  // requestAnimationFrame mehr. Der Grund dafuer steht im Kopf dieser Datei und gilt unveraendert
+  // ("Ein Fragebogen mit fuenfzig Fragen soll nicht nebenher ein Canvas zeichnen lassen") — ein
+  // Standbild kostet nach dem Zeichnen nichts. Es ist genau der Weg, den die Flaeche bei
+  // prefers-reduced-motion ohnehin schon immer genommen hat; neu ist nur, WANN er gilt.
+  //
+  // Warum dasselbe Bild und nicht ein zweiter, eigener Hintergrund: Der Uebergang von der
+  // Startseite in den Fragebogen laesst die Flaeche damit stehen, statt eine Gestaltung gegen
+  // eine andere zu tauschen. Und es ist kein neuer Code, sondern ein anderer Takt fuer den
+  // vorhandenen — einschliesslich Hell/Dunkel, Staub/Sterne und aller gemessenen Farbwerte.
+  //
+  // Leiser als auf der Startseite ist es trotzdem (html.sternen-still, 00-grundlagen.css): Im
+  // Fragebogen wird gelesen, fuenfzig Mal eine Entscheidung, und der Text hat Vorrang.
+  // Der Takt haengt nicht an einem eigenen Namen, sondern an der Ansicht selbst: ANSICHTEN sagt,
+  // wo die Flaeche ueberhaupt liegt, BEWEGTE_ANSICHT sagt, welche davon sie laufen laesst. Ein
+  // zusaetzliches Wort dafuer waere ein Bezeichner, den man in beiden Richtungen pflegen muss —
+  // und es waere ein deutsches Zeichenketten-Literal in einer Datei voller uebersetzter Texte,
+  // was das i18n-Audit zu Recht nicht unterscheiden kann.
+  var ANSICHTEN = ['view-landing', 'view-quiz'];
+  var BEWEGTE_ANSICHT = 'view-landing';
   function sichtbar(){
-    var v = document.getElementById('view-landing');
-    if (!v) return false;
-    if (document.hidden) return false;
-    try{ return getComputedStyle(v).display !== 'none'; }catch(e){ return false; }
+    if (document.hidden) return null;
+    for (var i = 0; i < ANSICHTEN.length; i++){
+      var v = document.getElementById(ANSICHTEN[i]);
+      if (!v) continue;
+      try{ if (getComputedStyle(v).display !== 'none') return ANSICHTEN[i]; }catch(e){}
+    }
+    return null;
   }
 
+  // Welche Ansicht die Flaeche gerade traegt und in welchem Takt. Getrennt von laeuft, weil ein
+  // Wechsel ZWISCHEN den Takten (Startseite -> Fragebogen) sonst unbemerkt bliebe: laeuft waere
+  // vorher und nachher true, und die Flaeche zeichnete im Fragebogen munter weiter.
+  var ansicht = null, stillerTakt = false;
   function pruefen(){
     var soll = sichtbar();
-    document.documentElement.classList.toggle('sternen-an', soll);
-    if (soll && !laeuft){
-      laeuft = true;
-      // Vor dem ersten Bild die Farben lesen, nicht erst nach 60 Bildern: Sonst zeigt das erste
-      // gezeichnete Bild nach der Rueckkehr die Atmosphaere des vorigen Farbmodus.
-      farbenLesen();
-      if (wenigerBewegung){ zeichnen(); }
-      else { rafId = window.requestAnimationFrame(schritt); }
-    } else if (!soll && laeuft){
-      laeuft = false;
-      if (rafId){ window.cancelAnimationFrame(rafId); rafId = null; }
-    }
+    // Zwei verschiedene Fragen, die beim ersten Anlauf dieser Runde EINE waren — und das war
+    // falsch, in der Gegenprobe auf beiden Motoren gemessen:
+    //   gedaempft: Wird hier gelesen? Das haengt allein an der Ansicht.
+    //   still:     Darf sich etwas bewegen? Das haengt auch an der Bewegungsvorliebe.
+    // Zusammengelegt bekam die Startseite bei "weniger Bewegung" die gedaempfte Deckkraft mit —
+    // wer weniger Bewegung will, hat aber nichts gegen Helligkeit gesagt.
+    var gedaempft = !!soll && soll !== BEWEGTE_ANSICHT;
+    var still = !!soll && (wenigerBewegung || gedaempft);
+    document.documentElement.classList.toggle('sternen-an', !!soll);
+    document.documentElement.classList.toggle('sternen-still', gedaempft);
+    if (soll === ansicht && still === stillerTakt) return;
+    ansicht = soll; stillerTakt = still;
+    if (rafId){ window.cancelAnimationFrame(rafId); rafId = null; }
+    laeuft = !!soll;
+    if (!soll) return;
+    // Vor dem ersten Bild die Farben lesen, nicht erst nach 60 Bildern: Sonst zeigt das erste
+    // gezeichnete Bild nach der Rueckkehr die Atmosphaere des vorigen Farbmodus.
+    farbenLesen();
+    if (still){ zeichnen(); }
+    else { rafId = window.requestAnimationFrame(schritt); }
   }
 
   var groesseTimer = null;
   window.addEventListener('resize', function(){
     if (groesseTimer) clearTimeout(groesseTimer);
-    groesseTimer = setTimeout(function(){ groesseTimer = null; aufbauen(); if (laeuft && wenigerBewegung) zeichnen(); }, 200);
+    // Im stillen Takt muss die Flaeche nach dem Neuaufbau selbst neu gezeichnet werden; im
+    // bewegten tut das das naechste Bild von allein.
+    groesseTimer = setTimeout(function(){ groesseTimer = null; aufbauen(); if (stillerTakt) zeichnen(); }, 200);
   });
   document.addEventListener('visibilitychange', pruefen);
 
@@ -824,7 +866,21 @@
     farbenLesen();
     aufbauen();
     pruefen();
-    // Der Ansichtswechsel loest kein Ereignis aus; ein Blick pro Sekunde genuegt und kostet nichts.
+    // Runde 108: Der Blick pro Sekunde bleibt als Netz, ist aber nicht mehr die einzige Quelle.
+    // Solange es nur "Startseite oder nicht" war, fiel eine Verzoegerung von bis zu einer Sekunde
+    // nicht auf — die Flaeche blendete ueber .8s aus, das eine verdeckte das andere. Mit dem
+    // stillen Takt im Fragebogen wurde daraus etwas Sichtbares: Nachgemessen bei 320x568 lief die
+    // Flaeche nach dem Antippen von "Test starten" noch weiter, weil der Takt erst beim naechsten
+    // Blick umgestellt wurde. Der Ansichtswechsel meldet sich jetzt selbst — dieselbe Loesung wie
+    // beim Farbmodus ein paar Zeilen darueber, und aus demselben Grund: Ein Zustand, den man
+    // beobachten kann, muss nicht abgefragt werden.
+    try{
+      var wache = new MutationObserver(pruefen);
+      for (var i = 0; i < ANSICHTEN.length; i++){
+        var el = document.getElementById(ANSICHTEN[i]);
+        if (el) wache.observe(el, { attributes:true, attributeFilter:['class', 'style'] });
+      }
+    }catch(e){}
     setInterval(pruefen, 1000);
   }
   if (window.requestAnimationFrame){

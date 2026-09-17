@@ -3,11 +3,56 @@
   .trend-row{display:flex;align-items:center;gap:12px;}
   .trend-label{font-family:var(--mono);font-size:11px;color:var(--muted);width:64px;flex-shrink:0;}
   .trend-row svg{flex:1;min-width:0;display:block;}
-  .trend-val{font-family:var(--mono);font-size:14.5px;font-weight:600;width:28px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums;}
+  /* Runde 108: Stand und Veraenderung stehen uebereinander in EINER Spalte, nicht nebeneinander
+     in zwei. Bei 320px Geraetebreite bleiben der Kurve nach Polsterung und fester Spalte rund
+     120px — eine zweite Spalte neben der Zahl haette davon weitere 30 genommen, und eine
+     Sparkline von 90px ist keine Kurve mehr, sondern ein Haken. Gestapelt kostet die Ergaenzung
+     6px. Die Begruendung, warum beide Richtungen dieselbe Farbe tragen, steht in 05-verlauf.js. */
+  .trend-zahl{width:34px;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
+  .trend-val{font-family:var(--mono);font-size:14.5px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;line-height:1.1;}
+  .trend-delta{font-family:var(--mono);font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1.1;}
   .history-list{margin-top:14px;display:flex;flex-direction:column;gap:8px;}
   .history-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-s);padding:11px 14px;font-size:13.5px;}
   .history-date{font-family:var(--mono);color:var(--muted);flex-shrink:0;font-size:12px;}
   .history-title{font-family:var(--serif);text-align:right;}
+
+  /* ---------- Die Verlaufsliste im Profil (Runde 108) ----------
+     Bewusst auf #historyContent eingegrenzt. .history-row traegt drei Listen der App — den
+     Verlauf hier, das Vergleichsarchiv und die Tagesform-Tage —, und nur diese eine war gemeldet.
+     Eine Aenderung an der gemeinsamen Regel haette zwei ungeprueft mitgenommen.
+     Die Zeile bleibt eine Karte: Die gemeinsamen Regeln fuer Rand, Druckzustand und
+     Farbmodus-Wechsel (10-druckzustaende.css) gelten damit unveraendert weiter. Was sich aendert,
+     ist die Anordnung darin. */
+  #historyContent .history-row{align-items:flex-start;padding:12px 14px;}
+  #historyContent .history-body{display:flex;flex-direction:column;gap:3px;min-width:0;}
+  /* Datum und Titel untereinander und beide linksbuendig: Rechtsbuendig gesetzt begann die
+     zweite Zeile eines langen Titels unter dem Datum, und zwei Leserichtungen in einer Zeile
+     sind eine zu viel. */
+  #historyContent .history-title{text-align:left;line-height:1.35;}
+  /* Die kurze Marke der fuehrenden Dimension — dieselben Kuerzel wie an der Kurve darueber
+     (RADAR_LABELS). Sie erklaert zugleich, wofuer die Kante links steht.
+     --muted und nicht --muted-soft, und das ist nachgemessen statt geschaetzt: Die Fehlersuche
+     hat die erste Fassung 30-mal gemeldet (beide Motoren, 390 und 320, vier Sprachen) —
+     **4,26:1, noetig sind 4,5:1**. Der Grund ist der Untergrund: --muted-soft ist die unterste
+     Textstufe und fuer --paper gerechnet (Runde 42), die Marke liegt aber auf einer Karte, und
+     auf der hervorgehobenen Zeile sogar auf --surface-2. Dieselbe Farbe, weniger Unterschied.
+     Die Marke ist damit etwas kraeftiger als beabsichtigt — das ist der richtige Tausch: Ihre
+     Zurueckhaltung traegt die Groesse (10px) und die Mono-Schrift, nicht die Farbe allein. */
+  #historyContent .history-dim{
+    font-size:10px;letter-spacing:.05em;color:var(--muted);flex-shrink:0;
+    margin-top:1px;white-space:nowrap;
+  }
+  /* Die Kante traegt den Pol, nicht die Dimension: fuenf Farben waeren fuenf neue Marken mit je
+     drei Bloecken, und die Frage "hoch oder niedrig" ist die, die man an einer Liste stellt.
+     Nur die Farbe, nicht die Breite — .history-row bekommt von der Formensprache aus Runde 69
+     border-width:2px !important (10-druckzustaende.css), eine eigene Breite hier kaeme nie an. */
+  #historyContent .history-pol-high{border-left-color:var(--accent);}
+  #historyContent .history-pol-low{border-left-color:var(--accent-2);}
+  /* Der jueungste Eintrag. Die Liste laeuft absteigend; ohne diese Hervorhebung musste man das
+     aus den Datumsangaben schliessen. */
+  #historyContent .history-neu{background:var(--surface-2);}
+  #historyContent .history-neu .history-title{font-size:15px;}
+  #historyContent .history-neu .history-date{color:var(--ink);}
 
   
   /* ---------- Verlaufsdiagramm (Runde 67) ----------

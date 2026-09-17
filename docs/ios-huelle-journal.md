@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-09-17, nach Runde 107)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-09-17, nach Runde 108)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -16,44 +16,34 @@ im Wurzelverzeichnis.
 
 ### Der laufende Auftrag
 
-Der Inhaber hat eine **Rueckmeldungsliste mit 18 Punkten in acht Gruppen** vorgelegt. Runde 107 hat
-zuerst geprueft, was davon schon stand, und dann die Punkte mit kleiner, klarer Ursache umgesetzt.
-Die Reihenfolge fuer den Rest ist mit ihm **abgesprochen** („ja guter vorschlag so"): erst die
-kleinen Ursachen, dann Zeichnen/Achse, dann das Grosse. Punkte 1–6 der Liste sind fertig.
+Der Inhaber hat eine **Rueckmeldungsliste mit 18 Punkten in acht Gruppen** vorgelegt. Die
+Reihenfolge ist mit ihm **abgesprochen** („ja guter vorschlag so"): erst die kleinen Ursachen, dann
+Zeichnen/Achse, dann das Grosse. Runde 107 hat Punkte 1–6 erledigt, **Runde 108 die fuenf
+Gestaltungspunkte aus Batch 3** (Aussagen-Box, Fragebogen-Hintergrund, Verlauf, Archetypen,
+Uebergaenge).
 
-**Der naechste Schritt ist Batch 3.** Er steht unten mit Datei und Zeile — bitte nicht neu suchen.
+**Der naechste Schritt ist eine Frage, keine Aufgabe** — siehe „Was als Naechstes zu tun ist".
 
-Eine Bitte des Inhabers stand ueber der ganzen Runde und gilt weiter: **nichts stillschweigend
+Eine Bitte des Inhabers stand ueber Runde 107 und gilt weiter: **nichts stillschweigend
 gegen eine dokumentierte Entscheidung aendern.** Drei Punkte der Liste sind genau das und liegen
 deshalb bei ihm (Abschnitt „Was nur der Inhaber entscheiden kann").
 
-### Batch 3 — was als Naechstes zu tun ist, mit Fundstelle
+### Was als Naechstes zu tun ist
 
-1. **Aussagen-Box im Fragebogen hoeher.** Heute vertikal zentriert:
-   `.quiz-body{justify-content:safe center}` in `src/styles/02-quiz.css:6`, dazu
-   `#view-quiz.active{min-height:calc(100vh - 150px)}` in Zeile 5. Die Zentrierung ist begruendet
-   (der Fragenblock soll bei kurzem Inhalt nicht ins Leere laufen) — also nicht ersetzen, sondern
-   den Schwerpunkt nach oben verschieben.
-2. **Fragebogen-Hintergrund gestalten.** Er ist leer. Der Sternenhimmel/Lichtstaub laeuft
-   **ausschliesslich** auf der Startseite: `src/js/22-sternenhimmel.js:764` haengt sich an
-   `#view-landing`. Achtung, das ist eine **eigene IIFE** (siehe `CLAUDE.md`, `src/manifest.json`)
-   — sie sieht die Funktionen der grossen IIFE nicht.
-3. **Verlauf im Profil visuell ueberarbeiten.** Gerendert von `renderHistory()` in
-   `src/js/05-verlauf.js:97ff` nach `#historyContent`, das in `view-profile` liegt (Erklaerung in
-   `src/js/15-profile.js:128-130`). Stilblatt: `.trend-list`, `.trend-row`, `.history-row`,
-   `.history-date`, `.history-title` in `src/styles/06-trend-history.css:2-10` — schlichte Zeilen
-   mit Datum links und Text rechts, seit vielen Runden unangetastet.
-4. **Archetypen-Bereich ueberarbeiten.** Kopf in `src/styles/09-archetypen.css:2-6`
-   (`.archetypes-head`, `.archetype-groups`); der Inhalt wird in `src/js/04-scoring.js:59`
-   (`$('archetypeGroups').innerHTML`) als Aufklappliste erzeugt.
-5. **Groessere, auffaellige Uebergaenge.** Kleines ist reichlich da (Fragewechsel, Haken-Zeichnung,
-   Konfetti, Sternenhimmel, Druckzustaende, Glas beim Druecken, seit Runde 107 das Einzeichnen der
-   Tagesform-Kurve). Grosses gibt es **genau eines**: `.view.active.nav-vor` / `.nav-zurueck`,
-   0,45 s, `translateX(16px)` — `src/styles/10-druckzustaende.css:218-220`.
-6. **Die App insgesamt visuell verschoenern** — der Sammelpunkt der Liste. Ohne eine engere Frage
-   des Inhabers ist das nicht messbar abzuarbeiten; im Zweifel nachfragen, welche Ansicht er meint.
-7. **Fluessigkeit.** Der laut Journal groesste offene Hebel ist der **Release-Bau** statt Debug
-   (Runde 103), danach die 20px `backdrop-filter`-Unschaerfe der Schublade.
+Aus Batch 3 sind zwei Punkte offen, und **keiner davon ist ein Stilblatt-Auftrag**:
+
+1. **Punkt 6, „die App insgesamt visuell verschoenern"** — der Sammelpunkt der Liste. Ohne eine
+   engere Frage nicht messbar abzuarbeiten. Die konkrete Frage an den Inhaber lautet: **welche
+   Ansicht stoert am meisten?** Vorschlag aus dem Stand der Arbeit: die **Ergebnisseite** — sie ist
+   die laengste (acht Bildschirme), traegt die meisten Karten, und sie ist die einzige, die jemand
+   jemandem zeigt. Fragen, nicht raten.
+2. **Punkt 7, Fluessigkeit.** Der groesste Hebel ist der **Release-Bau statt Debug** (Runde 103),
+   danach die 20px `backdrop-filter`-Unschaerfe der Schublade. Beides ist eine Einstellung in Xcode
+   plus eine Messung am **Geraet**, nicht am Stilblatt — es gehoert in dieselbe Runde wie „die App
+   auf einem echten iPhone". In Runde 108 **ungemessen** geblieben.
+
+Danach folgt der Rest der Liste ab Gruppe 7. Was in Runde 108 an Zahlen gemessen wurde, steht im
+Eintrag „Runde 108" weiter unten — die Werte nicht neu erheben, sondern dort nachlesen.
 
 **Und ein Punkt, der KEIN weiterer Nachschliff sein darf:** „Die Avatare sehen zu unrealistisch
 aus, bitte komplett ueberarbeiten." Das ist die **dritte** Rueckmeldung dieser Art. Runde 87 hat
@@ -64,6 +54,44 @@ Licht, die Iris als einfarbige Scheibe, den Mund als Strich und zehn Mienen auf 
 **Grundsatzentscheidung des Inhabers** — Konstruktion behalten oder durch etwas anderes ersetzen —,
 und sie gehoert gefragt, nicht geraten. Es ist die Lehre „eine Messung kann sich auf die falsche
 Groesse beziehen" in ihrer teuren Form.
+
+### Was Runde 108 erledigt hat — nicht erneut anfassen
+
+Ausfuehrlich mit allen Zahlen im Eintrag „Runde 108"; hier nur, was man wissen muss, um nicht
+dasselbe zweimal zu suchen.
+
+1. **Die Aussagen-Box sitzt hoeher.** Nicht durch Abschalten der Zentrierung, sondern durch zwei
+   leere Flexglieder in `.quiz-body`, die den freien Platz 1:2,4 verteilen. Bei 320px bleibt alles
+   Bildpunkt fuer Bildpunkt wie vorher, weil ein Glied mit Basis 0 dort von selbst 0 wird.
+2. **Der Fragebogen hat einen Hintergrund:** dieselbe Flaeche wie die Startseite, aber als
+   **Standbild** (`html.sternen-still`, opacity .6). Die alte Begruendung („kein Canvas nebenher
+   bei fuenfzig Fragen") bleibt damit gewahrt. Der Takt haengt an den Ansichtskennungen in
+   `ANSICHTEN`/`BEWEGTE_ANSICHT` und wird von einem `MutationObserver` auf dem `class`-Attribut
+   sofort umgestellt — der Sekundentakt ist nur noch das Netz.
+   **Zwei Fallen, beide bezahlt:** „still" und „gedaempft" sind **zwei** Groessen (sonst dimmt
+   `prefers-reduced-motion` die Startseite mit), und ein Literal wie `'bewegt'` bricht
+   `audit_i18n.py` — deshalb Ansichtskennungen statt eigener Taktnamen.
+3. **Der Verlauf im Profil** ist ueberarbeitet, eingegrenzt auf `#historyContent`: Datum ueber
+   Titel, beide linksbuendig, Dimensionsmarke rechts, Pol als Kante links, jueungster Eintrag
+   hervorgehoben; die Trendkurve traegt neben dem Stand die Veraenderung. `.history-row` selbst ist
+   **unveraendert** — die Klasse traegt auch Vergleichsarchiv und Tagesform.
+4. **Der Archetypen-Bereich hat jetzt Gruppen** (fuenf Dimensionen mit je zwei Polen) statt zehn
+   gleicher Karten in einer Reihe. 80 Kombinationen wie vorher.
+5. **Die Uebergaenge sind groesser, aber nicht weiter:** `rise`, `view-vor` und `view-zurueck`
+   kommen zusaetzlich mit 4 % aus der Tiefe. Die Strecke bleibt 16px — mehr gibt die Polsterung
+   nicht her. Dauer und Kurve bleiben .45s.
+   **Wichtig:** `q-enter` in `02-quiz.css` **greift nicht**, `11-feier.css` ersetzt es durch
+   `q-schub`. Der Fragewechsel ist seit Runde 69 gross; dort ist nichts zu tun.
+
+**Vier neue Messungen sind dauerhaft in `tools/pruef_bewegung.mjs`**, drei davon gegen den
+nachgestellten alten Zustand gegengeprueft (sie schlagen dort fehl): Startseite bewegt sich /
+steht bei reduzierter Bewegung still und bleibt voll da, Fragebogen-Hintergrund ist da und steht
+still, Aussagen-Box im oberen Drittel.
+
+**`tools/renderer/run_*.js` wurde bewusst NICHT nachgezogen** und enthaelt jetzt veraltete Kopien
+von `renderHistory()` und `renderArchetypeGroups()`. Der Renderer steht in keiner der neun
+Pruefungen und erklaert sich in seiner eigenen `LIESMICH.md` als ueberfluessig, sobald ein echter
+Browser da ist.
 
 ### Was Runde 107 erledigt hat — nicht erneut anfassen
 
@@ -142,10 +170,18 @@ man den alten Zustand nachstellt):
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 107: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
+`npm run pruef-alles` nach Runde 108: **ALLE 9 BESTANDEN** (9,4 Minuten), `fehlersuche` KEINE FUNDE
 auf **beiden** Motoren, `pruef-nativ` 45/45, `pruef-app` 20/20, `pruef-store` 32/32,
-`pruef-bewegung` beide Durchlaeufe, `diff-sprachen` 127 verdaechtige Zeilen (unveraendert seit
-Runde 105). iOS-Bau: SUCCEEDED.
+`pruef-bewegung` beide Durchlaeufe einschliesslich der vier neuen Messungen, `diff-sprachen` 130
+verdaechtige Zeilen (127 in Runde 105–107; die drei neuen sind **keine** neuen Texte, sondern die
+drei Zeilen, in denen `verlaufZeileHTML()` jetzt Markup zusammensetzt — `diff-sprachen` ist ein
+Bericht, kein Bestanden/Durchgefallen). iOS-Bau: **in Runde 108 nicht gelaufen** — es wurde keine
+Datei unter `ios/` angefasst; alle Aenderungen liegen in `src/`, `tools/` und `docs/`.
+
+**Der erste Sammellauf dieser Runde ist NICHT durchgegangen** (30 Funde, alle derselbe
+Kontrastfehler an einem neu eingefuehrten Element). Das gehoert hierher, weil es der eigentliche
+Wert des Sammellaufs ist: Der Fehler war im Stilblatt nicht zu sehen, weil die Farbe die
+dokumentiert richtige war — nur der Untergrund ein anderer. Einzelheiten im Eintrag „Runde 108".
 
 **Eine Lehre aus dieser Runde, die Zeit spart:** Ein Sammellauf ist an einem Klick-Timeout in
 `diff-sprachen` gestorben — bei 22547 s fuer `fehlersuche` statt der ueblichen ~300 s. Das war eine
@@ -201,6 +237,22 @@ bewusst NICHT umgesetzt; wer sie umsetzt, soll es auf seine ausdrueckliche Ansag
   naechste Hebel ist ein Akzentpunkt links im Text, **nicht** die Umkehrung zurueck)? Sieht ein
   echt geteiltes Bild in Fraunces gut aus? Und sitzen die vier Datumsangaben auf dem Geraet
   angenehm oder gedraengt?
+- **Die fuenf Stellen aus Runde 108 beurteilen.** Sie sind gerechnet, gemessen und im Bild
+  angesehen — aber ein Geschmacksurteil steht noch aus:
+  1. Sitzt die **Aussagen-Box** bei 29 % der freien Hoehe richtig, oder noch hoeher? Der Wert steht
+     als **eine** Zahl im Stilblatt (`flex:2.4 0 0` bei `.quiz-body::after`); 1,5 waere tiefer,
+     4 waere fast oben.
+  2. Ist der **Hintergrund im Fragebogen** bei opacity .6 zu praesent oder zu leise? Die
+     Sonnenstrahlen sind im oberen Drittel gut zu sehen — auf dem Bild sieht das richtig aus, am
+     Geraet beim tatsaechlichen Beantworten von fuenfzig Fragen ist es eine andere Frage.
+  3. Sagt die neue **Verlaufszeile** auf Anhieb, welcher Eintrag der jueungste ist? Die
+     Hervorhebung ist `--surface-2` plus 15px statt 13,5px — bewusst leise, und damit an der
+     Grenze zu unsichtbar.
+  4. Traegt die **Gruppenueberschrift** im Archetypen-Bereich genug? Sie ist 11px Mono in
+     `--muted` mit einer Linie dahinter; der Abstand (26px gegen 12px) traegt die Trennung mit.
+  5. Sind die **Uebergaenge** mit 4 % Tiefe jetzt „groesser und auffaelliger" genug? Weiter als
+     16px geht nicht, ohne den gemessenen Ueberhang zu erzeugen — wenn es noch zu klein wirkt, ist
+     der naechste Hebel **Dauer** (.45s), und die kostet Wartezeit in den Pruefungen.
 - **„Transparenz reduzieren" mit einem echten Finger** (Runde 106): Der ganze Weg ist am Simulator
   gemessen; was ein Geraet hinzufuegt, ist nur das Urteil, ob die deckende Kopfleiste neben der
   Dynamic Island gut aussieht.
@@ -241,6 +293,207 @@ ausdrueckliche Bitte. Die beiden Commits der Runde 107: `7eabcc0` (die vier klei
 `03f60b7` (Einzeichnen + Achse). Der Arbeitsbaum ist sauber — bis auf
 `ios/App/App.xcworkspace/xcshareddata/`, das schon vor dieser Runde unversioniert dalag und
 absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 108 — Batch 3: die fuenf Gestaltungspunkte der Rueckmeldungsliste
+
+Batch 3 stand in der Uebergabe mit Datei und Zeile. Fuenf der sieben Punkte hatten eine benennbare
+Ursache und sind umgesetzt; zwei nicht — einer, weil er eine Frage an den Inhaber ist, einer, weil
+er in Xcode entschieden wird und nicht im Stilblatt. Beide stehen unten mit Begruendung.
+
+### 1. Die Aussagen-Box sass zu tief
+
+**Der Fehler war nicht die Zentrierung, sondern ihre Gleichverteilung.** `justify-content:safe
+center` legt den freien Platz zu gleichen Teilen ueber und unter den Fragenblock. Nachgemessen bei
+390x844: **130px Leere ueber der Aussage und 130px darunter** — bei einem Blick, der von oben nach
+unten laeuft, ist das oben zu viel.
+
+Die Zentrierung bleibt richtig (die Begruendung dafuer steht seit vielen Runden in `02-quiz.css`:
+bei kurzem Inhalt soll der Block nicht ins Leere laufen). Sie verteilt nur ungleich: **zwei leere
+Flexglieder mit Basis 0 nehmen den freien Platz im Verhaeltnis 1:2,4 auf.** Gemessen danach:
+**76px ueber / 183px unter, die Karte 54px hoeher** (305 -> 251px).
+
+Warum keine Polsterung nach unten, die naheliegende Loesung: Die bleibt stehen, wenn kein freier
+Platz da ist. Bei 320x568 bleiben rechnerisch rund 10px uebrig — 120px Polsterung waeren dort
+120px Leerlauf mit Bildlauf. Ein Flexglied mit Basis 0 wird in dem Fall von selbst 0 hoch, und
+genau das ist nachgemessen: **Bei 320x568 ist das Ergebnis Bildpunkt fuer Bildpunkt identisch mit
+dem Zustand davor** (Karte bei 175px, kein zusaetzlicher Bildlauf).
+
+Und eine Zahl, die ich zuerst falsch zugeordnet haette: Der Fragebogen **scrollt** bei 390x844 um
+17px. Das ist **nicht neu** — in der Gegenprobe mit gleich grossen Gliedern stehen dieselben 17px.
+
+### 2. Der Hintergrund des Fragebogens war leer
+
+Er war nicht nur leer, sondern ein **Bruch**: Mit dem Antippen von „Test starten" verschwand die
+Atmosphaere fuer fuenfzig Fragen. `22-sternenhimmel.js` haengt seit Runde 71 ausschliesslich an
+`#view-landing`.
+
+**Es liegt jetzt dieselbe Flaeche dort — als Standbild.** Ein einziges gezeichnetes Bild, danach
+kein `requestAnimationFrame` mehr. Der Grund dafuer steht im Kopf derselben Datei und gilt
+unveraendert: „Ein Fragebogen mit fuenfzig Fragen soll nicht nebenher ein Canvas zeichnen lassen."
+Ein Standbild kostet nach dem Zeichnen nichts; es ist genau der Weg, den die Flaeche bei
+`prefers-reduced-motion` ohnehin schon immer genommen hat. Neu ist nur, **wann** er gilt.
+
+Warum dasselbe Bild und nicht eine zweite, eigene Gestaltung: Der Uebergang laesst die Atmosphaere
+damit **stehen**, statt eine Gestaltung gegen eine andere zu tauschen — und es ist kein neuer Code,
+sondern ein anderer Takt fuer den vorhandenen, einschliesslich Hell/Dunkel, Staub/Sterne und aller
+in vier Runden gemessenen Farbwerte. Leiser ist es trotzdem (`html.sternen-still`, opacity .6): Im
+Fragebogen wird gelesen.
+
+**Drei Dinge daran, die erst die Messung gezeigt hat:**
+
+1. **Der Takt hing eine Sekunde nach.** `pruefen()` lief nur im Sekundentakt („Der Ansichtswechsel
+   loest kein Ereignis aus"). Solange es nur „Startseite oder nicht" war, verdeckte das
+   .8s-Ausblenden die Verzoegerung. Mit dem stillen Takt wurde sie sichtbar: Bei 320x568 lief die
+   Flaeche nach dem Antippen noch weiter. Der Ansichtswechsel meldet sich jetzt selbst, ueber einen
+   `MutationObserver` auf dem `class`-Attribut der beiden Ansichten — dieselbe Loesung wie beim
+   Farbmodus in Runde 86 und aus demselben Grund. Dass beide Klassenwechsel (`remove` von allen,
+   `add` beim Ziel) in `02-state.js` in **einer** synchronen Aufgabe liegen, ist die Voraussetzung:
+   Der Beobachter sieht damit den Endzustand und nicht den Moment, in dem keine Ansicht aktiv ist.
+2. **„still" und „gedaempft" waren erst EINE Groesse, und das war falsch.** In der Gegenprobe
+   gemessen: Bei `prefers-reduced-motion` bekam die **Startseite** die gedaempfte Deckkraft mit.
+   Wer weniger Bewegung will, hat aber nichts gegen Helligkeit gesagt. Es sind zwei Fragen —
+   *wird hier gelesen?* (haengt allein an der Ansicht) und *darf sich etwas bewegen?* (haengt auch
+   an der Vorliebe) — und sie sind jetzt zwei Variablen.
+3. **Ein deutsches Zeichenketten-Literal bricht den Bau.** Die Takte hiessen zuerst `'bewegt'` und
+   `'still'`; `audit_i18n.py` meldet `bewegt` als deutsches Literal im Code, und zu Recht — es
+   kann einen internen Zustandsnamen nicht von einem uebersehenen Oberflaechentext unterscheiden.
+   Die Takte haengen deshalb jetzt an den **Ansichtskennungen** selbst (`view-landing`,
+   `view-quiz`), nicht an eigenen Namen.
+
+### 3. Der Verlauf im Profil
+
+Eine Zeile war **Datum links, Titel rechts** — zwei Leserichtungen in einer Zeile, und bei sieben
+Eintraegen siebenmal dieselbe graue Zeile. Der rechtsbuendige Titel begann bei zwei langen Woertern
+in einer zweiten Zeile **unter dem Datum**. Welcher Eintrag der jueungste ist, sagte nichts (die
+Liste laeuft absteigend, das stand nirgends).
+
+Jetzt: **Datum und Titel untereinander und beide linksbuendig**, die fuehrende Dimension als kurze
+Marke rechts (dieselben `RADAR_LABELS` wie an der Kurve darueber), ihr **Pol als Kante links**, und
+der jueungste Eintrag hervorgehoben. Dazu traegt die Trendkurve neben dem Stand jetzt die
+**Veraenderung** ueber die gezeigte Strecke.
+
+**Vier Entscheidungen, die dabei wichtiger sind als das Aussehen:**
+
+- **Eingegrenzt auf `#historyContent`.** `.history-row` traegt **drei** Listen der App — den
+  Verlauf, das Vergleichsarchiv und die Tagesform-Tage. Gemeldet war eine. Eine Aenderung an der
+  gemeinsamen Regel haette zwei ungeprueft mitgenommen.
+- **Die Zeile bleibt eine Karte.** Damit gelten die gemeinsamen Regeln fuer Rand, Druckzustand und
+  Farbmodus-Wechsel unveraendert weiter.
+- **Nur die Farbe der Kante, nicht ihre Breite.** Die Formensprache aus Runde 69 setzt
+  `border-width:2px !important`. Eine eigene Breite hier waere toter Code, der aussieht, als wirke
+  er — am Geraet nachgemessen: 2px, wie vorhergesagt.
+- **Die Veraenderung traegt KEINE Farbe.** Ein gruenes „+" und ein rotes „−" hiessen, hoch sei
+  besser als niedrig. Das ist bei den fuenf Dimensionen falsch und widerspricht dem, was die App an
+  jeder anderen Stelle sagt. Das Vorzeichen ist die ganze Aussage; gerechnet wird ueber die
+  **angezeigte** Strecke, weil die freie Fassung nur die letzten zwei Durchlaeufe zeigt und eine
+  Zahl ueber verborgene Eintraege nicht nachvollziehbar waere.
+- **Keine neuen Texte.** Datum, Marke und Form sagen alles. Ein Wort wie „zuletzt" haette acht
+  Sprachpakete gebraucht, um zu sagen, was eine kraeftigere Kante auch sagt.
+
+### 4. Der Archetypen-Bereich
+
+Der Bereich heisst seit jeher `.archetype-groups` und **hatte keine Gruppen**: zehn gleich gebaute
+Karten in einer Reihe, deren einziger Unterschied eine kleine Marke „DIMENSION · Adjektiv" war.
+Dass die zehn Rollen genau **fuenf Gegensatzpaare** sind — und dass genau das der Unterschied zu
+den Schubladen des MBTI ist, den der Absatz darueber erklaert —, war aus der Anordnung nicht zu
+sehen. Jede zweite Karte war der Gegenpol der vorigen, und es sah aus wie eine Aufzaehlung.
+
+Jetzt **fuenf Gruppen mit je zwei Karten**, die Dimension als Ueberschrift. Damit verschwindet aus
+der Marke auf der Karte die Wiederholung: Die Dimension steht einmal ueber der Gruppe, auf der
+Karte bleibt der Pol — und die Kante links traegt ihn zusaetzlich als Form. Der Abstand zwischen
+den Gruppen (26px) ist deutlich groesser als der innerhalb (12px); die Ueberschrift allein traegt
+die Trennung nicht. Die Verzoegerung der Einblendung zaehlt weiter durchgehend 0 bis 9 und nicht je
+Gruppe 0 bis 1, sonst liefen fuenf Paare gleichzeitig ein.
+
+Nachgemessen: 5 Gruppen mit je 2 Karten, 10 Pol-Kanten, **80 Kombinationen wie vorher**, bei 390
+und bei 320 keine Karte aus der Spur.
+
+### 5. Groessere Uebergaenge — und der Punkt, an dem ich auf toten Code hereingefallen bin
+
+Die Strecke war **nicht** der Hebel: 16px seitlich sind bereits so viel, wie die 20px Polsterung
+von `#shell` hergeben, und der Rest waere genau der Ueberhang, den die Fehlersuche seit Runde 91
+misst. Der zweite Freiheitsgrad ist die **Tiefe**: Die Ansicht kommt jetzt mit 4 % aus der Tiefe
+nach vorn — deutlich zu sehen, und sie laeuft nach **innen**, kann also nirgends ueber den Rand.
+Nachgerechnet und nicht angenommen: Bei 390px ist die Ansicht 350px breit, 4 % sind 7,9px je Seite,
+die rechte Kante steht zu Beginn bei 370 − 7,9 + 16 = **378 von 390** — zwoelf Punkte Luft, also
+**mehr** als die vier, die 16px allein uebrig liessen. Im Browser bei beiden Breiten waehrend der
+Bewegung gemessen: 0px Quer-Ueberlauf. Dauer und Kurve bleiben bei .45s, weil die Pruefungen dort
+ihre Wartezeiten haben und drei Uebergaenge, die sich wie einer anfuehlen sollen, dieselbe Zeit
+brauchen.
+
+**Und der Fehler, der es fast in den Commit geschafft haette:** Ich habe zuerst `q-enter` in
+`02-quiz.css` vergroessert — die Einblendung der Fragekarte, 9px. Die Regel **greift nicht**.
+`11-feier.css` ersetzt sie durch `q-schub` (26px seitlich mit Ueberschwung) und sagt es dort auch,
+nur sagte es an der Fundstelle nichts. Die Aenderung war gemessen wirkungslos, und der
+Fragewechsel ist damit **schon seit Runde 69 gross**. `q-enter` steht wieder wie vorher; neu ist
+dort nur ein Hinweis, dass die Regel nicht greift — an der Stelle, an der man zuerst sucht. Das ist
+dieselbe Lehre wie die verworfene Gegenprobe aus Runde 107: **Eine Aenderung an Code, der nicht
+laeuft, ist keine Aenderung.**
+
+### Was die Fehlersuche gefunden hat — und es war meins
+
+Der erste Sammellauf nach den fuenf Punkten meldete **30 Funde**, und alle dreissig waren
+**dasselbe Element**: `div.history-dim`, die neue Dimensionsmarke im Verlauf, mit **4,26:1 — noetig
+sind 4,5:1**. Auf beiden Motoren, bei 390 und 320 Punkten, in vier Sprachen, in zwei Ansichten.
+
+Die Ursache ist lehrreich, weil sie nicht in der Farbe liegt, sondern im **Untergrund**:
+`--muted-soft` ist die unterste Textstufe der App und in Runde 42 fuer `--paper` gerechnet. Die
+Marke liegt aber auf einer **Karte** — und auf der hervorgehobenen jueungsten Zeile sogar auf
+`--surface-2`. Dieselbe Farbe, weniger Unterschied. Ein Blick ins Stilblatt haette „das ist doch
+die Farbe fuer genau so etwas" gesagt und waere falsch gewesen.
+
+Die Marke steht jetzt in `--muted` und ist damit etwas kraeftiger als beabsichtigt. Das ist der
+richtige Tausch: Ihre Zurueckhaltung traegt die Groesse (10px) und die Mono-Schrift, nicht die
+Farbe allein. Nachgefahren auf `390px/hell/de`, beide Motoren: **keine Funde**.
+
+### Vier neue Messungen, dauerhaft im Repository
+
+Alle vier in `tools/pruef_bewegung.mjs`, und alle gegen den **nachgestellten alten Zustand**
+gegengeprueft — sie schlagen dort fehl:
+
+| Messung | gegen den alten Zustand |
+|---|---|
+| Startseite: der Hintergrund bewegt sich | — (neu, sichert den Zustand, den es schon gab) |
+| Startseite: steht still bei reduzierter Bewegung, bleibt aber voll da | FAIL bei zusammengelegtem „still"/„gedaempft" |
+| Fragebogen: der Hintergrund ist da und steht still | FAIL (opacity 0) |
+| Fragebogen: die Aussagen-Box sitzt im oberen Drittel | FAIL (50 %) |
+
+Die erste ist die wichtigste und hat keinen alten Zustand, gegen den sie sich beweisen kann: Bis zu
+dieser Runde kannte die Flaeche nur „Startseite oder nicht", jetzt kennt sie zwei Takte — und damit
+die Moeglichkeit, versehentlich **beide** stillzulegen. Das waere der unauffaelligste Fehler von
+allen: Die Flaeche ist da, sieht auf jedem Bildschirmfoto richtig aus, und die Atmosphaere, um die
+es ueber vier Runden ging, ist tot. Kein Stilblatt- und kein Quelltext-Blick zeigt das an.
+
+Gemessen wird der Hintergrund ueber seinen **Inhalt** (Stichprobe jedes 37. Bildpunkts auf den
+Alphakanal), nicht ueber eine Klasse: Ein Canvas, das da ist und nichts zeigt, ist derselbe leere
+Hintergrund wie vorher. Bei der Box wird das **Verhaeltnis** gemessen und nicht der Pixelwert —
+der haengt an Geraetehoehe, Sprache und Zeilenumbruch, das Verhaeltnis nicht.
+
+### Was in Batch 3 offen bleibt, und warum
+
+- **Punkt 6, „die App insgesamt visuell verschoenern".** Das ist der Sammelpunkt der Liste und
+  ohne eine engere Frage nicht messbar abzuarbeiten. Nach dieser Runde waere die konkrete Frage an
+  den Inhaber: **Welche Ansicht stoert am meisten?** Aus dem Stand der Runde heraus wuerde ich die
+  **Ergebnisseite** vorschlagen — sie ist die laengste (acht Bildschirme), traegt die meisten
+  Karten und ist die einzige, die jemand jemandem zeigt.
+- **Punkt 7, Fluessigkeit.** Der laut Journal groesste Hebel ist der **Release-Bau statt Debug**.
+  Das ist keine Aenderung am Stilblatt, sondern eine Einstellung des Schemas in Xcode und eine
+  Messung am Geraet — sie gehoert in dieselbe Runde wie „die App auf einem echten iPhone", und die
+  steht beim Inhaber. Ungemessen und deshalb hier vermerkt, nicht stillschweigend uebersprungen.
+- **Die Avatare** sind unveraendert. Die Begruendung steht in der Uebergabe und in Runde 107: Ein
+  vierter Nachschliff an derselben Konstruktion ist eine Grundsatzentscheidung des Inhabers, keine
+  Aufgabe.
+
+### Ein Werkzeug, das nicht mitgezogen wurde — mit Absicht
+
+`tools/renderer/run_*.js` enthaelt **Kopien** des App-JavaScripts, darunter die alte
+`renderHistory()` und `renderArchetypeGroups()`. Diese Kopien sind jetzt veraltet. Sie wurden
+bewusst nicht nachgezogen: `tools/renderer/LIESMICH.md` sagt selbst, dass der ganze Renderer „in
+einer Umgebung mit echtem Browser ueberfluessig" ist, und er steht in keiner der neun Pruefungen.
+Ihn zu pflegen hiesse, zwei Staende derselben Logik zu halten, von denen einer nie gelesen wird.
+**Wer ihn doch einmal braucht, muss die betroffenen Funktionen frisch aus `src/js/` uebernehmen.**
 
 ---
 

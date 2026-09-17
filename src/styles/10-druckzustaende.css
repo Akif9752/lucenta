@@ -215,10 +215,19 @@
         hinaus; seit Runde 91 wird das nicht mehr nur angenommen, sondern gemessen (die
         Fehlersuche nimmt die Verdeckung dafür kurz ab). Dieselbe Kurve und Dauer wie "rise", damit sich die drei Varianten
         wie ein Übergang anfühlen und nicht wie drei. */
+  /* Runde 108, gemeldet: „Groessere, auffaelligere Uebergaenge." Die Strecke bleibt bei 16px —
+     mehr gibt die 20px Polsterung von #shell nicht her, und der Ueberhang waere genau der, den
+     die Fehlersuche seit Runde 91 misst. Dazu kommt die Tiefe (dieselben 4 % wie bei "rise",
+     Begruendung dort): Die Ansicht schiebt sich nicht nur zur Seite, sie kommt nach vorn.
+     Nachgerechnet bei 390px Fensterbreite, damit es nicht wieder eine Annahme ist: Die Ansicht
+     ist 350px breit, 4 % davon sind 7,9px je Seite. Beim Vorwaerts-Uebergang steht die rechte
+     Kante zu Beginn bei 370 − 7,9 + 16 = 378 von 390 — zwoelf Punkte Luft, also MEHR als die
+     vier Punkte, die 16px allein uebrig liessen. Nach innen skalieren macht den Uebergang
+     groesser und den Ueberhang kleiner. */
   .view.active.nav-vor{ animation:view-vor .45s cubic-bezier(.2,.8,.2,1) both; }
   .view.active.nav-zurueck{ animation:view-zurueck .45s cubic-bezier(.2,.8,.2,1) both; }
-  @keyframes view-vor{ from{opacity:0;transform:translateX(16px);} to{opacity:1;transform:none;} }
-  @keyframes view-zurueck{ from{opacity:0;transform:translateX(-16px);} to{opacity:1;transform:none;} }
+  @keyframes view-vor{ from{opacity:0;transform:translateX(16px) scale(.96);} to{opacity:1;transform:none;} }
+  @keyframes view-zurueck{ from{opacity:0;transform:translateX(-16px) scale(.96);} to{opacity:1;transform:none;} }
 
   /* 2. Ergebniskarten blenden ein, wenn sie in den Blick kommen. Die Klasse "defer" setzt nur
         das JavaScript, und nur auf Karten unterhalb des Sichtbereichs — ohne sie bleibt alles

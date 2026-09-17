@@ -997,8 +997,16 @@
   .drawer-profile-row .chev{color:var(--muted);flex-shrink:0;}
 
   .view{display:none;}
+  /* Runde 108, gemeldet: „Groessere, auffaelligere Uebergaenge." Der Weg dorthin ist NICHT mehr
+     Strecke — 16px seitlich sind bereits so viel, wie die 20px Polsterung von #shell hergeben,
+     und der Rest waere ein Ueberhang, den die Fehlersuche seit Runde 91 misst. Es ist ein
+     zweiter Freiheitsgrad: Die Ansicht kommt jetzt auch aus der Tiefe. 4 % Groessenunterschied
+     sind auf einer ganzen Ansicht deutlich zu sehen und laufen nach INNEN — die Flaeche wird
+     am Anfang kleiner, nicht groesser, und kann deshalb nirgends ueber den Rand.
+     Dauer und Kurve bleiben: Bei .45s messen die Pruefungen ihre Wartezeiten, und drei
+     Uebergaenge, die sich wie einer anfuehlen sollen, muessen dieselbe Zeit haben. */
   .view.active{display:block; animation:rise .45s cubic-bezier(.2,.8,.2,1) both;}
-  @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  @keyframes rise{from{opacity:0;transform:translateY(13px) scale(.96);}to{opacity:1;transform:none;}}
   @media (prefers-reduced-motion: reduce){ .view.active{animation:none;} }
 
   
@@ -1014,8 +1022,14 @@
     z-index:0; pointer-events:none;
     opacity:0; transition:opacity .8s ease;
   }
-  /* Nur auf der Startseite. Die Klasse setzt das Skript, wenn die Ansicht sichtbar ist. */
+  /* Startseite und Fragebogen. Die Klasse setzt das Skript, wenn eine der beiden sichtbar ist. */
   html.sternen-an #sternenhimmel{opacity:1;}
+  /* Runde 108: Im Fragebogen steht dieselbe Flaeche still (22-sternenhimmel.js) und tritt
+     zurueck. Nicht aus Sparsamkeit — ein Standbild kostet nichts —, sondern weil dort gelesen
+     wird: fuenfzig Aussagen, je eine Entscheidung. Die Flaeche soll den Raum fuellen, an dem
+     vorher nichts war, und sich nicht neben den Text stellen. Die Regel steht NACH der
+     Startseiten-Regel, weil beide dieselbe Spezifitaet haben. */
+  html.sternen-still #sternenhimmel{opacity:.6;}
   @media (prefers-reduced-motion: reduce){
     #sternenhimmel{transition:none;}
   }

@@ -94,6 +94,36 @@
     return ACHSE_DATE_FMT;
   }
   function resetDateFmt(){ HISTORY_DATE_FMT = null; ACHSE_DATE_FMT = null; }
+  // Runde 108, gemeldet: „Den Verlauf im Profil bitte visuell ueberarbeiten."
+  //
+  // Eine Zeile war Datum links, Titel rechts — und bei mehreren Eintraegen zehnmal dieselbe graue
+  // Zeile. Was fehlte, war jede Form von Ordnung: Der Titel stand rechtsbuendig und lief bei zwei
+  // langen Woertern in eine zweite Zeile, die unter dem Datum begann; welcher Eintrag der
+  // jueungste ist, sagte nichts (die Liste laeuft absteigend, das stand nirgends); und der
+  // farbige Bezug zum Ergebnis fehlte ganz.
+  //
+  // Die Zeile traegt jetzt drei Dinge statt zwei: Datum und Titel untereinander und linksbuendig
+  // (eine Leserichtung statt zwei), die fuehrende Dimension als kurze Marke rechts, und ihren Pol
+  // als Kante links — dieselbe Unterscheidung wie .role-tag-high/-low in der Archetypen-Ansicht.
+  // Der jueungste Eintrag ist hervorgehoben.
+  //
+  // Bewusst KEINE neuen Texte: Datum, Marke (RADAR_LABELS) und Form sind alles, was hier steht.
+  // Ein Wort wie „zuletzt" haette acht Sprachpakete gebraucht, um zu sagen, was eine kraeftigere
+  // Kante auch sagt.
+  function verlaufZeileHTML(e, istNeuste){
+    var a = archetypeOf(e.scores);
+    var titel = NOUN[a.top1][e.scores[a.top1]>=50?'high':'low'] + ' · ' +
+                ADJ[a.top2][e.scores[a.top2]>=50?'high':'low'];
+    var datum = ''; try{ datum = historyDateFmt().format(new Date(e.date)); }catch(ex){}
+    var pol = e.scores[a.top1]>=50 ? 'high' : 'low';
+    return '<div class="history-row history-pol-'+pol+(istNeuste?' history-neu':'')+'">'+
+      '<div class="history-body">'+
+        '<div class="history-date">'+datum+'</div>'+
+        '<div class="history-title">'+titel+'</div>'+
+      '</div>'+
+      '<div class="history-dim mono">'+RADAR_LABELS[a.top1]+'</div>'+
+      '</div>';
+  }
   function renderHistory(){
     $('historyMaxCount').textContent = MAX_HISTORY;
     var alle = loadHistory();
@@ -113,31 +143,36 @@
       // Umkehrung dessen, was der Zielgradienten-Effekt nahelegt: Was jemand bereits geleistet
       // hat, gehört gezeigt und mitgezählt, nicht verschwiegen. Kein erfundener Vorsprung —
       // der Eintrag ist echt, er wurde nur bislang unterschlagen.
-      var f1 = historyDateFmt(), e1 = hist[0], a1 = archetypeOf(e1.scores);
-      var t1 = NOUN[a1.top1][e1.scores[a1.top1]>=50?'high':'low'] + ' · ' + ADJ[a1.top2][e1.scores[a1.top2]>=50?'high':'low'];
-      var d1 = ''; try{ d1 = f1.format(new Date(e1.date)); }catch(ex){}
       wrap.innerHTML =
-        '<div class="history-list"><div class="history-row">'+
-          '<div class="history-date">'+d1+'</div><div class="history-title">'+t1+'</div>'+
-        '</div></div>'+
+        '<div class="history-list">'+verlaufZeileHTML(hist[0], true)+'</div>'+
         // Bewusst kurz: Der Abschnitts-Hinweis unterhalb erklärt bereits, dass ein echter Trend
         // Monate braucht — das hier zweimal zu sagen, wäre genau die Textlast, die Runde 44
         // reduziert hat.
         tx('js_dein_erster_durchlauf_ist');
       return;
     }
+    // Runde 108: Neben dem heutigen Wert steht jetzt die Veraenderung ueber die gezeigte Strecke.
+    // Der Grund: Die Kurve zeigt den VERLAUF, die Zahl den STAND — die Richtung musste man sich
+    // bisher aus einer 140x32 grossen Linie erschliessen, und bei zwei Punkten ist sie darin
+    // kaum ablesbar.
+    // Gerechnet wird ueber die angezeigte Strecke, nicht ueber alle Durchlaeufe: Die freie
+    // Fassung zeigt die letzten zwei, und eine Zahl, die sich auf verborgene Eintraege bezieht,
+    // waere nicht nachvollziehbar.
+    // Das Vorzeichen ist die ganze Aussage; die Farbe traegt KEINE. Ein gruenes „+" und ein
+    // rotes „−" hiessen, hoch sei besser als niedrig — das ist bei den fuenf Dimensionen falsch
+    // und widerspricht dem, was die App an jeder anderen Stelle sagt.
     var trendRows = ORDER.map(function(f){
       var vals = hist.map(function(e){ return e.scores[f]; });
       var last = vals[vals.length-1];
-      return '<div class="trend-row"><div class="trend-label">'+RADAR_LABELS[f]+'</div>'+sparklineSVG(vals,140,32)+'<div class="trend-val mono">'+last+'</div></div>';
+      var d = last - vals[0];
+      var delta = (d > 0 ? '+' : (d < 0 ? '−' : '±')) + Math.abs(d);
+      return '<div class="trend-row"><div class="trend-label">'+RADAR_LABELS[f]+'</div>'+
+        sparklineSVG(vals,140,32)+
+        '<div class="trend-zahl"><div class="trend-val mono">'+last+'</div>'+
+        '<div class="trend-delta mono">'+delta+'</div></div></div>';
     }).join('');
-    var fmt = historyDateFmt();
-    var listRows = hist.slice().reverse().map(function(e){
-      var a = archetypeOf(e.scores);
-      var title = NOUN[a.top1][e.scores[a.top1]>=50?'high':'low'] + ' · ' + ADJ[a.top2][e.scores[a.top2]>=50?'high':'low'];
-      var dateStr;
-      try{ dateStr = fmt.format(new Date(e.date)); }catch(ex){ dateStr = ''; }
-      return '<div class="history-row"><div class="history-date">'+dateStr+'</div><div class="history-title">'+title+'</div></div>';
+    var listRows = hist.slice().reverse().map(function(e,i){
+      return verlaufZeileHTML(e, i===0);
     }).join('');
     wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
       tx('js_frühere_ergebnisse')+hist.length+'</span></h2>'+

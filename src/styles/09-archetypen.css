@@ -3,8 +3,31 @@
   .archetypes-head h1{font-size:clamp(24px,6vw,32px);line-height:1.15;margin-top:8px;letter-spacing:-.01em;}
   .archetypes-head p{margin-top:14px;font-size:14.5px;color:var(--muted);max-width:56ch;line-height:1.6;}
   .archetypes-head b{color:var(--ink);}
-  .archetype-groups{margin-top:26px;display:flex;flex-direction:column;gap:12px;}
+  /* Runde 108: Der Bereich hiess seit jeher .archetype-groups und hatte keine Gruppen. Jetzt
+     fuenf — je eine Dimension mit ihren zwei Polen. Der Abstand ZWISCHEN den Gruppen (26px) muss
+     deutlich groesser sein als der innerhalb (12px), sonst sind es wieder zehn Karten in einer
+     Reihe; die Ueberschrift allein traegt die Trennung nicht. Die Begruendung steht bei
+     renderArchetypeGroups() in 04-scoring.js. */
+  .archetype-groups{margin-top:26px;display:flex;flex-direction:column;gap:26px;}
+  .arch-gruppe{display:flex;flex-direction:column;gap:12px;}
+  /* Eine Angabe, keine Aussage — deshalb in der Mono-Schrift wie alle Kennzeichnungen der App.
+     Die Linie dahinter fuellt den Rest der Zeile: Sie macht aus der Ueberschrift eine Trennung,
+     ohne dass darueber eine zweite Linie noetig waere. */
+  .arch-gruppe-titel{
+    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);margin:0;
+    display:flex;align-items:center;gap:10px;
+  }
+  .arch-gruppe-titel::after{content:'';flex:1;height:1px;background:var(--line);}
   .role-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:16px 18px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;transition:border-color .15s ease;}
+  /* Der Pol als Kante, nicht nur als Farbe eines Wortes: Zwei Karten einer Gruppe sind
+     Gegensaetze, und ein 11px kleines Adjektiv in Akzentfarbe ist dafuer zu leise. Dieselben
+     zwei Marken wie .role-tag-high/-low — es ist dieselbe Unterscheidung, nur groesser.
+     Nur die FARBE, nicht die Breite: Die Formensprache aus Runde 69 setzt fuer .role-card
+     border-width:2px !important (10-druckzustaende.css). Eine eigene Breite hier waere eine
+     Angabe, die nie ankommt — toter Code, der aussieht, als wirke er. */
+  .role-pol-high{border-left-color:var(--accent);}
+  .role-pol-low{border-left-color:var(--accent-2);}
   @media (hover:hover){ .role-card:hover{border-color:var(--accent-strong);} }
   @media (prefers-reduced-motion: reduce){ .role-card{animation:none;opacity:1;} }
   .role-tag{

@@ -45,24 +45,36 @@
 
   // ---------- archetypes overview (the 10 primary roles, generated from the same data the real result uses) ----------
   function renderArchetypeGroups(){
-    var roles = [];
-    ORDER.forEach(function(t){
-      ['high','low'].forEach(function(p){
-        roles.push({ title: NOUN[t][p], motto: MOTTO[t][p], desc: CORE[t][p], dim: t, pole: p });
-      });
-    });
-    var totalCombos = roles.length * (ORDER.length-1) * 2; // each role paired with 4 other traits × 2 poles
+    // 10 Rollen (5 Dimensionen x 2 Pole), jede mit 4 anderen Dimensionen x 2 Polen kombinierbar.
+    var totalCombos = (ORDER.length*2) * (ORDER.length-1) * 2;
     $('archTotalCount').textContent = totalCombos;
-    // Jede Rolle stammt aus genau einer der fünf Dimensionen — das war bisher unsichtbar.
-    // Ein kleiner Tag macht die Herkunft transparent und bricht zehn sonst identisch wirkende
-    // Karten optisch auf, ohne neue Texte erfinden zu müssen (nutzt das vorhandene ADJ-Vokabular).
-    $('archetypeGroups').innerHTML = roles.map(function(r,i){
-      return '<div class="role-card" style="animation-delay:'+(i*40)+'ms">'+
-        '<div class="role-tag role-tag-'+r.pole+'">'+LABELS[r.dim]+' &middot; '+ADJ[r.dim][r.pole]+'</div>'+
-        '<div class="role-title">'+r.title+'</div>'+
-        '<div class="role-motto">'+r.motto+'</div>'+
-        '<p class="role-desc">'+r.desc+'</p>'+
-        '</div>';
+    // Runde 108, gemeldet: „Den Archetypen-Bereich bitte ueberarbeiten."
+    //
+    // Der Bereich hiess .archetype-groups und hatte keine Gruppen: zehn gleich gebaute Karten in
+    // einer Reihe, deren einziger Unterschied eine kleine Marke „DIMENSION · Adjektiv" war. Dass
+    // die zehn Rollen genau fuenf Gegensatzpaare sind — und dass genau das der Unterschied zu den
+    // Schubladen des MBTI ist, den der Absatz darueber erklaert —, war aus der Anordnung nicht zu
+    // sehen. Jede zweite Karte war der Gegenpol der vorigen, und es sah aus wie eine Aufzaehlung.
+    //
+    // Jetzt fuenf Gruppen mit je zwei Karten und der Dimension als Ueberschrift. Damit
+    // verschwindet aus der Marke auf der Karte auch die Wiederholung: Die Dimension steht einmal
+    // ueber der Gruppe, auf der Karte bleibt der Pol. Die Kante links traegt ihn zusaetzlich als
+    // Form, nicht nur als Farbe eines Wortes.
+    //
+    // Die Verzoegerung der Einblendung zaehlt weiter durchgehend von 0 bis 9 und nicht je Gruppe
+    // von 0 bis 1: Sonst liefen fuenf Paare gleichzeitig ein und die Liste blitzte auf, statt
+    // sich aufzubauen.
+    $('archetypeGroups').innerHTML = ORDER.map(function(t, gi){
+      var karten = ['high','low'].map(function(p, pi){
+        return '<div class="role-card role-pol-'+p+'" style="animation-delay:'+((gi*2+pi)*40)+'ms">'+
+          '<div class="role-tag role-tag-'+p+'">'+ADJ[t][p]+'</div>'+
+          '<div class="role-title">'+NOUN[t][p]+'</div>'+
+          '<div class="role-motto">'+MOTTO[t][p]+'</div>'+
+          '<p class="role-desc">'+CORE[t][p]+'</p>'+
+          '</div>';
+      }).join('');
+      return '<section class="arch-gruppe">'+
+        '<h2 class="arch-gruppe-titel">'+LABELS[t]+'</h2>'+karten+'</section>';
     }).join('');
   }
 

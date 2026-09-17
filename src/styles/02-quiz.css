@@ -1,9 +1,24 @@
 /* ---------- Quiz ---------- */
   /* Der Fragebogen läuft 50x durch dieselbe Komposition — statt oben anzuhängen und darunter
      bei kurzem Inhalt ins Leere zu laufen, wird der Fragenblock im verbleibenden Platz
-     vertikal zentriert. Bei sehr kurzen Viewports wächst die Box einfach normal mit. */
+     ausgerichtet (wie genau, steht bei .quiz-body). Bei sehr kurzen Viewports wächst die Box
+     einfach normal mit. */
   #view-quiz.active{display:flex;flex-direction:column;min-height:calc(100vh - 150px);}
-  .quiz-body{flex:1;display:flex;flex-direction:column;justify-content:safe center;}
+  /* Runde 108, gemeldet: „Die Box mit den Aussagen sitzt zu tief, bitte weiter nach oben."
+     Zutreffend, und die Ursache ist die Zentrierung darueber — nicht ihre Existenz, sondern ihre
+     gleichmaessige Verteilung. Nachgerechnet bei 390x844: Unter der Kopfzeile bleiben rund 270px
+     frei, die `safe center` zu gleichen Teilen ueber und unter den Fragenblock legt. 135px Leere
+     ueber der Aussage sind mehr, als der Blick von oben nach unten verzeiht.
+     Zwei leere Flexglieder nehmen den freien Platz jetzt im Verhaeltnis 1:2,4 auf; der Block
+     sitzt damit bei knapp 30 % statt bei 50 % der freien Hoehe. Sie ERSETZEN justify-content
+     statt es zu ueberstimmen — zweimal dieselbe Entscheidung im Stilblatt ist eine zu viel, und
+     ohne freien Platz ergeben beide ohnehin dasselbe (Anfang der Achse).
+     Warum keine Polsterung nach unten: Die bleibt stehen, wenn kein freier Platz da ist. Bei
+     320x568 bleiben rechnerisch rund 10px uebrig — 120px Polsterung waeren dort 120px Leerlauf
+     mit Bildlauf. Ein Flexglied mit Basis 0 wird in dem Fall von selbst 0 hoch. */
+  .quiz-body{flex:1;display:flex;flex-direction:column;}
+  .quiz-body::before{content:'';flex:1 0 0;}
+  .quiz-body::after{content:'';flex:2.4 0 0;}
   /* flex-wrap ergaenzt nach dem 200-%-Zoom-Test (Backlog Runde 28, Punkt 2): die Kopfzeile aus
      „← Start" und „Test wiederholen" ist bei halber Layoutbreite breiter als die Seite, die zweite
      Schaltflaeche lief rechts aus dem Bild. Bei normaler Breite passt die Zeile weiterhin in eine
@@ -19,6 +34,11 @@
      Mal je Durchlauf — und der einzige völlig unbewegte: Nach 220 ms tauschte der Text schlicht
      aus. Jetzt kommt die neue Frage herein. Bewusst nur EIN-, nicht ausblendend: Ein Ausblenden
      würde die eben angetippte Antwort verschlucken, bevor man sie gefüllt gesehen hat. */
+  /* ACHTUNG, Runde 108: Diese Regel greift NICHT. 11-feier.css ersetzt sie durch "q-schub" (26px
+     seitlich mit Ueberschwung) und sagt es dort auch — nur sagte es hier nichts, und genau darauf
+     bin ich in dieser Runde hereingefallen: Der Auftrag "groessere Uebergaenge" liess mich die
+     9px hier vergroessern, und gemessen aendert das gar nichts. Der Hinweis steht jetzt an der
+     Stelle, an der man zuerst sucht. */
   .qcard.q-in{ animation:q-enter .3s cubic-bezier(.2,.8,.2,1) both; }
   @keyframes q-enter{ from{opacity:0;transform:translateY(9px);} to{opacity:1;transform:none;} }
   @media (prefers-reduced-motion: reduce){ .qcard.q-in{animation:none;} }

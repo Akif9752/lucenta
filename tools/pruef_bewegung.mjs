@@ -70,6 +70,25 @@ async function durchlauf(reduziert){
 
   console.log('\n' + (reduziert ? 'MIT prefers-reduced-motion' : 'OHNE prefers-reduced-motion'));
 
+  // --- Die Startseite bewegt sich (Runde 108)
+  // Das Gegenstueck zur Messung im Fragebogen weiter unten. Bis Runde 108 kannte die Flaeche nur
+  // "Startseite oder nicht"; jetzt kennt sie zwei Takte — und damit die Moeglichkeit,
+  // versehentlich BEIDE stillzulegen. Das waere der unauffaelligste Fehler von allen: Die Flaeche
+  // ist da, sieht auf dem Bild richtig aus, und die Atmosphaere, um die es ueber vier Runden
+  // ging, ist tot. Kein Stilblatt und kein Quelltext-Blick zeigt das an.
+  const himmelStart = await verlauf(p, () => document.getElementById('sternenhimmel').toDataURL().length, [0, 900]);
+  const startDeckkraft = await p.evaluate(() => getComputedStyle(document.getElementById('sternenhimmel')).opacity);
+  if (reduziert){
+    // Bei reduzierter Bewegung steht sie still — aber in voller Deckkraft. Wer weniger Bewegung
+    // will, hat nichts gegen Helligkeit gesagt; genau das war in Runde 108 der erste Anlauf und
+    // fiel erst in der Gegenprobe auf, weil "still" und "gedaempft" dort EINE Groesse waren.
+    pruefe(!bewegtSich(himmelStart) && startDeckkraft === '1',
+           'Startseite: Hintergrund steht still, bleibt aber voll da', `(opacity ${startDeckkraft})`);
+  } else {
+    pruefe(bewegtSich(himmelStart) && startDeckkraft === '1',
+           'Startseite: der Hintergrund bewegt sich', `(opacity ${startDeckkraft})`);
+  }
+
   // --- Ansichtswechsel mit Richtung
   await p.click('#btnDrawerToggle'); await p.waitForTimeout(400);
   await p.click('#btnDrawerSettings'); await p.waitForTimeout(40);
@@ -87,6 +106,58 @@ async function durchlauf(reduziert){
   // --- Fragebogen
   await p.click('#btnStart'); await p.waitForTimeout(500);
   { const r = await p.$('#btnRunSelf'); if (r && await r.isVisible()){ await r.click(); await p.waitForTimeout(500); } }
+
+  // --- Der Hintergrund des Fragebogens (Runde 108)
+  // Bis Runde 108 lief die Flaeche ausschliesslich auf der Startseite und der Fragebogen war
+  // leer. Jetzt liegt dieselbe Atmosphaere dort, aber als STANDBILD: Ein Fragebogen mit fuenfzig
+  // Fragen soll nicht nebenher ein Canvas zeichnen lassen (die Begruendung steht im Kopf von
+  // 22-sternenhimmel.js und ist aelter als diese Aenderung).
+  // Gemessen werden BEIDE Haelften, weil jede fuer sich lautlos brechen kann: Faellt der
+  // Takt-Wechsel aus, zeichnet die Flaeche fuenfzig Fragen lang weiter und niemand sieht es —
+  // ausser am Akku. Faellt der Klassen-Wechsel aus, ist der gemeldete leere Hintergrund zurueck.
+  // Nach dem INHALT gefragt und nicht nach einer Klasse: Ein Canvas, das da ist und nichts
+  // zeigt, ist derselbe leere Hintergrund wie vorher.
+  const himmelQuiz = await verlauf(p, () => document.getElementById('sternenhimmel').toDataURL().length, [0, 900]);
+  const himmelStand = await p.evaluate(() => {
+    const c = document.getElementById('sternenhimmel');
+    const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+    let gesetzt = 0, gezaehlt = 0;
+    // Jeder 37. Bildpunkt genuegt; eine Primzahl, damit die Stichprobe nicht mit einem Muster
+    // der Flaeche in Takt geraet.
+    for (let i = 3; i < d.length; i += 4*37){ gezaehlt++; if (d[i] > 0) gesetzt++; }
+    return { anteil: gesetzt / Math.max(1, gezaehlt),
+             gedaempft: document.documentElement.classList.contains('sternen-still'),
+             deckkraft: getComputedStyle(c).opacity };
+  });
+  pruefe(!bewegtSich(himmelQuiz) && himmelStand.anteil > .5 && himmelStand.gedaempft,
+         'Fragebogen: der Hintergrund ist da und steht still',
+         `(gezeichnet ${(himmelStand.anteil*100).toFixed(0)} %, opacity ${himmelStand.deckkraft},`
+         + ` bewegt ${bewegtSich(himmelQuiz)})`);
+
+  // --- Die Aussagen-Box sitzt im oberen Drittel (Runde 108)
+  // Gemeldet war "sitzt zu tief": justify-content:safe center legte den freien Platz zu gleichen
+  // Teilen ueber und unter den Fragenblock. Zwei leere Flexglieder verteilen ihn jetzt 1:2,4.
+  // Gemessen wird das VERHAELTNIS, nicht der Pixelwert — der haengt an Geraetehoehe, Sprache und
+  // Zeilenumbruch, das Verhaeltnis nicht. Ein zurueckgedrehtes justify-content faellt sofort auf:
+  // dann stehen hier 50 %.
+  const sitz = await p.evaluate(() => {
+    const karte = document.getElementById('qCard');
+    const rb = document.querySelector('.quiz-body').getBoundingClientRect();
+    const rk = karte.getBoundingClientRect();
+    const rn = document.querySelector('.quiz-nav').getBoundingClientRect();
+    // Der Aussenabstand der Karte gehoert zum Inhalt, nicht zum freien Platz.
+    return { oben: rk.top - rb.top - parseFloat(getComputedStyle(karte).marginTop),
+             unten: rb.bottom - rn.bottom };
+  });
+  const freierPlatz = sitz.oben + sitz.unten;
+  const anteilOben = sitz.oben / Math.max(1, freierPlatz);
+  // Unter 8px freiem Platz ist das Verhaeltnis gegenstandslos (kurze Bildschirme, lange
+  // Uebersetzungen) — dort ist richtig, dass der Block einfach oben anfaengt.
+  pruefe(freierPlatz < 8 || (anteilOben > .2 && anteilOben < .38),
+         'Fragebogen: die Aussagen-Box sitzt im oberen Drittel',
+         `(${Math.round(sitz.oben)}px ueber / ${Math.round(sitz.unten)}px unter`
+         + ` = ${(anteilOben*100).toFixed(0)} %)`);
+
   const knoepfe = await p.$$('#scaleRow .scale-btn');
   await knoepfe[2].click(); await p.waitForTimeout(50);
   const puls = await p.evaluate(() => {
