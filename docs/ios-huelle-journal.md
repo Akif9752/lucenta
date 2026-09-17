@@ -175,8 +175,15 @@ auf **beiden** Motoren, `pruef-nativ` 45/45, `pruef-app` 20/20, `pruef-store` 32
 `pruef-bewegung` beide Durchlaeufe einschliesslich der vier neuen Messungen, `diff-sprachen` 130
 verdaechtige Zeilen (127 in Runde 105–107; die drei neuen sind **keine** neuen Texte, sondern die
 drei Zeilen, in denen `verlaufZeileHTML()` jetzt Markup zusammensetzt — `diff-sprachen` ist ein
-Bericht, kein Bestanden/Durchgefallen). iOS-Bau: **in Runde 108 nicht gelaufen** — es wurde keine
-Datei unter `ios/` angefasst; alle Aenderungen liegen in `src/`, `tools/` und `docs/`.
+Bericht, kein Bestanden/Durchgefallen).
+
+**iOS-Bau: SUCCEEDED.** Unter `ios/` wurde nichts von Hand geaendert — alle Aenderungen liegen in
+`src/`, `tools/` und `docs/`. Gelaufen ist trotzdem
+`LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 npm run ios:sync`, damit `ios/App/public/` nicht auf dem alten
+Stand stehen bleibt, und danach ein Bau. **Nachgeprueft am gebauten Bundle**, nicht an der Quelle
+(der Bau lief in 0,9 s durch, was fuer sich genommen auch „nichts kopiert" heissen koennte):
+`sternen-still` und `arch-gruppe` stehen in
+`DerivedData/.../App.app/public/index.html`.
 
 **Der erste Sammellauf dieser Runde ist NICHT durchgegangen** (30 Funde, alle derselbe
 Kontrastfehler an einem neu eingefuehrten Element). Das gehoert hierher, weil es der eigentliche
