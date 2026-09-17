@@ -7,7 +7,244 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## Runde 107 — Rueckmeldungsliste des Inhabers, erste vier Punkte
+## ÜBERGABE an die naechste Sitzung (Stand 2026-09-17, nach Runde 107)
+
+**Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
+sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
+`ios/App/CLAUDE.md` neben der `.xcodeproj` und wird von Xcode ohnehin geladen) und die `CLAUDE.md`
+im Wurzelverzeichnis.
+
+### Der laufende Auftrag
+
+Der Inhaber hat eine **Rueckmeldungsliste mit 18 Punkten in acht Gruppen** vorgelegt. Runde 107 hat
+zuerst geprueft, was davon schon stand, und dann die Punkte mit kleiner, klarer Ursache umgesetzt.
+Die Reihenfolge fuer den Rest ist mit ihm **abgesprochen** („ja guter vorschlag so"): erst die
+kleinen Ursachen, dann Zeichnen/Achse, dann das Grosse. Punkte 1–6 der Liste sind fertig.
+
+**Der naechste Schritt ist Batch 3.** Er steht unten mit Datei und Zeile — bitte nicht neu suchen.
+
+Eine Bitte des Inhabers stand ueber der ganzen Runde und gilt weiter: **nichts stillschweigend
+gegen eine dokumentierte Entscheidung aendern.** Drei Punkte der Liste sind genau das und liegen
+deshalb bei ihm (Abschnitt „Was nur der Inhaber entscheiden kann").
+
+### Batch 3 — was als Naechstes zu tun ist, mit Fundstelle
+
+1. **Aussagen-Box im Fragebogen hoeher.** Heute vertikal zentriert:
+   `.quiz-body{justify-content:safe center}` in `src/styles/02-quiz.css:6`, dazu
+   `#view-quiz.active{min-height:calc(100vh - 150px)}` in Zeile 5. Die Zentrierung ist begruendet
+   (der Fragenblock soll bei kurzem Inhalt nicht ins Leere laufen) — also nicht ersetzen, sondern
+   den Schwerpunkt nach oben verschieben.
+2. **Fragebogen-Hintergrund gestalten.** Er ist leer. Der Sternenhimmel/Lichtstaub laeuft
+   **ausschliesslich** auf der Startseite: `src/js/22-sternenhimmel.js:764` haengt sich an
+   `#view-landing`. Achtung, das ist eine **eigene IIFE** (siehe `CLAUDE.md`, `src/manifest.json`)
+   — sie sieht die Funktionen der grossen IIFE nicht.
+3. **Verlauf im Profil visuell ueberarbeiten.** Gerendert von `renderHistory()` in
+   `src/js/05-verlauf.js:97ff` nach `#historyContent`, das in `view-profile` liegt (Erklaerung in
+   `src/js/15-profile.js:128-130`). Stilblatt: `.trend-list`, `.trend-row`, `.history-row`,
+   `.history-date`, `.history-title` in `src/styles/06-trend-history.css:2-10` — schlichte Zeilen
+   mit Datum links und Text rechts, seit vielen Runden unangetastet.
+4. **Archetypen-Bereich ueberarbeiten.** Kopf in `src/styles/09-archetypen.css:2-6`
+   (`.archetypes-head`, `.archetype-groups`); der Inhalt wird in `src/js/04-scoring.js:59`
+   (`$('archetypeGroups').innerHTML`) als Aufklappliste erzeugt.
+5. **Groessere, auffaellige Uebergaenge.** Kleines ist reichlich da (Fragewechsel, Haken-Zeichnung,
+   Konfetti, Sternenhimmel, Druckzustaende, Glas beim Druecken, seit Runde 107 das Einzeichnen der
+   Tagesform-Kurve). Grosses gibt es **genau eines**: `.view.active.nav-vor` / `.nav-zurueck`,
+   0,45 s, `translateX(16px)` — `src/styles/10-druckzustaende.css:218-220`.
+6. **Die App insgesamt visuell verschoenern** — der Sammelpunkt der Liste. Ohne eine engere Frage
+   des Inhabers ist das nicht messbar abzuarbeiten; im Zweifel nachfragen, welche Ansicht er meint.
+7. **Fluessigkeit.** Der laut Journal groesste offene Hebel ist der **Release-Bau** statt Debug
+   (Runde 103), danach die 20px `backdrop-filter`-Unschaerfe der Schublade.
+
+**Und ein Punkt, der KEIN weiterer Nachschliff sein darf:** „Die Avatare sehen zu unrealistisch
+aus, bitte komplett ueberarbeiten." Das ist die **dritte** Rueckmeldung dieser Art. Runde 87 hat
+schwebenden Kopf, flaechige Farben, kreisrundes Auge und Symmetrie behoben; Runde 94 fehlendes
+Licht, die Iris als einfarbige Scheibe, den Mund als Strich und zehn Mienen auf 22 Figuren
+(Begruendungen stehen ausfuehrlich in `src/js/13-figuren.js:18-68`). Ein vierter Anlauf an derselben
+40x40-Einheiten-Konstruktion aus Parametern wird dasselbe Ergebnis haben. Das ist eine
+**Grundsatzentscheidung des Inhabers** — Konstruktion behalten oder durch etwas anderes ersetzen —,
+und sie gehoert gefragt, nicht geraten. Es ist die Lehre „eine Messung kann sich auf die falsche
+Groesse beziehen" in ihrer teuren Form.
+
+### Was Runde 107 erledigt hat — nicht erneut anfassen
+
+1. **Benachrichtigungen folgen dem Farbmodus.** `.toast` trug `--ink`/`--paper`, also die
+   **Umkehrung** des Modus; jetzt eine Karte wie jede andere, mit Rand und Schatten statt
+   Umkehrung (`src/styles/09-archetypen.css`).
+2. **Alle fuenf Antwortoptionen sind beschriftet**, in allen acht Sprachen. Die Zeile laeuft von
+   `space-between` auf `flex:1` mit denselben 8px wie die Knopfreihe — nur so steht jede
+   Beschriftung unter IHREM Knopf. Texte kurz, weil bei 320px je Spalte 49,6px bleiben (gemessen);
+   der volle Wortlaut steht weiter im `aria-label`.
+3. **Der Ladebildschirm ist 32 % statt 82 % der Bildschirmbreite.** Die Wurzelansicht WAR der
+   `UIImageView` mit `aspectFill` auf einem 2732er Quadrat. Jetzt traegt eine `UIView` den
+   Hintergrund (neue Farbe `Papier.colorset`), das Bild liegt mittig mit `aspectFit` bei 0,85 der
+   Ansichtsbreite. Auf SE/17/Pro Max identisch nachgemessen.
+   **Zwei Dinge daran muss man wissen:** `@capacitor/splash-screen` zeichnet **nicht selbst**,
+   sondern instanziert dasselbe `LaunchScreen.storyboard` (`buildViews()` in
+   `node_modules/@capacitor/splash-screen/ios/Sources/SplashScreenPlugin/SplashScreen.swift`) —
+   eine Aenderung wirkt an beiden Stellen. Und `plugins.SplashScreen.backgroundColor` ist aus
+   `capacitor.config.json` **entfernt**: eine feste Hellfarbe, die das Plugin auf die Wurzelansicht
+   setzt und die im Dunkelmodus jetzt sichtbar falsch waere.
+4. **Das geteilte Bild laeuft in Fraunces**, nicht mehr in Georgia (`SHARE_SERIF` in
+   `src/js/10-ergebnisbild.js`). Gewicht 600 statt 700, weil Fraunces das Band 400–600 traegt;
+   Mincho im Rueckfall, weil Fraunces nur Latin fuehrt.
+5. **Die Tagesform-Kurve zeichnet sich von links nach rechts ein**, bei jedem Wechsel des
+   Zeitraums. `stroke-dasharray`/`dashoffset`, Laenge gerechnet (Polygonzug = Summe der Strecken),
+   als `--vl-laenge` am `<svg>`; beide Reihen benutzen die laengere der zwei Laengen.
+   **Die Klasse `vl-zeichnet` setzt JS**, nicht das Stilblatt — `@media (prefers-reduced-motion)`
+   kennt den Schalter IN der App nicht, der in `localStorage` liegt. `prefersReducedMotion()` fragt
+   beide; dasselbe Muster tragen `.qcard.q-in` und `pulseFocusline()`.
+6. **Die x-Achse nennt vier echte Datumsangaben** an gerechneten Stellen (`verlaufAchseHTML()` in
+   `src/js/08-code.js`, absichtlich direkt neben `verlaufDiagrammSVG()`, damit die
+   Geometriekonstanten nicht doppelt stehen). Dafuer teilen Diagramm und Achse jetzt eine Spalte
+   (`.verlauf-spalte`): Die Achse lag als Geschwister unter `.verlauf-flaeche` und war um die
+   Breite der 1-bis-5-Skala breiter als das Diagramm — gemessen 14,3px Versatz je Marke.
+   `js_vor_tagen` und `js_tagen` sind damit in allen acht Paketen verwaist und entfernt.
+7. **Zwei erledigte Punkte der Liste, die schon vorher standen** — bitte nicht erneut suchen:
+   Der Overscroll-Bounce ist nativ abgeschaltet (`ios/App/App/MainViewController.swift`, `bounces = false`).
+   Und das Impressum steht **nicht** „auf vielen Seiten ganz unten": Es gibt im ganzen Dokument
+   genau **einen** `<footer class="appfoot">` (`src/index.body.html:248`), und der liegt nur in
+   `view-result`.
+
+**Drei neue Pruefungen sind dauerhaft im Repository**, alle gegengeprueft (sie schlagen fehl, wenn
+man den alten Zustand nachstellt):
+
+- `suchSkalaVersatz` in `tools/fehlersuche.mjs` — vergleicht Mittelpunkte von Antwortknopf und
+  Beschriftung paarweise, meldet leere/ausgeblendete/aus der Spalte laufende Beschriftungen.
+- `suchAchseVersatz` in `tools/fehlersuche.mjs` — fragt zuerst, ob die Achse dieselbe Flaeche deckt
+  wie das Diagramm, dann je Marke leer/ragt heraus/klebt an der Nachbarin.
+- drei Messungen in `tools/pruef_bewegung.mjs` — schieben 60 Tage und Lucenta+ unter (der
+  Fragebogen legt keine Tagesform-Eintraege an, der Zeitraumwaehler steht nur in der gekauften
+  Fassung), wechseln den Zeitraum und lesen den Versatz bei 80/300/1300 ms, in beiden Durchlaeufen.
+
+### Was frueher erledigt wurde — auch nicht erneut anfassen
+
+- **„Transparenz reduzieren" ist nativ nachgebaut** (Runde 106) und am Simulator in beide
+  Richtungen nachgemessen. `ios/App/App/MainViewController.swift` liest
+  `UIAccessibility.isReduceTransparencyEnabled` und setzt `data-transparenz="reduziert"` an
+  `:root` — vor dem ersten Zeichnen ueber ein `WKUserScript`, danach bei jeder Aenderung und bei
+  jedem `didBecomeActive`. Grund: WebKit auf iOS 27 kennt `prefers-reduced-transparency` **gar
+  nicht** (am Geraet gemessen: `reduce` UND `no-preference` melden beide `false`). Jede Regel fuer
+  diesen Fall steht deshalb **zweimal** im Stilblatt, und `pruefeTransparenzTueren` in `build.js`
+  bricht den Bau ab, wenn nur eine der beiden geaendert wird.
+- **Der `JS Eval error` beim Kaltstart ist geklaert** (Runde 104) und **kein Fehler von uns**:
+  Capacitor feuert ein `resume`-Ereignis in einen WebView, der noch bei 10 % laedt. Upstream,
+  harmlos, im Release-Bau nicht sichtbar. **Bitte nicht erneut suchen.**
+- **Liquid Glass** Schritt 2 und 3 (Runde 103/104): Schublade 82 %, Bild- und Plus-Fenster 86 %;
+  Glas **nur beim Druecken** an den drei Schaltern und am Segmentwaehler, mit Rueckfaellen. Kein
+  Glas im Ruhezustand.
+- **Sprachpakete aufgeteilt** (Runde 103): App-Fassung 932 -> 394 KB, Deutsch eingebettet, sieben
+  Pakete in `dist/sprachen/` ueber `SPRACHQUELLEN` in `src/js/01-sprachpakete.js`.
+- **Kein Querformat, kein iPad** (Runde 103): nur `Portrait`, `TARGETED_DEVICE_FAMILY = 1`,
+  `arm64`.
+- **Die StoreKit-Bruecke steht** (`ios/App/App/LucentaKaeufePlugin.swift`), und die zwei Stellen,
+  die das Abo verschenkten, sind zu. Angemeldet in `MainViewController.capacitorDidLoad()` —
+  **nie** in `capacitor.config.json`, die ist erzeugt.
+
+### Stand der Pruefungen
+
+`npm run pruef-alles` nach Runde 107: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
+auf **beiden** Motoren, `pruef-nativ` 45/45, `pruef-app` 20/20, `pruef-store` 32/32,
+`pruef-bewegung` beide Durchlaeufe, `diff-sprachen` 127 verdaechtige Zeilen (unveraendert seit
+Runde 105). iOS-Bau: SUCCEEDED.
+
+**Eine Lehre aus dieser Runde, die Zeit spart:** Ein Sammellauf ist an einem Klick-Timeout in
+`diff-sprachen` gestorben — bei 22547 s fuer `fehlersuche` statt der ueblichen ~300 s. Das war eine
+**ausgehungerte Maschine**, kein Logikfehler; einzeln nachgefahren lief es durch. Also
+`pruef-alles` **nicht** parallel zu anderer schwerer Arbeit starten. Ein knapp gemessener Fund ist
+ein falscher Fund — hier war es ein knapp gemessener Abbruch.
+
+**Zwei Fallen beim Werkzeug, beide in Runde 107 bezahlt:**
+
+- `npm run ios:sync` bricht hier in CocoaPods ab („Unicode Normalization not appropriate for
+  ASCII-8BIT"), wenn das Gebietsschema fehlt. Also:
+  `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 npm run ios:sync`.
+- Ein Kommentar **vor** `<document>` in einem Storyboard laesst Interface Builder den Dateityp
+  nicht mehr erkennen („can't determine the type… may be due to a missing SDK") — er muss
+  **hinein**. Und ein XML-Kommentar darf kein `--` enthalten, was bei einem Projekt, das seine
+  CSS-Marken mit zwei Strichen benennt, sofort zuschlaegt.
+
+### Was nur der Inhaber entscheiden kann
+
+**Drei Punkte der Rueckmeldungsliste widersprechen dokumentierten Entscheidungen.** Sie sind
+bewusst NICHT umgesetzt; wer sie umsetzt, soll es auf seine ausdrueckliche Ansage tun:
+
+- **Doppeltipp-Zoom abschalten.** `src/index.head.html:25-27` verzichtet ausdruecklich auf
+  `maximum-scale`/`user-scalable=no`, mit der Begruendung, dass Zoom zu unterbinden „eine der
+  haeufigsten Barrierefreiheits-Verfehlungen mobiler Weboberflaechen" ist.
+- **Textmarkierung unterbinden.** `src/styles/00-grundlagen.css:423-426` setzt `user-select:none`
+  bewusst nur auf Bedienelemente (`button, summary, .scale-btn, .avatar-color-swatch,
+  .drawer-tab`); „Fliesstext bleibt bewusst markierbar".
+- **Auf EIN Teilformat einigen.** `SHARE_FORMATS` in `src/js/10-ergebnisbild.js` traegt Feed
+  (1080x1350) und Story (1080x1920) als **bewusste Wahl mit Umschalter** (`.img-format-btn`); die
+  Story-Fassung ist dieselbe Komposition in mehr Leerraum. Ein einheitliches Format ist damit eine
+  Streichung, kein Umbau — und die Begruendung dort nennt TikTok/Reels als Grund fuer 9:16.
+- Dazu die kleine Geschmacksfrage aus Punkt 8: Soll der **eine** Fusszeilen-Link „Impressum &
+  Datenschutz" auf der Ergebnisseite bleiben, wo es den zentralen Zugang in den Einstellungen
+  ohnehin gibt?
+
+**Und was nur am Geraet oder mit einem Konto geht:**
+
+- **Die zwei Abo-Produkte in App Store Connect anlegen:** `lucenta.plus.monat` (4,99 EUR) und
+  `lucenta.plus.jahr` (29,99 EUR), **genau so geschrieben**, in **derselben** Abo-Gruppe. Ohne das
+  findet `Product.products(for:)` nichts, und **ein echter Kauf ist noch nie gelaufen**. Belegt ist
+  der Weg bis in StoreKit hinein, nicht der Kauf selbst.
+- **Lokal testen geht trotzdem:** `ios/App/App/Lucenta.storekit` traegt beide Produkte, das Schema
+  verweist per Pfad darauf. Greift **nur beim Start aus Xcode**, und ob der Pfad aufloest, ist
+  **ungeprueft**. Im Zweifel: Product > Scheme > Edit > Run > Options > StoreKit Configuration.
+- **Die App auf einem echten iPhone** (freie Apple-ID genuegt, 7-Tage-Signatur).
+- **Der Druckzustand mit einem echten Finger** (Runde 105): Die Regel greift auf WebKit
+  nachweislich; offen ist nur, ob iOS sie bei einem echten kurzen Tipp zeigt. Mit synthetischen
+  Beruehrungen ist das grundsaetzlich nicht messbar.
+- **Die vier Stellen aus Runde 107 ansehen** — sie sind gerechnet und gemessen, aber nicht
+  beurteilt: Sind **32 %** beim Startbild richtig (der Wert steht als **eine** Zahl im Storyboard,
+  `multiplier="0.85"`)? Sagt die neue Toast-Flaeche noch deutlich „Hinweis" (falls nicht: der
+  naechste Hebel ist ein Akzentpunkt links im Text, **nicht** die Umkehrung zurueck)? Sieht ein
+  echt geteiltes Bild in Fraunces gut aus? Und sitzen die vier Datumsangaben auf dem Geraet
+  angenehm oder gedraengt?
+- **„Transparenz reduzieren" mit einem echten Finger** (Runde 106): Der ganze Weg ist am Simulator
+  gemessen; was ein Geraet hinzufuegt, ist nur das Urteil, ob die deckende Kopfleiste neben der
+  Dynamic Island gut aussieht.
+- **Das Urteil zu zwei Aenderungen aus Runde 103:** Startet die App spuerbar schneller
+  (Sprachaufteilung)? Sieht jemand mit anderer Sprache beim Start kurz Deutsch? Faehrt die
+  Schublade mit dem `backdrop-filter` noch geschmeidig ein?
+- Der Rest der Einreichung steht in `docs/app-store-start.md` (Datenschutz-URL, Support-Adresse,
+  Markenrecherche, Bildschirmfotos hochladen).
+
+### Arbeitsweise, die Kontingent spart (vom Inhaber ausdruecklich gewuenscht)
+
+Lange Pruefläufe in **einem** Durchgang starten und nur das **Endergebnis** lesen, nicht im
+Minutentakt den Zwischenstand abfragen. Bildschirmfotos sparsam: In Runde 103 liess sich die
+Anmeldung der Kauf-Bruecke am Simulator vollstaendig ueber die **Bedienhilfen-Hierarchie als Text**
+belegen (`DeviceInteractionSynthesize` liefert Pfade, kein Bild im Verlauf); in Runde 107 hat
+`RunCodeSnippet` am instanzierten Storyboard die Splash-Geometrie auf drei Geraetegroessen
+beantwortet, ebenfalls ohne ein einziges Bild. Grund: Jede Zwischenabfrage verarbeitet den ganzen
+Verlauf erneut; beim Inhaber waren das 40–50 % des 5-Stunden-Kontingents.
+
+Und die Lehre, die in Runde 107 zweimal Geld gekostet haette: **Eine neue Pruefung ohne Gegenprobe
+ist eine Behauptung.** Beide neuen Funktionen wurden gegen den nachgestellten alten Zustand
+geprueft. Dabei ist die Gegenprobe selbst einmal ins Leere gelaufen — ein Inline-Override von
+`--vl-laenge` wird beim Neuzeichnen des `<svg>` verworfen, die Probe „bestand" und hatte nichts
+gemessen. Als Stylesheet ueberlebt sie es.
+
+### Stand der Umgebung
+
+Simulatorziel **iPhone 18 Pro** (iOS 27.0, id `B55215E2-9318-4732-9132-F2D7FFFC18EC`), die
+iOS-26.5-Runtime ist geloescht. Deployment Target 15.0, `ENABLE_USER_SCRIPT_SANDBOXING = NO` — in
+Xcode **nicht** „Update to recommended settings" akzeptieren, das hat beides schon einmal gebrochen.
+`npm run mac:entlasten` nach jedem `npm install`/`pod install`, sonst indexiert Spotlight
+`node_modules` und `Pods` und der Mac haengt. Xcode legt den Code eines Debug-Baus in
+`App.debug.dylib`, nicht in `App` — wer dort nach einem Symbol sucht, findet nichts und zieht den
+falschen Schluss (in Runde 103 genau so passiert).
+
+Entwickelt wird auf `claude/lucenta-setup-browser-test-j6hn7f`. Kein Pull Request ohne
+ausdrueckliche Bitte. Die beiden Commits der Runde 107: `7eabcc0` (die vier kleinen Ursachen) und
+`03f60b7` (Einzeichnen + Achse). Der Arbeitsbaum ist sauber — bis auf
+`ios/App/App.xcworkspace/xcshareddata/`, das schon vor dieser Runde unversioniert dalag und
+absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 107 — Rueckmeldungsliste des Inhabers, Punkte 1 bis 6
 
 Der Inhaber hat eine Liste mit 18 Punkten in acht Gruppen vorgelegt und zuerst gefragt, **was davon
 schon umgesetzt ist**. Der Befund vorweg, weil er den Rest der Runde erklaert:
@@ -34,8 +271,9 @@ schon umgesetzt ist**. Der Befund vorweg, weil er den Rest der Runde erklaert:
   nicht auf Fliesstext) und die zwei Teilformate (Feed 1080x1350 und Story 1080x1920 sind eine
   bewusste Wahl mit Umschalter). Sie liegen beim Inhaber.
 
-Umgesetzt sind in dieser Runde die vier Punkte mit **kleiner, klarer Ursache**, in dieser
-Reihenfolge auf ausdrueckliche Zustimmung des Inhabers („ja guter vorschlag so").
+Umgesetzt sind in dieser Runde zuerst die vier Punkte mit **kleiner, klarer Ursache**, danach
+das Einzeichnen der Kurve und die x-Achse — in dieser Reihenfolge auf ausdrueckliche Zustimmung
+des Inhabers („ja guter vorschlag so").
 
 ### 1. Die Benachrichtigungen folgten dem Farbmodus nicht
 
@@ -304,122 +542,6 @@ der Code ist nebenbei besser zu lesen.
 3. Die grossen, auffaelligen Uebergaenge (heute gibt es genau einen: `view-vor`/`view-zurueck`).
 
 ---
-
-## ÜBERGABE an die naechste Sitzung (Stand 2026-09-17, nach Runde 106)
-
-**Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
-sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
-`ios/App/CLAUDE.md` neben der `.xcodeproj` und wird von Xcode ohnehin geladen).
-
-### Was erledigt ist — nicht erneut anfassen
-
-0aa. **„Transparenz reduzieren" ist nativ nachgebaut** (Runde 106) und **am Simulator mit dem
-   echten Schalter in beide Richtungen nachgemessen**. Der Inhaber hat die Entscheidung aus
-   Runde 105 so getroffen: nachbauen, nicht kommentieren.
-   `MainViewController.swift` liest `UIAccessibility.isReduceTransparencyEnabled` und setzt
-   `data-transparenz="reduziert"` an `:root` — vor dem ersten Zeichnen ueber ein
-   `WKUserScript`, danach bei jeder Aenderung und bei jedem `didBecomeActive`. Die vier
-   Rueckfallregeln im Stilblatt nehmen das Attribut **neben** dem Medienmerkmal an.
-   Zwei neue Pruefungen halten das zusammen: `pruefeTransparenzTueren` in `build.js` (bricht den
-   Bau ab, wenn die beiden Fassungen einer Regel auseinanderlaufen) und fuenf Messungen in
-   `pruef_bewegung.mjs`. Beide sind gegengeprueft — sie schlagen fehl, wenn die Tuer fehlt.
-   **Nichts mehr zu entscheiden**, Begruendung im Eintrag „Runde 106" darunter.
-0. **Der `JS Eval error` ist geklaert** (Runde 104) und **kein Fehler von uns**: Capacitor feuert
-   beim Kaltstart ein `resume`-Ereignis in einen WebView, der noch bei 10 % laedt. Upstream,
-   harmlos, im Release-Bau nicht einmal sichtbar. **Nichts zu tun** — Begruendung im Eintrag
-   „Runde 104" darunter. Bitte nicht erneut suchen.
-0b. **Liquid Glass Schritt 3 ist gebaut** (Runde 104): Glas nur BEIM DRUECKEN, an den drei
-   Schaltern und am Segmentwaehler, mit Rueckfaellen. Kein Glas im Ruhezustand — Begruendung
-   im Eintrag darunter.
-0c. **Zwei Fehler nebenbei behoben** (Runde 104), beide seit mehreren Runden blind mitgelaufen:
-   eine verwaiste CSS-Deklaration, die `.tagline` mitverschluckte, und ein Segmentwaehler mit
-   zwei festen Spalten fuer drei Faecher. `pruefeWaisen` in `build.js` bricht jetzt beim ersten
-   ab.
-
-Aus Runde 103:
-
-1. **Sprachpakete aufgeteilt.** App-Fassung 932 -> 394 KB; Deutsch eingebettet, sieben Pakete in
-   `dist/sprachen/`, nachgeladen ueber `SPRACHQUELLEN` in `src/js/01-sprachpakete.js`.
-2. **Pruefablauf.** `npm run pruef-alles` (alle neun, ~9 min, Server kommt selbst mit),
-   `npm run pruef-schnell` (~40 s). `fehlersuche` laeuft auf **WebKit + Chromium** (26 Durchlaeufe,
-   vier gleichzeitig).
-3. **Kein Querformat, kein iPad.** Nur `Portrait`, `TARGETED_DEVICE_FAMILY = 1`, `arm64`.
-4. **Liquid Glass Schritt 2.** Schublade 82 %, Bild- und Plus-Fenster 86 %, drei Rueckfaelle
-   (kein `backdrop-filter`, `prefers-reduced-transparency`, `prefers-contrast: more`).
-5. **Die StoreKit-Bruecke** (`ios/App/App/LucentaKaeufePlugin.swift`) und **die zwei Stellen, die
-   das Abo verschenkten**, sind erledigt. Angemeldet in `MainViewController.capacitorDidLoad()` —
-   **nie** in `capacitor.config.json`, die ist erzeugt.
-
-Stand der Pruefungen (nach Runde 105, 9,2 Minuten): `pruef-alles` ALLE 9 BESTANDEN, `fehlersuche`
-KEINE FUNDE auf beiden Motoren, `pruef-nativ` 45/45, `pruef-app` 20/20, `pruef-store` 32/32,
-`pruef-bewegung` einschliesslich der sechs neuen Druckzustands-Pruefungen, `diff-sprachen` 127
-(unveraendert).
-
-### Als Naechstes, in dieser Reihenfolge
-
-1. **ERLEDIGT in Runde 105: Runde 104 ist jetzt ANGESEHEN.** Drei der vier Stellen sind am
-   Simulator (iPhone 18 Pro, iOS 27) bestaetigt: **Darstellung** (drei Faecher in einer Zeile, je
-   103x45 Punkte), **Sprache** (Trennlinien eingerueckt, gewaehlte Zeile nicht fett, Haekchen
-   statt Fettung), **Kopfzeile** (`EINSTELLUNGEN` klein und Monospace neben der Wortmarke).
-   Der **Druckzustand** liess sich am Simulator nicht einfangen, ist aber inzwischen auf anderem
-   Weg geklaert: Ein gehaltener Mausdruck auf **WebKit** laesst alle drei Regeln greifen (Glasbahn,
-   Knopfbreite 27->33px, `scale(.955)` am Knopf). Das CSS ist gesund; stumm blieb die synthetische
-   Beruehrung. Seit Runde 105 messen das **sechs** Pruefungen in `pruef_bewegung.mjs`, damit es
-   nicht zurueckdriftet.
-2. **ERLEDIGT in Runde 105, mit einem Befund:** `prefers-reduced-transparency` kennt **WebKit auf
-   iOS 27 gar nicht** — am Geraet gemessen, nicht geraten (`reduce` UND `no-preference` melden
-   beide `false`; ein unterstuetztes Merkmal muesste genau eines bejahen). Der Zweig ist auf dem
-   iPhone also **toter Code**. `prefers-contrast: more` dagegen kommt an, sofort und ohne
-   Neustart. **Die Folge ist in Runde 106 behoben** — nativ nachgebaut, siehe Punkt 0aa oben.
-3. **ERLEDIGT in Runde 105:** `plus_beenden` ist aus allen acht Paketen entfernt, der Kommentar in
-   `18-ergebnisbild-dialog.js`, der das Gegenteil behauptete, ist nachgezogen.
-
-### Was nur der Inhaber kann — und was davon blockiert
-
-- **Die zwei Abo-Produkte in App Store Connect anlegen:** `lucenta.plus.monat` (4,99 EUR) und
-  `lucenta.plus.jahr` (29,99 EUR), **genau so geschrieben**, in **derselben** Abo-Gruppe. Ohne das
-  findet `Product.products(for:)` nichts, und **ein echter Kauf ist damit noch nie gelaufen**.
-  Belegt ist der Weg bis in StoreKit hinein (Simulator: „Kaeufe wiederherstellen" oeffnet den
-  Apple-Account-Dialog aus `AppStore.sync()`), nicht der Kauf selbst.
-- **Lokal testen geht trotzdem:** `ios/App/App/Lucenta.storekit` traegt beide Produkte, das Schema
-  verweist per Pfad darauf. Das greift aber **nur beim Start aus Xcode**, und ob der Pfad richtig
-  aufloest, ist **ungeprueft**. Im Zweifel: Product > Scheme > Edit > Run > Options > StoreKit
-  Configuration.
-- **Die App auf einem echten iPhone** (freie Apple-ID genuegt, 7-Tage-Signatur).
-- **Der Druckzustand, mit einem echten Finger** (Runde 105): Die Regel greift auf WebKit
-  nachweislich — offen ist nur, ob iOS sie bei einem echten, kurzen Tipp auch zeigt. Mit
-  synthetischen Beruehrungen ist das grundsaetzlich nicht messbar (Begruendung im Eintrag
-  „Runde 105, Teil 2"). Ein Fingertipp auf einen Schieber beantwortet es.
-- **„Transparenz reduzieren" mit einem echten Finger** (Runde 106): Am Simulator ist der ganze
-  Weg gemessen — Schalter in den Systemeinstellungen umgelegt, Attribut kommt an, Glas ist weg,
-  und beim Ausschalten kommt es zurueck. Was ein Geraet noch hinzufuegen koennte, ist nur das
-  Urteil, **ob es dann auch gut aussieht**: Die deckende Kopfleiste ist eine andere Flaeche als
-  die glaeserne, und ob sie neben der Dynamic Island stimmt, entscheidet das Auge.
-- **Das Urteil zu zwei Aenderungen aus Runde 103**, das keine Messung ersetzt: Startet die App
-  spuerbar schneller (Sprachaufteilung)? Sieht jemand mit anderer Sprache beim Start kurz Deutsch?
-  Und: Faehrt die Schublade mit dem `backdrop-filter` noch geschmeidig ein? Ruckelt es, sind die
-  20px Unschaerfe der erste Hebel.
-- Der Rest der Einreichung steht in `docs/app-store-start.md` (Datenschutz-URL, Support-Adresse,
-  Markenrecherche, Bildschirmfotos hochladen).
-
-### Arbeitsweise, die Kontingent spart (vom Inhaber ausdruecklich gewuenscht)
-
-Lange Pruefläufe in **einem** Durchgang starten und nur das **Endergebnis** lesen, nicht im
-Minutentakt den Zwischenstand abfragen. Bildschirmfotos sparsam: In Runde 103 liess sich die
-Anmeldung der Kauf-Bruecke am Simulator vollstaendig ueber die **Bedienhilfen-Hierarchie als Text**
-belegen (`DeviceInteractionSynthesize` liefert Pfade, kein Bild im Verlauf) — das ist der billige
-Weg und beantwortet dieselbe Frage. Grund: Jede Zwischenabfrage verarbeitet den ganzen Verlauf
-erneut; beim Inhaber waren das 40–50 % des 5-Stunden-Kontingents.
-
-### Stand der Umgebung
-
-Simulatorziel **iPhone 18 Pro** (iOS 27.0, id `B55215E2-9318-4732-9132-F2D7FFFC18EC`), die
-iOS-26.5-Runtime ist geloescht. Deployment Target 15.0, `ENABLE_USER_SCRIPT_SANDBOXING = NO` — in
-Xcode **nicht** „Update to recommended settings" akzeptieren, das hat beides schon einmal gebrochen.
-`npm run mac:entlasten` nach jedem `npm install`/`pod install`, sonst indexiert Spotlight
-`node_modules` und `Pods` und der Mac haengt. Xcode legt den Code eines Debug-Baus in
-`App.debug.dylib`, nicht in `App` — wer dort nach einem Symbol sucht, findet nichts und zieht den
-falschen Schluss (in Runde 103 genau so passiert).
 
 ---
 
