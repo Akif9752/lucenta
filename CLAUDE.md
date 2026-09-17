@@ -28,8 +28,13 @@ Zwei Regeln, die der Bau erzwingt und die sonst leise Schaden anrichten:
   `:root[data-theme="dark"]`. Fehlt einer, bricht der Bau ab (`pruefeDunkelbloecke`).
   Grund: Der Betrachter hat drei Zustände — hell, dunkel, und „wie das System".
 
-Vier weitere Abbruchprüfungen laufen mit: `pruefeSyntax`, `pruefeBildfarben`,
-`pruefeIphoneOnly` (Desktop-Bezüge sind hier ein Fehler, keine Nachlässigkeit).
+Weitere Abbruchprüfungen laufen mit: `pruefeSyntax`, `pruefeBildfarben`, `pruefeWaisen`,
+`pruefeIphoneOnly` (Desktop-Bezüge sind hier ein Fehler, keine Nachlässigkeit) — und seit
+Runde 106 `pruefeTransparenzTueren`: Jede Regel unter
+`@media (prefers-reduced-transparency: reduce)` braucht direkt dahinter dieselben
+Deklarationen unter `:root[data-transparenz="reduziert"]`. Grund: WebKit auf dem iPhone kennt
+das Medienmerkmal nicht, die iOS-Hülle setzt stattdessen dieses Attribut — und doppelt
+geschriebene Werte driften auseinander, wenn niemand sie zusammenhält.
 
 ## Prüfen — vollständig, vor jedem Commit
 

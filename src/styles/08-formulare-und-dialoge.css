@@ -310,6 +310,10 @@
     .schalter:active{ background:var(--surface-3); -webkit-backdrop-filter:none; backdrop-filter:none; }
     .schalter[aria-checked="true"]:active{ background:var(--accent); -webkit-backdrop-filter:none; backdrop-filter:none; }
   }
+  /* Die zweite Tuer, Begruendung bei der Kopfleiste in 00-grundlagen.css: Das Medienmerkmal
+     darueber kennt WebKit auf dem iPhone nicht, die Huelle setzt stattdessen das Attribut. */
+  :root[data-transparenz="reduziert"] .schalter:active{ background:var(--surface-3); -webkit-backdrop-filter:none; backdrop-filter:none; }
+  :root[data-transparenz="reduziert"] .schalter[aria-checked="true"]:active{ background:var(--accent); -webkit-backdrop-filter:none; backdrop-filter:none; }
   @media (prefers-reduced-motion: reduce){
     .schalter, .schalter-knopf{ transition:none; }
     .schalter:active .schalter-knopf{ width:27px; }

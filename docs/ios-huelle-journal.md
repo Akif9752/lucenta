@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-09-16, nach Runde 105)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-09-17, nach Runde 106)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -15,6 +15,17 @@ sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CL
 
 ### Was erledigt ist — nicht erneut anfassen
 
+0aa. **„Transparenz reduzieren" ist nativ nachgebaut** (Runde 106) und **am Simulator mit dem
+   echten Schalter in beide Richtungen nachgemessen**. Der Inhaber hat die Entscheidung aus
+   Runde 105 so getroffen: nachbauen, nicht kommentieren.
+   `MainViewController.swift` liest `UIAccessibility.isReduceTransparencyEnabled` und setzt
+   `data-transparenz="reduziert"` an `:root` — vor dem ersten Zeichnen ueber ein
+   `WKUserScript`, danach bei jeder Aenderung und bei jedem `didBecomeActive`. Die vier
+   Rueckfallregeln im Stilblatt nehmen das Attribut **neben** dem Medienmerkmal an.
+   Zwei neue Pruefungen halten das zusammen: `pruefeTransparenzTueren` in `build.js` (bricht den
+   Bau ab, wenn die beiden Fassungen einer Regel auseinanderlaufen) und fuenf Messungen in
+   `pruef_bewegung.mjs`. Beide sind gegengeprueft — sie schlagen fehl, wenn die Tuer fehlt.
+   **Nichts mehr zu entscheiden**, Begruendung im Eintrag „Runde 106" darunter.
 0. **Der `JS Eval error` ist geklaert** (Runde 104) und **kein Fehler von uns**: Capacitor feuert
    beim Kaltstart ein `resume`-Ereignis in einen WebView, der noch bei 10 % laedt. Upstream,
    harmlos, im Release-Bau nicht einmal sichtbar. **Nichts zu tun** — Begruendung im Eintrag
@@ -61,9 +72,7 @@ KEINE FUNDE auf beiden Motoren, `pruef-nativ` 45/45, `pruef-app` 20/20, `pruef-s
    iOS 27 gar nicht** — am Geraet gemessen, nicht geraten (`reduce` UND `no-preference` melden
    beide `false`; ein unterstuetztes Merkmal muesste genau eines bejahen). Der Zweig ist auf dem
    iPhone also **toter Code**. `prefers-contrast: more` dagegen kommt an, sofort und ohne
-   Neustart. **Folge, noch offen:** Wer nur „Transparenz reduzieren" einschaltet, bekommt das Glas
-   NICHT weg — der Rueckfall, der genau fuer diesen Menschen geschrieben wurde, feuert nicht.
-   Naechster Schritt steht im Eintrag „Runde 105, Teil 2".
+   Neustart. **Die Folge ist in Runde 106 behoben** — nativ nachgebaut, siehe Punkt 0aa oben.
 3. **ERLEDIGT in Runde 105:** `plus_beenden` ist aus allen acht Paketen entfernt, der Kommentar in
    `18-ergebnisbild-dialog.js`, der das Gegenteil behauptete, ist nachgezogen.
 
@@ -83,13 +92,11 @@ KEINE FUNDE auf beiden Motoren, `pruef-nativ` 45/45, `pruef-app` 20/20, `pruef-s
   nachweislich — offen ist nur, ob iOS sie bei einem echten, kurzen Tipp auch zeigt. Mit
   synthetischen Beruehrungen ist das grundsaetzlich nicht messbar (Begruendung im Eintrag
   „Runde 105, Teil 2"). Ein Fingertipp auf einen Schieber beantwortet es.
-- **Eine Entscheidung: „Transparenz reduzieren" nativ nachbauen — ja oder nein?** (Runde 105)
-  WebKit auf iOS kennt das Merkmal nicht, der Rueckfall ist auf dem iPhone unerreichbar. Wer die
-  Einstellung nutzt und „Kontrast erhoehen" nicht, behaelt das Glas. Nachbauen heisst:
-  `UIAccessibility.isReduceTransparencyEnabled` in Swift lesen, auf Aenderungen hoeren, ein
-  Attribut an `:root` setzen und es in die drei Rueckfallregeln aufnehmen — Swift, zwei
-  Stilblaetter, eine Pruefung. Es ginge auch der billige Weg: den Zweig als unerreichbar
-  kommentieren und es bei „Kontrast erhoehen" lassen.
+- **„Transparenz reduzieren" mit einem echten Finger** (Runde 106): Am Simulator ist der ganze
+  Weg gemessen — Schalter in den Systemeinstellungen umgelegt, Attribut kommt an, Glas ist weg,
+  und beim Ausschalten kommt es zurueck. Was ein Geraet noch hinzufuegen koennte, ist nur das
+  Urteil, **ob es dann auch gut aussieht**: Die deckende Kopfleiste ist eine andere Flaeche als
+  die glaeserne, und ob sie neben der Dynamic Island stimmt, entscheidet das Auge.
 - **Das Urteil zu zwei Aenderungen aus Runde 103**, das keine Messung ersetzt: Startet die App
   spuerbar schneller (Sprachaufteilung)? Sieht jemand mit anderer Sprache beim Start kurz Deutsch?
   Und: Faehrt die Schublade mit dem `backdrop-filter` noch geschmeidig ein? Ruckelt es, sind die
@@ -115,6 +122,137 @@ Xcode **nicht** „Update to recommended settings" akzeptieren, das hat beides s
 `node_modules` und `Pods` und der Mac haengt. Xcode legt den Code eines Debug-Baus in
 `App.debug.dylib`, nicht in `App` — wer dort nach einem Symbol sucht, findet nichts und zieht den
 falschen Schluss (in Runde 103 genau so passiert).
+
+---
+
+## 2026-09-17 (Runde 106) — ein toter Rueckfall bekommt eine zweite Tuer
+
+**Auftrag des Inhabers:** die offene Entscheidung aus Runde 105 entscheiden und ausfuehren —
+„Transparenz reduzieren" nativ nachbauen, am Simulator mit der Einstellung ein UND aus
+nachmessen, erst der Simulator und keine Pruefläufe nebenher, `pruef-alles` am Ende, ein Commit.
+
+### Der Fehler
+
+Runde 105 hatte am Geraet gemessen, dass WebKit auf iOS 27 `prefers-reduced-transparency` nicht
+kennt. Damit war der Rueckfall im Stilblatt — Glas weg, deckende Flaeche — auf dem iPhone
+unerreichbar. Wer „Transparenz reduzieren" einschaltet und „Kontrast erhoehen" nicht, behielt
+genau das Glas, das er abbestellt hat. Vier Regeln waren betroffen: die Kopfleiste, die drei
+grossen Flaechen (Schublade, Bild-, Plus-Fenster), der Segmentwaehler und der Schieber.
+
+Die Einstellung selbst ist nicht unerreichbar — nur die WebView kann nicht nach ihr fragen. Die
+Huelle kann es.
+
+### Die Aenderung
+
+**Swift** (`ios/App/App/MainViewController.swift`): `UIAccessibility.isReduceTransparencyEnabled`
+lesen und als `data-transparenz="reduziert"` an `:root` haengen. Zwei Wege, und beide sind
+noetig:
+
+1. Ein `WKUserScript` bei `atDocumentStart`, angemeldet in `capacitorDidLoad()` — dort steht die
+   WebView schon, die Seite ist noch nicht geladen. Das Attribut ist also **vor dem ersten
+   Bild** da. Ohne diesen Weg saehe genau der Mensch, der das Glas abbestellt hat, beim Start
+   einen Wimpernschlag Glas.
+2. `evaluateJavaScript` bei `reduceTransparencyStatusDidChangeNotification` **und** bei
+   `didBecomeActive`. Der zweite Anlass ist der wichtigere: Umgelegt wird die Einstellung in den
+   Systemeinstellungen, also waehrend Lucenta im Hintergrund liegt. Beim Zurueckkehren ist der
+   Stand verlaesslich.
+
+Warum **kein** Capacitor-Plugin, obwohl die Kauf-Bruecke eines ist: Ein Plugin muss von
+JavaScript aus gefragt werden, und die Antwort kaeme nach dem ersten Zeichnen. Das Attribut
+gehoert vorher gesetzt, und dafuer muss die Huelle unaufgefordert reden.
+
+Das `evaluateJavaScript` ist bewusst auf eine fertig geladene Seite beschraenkt
+(`url != nil && !isLoading`). Beim Kaltstart feuert `didBecomeActive`, waehrend die WebView noch
+laedt — **am Simulator nachgesehen und bestaetigt: `isLoading` ist dort `true`**. Ohne die
+Schranke waere das genau der `JS Eval error`, der in Runde 104 eine Runde Suche gekostet hat, und
+gebraucht wird der Aufruf dann auch nicht: Die ladende Seite hat ihren Stand aus Weg 1.
+
+**CSS** (`00-grundlagen.css` 3x, `08-formulare-und-dialoge.css` 1x): Jede der vier Regeln steht
+jetzt zweimal — einmal unter dem Medienmerkmal, einmal unter `:root[data-transparenz="reduziert"]`
+direkt dahinter. Das Merkmal bleibt ausdruecklich stehen: Es ist im Chromium der Pruefungen der
+gemessene Weg, und eine kuenftige WebKit-Fassung, die es lernt, braucht dann keine Huelle.
+
+Die ausfuehrliche Begruendung steht **einmal**, bei der Kopfleiste; die drei anderen Tueren
+verweisen dorthin.
+
+### Die zwei Pruefungen — und warum es zwei sein muessen
+
+Doppelt geschriebene Werte driften auseinander. Das ist dieselbe Fehlerart, die
+`pruefeDunkelbloecke` schon einmal gekostet hat, nur mit den Farbmarken.
+
+- **`pruefeTransparenzTueren` in `build.js`** (fuenfte Abbruchpruefung) vergleicht beide
+  Fassungen jeder Regel Deklaration fuer Deklaration und verlangt, dass die Attributfassung
+  direkt hinter der Medienregel steht. Sie hat beim **ersten Lauf sofort einen echten Fehler
+  gefunden** — meinen eigenen: Der Schieber braucht **zwei** Attributregeln (Bahn aus, Bahn ein),
+  und die erste Fassung der Pruefung las nur die erste.
+- **Fuenf Messungen in `pruef_bewegung.mjs`**, weil ein Textvergleich eine Frage nicht beantworten
+  kann: Ob das Attribut die Regel tatsaechlich greifen laesst, entscheidet die **Spezifitaet**.
+  `:root[data-transparenz="reduziert"] .segment-opt:active` muss sich gegen
+  `.segment-opt[aria-checked="true"]:active` durchsetzen. Drei Messungen nehmen das Glas von
+  Kopfleiste, Schublade und Bildfenster und geben es zurueck; zwei halten den Mausdruck auf
+  Schieber und Segmentfach, **mit** gesetztem Attribut — beides ist gleichzeitig zu haben, das
+  Attribut an `:root`, der Druck am Element.
+
+Beide Pruefungen sind **gegengeprueft**: Mit einem geaenderten Wert bricht der Bau ab, und ohne
+die Tuer des Schiebers meldet `pruef-bewegung`
+`Schieberbahn ... (none -> blur(8px) saturate(1.8) brightness(1.06))`. Eine Pruefung, die nicht
+fehlschlagen kann, ist wertlos.
+
+### Am Simulator nachgemessen, mit dem echten Schalter
+
+Zuerst ein Umweg, der nichts brachte und als Warnung hier steht:
+`xcrun simctl spawn <id> defaults write com.apple.Accessibility ReduceTransparencyEnabled -bool true`
+schreibt den Wert, `defaults read` liest ihn zurueck — und
+`UIAccessibility.isReduceTransparencyEnabled` bleibt trotzdem `false`. Auch nach Neustart der App
+und nach **Neustart des ganzen Simulators**. `xcrun simctl ui` kennt `appearance`,
+`increase_contrast` und `content_size`, aber **kein** `reduce_transparency`. Der einzige Weg ist
+der Schalter in der Einstellungen-App (`REDUCE_TRANSPARENCY` unter Bedienungshilfen > Anzeige &
+Textgroesse) — und der muss am **rechten** Rand getroffen werden, nicht in der Zeilenmitte: Das
+Hierarchie-Element ist 330 Punkte breit, der eigentliche Schalter sitzt rechts.
+
+Gemessen wurde ohne ein einziges Bildschirmfoto. Capacitor leitet `console.log` aus der WebView in
+die Xcode-Konsole; damit genuegt ein `evaluateJavaScript` aus dem Debugger, und die Antwort steht
+als Text in `GetConsoleOutput`. Das ist der billige Weg und beantwortet dieselbe Frage — ein
+asynchroner Swift-Abschluss aus einem lldb-Ausdruck funktioniert ohnehin nicht, sein Code wird
+mit dem Ausdruck freigegeben. (Der Zugriff auf die WebView geht ueber
+`rootViewController.view` — `valueForKey:@"webView"` wirft, weil die Swift-Eigenschaft nicht
+`@objc` ist.)
+
+| Zustand | Weg | `data-transparenz` | Kopfleiste `backdrop-filter` | Kopfleiste Hintergrund |
+|---|---|---|---|---|
+| aus | — | `null` | `blur(20px) saturate(1.6)` | `color(srgb 0.086 0.133 …)`, durchscheinend |
+| **ein**, Kaltstart | UserScript | `reduziert` | `none` | `rgb(22, 34, 29)`, deckend |
+| **ein**, lebende Seite | `didBecomeActive` | `reduziert` | `none` | `rgb(22, 34, 29)`, deckend |
+| wieder **aus**, lebende Seite | `didBecomeActive` | `null` | `blur(20px) saturate(1.6)` | durchscheinend |
+
+Die drei grossen Flaechen mitgemessen (eingeschaltet, lebende Seite): `#drawerPanel`, `#imgModal`
+und `#plusModal` alle `filter=none`, `bg=rgb(23, 33, 28)` — die Tuer mit drei Selektoren geht
+also ebenfalls auf. Ausgeschaltet kommt das Glas an allen zurueck (`blur(20px) saturate(1.5)`).
+
+Nebenbei belegt: Der Beobachter ist richtig angemeldet. Eine von Hand gepostete
+`UIAccessibilityReduceTransparencyStatusDidChangeNotification` landet in
+`transparenzNachziehen()` — im Debugger am Haltepunkt gesehen.
+
+### Was unsicher blieb
+
+- **Der Aenderungs-Anlass `reduceTransparencyStatusDidChangeNotification` ist nicht im
+  Vordergrund gemessen**, sondern nur ueber eine von Hand geposteten Mitteilung. Das ist kein
+  Mangel an Sorgfalt, sondern die Lage: Umgelegt wird die Einstellung in den Systemeinstellungen,
+  Lucenta liegt dann im Hintergrund, und der wirksame Anlass ist `didBecomeActive` — der ist
+  gemessen. Der zweite Anlass ist der Guertel zum Hosentraeger.
+- **Ob die deckende Kopfleiste gut aussieht**, ist keine Messung. Sie ist eine andere Flaeche als
+  die glaeserne; ob sie neben der Dynamic Island stimmt, entscheidet das Auge auf einem Geraet.
+  Steht so im Uebergabe-Block.
+- Ein `defaults write` aus einem frueheren Versuch stand noch in den Voreinstellungen des
+  Simulators und ist wieder auf `false` gesetzt — sonst haette die naechste Sitzung dort einen
+  Wert gefunden, der nichts bewirkt und alles verwirrt.
+
+### Pruefungen
+
+`npm run pruef-alles`: **ALLE 9 BESTANDEN**, 9,0 Minuten. `fehlersuche` **KEINE FUNDE** auf
+beiden Motoren (WebKit zuerst), `pruef-bewegung` einschliesslich der zehn neuen Messungen
+(fuenf je Bewegungsmodus), `pruef-nativ` 45/45, `pruef-app` 20/20, `pruef-store` 32/32,
+`diff-sprachen` 127 (unveraendert).
 
 ---
 

@@ -58,6 +58,8 @@ class MainViewController: CAPBridgeViewController {
     override func capacitorDidLoad() {
         super.capacitorDidLoad()
         bridge?.registerPluginInstance(LucentaKaeufePlugin())
+        transparenzVorzeichnen()
+        transparenzBeobachten()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -78,5 +80,88 @@ class MainViewController: CAPBridgeViewController {
         view.backgroundColor = papierfarbe
         webView?.backgroundColor = papierfarbe
         webView?.scrollView.backgroundColor = papierfarbe
+    }
+
+    // MARK: - "Transparenz reduzieren" (Runde 106)
+    //
+    // Befund aus Runde 105, am Geraet gemessen und nicht geraten: WebKit auf iOS 27 kennt
+    // `prefers-reduced-transparency` nicht. `reduce` UND `no-preference` melden beide `false` —
+    // ein unterstuetztes Merkmal muesste genau eines bejahen. Der Rueckfall im Stilblatt (Glas
+    // weg, deckende Flaeche) ist auf dem iPhone damit unerreichbar: Wer "Transparenz reduzieren"
+    // einschaltet und "Kontrast erhoehen" nicht, behaelt genau das Glas, das er abbestellt hat.
+    //
+    // Die Huelle kann die Frage beantworten, die die WebView nicht stellen kann.
+    // `UIAccessibility.isReduceTransparencyEnabled` ist dieselbe Einstellung, nur von der
+    // nativen Seite gelesen. Sie wird als Attribut `data-transparenz="reduziert"` an `:root`
+    // gehaengt; das Stilblatt nimmt dieses Attribut an vier Stellen NEBEN dem Medienmerkmal an
+    // (`pruefeTransparenzTueren` in build.js haelt die beiden Fassungen jeder Regel zusammen,
+    // damit sie nicht auseinanderdriften).
+    //
+    // Bewusst KEIN Capacitor-Plugin: Ein Plugin muesste von JavaScript aus gefragt werden, und
+    // die Antwort kaeme erst nach dem ersten Zeichnen — ein Wimpernschlag Glas bei genau dem
+    // Menschen, der es abbestellt hat. Die Huelle weiss es vorher und sagt es unaufgefordert.
+
+    /// Der Attributname an `:root`, einmal hier und einmal im Stilblatt.
+    private static let transparenzAttribut = "data-transparenz"
+
+    /// Die eine Zeile, die das Attribut setzt oder wegnimmt — Grundlage beider Wege unten.
+    private static func transparenzZeile(_ reduziert: Bool) -> String {
+        reduziert
+            ? "document.documentElement.setAttribute('\(transparenzAttribut)','reduziert');"
+            : "document.documentElement.removeAttribute('\(transparenzAttribut)');"
+    }
+
+    /// Weg 1: der Stand von JETZT, bevor die Seite zeichnet.
+    ///
+    /// `capacitorDidLoad()` ist dafuer der richtige Zeitpunkt — die WebView steht, die Seite ist
+    /// noch nicht geladen (`loadWebView()` kommt erst danach). Ein `WKUserScript` bei
+    /// `atDocumentStart` laeuft damit vor dem ersten Bild.
+    ///
+    /// Der Umweg ueber `readystatechange` ist kein Zierrat: Bei `atDocumentStart` ist
+    /// `document.documentElement` in der Regel schon da, aber nicht garantiert. Faellt der erste
+    /// Versuch aus, zieht der zweite nach — und weil ein UserScript nur beim Laden laeuft,
+    /// sammelt sich dieser Zuhoerer nicht an.
+    private func transparenzVorzeichnen() {
+        guard let inhalt = webView?.configuration.userContentController else { return }
+        let quelle = """
+        (function(){
+          var setzen = function(){
+            if (!document.documentElement) return;
+            \(Self.transparenzZeile(UIAccessibility.isReduceTransparencyEnabled))
+          };
+          setzen();
+          document.addEventListener('readystatechange', setzen);
+        })();
+        """
+        inhalt.addUserScript(WKUserScript(source: quelle,
+                                          injectionTime: .atDocumentStart,
+                                          forMainFrameOnly: true))
+    }
+
+    /// Weg 2: die lebende Seite nachziehen.
+    ///
+    /// Das UserScript aus Weg 1 traegt den Stand vom Ladezeitpunkt und laesst sich nicht
+    /// nachtraeglich ersetzen — `removeAllUserScripts()` wuerde die Bruecke von Capacitor
+    /// mitnehmen. Also wird die geladene Seite direkt nachgezogen.
+    ///
+    /// Zwei Anlaesse, und der zweite ist der wichtigere: Die Mitteilung von UIKit kommt, solange
+    /// Lucenta vorn ist. Wird die Einstellung aber in den Systemeinstellungen umgelegt, liegt
+    /// Lucenta im Hintergrund — dann ist der Stand beim Zurueckkehren der verlaessliche.
+    private func transparenzBeobachten() {
+        for anlass in [UIAccessibility.reduceTransparencyStatusDidChangeNotification,
+                       UIApplication.didBecomeActiveNotification] {
+            NotificationCenter.default.addObserver(self, selector: #selector(transparenzNachziehen),
+                                                   name: anlass, object: nil)
+        }
+    }
+
+    @objc private func transparenzNachziehen() {
+        // Nur in eine fertig geladene Seite hinein. `didBecomeActive` feuert beim Kaltstart,
+        // waehrend die WebView noch laedt — ein `evaluateJavaScript` darauf ergibt genau den
+        // `JS Eval error`, der in Runde 104 eine Runde Suche gekostet hat. Die noch ladende
+        // Seite braucht es auch nicht: Sie bekommt den richtigen Stand aus Weg 1.
+        guard let webView, webView.url != nil, !webView.isLoading else { return }
+        let zeile = Self.transparenzZeile(UIAccessibility.isReduceTransparencyEnabled)
+        webView.evaluateJavaScript("if (document.documentElement) { \(zeile) }")
     }
 }

@@ -206,6 +206,96 @@ function pruefeDunkelbloecke(css){
 }
 pruefeDunkelbloecke(css);
 
+// Runde 106: Jede Regel fuer "Transparenz reduzieren" steht ZWEIMAL — einmal unter
+// @media (prefers-reduced-transparency: reduce), einmal unter :root[data-transparenz="reduziert"].
+// Der Grund steht ausfuehrlich bei der Kopfleiste in 00-grundlagen.css: WebKit auf iOS kennt das
+// Medienmerkmal nicht (Runde 105 am Geraet gemessen), die Huelle setzt deshalb das Attribut.
+//
+// Doppelt geschriebene Werte driften auseinander. Wer die Deckfarbe der Schublade aendert, aendert
+// die Regel, die er gerade liest — die andere bleibt stehen, und ab dann sieht dieselbe App auf
+// dem iPhone anders aus als in den Pruefungen. Genau diese Fehlerart hat pruefeDunkelbloecke schon
+// einmal gekostet, nur mit den Farbmarken.
+//
+// Die Pruefung vergleicht Deklaration fuer Deklaration und verlangt zweierlei: dass jede
+// Medienregel eine Attributfassung DIREKT dahinter hat (nur Leerraum und Kommentare dazwischen),
+// und dass beide dieselben Selektoren mit denselben Deklarationen tragen. Die Attributfassung
+// darf keinen Selektor mehr und keinen weniger haben.
+function pruefeTransparenzTueren(css){
+  const TUER = ':root[data-transparenz="reduziert"]';
+  // Flache Regeln im Block lesen: "selektor { deklarationen }". Die Bloecke hier haben keine
+  // Verschachtelung — mehr Parser braucht es nicht, und mehr waere hier eine Fehlerquelle.
+  const regeln = (text) => {
+    const karte = new Map();
+    for (const [, sel, decl] of text.matchAll(/([^{}]+)\{([^{}]*)\}/g)){
+      const schluessel = sel.replace(/\/\*[\s\S]*?\*\//g, ' ').split(',')
+        .map(s => s.trim()).filter(Boolean).sort().join(', ');
+      if (!schluessel) continue;
+      karte.set(schluessel, decl.split(';').map(d => d.replace(/\s+/g, '')).filter(Boolean).sort().join(';'));
+    }
+    return karte;
+  };
+  const klammerEnde = (text, auf) => {
+    let tiefe = 0;
+    for (let i = auf; i < text.length; i++){
+      if (text[i] === '{') tiefe++;
+      else if (text[i] === '}' && --tiefe === 0) return i;
+    }
+    return -1;
+  };
+  const meldungen = [];
+  const merkmal = /@media \(prefers-reduced-transparency: reduce\)[^{]*\{/g;
+  let treffer;
+  while ((treffer = merkmal.exec(css)) !== null){
+    const auf = treffer.index + treffer[0].length - 1;
+    const zu = klammerEnde(css, auf);
+    if (zu < 0) continue;
+    const zeile = css.slice(0, treffer.index).split('\n').length;
+    const imMedia = regeln(css.slice(auf + 1, zu));
+    // Was direkt dahinter steht, ohne Kommentare und Leerraum — und zwar ALLE aufeinander
+    // folgenden Attributregeln. Der Schieber in 08-formulare-und-dialoge.css braucht zwei
+    // (Bahn aus und Bahn ein), und eine Fassung, die nur die erste liest, meldet die zweite
+    // faelschlich als fehlend. Genau das tat der erste Lauf dieser Pruefung.
+    let rest = zu + 1, roh = '';
+    for (;;){
+      const vorlauf = css.slice(rest).match(/^(?:\s|\/\*[\s\S]*?\*\/)*/)[0];
+      const anfang = rest + vorlauf.length;
+      if (!css.startsWith(TUER, anfang)) break;
+      const ende = klammerEnde(css, css.indexOf('{', anfang));
+      if (ende < 0) break;
+      roh += css.slice(anfang, ende + 1);
+      rest = ende + 1;
+    }
+    if (!roh){
+      meldungen.push(`  Zeile ${zeile}: keine Attributfassung direkt hinter der Medienregel`);
+      continue;
+    }
+    const imAttribut = regeln(roh);
+    // Denselben Vergleich fuehren wie bei der Medienregel, nur ohne den Vorsatz.
+    const ohneVorsatz = new Map();
+    for (const [sel, decl] of imAttribut){
+      ohneVorsatz.set(sel.split(',').map(s => s.trim().replace(TUER + ' ', '')).sort().join(', '), decl);
+    }
+    for (const [sel, decl] of imMedia){
+      if (!ohneVorsatz.has(sel)) meldungen.push(`  Zeile ${zeile}: "${sel}" fehlt in der Attributfassung`);
+      else if (ohneVorsatz.get(sel) !== decl) meldungen.push(`  Zeile ${zeile}: "${sel}" traegt andere Werte:\n` +
+                                                             `    Medienregel:    ${decl}\n` +
+                                                             `    Attributfassung: ${ohneVorsatz.get(sel)}`);
+    }
+    for (const sel of ohneVorsatz.keys()){
+      if (!imMedia.has(sel)) meldungen.push(`  Zeile ${zeile}: "${sel}" steht nur in der Attributfassung`);
+    }
+  }
+  if (meldungen.length){
+    console.error('\nBAU ABGEBROCHEN — die beiden Fassungen von "Transparenz reduzieren" stimmen nicht ueberein:');
+    console.error(meldungen.join('\n'));
+    console.error('\nJede @media (prefers-reduced-transparency: reduce)-Regel braucht direkt dahinter\n' +
+                  'dieselben Deklarationen unter ' + TUER + ' — auf dem iPhone ist\n' +
+                  'das Medienmerkmal toter Code und nur die Attributfassung wirkt.\n');
+    process.exit(1);
+  }
+}
+pruefeTransparenzTueren(css);
+
 // Runde 95: "jegliche desktop referenzen sollen raus weil die app ja ausschliesslich fuer
 // iphone ist." Entfernt waren sie damit — aber sie kommen zurueck, wenn niemand hinsieht: Ein
 // Hinweistext, der beilaeufig "oder rechtsklicken" ergaenzt, faellt beim Lesen nicht auf, und

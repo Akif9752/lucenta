@@ -131,9 +131,15 @@ sondern was der Fehler war, warum die Aenderung ihn behebt, und was daran unsich
 Eine Pruefung, die auf diesem Rechner nicht lief, gehoert ebenfalls hierher.
 
 Die vollstaendigen Regeln des Projekts stehen in der `CLAUDE.md` im Wurzelverzeichnis (zwei
-Ebenen ueber diesem Ordner): die gemeinsame IIFE, die drei Farbbloecke, die vier
+Ebenen ueber diesem Ordner): die gemeinsame IIFE, die drei Farbbloecke, die
 Abbruchpruefungen des Baus, und zwei Lehren, die je dreimal bezahlt wurden. Lies sie zuerst —
 sie erklaeren, warum der Bau abbricht, bevor du raetst.
+
+Eine davon betrifft diese Sitzung unmittelbar: `pruefeTransparenzTueren` (Runde 106). „Transparenz
+reduzieren" ist auf dem iPhone nativ nachgebaut, weil WebKit `prefers-reduced-transparency` nicht
+kennt — `MainViewController.swift` setzt `data-transparenz="reduziert"` an `:root`. Jede Regel fuer
+diesen Fall steht deshalb **zweimal** im Stilblatt, und der Bau bricht ab, wenn nur eine der
+beiden geaendert wird. Die Begruendung steht einmal, bei der Kopfleiste in `00-grundlagen.css`.
 
 ## Die Huelle: was erledigt ist
 

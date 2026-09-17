@@ -258,6 +258,60 @@ async function durchlauf(reduziert){
            'Segmentfach wird beim Druck glaesern', `(${fach.ruhe.glas} -> ${fach.gedrueckt.glas})`);
   }
 
+  // --- Die zweite Tuer fuer "Transparenz reduzieren" (Runde 106)
+  //
+  // Warum das hier gemessen wird und nicht im Quelltext: `pruefeTransparenzTueren` in build.js
+  // haelt die beiden Fassungen jeder Regel zusammen, aber nur als TEXT. Ob das Attribut die
+  // Regel tatsaechlich greifen laesst, ist eine andere Frage — es entscheidet die Spezifitaet,
+  // und `:root[data-transparenz="reduziert"] .segment-opt:active` muss sich gegen
+  // `.segment-opt[aria-checked="true"]:active` durchsetzen. Ein Vergleich von Zeichenketten
+  // sieht das nicht. Gemessen wird deshalb der berechnete Stil.
+  //
+  // Auf dem Geraet ist diese Tuer die EINZIGE, die wirkt: WebKit auf iOS kennt
+  // `prefers-reduced-transparency` nicht (Runde 105), die Huelle setzt das Attribut
+  // (`MainViewController.swift`). Hier laeuft Chromium, also wird das Attribut von Hand
+  // gesetzt — genau so, wie die Huelle es tut. Am Simulator ist derselbe Weg in Runde 106 mit
+  // dem echten Schalter nachgemessen worden, auf WebKit.
+  const tuer = await p.evaluate(() => {
+    const glas = (q) => {
+      const el = document.querySelector(q);
+      if (!el) return 'FEHLT';
+      const s = getComputedStyle(el);
+      return s.webkitBackdropFilter || s.backdropFilter;
+    };
+    const lies = () => ({ kopf: glas('header.top'), schublade: glas('#drawerPanel'), bild: glas('#imgModal') });
+    const vorher = lies();
+    document.documentElement.setAttribute('data-transparenz', 'reduziert');
+    const reduziert = lies();
+    document.documentElement.removeAttribute('data-transparenz');
+    return { vorher, reduziert, zurueck: lies() };
+  });
+  for (const flaeche of ['kopf', 'schublade', 'bild']){
+    pruefe(/blur\(20px\)/.test(tuer.vorher[flaeche]) && tuer.reduziert[flaeche] === 'none'
+           && /blur\(20px\)/.test(tuer.zurueck[flaeche]),
+           `data-transparenz nimmt das Glas von "${flaeche}" und gibt es zurueck`,
+           `(${tuer.vorher[flaeche]} -> ${tuer.reduziert[flaeche]} -> ${tuer.zurueck[flaeche]})`);
+  }
+  // Die beiden Druckzustaende sind der Fall, in dem die Spezifitaet entscheidet: Die Tuer
+  // `:root[data-transparenz="reduziert"] .segment-opt:active` muss sich gegen
+  // `.segment-opt[aria-checked="true"]:active` durchsetzen, und beim Schieber gegen
+  // `.schalter[aria-checked="true"]:active`. Attribut UND Druck gehen zusammen: Das Attribut
+  // steht an `:root`, der Mausdruck am Element. Genau so wird gemessen.
+  await p.evaluate(() => document.documentElement.setAttribute('data-transparenz', 'reduziert'));
+  for (const [wahl, name] of [['#haptikSchalter', 'Schieberbahn'], ['#themeSystem', 'Segmentfach']]){
+    const gedrueckt = await imDruck(wahl, el => ({
+      glas: getComputedStyle(el).webkitBackdropFilter || getComputedStyle(el).backdropFilter,
+    }));
+    if (!gedrueckt){
+      pruefe(false, `${name} fuer die Attributfassung des Druckzustands gefunden`);
+    } else {
+      pruefe(gedrueckt.gedrueckt.glas === 'none',
+             `${name} bleibt bei data-transparenz auch im Druck deckend`,
+             `(${gedrueckt.ruhe.glas} -> ${gedrueckt.gedrueckt.glas})`);
+    }
+  }
+  await p.evaluate(() => document.documentElement.removeAttribute('data-transparenz'));
+
   pruefe(!abstuerze.length, 'keine Ausnahme in der Konsole', abstuerze.join(' | '));
   await b.close();
 }

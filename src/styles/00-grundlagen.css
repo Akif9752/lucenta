@@ -577,6 +577,27 @@
       -webkit-backdrop-filter:none; backdrop-filter:none;
     }
   }
+  /* ---------- Runde 106: die zweite Tuer zu derselben Regel ----------
+     Das Medienmerkmal darueber ist auf dem iPhone toter Code. In Runde 105 am Geraet gemessen,
+     nicht geraten: WebKit auf iOS 27 bejaht WEDER `reduce` NOCH `no-preference` — ein
+     unterstuetztes Merkmal muesste genau eines bejahen. Wer "Transparenz reduzieren" einschaltet
+     und "Kontrast erhoehen" nicht, behielt damit genau das Glas, das er abbestellt hat.
+
+     Die iOS-Huelle liest die Einstellung nativ (`UIAccessibility.isReduceTransparencyEnabled`,
+     `MainViewController.swift`) und haengt `data-transparenz="reduziert"` an `:root` — vor dem
+     ersten Zeichnen ueber ein UserScript, danach bei jeder Aenderung. Das Merkmal bleibt
+     trotzdem stehen: Es ist im Chromium der Pruefungen der gemessene Weg, und eine kuenftige
+     WebKit-Fassung, die es lernt, braucht dann keine Huelle.
+
+     Diese Begruendung steht EINMAL, hier. Die drei weiteren Tueren (Schublade/Fenster und der
+     Segmentwaehler in dieser Datei, der Schieber in 08-formulare-und-dialoge.css) verweisen
+     hierher. Beide Fassungen jeder Regel muessen dieselben Erklaerungen tragen, sonst faellt
+     eine Aenderung nur auf einer Seite an — `pruefeTransparenzTueren` in build.js vergleicht
+     sie deshalb Deklaration fuer Deklaration und bricht den Bau ab, wenn sie auseinanderlaufen. */
+  :root[data-transparenz="reduziert"] header.top{
+    background:linear-gradient(96deg, var(--kopf-links) 0%, var(--kopf-rechts) 68%, var(--kopf-rechts) 100%);
+    -webkit-backdrop-filter:none; backdrop-filter:none;
+  }
   header.top.scrolled{border-bottom-color:var(--line);}
   .wordmark{
     font-family:var(--serif); font-size:20px; font-weight:600; letter-spacing:.01em;
@@ -775,6 +796,13 @@
       -webkit-backdrop-filter:none; backdrop-filter:none;
     }
   }
+  /* Die zweite Tuer, Begruendung bei der Kopfleiste weiter oben in dieser Datei. */
+  :root[data-transparenz="reduziert"] #drawerPanel,
+  :root[data-transparenz="reduziert"] #imgModal,
+  :root[data-transparenz="reduziert"] #plusModal{
+    background:var(--surface);
+    -webkit-backdrop-filter:none; backdrop-filter:none;
+  }
   @media (prefers-contrast: more){
     #drawerPanel, #imgModal, #plusModal{
       background:var(--surface);
@@ -891,6 +919,14 @@
       background:var(--surface);
       -webkit-backdrop-filter:none; backdrop-filter:none;
     }
+  }
+  /* Die zweite Tuer, Begruendung bei der Kopfleiste weiter oben in dieser Datei. Nur fuer
+     "Transparenz reduzieren" — `prefers-contrast: more` kommt auf dem iPhone an (Runde 105
+     nachgemessen) und braucht keine. */
+  :root[data-transparenz="reduziert"] .segment-opt:active,
+  :root[data-transparenz="reduziert"] .segment-opt[aria-checked="true"]:active{
+    background:var(--surface);
+    -webkit-backdrop-filter:none; backdrop-filter:none;
   }
   .segment-preis{font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:-.01em;}
   .segment-spar{font-family:var(--mono);font-size:10.5px;color:var(--accent-2-text);letter-spacing:.02em;}
