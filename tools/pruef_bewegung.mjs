@@ -312,6 +312,73 @@ async function durchlauf(reduziert){
   }
   await p.evaluate(() => document.documentElement.removeAttribute('data-transparenz'));
 
+  // --- Tagesform: zeichnet sich die Kurve beim Wechsel des Zeitraums ein? (Runde 107)
+  //
+  // Gemeldet war: "Die Tagesform-Graphen sollen sich beim Wechsel der verschiedenen Zeitraeume
+  // live von links nach rechts einzeichnen."
+  //
+  // Warum das hier gemessen wird und nicht im Quelltext: Die Bewegung haengt an einem
+  // Strichmuster in LINIENLAENGE, und diese Laenge wird in 08-code.js gerechnet und als
+  // --vl-laenge an das <svg> gehaengt. Steht dort eine 0 oder ein leerer Wert — weil der
+  // Polygonzug nur einen Punkt hat, weil die Marke anders heisst, weil das Stilblatt sie nicht
+  // findet —, dann ist die Regel gueltig, die Syntax stimmt, und es bewegt sich nichts. Genau
+  // die Fehlerart, fuer die diese Datei gebaut wurde.
+  //
+  // Der Durchlauf braucht dafuer Daten, die er selbst nicht erzeugt: Der Fragebogen legt keine
+  // Tagesform-Eintraege an. 60 Tage und Lucenta+ werden deshalb untergeschoben — Lucenta+, weil
+  // der Zeitraumwaehler nur in der gekauften Fassung steht (fensterWahlHTML).
+  await p.evaluate(() => {
+    const heute = Date.now(), eintraege = [];
+    for (let i = 59; i >= 0; i--){
+      const d = new Date(heute - i * 86400000);
+      eintraege.push({ day: d.toISOString().slice(0, 10), ts: d.getTime(),
+                       energy: 3 + Math.sin(i / 4) * 1.6, valence: 3 + Math.cos(i / 5) * 1.5 });
+    }
+    try{
+      localStorage.setItem('lucenta_state', JSON.stringify(eintraege));
+      localStorage.setItem('lucenta_plus', '1');
+    }catch(e){}
+  });
+  await p.goto(URL, {waitUntil:'networkidle'});
+  await p.waitForTimeout(600);
+  await p.click('#btnLandingStateHistory');
+  await p.waitForTimeout(600);
+
+  const waehler = await p.$('.tf-fenster .segment-opt[data-fenster="90"]');
+  if (!waehler){
+    pruefe(false, 'Zeitraumwaehler der Tagesform gefunden');
+  } else {
+    // Auf einen ANDEREN Zeitraum wechseln, damit renderStateTrend() das <svg> neu baut. Genau
+    // das ist der Moment aus der Rueckmeldung.
+    await waehler.click();
+    const gezeichnet = await verlauf(p, () => {
+      const l = document.querySelector('.verlauf-svg .vl-linie');
+      if (!l) return 'keine Linie';
+      const s = getComputedStyle(l);
+      return s.strokeDasharray === 'none' ? 'kein Muster' : Math.round(parseFloat(s.strokeDashoffset));
+    }, [80, 300, 1300]);
+    const spitzen = await p.evaluate(() =>
+      [...document.querySelectorAll('.verlauf-svg .vl-spitze')]
+        .map(e => Math.round(parseFloat(getComputedStyle(e).opacity) * 100)));
+
+    if (reduziert){
+      // Bei reduzierter Bewegung wird .vl-zeichnet gar nicht gesetzt (JS-Gatter in
+      // verlaufDiagrammSVG), das Muster fehlt also ganz — und damit steht die Linie vollstaendig.
+      pruefe(gezeichnet.every(v => v === 'kein Muster'),
+             'Tagesform-Kurve ohne Einzeichnen sofort vollstaendig', JSON.stringify(gezeichnet));
+    } else {
+      const zahlen = gezeichnet.filter(v => typeof v === 'number');
+      pruefe(zahlen.length === 3 && zahlen[0] > 1 && bewegtSich(gezeichnet),
+             'Tagesform-Kurve zeichnet sich von links nach rechts ein', JSON.stringify(gezeichnet));
+      pruefe(zahlen.length === 3 && zahlen[2] === 0,
+             'Tagesform-Kurve steht am Ende vollstaendig', `(Versatz ${zahlen[zahlen.length-1]})`);
+    }
+    // In beiden Faellen: Der jüngste Punkt muss am Ende zu sehen sein. Er kommt NACH der Linie
+    // herein — bleibt er blass, stehen zwei Werte im Diagramm, die niemand ablesen kann.
+    pruefe(spitzen.length === 2 && spitzen.every(o => o === 100),
+           'Endpunkte der Tagesform-Kurve am Ende voll sichtbar', JSON.stringify(spitzen));
+  }
+
   pruefe(!abstuerze.length, 'keine Ausnahme in der Konsole', abstuerze.join(' | '));
   await b.close();
 }

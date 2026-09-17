@@ -452,8 +452,6 @@
       'js_verlauf_bis': ' &ndash; ',
       'js_verlauf_titel': 'Eğilim',
       'js_heute': 'bugün',
-      'js_vor_tagen': '',
-      'js_tagen': ' gün önce',
       'js_erschoepft_kurz': 'bitkin',
       'js_voll_kurz': 'enerji dolu',
       'js_andere_person': 'Diğer kişi',

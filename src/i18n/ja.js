@@ -452,8 +452,6 @@
       'js_verlauf_bis': ' 〜 ',
       'js_verlauf_titel': '推移',
       'js_heute': '今日',
-      'js_vor_tagen': '',
-      'js_tagen': ' 日前',
       'js_erschoepft_kurz': '消耗',
       'js_voll_kurz': '満ちている',
       'js_andere_person': '相手',

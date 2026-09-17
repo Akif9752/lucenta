@@ -184,6 +184,47 @@ const suchSkalaVersatz = () => {
   return raus.slice(0, 6);
 };
 
+// Runde 107: Beschriftet die x-Achse des Verlaufsdiagramms die Stellen, die sie behauptet?
+//
+// Vorher standen dort zwei RELATIVE Angaben ("vor 29 Tagen", "heute"), links- und rechtsbuendig.
+// Zwei buendige Angaben koennen nicht verrutschen, gemessen werden musste also nichts. Marken an
+// gerechneten Prozentstellen koennen es sehr wohl — und eine Marke unter dem falschen Punkt ist
+// schlimmer als keine, weil sie ein Datum behauptet, das dort nicht steht.
+//
+// Der Fehler, den diese Pruefung zuerst faende, ist der, der beim Bauen tatsaechlich drohte: Bis
+// Runde 107 lag die Achse als Geschwister UNTER .verlauf-flaeche und war damit um die Breite der
+// 1-bis-5-Skala breiter als das Diagramm. Jede Marke haette dann um diese Breite links von ihrem
+// Punkt gestanden. Deshalb ist die erste Frage hier nicht "stimmt die Marke", sondern "deckt die
+// Achse ueberhaupt dieselbe Flaeche wie das Diagramm".
+const suchAchseVersatz = () => {
+  const raus = [];
+  const svg = document.querySelector('.view.active .verlauf-svg');
+  const achse = document.querySelector('.view.active .verlauf-achse');
+  if (!svg) return raus;
+  if (!achse){ raus.push('Diagramm ohne x-Achse'); return raus; }
+  const s = svg.getBoundingClientRect(), a = achse.getBoundingClientRect();
+  if (Math.abs(a.left - s.left) > 1 || Math.abs(a.width - s.width) > 1){
+    raus.push('die Achse deckt das Diagramm nicht (Achse ' + a.left.toFixed(1) + '+' + a.width.toFixed(1) +
+              ', Diagramm ' + s.left.toFixed(1) + '+' + s.width.toFixed(1) + ')');
+  }
+  const marken = [...achse.querySelectorAll('.vl-achse-marke')];
+  if (marken.length < 2){ raus.push('die Achse traegt ' + marken.length + ' Marken'); return raus; }
+  let vorher = null;
+  marken.forEach((m, i) => {
+    if (!m.textContent.trim()) raus.push('Achsenmarke ' + (i+1) + ' ist leer');
+    const r = m.getBoundingClientRect();
+    // Ein Bildpunkt Spiel, wie bei suchSeitlichesSchieben.
+    if (r.left < s.left - 1) raus.push('Achsenmarke ' + (i+1) + ' ("' + m.textContent.trim() + '") ragt links aus dem Diagramm');
+    if (r.right > s.right + 1) raus.push('Achsenmarke ' + (i+1) + ' ("' + m.textContent.trim() + '") ragt rechts aus dem Diagramm');
+    // Zwei Daten, die sich beruehren, sind eine Zahlenreihe und kein Datum mehr.
+    if (vorher && r.left < vorher + 2){
+      raus.push('Achsenmarken ' + i + ' und ' + (i+1) + ' beruehren sich ("' + m.textContent.trim() + '")');
+    }
+    vorher = r.right;
+  });
+  return raus.slice(0, 6);
+};
+
 // Zu kleine Tippflaechen in der aktiven Ansicht.
 //
 // Gemessen wird NICHT der Kasten des Elements. Seit Runde 60 vergroessert die App die
@@ -589,6 +630,7 @@ async function pruefeAnsicht(p, ansicht, kennung, breite, melde){
     ['Seite seitlich schiebbar', suchSeitlichesSchieben, null],
     ['Tippflaeche unter ' + MIN_TIPP + 'px', suchTippflaechen, MIN_TIPP],
     ['Antwortskala falsch beschriftet', suchSkalaVersatz, null],
+    ['x-Achse falsch beschriftet', suchAchseVersatz, null],
     ['Schaltflaeche ohne Namen', suchNamenlos, null],
     ['Rest einer Ersetzung im Text', suchReste, null],
     ['unsichtbarer Text', suchUnsichtbarenText, null],

@@ -148,29 +148,125 @@
       raster += '<line x1="'+links+'" y1="'+y(w2).toFixed(1)+'" x2="'+(links+iw)+'" y2="'+y(w2).toFixed(1)+
                 '" stroke="var(--line)" stroke-width="1" '+(w2===1||w2===5?'':'stroke-dasharray="2 4" ')+'opacity="'+(w2===1||w2===5?'0.9':'0.55')+'"/>';
     }
+    // Runde 107, gemeldet: "Die Tagesform-Graphen sollen sich beim Wechsel der verschiedenen
+    // Zeitraeume live von links nach rechts einzeichnen."
+    //
+    // Gemacht ueber stroke-dasharray/stroke-dashoffset: Ein Strich, dessen Strichmuster genau
+    // so lang ist wie er selbst, ist bei Versatz 0 durchgezogen und bei Versatz = Laenge
+    // unsichtbar. Der Uebergang dazwischen ist genau das Einzeichnen, und zwar in
+    // Zeichenrichtung — die Punkte stehen hier nach Datum aufsteigend, also von links.
+    //
+    // Die Laenge wird GERECHNET, nicht ueber getTotalLength() geholt. Zwei Gruende: Der Pfad
+    // ist ein Polygonzug, seine Laenge ist damit exakt die Summe der Strecken (keine Naeherung
+    // noetig), und getTotalLength() braeuchte das Element im Dokument — zu diesem Zeitpunkt
+    // ist es eine Zeichenkette. Sie geht als --vl-laenge an das <svg>, damit das Stilblatt sie
+    // sowohl fuer das Strichmuster als auch fuer den Anfangsversatz benutzen kann.
+    //
+    // Die 2 Prozent Zuschlag sind kein Ausgleich fuer preserveAspectRatio="none" — das waere
+    // falsch gedacht: Strichmuster werden im Nutzerkoordinatensystem berechnet, also VOR der
+    // Streckung, Laenge und Muster liegen damit ohnehin im selben Raum. Der Zuschlag deckt das
+    // ab, was die Summe der Strecken nicht kennt: die runden Ecken an den Knicken, die den
+    // sichtbaren Strich ein wenig kuerzer machen als den gerechneten Polygonzug. Zwei Prozent
+    // kosten nichts und nehmen das Risiko einer Haarstrich-Luecke am jüngsten Punkt.
+    var laengeMax = 0;
     var linie = function(feld, farbe){
       var d = eintraege.map(function(e,i){ return (i?'L':'M')+x(i).toFixed(1)+','+y(e[feld]).toFixed(1); }).join(' ');
+      var lang = 0;
+      for (var i = 1; i < n; i++){
+        var dx = x(i) - x(i-1), dy = y(eintraege[i][feld]) - y(eintraege[i-1][feld]);
+        lang += Math.sqrt(dx*dx + dy*dy);
+      }
+      if (lang > laengeMax) laengeMax = lang;
       var letzter = eintraege[n-1];
-      return '<path d="'+d+'" fill="none" stroke="'+farbe+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'+
-             '<circle cx="'+x(n-1).toFixed(1)+'" cy="'+y(letzter[feld]).toFixed(1)+'" r="4.5" fill="'+farbe+
-             '" stroke="var(--surface)" stroke-width="2"/>';
+      return '<path class="vl-linie" d="'+d+'" fill="none" stroke="'+farbe+
+             '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'+
+             '<circle class="vl-spitze" cx="'+x(n-1).toFixed(1)+'" cy="'+y(letzter[feld]).toFixed(1)+
+             '" r="4.5" fill="'+farbe+'" stroke="var(--surface)" stroke-width="2"/>';
     };
     // Der jüngste Punkt trägt einen Ring in der Flächenfarbe: Wo sich zwei Marken überlagern,
     // trennt der Ring sie, statt sie zu einem Fleck verschmelzen zu lassen.
-    return '<svg class="verlauf-svg" viewBox="0 0 '+breite+' '+hoehe+'" preserveAspectRatio="none" role="img" '+
+    // Beide Linien werden zuerst gebaut, damit --vl-laenge die laengere von beiden kennt: Bei
+    // zwei verschiedenen Laengen waere eine der beiden vor der anderen fertig, und zwei Linien,
+    // die nicht gleichzeitig ankommen, lesen sich als Wettrennen statt als ein Diagramm.
+    var linien = linie('energy','var(--daten-energie)') + linie('valence','var(--daten-stimmung)');
+    // Die Klasse entscheidet hier und nicht im Stilblatt. @media (prefers-reduced-motion) kennt
+    // nur die Systemeinstellung; der Schalter IN der App (Einstellungen -> Bewegung) steht in
+    // localStorage und ist fuer CSS unsichtbar. prefersReducedMotion() fragt beide. Dasselbe
+    // Muster tragen .qcard.q-in und pulseFocusline() — die Bewegung wird gar nicht erst
+    // angeordnet, statt sie nachtraeglich zu unterdruecken.
+    //
+    // Beide Zweige tragen das VOLLSTAENDIGE Klassenattribut, nicht nur den Zusatz. Das ist kein
+    // Schoenheitsschritt: audit_i18n.py erkennt Bezeichner am KONTEXT und nicht an der
+    // Schreibweise (Begruendung dort, Runde 75) — ein blosses ' vl-zeichnet' waere ein nackter
+    // Literal und wuerde als deutscher Oberflaechentext gemeldet, weil "zeichnet" im deutschen
+    // Sprachpaket vorkommt und im englischen nicht. Als class="..." ist es erkennbar ein Name.
+    var zeichnet = prefersReducedMotion() ? 'class="verlauf-svg"' : 'class="verlauf-svg vl-zeichnet"';
+    return '<svg '+zeichnet+' viewBox="0 0 '+breite+' '+hoehe+'" preserveAspectRatio="none" role="img" '+
+             'style="--vl-laenge:'+(laengeMax * 1.02).toFixed(1)+'" '+
              'aria-label="'+beschriftungVerlauf(eintraege)+'">'+
              raster +
              // Fadenkreuz und Ablesepunkte liegen vor den Linien und sind bis zur ersten
              // Berührung verborgen.
              '<line class="vl-kreuz" x1="0" y1="'+oben+'" x2="0" y2="'+(oben+ih)+'" '+
                'stroke="var(--line-strong)" stroke-width="1" opacity="0"/>' +
-             linie('energy','var(--daten-energie)') +
-             linie('valence','var(--daten-stimmung)') +
+             linien +
              '<circle class="vl-lese vl-lese-e" r="4" fill="var(--daten-energie)" '+
                'stroke="var(--surface)" stroke-width="2" opacity="0"/>' +
              '<circle class="vl-lese vl-lese-s" r="4" fill="var(--daten-stimmung)" '+
                'stroke="var(--surface)" stroke-width="2" opacity="0"/>' +
            '</svg>';
+  }
+
+  // Runde 107, gemeldet: "Die X-Achse ist aktuell unbeschriftet und muss mit den entsprechenden
+  // Zeit-/Datumsangaben versehen werden."
+  //
+  // Sie war nicht ganz unbeschriftet, aber fast: Dort standen zwei RELATIVE Angaben, "vor 29
+  // Tagen" und "heute", und zwar links- und rechtsbuendig in einer eigenen Zeile. Relativ heisst,
+  // dass man rechnen muss, um einen Punkt in der Mitte einem Tag zuzuordnen — und in der Mitte
+  // stand gar nichts.
+  //
+  // Jetzt echte Daten an echten Stellen. Zwei Dinge daran sind der eigentliche Aufwand:
+  //
+  //   DIE STELLEN MUESSEN STIMMEN. Eine Marke, die nicht ueber ihrem Punkt steht, ist schlimmer
+  //   als keine: Sie behauptet etwas Falsches. Deshalb kommt die Position aus derselben Rechnung
+  //   wie die Punkte im Diagramm — x(i)/breite in Prozent, mit denselben Werten fuer links,
+  //   rechts und breite. Stehen die Konstanten irgendwann doppelt und driften auseinander,
+  //   verschiebt sich die Achse gegen die Kurve; deshalb liegt die Funktion hier, direkt neben
+  //   verlaufDiagrammSVG, und nicht bei der Tagesform.
+  //
+  //   DIE ZAHL DER MARKEN. Vier passen bei 320px Geraetebreite (gemessen: je Marke rund 38px in
+  //   der Monospace, verfuegbar rund 280px). Mehr waere eine Zahlenreihe, weniger liesse die
+  //   Mitte wieder offen. Bei weniger als vier Punkten wird je Punkt eine Marke gesetzt: Zwei
+  //   Punkte und vier Datumsangaben waeren erfundene Zwischenwerte.
+  //
+  // Die erste Marke steht linksbuendig, die letzte rechtsbuendig, die beiden mittleren zentriert
+  // — mittig gesetzt wuerden die aeusseren je zur Haelfte aus der Flaeche laufen.
+  var ACHSE_MARKEN = 4;
+  function verlaufAchseHTML(eintraege, breite){
+    breite = breite || 320;
+    var links = 4, rechts = 4, iw = breite - links - rechts;
+    var n = eintraege.length;
+    if (!n) return '';
+    var fmt = achsenDatumFmt();
+    var anzahl = Math.min(ACHSE_MARKEN, n);
+    var stellen = [];
+    for (var m = 0; m < anzahl; m++){
+      // Gleichmaessig verteilte Punkt-Indizes, Anfang und Ende immer dabei.
+      stellen.push(anzahl < 2 ? 0 : Math.round(m * (n - 1) / (anzahl - 1)));
+    }
+    // Bei sehr wenigen Punkten kann das Runden denselben Index zweimal treffen.
+    stellen = stellen.filter(function(i, k){ return stellen.indexOf(i) === k; });
+    return '<div class="verlauf-achse" aria-hidden="true">' + stellen.map(function(i, k){
+      var e = eintraege[i], text = '';
+      try{ text = fmt.format(new Date(e.ts)); }catch(x){ text = e.day || ''; }
+      var anteil = (n < 2 ? links + iw/2 : links + (i/(n-1))*iw) / breite * 100;
+      // Volles Klassenattribut je Zweig, aus demselben Grund wie bei vl-zeichnet oben: Der
+      // i18n-Audit erkennt einen Bezeichner an class="...", nicht an seiner Schreibweise.
+      var lage = k === 0 ? 'class="vl-achse-marke vl-achse-erst"'
+               : (k === stellen.length - 1 ? 'class="vl-achse-marke vl-achse-letzt"'
+                                           : 'class="vl-achse-marke"');
+      return '<span '+lage+' style="left:'+anteil.toFixed(2)+'%">'+text+'</span>';
+    }).join('') + '</div>';
   }
 
   // Ein Liniendiagramm im Browser ist bedienbar, kein Bild. Wer den Finger darüber zieht, liest

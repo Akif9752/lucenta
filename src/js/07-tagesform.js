@@ -420,7 +420,6 @@
     var fenster = hist.slice(-fensterTage);
     var proWoche = fenster.length > 35;
     var kurve = proWoche ? zuWochen(fenster) : fenster;
-    var tage = fenster.length;
     // Legende bei zwei Reihen immer, damit die Zuordnung nie allein an der Farbe hängt — ein
     // farbiges Plättchen NEBEN dem Wort, nicht das Wort in der Farbe.
     var legende =
@@ -434,12 +433,18 @@
     var trendRows =
       legende +
       (plus ? fensterWahlHTML(hist.length) : '') +
+      // Runde 107: Die Achse steht jetzt IN der Diagrammspalte, nicht als Geschwister darunter.
+      // Grund: Sie traegt Marken an gerechneten Stellen (Prozent der Diagrammbreite), und als
+      // Geschwister von .verlauf-flaeche haette sie auch die Spalte mit der 1-bis-5-Skala
+      // ueberspannt — jede Marke waere um die Breite dieser Spalte nach links verschoben
+      // gewesen. Bei den zwei alten links-/rechtsbuendigen Angaben fiel das nicht auf.
       '<div class="verlauf-flaeche">'+
         '<div class="verlauf-skala"><span>5</span><span>1</span></div>'+
-        verlaufDiagrammSVG(kurve, 320, 150)+
+        '<div class="verlauf-spalte">'+
+          verlaufDiagrammSVG(kurve, 320, 150)+
+          verlaufAchseHTML(kurve, 320)+
+        '</div>'+
       '</div>'+
-      '<div class="verlauf-achse"><span>'+(tage>1 ? (tx('js_vor_tagen')+(tage-1)+tx('js_tagen')) : '')+
-        '</span><span>'+tx('js_heute')+'</span></div>'+
       (proWoche ? '<p class="verlauf-hinweis">'+tx('js_verlauf_wochen')+'</p>' : '');
     var fmt = historyDateFmt();
     // Die Liste folgt dem Fenster. Vierzehn Zeilen unter einer Kurve ueber neunzig Tage waeren

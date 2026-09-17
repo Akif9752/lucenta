@@ -47,17 +47,60 @@
     font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);
     padding:6px 0 14px; flex-shrink:0; font-variant-numeric:tabular-nums;
   }
+  /* Runde 107: Diagramm und Achse teilen eine Spalte, damit die Achse GENAU so breit ist wie das
+     Diagramm. Vorher lag die Achse als Geschwister unter .verlauf-flaeche und war damit um die
+     Breite der 1-bis-5-Skala breiter — mit zwei links-/rechtsbuendigen Angaben unsichtbar, mit
+     Marken an gerechneten Stellen ein Versatz in jeder einzelnen. */
+  .verlauf-spalte{flex:1; min-width:0; display:flex; flex-direction:column;}
   .verlauf-achse{
-    display:flex; justify-content:space-between; margin-top:2px;
+    position:relative; height:16px; margin-top:2px;
     font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);
+    font-variant-numeric:tabular-nums;
   }
+  /* Die Marken liegen absolut auf ihrem Prozentwert — dieselbe Rechnung wie die Punkte im
+     Diagramm (verlaufAchseHTML in 08-code.js). Die aeusseren beiden werden an ihrer Kante
+     ausgerichtet statt mittig: Mittig gesetzt liefe die erste zur Haelfte nach links und die
+     letzte zur Haelfte nach rechts aus der Flaeche. */
+  .vl-achse-marke{position:absolute; top:0; transform:translateX(-50%); white-space:nowrap;}
+  .vl-achse-marke.vl-achse-erst{transform:none;}
+  .vl-achse-marke.vl-achse-letzt{transform:translateX(-100%);}
 
   /* Ablesehilfe: Die Trefferfläche ist die ganze Diagrammfläche, nicht die 2px-Linie. */
   .verlauf-flaeche{touch-action:pan-y; cursor:crosshair;}
   .vl-datum{margin-left:auto; font-size:11.5px; color:var(--muted-soft);}
   .verlauf-svg .vl-kreuz, .verlauf-svg .vl-lese{transition:opacity .12s ease;}
+
+  /* Runde 107: Die Kurve zeichnet sich von links nach rechts ein — beim Oeffnen der Tagesform
+     und bei jedem Wechsel des Zeitraums, weil renderStateTrend() das <svg> dabei jedes Mal neu
+     erzeugt und die Klasse mitbringt.
+     Wie es funktioniert: --vl-laenge ist die Laenge des laengeren der beiden Polygonzuege, in
+     Nutzereinheiten gerechnet (08-code.js). Ein Strichmuster, das genau so lang ist wie der
+     Strich selbst, zeigt bei Versatz 0 die ganze Linie und bei Versatz = Laenge keine. Der
+     Ruhezustand ist deshalb Versatz 0: Bleibt die Animation aus, steht die Linie vollstaendig da.
+     Die Endpunkte kommen NACH der Linie, sonst stuenden zwei Punkte im Nichts, bevor etwas sie
+     verbindet. Nur opacity, kein scale: Ein transform auf einem SVG-Kreis braucht
+     transform-box/transform-origin und ist auf WebKit die teurere Wette. */
+  /* Das Strichmuster steht bewusst NUR unter .vl-zeichnet und nicht als Grundzustand. Ohne
+     Animation traegt die Linie damit gar kein Muster — statt eines Musters in Linienlaenge, das
+     rechnerisch durchgezogen aussieht, aber bei jedem Rundungsfehler einen Haarstrich Luecke am
+     jüngsten Punkt riskiert. */
+  .verlauf-svg.vl-zeichnet .vl-linie{
+    stroke-dasharray:var(--vl-laenge);
+    animation:vl-einzeichnen .9s cubic-bezier(.25,.8,.3,1) both;
+  }
+  .verlauf-svg.vl-zeichnet .vl-spitze{animation:vl-spitze-ein .28s ease .8s both;}
+  @keyframes vl-einzeichnen{ from{stroke-dashoffset:var(--vl-laenge);} to{stroke-dashoffset:0;} }
+  @keyframes vl-spitze-ein{ from{opacity:0;} to{opacity:1;} }
+
   @media (prefers-reduced-motion: reduce){
     .verlauf-svg .vl-kreuz, .verlauf-svg .vl-lese{transition:none;}
+    /* Die zweite Tuer. Die erste ist der JS-Gatter in verlaufDiagrammSVG: Bei reduzierter
+       Bewegung wird .vl-zeichnet gar nicht erst gesetzt — nur so wirkt auch der Schalter IN der
+       App, den das Medienmerkmal nicht kennt (dasselbe Muster wie .qcard.q-in). Diese Regel
+       greift also nur, falls die Klasse doch einmal ankommt; dann muss mit der Animation auch
+       das Strichmuster weg, sonst bliebe die Linie unvollstaendig stehen. */
+    .verlauf-svg.vl-zeichnet .vl-linie{stroke-dasharray:none; animation:none;}
+    .verlauf-svg.vl-zeichnet .vl-spitze{animation:none;}
   }
 
   /* ---------- Befunde (Runde 68) ----------

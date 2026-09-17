@@ -78,7 +78,22 @@
     }
     return HISTORY_DATE_FMT;
   }
-  function resetDateFmt(){ HISTORY_DATE_FMT = null; }
+  // Runde 107: Ein zweites, kuerzeres Format — nur fuer die x-Achse des Verlaufsdiagramms.
+  // historyDateFmt() gibt "05. Sept. 2026" aus; das ist in einer Liste richtig und auf einer
+  // Achse unbrauchbar, wo vier Marken in rund 280px passen muessen. Tag und Monat als Zahl
+  // genuegen dort: Das Jahr steht in der Liste darunter, und eine Achse, die dreimal dasselbe
+  // Jahr wiederholt, sagt dreimal nichts.
+  // Ueber das Gebietsschema aus dem Sprachpaket, nicht fest verdrahtet — im Englischen gehoert
+  // der Monat vor den Tag, und genau dieser Fehler stand bis Runde 59 im Verlauf.
+  var ACHSE_DATE_FMT = null;
+  function achsenDatumFmt(){
+    if (!ACHSE_DATE_FMT){
+      try{ ACHSE_DATE_FMT = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {day:'2-digit', month:'2-digit'}); }
+      catch(e){ ACHSE_DATE_FMT = { format:function(d){ return d.toLocaleDateString(); } }; }
+    }
+    return ACHSE_DATE_FMT;
+  }
+  function resetDateFmt(){ HISTORY_DATE_FMT = null; ACHSE_DATE_FMT = null; }
   function renderHistory(){
     $('historyMaxCount').textContent = MAX_HISTORY;
     var alle = loadHistory();

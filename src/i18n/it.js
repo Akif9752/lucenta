@@ -448,8 +448,6 @@
       'js_verlauf_bis': ' a ',
       'js_verlauf_titel': 'Andamento',
       'js_heute': 'oggi',
-      'js_vor_tagen': '',
-      'js_tagen': ' giorni fa',
       'js_erschoepft_kurz': 'esausta',
       'js_voll_kurz': 'piena di energia',
       'js_andere_person': 'L’altra persona',

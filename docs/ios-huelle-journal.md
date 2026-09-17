@@ -186,13 +186,122 @@ Die Lehre daraus fuer die naechste Runde: `pruef-alles` nicht parallel zu andere
 auf demselben Rechner starten. Ein knapp gemessener Fund ist ein falscher Fund — hier war es ein
 knapp gemessener Abbruch.
 
+### 5. Die Tagesform-Kurve stand einfach da
+
+**Fehler:** Gemeldet als „sollen sich beim Wechsel der verschiedenen Zeitraeume live von links nach
+rechts einzeichnen". Sie tat gar nichts: `verlaufDiagrammSVG()` gab fertige `<path>` aus, und beim
+Wechsel des Zeitraums tauschte das Diagramm schlicht aus.
+
+**Aenderung:** `stroke-dasharray`/`stroke-dashoffset`. Ein Strich, dessen Strichmuster genau so lang
+ist wie er selbst, ist bei Versatz 0 durchgezogen und bei Versatz = Laenge unsichtbar; der Uebergang
+dazwischen ist das Einzeichnen, und zwar in Zeichenrichtung — die Punkte stehen nach Datum
+aufsteigend, also von links.
+
+**Drei Entscheidungen, die daran nicht offensichtlich sind:**
+
+1. **Die Laenge wird gerechnet, nicht ueber `getTotalLength()` geholt.** Der Pfad ist ein
+   Polygonzug, seine Laenge ist damit exakt die Summe der Strecken — und `getTotalLength()`
+   braeuchte das Element im Dokument, waehrend es zu diesem Zeitpunkt eine Zeichenkette ist. Die
+   Laenge geht als `--vl-laenge` an das `<svg>`.
+2. **Beide Reihen benutzen die LAENGERE der zwei Laengen.** Bei zwei verschiedenen Werten waere eine
+   Linie vor der anderen fertig, und zwei Linien, die nicht gleichzeitig ankommen, lesen sich als
+   Wettrennen statt als ein Diagramm.
+3. **Der 2-Prozent-Zuschlag ist nicht der Ausgleich fuer `preserveAspectRatio="none"`.** So hatte
+   ich es zuerst in den Kommentar geschrieben, und das war falsch: Strichmuster werden im
+   Nutzerkoordinatensystem berechnet, also VOR der Streckung — Laenge und Muster liegen ohnehin im
+   selben Raum. Der Zuschlag deckt die runden Ecken an den Knicken ab, die den sichtbaren Strich
+   etwas kuerzer machen als den gerechneten Polygonzug.
+
+**Und ein Fehler, den ich im ersten Anlauf gebaut hatte:** Die Klasse `vl-zeichnet` stand fest im
+Markup, die Abschaltung nur in `@media (prefers-reduced-motion: reduce)`. Damit haette der
+Schalter IN der App (Einstellungen -> Bewegung) nicht gewirkt — er liegt in `localStorage` und ist
+fuer CSS unsichtbar. Die Klasse wird jetzt in JS gesetzt, ueber `prefersReducedMotion()`, das beide
+Quellen kennt; dasselbe Muster tragen `.qcard.q-in` und `pulseFocusline()`. Das Medienmerkmal bleibt
+als zweite Tuer stehen. Dazu passend liegt das Strichmuster **nur** unter `.vl-zeichnet` und nicht
+als Grundzustand: Ohne Animation traegt die Linie gar kein Muster, statt eines Musters in
+Linienlaenge, das rechnerisch durchgezogen aussieht und bei jedem Rundungsfehler eine Haarstrich-
+Luecke am jüngsten Punkt riskiert.
+
+### 6. Die x-Achse nannte keine Daten
+
+**Fehler:** Gemeldet als „unbeschriftet". Ganz stimmte das nicht — dort standen zwei **relative**
+Angaben, „vor 29 Tagen" und „heute", links- und rechtsbuendig. Relativ heisst, dass man rechnen
+muss, um einen Punkt einem Tag zuzuordnen, und in der Mitte stand ohnehin nichts.
+
+**Aenderung:** Vier echte Datumsangaben an echten Stellen (`verlaufAchseHTML()` in `08-code.js`,
+direkt neben `verlaufDiagrammSVG()`, damit die Geometriekonstanten nicht doppelt stehen und
+auseinanderdriften). Die Position kommt aus derselben Rechnung wie die Punkte im Diagramm.
+
+**Warum vier:** Bei 320px Geraetebreite bleiben rund 280px, je Marke braucht die Monospace rund
+38px. Mehr waere eine Zahlenreihe, weniger liesse die Mitte wieder offen. Bei weniger als vier
+Punkten gibt es je Punkt eine Marke — zwei Punkte und vier Datumsangaben waeren erfundene
+Zwischenwerte. Ein zweites, kuerzeres Format (`achsenDatumFmt()`, Tag und Monat als Zahl) statt
+`historyDateFmt()`: „05. Sept. 2026" ist in einer Liste richtig und auf einer Achse unbrauchbar,
+und eine Achse, die viermal dasselbe Jahr wiederholt, sagt viermal nichts.
+
+**Die Struktur musste sich dafuer aendern, und das war der eigentliche Fund.** Die Achse lag als
+Geschwister UNTER `.verlauf-flaeche` und war damit um die Breite der 1-bis-5-Skala breiter als das
+Diagramm. Mit zwei buendigen Angaben ist das unsichtbar; mit Marken an gerechneten Prozentstellen
+haette **jede einzelne** um diese Breite links von ihrem Punkt gestanden — gemessen 14,3px. Jetzt
+teilen Diagramm und Achse eine Spalte (`.verlauf-spalte`).
+
+**Nebenwirkung, bewusst in Kauf genommen:** Die Trefferflaeche zum Ablesen ist `.verlauf-flaeche`
+und umfasst damit jetzt auch den Achsenstreifen. Das passt zur dort schon notierten Absicht
+(„die Trefferflaeche ist die ganze Diagrammflaeche, nicht die 2px-Linie") — ein groesseres Ziel ist
+auf dem Telefon das bessere.
+
+**Aufgeraeumt:** `js_vor_tagen` und `js_tagen` sind damit in allen acht Paketen verwaist und
+entfernt — wie Runde 105 es mit `plus_beenden` gemacht hat.
+
+### Zwei neue Pruefungen, beide gegengeprueft
+
+Nach der Lehre „die Pruefung gehoert danach als Werkzeug ins Repository, damit die Zahl nicht
+zurueckdriftet" sind die Messungen nicht als Einmal-Skript geblieben:
+
+- **`suchAchseVersatz`** in `tools/fehlersuche.mjs` — fragt zuerst, ob die Achse ueberhaupt dieselbe
+  Flaeche wie das Diagramm deckt, dann je Marke: leer, aus dem Diagramm ragend, an der Nachbarin
+  klebend. Laeuft ueber alle 13 Konfigurationen und beide Motoren; die Beispieldaten bringen
+  Tagesform-Eintraege mit, die Ansicht ist also tatsaechlich bestueckt.
+- **Drei Messungen in `tools/pruef_bewegung.mjs`** — schiebt 60 Tage und Lucenta+ unter (der
+  Fragebogen legt keine Tagesform-Eintraege an, und der Zeitraumwaehler steht nur in der gekauften
+  Fassung), wechselt den Zeitraum und liest den Versatz bei 80/300/1300 ms.
+
+**Die Gegenproben** (ohne sie ist eine neue Pruefung eine Behauptung):
+
+| Probe | Ergebnis |
+|---|---|
+| gesunder Zustand | KEINE FUNDE |
+| Achse aus der Spalte gezogen | 2 Funde, u. a. „die Achse deckt das Diagramm nicht (Achse 40,0+240,0, Diagramm 54,3+225,7)" |
+| Animation per Stylesheet abgeschaltet | Versatz `[0,0,0]` -> faellt durch, richtig |
+
+Der erste Versuch der dritten Probe hat **nichts gemessen**: Ich hatte `--vl-laenge` als
+Inline-Eigenschaft ueberschrieben und danach den Zeitraum gewechselt — dabei wird das `<svg>` neu
+erzeugt und der Override ist weg. Als Stylesheet ueberlebt die Aenderung das Neuzeichnen. Das ist
+dieselbe Falle wie „eine Messung kann sich auf die falsche Groesse beziehen", nur eine Ebene tiefer:
+eine Probe, die scheinbar bestaetigt, weil sie ihren Gegenstand verfehlt.
+
+Einmalig zusaetzlich auf **WebKit** ueber 5 Breiten/Sprachen x 3 Zeitraeume gemessen: Versatz laeuft
+von 189–315 auf 0,0, Achse deckt das Diagramm auf den Bildpunkt, vier Datumsangaben ohne
+Beruehrung, Gebietsschema korrekt (de „04.09.", en „04/09", ja „09/04", fr „04/09").
+
+### Eine Regel, die ich fast aufgeweicht haette
+
+`audit_i18n.py` hat `vl-zeichnet` und `vl-achse-erst` als **deutsche Oberflaechentexte** gemeldet —
+zu Recht nach seiner Regel: „zeichnet" und „erst" stehen im deutschen Sprachpaket und nicht im
+englischen. Die Versuchung war, die Heuristik zu lockern (etwa „enthaelt einen Bindestrich, keine
+Leerzeichen -> Bezeichner"). Genau davor warnt der Kommentar dort seit Runde 75: Eine Regel nach
+Zeichenform koennte auch echten Text verdecken; Bezeichner werden am **Kontext** erkannt.
+
+Also hat sich der Code geaendert, nicht die Pruefung: Beide Zweige tragen jetzt das **vollstaendige**
+`class="..."`-Attribut statt nur des Zusatzes. Damit ist es fuer den Audit erkennbar ein Name — und
+der Code ist nebenbei besser zu lesen.
+
 ### Was als Naechstes ansteht (aus derselben Liste, in vereinbarter Reihenfolge)
 
-1. Tagesform-Graphen von links nach rechts einzeichnen; X-Achse mit Datumsangaben statt nur
-   „vor N Tagen / heute".
-2. Fragebogen: Aussagen-Box hoeher (heute `justify-content:safe center`), Hintergrund gestalten
+1. Fragebogen: Aussagen-Box hoeher (heute `justify-content:safe center`), Hintergrund gestalten
    (der Sternenhimmel laeuft nur auf `view-landing`).
-3. Verlauf im Profil und der Archetypen-Bereich, beide visuell.
+2. Verlauf im Profil und der Archetypen-Bereich, beide visuell.
+3. Die grossen, auffaelligen Uebergaenge (heute gibt es genau einen: `view-vor`/`view-zurueck`).
 
 ---
 

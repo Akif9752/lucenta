@@ -449,8 +449,6 @@
       'js_verlauf_bis': ' to ',
       'js_verlauf_titel': 'Trend',
       'js_heute': 'today',
-      'js_vor_tagen': '',
-      'js_tagen': ' days ago',
       'js_erschoepft_kurz': 'drained',
       'js_voll_kurz': 'full of energy',
       'js_andere_person': 'Other person',

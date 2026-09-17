@@ -448,8 +448,6 @@
       'js_verlauf_bis': ' a ',
       'js_verlauf_titel': 'Evolução',
       'js_heute': 'hoje',
-      'js_vor_tagen': 'há ',
-      'js_tagen': ' dias',
       'js_erschoepft_kurz': 'exausta',
       'js_voll_kurz': 'cheia de energia',
       'js_andere_person': 'A outra pessoa',

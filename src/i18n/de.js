@@ -180,8 +180,6 @@ CONTENT.de = {
       'js_verlauf_bis': ' bis ',
       'js_verlauf_titel': 'Verlauf',
       'js_heute': 'heute',
-      'js_vor_tagen': 'vor ',
-      'js_tagen': ' Tagen',
       'js_erschoepft_kurz': 'erschöpft',
       'js_voll_kurz': 'voller Energie',
       'js_andere_person': 'Andere Person',
