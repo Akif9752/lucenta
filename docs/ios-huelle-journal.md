@@ -356,7 +356,8 @@ Xcode **nicht** „Update to recommended settings" akzeptieren, das hat beides s
 falschen Schluss (in Runde 103 genau so passiert).
 
 Entwickelt wird auf `claude/lucenta-setup-browser-test-j6hn7f`. Kein Pull Request ohne
-ausdrueckliche Bitte. Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 108:
+ausdrueckliche Bitte. Runde 110: `8d2b4a7` (Punkt 7, Fluessigkeit). Runde 109: `3eb06f4` (die
+drei zurueckgestellten Punkte). Runde 108:
 `7c49c74` (Batch 3, fuenf Punkte). Runde 107: `7eabcc0` (die vier kleinen Ursachen) und
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
