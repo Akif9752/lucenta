@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-09-19, nach Runde 110)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-09-19, nach Runde 111)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -60,13 +60,20 @@ Offen ist **eine Frage an den Inhaber** und **eine Messung am Geraet**. Kein Sti
    die jetzt im Werkzeug steckt. Am Geraet beantwortet sie der Schalter **Bedienhilfen >
    Transparenz reduzieren** mit einem Finger (er schaltet seit Runde 106 nativ jeden
    `backdrop-filter` ab). Einzelheiten im Eintrag „Runde 110".
+3. **Die Avatare sind in Runde 111 ueberarbeitet — das Urteil steht aus.** Auf Entscheidung
+   des Inhabers strukturell statt malerisch: Kopf von 67 auf 56 % der Bildhoehe, sichtbarer
+   Hals, Ohren die herausragen, Augenneigung je Figur, Nasenruecken. Die zwoelf Tiere sind
+   **unberuehrt**, weil sie tragen. Ob es reicht, sagt nur er, und zwar am Geraet.
+   **Falls die Rueckmeldung ein FUENFTES Mal kommt:** nicht wieder diese Konstruktion
+   nachschleifen. Dann bleiben die zwei Wege, die er in Runde 111 nicht gewaehlt hat —
+   Menschen streichen und nur Tiere anbieten, oder von Hand gezeichnete Figuren.
 
 **Es gibt keinen „Rest der Liste" dahinter.** Ein frueherer Stand dieser Uebergabe versprach einen,
 und das war falsch — nachgezaehlt gehen die 18 Punkte vollstaendig auf: 2 waren schon vorher
 erledigt (Overscroll, Impressum), 6 in Runde 107, 5 in Runde 108, **3 in Runde 109 auf Ansage des
 Inhabers** (Zoom, Textmarkierung, ein Teilformat), **Punkt 7 in Runde 110 geklaert** (der Hebel
-trug nicht). Offen bleiben genau **zwei**: Punkt 6 als Frage, und die **Avatare** als
-Grundsatzentscheidung — keines davon eine Aufgabe, die man einfach anfangen kann.
+trug nicht), **die Avatare in Runde 111** (auf seine Entscheidung: Menschen strukturell, Tiere
+unberuehrt). Offen bleibt genau **einer**: Punkt 6, und der ist eine Frage an ihn, keine Aufgabe.
 
 Die **woertliche Liste liegt nicht im Repository** — nur ihre Auswertung in den Eintraegen 107 und
 108. Wer sie braucht, muss den Inhaber danach fragen; aus dem Journal laesst sie sich nicht
@@ -76,15 +83,18 @@ Liste woertlich nach `docs/`, bevor daran gearbeitet wird.)
 Was in Runde 108 an Zahlen gemessen wurde, steht im Eintrag „Runde 108" weiter unten — die Werte
 nicht neu erheben, sondern dort nachlesen.
 
-**Und ein Punkt, der KEIN weiterer Nachschliff sein darf:** „Die Avatare sehen zu unrealistisch
-aus, bitte komplett ueberarbeiten." Das ist die **dritte** Rueckmeldung dieser Art. Runde 87 hat
-schwebenden Kopf, flaechige Farben, kreisrundes Auge und Symmetrie behoben; Runde 94 fehlendes
-Licht, die Iris als einfarbige Scheibe, den Mund als Strich und zehn Mienen auf 22 Figuren
-(Begruendungen stehen ausfuehrlich in `src/js/13-figuren.js:18-68`). Ein vierter Anlauf an derselben
-40x40-Einheiten-Konstruktion aus Parametern wird dasselbe Ergebnis haben. Das ist eine
-**Grundsatzentscheidung des Inhabers** — Konstruktion behalten oder durch etwas anderes ersetzen —,
-und sie gehoert gefragt, nicht geraten. Es ist die Lehre „eine Messung kann sich auf die falsche
-Groesse beziehen" in ihrer teuren Form.
+**Zu den Avataren, weil hier lange etwas anderes stand:** „Zu unrealistisch" kam viermal. Runde
+87, 94 und 97/99 haben je etwas Richtiges behoben — schwebenden Kopf, flaechige Farben, fehlendes
+Licht, Iris als Scheibe, Mund als Strich — und **alle drei am Rendering**. Runde 111 hat zuerst
+hingesehen statt nachgeschliffen und den Bruch benannt: **Die zwoelf Tiere tragen, die zehn
+Menschen nicht**, weil ein Tierkopf rund ist, keinen Hals zeigt und grosse Ohren hat. Die
+Konstruktion war nie das Problem; die Proportion war es — Kopf auf 67 % der Bildhoehe, und darin
+kein Platz fuer einen Hals.
+
+Die Lehre, die hier dreimal bezahlt wurde, lautet damit genauer als bisher: **nicht „ein vierter
+Anlauf an derselben Konstruktion bringt dasselbe", sondern „ein vierter Anlauf auf derselben
+ACHSE bringt dasselbe".** Rendering war dreimal die falsche Achse. Was offen bleibt, steht als
+Punkt 3 oben.
 
 ### Was Runde 109 erledigt hat — nicht erneut anfassen
 
@@ -356,8 +366,8 @@ Xcode **nicht** „Update to recommended settings" akzeptieren, das hat beides s
 falschen Schluss (in Runde 103 genau so passiert).
 
 Entwickelt wird auf `claude/lucenta-setup-browser-test-j6hn7f`. Kein Pull Request ohne
-ausdrueckliche Bitte. Runde 110: `8d2b4a7` (Punkt 7, Fluessigkeit). Runde 109: `3eb06f4` (die
-drei zurueckgestellten Punkte). Runde 108:
+ausdrueckliche Bitte. Runde 111: `eea0f38` (die Avatare). Runde 110: `8d2b4a7` (Punkt 7,
+Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 108:
 `7c49c74` (Batch 3, fuenf Punkte). Runde 107: `7eabcc0` (die vier kleinen Ursachen) und
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
