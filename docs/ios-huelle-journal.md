@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-09-17, nach Runde 109)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-09-19, nach Runde 110)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -27,6 +27,12 @@ Inhabers („die drei punkte"): Doppeltipp-Zoom, Textmarkierung, ein Teilformat.
 nur der Inhaber entscheiden kann" ist entsprechend kuerzer geworden; was dort noch steht, steht
 dort weiter aus gutem Grund.
 
+**Runde 110 hat Punkt 7 („Fluessigkeit") geklaert, und zwar negativ:** Der im Journal seit Runde
+103 genannte „groesste Hebel", der Release-Bau, traegt nicht — `ArchiveAction` ist ohnehin Release,
+und die Oberflaeche laeuft in einem eigenen WebKit-Prozess, den unsere Kompilierung nicht beruehrt.
+Gemessen wurde stattdessen (`npm run mess-fluessigkeit`, neu): auf dem Hauptfaden **kein einziges
+ausgefallenes Bild**. Die Glas-Frage bleibt offen und ist **nur am Geraet** zu beantworten.
+
 **Der naechste Schritt ist eine Frage, keine Aufgabe** — siehe „Was als Naechstes zu tun ist".
 
 Eine Bitte des Inhabers stand ueber Runde 107 und gilt weiter: **nichts stillschweigend
@@ -35,23 +41,32 @@ solche Punkte freigegeben hat — sie ist genau der Grund, warum er gefragt wurd
 
 ### Was als Naechstes zu tun ist
 
-Offen sind zwei Punkte, und **keiner davon ist ein Stilblatt-Auftrag**:
+Offen ist **eine Frage an den Inhaber** und **eine Messung am Geraet**. Kein Stilblatt-Auftrag:
 
 1. **Punkt 6, „die App insgesamt visuell verschoenern"** — der Sammelpunkt der Liste. Ohne eine
    engere Frage nicht messbar abzuarbeiten. Die konkrete Frage an den Inhaber lautet: **welche
    Ansicht stoert am meisten?** Vorschlag aus dem Stand der Arbeit: die **Ergebnisseite** — sie ist
    die laengste (acht Bildschirme), traegt die meisten Karten, und sie ist die einzige, die jemand
    jemandem zeigt. Fragen, nicht raten.
-2. **Punkt 7, Fluessigkeit.** Der groesste Hebel ist der **Release-Bau statt Debug** (Runde 103),
-   danach die 20px `backdrop-filter`-Unschaerfe der Schublade. Beides ist eine Einstellung in Xcode
-   plus eine Messung am **Geraet**, nicht am Stilblatt — es gehoert in dieselbe Runde wie „die App
-   auf einem echten iPhone". In Runde 108 **ungemessen** geblieben.
+2. **Punkt 7, Fluessigkeit — der „Release-Hebel" aus Runde 103 traegt NICHT.** Runde 110 hat ihn
+   nachgeprueft: `ArchiveAction` steht auf **Release**, der ausgelieferte Bau ist also laengst
+   die Release-Fassung; nur die Run-Aktion ist Debug, und die sieht kein Nutzer. Und die
+   Oberflaeche laeuft in einer WKWebView in einem **eigenen Prozess** — wie der Swift-Wirt
+   kompiliert wurde, beruehrt WebKits Rendering gar nicht. **Bitte nicht erneut verfolgen.**
+   Gemessen ist stattdessen der Hauptfaden (`npm run mess-fluessigkeit`, neu): **kein einziges
+   ausgefallenes Bild** in drei Szenen. Offen bleibt allein die **Glas-Frage** (20px
+   `backdrop-filter` der Schublade), und die ist auf diesem Rechner **prinzipiell nicht messbar** —
+   headless WebKit legt GPU-Kosten nicht auf die rAF-Zeitachse, nachgewiesen mit einer Eichprobe,
+   die jetzt im Werkzeug steckt. Am Geraet beantwortet sie der Schalter **Bedienhilfen >
+   Transparenz reduzieren** mit einem Finger (er schaltet seit Runde 106 nativ jeden
+   `backdrop-filter` ab). Einzelheiten im Eintrag „Runde 110".
 
 **Es gibt keinen „Rest der Liste" dahinter.** Ein frueherer Stand dieser Uebergabe versprach einen,
 und das war falsch — nachgezaehlt gehen die 18 Punkte vollstaendig auf: 2 waren schon vorher
-erledigt (Overscroll, Impressum), 6 in Runde 107, 5 in Runde 108, **3 liegen beim Inhaber** (Zoom,
-Textmarkierung, ein Teilformat), und offen bleiben genau **drei**: die zwei oben genannten plus die
-**Avatare**, die eine Grundsatzentscheidung sind und keine Aufgabe.
+erledigt (Overscroll, Impressum), 6 in Runde 107, 5 in Runde 108, **3 in Runde 109 auf Ansage des
+Inhabers** (Zoom, Textmarkierung, ein Teilformat), **Punkt 7 in Runde 110 geklaert** (der Hebel
+trug nicht). Offen bleiben genau **zwei**: Punkt 6 als Frage, und die **Avatare** als
+Grundsatzentscheidung — keines davon eine Aufgabe, die man einfach anfangen kann.
 
 Die **woertliche Liste liegt nicht im Repository** — nur ihre Auswertung in den Eintraegen 107 und
 108. Wer sie braucht, muss den Inhaber danach fragen; aus dem Journal laesst sie sich nicht
@@ -346,6 +361,113 @@ ausdrueckliche Bitte. Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). 
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 110 — Punkt 7 „Fluessigkeit": die Behauptung im Journal war falsch
+
+Punkt 7 der Rueckmeldungsliste lautete „Fluessigkeit", und das Journal nannte dazu seit Runde 103
+einen Hebel: **„der groesste offene Hebel ist der Release-Bau statt Debug"**. Diese Runde hat ihn
+nachgeprueft statt ihm zu folgen. Er traegt nicht, und zwar aus zwei unabhaengigen Gruenden.
+
+### 1. Der ausgelieferte Bau ist laengst Release
+
+Aus `App.xcodeproj/xcshareddata/xcschemes/App.xcscheme`, Aktion fuer Aktion ausgelesen:
+
+| Aktion | Konfiguration |
+|---|---|
+| Launch (Cmd+R) | Debug |
+| Test | Debug |
+| Analyze | Debug |
+| **Profile** | **Release** |
+| **Archive** | **Release** |
+
+**Archive ist Release.** Was in den App Store geht, ist also bereits die Release-Fassung — ganz
+gleich, was die Run-Aktion macht. Der „Hebel" betraf nie die ausgelieferte App, sondern nur das,
+was der Inhaber sieht, wenn er in Xcode auf Start drueckt. **Fuer Nutzer gibt es hier nichts zu
+holen**, und der Punkt loest sich damit auf.
+
+(Release baut auch durch — `xcodebuild -configuration Release` wurde in dieser Runde erstmals
+ausgefuehrt: **BUILD SUCCEEDED**. Das war bis hierher unbelegt.)
+
+### 2. Release kann die Oberflaeche gar nicht fluessiger machen
+
+Der zweite Grund ist der grundsaetzlichere und gehoert aufgeschrieben, damit die Behauptung nicht
+wiederkommt: **Lucenta zeichnet nichts in Swift.** Die ganze Oberflaeche laeuft in einer
+`WKWebView`, und die rendert in einem **eigenen Prozess** (`com.apple.WebKit.WebContent`), den
+Apple gebaut und optimiert hat. Wie der Swift-Wirt kompiliert wurde, hat auf WebKits Layout,
+Zeichnen und JIT **keinen** Einfluss. Debug gegen Release beruehrt unseren eigenen Swift-Code
+(`MainViewController`, die Kauf-Bruecke) und den von Capacitor — beides laeuft beim Start und bei
+Bruecken-Aufrufen, nicht waehrend einer Animation.
+
+### Also gemessen, wo Bilder wirklich verloren gehen
+
+Neu im Repository: `tools/mess_fluessigkeit.mjs` (`npm run mess-fluessigkeit`). Es zeichnet auf
+WebKit Bild fuer Bild die Abstaende zwischen `requestAnimationFrame` auf, waehrend eine Szene
+laeuft, und misst jede Szene **zweimal** — einmal wie sie ist, einmal mit abgeschaltetem
+Verdaechtigen.
+
+**Der erste Lauf meldete fuer jede Szene Median 17,0ms, null lange Bilder und null Unterschied.**
+Das sah nach „alles fluessig" aus. Es war „nicht gemessen", und dieser Unterschied ist der
+eigentliche Ertrag der Runde. Die Eichung, die das aufgedeckt hat und jetzt **vor jedem Lauf
+automatisch** mitlaeuft:
+
+| Probe | Median | Bilder | Ergebnis |
+|---|---|---|---|
+| Ruhe | 17ms | 90 | Vergleichswert |
+| Hauptfaden 25ms je Bild blockiert | **25ms** | **59** | wird gesehen |
+| `blur(120px)` ganzseitig, animiert | 17ms | 90 | **wird NICHT gesehen** |
+| `backdrop-filter: blur(200px)` | 17ms | 90 | **wird NICHT gesehen** |
+
+Headless-WebKit legt die Kosten der **Zusammensetzung (GPU)** gar nicht auf die rAF-Zeitachse.
+Daraus folgt hart: Das Werkzeug misst Arbeit auf dem **Hauptfaden** (Layout, JavaScript, die
+Zeichenflaeche, DOM-Bau) und ist dort empfindlich — und es ist **blind fuer genau das**, was das
+Journal als naechsten Hebel nannte, den 20px-`backdrop-filter` der Schublade. Das Werkzeug sagt
+das jetzt selbst und weigert sich, fuer GPU-Szenen eine Aussage zu drucken; bricht die
+Hauptfaden-Eichung, bricht es ganz ab.
+
+**Das Ergebnis auf dem Hauptfaden, vier Durchlaeufe je Szene und Zustand:**
+
+| Szene | Median | schlimmstes Bild | lange Bilder (>33ms) |
+|---|---|---|---|
+| Ansichtswechsel zu den Archetypen (10 Karten) | 17,0ms | 30ms | 0 / 333 |
+| Fragebogen, eine Frage weiter | 17,0ms | 18ms | 0 / 192 |
+| Startseite im Ruhezustand (Sternenhimmel laeuft) | 17,0ms | 20ms | 0 / 380 |
+
+**Kein einziges ausgefallenes Bild.** Weder das Bauen der zehn Archetypen-Karten noch die
+Zeichenflaeche des Sternenhimmels kostet messbar etwas. Die Oberflaeche ist nicht
+hauptfaden-gebunden — und damit ist auch klar, dass die Stellschrauben, die eine JavaScript-Seite
+ueblicherweise hat, hier nichts bringen.
+
+### Was offen bleibt, und wie der Inhaber es in zehn Sekunden beantwortet
+
+**Die Glas-Frage ist unbeantwortet.** Ob die 20px-Unschaerfe der Schublade auf einem echten iPhone
+Bilder kostet, laesst sich auf diesem Rechner nicht messen — und eine Null aus einem blinden
+Instrument ist kein Freispruch.
+
+Dafuer braucht es kein neues Werkzeug: **Bedienhilfen > Transparenz reduzieren** schaltet seit
+Runde 106 nativ jeden `backdrop-filter` der App ab (`MainViewController.swift` setzt
+`data-transparenz="reduziert"`). Ein Finger, zwei Zustaende, derselbe Bildschirm. Faehrt die
+Schublade mit dem Schalter spuerbar geschmeidiger ein, ist das Glas der Grund; faehlt sich kein
+Unterschied an, ist die Frage erledigt.
+
+**Und eine Kleinigkeit, die NICHT geaendert wurde, weil sie dem Inhaber gehoert:** Die Run-Aktion
+des Schemas steht auf Debug. Wer in Xcode startet, sieht also nicht, was Nutzer sehen. Auf Release
+umzustellen waere eine Zeile — kostet aber Haltepunkte und laengere Bauzeiten beim Entwickeln.
+Das ist ein Tausch, keine Verbesserung, und deshalb seine Entscheidung.
+
+### Ein Instrument, das nicht funktioniert hat — und warum es nicht im Repository liegt
+
+Fuer die Startzeit (Debug gegen Release) war ein Skript gebaut, das
+`xcrun simctl launch --console-pty` mitliest und auf Capacitors Fertig-Zeile wartet. Es lief in
+jeden Zeitausgleich: **`--console-pty` liefert Capacitors Log nicht.** Die `⚡️`-Zeilen gehen ueber
+`os_log` ins Unified Log, nicht auf stdout; auf stdout steht nur eine Cookie-Meldung und die PID.
+Der richtige Weg waere `xcrun simctl spawn <id> log stream` mit einem Praedikat — nachgewiesen,
+dass die WebKit-Ereignisse der App dort ankommen.
+
+Weiterverfolgt wurde es **nicht**, weil die Frage sich vorher aufgeloest hat (Abschnitt 1: der
+ausgelieferte Bau ist ohnehin Release). Das Skript ist geloescht statt halbfertig liegen zu
+bleiben; wer die Startzeit doch einmal braucht, findet hier den Weg und die Falle.
 
 ---
 

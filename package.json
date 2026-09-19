@@ -10,6 +10,7 @@
     "render": "python3 tools/renderer/go.py",
     "diff-sprachen": "node tools/diff_sprachen.mjs",
     "pruef-bewegung": "node tools/pruef_bewegung.mjs",
+    "mess-fluessigkeit": "node tools/mess_fluessigkeit.mjs",
     "fehlersuche": "node tools/fehlersuche.mjs",
     "schriften": "node tools/schriften_holen.mjs",
     "pruef-nativ": "node tools/pruef_nativ.mjs",
