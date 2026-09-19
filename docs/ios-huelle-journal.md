@@ -365,6 +365,117 @@ mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
 
 ---
 
+## Runde 111 — die Avatare, vierte Rueckmeldung, erste auf der richtigen Achse
+
+Der Inhaber hat entschieden: **die zehn Menschenfiguren strukturell ueberarbeiten, die zwoelf
+Tiere unberuehrt lassen.** Vorher stand der Befund, und der ist wichtiger als die Aenderung.
+
+### Der Befund: die Tiere tragen, die Menschen nicht
+
+Die vergroesserte Darstellung aller 22 Figuren nebeneinander zeigt einen Bruch, den die
+Rueckmeldung „die Avatare sehen zu unrealistisch aus" nicht benennt: **Fuchs, Katze, Baer, Panda,
+Hase, Reh, die beiden Hunde und die Eule funktionieren.** Die Lichtarbeit aus Runde 94 sieht man
+ihnen an. Neben ihnen fallen die Menschen ab.
+
+Und das erklaert, warum drei Ueberarbeitungen nichts geloest haben: **Runde 87, 94 und 97/99 haben
+am RENDERING gearbeitet** — Licht, Verlaeufe, Iris mit Limbusring, Lippen mit Glanz, Nasenfluegel,
+Ohrmuschel, Wangenroete ohne Kante. Jede einzelne Aenderung war richtig. Die Beschwerde betraf
+aber die **Proportion**, und die hat keine von ihnen angefasst.
+
+Das ist die Lehre „eine Messung kann sich auf die falsche Groesse beziehen" in ihrer teuersten
+Form: Dreimal wurde etwas Richtiges verbessert, waehrend der sichtbare Fehler eine Ebene tiefer
+lag. Bei Tieren faellt das nicht auf, weil ein Tierkopf rund ist, keinen Hals zeigt und grosse
+Ohren hat — die Konstruktion passt zu ihnen. Bei Menschen passt sie nicht.
+
+### Zwei Dinge waren gebaut und haben nie gewirkt
+
+Das ist der eigentliche Fund der Runde, und beide waren im Quelltext unsichtbar:
+
+**1. Der Hals aus Runde 99 war nie zu sehen.** Am Bildpunkt nachgemessen: Er lief von y=28,5 bis
+35,45, das Kinn endete bei 35,1 — und das oberste Element in seiner Mitte (20 / 31) war der
+**Kopfpfad**. Es gab sogar ZWEI Halsformen, eine in `figMensch` und eine in `figSchultern`, beide
+vollstaendig hinter dem Gesicht. Zwoelf Runden lang stand im Kommentar, der Hals sei „der Grund,
+warum die Figuren nicht mehr wie aufgesetzte Koepfe wirken".
+
+**2. Die Ohren aus Runde 97 lagen unter der Sichtbarkeitsschwelle.** Sie ragten **0,95 Einheiten**
+aus einem 23,9 Einheiten breiten Kopf — auf dem 96px-Avatar 2,3 Bildpunkte, im 52px-Waehler 1,2.
+Samt Innenwindung und Laeppchen, die dort nie jemand gesehen hat.
+
+Die gemeinsame Ursache: **Der Kopf war 26,9 von 40 Einheiten hoch, also 67 % des Bildes.** Das ist
+keine Buestenansicht, sondern eine Chibi-Proportion — und fuer einen Hals ist darin schlicht kein
+Platz.
+
+### Was geaendert wurde
+
+1. **Der Kopf ist eine eigene Gruppe und um 0,85 verkleinert** (`KOPFSKALA`). Der Faktor ist
+   gerechnet: Kinn = 8,2 + (34,6 + `kopfL` − 8,2) · 0,85 ergibt ueber alle zehn Figuren **30,1 bis
+   31,2**, also 2,2 bis 3,3 Einheiten Hals vor den Schultern bei 33,4. Der Kopf steht damit bei
+   **56 % statt 67 %** der Hoehe. Drehpunkt oben (20 / 8,2), damit der Scheitel bleibt, wo er ist.
+2. **Der Hals ist neu.** Der alte war ein Rechteck mit vier rechten Winkeln — folgenlos, solange
+   ihn niemand sah, und ein Pflock, sobald er sichtbar wurde. Jetzt verbreitert er sich nach unten
+   (der Trapezmuskel), traegt einen Verlauf quer (Licht von links wie ueberall) und einen
+   Kinnschatten. Die doppelte Halsform in `figMensch` ist geloescht.
+3. **Die Ohren ragen 2,2 Einheiten heraus** und folgen jetzt der Kopfbreite. Sie standen fest auf
+   9,2 und 30,8, waehrend der Kopfrand mit `kopfB` zwischen 7,7 und 9,1 wandert — bei einem breiten
+   Gesicht verschwand das Ohr damit fast, bei einem schmalen stand es frei.
+4. **Die Augen haben eine Neigung je Figur** (−4 bis +7 Grad, spiegelbildlich). Bis hierher war
+   jedes Auge dieselbe Ellipse; verschieden waren nur Groesse, Oeffnung und was darin stand. Der
+   Winkel zwischen innerem und aeusserem Augenwinkel ist der groesste Formunterschied, den zwei
+   Augenpaare haben koennen. Tiere geben keine Neigung mit und bleiben unveraendert.
+5. **Die Nase hat einen Ruecken.** Sie hatte seit Runde 97 Fluegel, Loecher und einen Lichtpunkt
+   auf der Spitze — also eine Spitze, aber keinen Ruecken, und sass als Gebilde mitten im Gesicht.
+   Dazu kommt die helle Haelfte der Kante als schmaler Verlauf; die dunkle lieferte die vorhandene
+   Schattenellipse.
+
+**Der Schlagschatten auf die Schulter ist entfallen.** Er war fuer ein Kinn gerechnet, das
+unmittelbar auf der Schulter auflag; mit einem Hals dazwischen hat der Kopf dort keinen Kontakt
+mehr, und die Ellipse stand als grauer Fleck daneben. Was sie leisten sollte, leisten jetzt
+Kinnschatten und Kragenschatten — beide naeher an ihrer Ursache.
+
+### Ein Fehler unterwegs, im Bild sofort sichtbar und im Code nicht
+
+Nach dem neuen Hals standen auf jeder Figur **zwei blasse Beulen links und rechts davon**. Der
+Kinnschatten war eine Ellipse mit rx 4,3 auf einem Hals von 3,1 Halbbreite und quoll seitlich ins
+Freie. Eine schmalere Ellipse haette diesen einen Fall behoben; stattdessen steht die Halsform
+jetzt **einmal** da und dient zugleich als **Schablone** (`clipPath`) — das behebt auch den
+naechsten Fall, in dem jemand den Hals schmaler oder den Schatten breiter macht.
+
+### Die Pruefung, und die zwei Wege dorthin, die nicht getragen haben
+
+Neu in `pruef-app` (jetzt **26** statt 25): **zwischen Kinn und Schulter bleibt Platz fuer einen
+sichtbaren Hals, mindestens 1,5 Einheiten.** Gegengeprueft — im gesunden Zustand **2,34
+Einheiten**, mit `KOPFSKALA = 1` nachgestellt **−1,7**.
+
+Drei Wege wurden probiert, und die ersten zwei gehoeren ins Protokoll, damit sie niemand
+wiederholt:
+
+- **`getBoundingClientRect`** liefert fuer Knoten in einer skalierten SVG-Gruppe auf WebKit
+  wiederholt **0**.
+- **`elementFromPoint`** meldet an der Halsstelle die Formen, die DARUEBER liegen (Kinnschatten,
+  Kopfsaum). Der Halspfad steht dort nie obenauf, obwohl der Hals klar zu sehen ist.
+- **Ein Bildvergleich „mit und ohne Hals"** bestand die Gegenprobe **faelschlich**: Mit dem alten,
+  verdeckten Hals blieb ein Rest der verbreiterten Unterkante sichtbar, und **zwei Byte**
+  Unterschied genuegten dem Vergleich. „Das Bild aendert sich" ist ohne Schwelle keine Aussage —
+  und das waere beinahe die zweite blinde Pruefung in drei Runden gewesen.
+
+Getragen hat `getBBox` (reine Geometrie, unabhaengig vom Layout) plus der Massstab aus dem
+`transform` der Kopfgruppe. Auch das erst im zweiten Anlauf: `parentNode` allein las den Massstab
+als 1, weil `figSaum` eine eigene Gruppe dazwischenlegt — die Pruefung meldete den Fehler zuerst
+auch im gesunden Zustand. Sie laeuft jetzt nach oben, bis sie ein `scale()` findet.
+
+### Was offen bleibt
+
+**Ob es diesmal reicht, kann nur der Inhaber sagen** — und zwar am Geraet, nicht an einem
+Bildschirmfoto. Der Unterschied ist bei 62px im Waehler und 96px im Profil nachgesehen und traegt
+dort; die Augenneigung und der Nasenruecken sind allerdings bei dieser Groesse fein, und ihr
+Beitrag ist ehrlicherweise kleiner als der von Hals und Proportion.
+
+Sollte die Rueckmeldung ein **fuenftes** Mal kommen, ist der naechste Schritt nicht wieder diese
+Konstruktion. Dann bleiben die zwei Wege, die der Inhaber in dieser Runde nicht gewaehlt hat: die
+Menschen streichen und nur Tiere anbieten, oder von Hand gezeichnete Figuren.
+
+---
+
 ## Runde 110 — Punkt 7 „Fluessigkeit": die Behauptung im Journal war falsch
 
 Punkt 7 der Rueckmeldungsliste lautete „Fluessigkeit", und das Journal nannte dazu seit Runde 103

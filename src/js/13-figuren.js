@@ -245,8 +245,28 @@
       '" stroke="'+figTon(haut, 1.16)+'" stroke-width="'+(r*0.22).toFixed(2)+'" fill="none" stroke-linecap="round" opacity=".85"/>';
   }
   var FIG_AUGE_LAUF = 0;
+  // Runde 111: die Neigung der Lidachse, je Figur. Bis hierher war jedes Auge dieselbe Ellipse —
+  // verschieden waren nur ihre Groesse, ihre Oeffnung und was DARIN stand. Damit unterschieden
+  // sich zehn Gesichter in allem ausser der Augenform, und die Augenform ist das, was man an
+  // einem Gesicht zuerst liest.
+  //
+  // Ein Winkel genuegt dafuer, und zwar der zwischen innerem und aeusserem Augenwinkel: Ob die
+  // Achse nach aussen ansteigt (mandelfoermig, wach) oder abfaellt (sanft, muede), ist der
+  // groesste Formunterschied, den zwei Augenpaare haben koennen. Gedreht wird um den
+  // Augenmittelpunkt und SPIEGELBILDLICH — beide Augen in dieselbe Richtung zu drehen ergaebe
+  // ein schiefes Gesicht statt einer Augenform.
+  //
+  // Die Werte bleiben klein (hoechstens 7 Grad). Darueber wird aus Vielfalt eine Karikatur —
+  // dieselbe Grenze, die in Runde 97 schon fuer Augenabstand und Augengroesse gezogen wurde.
+  // Tiere geben keine Neigung mit und bleiben damit unveraendert.
   function figAugen(x1, x2, y, r, o){
-    return '<g class="fig-augen">' + figAuge(x1, y, r, o) + figAuge(x2, y, r, o) + '</g>';
+    var n = (o && o.neigung) || 0;
+    var eins = function(x, vz){
+      if (!n) return figAuge(x, y, r, o);
+      return '<g transform="rotate('+(vz * n).toFixed(2)+' '+x.toFixed(2)+' '+y.toFixed(2)+')">'+
+             figAuge(x, y, r, o)+'</g>';
+    };
+    return '<g class="fig-augen">' + eins(x1, -1) + eins(x2, 1) + '</g>';
   }
 
   // Licht oben, Schatten unten. Beides sehr zurueckhaltend: Es soll Koerper geben, nicht
@@ -277,8 +297,41 @@
   // Der einzelne groesste Schritt weg von der Spielkonsolen-Anmutung. Ein Kopf ohne Koerper
   // schwebt, und alles, was schwebt, liest sich als Symbol. Angeschnitten am unteren Rand, wie
   // ein Portraet: Man sieht keinen ganzen Menschen, man sieht den Ausschnitt eines Bildes.
+  // Nur die Menschen benutzen diese Funktion; die Tiere bringen eigene Schultern mit.
+  //
+  // Runde 111: Hier stand ein RECHTECK — `M16.4 30.5 L23.6 30.5 L23.6 34 L16.4 34 Z`, flach
+  // gefuellt, mit vier rechten Winkeln. Das war jahrelang folgenlos, weil es vollstaendig hinter
+  // dem Kinn lag und nie jemand gesehen hat. Sobald der Kopf ihm Platz machte, stand die Figur
+  // auf einem Pflock: Ein Hals mit senkrechten Kanten und ohne Licht ist kein Koerperteil.
+  //
+  // Drei Dinge machen daraus einen Hals, und alle drei sind noetig:
+  //   1. Er VERBREITERT sich nach unten. Ein Hals geht nicht in die Schulter, er wird zu ihr —
+  //      die Kante nach aussen ist der Trapezmuskel. Senkrechte Seiten sind eine Roehre.
+  //   2. Er ist RUND. Das Licht kommt wie ueberall von links oben, also ist die rechte Seite
+  //      dunkler. Ohne das bleibt er eine Flaeche, egal welche Form sie hat.
+  //   3. Das Kinn wirft einen SCHATTEN darauf. Das ist die Stelle, an der Kopf und Hals
+  //      zusammengehoeren statt aneinanderzustossen — und sie liegt bewusst hier, VOR dem Kopf:
+  //      Was oberhalb des Kinns davon liegt, verdeckt das Gesicht von selbst, und weil jede
+  //      Figur ein anderes Kinn hat (kopfL), waere jede andere Loesung eine Rechnung mehr.
   function figSchultern(haut, kleid){
-    return '<path d="M16.4 30.5 L23.6 30.5 L23.6 34 L16.4 34 Z" fill="'+figTon(haut, 0.86)+'"/>'+
+    var gn = FIG_UID + 'hals', gc = FIG_UID + 'halsform';
+    // Die Halsform steht einmal da und wird zweimal benutzt: als Flaeche und als Schablone fuer
+    // den Kinnschatten. Der Schatten war im ersten Entwurf eine Ellipse mit rx 4,3 auf einem
+    // Hals von 3,1 Halbbreite — und quoll links und rechts als blasse Beule ins Freie. Eine
+    // schmalere Ellipse haette diesen einen Fall behoben; die Schablone behebt auch den
+    // naechsten, in dem jemand den Hals schmaler macht oder den Schatten breiter.
+    var HALS = 'M16.9 27.4 L16.9 30.8 C16.9 32.8 15.8 33.5 15.1 34.8 '+
+               'L24.9 34.8 C24.2 33.5 23.1 32.8 23.1 30.8 L23.1 27.4 Z';
+    return '<defs><linearGradient id="'+gn+'" x1="0" y1="0" x2="1" y2="0">'+
+             '<stop offset="0" stop-color="'+figTon(haut, 0.78)+'"/>'+
+             '<stop offset="0.42" stop-color="'+figTon(haut, 0.95)+'"/>'+
+             '<stop offset="1" stop-color="'+figTon(haut, 0.64)+'"/>'+
+           '</linearGradient>'+
+           '<clipPath id="'+gc+'"><path d="'+HALS+'"/></clipPath></defs>'+
+           '<path d="'+HALS+'" fill="url(#'+gn+')"/>'+
+           '<g clip-path="url(#'+gc+')">'+
+             '<ellipse cx="20" cy="30.9" rx="4.3" ry="1.8" fill="'+FIG_INK+'" opacity=".18"/>'+
+           '</g>'+
            '<path d="M20 33.4 C13.4 33.4 8.2 36.4 6.6 40 L33.4 40 C31.8 36.4 26.6 33.4 20 33.4 Z" fill="'+kleid+'"/>'+
            // Der Kragenschatten, wo der Hals im Kleidungsstueck verschwindet.
            '<path d="M16.6 33.6 Q20 35.6 23.4 33.6" stroke="'+FIG_INK+'" stroke-width="1" fill="none" opacity=".14"/>';
@@ -779,7 +832,7 @@
     // Bild zu sehen.
     if (haar && FIG_GLATT[o.haar]) haarVorn = figStraehnen(o.haarFarbe || '#3A2A20');
     var gh = FIG_UID + 'haut', gk = FIG_UID + 'kern', gs = FIG_UID + 'nase', gf = FIG_UID + 'falte',
-        gw = FIG_UID + 'wange', gj = FIG_UID + 'kiefer';
+        gw = FIG_UID + 'wange', gj = FIG_UID + 'kiefer', gb = FIG_UID + 'ruecken';
     // Runde 97: Das Kinn ist schmaler geworden. Der Umriss lief bis hierher fast senkrecht
     // hinunter und bog erst ganz unten ein — im Bild ist das ein Ei mit Augen. Ein Gesicht
     // verjuengt sich AB DEN WANGENKNOCHEN, also ab etwa zwei Dritteln der Hoehe.
@@ -790,6 +843,11 @@
     // sich daran vor allem anderen — ein schmales langes und ein breites rundes Gesicht sind
     // auf zwanzig Meter zwei verschiedene Personen, noch bevor man Augen oder Haare sieht.
     var kb = o.kopfB || 1, kl = o.kopfL || 0;
+    // Runde 111: Die zwei Zahlen, mit denen der Kopf als Ganzes rechnet. KOPFSKALA verkleinert
+    // ihn (Begruendung unten, bei der Gruppe), kopfRandL/R sind seine seitlichen Kanten — die
+    // Ohren haengen daran, statt auf festen Werten zu stehen.
+    var KOPFSKALA = 0.85;
+    var kopfRandL = 20 - 11.6 * kb, kopfRandR = 20 + 11.6 * kb;
     var bx = function(v){ return (20 + (v - 20) * kb).toFixed(2); };
     var by = function(v){ return (v + (v > 20 ? (v - 20) / 14.6 * kl : 0)).toFixed(2); };
     var KOPF = 'M20 8.2 C'+bx(27.2)+' 8.2 '+bx(31.6)+' 13.2 '+bx(31.6)+' 20.4 '+
@@ -821,31 +879,80 @@
       '<radialGradient id="'+gj+'">'+
         '<stop offset="0" stop-color="'+figTon(o.haut, 0.68)+'" stop-opacity="0.30"/>'+
         '<stop offset="1" stop-color="'+figTon(o.haut, 0.68)+'" stop-opacity="0"/>'+
+      '</radialGradient>'+
+      // Das Licht auf dem Nasenruecken. Weiss statt einer aufgehellten Hautfarbe, weil ein
+      // Glanzlicht die Farbe des LICHTS hat und nicht die der Flaeche — und sehr blass, weil
+      // der Ruecken die laengste zusammenhaengende helle Flaeche im Gesicht ist und bei
+      // hoeherer Deckung sofort als Streifen liest.
+      '<radialGradient id="'+gb+'">'+
+        '<stop offset="0" stop-color="#FFFFFF" stop-opacity="0.20"/>'+
+        '<stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>'+
       '</radialGradient>'+'</defs>' +
-      // Runde 99: ein Hals. Bis hierher sass der Kopf unmittelbar auf den Schultern, und das
-      // ist die Sorte Fehler, die man nicht benennen kann und trotzdem sieht — der Grund,
-      // warum die Figuren wie aufgesetzte Koepfe wirkten. Er steht VOR den Schultern, damit
-      // die Kleidung ihn unten ueberdeckt.
-      '<path d="M15.6 28.5 L15.6 34.5 Q20 36.4 24.4 34.5 L24.4 28.5 Z" fill="'+figTon(o.haut, 0.90)+'"/>' +
+      // Runde 111: Hier stand seit Runde 99 ein Hals — und er war NIE zu sehen. Am Bildpunkt
+      // nachgemessen: Er lief von y=28,5 bis 35,45, das Kinn endete bei 35,1, und das oberste
+      // Element in seiner Mitte (20, 31) war der KOPFPFAD. Es gab sogar zwei Halsformen, diese
+      // und die in figSchultern — beide vollstaendig hinter dem Gesicht.
+      // Diese ist geloescht. Sichtbar wird jetzt die aus figSchultern, weil der Kopf ihr Platz
+      // macht; die Begruendung steht bei KOPFSKALA weiter unten.
       figSchultern(o.haut, o.kleid || '#6E7F73') +
-      // Der Schatten, den der Kopf auf die Schulter wirft. Ohne ihn liegt der Kopf nicht auf
-      // dem Koerper, er steht davor.
-      '<ellipse cx="20" cy="35.4" rx="7.4" ry="2.6" fill="'+FIG_INK+'" opacity=".22"/>' +
+      // Runde 111: Hier lag der Schatten, den der Kopf auf die Schulter wirft — als breite
+      // Ellipse bei y=35,4, gerechnet fuer ein Kinn, das unmittelbar auf der Schulter auflag.
+      // Mit einem Hals dazwischen hat der Kopf keinen Kontakt mehr zur Schulter, und die
+      // Ellipse stand als grauer Fleck neben dem Hals. Was sie leisten sollte, leisten jetzt
+      // zwei Dinge in figSchultern, die beide naeher an ihrer Ursache sitzen: der Kinnschatten
+      // auf dem Hals und der Kragenschatten am Ausschnitt.
+      // ---------- Der Kopf als eigene Einheit (Runde 111) ----------
+      // Alles ab hier gehoert zum Kopf und wird GEMEINSAM verkleinert. Der Grund ist die
+      // Proportion, und sie war das Letzte, was an diesen Figuren noch nach Baukasten aussah:
+      // Der Kopf war 26,9 von 40 Einheiten hoch — 67 % des Bildes. Das ist keine Buestenansicht,
+      // das ist eine Chibi-Figur, und genau daran erkennt man die Wii-Anmutung, die seit
+      // Runde 87 dreimal gemeldet wurde.
+      //
+      // Die drei Runden davor haben am RENDERING gearbeitet (Licht, Verlaeufe, Iris, Lippen) und
+      // jedes Mal etwas Richtiges verbessert. Der gemeldete Fehler lag aber eine Ebene tiefer,
+      // im Bauplan: Bei 67 % Kopfhoehe ist fuer einen Hals kein Platz, und ohne Hals sitzt jeder
+      // Kopf auf jeder Schulter wie aufgesetzt. Deshalb hat auch der Hals aus Runde 99 nichts
+      // geaendert — er war da, er passte nur nicht mehr ins Bild.
+      //
+      // 0,85 ist gerechnet, nicht gegriffen: Das Kinn soll oberhalb des Halsstuecks aus
+      // figSchultern landen (das beginnt bei y=30,5). Kinn = 8,2 + (34,6 + kopfL − 8,2) · 0,85
+      // ergibt ueber alle zehn Figuren 30,1 bis 31,2 — also 2,2 bis 3,3 Einheiten sichtbarer
+      // Hals vor den Schultern bei y=33,4. Der Kopf steht damit bei 56 % statt 67 % der Hoehe.
+      //
+      // Der Drehpunkt liegt oben (20 / 8,2), nicht in der Mitte: Der Scheitel soll bleiben, wo
+      // er ist — sonst rutscht die ganze Figur im Kreis nach unten und es entsteht oben eine
+      // Luecke statt unten ein Hals.
+      '<g transform="translate(20 8.2) scale('+KOPFSKALA+') translate(-20 -8.2)">' +
       // Die Ohren liegen HINTER dem Kopf: Sichtbar bleibt nur, was seitlich hervorsteht.
       // Davor standen sie darauf und sahen aus wie angeklebte Knoepfe.
       // Runde 97: Ein Ohr ist keine Ellipse. Was es zum Ohr macht, ist die INNENWINDUNG — der
       // Bogen, der von oben nach innen laeuft und unten im Laeppchen endet. Zwei Linien je
       // Ohr, und aus dem Knopf wird ein Ohr.
-      '<ellipse cx="9.2" cy="22.8" rx="2.1" ry="2.9" fill="'+figTon(o.haut, 0.90)+'"/>'+
-      '<path d="M9.9 20.9 Q8.4 22.4 9.2 24.4" stroke="'+figTon(o.haut, 0.66)+'" stroke-width="0.55" '+
-        'fill="none" stroke-linecap="round" opacity=".8"/>'+
-      '<path d="M9.4 24.8 Q8.9 25.2 9.6 25.4" stroke="'+figTon(o.haut, 0.70)+'" stroke-width="0.45" '+
-        'fill="none" stroke-linecap="round" opacity=".6"/>'+
-      '<ellipse cx="30.8" cy="22.8" rx="2.1" ry="2.9" fill="'+figTon(o.haut, 0.84)+'"/>'+
-      '<path d="M30.1 20.9 Q31.6 22.4 30.8 24.4" stroke="'+figTon(o.haut, 0.62)+'" stroke-width="0.55" '+
-        'fill="none" stroke-linecap="round" opacity=".8"/>'+
-      '<path d="M30.6 24.8 Q31.1 25.2 30.4 25.4" stroke="'+figTon(o.haut, 0.66)+'" stroke-width="0.45" '+
-        'fill="none" stroke-linecap="round" opacity=".6"/>'+
+      // Runde 111: Die Ohren waren gebaut — samt Innenwindung und Laeppchen aus Runde 97 — und
+      // ragten 0,95 Einheiten aus einem 23,9 Einheiten breiten Kopf heraus. Am Geraet sind das
+      // auf dem 96px-Avatar 2,3 Bildpunkte und im 52px-Waehler 1,2. Gebaut und unterhalb der
+      // Sichtbarkeitsschwelle ist dasselbe wie nicht gebaut; im Bild fehlten sie schlicht.
+      //
+      // Sie stehen jetzt so weit heraus, dass nach der Verkleinerung 2,2 Einheiten sichtbar
+      // bleiben (2,59 davor, geteilt durch 0,85). Und sie folgen der Kopfbreite: Bis hierher
+      // standen sie fest auf 9,2 und 30,8, waehrend der Kopfrand mit kopfB zwischen 7,7 und
+      // 9,1 wandert — bei einem breiten Gesicht verschwand das Ohr damit fast ganz, bei einem
+      // schmalen stand es frei. Verschoben wird die ganze Gruppe, nicht die Ellipse: Sonst
+      // bliebe die Innenwindung an ihrem alten Platz stehen.
+      '<g transform="translate('+(kopfRandL - 0.49 - 9.2).toFixed(2)+' 0)">'+
+        '<ellipse cx="9.2" cy="22.8" rx="2.1" ry="2.9" fill="'+figTon(o.haut, 0.90)+'"/>'+
+        '<path d="M9.9 20.9 Q8.4 22.4 9.2 24.4" stroke="'+figTon(o.haut, 0.66)+'" stroke-width="0.55" '+
+          'fill="none" stroke-linecap="round" opacity=".8"/>'+
+        '<path d="M9.4 24.8 Q8.9 25.2 9.6 25.4" stroke="'+figTon(o.haut, 0.70)+'" stroke-width="0.45" '+
+          'fill="none" stroke-linecap="round" opacity=".6"/>'+
+      '</g>'+
+      '<g transform="translate('+(kopfRandR + 0.49 - 30.8).toFixed(2)+' 0)">'+
+        '<ellipse cx="30.8" cy="22.8" rx="2.1" ry="2.9" fill="'+figTon(o.haut, 0.84)+'"/>'+
+        '<path d="M30.1 20.9 Q31.6 22.4 30.8 24.4" stroke="'+figTon(o.haut, 0.62)+'" stroke-width="0.55" '+
+          'fill="none" stroke-linecap="round" opacity=".8"/>'+
+        '<path d="M30.6 24.8 Q31.1 25.2 30.4 25.4" stroke="'+figTon(o.haut, 0.66)+'" stroke-width="0.45" '+
+          'fill="none" stroke-linecap="round" opacity=".6"/>'+
+      '</g>'+
       figSaum(KOPF, 'url(#'+gh+')', figTon(o.haut, 1.30)) +
       // Der Kopf ist keine Ellipse mehr, sondern eine Form mit Kinn: oben breit, zur Mitte
       // leicht eingezogen, unten gerundet auslaufend. Eine reine Ellipse hat kein Gesicht,
@@ -894,7 +1001,8 @@
       // Kopfbreite). Groesser wird daraus keine Vielfalt, sondern eine Karikatur.
       figAugen(20 - (4.4 + (o.augenAb || 0)), 20 + (4.4 + (o.augenAb || 0)),
                20.8 + (o.augenY || 0), o.augeR || 2.15,
-               {blick:o.blick, iris:o.iris || '#4A352A', seite:o.seite, hoehe:o.hoehe, oeffnung:o.oeffnung, haut:o.haut}) +
+               {blick:o.blick, iris:o.iris || '#4A352A', seite:o.seite, hoehe:o.hoehe, oeffnung:o.oeffnung,
+                haut:o.haut, neigung:o.neigung}) +
       // Nase: nur ein kurzer Bogen. Mehr braucht ein Gesicht dieser Groesse nicht, und alles
       // Groessere zieht den Blick von den Augen weg.
       // Die Nase traegt jetzt beides: den Schatten auf ihrer rechten Seite (das Licht kommt von
@@ -904,6 +1012,16 @@
       // wieder eine Zeichnung; hier soll nur die rechte Seite der Nase etwas dunkler stehen,
       // weil das Licht von links kommt.
       '<ellipse cx="21.3" cy="23.8" rx="1.5" ry="2.2" fill="url(#'+gs+')"/>' +
+      // Runde 111: der Nasenruecken. Die Nase hatte seit Runde 97 Fluegel, Loecher und einen
+      // Lichtpunkt auf der Spitze — also eine SPITZE, aber keinen Ruecken. Sie sass damit als
+      // kleines Gebilde mitten im Gesicht, statt aus der Stirn herunterzukommen.
+      // Ein Ruecken ist keine Linie, sondern die Kante, an der sich das Licht teilt: links
+      // heller, rechts der Schatten, den die Ellipse darueber schon liefert. Hier steht
+      // deshalb nur die helle Haelfte, als schmaler senkrechter Verlauf von den Brauen bis zur
+      // Spitze. Ein Strich waere an dieser Stelle wieder eine Zeichnung — dieselbe Lehre wie
+      // bei Wangenknochen, Lachfalte und Haarglanz, die alle als Strich versucht und verworfen
+      // wurden.
+      '<ellipse cx="19.3" cy="21.6" rx="0.8" ry="2.9" fill="url(#'+gb+')"/>' +
       // Runde 97: Was die Nase bisher war — ein Haken. Was eine Nase hat und der Haken nicht:
       // zwei Fluegel, zwei Loecher und einen Lichtpunkt auf der Spitze. Alles sehr klein
       // gehalten; bei 40 Einheiten Kopfhoehe ist ein sichtbares Nasenloch sofort zu viel.
@@ -939,7 +1057,10 @@
          '<path d="M19.5 20.6 Q20 20.1 20.5 20.6" stroke-linecap="round"/>'+
          '<path d="M11.7 20.2 L9.2 19.6 M28.3 20.2 L30.8 19.6" stroke-linecap="round"/></g>' : '') +
       (o.bart ? '<path d="M12.6 24 C12.6 32 16 34.6 20 34.6 C24 34.6 27.4 32 27.4 24 '+
-                'C27.4 28 24 29.6 20 29.6 C16 29.6 12.6 28 12.6 24 Z" fill="'+haarFuell+'"/>' : '');
+                'C27.4 28 24 29.6 20 29.6 C16 29.6 12.6 28 12.6 24 Z" fill="'+haarFuell+'"/>' : '') +
+      // Schliesst die Kopf-Gruppe aus Runde 111. Alles darin ist gemeinsam verkleinert; Hals,
+      // Schultern und Schlagschatten stehen bewusst davor und damit in voller Groesse.
+      '</g>';
   }
 
   // Die Figuren. Reihenfolge: erst Menschen, dann Tiere — wer sich selbst sucht, sucht nicht
@@ -951,26 +1072,26 @@
     // die Augenfarbe (iris) kommt dazu. Vorher unterschied sie nur der Mund, und der traegt an
     // einem Gesicht die wenigste Mimik: Deshalb sahen zweiundzwanzig Figuren gleich aus,
     // obwohl sie es auf dem Papier nicht waren.
-    {id:'m1',  feld:'#F3E3D3', svg:function(){ return figMensch({kopfB:1.03, kopfL:0.5, augenAb:-0.35, augenY:0.0, augeR:2.1, miene:'warm', haut:'#E8BE9A', haar:'kurzhaar', haarFarbe:'#3A2A20',
+    {id:'m1',  feld:'#F3E3D3', svg:function(){ return figMensch({kopfB:1.03, kopfL:0.5, augenAb:-0.35, augenY:0.0, augeR:2.1, neigung:4, miene:'warm', haut:'#E8BE9A', haar:'kurzhaar', haarFarbe:'#3A2A20',
                   iris:'#4A352A', kleid:'#5E7466',}); }},
-    {id:'m2',  feld:'#EFE0EA', svg:function(){ return figMensch({kopfB:0.95, kopfL:-0.4, augenAb:0.3, augenY:-0.3, augeR:2.24, miene:'begeistert', haut:'#F0CBAA', haar:'lang', haarFarbe:'#8A4B2A',
+    {id:'m2',  feld:'#EFE0EA', svg:function(){ return figMensch({kopfB:0.95, kopfL:-0.4, augenAb:0.3, augenY:-0.3, augeR:2.24, neigung:-3, miene:'begeistert', haut:'#F0CBAA', haar:'lang', haarFarbe:'#8A4B2A',
                   iris:'#3E6B5A', kleid:'#8A6E82',}); }},
-    {id:'m3',  feld:'#E2E7DC', svg:function(){ return figMensch({kopfB:1.06, kopfL:-0.6, augenAb:0.55, augenY:0.2, augeR:2.3, miene:'neugier', haut:'#8D5A3B', haar:'locken', haarFarbe:'#2B1D17',
+    {id:'m3',  feld:'#E2E7DC', svg:function(){ return figMensch({kopfB:1.06, kopfL:-0.6, augenAb:0.55, augenY:0.2, augeR:2.3, neigung:6, miene:'neugier', haut:'#8D5A3B', haar:'locken', haarFarbe:'#2B1D17',
                   iris:'#3A2A20', kleid:'#4F6B5E',}); }},
-    {id:'m4',  feld:'#DDE6EC', svg:function(){ return figMensch({kopfB:0.97, kopfL:0.3, augenAb:-0.2, augenY:0.3, augeR:2.06, miene:'traeumerisch', haut:'#E5B98F', haar:'tuch', haarFarbe:'#3E6B74', brauenFarbe:'#4A3226',
+    {id:'m4',  feld:'#DDE6EC', svg:function(){ return figMensch({kopfB:0.97, kopfL:0.3, augenAb:-0.2, augenY:0.3, augeR:2.06, neigung:-4, miene:'traeumerisch', haut:'#E5B98F', haar:'tuch', haarFarbe:'#3E6B74', brauenFarbe:'#4A3226',
                   iris:'#43352C', kleid:'#3E6B74',}); }},
-    {id:'m5',  feld:'#EDE6DA', svg:function(){ return figMensch({kopfB:1.0, kopfL:-0.2, augenAb:0.15, augenY:0.0, augeR:2.2, miene:'freude', haut:'#C98F62', haar:'dutt', haarFarbe:'#4A3226',
+    {id:'m5',  feld:'#EDE6DA', svg:function(){ return figMensch({kopfB:1.0, kopfL:-0.2, augenAb:0.15, augenY:0.0, augeR:2.2, neigung:-2, miene:'freude', haut:'#C98F62', haar:'dutt', haarFarbe:'#4A3226',
                   iris:'#4A352A', kleid:'#7A6A52',}); }},
-    {id:'m6',  feld:'#E7E2F0', svg:function(){ return figMensch({kopfB:1.05, kopfL:0.7, augenAb:-0.55, augenY:-0.2, augeR:2.0, miene:'entschlossen', haut:'#EFC9A6', haar:'kurzhaar', haarFarbe:'#6B6B6B', bart:true,
+    {id:'m6',  feld:'#E7E2F0', svg:function(){ return figMensch({kopfB:1.05, kopfL:0.7, augenAb:-0.55, augenY:-0.2, augeR:2.0, neigung:5, miene:'entschlossen', haut:'#EFC9A6', haar:'kurzhaar', haarFarbe:'#6B6B6B', bart:true,
                   iris:'#546B78', kleid:'#5A5F72',}); }},
     // Runde 83 dazu: mehr Haarfarben und mehr Gesichter, ausdruecklich gewuenscht.
-    {id:'m7',  feld:'#F4EEDC', svg:function(){ return figMensch({kopfB:0.94, kopfL:0.4, augenAb:0.4, augenY:0.2, augeR:2.26, miene:'stolz', haut:'#F2D3B4', haar:'lang', haarFarbe:'#DFB25F', brauenFarbe:'#B98F45',
+    {id:'m7',  feld:'#F4EEDC', svg:function(){ return figMensch({kopfB:0.94, kopfL:0.4, augenAb:0.4, augenY:0.2, augeR:2.26, neigung:3, miene:'stolz', haut:'#F2D3B4', haar:'lang', haarFarbe:'#DFB25F', brauenFarbe:'#B98F45',
                   iris:'#4E7C8C', kleid:'#C79A5E',}); }},
-    {id:'m8',  feld:'#F6E4DC', svg:function(){ return figMensch({kopfB:0.98, kopfL:-0.5, augenAb:-0.1, augenY:-0.3, augeR:2.12, miene:'staunen', haut:'#F5D6BE', haar:'locken', haarFarbe:'#C25A2B', brauenFarbe:'#A64A22',
+    {id:'m8',  feld:'#F6E4DC', svg:function(){ return figMensch({kopfB:0.98, kopfL:-0.5, augenAb:-0.1, augenY:-0.3, augeR:2.12, neigung:-3, miene:'staunen', haut:'#F5D6BE', haar:'locken', haarFarbe:'#C25A2B', brauenFarbe:'#A64A22',
                   sommersprossen:true, iris:'#4C7A46', kleid:'#A5644A',}); }},
-    {id:'m9',  feld:'#E4E9EF', svg:function(){ return figMensch({kopfB:1.02, kopfL:-0.3, augenAb:0.65, augenY:0.1, augeR:2.32, miene:'skeptisch', haut:'#D9A97C', haar:'pony', haarFarbe:'#241C18',
+    {id:'m9',  feld:'#E4E9EF', svg:function(){ return figMensch({kopfB:1.02, kopfL:-0.3, augenAb:0.65, augenY:0.1, augeR:2.32, neigung:7, miene:'skeptisch', haut:'#D9A97C', haar:'pony', haarFarbe:'#241C18',
                   iris:'#3A2A20', kleid:'#4A5A6B',}); }},
-    {id:'m10', feld:'#EAE7DF', svg:function(){ return figMensch({kopfB:0.96, kopfL:0.6, augenAb:-0.45, augenY:0.3, augeR:2.04, miene:'verschmitzt', haut:'#EAC49F', haar:'zopf', haarFarbe:'#7A5A3C', brille:true,
+    {id:'m10', feld:'#EAE7DF', svg:function(){ return figMensch({kopfB:0.96, kopfL:0.6, augenAb:-0.45, augenY:0.3, augeR:2.04, neigung:2, miene:'verschmitzt', haut:'#EAC49F', haar:'zopf', haarFarbe:'#7A5A3C', brille:true,
                   iris:'#5E6B4A', kleid:'#6E6455',}); }},
     {id:'fuchs', feld:'#F6E6D8', svg:function(){ return figTier({form:'spitz', nase:'dreieck', schnurrhaare:true, miene:'schelmisch', ohr:'spitz', fell:'#D97A45', innen:'#F5E2D2', schnauze:'#F8EFE6',
                   wange:'#E9A177', iris:'#7A4520'}); }},
