@@ -162,7 +162,14 @@
     // `nativVorhanden()` von sich aus — eine Marke, die man setzen muss, ist eine, die man
     // vergisst, und dieses Vergessen kostet hier Geld. Beim Entwickeln bleibt der Umschalter
     // vollstaendig erhalten; die Pruefungen setzen 'lucenta_plus' ohnehin direkt.
-    if (!nativVorhanden()){
+    //
+    // Runde 113, auf Wunsch des Inhabers: Er erscheint jetzt AUCH in der App, aber nur im
+    // Entwicklungsbau (Start aus Xcode). Die Marke dafuer setzt nicht dieser Code und nicht
+    // jemand von Hand, sondern der Compiler — `#if DEBUG` in MainViewController.swift. Das
+    // Archiv fuer den Store ist ein Release-Bau und kennt sie nicht; dort bleibt der Schalter so
+    // unsichtbar wie bisher. Der Einwand oben gegen eine Debug-Marke gilt damit nicht: Diese
+    // kann man nicht vergessen zu entfernen, weil man sie nie setzt.
+    if (!nativVorhanden() || entwicklungsBau()){
       var plusEl = document.createElement('div');
       plusEl.className = 'plus-schalter-zeile';
       plusEl.innerHTML =

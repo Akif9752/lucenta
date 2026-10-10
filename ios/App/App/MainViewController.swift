@@ -60,7 +60,29 @@ class MainViewController: CAPBridgeViewController {
         bridge?.registerPluginInstance(LucentaKaeufePlugin())
         transparenzVorzeichnen()
         transparenzBeobachten()
+        #if DEBUG
+        entwicklungsbauMelden()
+        #endif
     }
+
+    #if DEBUG
+    /// Runde 113, auf Wunsch des Inhabers: ein Umschalter im Profil zwischen freier und gekaufter
+    /// Fassung, damit sich die bezahlte Version am Geraet ansehen laesst.
+    ///
+    /// Den Umschalter gab es schon — er war in der App absichtlich unsichtbar, weil er dort im
+    /// App Store das Abo verschenken wuerde (Runde 103). `src/js/15-profile.js` lehnte dafuer eine
+    /// Debug-Marke ab: "Eine Marke, die man setzen muss, ist eine, die man vergisst." Diese hier
+    /// setzt niemand. Sie steht hinter `#if DEBUG`, und das setzt der Compiler — beim Start aus
+    /// Xcode (Run = Debug) ist sie da, im Archiv fuer den Store (Archive = Release) ist dieser
+    /// ganze Block gar nicht erst im Programm. Vergessen kann man sie also nur, indem man das
+    /// Schema umstellt, und das wuerde man merken.
+    private func entwicklungsbauMelden() {
+        guard let inhalt = webView?.configuration.userContentController else { return }
+        inhalt.addUserScript(WKUserScript(source: "window.__lucentaEntwicklungsbau = true;",
+                                          injectionTime: .atDocumentStart,
+                                          forMainFrameOnly: true))
+    }
+    #endif
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)

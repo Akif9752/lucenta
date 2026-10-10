@@ -29,6 +29,14 @@
       return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
     }catch(e){ return false; }
   }
+  // Runde 113: Laeuft hier ein Entwicklungsbau der App? Die Marke setzt MainViewController.swift
+  // nur hinter `#if DEBUG` — beim Start aus Xcode ja, im Archiv fuer den Store nie. Sie schaltet
+  // genau zwei Dinge frei: den Plus-Umschalter im Profil, und dass die Store-Abfrage beim Start
+  // einen von Hand eingeschalteten Plus-Stand nicht wieder wegnimmt (der Simulator antwortet
+  // ehrlich "kein Kauf", und der Umschalter stuende sonst nach jedem Start wieder auf aus).
+  function entwicklungsBau(){
+    try{ return window.__lucentaEntwicklungsbau === true; }catch(e){ return false; }
+  }
   function nativModul(name){
     try{
       var p = window.Capacitor && window.Capacitor.Plugins;
@@ -205,6 +213,9 @@
         if (!r || typeof r.aktiv !== 'boolean') return;
         if (r.aktiv && r.produkt) schalterSetzen(PLUS_PRODUKT, r.produkt, null);
         if (r.aktiv === istPlus()) return;
+        // Im Entwicklungsbau nimmt die Abfrage nichts weg — sonst ueberlebte der Umschalter im
+        // Profil keinen Neustart. Geben darf sie weiterhin: Ein echter Testkauf soll ankommen.
+        if (!r.aktiv && entwicklungsBau()) return;
         plusSetzen(r.aktiv);
         plusAnsichtenAuffrischen();
       }).catch(function(){});

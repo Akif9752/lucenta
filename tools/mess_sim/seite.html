@@ -1,0 +1,111 @@
+<!doctype html>
+<!-- Fluessigkeitsmessung im Simulator (Runde 113). Laeuft in Safari im iOS-Simulator, also auf
+     echtem WebKit MIT Zusammensetzung — anders als headless WebKit, das GPU-Kosten nicht auf die
+     rAF-Zeitachse legt (Runde 110). Laedt die App in einen Rahmen, spielt Szenen ab, misst die
+     Abstaende zwischen den Bildern und schickt das Ergebnis an server.py. -->
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+  html,body{margin:0;height:100%;background:#000;}
+  iframe{position:fixed;inset:0;width:100%;height:100%;border:0;}
+  #stand{position:fixed;left:0;right:0;bottom:0;z-index:9;font:12px monospace;color:#0f0;background:#000a;padding:4px;}
+</style></head><body>
+<iframe id="app"></iframe><div id="stand">bereit</div>
+<script>
+var RUNDEN = 3;
+var rahmen = document.getElementById('app');
+var stand = document.getElementById('stand');
+function warte(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+function laden(){
+  return new Promise(function(r){
+    rahmen.onload = function(){ r(); };
+    rahmen.src = '/dist/lucenta.html?t=' + Date.now();
+  });
+}
+function stil(css){
+  var d = rahmen.contentDocument, s = d.createElement('style');
+  s.textContent = css; d.head.appendChild(s);
+}
+function klick(id){ var e = rahmen.contentDocument.getElementById(id); if (e) e.click(); }
+
+// Bilder aufzeichnen im Fenster der APP, nicht der Messseite.
+function aufzeichnen(ms, jeBild){
+  var w = rahmen.contentWindow;
+  return new Promise(function(r){
+    var b = [], vor = null, start = null;
+    function takt(t){
+      if (start === null){ start = t; vor = t; }
+      else { b.push(t - vor); vor = t; }
+      if (jeBild) jeBild(t - start);
+      if (t - start < ms) w.requestAnimationFrame(takt); else r(b);
+    }
+    w.requestAnimationFrame(takt);
+  });
+}
+function auswerten(b){
+  var s = b.slice().sort(function(x,y){ return x-y; });
+  var p = function(q){ return s[Math.min(s.length-1, Math.floor(s.length*q))] || 0; };
+  return { n:b.length, median:+p(.5).toFixed(1), p95:+p(.95).toFixed(1),
+           max:+(s[s.length-1]||0).toFixed(1), lang:b.filter(function(d){ return d > 25; }).length };
+}
+
+var KEIN_GLAS_KOPF = 'header.top{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}';
+var KEIN_GLAS_SCHUBLADE = '#drawerPanel{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}';
+var KEIN_HIMMEL = '#sternenhimmel{display:none!important;}';
+
+// Jede Szene: name, css (Abweichung), vorbereiten, tun(während der Aufnahme), dauer
+var SZENEN = [
+  {name:'EICHUNG Ruhe (Startseite ohne Himmel)', css:KEIN_HIMMEL, dauer:1500},
+  {name:'EICHUNG Hauptfaden 12ms je Bild', css:KEIN_HIMMEL, dauer:1500,
+   jeBild:function(){ var e = performance.now() + 12; while (performance.now() < e); }},
+  {name:'EICHUNG blur(60px) ganzseitig animiert', dauer:1500,
+   css:KEIN_HIMMEL + '@keyframes __e{from{filter:blur(0px) hue-rotate(0deg)}to{filter:blur(60px) hue-rotate(360deg)}}#shell{animation:__e 1s linear infinite!important}'},
+
+  {name:'Startseite, Himmel laeuft', dauer:2000},
+  {name:'Startseite, ohne Himmel', css:KEIN_HIMMEL, dauer:2000},
+
+  {name:'Bildlauf Startseite, Kopfleiste mit Glas', dauer:1600, scroll:true},
+  {name:'Bildlauf Startseite, Kopfleiste ohne Glas', css:KEIN_GLAS_KOPF, dauer:1600, scroll:true},
+  {name:'Bildlauf Startseite, ohne Glas und ohne Himmel', css:KEIN_GLAS_KOPF + KEIN_HIMMEL, dauer:1600, scroll:true},
+
+  {name:'Schublade oeffnet, mit Glas', dauer:900, tun:function(){ klick('btnDrawerToggle'); }},
+  {name:'Schublade oeffnet, ohne Glas', css:KEIN_GLAS_SCHUBLADE, dauer:900, tun:function(){ klick('btnDrawerToggle'); }},
+  {name:'Schublade oeffnet, ohne Glas und ohne Himmel', css:KEIN_GLAS_SCHUBLADE + KEIN_HIMMEL, dauer:900,
+   tun:function(){ klick('btnDrawerToggle'); }},
+
+  {name:'Fragebogen, Antwort und naechste Frage', dauer:900,
+   vorbereiten:async function(){ klick('btnStart'); await warte(900); },
+   tun:function(){ var b = rahmen.contentDocument.querySelector('#scaleRow .scale-btn:nth-child(4)'); if (b) b.click(); }}
+];
+
+async function los(){
+  var ergebnis = { ua:navigator.userAgent, dpr:window.devicePixelRatio, szenen:[] };
+  for (var i = 0; i < SZENEN.length; i++){
+    var z = SZENEN[i], alle = [];
+    for (var r = 0; r < RUNDEN; r++){
+      stand.textContent = (i+1) + '/' + SZENEN.length + ' ' + z.name + ' (' + (r+1) + ')';
+      await laden(); await warte(900);
+      if (z.css) stil(z.css);
+      await warte(300);
+      if (z.vorbereiten) await z.vorbereiten();
+      var w = rahmen.contentWindow;
+      if (z.scroll) w.scrollTo(0, 0);
+      var tun = z.tun; if (tun) setTimeout(tun, 30);
+      var jeBild = z.jeBild || (z.scroll ? function(t){
+        // gleichmaessig 1,1 Bildschirmhoehen pro Sekunde, hin und zurueck
+        var h = Math.max(1, w.document.documentElement.scrollHeight - w.innerHeight);
+        var phase = (t / 1000 * 1.1 * w.innerHeight) % (2*h);
+        w.scrollTo(0, phase < h ? phase : 2*h - phase);
+      } : null);
+      alle = alle.concat(await aufzeichnen(z.dauer, jeBild));
+    }
+    var a = auswerten(alle); a.name = z.name;
+    ergebnis.szenen.push(a);
+  }
+  stand.textContent = 'fertig, sende';
+  await fetch('/ergebnis', {method:'POST', body:JSON.stringify(ergebnis)});
+  stand.textContent = 'gesendet';
+}
+setTimeout(los, 800);
+</script></body></html>

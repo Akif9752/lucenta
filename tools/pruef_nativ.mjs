@@ -47,6 +47,10 @@ await seite.addInitScript(() => {
   try {
     window.__aboAktiv = localStorage.getItem('__pruef_abo') === '1';
     window.__standFehler = localStorage.getItem('__pruef_standfehler') === '1';
+    // Runde 113: stellt den Entwicklungsbau nach — auf dem Geraet setzt das MainViewController.swift
+    // hinter `#if DEBUG`. Ueber den localStorage aus demselben Grund wie oben: Es muss ein
+    // Neuladen ueberleben.
+    if (localStorage.getItem('__pruef_entwicklung') === '1') window.__lucentaEntwicklungsbau = true;
   } catch (e) {}
   const merke = (was, arg) => { window.__nativLog.push({was, arg}); };
   window.Capacitor = {
@@ -345,6 +349,39 @@ await seite.waitForTimeout(200);
 const zurueck = await themeFarben();
 ok(zurueck.join(' ') === farbenVorher.join(' '),
    'bei "System" stehen die Ausgangswerte wieder da: ' + zurueck.join(' '));
+
+// --- Runde 113: der Entwicklungsbau
+//
+// Der Umschalter darf in der App erscheinen — aber NUR, wenn der Compiler die Marke gesetzt hat
+// (Start aus Xcode). Die Pruefung weiter oben ("kein #plusSchalter mit nativer Bruecke") bleibt
+// unveraendert und ist die wichtigere der beiden: Sie ist das, was im Store-Bau gilt. Diese hier
+// prueft die Gegenseite, und dass die Store-Abfrage beim Start den Vorschau-Stand nicht kippt.
+console.log('\n=== Im Entwicklungsbau gibt es den Umschalter, und er ueberlebt einen Neustart ===');
+await seite.evaluate(() => {
+  localStorage.setItem('__pruef_entwicklung', '1');
+  localStorage.setItem('lucenta_plus', '1');          // von Hand eingeschaltet
+  localStorage.setItem('__pruef_abo', '0');           // der Store sagt: kein Kauf
+  localStorage.setItem('__pruef_standfehler', '0');
+});
+await seite.reload({waitUntil: 'networkidle'});
+await seite.waitForTimeout(700);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'),
+   'im Entwicklungsbau nimmt die Store-Abfrage beim Start den Vorschau-Stand NICHT weg');
+await seite.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+await seite.waitForTimeout(300);
+await seite.evaluate(() => document.getElementById('btnDrawerProfileRow')?.click());
+await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => !!document.getElementById('plusSchalter')),
+   'im Entwicklungsbau steht der Umschalter im Profil');
+await seite.evaluate(() => document.getElementById('plusSchalter')?.click());
+await seite.waitForTimeout(300);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') !== '1'),
+   'ein Tipp darauf schaltet zurueck auf die freie Fassung');
+await seite.evaluate(() => document.getElementById('plusSchalter')?.click());
+await seite.waitForTimeout(300);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'),
+   'und ein zweiter wieder auf Lucenta+');
+await seite.evaluate(() => localStorage.removeItem('__pruef_entwicklung'));
 
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 

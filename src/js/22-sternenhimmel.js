@@ -9,8 +9,10 @@
  *   - Er läuft NUR, während die Startseite sichtbar ist, und pausiert, sobald der Tab in den
  *     Hintergrund geht. Ein Fragebogen mit fünfzig Fragen soll nicht nebenher ein Canvas
  *     zeichnen lassen.
- *   - Die Bildpunktdichte ist auf 2 gedeckelt. Auf einem Telefon mit Faktor 3 wären es sonst
- *     2,25-mal so viele Bildpunkte für einen Hintergrund, den man kaum bemerkt.
+ *   - Die Bildpunktdichte ist auf 1,5 gedeckelt (bis Runde 113: 2). Auf einem Telefon mit
+ *     Faktor 3 wären es sonst viermal so viele Bildpunkte für einen Hintergrund, den man kaum
+ *     bemerkt. Dazu wird nur jedes zweite Bild gemalt, und unter Schublade und Fenstern steht
+ *     der Himmel still — beides seit Runde 113, Begründung bei schritt().
  *   - Bei prefers-reduced-motion wird das Feld EINMAL gezeichnet und steht dann still. Der
  *     Himmel bleibt, die Bewegung nicht.
  */
@@ -97,7 +99,14 @@
   function aufbauen(){
     var neuB = window.innerWidth, neuH = window.innerHeight;
     if (!neuB || !neuH) return;
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Runde 113: Obergrenze 1,5 statt 2. Im iOS-Simulator lief die Startseite mit dem Himmel
+    // bei rund 9 Bildern pro Sekunde (Median 110 ms) und ohne ihn bei 43 — und headless WebKit
+    // verlor bei Pixeldichte 3 selbst auf einem schnellen Mac 15 von 121 Bildern, bei Dichte 1
+    // keines. Die Kosten wachsen mit der Bildpunktzahl, und 2 hiess 780x1688, also 1,3
+    // Millionen Bildpunkte, 60-mal in der Sekunde neu gemalt. Bei 1,5 sind es 0,74 Millionen.
+    // Sichtbar ist das kaum: Staub, Strahlen und Wolken sind weich gezeichnet und verlieren
+    // nichts; nur die kleinsten Sterne im Dunkelmodus werden einen Hauch weicher.
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     b = neuB; h = neuH;
     canvas.width = Math.round(b * dpr);
     canvas.height = Math.round(h * dpr);
@@ -714,8 +723,37 @@
     ctx.globalAlpha = 1;
   }
 
+  // Runde 113: Steht etwas ueber dem Himmel, steht er still. Schublade, Bild- und Plus-Fenster
+  // tragen alle ein backdrop-filter, und eine Unschaerfe ueber einem BEWEGTEN Grund muss WebKit
+  // in jedem Bild neu rechnen. Ueber einem stehenden kann es sie zwischenspeichern. Gemessen im
+  // Simulator: Die Schublade oeffnete mit Glas und laufendem Himmel bei Median 190 ms je Bild,
+  // ohne beides bei 94. Der Himmel ist dabei ohnehin zu zwei Dritteln verdeckt und durch die
+  // Unschaerfe nur als Farbe zu ahnen — angehalten sieht man ihn genauso.
+  var UEBERLAGERUNGEN = ['drawerPanel', 'imgModal', 'plusModal'].map(function(id){
+    return document.getElementById(id);
+  }).filter(Boolean);
+  function verdeckt(){
+    for (var i = 0; i < UEBERLAGERUNGEN.length; i++){
+      if (UEBERLAGERUNGEN[i].classList.contains('open')) return true;
+    }
+    return false;
+  }
+  // Runde 113: gemalt wird jedes ZWEITE Bild, bewegt wird jedes. Die Bewegung ist so langsam
+  // (eine volle Wanderung des Lichts dauert rund vier Minuten, ein Staubkorn braucht Sekunden
+  // fuer eine Fingerbreite), dass 30 Bilder in der Sekunde nicht von 60 zu unterscheiden sind
+  // — die Kosten aber halbieren sich. Die Positionen laufen weiter in jedem Takt, damit sich
+  // die Geschwindigkeit nicht aendert, nur die Zahl der Aufnahmen davon.
+  var bildTakt = 0;
+  // Runde 113: Waehrend gescrollt wird, steht der Himmel ebenfalls still — und 180 ms danach
+  // laeuft er weiter. Im Simulator kostete der laufende Himmel beim Bildlauf mehr als jede
+  // andere Stelle (90 Bilder mit ihm, 140 ohne, in derselben Zeit), und Bildlauf ist genau der
+  // Moment, in dem man ein Ruckeln bemerkt. Den Stillstand bemerkt man nicht: Was sich auf der
+  // Flaeche bewegt, bewegt sich langsamer, als ein Finger wischt.
+  var bildlaufBis = 0;
+  window.addEventListener('scroll', function(){ bildlaufBis = performance.now() + 180; }, {passive:true});
   function schritt(){
     if (!laeuft) return;
+    if (verdeckt() || performance.now() < bildlaufBis){ rafId = window.requestAnimationFrame(schritt); return; }
     var i, s;
     for (i = 0; i < sterne.length; i++){
       s = sterne[i];
@@ -756,7 +794,7 @@
       wolkenBewegen();
     }
     if (++farbZaehler > 60){ farbZaehler = 0; farbenLesen(); }
-    zeichnen();
+    if ((++bildTakt & 1) === 0) zeichnen();
     rafId = window.requestAnimationFrame(schritt);
   }
 

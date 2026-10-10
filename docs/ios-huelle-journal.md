@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-10, nach Runde 112)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-10, nach Runde 113)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -375,6 +375,89 @@ Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 1
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 113 — der Plus-Umschalter in der App, und wo die Startseite wirklich ruckelte
+
+Zwei Auftraege des Inhabers: „einen Switch auf der Profilseite, mit dem ich Plus und Standard
+an- und abwaehlen kann, um zu sehen, wie die bezahlte Version aussieht" — und „die ganze App muss
+ruckelloser und fluessiger laufen".
+
+### 1. Der Umschalter: sichtbar beim Start aus Xcode, im Store-Archiv nicht vorhanden
+
+Den Umschalter gab es seit Runde 84. Seit Runde 103 war er in der App **absichtlich unsichtbar**,
+weil er dort im App Store das Abo verschenken wuerde — er war eine der zwei Stellen, die genau
+das getan haben. Der Kommentar lehnte eine Debug-Marke ausdruecklich ab: „Eine Marke, die man
+setzen muss, ist eine, die man vergisst, und dieses Vergessen kostet hier Geld."
+
+Das gilt fuer `#if DEBUG` in Swift nicht, denn die setzt der Compiler, nicht ein Mensch.
+`MainViewController.swift` spielt nur im Debug-Bau `window.__lucentaEntwicklungsbau = true` ein;
+`15-profile.js` zeigt den Schalter, wenn keine Bruecke da ist ODER diese Marke. **Run** ist Debug,
+**Archive** ist Release (Runde 110 ausgelesen) — im Store-Bau ist der ganze Block nicht im Programm.
+
+**Am gebauten Programm nachgeprueft, nicht an der Quelle:** Debug-Programm enthaelt die Marke 1x,
+Release-Programm 0x. Und weil „0x" auch die Antwort waere, wenn es den Bau gar nicht gaebe: Das
+Release-Programm ist da (361 KB) und enthaelt Zeichenketten aus derselben Datei
+(`data-transparenz` 2x) — die Suche funktioniert also.
+
+**Eine zweite Falle, die den Schalter sonst nutzlos gemacht haette:** Beim Start fragt die App
+den Store (`plusStandPruefen`), und der Simulator antwortet ehrlich „kein Kauf". Der Schalter
+stuende damit nach jedem Neustart wieder auf aus. Im Entwicklungsbau nimmt diese Abfrage deshalb
+nichts weg; geben darf sie weiterhin, damit ein Testkauf ankommt.
+
+`pruef-nativ` 45 -> **49**. Die alte Zusicherung „kein #plusSchalter mit nativer Bruecke" bleibt
+unveraendert — sie ist das, was im Store-Bau gilt. Neu: mit Marke steht er da, ueberlebt einen
+Neustart, und schaltet in beide Richtungen. Gegengeprueft: ohne die zwei neuen Zeilen schlagen
+die neuen Pruefungen fehl.
+
+**Vorruebergehend** heisst damit: Er verschwindet von selbst, sobald archiviert wird. Soll er
+auch aus dem Entwicklungsbau wieder weg, sind es die zwei Zeilen mit `entwicklungsBau()`.
+
+### 2. Fluessigkeit: diesmal mit einem Instrument, das zusammensetzt
+
+Runde 110 hatte gezeigt, dass headless WebKit GPU-Kosten nicht sieht. Neu deshalb
+`tools/mess_sim/` — eine Messseite, die in **Safari im iOS-Simulator** laeuft, die App in einen
+Rahmen laedt, Szenen abspielt und das Ergebnis an einen kleinen Server auf dem Mac schickt.
+Benutzung steht in `server.py`.
+
+**Der Befund war eindeutig und kam nicht von dort, wo das Journal ihn vermutet hatte.** Nicht das
+Glas, sondern der **Sternenhimmel**: Startseite mit Himmel Median 110 ms je Bild (rund 9 Bilder pro
+Sekunde), ohne ihn 23 ms. Gegengeprueft in headless WebKit: bei Pixeldichte 1 kostet er nichts,
+bei Dichte 3 fallen auf dem schnellen Mac 15 von 121 Bildern aus. Darum war er in Runde 110
+unsichtbar — gemessen wurde dort bei Dichte 1. Die Zeichenflaeche hatte 780x1688 Bildpunkte,
+60-mal in der Sekunde neu gemalt, mit einem neu angelegten Verlauf je Stern.
+
+Und er verteuerte das Glas: Eine Unschaerfe ueber einem BEWEGTEN Grund muss WebKit in jedem Bild
+neu rechnen, ueber einem stehenden kann es sie zwischenspeichern.
+
+Vier Hebel in `22-sternenhimmel.js`, keiner aendert das Aussehen nennenswert:
+
+1. Pixeldichte hoechstens **1,5** statt 2 (0,74 statt 1,3 Mio. Bildpunkte).
+2. Gemalt wird **jedes zweite Bild**, bewegt wird jedes — die Geschwindigkeit bleibt, nur die
+   Zahl der Aufnahmen halbiert sich. Die Bewegung ist dafuer langsam genug.
+3. **Unter Schublade, Bild- und Plus-Fenster steht er still.**
+4. **Beim Scrollen steht er still**, bis 180 ms nach der letzten Bewegung.
+
+| Simulator, innerhalb eines Laufs verglichen | vorher | nachher |
+|---|---|---|
+| Schublade oeffnet, Median je Bild | 190 ms | **17 ms** (= ohne Glas) |
+| Scrollen Startseite, Bilder in gleicher Zeit | 90 | **226** (= ohne Glas und Himmel) |
+| Startseite in Ruhe, Bilder | 52–114 | 141 (ohne Himmel 352) |
+
+**Was diese Zahlen taugen, ehrlich:** Der Simulator drosselt Safari mitunter auf 30 Bilder pro
+Sekunde (im ersten Lauf lag schon die Eichung „Ruhe" bei 33 ms), deshalb wird nur innerhalb eines
+Laufs verglichen. Und er malt die 2D-Zeichenflaeche auf der CPU des Macs, ein iPhone auf seiner GPU
+— er kann also uebertreiben. Die Richtung ist belastbar, die Groessenordnung auf dem Geraet nicht.
+
+**Offen:** Die Startseite im Ruhezustand kostet im Simulator noch das 2,5-Fache von „ohne
+Himmel". Der naechste Hebel waere, die Sterne als vorgezeichnete Bildchen zu stempeln statt je
+Stern und Bild einen Verlauf anzulegen. Das ist ein Umbau am Zeichner eines ueber viele Runden
+abgestimmten Bildes und gehoert erst gemacht, wenn das Geraet sagt, dass es noetig ist — nicht
+auf Grund eines Instruments, das moeglicherweise uebertreibt. Dieselbe Vorsicht wie Runde 110.
+
+Nicht angefasst: das Glas der Kopfleiste (beim Scrollen mit stehendem Himmel ohne messbaren
+Unterschied mehr) und alle Uebergaenge.
 
 ---
 
