@@ -54,15 +54,8 @@
   .share-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:relative;}
   .share-brand{font-family:var(--serif);font-size:14px;color:var(--muted);}
   .share-title{font-family:var(--serif);font-size:21px;margin-top:8px;position:relative;}
-  .share-scores{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;position:relative;}
-  /* Ebenfalls aus dem Zoom-Test: „Gewissenhaftigkeit" ist als einzelnes Wort breiter als der
-     Chip, die Zahl dahinter schob sich dadurch ueber das Wort. Umbruch innerhalb des Chips statt
-     Ueberlagerung; bei normaler Breite bleibt jeder Chip einzeilig. */
-  .chip{
-    font-family:var(--mono);font-size:11.5px;background:var(--surface-2);border:1px solid var(--line);
-    border-radius:100px;padding:5px 10px;display:flex;gap:6px;flex-wrap:wrap;
-  }
-  .chip b{color:var(--accent-strong);}
+  /* Runde 112: .share-scores und .chip sind entfallen, mit den Chips der Ergebniskarte
+     (Begruendung in index.body.html). */
   .share-actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;position:relative;}
   .code-box{
     margin-top:10px;font-family:var(--mono);font-size:13px;background:var(--surface-2);

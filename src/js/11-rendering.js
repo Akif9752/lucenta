@@ -258,10 +258,6 @@
     // damit die Fünfeck-Form über mehrere Testdurchläufe hinweg vergleichbar bleibt.
     var sortedTraits = ORDER.slice().sort(function(a,b){ return scores[b]-scores[a]; });
 
-    var chips = sortedTraits.map(function(f){
-      return '<span class="chip">'+LABELS[f]+' <b>'+scores[f]+'</b></span>';
-    }).join('');
-    $('shareChips').innerHTML = chips;
 
     var code = toCode(scores);
     $('myCode').textContent = code;

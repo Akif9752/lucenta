@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-09-19, nach Runde 111)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-10, nach Runde 112)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -46,8 +46,11 @@ Offen ist **eine Frage an den Inhaber** und **eine Messung am Geraet**. Kein Sti
 1. **Punkt 6, „die App insgesamt visuell verschoenern"** — der Sammelpunkt der Liste. Ohne eine
    engere Frage nicht messbar abzuarbeiten. Die konkrete Frage an den Inhaber lautet: **welche
    Ansicht stoert am meisten?** Vorschlag aus dem Stand der Arbeit: die **Ergebnisseite** — sie ist
-   die laengste (acht Bildschirme), traegt die meisten Karten, und sie ist die einzige, die jemand
-   jemandem zeigt. Fragen, nicht raten.
+   die laengste, traegt die meisten Karten, und sie ist die einzige, die jemand jemandem zeigt.
+   **Runde 112 hat dort angefangen** (der Inhaber hat zweimal mit „weiter" geantwortet): Die fuenf
+   Werte standen viermal untereinander, die Chips der Ergebniskarte sind als Wiederholung ohne
+   Aufgabe heraus. Der Punkt ist damit angefangen, nicht erledigt — die naechste Ansicht ist die,
+   die der Inhaber nennt. Muster: erst zaehlen, dann aendern.
 2. **Punkt 7, Fluessigkeit — der „Release-Hebel" aus Runde 103 traegt NICHT.** Runde 110 hat ihn
    nachgeprueft: `ArchiveAction` steht auf **Release**, der ausgelieferte Bau ist also laengst
    die Release-Fassung; nur die Run-Aktion ist Debug, und die sieht kein Nutzer. Und die
@@ -372,6 +375,71 @@ Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 1
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 112 — Punkt 6, angefangen bei der Ergebnisseite
+
+Punkt 6 der Liste („die App insgesamt visuell verschoenern") brauchte eine Antwort auf die Frage,
+welche Ansicht am meisten stoert. Der Inhaber hat zweimal mit „weiter" geantwortet; genommen ist
+deshalb der Vorschlag, der hier seit Runde 108 stand — die **Ergebnisseite** —, und das ist im
+Bericht an ihn ausdruecklich gesagt, damit er umsteuern kann.
+
+### Zwei Zahlen im Journal waren veraltet
+
+Die Ergebnisseite ist **3,9 Bildschirme** lang (3306px bei 390x844), nicht acht, und traegt **42**
+gerahmte Elemente, nicht 46. Gemessen mit Beispieldaten auf WebKit. Die alten Zahlen stammen aus
+der Zeit vor der Formensprache aus Runde 69.
+
+### Ein Messfehler unterwegs, und er war meiner
+
+Die erste Aufnahme zeigte eine Luecke von rund 160px zwischen Kurzportraet und Netzdiagramm. Das
+war **nicht** die Seite: Ich hatte fuer die Aufnahme alle Animationen mit `animation:none`
+abgeschaltet, und die Kennzahl-Kacheln starten auf Deckkraft 0 und werden erst von ihrer
+Einblendung sichtbar. Ohne Einblendung bleiben sie unsichtbar stehen. Richtig ist
+`reducedMotion:'reduce'` im Browserkontext — das ist der Weg, den die App selbst kennt, und dort
+setzt das Stilblatt die Deckkraft ausdruecklich auf 1. **Wer die Ergebnisseite fuer ein Bild
+stillstellen will, nimmt diesen Weg, nicht `animation:none`.**
+
+### Der Befund: dieselben fuenf Zahlen viermal
+
+Bevor jemand eine einzige Erklaerung liest, stehen die fuenf Werte (74 · 70 · 63 · 56 · 48)
+**viermal** untereinander: in den Kacheln, an den Achsen des Netzdiagramms, als Chips in der
+Ergebniskarte und in den Karten des Berichts. Das ist zaehlbar und keine Geschmacksfrage.
+
+Drei davon haben eine Aufgabe, und die steht jeweils am Code: Die Kacheln sind „auf einen Blick"
+(die erste Zahl frueh, statt erst im Bericht), das Netzdiagramm ist ohne Beschriftung nicht
+ablesbar, die Karten sind der Bericht. **Die Chips hatten keine.** Sie machten die Ergebniskarte
+zum groessten Block der oberen Haelfte, obwohl deren Aufgabe Teilen und Code ist — und das
+geteilte Bild zeichnet seine Werte ohnehin selbst (`10-ergebnisbild.js`).
+
+### Was geaendert wurde
+
+Die Chips sind heraus — Markup, das Befuellen in `11-rendering.js`, `.share-scores` und `.chip` im
+Stilblatt (beides wurde nur dort benutzt; keine Testreihe und keine Pruefung haengt daran).
+
+| | vorher | nachher |
+|---|---|---|
+| Ergebniskarte | 393px | **280px** |
+| Ergebnisseite | 3306px | **3193px** |
+| gerahmte Elemente | 42 | **37** |
+| Wiederholungen der fuenf Werte vor dem Bericht | 3 | **2** |
+
+### Was bewusst NICHT geaendert wurde
+
+- **„Test wiederholen" steht weiter zweimal** (oben rechts und in der Karte), der **Code
+  ebenfalls zweimal** (Karte und Vergleich). Beides sind Bedienelemente, und beim Vergleich ist
+  das Vorbefuellen des eigenen Codes eine Hilfe, keine Wiederholung. Eine Streichung waere hier
+  eine Entscheidung ueber Bedienung, nicht ueber Aussehen — die gehoert dem Inhaber.
+- Der Schein hinter der Ueberschrift (der Strahlenkranz) ist in Runde 94–100 nachgemessen und
+  zweimal auf Rueckmeldung eingestellt worden. Er bleibt.
+
+### Was offen bleibt
+
+Punkt 6 ist damit **angefangen, nicht erledigt** — „insgesamt verschoenern" ist kein Punkt, der
+sich abhaken laesst. Die untere Haelfte der Ergebnisseite ist aufgeraeumt (Dimensionskarten,
+Vergleich, Fusszeile ohne Befund). Die naechste Ansicht nach diesem Muster — erst zaehlen, dann
+aendern — waere die, die der Inhaber nennt.
 
 ---
 
