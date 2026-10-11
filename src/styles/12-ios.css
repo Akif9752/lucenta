@@ -468,3 +468,147 @@
      auf die dunkelste. Auf --surface-2 sind es 4,77:1 hell und 4,86:1 dunkel, nachgerechnet. */
   .segment{ background:var(--surface-2); }
   .stat-tile{ background:var(--surface-2); }
+
+/* ================= Liquid Glass (Runde 121) =================
+     Auftrag des Inhabers: "Die Sidebar muss noch mehr Liquid Glass sein — noch durchsichtiger und
+     richtig wie Glas. Generell muss die App mehr von Apples Liquid Glass enthalten."
+
+     Nach Apples eigener Beschreibung (Human Interface Guidelines, "Materials: Liquid Glass"):
+     Liquid Glass gehoert auf die BEDIEN- und NAVIGATIONSEBENE, die ueber dem Inhalt schwebt —
+     Seitenleisten, Leisten, Knoepfe —, nicht in den Inhalt selbst. Es ist mehr als Unschaerfe: Es
+     wirft Licht und Farbe der Umgebung zurueck, hat helle Kanten, und es gibt eine klare, sehr
+     durchsichtige Variante. Apple setzt Seitenleisten eher deckend; der Inhaber will sie
+     durchsichtiger — die klare Variante also, und die Lesbarkeit liegt auf den Zeilen, die eine
+     eigene, halbdeckende Glasflaeche tragen.
+
+     Was "richtig wie Glas" hier heisst, in drei Lagen:
+       1. Durchsicht: geringe Toenung (--glas oben, --glas-tief unten) mit starker Unschaerfe und
+          gehobener Saettigung — der Grund scheint farbig durch, nicht grau.
+       2. Kanten: eine helle Lichtkante innen (--glas-rand) — Glas hat Dicke, und seine Kante faengt
+          Licht.
+       3. Glanz: ein schraeger Lichtstreif von oben (--glas-licht), der zur Mitte hin ausblendet.
+
+     Die Tueren fuer "Transparenz reduzieren" und "Kontrast erhoehen" stehen am Ende dieses Blocks
+     und schlagen alles hier: Wer deckend gewaehlt hat, bekommt deckend. */
+
+  /* Nachgemessen im Simulator (erster Wurf dieser Runde): Die Schublade las sich "fast deckend
+     dunkelgrau". Die Toenung war nicht der Hauptgrund — hinter dem Glas lag der Abdunkler
+     #drawerScrim mit 45 % Fast-Schwarz. Das Glas weichzeichnete also einen bereits verdunkelten
+     Grund, und im Dunkelmodus bleibt davon nur Grau. iOS dunkelt hinter schwebenden Flaechen
+     kaum ab; hier jetzt 16 %. Die Unschaerfe ist von 26 auf 16 px zurueck, damit hinter dem Glas
+     noch FORMEN zu erkennen sind — bei starker Unschaerfe wird jedes Glas zur Milchscheibe. */
+  #drawerScrim{ background:rgba(0,0,0,.16); }
+  #drawerPanel, .img-modal-panel-glas{
+    background:linear-gradient(165deg, var(--glas) 0%, var(--glas-tief) 100%);
+    -webkit-backdrop-filter:blur(16px) saturate(210%) brightness(1.06);
+    backdrop-filter:blur(16px) saturate(210%) brightness(1.06);
+    border-left:1px solid var(--glas-rand);
+    box-shadow:inset 1px 0 0 var(--glas-rand), inset 0 1px 0 var(--glas-licht),
+               -24px 0 60px -20px rgba(0,0,0,.38);
+  }
+  /* Der Glanz: ein Lichtstreif oben, der nach unten ausblendet. Als eigene Lage ueber dem Glas und
+     unter dem Inhalt; er faengt keine Beruehrung. */
+  #drawerPanel::before{
+    content:''; position:absolute; inset:0 0 auto 0; height:42%; pointer-events:none; z-index:0;
+    background:linear-gradient(170deg, var(--glas-licht) 0%, transparent 46%);
+    opacity:.55;
+  }
+  #drawerPanel > *{ position:relative; z-index:1; }
+
+  /* Zeilen auf dem Glas: halbdeckend, damit die Schrift auf jedem Grund lesbar bleibt. */
+  #drawerPanel .drawer-section{ background:var(--glas-zeile); }
+  #drawerPanel .drawer-profile-row:not([data-hg]){ background:var(--glas-zeile); border-color:var(--glas-rand); }
+
+  /* Runde Knoepfe (Schublade oeffnen und schliessen) als Glaskugeln, wie die Knoepfe der
+     Navigationsleisten in iOS 26. */
+  .drawer-tab, .drawer-close{
+    background:linear-gradient(160deg, var(--glas) 0%, var(--glas-tief) 100%);
+    -webkit-backdrop-filter:blur(14px) saturate(190%); backdrop-filter:blur(14px) saturate(190%);
+    border:1px solid var(--glas-rand);
+    box-shadow:inset 0 1px 0 var(--glas-licht), 0 2px 10px -2px rgba(0,0,0,.22);
+  }
+  .drawer-close{ border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; color:var(--ink); }
+
+  /* Die "Zurueck"- und Kopfknoepfe der Ansichten als Glaskapseln — in iOS 26 sind die Knoepfe der
+     Navigationsleiste genau das. */
+  .quiz-head .btn-ghost{
+    background:linear-gradient(160deg, var(--glas) 0%, var(--glas-tief) 100%);
+    -webkit-backdrop-filter:blur(14px) saturate(190%); backdrop-filter:blur(14px) saturate(190%);
+    border:1px solid var(--glas-rand);
+    box-shadow:inset 0 1px 0 var(--glas-licht), 0 2px 10px -2px rgba(0,0,0,.18);
+  }
+
+  /* Mitteilungen schweben in iOS 26 als Glaskapsel ueber dem Inhalt. Die Schrift bleibt --ink;
+     unter der Kapsel liegt die Seite in --paper, also bleibt der Grund hell bzw. dunkel genug. */
+  .toast{
+    background:linear-gradient(165deg, var(--glas) 0%, var(--glas-tief) 100%), color-mix(in srgb, var(--surface) 55%, transparent);
+    -webkit-backdrop-filter:blur(18px) saturate(200%); backdrop-filter:blur(18px) saturate(200%);
+    border:1px solid var(--glas-rand);
+    box-shadow:inset 0 1px 0 var(--glas-licht), 0 8px 26px -10px rgba(0,0,0,.35);
+  }
+  /* Der Plus-Dialog: durchsichtiger als bisher (86 -> 70 %), dazu Lichtkante und Glanz. Das
+     Bild-Fenster bleibt bei 86 % — darin wird die Vorschau des Ergebnisbildes beurteilt, und ein
+     Bild hinter Glas zu beurteilen ginge nicht (Runde 103). Es bekommt nur die Kante. */
+  #plusModal{
+    background:linear-gradient(165deg, var(--glas) 0%, transparent 60%), color-mix(in srgb, var(--surface) 70%, transparent);
+    -webkit-backdrop-filter:blur(22px) saturate(200%); backdrop-filter:blur(22px) saturate(200%);
+  }
+  #plusModal, #imgModal{
+    border-color:var(--glas-rand);
+    box-shadow:inset 0 1px 0 var(--glas-licht), 0 24px 60px -18px rgba(0,0,0,.45);
+  }
+  /* Die Kopfleiste ist seit Runde 102 Glas, ihr fehlte aber die Kante: eine feine Lichtlinie
+     unten, wo das Glas aufhoert. Nur Schatten, kein Grund — die Tueren der Leiste in
+     00-grundlagen.css bleiben damit unberuehrt. */
+  header.top{ box-shadow:inset 0 -1px 0 var(--glas-rand); }
+
+  /* Der Hauptknopf als getoentes Glas: Apple faerbt bei hervorgehobenen Knoepfen den GRUND in der
+     Akzentfarbe ("prominent glass"). Die Farbe bleibt deckend — sie traegt die Lesbarkeit der
+     Schrift —, dazu kommen Lichtkante und Glanzstreif. */
+  .btn-primary{
+    background-image:linear-gradient(175deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,0) 52%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.45), inset 0 -1px 0 rgba(0,0,0,.12),
+               0 6px 18px -8px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+
+  /* Die Tueren. */
+  @media (prefers-reduced-transparency: reduce){
+    #drawerPanel, .drawer-tab, .drawer-close, .quiz-head .btn-ghost, .toast, #plusModal{
+      background:var(--surface); -webkit-backdrop-filter:none; backdrop-filter:none;
+    }
+  }
+  :root[data-transparenz="reduziert"] #drawerPanel,
+  :root[data-transparenz="reduziert"] .drawer-tab,
+  :root[data-transparenz="reduziert"] .drawer-close,
+  :root[data-transparenz="reduziert"] .quiz-head .btn-ghost,
+  :root[data-transparenz="reduziert"] .toast,
+  :root[data-transparenz="reduziert"] #plusModal{
+    background:var(--surface); -webkit-backdrop-filter:none; backdrop-filter:none;
+  }
+  @media (prefers-contrast: more){
+    #drawerPanel, .drawer-tab, .drawer-close, .quiz-head .btn-ghost, .toast, #plusModal{
+      background:var(--surface); -webkit-backdrop-filter:none; backdrop-filter:none;
+    }
+  }
+
+/* ================= Startbewegung (Runde 121) =================
+     Auf Wunsch des Inhabers: beim Start dieselbe Bewegung wie nach dem letzten Testschritt, mit
+     dem Namen. Benutzt die Keyframes der Auswertungs-Ueberlagerung (08-formulare-und-dialoge.css),
+     damit beide Momente wirklich DIESELBE Bewegung sind und nicht zwei, die sich aehneln.
+     Gezeigt wird sie nur in der App (startBewegung() in 21-beta-rueckmeldung.js); die Ueberlagerung
+     ist durchklickbar und nach 1,7 s wieder `hidden`. */
+  #startOverlay{
+    position:fixed; inset:0; z-index:120; background:var(--paper);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    pointer-events:none; transition:opacity .35s ease;
+  }
+  #startOverlay[hidden]{ display:none; }
+  #startOverlay.weg{ opacity:0; }
+  #startOverlay.show .processing-mark polygon{ animation:mark-zeichnen .62s cubic-bezier(.4,0,.2,1) .1s forwards; }
+  #startOverlay.show .processing-mark .processing-mark-fill{ animation:mark-fuellen .34s ease .62s forwards; }
+  .start-name{
+    font-family:var(--serif); font-size:34px; font-weight:600; letter-spacing:.01em; color:var(--ink);
+    opacity:0; transform:translateY(6px);
+  }
+  #startOverlay.show .start-name{ animation:start-name .5s cubic-bezier(.2,.8,.2,1) .5s forwards; }
+  @keyframes start-name{ to{ opacity:1; transform:none; } }

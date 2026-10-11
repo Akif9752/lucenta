@@ -92,7 +92,7 @@ braucht, was nur der Inhaber erledigen kann. Kurz die Fallen:
   `packageClassList` in `capacitor.config.json`, die ist erzeugt und wird bei jedem
   `npx cap sync ios` überschrieben. Die zwei Stellen, die das Abo verschenkten
   (`btnPlusAktivieren`, `plusSchalter`), sind zu; der Umschalter im Profil erscheint nur noch
-  ohne native Brücke. Geprüft über `npm run pruef-nativ` (45 Prüfungen, alle vier Ausgänge des
+  ohne native Brücke. Geprüft über `npm run pruef-nativ` (51 Prüfungen, alle vier Ausgänge des
   Kaufs). **Offen und nur vom Inhaber zu erledigen:** die zwei Produkte in App Store Connect
   anlegen — `lucenta.plus.monat` und `lucenta.plus.jahr`, genau so geschrieben, in derselben
   Abo-Gruppe.

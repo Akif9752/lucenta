@@ -239,6 +239,12 @@
       sk.restorePurchases()
         .then(function(r){
           var hat = !!(r && r.aktiv);
+          // Runde 121: Wer den Anmeldedialog wegtippt, hat nichts gefragt bekommen — also aendert
+          // sich nichts, und es gibt auch keine Meldung. Vorher nahm genau das Lucenta+ weg.
+          if (!hat && r && r.abgebrochen) return;
+          // Im Entwicklungsbau nimmt das Wiederherstellen nichts weg, wie die Startabfrage oben —
+          // sonst schaltet ein Test des Knopfs den Umschalter im Profil stumm ab.
+          if (!hat && entwicklungsBau()){ toast(tx('plus_wieder_nichts')); return; }
           plusSetzen(hat);
           if (hat && r.produkt) schalterSetzen(PLUS_PRODUKT, r.produkt, null);
           plusAnsichtenAuffrischen();

@@ -70,6 +70,7 @@ await seite.addInitScript(() => {
       // der erste darf etwas freischalten.
       StoreKit: {
         restorePurchases: () => { merke('wiederherstellen');
+          if (window.__wiederAbbruch && !window.__aboAktiv) return Promise.resolve({aktiv: false, produkt: '', abgebrochen: true});
           return Promise.resolve({aktiv: !!window.__aboAktiv, produkt: window.__aboAktiv ? 'lucenta.plus.jahr' : ''}); },
         stand: () => { merke('stand');
           return window.__standFehler
@@ -154,6 +155,17 @@ await seite.evaluate(() => { window.__aboAktiv = false; window.__nativLog = []; 
 await seite.evaluate(() => document.getElementById('btnPlusWiederherstellen').click());
 await seite.waitForTimeout(500);
 ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') !== '1'), 'ohne Abo wird nichts freigeschaltet');
+// Runde 121, im Simulator gefunden: Wer den Anmeldedialog des Wiederherstellens wegtippte, verlor
+// Lucenta+. Ein Abbruch ist keine Antwort — er darf nichts wegnehmen. Eine klare Antwort "kein Abo"
+// dagegen schon (sonst bliebe ein gekuendigtes Abo fuer immer stehen).
+await seite.evaluate(() => { localStorage.setItem('lucenta_plus', '1'); window.__wiederAbbruch = true; });
+await seite.evaluate(() => document.getElementById('btnPlusWiederherstellen').click());
+await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'), 'ein abgebrochener Anmeldedialog nimmt Lucenta+ nicht weg');
+await seite.evaluate(() => { window.__wiederAbbruch = false; });
+await seite.evaluate(() => document.getElementById('btnPlusWiederherstellen').click());
+await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') !== '1'), 'eine klare Antwort "kein Abo" nimmt es weg');
 await seite.evaluate(() => { window.__aboAktiv = true; });
 await seite.evaluate(() => document.getElementById('btnPlusWiederherstellen').click());
 await seite.waitForTimeout(500);

@@ -146,11 +146,20 @@ public class LucentaKaeufePlugin: CAPInstancePlugin, CAPBridgedPlugin {
     /// `AppStore.sync()` wirft, wenn die Person den Anmeldedialog abbricht. Das ist kein Fehler
     /// und wird deshalb verschluckt; die Antwort kommt danach trotzdem aus dem Geraet. Sonst
     /// saehe jemand, der nur den Dialog wegtippt, eine Fehlermeldung statt seines Standes.
+    ///
+    /// Runde 121, im Simulator gefunden: Der Abbruch wurde verschluckt, und die Seite bekam danach
+    /// "kein Abo" — und nahm Lucenta+ weg. Ein weggetippter Anmeldedialog ist aber keine Antwort
+    /// auf die Frage, ob jemand ein Abo hat. Kennt das Geraet keines, wird der Abbruch deshalb
+    /// ausdruecklich gemeldet (`abgebrochen`), und die Seite aendert dann nichts. Kennt es eines,
+    /// zaehlt das wie bisher.
     @objc func restorePurchases(_ call: CAPPluginCall) {
         Task {
-            do { try await AppStore.sync() } catch { }
+            var abgebrochen = false
+            do { try await AppStore.sync() } catch StoreKitError.userCancelled { abgebrochen = true } catch { }
             let abo = await aktivesAbo()
-            call.resolve(["aktiv": abo.aktiv, "produkt": abo.produkt ?? ""])
+            var antwort: [String: Any] = ["aktiv": abo.aktiv, "produkt": abo.produkt ?? ""]
+            if abgebrochen && !abo.aktiv { antwort["abgebrochen"] = true }
+            call.resolve(antwort)
         }
     }
 }

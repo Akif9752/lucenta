@@ -292,6 +292,21 @@
   // oben, weil es die Bruecke braucht — und weil die Testreihen den Code nur bis zur Marke
   // "wiring" ausfuehren und diesen Aufruf damit nicht anfassen.
   plusStandPruefen();
+  // Runde 121, auf Wunsch des Inhabers: Beim Start der App dieselbe kurze Bewegung wie nach dem
+  // letzten Testschritt — das Fuenfeck zeichnet sich und fuellt sich —, hier mit dem Namen
+  // darunter. Nur in der App: Im Browser laufen die Pruefungen gleich nach dem Laden los, und
+  // ein Vorhang ueber der ersten Messung waere ein falscher Fund. Durchklickbar ist er trotzdem
+  // (pointer-events:none), damit ein schneller Finger nicht 1,7 Sekunden ins Leere tippt.
+  // Wer weniger Bewegung eingestellt hat, sieht ihn gar nicht — ein stehendes Logo, das nur
+  // wartet, waere reine Verzoegerung.
+  (function startBewegung(){
+    var el = document.getElementById('startOverlay');
+    if (!el || !nativVorhanden() || prefersReducedMotion()) return;
+    el.hidden = false;
+    el.classList.add('show');
+    setTimeout(function(){ el.classList.add('weg'); }, 1350);
+    setTimeout(function(){ el.hidden = true; el.classList.remove('show', 'weg'); }, 1700);
+  })();
   // Runde 79: Der Text-Weg ist der Rueckfall, nicht mehr ein eigener Knopf. Wo das Geraet keine
   // Datei teilen kann (Schreibtisch-Browser), war die alte Antwort ein Hinweis und sonst nichts —
   // jetzt geht wenigstens Titel und Code hinaus, statt dass der Tipp ins Leere laeuft.

@@ -209,7 +209,7 @@ native Bruecke, also nur beim Entwickeln im Browser. Die gekaufte Kennung steht 
 `lucenta_plus_produkt` — getrennt von `lucenta_laufzeit`, das die im Waehler gewaehlte Laufzeit
 merkt. Eine Notiz und ein Beleg sind zwei verschiedene Dinge.
 
-**Geprueft wird das ohne Store:** `npm run pruef-nativ` (45 Pruefungen) stellt die Bruecke nach und
+**Geprueft wird das ohne Store:** `npm run pruef-nativ` (51 Pruefungen) stellt die Bruecke nach und
 misst alle vier Ausgaenge des Kaufs, das Nachziehen beim Start (einschliesslich "Stoerung nimmt
 nichts weg") und dass es in der App **keinen** Entwickler-Umschalter gibt.
 

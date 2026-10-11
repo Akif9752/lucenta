@@ -561,52 +561,115 @@
       '<g fill="#FFFFFF" opacity=".45"><circle cx="36" cy="14.4" r="1.1"/><circle cx="34.6" cy="11" r="0.7"/></g>';
   }
 
-  // Schildkroete von der Seite, nach links. Echt: ein gewoelbter Panzer aus Hornschilden — oben die
-  // Wirbelschilde, darunter die Rippenschilde, am Rand die kleinen Randschilde, jeder Schild mit
-  // hellerem Kern und dunkler Naht; darunter der gelbliche Bauchpanzer. Der Kopf sitzt vorn am
-  // Hals, mit schuppiger Haut und Hornschnabel; die Beine sind kurz, beschuppt, mit Krallen.
+  // Runde 121, vom Inhaber: "beim Schildkroeten-Avatar mehr an den Schildkroeten von Findet Nemo
+  // orientieren." Die Zeichnung bis hierher war eine LANDschildkroete im Profil — hoher Panzer,
+  // kleiner Kopf, Stummelbeine. Die Schildkroeten im Film sind Suppenschildkroeten im Schwimmen,
+  // und was sie sympathisch macht, laesst sich benennen und ist zugleich echte Anatomie einer
+  // Meeresschildkroete:
+  //   1. Flossen statt Beine — die vorderen lang wie Fluegel, die hinteren kurze Ruder.
+  //   2. Ein flacher, tropfenfoermiger Panzer, braun mit hellen strahlenfoermigen Zeichnungen in
+  //      jedem Schild, und darunter der helle Rand des Bauchpanzers.
+  //   3. Ein grosser runder Kopf mit Schuppenplatten (bei Chelonia mydas sind sie hell gesaeumt).
+  //   4. Grosse dunkle Augen unter schweren, halb gesenkten Lidern — der gelassene Blick.
+  //   5. Ein breiter Hornschnabel, dessen Linie als Grinsen hochzieht.
+  // Bewusst KEINE Nachbildung der Filmfigur: Das waere fremdes Markenrecht im App Store. Es ist eine
+  // Meeresschildkroete in diesem Geist, und der Name taucht nirgends auf.
+  // Das Grinsen ist eine FLAECHE (eine Sichel), kein Strich — die Lehre aus drei geloeschten
+  // Strichen mit runden Enden (CLAUDE.md).
   function figSchildkroete(){
-    var p = figSid(), h = figSid(), g = figSid(), sk = figSid();
-    var PANZER = 'M8.2 26.4 C8.2 15.4 15 9.4 22 9.4 C29.6 9.4 35.2 15.6 35.2 26.4 Z';
+    var p = figSid(), h = figSid(), hd = figSid(), fl = figSid(), g = figSid(), sk = figSid(), c = figSid(), kc = figSid();
+    var KOPF = '<ellipse cx="8.8" cy="20.4" rx="6.8" ry="5.8" transform="rotate(-8 8.8 20.4)"';
+    var HAUT = '#7DB24E';
+    // Panzer: in eigenen Koordinaten waagerecht gezeichnet, dann leicht nach vorn-oben geneigt —
+    // die Schwimmlage.
+    var DREH = 'rotate(-14 25 22)';
     var schild = function(cx, cy, s){
-      var pts = [];
-      for (var i = 0; i < 6; i++){ var a = Math.PI/6 + i*Math.PI/3; pts.push((cx + Math.cos(a)*s*1.12).toFixed(2)+','+(cy + Math.sin(a)*s*0.86).toFixed(2)); }
-      // Die Naehte sind dunkler als der Schild, aber nicht schwarz, und die Ecken gerundet
-      // (stroke-linejoin) — im ersten Entwurf las sich das scharfe Sechseckraster wie ein Fussball.
-      return '<polygon points="'+pts.join(' ')+'" fill="url(#'+sk+')" stroke="#3A5228" stroke-width="0.7" '+
-             'stroke-linejoin="round" stroke-opacity=".75"/>';
+      var pts = [], strahl = '';
+      for (var i = 0; i < 6; i++){
+        var a = Math.PI/6 + i*Math.PI/3;
+        var ex = cx + Math.cos(a)*s*1.12, ey = cy + Math.sin(a)*s*0.86;
+        pts.push(ex.toFixed(2)+','+ey.toFixed(2));
+        // Die strahlenfoermige Zeichnung: schmale helle Keile vom Kern zu den Ecken.
+        var b = a + 0.32;
+        strahl += '<path d="M'+cx.toFixed(2)+' '+cy.toFixed(2)+' L'+ex.toFixed(2)+' '+ey.toFixed(2)+
+                  ' L'+(cx + Math.cos(b)*s*0.95).toFixed(2)+' '+(cy + Math.sin(b)*s*0.74).toFixed(2)+' Z"/>';
+      }
+      return '<polygon points="'+pts.join(' ')+'" fill="url(#'+sk+')" stroke="#3B2A12" stroke-width="0.5" '+
+             'stroke-linejoin="round" stroke-opacity=".42"/>'+
+             '<g fill="#E9C77E" opacity=".34">'+strahl+'</g>';
     };
-    var schilde = schild(16.4, 15.8, 3.2) + schild(22, 13.4, 3.4) + schild(27.6, 15.8, 3.2) +
-                  schild(12.2, 21.8, 3.0) + schild(18.6, 20.4, 3.2) + schild(25.4, 20.4, 3.2) + schild(31.6, 21.8, 3.0);
-    var rand = '';
-    for (var x = 9.6; x < 34.5; x += 2.75){ rand += '<path d="M'+x.toFixed(2)+' 24 L'+x.toFixed(2)+' 26.4"/>'; }
-    return '<defs>'+figLinear(p, '#6E8A42', '#34491F')+figLinear(h, '#9AA65C', '#5E6A34')+figGlanz(g)+
-           '<radialGradient id="'+sk+'" cx="0.45" cy="0.35" r="0.75"><stop offset="0" stop-color="#A2A858"/>'+
-           '<stop offset="0.55" stop-color="#6E7E3A"/><stop offset="1" stop-color="#3E5426"/></radialGradient></defs>'+
-      '<ellipse cx="21" cy="32.6" rx="15" ry="1.8" fill="'+FIG_INK+'" opacity=".18"/>'+
-      // Hinterbein und Schwanz hinter dem Panzer.
-      '<path d="M31 26 C32 29.4 31.4 31.4 30.6 32.4 L34.2 32.4 C34.6 30.4 34.6 28.2 33.6 26 Z" fill="url(#'+h+')"/>'+
-      '<path d="M34.8 25.4 C37 25.6 38.2 26.6 38.4 27.6 C36.8 27.6 35.6 27.2 34.6 26.6 Z" fill="#7A8644"/>'+
-      // Hals und Kopf.
-      '<path d="M10.2 22.6 C8.4 21.6 6.6 21.8 5.6 22.6 L6.4 26.8 C8 26.8 9.6 26.6 11 26 Z" fill="url(#'+h+')"/>'+
-      '<ellipse cx="5" cy="23.4" rx="3.7" ry="2.9" fill="url(#'+h+')"/>'+
-      '<ellipse cx="4.2" cy="22.2" rx="2.2" ry="1.1" fill="url(#'+g+')"/>'+
-      '<g fill="#4E5A2A" opacity=".45"><circle cx="6.6" cy="22.2" r="0.45"/><circle cx="7.4" cy="24" r="0.4"/>'+
-        '<circle cx="5.8" cy="25.2" r="0.35"/><circle cx="8.6" cy="22.8" r="0.4"/></g>'+
-      '<g class="fig-augen">'+figTierAuge(3.9, 22.5, 0.95, {iris:'#2A2412'}, 1)+'</g>'+
-      // Der Hornschnabel: eine Kante, keine Lippen.
-      '<path d="M1.5 23.9 Q3.6 25.2 6.2 24.9" stroke="#2E3418" stroke-width="0.55" fill="none" opacity=".85"/>'+
-      // Panzer mit Schilden und Randschilden.
-      '<path d="'+PANZER+'" fill="url(#'+p+')"/>'+
-      schilde +
-      '<g stroke="#3A5228" stroke-width="0.5" opacity=".6">'+rand+'</g>'+
-      '<path d="M8.4 24 L35 24" stroke="#3A5228" stroke-width="0.5" opacity=".6"/>'+
-      '<ellipse cx="18.4" cy="13" rx="7" ry="2.8" fill="url(#'+g+')" transform="rotate(-14 18.4 13)"/>'+
-      // Bauchpanzer, gelblich.
-      '<path d="M8.2 26.4 L35.2 26.4 L34.2 28.2 L9.4 28.2 Z" fill="#C9B867"/>'+
-      // Vorderbein mit Krallen.
-      '<path d="M10.6 26.4 C9.6 29.4 9.4 31.2 9.8 32.4 L13.6 32.4 C13.8 30.4 14 28.4 14.2 26.4 Z" fill="url(#'+h+')"/>'+
-      '<g fill="#E8E2C4"><path d="M9.8 32.4 L9.3 33.4 L10.5 32.4 Z"/><path d="M11.4 32.4 L11 33.5 L12.1 32.4 Z"/><path d="M12.9 32.4 L12.6 33.4 L13.6 32.4 Z"/></g>';
+    var schilde =
+      schild(18.2, 21.4, 2.6) + schild(23.6, 20.8, 2.8) + schild(29.2, 21.0, 2.8) + schild(34.2, 21.8, 2.2) +
+      schild(20.8, 16.6, 2.7) + schild(26.6, 16.1, 2.8) + schild(32.0, 17.3, 2.5) +
+      schild(20.8, 26.3, 2.5) + schild(26.6, 26.8, 2.6) + schild(32.0, 25.9, 2.3);
+    var platte = function(x, y, rx, ry, rot){
+      return '<ellipse cx="'+x+'" cy="'+y+'" rx="'+rx+'" ry="'+ry+'" transform="rotate('+rot+' '+x+' '+y+')"/>';
+    };
+    // Schweres Oberlid in Hautfarbe ueber der oberen Augenhaelfte: der halb gesenkte Blick.
+    var lid = function(x, y, r){
+      return '<path d="M'+(x - r*1.45).toFixed(2)+' '+(y - r*0.22).toFixed(2)+
+             ' Q'+x.toFixed(2)+' '+(y - r*0.86).toFixed(2)+' '+(x + r*1.45).toFixed(2)+' '+(y - r*0.30).toFixed(2)+
+             ' L'+(x + r*1.45).toFixed(2)+' '+(y - r*1.7).toFixed(2)+' L'+(x - r*1.45).toFixed(2)+' '+(y - r*1.7).toFixed(2)+' Z" fill="url(#'+hd+')"/>'+
+             // Der Schatten unter der Lidkante — eine weiche Flaeche, er setzt das Lid AUF das Auge.
+             '<ellipse cx="'+x.toFixed(2)+'" cy="'+(y - r*0.40).toFixed(2)+'" rx="'+(r*1.05).toFixed(2)+'" ry="'+(r*0.22).toFixed(2)+'" fill="#1E2A10" opacity=".35"/>';
+    };
+    return '<defs>'+
+        '<radialGradient id="'+p+'" cx="0.42" cy="0.32" r="0.78"><stop offset="0" stop-color="#9A7A3A"/>'+
+          '<stop offset="0.7" stop-color="#6A4E22"/><stop offset="1" stop-color="#3E2C12"/></radialGradient>'+
+        '<radialGradient id="'+sk+'" cx="0.45" cy="0.38" r="0.72"><stop offset="0" stop-color="#B08A44"/>'+
+          '<stop offset="0.6" stop-color="#7A5A28"/><stop offset="1" stop-color="#4E3816"/></radialGradient>'+
+        figLinear(h, '#8CC05A', '#4C8030')+
+        figLinear(hd, '#93C660', '#6FA444')+
+        figLinear(fl, '#7EB24C', '#3F6E26', 0, 0, 1, 1)+
+        figGlanz(g)+
+        '<clipPath id="'+c+'"><ellipse cx="25" cy="22" rx="12.5" ry="9" transform="'+DREH+'"/></clipPath>'+
+        '<clipPath id="'+kc+'">'+KOPF+'/></clipPath></defs>'+
+      // Etwas kleiner und nach rechts: Im ersten Wurf stiess der Kopf an den Rand des Kreises.
+      '<g transform="translate(3.2 2) scale(.88)">'+
+      // Lichtflecken des Wassers, ganz leise.
+      '<g fill="#FFFFFF" opacity=".22"><ellipse cx="30" cy="6" rx="5" ry="1.2"/><ellipse cx="19" cy="4.4" rx="3" ry=".8"/></g>'+
+      // Hintere Flosse (fern) und vordere Flosse (fern), beide hinter dem Panzer, etwas dunkler.
+      '<path d="M35.4 18.6 C36.6 16.6 37.8 15.4 39.4 15 C39.4 16.8 38.4 18.6 36.8 19.8 Z" fill="#4F8432"/>'+
+      '<path d="M20 16.4 C17.2 12.8 13.8 9.4 9.6 6.6 C8.9 6.1 8.3 6.8 8.7 7.4 C11 10.6 13.8 14.2 16 18.6 Z" fill="#558A36"/>'+
+      // Hintere Flosse (nah).
+      '<path d="M33.2 27.4 C34.8 29.9 36.6 31.4 38.8 31.8 C38.8 30 37.3 28.3 35.4 26.6 Z" fill="url(#'+fl+')"/>'+
+      // Der helle Rand des Bauchpanzers, unter dem Panzer hervorschauend.
+      '<ellipse cx="25" cy="23.1" rx="12.4" ry="8.9" transform="'+DREH+'" fill="#D9C98A"/>'+
+      // Panzer mit Schilden, Strahlen und Glanz.
+      '<ellipse cx="25" cy="22" rx="12.5" ry="9" transform="'+DREH+'" fill="url(#'+p+')"/>'+
+      '<g clip-path="url(#'+c+')"><g transform="'+DREH+'">'+schilde+'</g>'+
+        '<ellipse cx="22.6" cy="15.4" rx="8" ry="3" fill="url(#'+g+')" transform="rotate(-18 22.6 15.4)"/></g>'+
+      // Hals und der grosse runde Kopf.
+      '<path d="M15.6 18.6 C13.6 18.6 12 19.6 11.6 21 L12.4 25.6 C14 25.6 15.6 25 16.8 24 Z" fill="url(#'+h+')"/>'+
+      KOPF+' fill="url(#'+h+')"/>'+
+      // Schuppenplatten auf Kopf und Wange, hell gesaeumt.
+      '<g fill="#B9DA78" opacity=".55" stroke="#3E6A24" stroke-width="0.3" stroke-opacity=".55">'+
+        platte(9.6, 15.9, 1.7, 1.05, -10) + platte(12.4, 17.6, 1.4, 1.15, 20) + platte(6.6, 15.8, 1.3, .9, -20) +
+        platte(13.2, 21.2, 1.25, 1.05, 10) + platte(11, 25.2, 1.3, .9, -6) + platte(14.4, 23.4, .9, .8, 0) +
+      '</g>'+
+      '<ellipse cx="7.6" cy="16.6" rx="4.2" ry="1.6" fill="url(#'+g+')" transform="rotate(-12 7.6 16.6)"/>'+
+      // Augen: das ferne am Rand des Kopfes, das nahe gross. Dunkel, mit Glanz, unter schweren Lidern.
+      '<g class="fig-augen">'+
+        figTierAuge(3.5, 19.3, 1.25, {iris:'#2E2010'}, 1) + figTierAuge(8.0, 19.0, 2.05, {iris:'#3A2814'}, 1) +
+        // Die Lider liegen im Umriss des Kopfes — im ersten Wurf ragte ihre gerade Oberkante
+        // als Ecke ueber den Kopf hinaus.
+        '<g clip-path="url(#'+kc+')">' + lid(3.5, 19.3, 1.25) + lid(8.0, 19.0, 2.05) + '</g>'+
+      '</g>'+
+      // Nasenloch.
+      '<ellipse cx="2.6" cy="21" rx=".35" ry=".28" fill="#2A3A16" opacity=".8"/>'+
+      // Der Schnabel: heller Hornsaum und das breite Grinsen als Sichel, die zur Wange hochzieht.
+      '<path d="M1.9 22.6 Q6.4 26.9 12.2 22.6 Q6.6 24.8 1.9 22.6 Z" fill="#D7CF86" opacity=".75"/>'+
+      '<path d="M2.1 22.3 Q6.6 25.9 11.8 22.2 Q6.6 24.2 2.1 22.3 Z" fill="#26341A"/>'+
+      '<ellipse cx="12.3" cy="22.4" rx=".7" ry=".55" fill="#26341A" opacity=".55"/>'+
+      // Vordere Flosse (nah): der lange Fluegel, ueber dem Panzerrand, mit Schuppenplatten.
+      '<path d="M16.4 24.4 C12.2 26.6 7.8 30.6 4.8 35.2 C4.3 36 5.1 36.5 5.9 35.9 C9.8 33.1 13.8 30.6 18.6 28.4 Z" fill="url(#'+fl+')"/>'+
+      '<g fill="#B9DA78" opacity=".45">'+
+        platte(14.6, 27, 1.2, .7, -34) + platte(11.6, 29.4, 1.0, .6, -38) + platte(8.8, 32, .8, .5, -40) +
+      '</g>'+
+      '<path d="M17.4 25.6 C13.4 27.8 9.4 31.2 6.6 34.8 C10.4 32.2 14.2 29.8 18.2 27.8 Z" fill="#FFFFFF" opacity=".14"/>'+
+      // Luftblasen.
+      '<g fill="#FFFFFF" opacity=".5"><circle cx="2.8" cy="12.4" r="1"/><circle cx="4.8" cy="9.2" r=".65"/><circle cx="2.6" cy="6.8" r=".45"/></g>'+
+      '</g>';
   }
 
   // Buckelwal, nach links. Echt: gestreckter Koerper, oben dunkel blaugrau, unten hell; die
@@ -689,7 +752,7 @@
     {id:'eule', feld:'#E3E7E4', svg:figEule},
     {id:'wal', feld:'#DCE7EE', svg:figWal},
     {id:'goldfisch', feld:'#FCEAD5', svg:figGoldfisch},
-    {id:'schildkroete', feld:'#DFEADD', svg:figSchildkroete}
+    {id:'schildkroete', feld:'#D6E9EF', svg:figSchildkroete}
   ];
 
   // ---------- Die Feldfarbe im Dunkelmodus ----------

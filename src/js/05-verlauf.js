@@ -124,6 +124,47 @@
       '<div class="history-dim mono">'+RADAR_LABELS[a.top1]+'</div>'+
       '</div>';
   }
+  // Runde 121: die Kurve einer Dimension im Verlauf. Feste Zeichenflaeche 300x64, die Breite
+  // kommt aus dem Stilblatt (width:100%, Hoehe folgt dem Seitenverhaeltnis) — so bleiben die
+  // Punkte rund, was mit preserveAspectRatio="none" nicht der Fall waere. Die Flaeche unter der
+  // Linie blendet nach unten aus; ihre Verlaufs-ID traegt die Dimension, weil fuenf Kurven in
+  // einem Dokument stehen und eine doppelte ID die Flaeche der falschen Kurve faerben wuerde.
+  function trendKurveSVG(values, f){
+    var w = 300, h = 64, px = 6, py = 7;
+    var n = values.length;
+    // Die Hoehe zeigt den Bereich der Werte, nicht die ganze Skala 0-100 — so macht es auch Apple
+    // Health. Im ersten Wurf lief die Kurve ueber 0-100, und ein Anstieg um 19 Punkte sah aus wie
+    // eine gerade Linie: genau das "nichtssagend", das gemeldet war. Mindestens 24 Punkte Spanne,
+    // damit umgekehrt ein Unterschied von 1 nicht wie ein Absturz aussieht.
+    var lo = Math.min.apply(null, values), hi = Math.max.apply(null, values);
+    var fehlt = Math.max(0, 24 - (hi - lo));
+    lo = Math.max(0, lo - 4 - fehlt/2); hi = Math.min(100, hi + 4 + fehlt/2);
+    if (hi - lo < 24){ if (lo === 0) hi = 24; else lo = 76; }
+    var yVon = function(v){ return py + (1 - (v - lo)/(hi - lo))*(h-2*py); };
+    var pts = values.map(function(v, i){
+      return [px + (n > 1 ? i/(n-1) : .5)*(w-2*px), yVon(v)];
+    });
+    var linie = pts.map(function(p, i){ return (i ? 'L' : 'M')+p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' ');
+    var flaeche = linie+' L'+pts[n-1][0].toFixed(1)+','+(h-1)+' L'+pts[0][0].toFixed(1)+','+(h-1)+' Z';
+    // Die Linie bei 50 nur, wenn sie im gezeigten Bereich liegt — sie ist die Mitte der Skala.
+    var mitte = (lo < 50 && hi > 50) ? yVon(50).toFixed(1) : null;
+    var id = 'trendFl-'+f;
+    var punkte = pts.slice(0, -1).map(function(p){
+      return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.6" fill="var(--surface)" stroke="var(--trend-farbe)" stroke-width="1.6"/>';
+    }).join('');
+    var z = pts[n-1];
+    return '<svg class="trend-kurve" viewBox="0 0 '+w+' '+h+'" role="img" aria-hidden="true">'+
+      '<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="var(--trend-farbe)" stop-opacity=".30"/>'+
+        '<stop offset="1" stop-color="var(--trend-farbe)" stop-opacity="0"/></linearGradient></defs>'+
+      (mitte ? '<line x1="0" y1="'+mitte+'" x2="'+w+'" y2="'+mitte+'" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 4"/>' : '')+
+      '<path class="trend-flaeche" d="'+flaeche+'" fill="url(#'+id+')"/>'+
+      '<path class="trend-linie" d="'+linie+'" fill="none" stroke="var(--trend-farbe)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/>'+
+      punkte+
+      '<circle cx="'+z[0].toFixed(1)+'" cy="'+z[1].toFixed(1)+'" r="7" fill="var(--trend-farbe)" opacity=".18"/>'+
+      '<circle cx="'+z[0].toFixed(1)+'" cy="'+z[1].toFixed(1)+'" r="4.2" fill="var(--trend-farbe)" stroke="var(--surface)" stroke-width="1.8"/>'+
+      '</svg>';
+  }
   function renderHistory(){
     $('historyMaxCount').textContent = MAX_HISTORY;
     var alle = loadHistory();
@@ -161,20 +202,34 @@
     // Das Vorzeichen ist die ganze Aussage; die Farbe traegt KEINE. Ein gruenes „+" und ein
     // rotes „−" hiessen, hoch sei besser als niedrig — das ist bei den fuenf Dimensionen falsch
     // und widerspricht dem, was die App an jeder anderen Stelle sagt.
+    //
+    // Runde 121, vom Inhaber: "Die Verlaufskurve im Profil ist zu nichtssagend." Zutreffend — fuenf
+    // gleichfarbige Linien von 140x32 neben Kuerzeln wie "GEWISS.", ohne Punkte, ohne Achse, ohne
+    // Zeitangabe. Jetzt in der Form von Apple Health: voller Name mit der Farbe der Dimension
+    // (dieselbe wie im Radar), gross der heutige Stand, darunter eine breite Kurve mit Flaeche,
+    // einer Mittellinie bei 50, einem Punkt je Durchlauf und dem letzten hervorgehoben; unter der
+    // Liste die Zeitspanne. Die Farbe kennzeichnet die Dimension, nicht die Richtung (s. oben).
     var trendRows = ORDER.map(function(f){
       var vals = hist.map(function(e){ return e.scores[f]; });
       var last = vals[vals.length-1];
       var d = last - vals[0];
       var delta = (d > 0 ? '+' : (d < 0 ? '−' : '±')) + Math.abs(d);
-      return '<div class="trend-row"><div class="trend-label">'+RADAR_LABELS[f]+'</div>'+
-        sparklineSVG(vals,140,32)+
-        '<div class="trend-zahl"><div class="trend-val mono">'+last+'</div>'+
-        '<div class="trend-delta mono">'+delta+'</div></div></div>';
+      return '<div class="trend-row" style="--trend-farbe:var(--dim-'+f.toLowerCase()+')">'+
+        '<div class="trend-kopf"><span class="trend-name">'+LABELS[f]+'</span>'+
+        '<span class="trend-val mono">'+last+'</span>'+
+        '<span class="trend-delta mono">'+delta+'</span></div>'+
+        trendKurveSVG(vals, f)+'</div>';
     }).join('');
+    var spanne = '';
+    try{
+      var fmt = historyDateFmt();
+      spanne = '<div class="trend-spanne"><span>'+fmt.format(new Date(hist[0].date))+'</span>'+
+        '<span>'+fmt.format(new Date(hist[hist.length-1].date))+'</span></div>';
+    }catch(ex){}
     var listRows = hist.slice().reverse().map(function(e,i){
       return verlaufZeileHTML(e, i===0);
     }).join('');
-    wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
+    wrap.innerHTML = '<div class="trend-list">'+trendRows+spanne+'</div>'+
       tx('js_frühere_ergebnisse')+hist.length+'</span></h2>'+
       '<div class="history-list">'+listRows+'</div>'+
       (verborgen ? schlossHTML(tx('plus_verlauf_a') + verborgen + tx('plus_verlauf_b')) : '');

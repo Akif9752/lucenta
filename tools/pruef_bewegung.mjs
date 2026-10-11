@@ -357,9 +357,14 @@ async function durchlauf(reduziert){
     document.documentElement.removeAttribute('data-transparenz');
     return { vorher, reduziert, zurueck: lies() };
   });
+  // Runde 121: Hier stand /blur\(20px\)/ — die Staerke von damals. Die Schublade hat seither 16px
+  // (12-ios.css, im Simulator abgestimmt), und die Pruefung schlug an, obwohl die Tuer genau tat,
+  // was sie soll. Gefragt ist, OB Glas da ist, weggeht und wiederkommt, nicht wie stark es ist;
+  // die gleiche Staerke vorher und nachher haelt die zweite Bedingung fest.
+  const glasDa = w => /blur\([1-9][\d.]*px\)/.test(w || '');
   for (const flaeche of ['kopf', 'schublade', 'bild']){
-    pruefe(/blur\(20px\)/.test(tuer.vorher[flaeche]) && tuer.reduziert[flaeche] === 'none'
-           && /blur\(20px\)/.test(tuer.zurueck[flaeche]),
+    pruefe(glasDa(tuer.vorher[flaeche]) && tuer.reduziert[flaeche] === 'none'
+           && tuer.zurueck[flaeche] === tuer.vorher[flaeche],
            `data-transparenz nimmt das Glas von "${flaeche}" und gibt es zurueck`,
            `(${tuer.vorher[flaeche]} -> ${tuer.reduziert[flaeche]} -> ${tuer.zurueck[flaeche]})`);
   }

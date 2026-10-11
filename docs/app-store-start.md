@@ -178,7 +178,7 @@ blockiert.
    - Beim Start fragt die App `stand()` und richtet sich danach: Ein abgelaufenes Abo nimmt
      Lucenta+ zurück, ein laufendes schaltet frei. Antwortet der Store **nicht**, bleibt alles
      wie es war — eine Störung darf niemandem wegnehmen, wofür er bezahlt hat.
-   - Geprüft ohne echten Store: `npm run pruef-nativ` (45 Prüfungen) stellt die Brücke nach und
+   - Geprüft ohne echten Store: `npm run pruef-nativ` (51 Prüfungen) stellt die Brücke nach und
      misst alle vier Ausgänge des Kaufs — nur der gelungene schaltet frei.
 
    **Lokal testen, ohne App Store Connect:** `ios/App/App/Lucenta.storekit` enthält beide

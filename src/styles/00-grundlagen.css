@@ -220,6 +220,10 @@
     --radius-s: 12px;
     /* Die Unterkante, die in dieser Formensprache den weichen Schatten ersetzt. */
     --kante:#D1D1D6;
+    /* Runde 121: Liquid Glass. Tönung oben/unten, Lichtkante, Glanz, Zeilenfläche auf Glas. */
+    --glas:rgba(255,255,255,.26); --glas-tief:rgba(255,255,255,.08);
+    --glas-rand:rgba(255,255,255,.78); --glas-licht:rgba(255,255,255,.9);
+    --glas-zeile:rgba(255,255,255,.50);
     /* Runde 78, mit Japanisch dazugekommen: Fraunces, Work Sans und IBM Plex Mono bringen keine
        CJK-Zeichen mit. Ohne ausdruecklichen Rueckfall waehlt der Browser dafuer irgendeine
        Schrift — auf Windows haeufig eine, die neben der lateinischen Schrift sichtbar fremd
@@ -293,6 +297,9 @@
       --surface-3:#3A3A3C;
       --shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 40px -14px rgba(0,0,0,.6);
       --kante:#000000;
+      --glas:rgba(78,78,84,.22); --glas-tief:rgba(28,28,30,.12);
+      --glas-rand:rgba(255,255,255,.22); --glas-licht:rgba(255,255,255,.34);
+      --glas-zeile:rgba(44,44,46,.50);
       --shadow-sm:0 1px 2px rgba(0,0,0,.45);
     }
   }
@@ -354,6 +361,9 @@
     --surface-3:#3A3A3C;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 40px -14px rgba(0,0,0,.6);
     --kante:#000000;
+    --glas:rgba(78,78,84,.22); --glas-tief:rgba(28,28,30,.12);
+    --glas-rand:rgba(255,255,255,.22); --glas-licht:rgba(255,255,255,.34);
+    --glas-zeile:rgba(44,44,46,.50);
     --shadow-sm:0 1px 2px rgba(0,0,0,.45);
   }
 

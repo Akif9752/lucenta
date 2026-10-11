@@ -1,16 +1,27 @@
 /* ---------- Trend / history ---------- */
   .trend-list{margin-top:22px;display:flex;flex-direction:column;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:20px 18px;}
-  .trend-row{display:flex;align-items:center;gap:12px;}
-  .trend-label{font-family:var(--mono);font-size:11px;color:var(--muted);width:64px;flex-shrink:0;}
-  .trend-row svg{flex:1;min-width:0;display:block;}
-  /* Runde 108: Stand und Veraenderung stehen uebereinander in EINER Spalte, nicht nebeneinander
-     in zwei. Bei 320px Geraetebreite bleiben der Kurve nach Polsterung und fester Spalte rund
-     120px — eine zweite Spalte neben der Zahl haette davon weitere 30 genommen, und eine
-     Sparkline von 90px ist keine Kurve mehr, sondern ein Haken. Gestapelt kostet die Ergaenzung
-     6px. Die Begruendung, warum beide Richtungen dieselbe Farbe tragen, steht in 05-verlauf.js. */
-  .trend-zahl{width:34px;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
-  .trend-val{font-family:var(--mono);font-size:14.5px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;line-height:1.1;}
-  .trend-delta{font-family:var(--mono);font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1.1;}
+  /* Runde 121: Die Kurve steht nicht mehr NEBEN Kuerzel und Zahl, sondern UNTER einem Kopf mit
+     vollem Namen — damit bekommt sie die ganze Breite der Karte statt der 120px, die bei 320pt
+     uebrig blieben (das Problem, das Runde 108 mit der gestapelten Zahl nur gelindert hatte).
+     Die Farbe der Dimension kommt als --trend-farbe aus 05-verlauf.js; Schrift bleibt --ink und
+     --muted, die Farbe traegt nur Punkt, Linie und Flaeche — so haengt kein Kontrast an ihr. */
+  .trend-row{display:flex;flex-direction:column;gap:6px;}
+  .trend-row + .trend-row{padding-top:14px;border-top:1px solid var(--line);}
+  .trend-kopf{display:flex;align-items:baseline;gap:8px;min-width:0;}
+  .trend-name{flex:1;min-width:0;font-size:15px;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .trend-name::before{content:'';flex-shrink:0;width:9px;height:9px;border-radius:50%;background:var(--trend-farbe);align-self:center;}
+  .trend-val{font-family:var(--mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1;color:var(--ink);}
+  .trend-delta{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1;
+    padding:4px 7px;border-radius:100px;background:var(--surface-2);align-self:center;min-width:40px;text-align:center;box-sizing:border-box;}
+  .trend-kurve{display:block;width:100%;height:auto;overflow:visible;}
+  /* Die Linie zeichnet sich beim Oeffnen einmal von links nach rechts — pathLength="100" macht
+     die Strichlaenge unabhaengig vom Verlauf. Nur ueber den Strich, nie ueber die Deckkraft: Eine
+     Messung kurz nach dem Wechsel sieht die Kurve dann als Linie, nicht als ausgeblendet. */
+  .trend-linie{stroke-dasharray:100;stroke-dashoffset:0;animation:trend-zeichnen .9s cubic-bezier(.4,0,.2,1);}
+  @keyframes trend-zeichnen{from{stroke-dashoffset:100;}}
+  @media (prefers-reduced-motion: reduce){ .trend-linie{animation:none;} }
+  .trend-spanne{display:flex;justify-content:space-between;gap:12px;margin-top:-2px;
+    font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;}
   .history-list{margin-top:14px;display:flex;flex-direction:column;gap:8px;}
   .history-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-s);padding:11px 14px;font-size:13.5px;}
   .history-date{font-family:var(--mono);color:var(--muted);flex-shrink:0;font-size:12px;}
@@ -29,8 +40,8 @@
      zweite Zeile eines langen Titels unter dem Datum, und zwei Leserichtungen in einer Zeile
      sind eine zu viel. */
   #historyContent .history-title{text-align:left;line-height:1.35;}
-  /* Die kurze Marke der fuehrenden Dimension — dieselben Kuerzel wie an der Kurve darueber
-     (RADAR_LABELS). Sie erklaert zugleich, wofuer die Kante links steht.
+  /* Die kurze Marke der fuehrenden Dimension (RADAR_LABELS; die Kurve darueber traegt seit
+     Runde 121 die vollen Namen). Sie erklaert zugleich, wofuer die Kante links steht.
      --muted und nicht --muted-soft, und das ist nachgemessen statt geschaetzt: Die Fehlersuche
      hat die erste Fassung 30-mal gemeldet (beide Motoren, 390 und 320, vier Sprachen) —
      **4,26:1, noetig sind 4,5:1**. Der Grund ist der Untergrund: --muted-soft ist die unterste

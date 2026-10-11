@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 120)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 121)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -375,6 +375,101 @@ Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 1
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 121 — Mehr Liquid Glass, Startbewegung, Verlaufskurve, Meeresschildkroete
+
+Fuenf Auftraege des Inhabers: die Seitenleiste "noch durchsichtiger und richtig wie Glas", mehr
+Liquid Glass in der ganzen App, eine Verlaufskurve, die etwas sagt, beim Start dieselbe Bewegung
+wie nach dem Test mit dem Namen, und die Schildkroete "mehr wie in Findet Nemo".
+
+### 1. Liquid Glass (`12-ios.css`, neue Marken `--glas*` in `00-grundlagen.css`)
+
+Fuenf neue Farbmarken (`--glas`, `--glas-tief`, `--glas-rand`, `--glas-licht`, `--glas-zeile`), je in
+allen drei Bloecken. Schublade: geringe Toenung im Verlauf, Lichtkante innen, ein Glanzstreif von
+oben, Zeilen halbdeckend. Dazu als Glas: die runden Knoepfe der Schublade, die Kopfknoepfe der
+Ansichten, die Mitteilung (Toast), der Plus-Dialog (86 -> 70 %); der Hauptknopf als getoentes Glas
+mit Lichtkante; die Kopfleiste bekommt eine Lichtlinie an der Unterkante. Das Bild-Fenster bleibt
+bei 86 %, weil darin das Ergebnisbild beurteilt wird (Begruendung aus Runde 103) — es bekommt nur
+die Kante. Jede neue Glasflaeche hat ihre Tuer fuer "Transparenz reduzieren" und "Kontrast erhoehen".
+
+**Der erste Wurf war im Simulator "fast deckend dunkelgrau" — und der Grund war nicht die Toenung.**
+Hinter der Schublade liegt `#drawerScrim` mit 45 % Fast-Schwarz. Das Glas weichzeichnete also einen
+schon verdunkelten Grund. Jetzt 16 %, die Unschaerfe 26 -> 16 px (bei starker Unschaerfe wird jedes
+Glas zur Milchscheibe), die Toenungen etwa halbiert. Nachgemessen im Simulator: dunkel deutlich
+Milchglas, Knopf, Portraetkarte und Sterne scheinen farbig durch, alles lesbar.
+
+**Offen und ehrlich:** Im Hellmodus wirkt die Schublade weiter fast weiss. Weisses Glas ueber einer
+fast weissen Seite (#F2F2F7) bleibt weiss — das ist bei Apple genauso, aber es ist nicht das
+"durchsichtig", das man im Dunkeln sieht. Headless WebKit zeichnet `backdrop-filter` nicht; geurteilt
+ist am Simulator.
+
+`pruef-bewegung` schlug danach zweimal an: Die Pruefung der Transparenz-Tuer verlangte woertlich
+`blur(20px)`, die Staerke von damals. Die Tuer tat genau, was sie soll (Glas -> none -> Glas). Die
+Pruefung fragt jetzt, OB Glas da ist, weggeht und unveraendert wiederkommt — nicht wie stark.
+
+### 2. Startbewegung (`#startOverlay`, `startBewegung()` in `21-beta-rueckmeldung.js`)
+
+Beim Start zeichnet sich das Fuenfeck und fuellt sich — mit denselben Keyframes wie die
+Auswertungs-Ueberlagerung nach dem Test, also wirklich dieselbe Bewegung —, darunter blendet
+"Lucenta" in Fraunces ein, nach 1,35 s blendet alles aus. Nur in der App (die Pruefungen im Browser
+messen gleich nach dem Laden), durchklickbar, und bei reduzierter Bewegung gar nicht.
+
+**Am Simulator gesehen und nicht behoben, weil es nicht aus dieser Runde stammt:** Vor der Bewegung
+liegen rund 2 s Schwarz (die WebView laedt; im Debug-Bau laenger), dann kurz der native
+Startbildschirm in HELL, obwohl die App auf "Dunkel" steht. Der Startbildschirm folgt dem System,
+nicht der App-Einstellung, und kann deren Wahl nicht kennen. Ob das im Release-Bau auf dem Geraet
+stoert, ist ein Urteil am Telefon.
+
+### 3. Die Verlaufskurve im Profil (`trendKurveSVG()` in `05-verlauf.js`, `06-trend-history.css`)
+
+Vorher fuenf gleichfarbige Linien von 140x32 neben Kuerzeln ("GEWISS."), ohne Punkte und ohne
+Zeitangabe. Jetzt nach Apple Health: voller Name mit dem Farbpunkt der Dimension (dieselbe Farbe
+wie im Radar), gross der heutige Wert, die Veraenderung als Kapsel; darunter eine Kurve ueber die
+ganze Breite mit Flaeche, einem Punkt je Durchlauf, dem letzten hervorgehoben, einer Linie bei 50
+(wenn im Bereich), und unter der Liste die Zeitspanne. Die Linie zeichnet sich beim Oeffnen einmal.
+
+**Der erste Wurf war wieder nichtssagend**, und das Bild hat es gezeigt, nicht der Code: Ueber die
+ganze Skala 0-100 sieht ein Anstieg um 19 Punkte aus wie eine gerade Linie. Die Hoehe zeigt jetzt
+den Bereich der Werte (mindestens 24 Punkte Spanne, damit ein Unterschied von 1 nicht wie ein
+Absturz aussieht). Die Farbe kennzeichnet die Dimension, nie die Richtung — Schrift bleibt
+`--ink`/`--muted`, daran haengt kein Kontrast. `sparklineSVG` bleibt: Testreihen und Werkzeuge rufen es.
+
+### 4. Die Schildkroete
+
+Vorher eine Landschildkroete im Profil. Jetzt eine schwimmende Meeresschildkroete: lange
+Vorderflossen wie Fluegel, kurze Hinterruder, flacher Tropfenpanzer in Braun mit strahlenfoermiger
+Zeichnung je Schild und hellem Bauchpanzerrand, grosser runder Kopf mit hell gesaeumten
+Schuppenplatten, grosse dunkle Augen unter schweren, entspannten Lidern, ein breites Grinsen als
+Flaeche (kein Strich). Hintergrund meerblau statt gruen. Bewusst keine Nachbildung der Filmfigur
+(fremdes Markenrecht im Store); der Name steht nirgends.
+
+In drei Schritten in Vergroesserung nachgebessert: Die Lider ragten mit gerader Oberkante ueber den
+Kopf hinaus (jetzt in den Kopfumriss geschnitten), der Kopf stiess an den Kreisrand (jetzt kleiner und
+mittiger), die Naehte der Schilde lasen sich wie Fliesen (weicher). Halb geschlossene Lider wirkten
+skeptisch statt gelassen — etwas angehoben.
+
+### 5. Ein Fehler, den der Simulator fand: Abbrechen nahm Lucenta+ weg
+
+"Kaeufe wiederherstellen" -> Anmeldedialog -> "Abbrechen": danach stand die freie Fassung da.
+`LucentaKaeufePlugin.restorePurchases` schluckte den Abbruch von `AppStore.sync()` und meldete den
+Stand des Geraets, und die Seite setzte diesen Stand. Im Simulator war Lucenta+ nur per
+Entwickler-Umschalter an, also "kein Abo" — und weg war es. Zwei Luecken:
+
+- Ein weggetippter Dialog ist keine Antwort. Swift meldet ihn jetzt als `abgebrochen` (nur wenn das
+  Geraet kein Abo kennt; kennt es eines, zaehlt das), und die Seite aendert dann nichts.
+- Im Entwicklungsbau nahm die Startabfrage schon nichts weg (Runde 113), das Wiederherstellen schon.
+  Jetzt beide gleich.
+
+Eine klare Antwort "kein Abo" nimmt weiterhin weg — sonst bliebe ein gekuendigtes Abo stehen.
+`pruef-nativ` prueft beides (zwei neue Pruefungen).
+
+### Was offen bleibt
+
+Hellmodus-Glas (s. 1), die Ladeluecke vor der Startbewegung (s. 2), und die Silbentrennung in den
+Untertiteln der Schublade ("Ergeb-nis", "Einordnun-gen") — im Simulator erneut gesehen, nicht
+Gegenstand dieser Runde.
 
 ---
 
