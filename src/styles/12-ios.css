@@ -352,3 +352,119 @@
     font-family:var(--sans); font-weight:500; font-size:16px; color:var(--paper);
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));
   }
+
+/* ================= Das Auswahl-Haekchen (Runde 120) =================
+     Auftrag des Inhabers: "Bei dem gewaehlten Avatar und dem gewaehlten Hintergrund soll so ein
+     Haken, der umkreist ist, drauf sein, damit klar ist, dass das ausgesucht ist."
+     Bis hierher trug die Wahl nur einen dunkleren Rand von 2 Punkt — bei bunten Figuren und
+     Hintergruenden ein schwacher Unterschied. iOS zeigt eine Wahl in einem Raster (Fotos,
+     Hintergrundbilder, Memoji) mit einem gefuellten Kreis in der Akzentfarbe und weissem Haken,
+     der unten rechts ueber den Rand hinaussteht. Er erscheint mit einem kurzen Federschwung.
+
+     Die Figurfelder schnitten bisher mit overflow:hidden alles ab, was ueber den Kreis ragt —
+     das Abzeichen waere halbiert worden. Abgeschnitten wird deshalb jetzt die Zeichnung selbst
+     (clip-path), und das Feld darf ueberstehen lassen. */
+  .figur-wahl{ position:relative; overflow:visible; }
+  .figur-wahl > svg{ clip-path:circle(50% at 50% 50%); border-radius:50%; }
+  .hg-wahl{ position:relative; }
+
+  .figur-wahl[aria-pressed="true"]::after,
+  .hg-wahl[aria-pressed="true"]::after{
+    content:''; position:absolute; right:-4px; bottom:-4px; width:22px; height:22px;
+    border-radius:50%; box-sizing:border-box;
+    border:2px solid var(--surface);
+    background:var(--accent-strong) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.5 12.5l3.6 3.6 7.4-8.2' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px 14px no-repeat;
+    box-shadow:0 1px 3px rgba(0,0,0,.25);
+    animation:wahl-haken .38s cubic-bezier(.34,1.56,.64,1) both;
+    pointer-events:none;
+  }
+  .hg-wahl[aria-pressed="true"]::after{ right:-6px; bottom:-6px; }
+  @keyframes wahl-haken{ from{ transform:scale(0); opacity:0; } to{ transform:scale(1); opacity:1; } }
+  @media (prefers-reduced-motion: reduce){
+    .figur-wahl[aria-pressed="true"]::after, .hg-wahl[aria-pressed="true"]::after{ animation:none; }
+  }
+
+/* ================= Bewegung wie in iOS (Runde 120) =================
+     Auftrag des Inhabers: "mehr Animationen in der App, z. B. in den Uebergaengen und wenn man auf
+     etwas drueckt." Vier Elemente aus dem Bewegungsbild von iOS, je mit dem Grund:
+
+     1. Federndes Loslassen. Ein gedrueckter Knopf glitt bisher in 0,24 s zurueck. In iOS federt
+        er: Er schiesst beim Loslassen einen Hauch ueber seine Groesse hinaus und setzt sich dann.
+        Das Druecken selbst bleibt unmittelbar (transition-duration:0s in 10-druckzustaende.css) —
+        nur das Zurueck federt.
+     2. Zeilen in Listen werden beim Druecken sofort hinterlegt und blenden beim Loslassen LANGSAM
+        aus. Genau dieses verzoegerte Ausblenden ist das, woran man eine iOS-Liste erkennt.
+     3. Das Haekchen springt beim Waehlen auf, statt einfach da zu sein.
+     4. Ein neuer Bildschirm baut sich gestaffelt auf. BEWUSST NUR UEBER DIE LAGE, nie ueber die
+        Deckkraft: Runde 108 hat eine Staffelung verworfen, weil die Pruefungen kurz nach einem
+        Wechsel messen und ein Block auf Deckkraft 0 dort als "ausgeblendet" gezaehlt wuerde. Ein
+        Block, der nur 14 Punkt tiefer beginnt, ist jederzeit sichtbar — die Messung sieht ihn,
+        das Auge sieht die Bewegung.
+
+     Alles verschwindet bei "weniger Bewegung" — dem Medienmerkmal UND dem Schalter in der App
+     (html.bewegung-aus wird hier nicht gebraucht: der Schalter setzt prefersReducedMotion() und
+     die gestaffelte Klasse kommt dann gar nicht erst; die Feder ist eine reine transition und
+     faellt unter die Regel am Ende). */
+
+  /* 1. Federndes Loslassen. */
+  .btn{
+    transition:transform .5s cubic-bezier(.34,1.56,.64,1), border-color .15s ease,
+               background .15s ease, color .15s ease, box-shadow .15s ease;
+  }
+  .scale-btn{ transition:transform .5s cubic-bezier(.34,1.56,.64,1), border-color .15s ease, background .15s ease; }
+  .figur-wahl, .hg-wahl, .avatar-color-swatch{
+    transition:transform .5s cubic-bezier(.34,1.56,.64,1), border-color .15s ease;
+  }
+
+  /* 2. Listenzeilen: sofort hinterlegt, langsam ausgeblendet. */
+  .wahl-zeile,
+  #view-settings .daten-knoepfe .btn,
+  #drawerPanel .drawer-section > .btn,
+  #view-settings #btnSettingsEditProfile,
+  #view-profile #btnProfileViewResult,
+  #view-profile #demoBlock .daten-knoepfe .btn{
+    transition:background .45s ease;
+  }
+  .wahl-zeile:active,
+  #view-settings .daten-knoepfe .btn:active,
+  #drawerPanel .drawer-section > .btn:active,
+  #view-settings #btnSettingsEditProfile:active,
+  #view-profile #btnProfileViewResult:active{ transition-duration:0s; }
+
+  /* 3. Das Haekchen springt auf. Die Drehung muss in der Animation mitstehen — das Haekchen ist ein
+        gedrehter Winkel, und eine Animation nur ueber scale wuerde die Drehung ueberschreiben. */
+  .wahl-zeile[aria-checked="true"]::after{ animation:haken-auf .42s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes haken-auf{
+    from{ transform:rotate(-45deg) translate(1px,-2px) scale(0); }
+    to  { transform:rotate(-45deg) translate(1px,-2px) scale(1); }
+  }
+
+  /* 4. Gestaffelter Aufbau beim Wechsel der Ansicht — nur Lage, keine Deckkraft. */
+  /* Nachgeprueft, dass diese Regel keine eigene Einblendung eines Blocks ersetzt: Im Browser
+     tragen die direkten Kinder der Ansichten keine wirksame eigene Animation. Die Abfrage nach
+     Selektoren meldete zuerst .understand-card auf der Startseite — dort setzt aber eine
+     spezifischere Regel animation:none, wie der berechnete Stil zeigte. Massgeblich ist, was am
+     Ende gilt, nicht welcher Selektor passt. */
+  .view.active.nav-vor > *, .view.active.nav-zurueck > *{
+    animation:glied-ein .55s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .view.active.nav-vor > *:nth-child(2), .view.active.nav-zurueck > *:nth-child(2){ animation-delay:.04s; }
+  .view.active.nav-vor > *:nth-child(3), .view.active.nav-zurueck > *:nth-child(3){ animation-delay:.08s; }
+  .view.active.nav-vor > *:nth-child(4), .view.active.nav-zurueck > *:nth-child(4){ animation-delay:.12s; }
+  .view.active.nav-vor > *:nth-child(5), .view.active.nav-zurueck > *:nth-child(5){ animation-delay:.16s; }
+  .view.active.nav-vor > *:nth-child(n+6), .view.active.nav-zurueck > *:nth-child(n+6){ animation-delay:.20s; }
+  @keyframes glied-ein{ from{ transform:translateY(14px); } to{ transform:none; } }
+
+  @media (prefers-reduced-motion: reduce){
+    .btn, .scale-btn, .figur-wahl, .hg-wahl, .avatar-color-swatch{ transition-duration:0s; }
+    .wahl-zeile[aria-checked="true"]::after{ animation:none; }
+    .view.active.nav-vor > *, .view.active.nav-zurueck > *{ animation:none; }
+  }
+
+  /* Runde 120, gefunden von der Fehlersuche nach dem Wechsel auf Apples Farbsystem: Segmentwaehler
+     und Kennzahl-Kacheln lagen auf --surface-3, der kraeftigsten Graustufe (#D1D1D6 / #3A3A3C). Mit
+     dem neuen Nebentext ergab das 3,94:1 statt der noetigen 4,5:1 — 110 Funde, alle diese drei
+     Bausteine. iOS legt den Segmentwaehler ohnehin auf eine HELLERE Fuellung als die Zeilen, nicht
+     auf die dunkelste. Auf --surface-2 sind es 4,77:1 hell und 4,86:1 dunkel, nachgerechnet. */
+  .segment{ background:var(--surface-2); }
+  .stat-tile{ background:var(--surface-2); }

@@ -13,8 +13,8 @@
   // Werte hier stehen fest verdrahtet — genau deshalb muessen sie bei jeder Aenderung der
   // Palette von Hand nachgefuehrt werden, und genau das ist in Runde 90 einmal vergessen
   // worden. Die Reihe "Das Bild folgt dem Farbmodus" haelt beide Seiten jetzt zusammen.
-  var SHARE_COLORS = { paper:'#E4E6DB', ink:'#0D1511', muted:'#515E56', line:'#D1D2C5', accent:'#2C6863', accentFill:'rgba(44,104,99,.26)', accent2:'#BF7438' };
-  var SHARE_COLORS_DARK = { paper:'#0F1613', ink:'#ECEEE7', muted:'#96A69C', line:'#293630', accent:'#5CB4AD', accentFill:'rgba(92,180,173,.26)', accent2:'#E39A5C' };
+  var SHARE_COLORS = { paper:'#F2F2F7', ink:'#000000', muted:'#636366', line:'#C6C6C8', accent:'#2C6863', accentFill:'rgba(44,104,99,.26)', accent2:'#BF7438' };
+  var SHARE_COLORS_DARK = { paper:'#000000', ink:'#FFFFFF', muted:'#98989F', line:'#38383A', accent:'#5CB4AD', accentFill:'rgba(92,180,173,.26)', accent2:'#E39A5C' };
   function shareColors(){ return dunkelAktiv() ? SHARE_COLORS_DARK : SHARE_COLORS; }
 
   // Runde 107. Hier stand an vier Stellen 'Georgia, serif' — auf einem Bild, das weitergegeben

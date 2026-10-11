@@ -95,17 +95,26 @@
     return set;
   }
   var hell = farbenVon('light'), dunkel = farbenVon('dark');
-  ok(!!hell['#e4e6db'], "hell: der Grund ist das Papier der Hellfassung (#E4E6DB)");
-  ok(!!hell['#0d1511'], "hell: die Schrift ist die Tinte der Hellfassung (#0D1511)");
-  ok(!!dunkel['#0f1613'], "dunkel: der Grund ist das Papier der Dunkelfassung (#0F1613)");
-  ok(!!dunkel['#eceee7'], "dunkel: die Schrift ist die Tinte der Dunkelfassung (#ECEEE7)");
-  ok(!dunkel['#e4e6db'] && !dunkel['#0d1511'],
+  ok(!!hell['#f2f2f7'], "hell: der Grund ist das Papier der Hellfassung (#F2F2F7)");
+  ok(!!hell['#000000'], "hell: die Schrift ist die Tinte der Hellfassung (#000000)");
+  ok(!!dunkel['#000000'], "dunkel: der Grund ist das Papier der Dunkelfassung (#000000)");
+  ok(!!dunkel['#ffffff'], "dunkel: die Schrift ist die Tinte der Dunkelfassung (#FFFFFF)");
+  ok(!dunkel['#f2f2f7'],
      "dunkel: keine einzige Farbe der Hellfassung bleibt im Bild stehen");
-  ok(!hell['#0f1613'] && !hell['#eceee7'],
+  ok(!hell['#ffffff'],
      "hell: keine einzige Farbe der Dunkelfassung bleibt im Bild stehen");
-  var gemeinsam = Object.keys(hell).filter(function(f){ return dunkel[f]; });
+  // Runde 120: Hier stand "die beiden Fassungen teilen sich keine Farbe". Mit Apples Farbsystem
+  // ist das nicht mehr wahr und auch nicht mehr die richtige Frage: Schwarz ist im Hellmodus die
+  // Schrift und im Dunkelmodus der Grund. Was die Reihe sichern soll, ist, dass im dunklen Bild
+  // nichts vom hellen STEHEN BLEIBT — also dass Grund und Schrift ihre Rollen tauschen und keine
+  // weitere Farbe der Hellfassung mitkommt. Genau das wird jetzt geprueft, ausser den beiden Farben,
+  // die ihre Rolle tauschen.
+  var getauscht = {'#000000':1, '#ffffff':1};
+  var gemeinsam = Object.keys(hell).filter(function(f){ return dunkel[f] && !getauscht[f]; });
   ok(gemeinsam.length === 0,
-     "die beiden Fassungen teilen sich keine Farbe (gemeinsam: "+gemeinsam.join(', ')+")");
+     "ausser Schwarz und Weiss (die ihre Rolle tauschen) teilen die Fassungen keine Farbe (gemeinsam: "+gemeinsam.join(', ')+")");
+  ok(hell['#f2f2f7'] && !dunkel['#f2f2f7'] && dunkel['#000000'],
+     "der Grund wechselt: hell #F2F2F7, dunkel #000000");
   console.log("  hell: "+Object.keys(hell).join(', '));
   console.log("  dunkel: "+Object.keys(dunkel).join(', '));
 

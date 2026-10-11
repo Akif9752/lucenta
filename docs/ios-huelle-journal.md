@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 119)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 120)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -375,6 +375,73 @@ Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 1
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 120 — Auswahl-Haekchen, Apples Farbsystem, Bewegung wie in iOS
+
+Drei Auftraege des Inhabers: ein umkreister Haken an Avatar und Hintergrund, die gewaehlt sind;
+Hell- und Dunkelmodus „so wie Apple es gemacht hat"; mehr Animationen in Uebergaengen und beim
+Druecken.
+
+### 1. Das Auswahl-Haekchen
+
+Bis hierher trug die Wahl nur einen dunkleren Rand von 2 Punkt — bei bunten Figuren und
+Hintergruenden ein schwacher Unterschied. Jetzt wie in iOS (Fotos, Hintergrundbilder, Memoji):
+ein gefuellter Kreis in der Akzentfarbe mit weissem Haken unten rechts, ueber den Rand
+hinausstehend, mit kurzem Federschwung beim Waehlen.
+
+Die Figurfelder schnitten mit `overflow:hidden` alles ab, was ueber den Kreis ragt — das Abzeichen
+waere halbiert worden. Abgeschnitten wird jetzt die Zeichnung (`clip-path:circle`), das Feld darf
+ueberstehen.
+
+### 2. Hell und Dunkel nach Apples Farbsystem
+
+Bis hierher stand die App in beiden Modi auf Salbeigruen (#E4E6DB / #0F1613). Jetzt Apples
+neutrales System: hell #F2F2F7 mit weissen Flaechen, dunkel echtes Schwarz mit #1C1C1E / #2C2C2E /
+#3A3A3C, Trennlinien #C6C6C8 bzw. #38383A. Teal bleibt — iOS-Apps bringen ihre Toenung mit.
+
+**Eine begruendete Abweichung:** Apples Grau fuer Nebentext (#8A8A8E) hat auf Weiss nur 3,4:1. Hier
+steht Apples eigene Fassung fuer „Erhoehter Kontrast" (#636366). Vorher nachgerechnet.
+
+Sechs Stellen tragen die Grundfarben zusaetzlich und sind nachgezogen: Ergebnisbild
+(`pruefeBildfarben` hat genau das beim Bau angemahnt), Statusleistenfarbe, `theme-color`,
+`MainViewController.papierfarbe`, `Papier.colorset`, `pruef-nativ`.
+
+**Eine Pruefung musste ihre Frage aendern, nicht ihre Schwelle:** `share_test` verlangte, dass
+helle und dunkle Fassung keine einzige Farbe teilen. Mit Apples System ist Schwarz beides — die
+Schrift im Hellen, der Grund im Dunklen. Die eigentliche Absicht der Reihe war, dass im dunklen
+Bild nichts vom hellen stehen bleibt; geprueft wird jetzt, dass Grund und Schrift ihre Rollen
+tauschen und keine weitere Farbe mitkommt.
+
+**Die Fehlersuche fand danach 110 Funde, alle dieselbe Sorte:** Nebentext auf `--surface-3` an
+Segmentwaehler und Kennzahl-Kacheln, 3,94:1 statt 4,5:1. iOS legt den Segmentwaehler ohnehin auf
+eine HELLERE Fuellung als die Zeilen. Auf `--surface-2`: 4,77:1 hell, 4,86:1 dunkel, keine Funde.
+
+### 3. Bewegung wie in iOS (`12-ios.css`)
+
+- Federndes Loslassen: Knoepfe, Antwortkreise, Figur- und Hintergrundfelder schiessen beim
+  Loslassen einen Hauch ueber ihre Groesse und setzen sich. Das Druecken bleibt unmittelbar.
+- Listenzeilen werden beim Druecken sofort hinterlegt und blenden beim Loslassen langsam aus —
+  das verzoegerte Ausblenden ist das Kennzeichen einer iOS-Liste.
+- Das Haekchen der Sprachwahl springt auf (die Drehung steht in der Animation mit, sonst wuerde
+  scale sie ueberschreiben).
+- Ein neuer Bildschirm baut sich gestaffelt auf — **nur ueber die Lage, nie ueber die Deckkraft.**
+  Runde 108 hatte eine Staffelung verworfen, weil die Pruefungen kurz nach einem Wechsel messen;
+  ein Block, der nur 14 Punkt tiefer beginnt, ist jederzeit sichtbar.
+
+**Eine Sorge, die sich als unbegruendet erwies — und warum das ins Protokoll gehoert:** Die
+Staffelung gilt fuer alle direkten Kinder einer Ansicht; eine Abfrage nach Selektoren meldete
+`.understand-card` auf der Startseite mit eigener Einblendung von Deckkraft 0 aus. Ich habe sie
+ausgenommen und die Gegenprobe gemacht — die Karte blieb auch OHNE Ausnahme sichtbar. Der Grund: Eine
+spezifischere Regel setzt dort `animation:none`. Die Ausnahme ist wieder heraus. Massgeblich ist
+der berechnete Stil, nicht welcher Selektor passt — und eine Gegenprobe kann auch die eigene
+Vorsicht widerlegen.
+
+### Was offen bleibt
+
+Ergebnisseite und Fragebogen tragen bis auf Schrift und Farben noch die Kartenoptik aus Runde 69.
+Ob sich Bewegung und Farben nach iOS anfuehlen, ist ein Urteil am Geraet.
 
 ---
 

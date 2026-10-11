@@ -335,13 +335,13 @@ ok(farbenVorher.length >= 2, 'es gibt mehrere theme-color-Eintraege ('+farbenVor
 await seite.evaluate(() => document.getElementById('themeLight')?.click());
 await seite.waitForTimeout(200);
 const hell = await themeFarben();
-ok(hell.every(f => f === '#F5F6EF'),
+ok(hell.every(f => f === '#F2F2F7'),
    'bei Wahl "hell" tragen alle Eintraege die helle Farbe: ' + hell.join(' '));
 
 await seite.evaluate(() => document.getElementById('themeDark')?.click());
 await seite.waitForTimeout(200);
 const dunkel = await themeFarben();
-ok(dunkel.every(f => f === '#0F1613'),
+ok(dunkel.every(f => f === '#000000'),
    'bei Wahl "dunkel" tragen alle Eintraege die dunkle Farbe: ' + dunkel.join(' '));
 
 await seite.evaluate(() => document.getElementById('themeSystem')?.click());

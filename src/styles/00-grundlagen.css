@@ -1,4 +1,15 @@
 
+  /* ================= Hell und Dunkel nach Apples Farbsystem (Runde 120) =================
+     Auftrag des Inhabers: "Hell- und Dunkelmodus mehr an Apple und iOS anpassen, so wie die es
+     gemacht haben." Bis hierher stand die App in beiden Modi auf einem salbeigruenen Papierton
+     (#E4E6DB hell, #0F1613 dunkel). iOS benutzt ein festes, neutrales System, und genau das ist
+     jetzt hier: hell der kuehle Grund #F2F2F7 mit reinweissen Flaechen, dunkel echtes Schwarz mit
+     den gestuften Grauflaechen #1C1C1E / #2C2C2E / #3A3A3C, Trennlinien #C6C6C8 bzw. #38383A.
+     Die Akzentfarbe bleibt Teal — iOS-Apps bringen ihre eigene Toenung mit.
+     EINE bewusste Abweichung: Apples Grau fuer Nebentext (#8A8A8E) erreicht auf Weiss nur 3,4:1;
+     die Fehlersuche verlangt 4,5:1. Hier steht deshalb die Fassung, die Apple selbst fuer
+     "Erhoehter Kontrast" vorsieht (#636366), und fuer Bedienelement-Raender ein etwas
+     dunkleres Grau, damit sie die 3:1 halten. Nachgerechnet, nicht geschaetzt. */
   :root{
     /* Runde 90: "das weiss bei der hellversion ist zu grell." Stimmte, und die Ursache war
        woertlich das: --surface war REINES Weiss, also der hellstmoegliche Wert, den ein
@@ -30,19 +41,19 @@
        Ob das alles stimmt, entscheidet ab dieser Runde nicht mehr dieser Kommentar, sondern
        eine Messung: tools/fehlersuche.mjs prueft im echten Browser jede Textstelle gegen den
        Grund, auf dem sie tatsaechlich liegt. */
-    --paper:#E4E6DB;
-    --surface:#EDEEE6;
-    --surface-2:#DADDCF;
-    --ink:#0D1511;
-    --muted:#515E56;
+    --paper:#F2F2F7;
+    --surface:#FFFFFF;
+    --surface-2:#E5E5EA;
+    --ink:#000000;
+    --muted:#636366;
     /* Feedback-Runde 42: dritte, bewusst leisere Textstufe für Fußnoten und rechtliche Hinweise.
        Ersetzt die in Runde 34 eingeführte opacity:.7 — Transparenz nimmt nicht nur die Betonung
        zurück, sondern auch den Kontrast, und zwar unter die Lesbarkeitsgrenze (gemessen 2,9–3,2:1
        im Hellmodus, nötig sind 4,5:1). Dieser Ton ist rechnerisch so weit zurückgenommen wie
        möglich, ohne auf irgendeinem der drei Untergründe unter 4,6:1 zu fallen. */
-    --muted-soft:#59685F;
-    --line:#D1D2C5;
-    --line-strong:#8D8E86;
+    --muted-soft:#67676C;
+    --line:#C6C6C8;
+    --line-strong:#7C7C80;
     --accent:#2C6863;
     --accent-strong:#21524E;
     /* Runde 63: Unterkante fuer die fuehlbaren Knoepfe — dunkler als --accent-strong, damit die
@@ -198,9 +209,9 @@
        4,80:1, dunkel 4,82:1. Beide mit Abstand zur Grenze, damit die naechste Verschiebung der
        Palette sie nicht sofort wieder darunter drueckt. */
     --danger:#A83025;
-    --surface-3:#D3D7C8;
-    --shadow: 0 1px 2px rgba(21,32,25,.05), 0 12px 32px -12px rgba(21,32,25,.18);
-    --shadow-sm: 0 1px 2px rgba(21,32,25,.06);
+    --surface-3:#D1D1D6;
+    --shadow:0 1px 2px rgba(0,0,0,.05), 0 12px 32px -12px rgba(0,0,0,.16);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.06);
     /* Runde 69: Groessere Radien als Teil der Umstellung des Erscheinungsbilds. Die Marken
        waren konsequent verwendet (radius-m 21x, radius-s 12x), der Wechsel laeuft deshalb ueber
        sie statt ueber verstreute Einzeleingriffe. */
@@ -208,7 +219,7 @@
     --radius-m: 18px;
     --radius-s: 12px;
     /* Die Unterkante, die in dieser Formensprache den weichen Schatten ersetzt. */
-    --kante:#C4C6B6;
+    --kante:#D1D1D6;
     /* Runde 78, mit Japanisch dazugekommen: Fraunces, Work Sans und IBM Plex Mono bringen keine
        CJK-Zeichen mit. Ohne ausdruecklichen Rueckfall waehlt der Browser dafuer irgendeine
        Schrift — auf Windows haeufig eine, die neben der lateinischen Schrift sichtbar fremd
@@ -228,15 +239,15 @@
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --paper:#0F1613;
-      --surface:#17211C;
-      --surface-2:#1D2822;
-      --ink:#ECEEE7;
-      --muted:#96A69C;
-      --muted-soft:#7F9286;
+      --paper:#000000;
+      --surface:#1C1C1E;
+      --surface-2:#2C2C2E;
+      --ink:#FFFFFF;
+      --muted:#98989F;
+      --muted-soft:#939399;
       --danger:#FF6252;
-      --line:#293630;
-      --line-strong:#546F62;
+      --line:#38383A;
+      --line-strong:#7C7C82;
       --accent:#5CB4AD;
       --accent-strong:#7FC7C0;
       --accent-deep:#2E6F6A;
@@ -279,10 +290,10 @@
       --accent-ink:#08211E;
       --accent-2:#E39A5C;
       --accent-2-text:#E39A5C;
-      --surface-3:#24322B;
-      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 16px 40px -14px rgba(0,0,0,.55);
-      --kante:#0C1310;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+      --surface-3:#3A3A3C;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 40px -14px rgba(0,0,0,.6);
+      --kante:#000000;
+      --shadow-sm:0 1px 2px rgba(0,0,0,.45);
     }
   }
   :root[data-theme="dark"]{
@@ -299,15 +310,15 @@
     --himmel-hoch:rgba(0,0,0,0);
     --wolke:rgba(0,0,0,0);
     --wolke-licht:rgba(0,0,0,0);
-    --paper:#0F1613;
-    --surface:#17211C;
-    --surface-2:#1D2822;
-    --ink:#ECEEE7;
-    --muted:#96A69C;
-    --muted-soft:#7F9286;
+    --paper:#000000;
+    --surface:#1C1C1E;
+    --surface-2:#2C2C2E;
+    --ink:#FFFFFF;
+    --muted:#98989F;
+    --muted-soft:#939399;
     --danger:#FF6252;
-    --line:#293630;
-    --line-strong:#546F62;
+    --line:#38383A;
+    --line-strong:#7C7C82;
     --accent:#5CB4AD;
     --accent-strong:#7FC7C0;
     --accent-deep:#2E6F6A;
@@ -340,10 +351,10 @@
     --accent-ink:#08211E;
     --accent-2:#E39A5C;
     --accent-2-text:#E39A5C;
-    --surface-3:#24322B;
-    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 16px 40px -14px rgba(0,0,0,.55);
-    --kante:#0C1310;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+    --surface-3:#3A3A3C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 40px -14px rgba(0,0,0,.6);
+    --kante:#000000;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.45);
   }
 
   *{box-sizing:border-box;}

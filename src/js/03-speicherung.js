@@ -411,7 +411,7 @@
         });
         return;
       }
-      var farbe = mode==='dark' ? '#0F1613' : '#F5F6EF';
+      var farbe = mode==='dark' ? '#000000' : '#F2F2F7';
       metas.forEach(function(m){ m.setAttribute('content', farbe); });
     }catch(e){}
   }

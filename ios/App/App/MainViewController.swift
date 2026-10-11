@@ -28,7 +28,7 @@ import Capacitor
 ///    Splashbild), sondern die Luecke danach — iOS zeigt bereits das App-Fenster mit der WKWebView,
 ///    die die ~1,5-MB-Ein-Datei samt eingebetteter Schriften aber noch nicht gezeichnet hat; eine
 ///    ungemalte WebView ist im Dunkelmodus schwarz. Wir faerben View/WebView/ScrollView auf die
-///    Papierfarbe der App (hell #E4E6DB, dunkel #0F1613, passend zu --paper), damit die Wartezeit
+///    Papierfarbe der App (hell #F2F2F7, dunkel #000000, passend zu --paper; seit Runde 120 Apples Farbsystem), damit die Wartezeit
 ///    in der Markenfarbe statt in Schwarz vergeht und nahtlos in die gezeichnete Seite uebergeht.
 ///    (Die Ladezeit selbst bleibt — sie kommt aus der grossen Ein-Datei; ein Release-Build startet
 ///    schneller als der debug-signierte Xcode-Build.)
@@ -37,8 +37,8 @@ class MainViewController: CAPBridgeViewController {
     /// Papierfarbe der App als dynamische Farbe (hell/dunkel), passend zum CSS-Token --paper.
     private let papierfarbe = UIColor { tc in
         tc.userInterfaceStyle == .dark
-            ? UIColor(red: 0x0F/255.0, green: 0x16/255.0, blue: 0x13/255.0, alpha: 1) // #0F1613
-            : UIColor(red: 0xE4/255.0, green: 0xE6/255.0, blue: 0xDB/255.0, alpha: 1) // #E4E6DB
+            ? UIColor(red: 0, green: 0, blue: 0, alpha: 1) // #000000
+            : UIColor(red: 0xF2/255.0, green: 0xF2/255.0, blue: 0xF7/255.0, alpha: 1) // #F2F2F7
     }
 
     override func viewDidLoad() {
