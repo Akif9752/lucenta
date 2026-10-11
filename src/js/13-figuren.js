@@ -447,6 +447,12 @@
       figOhren(o.ohr, o.ohrFarbe || o.fell, o.innen, o.ohrSpitze) +
       figSaum(TKOPF, 'url(#'+g+')', figTon(o.fell, 1.28)) +
       '<path d="'+TKOPF+'" fill="url(#'+gk+')"/>' +
+      // Runde 118: Backenfell. Beim echten Fuchs und bei der Katze steht das Fell an den Wangen
+      // seitlich ab, sodass das Gesicht breiter ist als der Schaedel — die Silhouette laeuft dort
+      // in zwei Spitzen aus statt in einem glatten Bogen. Als Flaeche in Fell- bzw. Wangenfarbe,
+      // HINTER dem Kopf, damit nur die Spitzen hervorstehen.
+      (o.backenfell ? '<path d="M9.4 21 L4.6 25.4 L8.6 25.2 L5.6 28.6 L10.6 27 Z" fill="'+o.backenfell+'"/>'+
+                      '<path d="M30.6 21 L35.4 25.4 L31.4 25.2 L34.4 28.6 L29.4 27 Z" fill="'+o.backenfell+'"/>' : '') +
       // Runde 116: helle Wangen und Kinn. Beim Fuchs reicht das Weiss von den Wangen bis unter das
       // Kinn, beim Reh ist die Kehle weiss — eine weiche Flaeche in der unteren Kopfhaelfte, in
       // die Kopfform geschnitten, damit sie den Umriss nicht veraendert.
@@ -503,7 +509,10 @@
       // Runde 115: die Augen 30 % groesser. Animoji-Augen sind gross und glaenzend; bei 2,3
       // Einheiten auf einem 23 Einheiten breiten Kopf blieben sie Knoepfe. 15 % waren im ersten
       // Anlauf zu wenig, um im Bild ueberhaupt aufzufallen.
-      figTierAugen(15, 25, 20.2, (o.auge || 2.3) * 1.20, {iris:o.iris || '#3A2416', pupille:o.pupille, augenForm:o.augenForm}) +
+      // Runde 118: der Augenabstand je Tier. Raubtiere (Fuchs, Katze, Baer, Hund) schauen nach vorn;
+      // Fluchttiere (Hase, Reh) tragen die Augen seitlich am Kopf, um fast rundum zu sehen. Mit
+      // demselben frontalen Abstand wie die Katze sahen Hase und Reh aus wie Pluesch.
+      figTierAugen(20 - (o.augenAbstand || 5), 20 + (o.augenAbstand || 5), 20.2 + (o.augenHoehe || 0), (o.auge || 2.3) * 1.20, {iris:o.iris || '#3A2416', pupille:o.pupille, augenForm:o.augenForm}) +
       (o.schnurrhaare ? figSchnurrhaare(sn.cy - 0.6, figTon(o.schnauze, 1.18)) : '') +
       figNase(o.nase || 'oval', 20, sn.cy - sn.ry*0.42, o.schnauze, o.naseFarbe) +
       figTierMaul(20, sn.cy - sn.ry*0.42, o);
@@ -519,6 +528,180 @@
   // Gespeicherte Profile mit einer Menschenfigur (m1 bis m10) fallen ueber figurFinden() von
   // selbst auf das Monogramm zurueck — es gibt nichts zu bereinigen.
 
+  // ---------- Vier Tiere nach ihrer echten Anatomie (Runde 118) ----------
+  //
+  // Rueckmeldung des Inhabers: "Vor allem die Fische und die Schildkroete muessen realistischer an
+  // den echten Tieren sein." Zutreffend: Der Goldfisch war eine orange Ellipse mit zwei
+  // Flossenecken, die Schildkroete ein gruener Halbkreis mit drei Linien und einem runden Kopf
+  // obendrauf, der Wal ein blaues Ei mit Strichfontaene. Keine dieser Formen kommt in der Natur
+  // vor. Jede ist jetzt aus den Teilen gebaut, an denen man das echte Tier erkennt — und aus
+  // denselben Lichtmitteln wie die anderen (Verlauf von oben, Glanz, weiche Schatten).
+  //
+  // Feine Linien gibt es hier, wo das echte Tier Linien HAT (Flossenstrahlen, Schildnaehte,
+  // Kehlfurchen) — sehr duenn, mit stumpfen Enden und geringer Deckung. Die Lehre aus CLAUDE.md
+  // gilt fuer aufgemalte Glanz- und Kantenstriche; eine Naht zwischen zwei Panzerschilden ist
+  // keine Zier, sondern der Panzer.
+  var FIG_SONDER_LAUF = 0;
+  function figSid(){ return FIG_UID + 'so' + (FIG_SONDER_LAUF++); }
+  function figLinear(id, oben, unten, x1, y1, x2, y2){
+    return '<linearGradient id="'+id+'" x1="'+(x1||0)+'" y1="'+(y1||0)+'" x2="'+(x2||0)+'" y2="'+(y2==null?1:y2)+'">'+
+           '<stop offset="0" stop-color="'+oben+'"/><stop offset="1" stop-color="'+unten+'"/></linearGradient>';
+  }
+  function figGlanz(id){
+    return '<radialGradient id="'+id+'"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>'+
+           '<stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.16"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>';
+  }
+
+  // Goldfisch, nach rechts schwimmend. Echt: hochovaler Koerper, oben rotorange, zum Bauch gold;
+  // Schuppen in Reihen; der Kiemendeckel als Bogen hinter dem Auge; eine durchscheinende
+  // Faecherflosse mit Strahlen; Ruecken-, Brust- und Bauchflossen; das Maul vorn an der Spitze.
+  function figGoldfisch(){
+    var k = figSid(), f = figSid(), g = figSid(), c = figSid();
+    var KOERPER = 'M33.6 21.4 C33.6 15.6 28 12.2 21.6 12.2 C15.4 12.2 10.6 16 10.2 21.2 C10.6 26.4 15.6 30.2 21.8 30.2 C28.2 30.2 33.6 27 33.6 21.4 Z';
+    var schuppen = '';
+    for (var r = 0; r < 4; r++){
+      for (var i = 0; i < 5; i++){
+        var x = 15.2 + i*2.9 + (r % 2 ? 1.45 : 0), y = 16.6 + r*2.7;
+        schuppen += '<path d="M'+(x-1.35).toFixed(2)+' '+y.toFixed(2)+' Q'+x.toFixed(2)+' '+(y+1.7).toFixed(2)+' '+(x+1.35).toFixed(2)+' '+y.toFixed(2)+
+                    ' Q'+x.toFixed(2)+' '+(y+0.9).toFixed(2)+' '+(x-1.35).toFixed(2)+' '+y.toFixed(2)+' Z"/>';
+      }
+    }
+    var strahlen = '';
+    [[2.4,12.6],[2.0,16.6],[2.6,20.8],[2.0,25.2],[2.4,29.4]].forEach(function(p){
+      strahlen += '<path d="M10.4 21 L'+p[0]+' '+p[1]+'"/>';
+    });
+    return '<defs>'+figLinear(k, '#E2561E', '#F6BE55')+figLinear(f, '#F0883A', '#F7C27A', 1, 0, 0, 0)+figGlanz(g)+
+           '<clipPath id="'+c+'"><path d="'+KOERPER+'"/></clipPath></defs>'+
+      // Schwanzflosse: zwei Lappen, durchscheinend, mit Strahlen.
+      '<path d="M11 21 C7.5 15.5 3.6 11 1.6 12.2 C2.8 16 4.4 18.8 5.2 21 C4.4 23.2 2.8 26 1.6 29.8 C3.6 31 7.5 26.5 11 21 Z" fill="url(#'+f+')" opacity=".82"/>'+
+      '<g stroke="#C8601E" stroke-width="0.3" opacity=".35" fill="none">'+strahlen+'</g>'+
+      // Rueckenflosse, Bauch- und Afterflosse, alle durchscheinend.
+      '<path d="M15.8 13.2 C17.6 7.6 23.4 6.8 27 11.6 C24.4 11.6 20.6 12 15.8 13.2 Z" fill="url(#'+f+')" opacity=".85"/>'+
+      '<path d="M17 28.8 C15.6 32.2 13 33.6 11.6 33 C13.2 31.4 14.6 29.8 17 28.8 Z" fill="#F2A24E" opacity=".85"/>'+
+      '<path d="M23.4 29.8 C22.8 33.2 20.4 34.8 19 34.2 C20.4 32.4 21.6 31 23.4 29.8 Z" fill="#F2A24E" opacity=".85"/>'+
+      '<path d="'+KOERPER+'" fill="url(#'+k+')"/>'+
+      '<g clip-path="url(#'+c+')">'+
+        '<g fill="#FFE7A8" opacity=".30">'+schuppen+'</g>'+
+        // Der helle Bauch und das Licht auf dem Ruecken.
+        '<ellipse cx="22" cy="28.6" rx="10" ry="3.4" fill="#FCE3A6" opacity=".55"/>'+
+        '<ellipse cx="19.6" cy="15.6" rx="8" ry="3" fill="url(#'+g+')" transform="rotate(-6 19.6 15.6)"/>'+
+      '</g>'+
+      // Kiemendeckel: der Bogen hinter dem Auge.
+      '<path d="M27.6 14.6 Q25 21.4 27.8 28" stroke="#B9481A" stroke-width="0.6" fill="none" opacity=".55"/>'+
+      // Brustflosse hinter dem Kiemendeckel.
+      '<path d="M26.6 23.4 C23.4 24.6 21.4 27.4 20.8 29.2 C23.2 28.2 25.4 26.4 26.6 23.4 Z" fill="#F7B868" opacity=".8"/>'+
+      '<g class="fig-augen">'+figTierAuge(29.4, 18.6, 1.9, {iris:'#C9A040'}, 1)+'</g>'+
+      // Das Maul vorn: kleine Oeffnung mit Lippe.
+      '<ellipse cx="33.5" cy="21.8" rx="0.75" ry="0.95" fill="#7A2E10"/>'+
+      '<path d="M33 20.7 Q34.4 21.8 33 22.9" stroke="#F6B26A" stroke-width="0.45" fill="none" opacity=".8"/>'+
+      '<g fill="#FFFFFF" opacity=".45"><circle cx="36" cy="14.4" r="1.1"/><circle cx="34.6" cy="11" r="0.7"/></g>';
+  }
+
+  // Schildkroete von der Seite, nach links. Echt: ein gewoelbter Panzer aus Hornschilden — oben die
+  // Wirbelschilde, darunter die Rippenschilde, am Rand die kleinen Randschilde, jeder Schild mit
+  // hellerem Kern und dunkler Naht; darunter der gelbliche Bauchpanzer. Der Kopf sitzt vorn am
+  // Hals, mit schuppiger Haut und Hornschnabel; die Beine sind kurz, beschuppt, mit Krallen.
+  function figSchildkroete(){
+    var p = figSid(), h = figSid(), g = figSid(), sk = figSid();
+    var PANZER = 'M8.2 26.4 C8.2 15.4 15 9.4 22 9.4 C29.6 9.4 35.2 15.6 35.2 26.4 Z';
+    var schild = function(cx, cy, s){
+      var pts = [];
+      for (var i = 0; i < 6; i++){ var a = Math.PI/6 + i*Math.PI/3; pts.push((cx + Math.cos(a)*s*1.12).toFixed(2)+','+(cy + Math.sin(a)*s*0.86).toFixed(2)); }
+      // Die Naehte sind dunkler als der Schild, aber nicht schwarz, und die Ecken gerundet
+      // (stroke-linejoin) — im ersten Entwurf las sich das scharfe Sechseckraster wie ein Fussball.
+      return '<polygon points="'+pts.join(' ')+'" fill="url(#'+sk+')" stroke="#3A5228" stroke-width="0.7" '+
+             'stroke-linejoin="round" stroke-opacity=".75"/>';
+    };
+    var schilde = schild(16.4, 15.8, 3.2) + schild(22, 13.4, 3.4) + schild(27.6, 15.8, 3.2) +
+                  schild(12.2, 21.8, 3.0) + schild(18.6, 20.4, 3.2) + schild(25.4, 20.4, 3.2) + schild(31.6, 21.8, 3.0);
+    var rand = '';
+    for (var x = 9.6; x < 34.5; x += 2.75){ rand += '<path d="M'+x.toFixed(2)+' 24 L'+x.toFixed(2)+' 26.4"/>'; }
+    return '<defs>'+figLinear(p, '#6E8A42', '#34491F')+figLinear(h, '#9AA65C', '#5E6A34')+figGlanz(g)+
+           '<radialGradient id="'+sk+'" cx="0.45" cy="0.35" r="0.75"><stop offset="0" stop-color="#A2A858"/>'+
+           '<stop offset="0.55" stop-color="#6E7E3A"/><stop offset="1" stop-color="#3E5426"/></radialGradient></defs>'+
+      '<ellipse cx="21" cy="32.6" rx="15" ry="1.8" fill="'+FIG_INK+'" opacity=".18"/>'+
+      // Hinterbein und Schwanz hinter dem Panzer.
+      '<path d="M31 26 C32 29.4 31.4 31.4 30.6 32.4 L34.2 32.4 C34.6 30.4 34.6 28.2 33.6 26 Z" fill="url(#'+h+')"/>'+
+      '<path d="M34.8 25.4 C37 25.6 38.2 26.6 38.4 27.6 C36.8 27.6 35.6 27.2 34.6 26.6 Z" fill="#7A8644"/>'+
+      // Hals und Kopf.
+      '<path d="M10.2 22.6 C8.4 21.6 6.6 21.8 5.6 22.6 L6.4 26.8 C8 26.8 9.6 26.6 11 26 Z" fill="url(#'+h+')"/>'+
+      '<ellipse cx="5" cy="23.4" rx="3.7" ry="2.9" fill="url(#'+h+')"/>'+
+      '<ellipse cx="4.2" cy="22.2" rx="2.2" ry="1.1" fill="url(#'+g+')"/>'+
+      '<g fill="#4E5A2A" opacity=".45"><circle cx="6.6" cy="22.2" r="0.45"/><circle cx="7.4" cy="24" r="0.4"/>'+
+        '<circle cx="5.8" cy="25.2" r="0.35"/><circle cx="8.6" cy="22.8" r="0.4"/></g>'+
+      '<g class="fig-augen">'+figTierAuge(3.9, 22.5, 0.95, {iris:'#2A2412'}, 1)+'</g>'+
+      // Der Hornschnabel: eine Kante, keine Lippen.
+      '<path d="M1.5 23.9 Q3.6 25.2 6.2 24.9" stroke="#2E3418" stroke-width="0.55" fill="none" opacity=".85"/>'+
+      // Panzer mit Schilden und Randschilden.
+      '<path d="'+PANZER+'" fill="url(#'+p+')"/>'+
+      schilde +
+      '<g stroke="#3A5228" stroke-width="0.5" opacity=".6">'+rand+'</g>'+
+      '<path d="M8.4 24 L35 24" stroke="#3A5228" stroke-width="0.5" opacity=".6"/>'+
+      '<ellipse cx="18.4" cy="13" rx="7" ry="2.8" fill="url(#'+g+')" transform="rotate(-14 18.4 13)"/>'+
+      // Bauchpanzer, gelblich.
+      '<path d="M8.2 26.4 L35.2 26.4 L34.2 28.2 L9.4 28.2 Z" fill="#C9B867"/>'+
+      // Vorderbein mit Krallen.
+      '<path d="M10.6 26.4 C9.6 29.4 9.4 31.2 9.8 32.4 L13.6 32.4 C13.8 30.4 14 28.4 14.2 26.4 Z" fill="url(#'+h+')"/>'+
+      '<g fill="#E8E2C4"><path d="M9.8 32.4 L9.3 33.4 L10.5 32.4 Z"/><path d="M11.4 32.4 L11 33.5 L12.1 32.4 Z"/><path d="M12.9 32.4 L12.6 33.4 L13.6 32.4 Z"/></g>';
+  }
+
+  // Buckelwal, nach links. Echt: gestreckter Koerper, oben dunkel blaugrau, unten hell; die
+  // Kehlfurchen am Unterkiefer; die sehr lange Brustflosse; eine kleine Rueckenflosse weit hinten;
+  // die waagerechte Fluke; das kleine Auge kurz hinter dem Maulwinkel. Der Blas ist Nebel, keine
+  // Fontaene aus Strichen.
+  function figWal(){
+    var k = figSid(), b = figSid(), g = figSid(), n = figSid(), c = figSid();
+    var KOERPER = 'M2.6 21.6 C2.6 16.6 9.6 13.8 18.6 14.2 C26.4 14.6 31 16.8 34.8 19.6 L38.4 15.6 C39.2 17.8 39 20 37.6 21.2 C39 22.4 39.2 24.6 38.4 26.8 L34.6 22.8 C30.4 25.6 25 28.2 17.6 28.2 C9 28.2 2.6 26.2 2.6 21.6 Z';
+    var furchen = '';
+    for (var i = 0; i < 5; i++){ furchen += '<path d="M'+(4.2+i*0.2)+' '+(23.6+i*0.8)+' Q11 '+(25.4+i*0.9)+' '+(18+i*0.4)+' '+(26+i*0.5)+'"/>'; }
+    return '<defs>'+figLinear(k, '#4B6C86', '#2A4256')+figLinear(b, '#C9D9E4', '#A9BFCF')+figGlanz(g)+
+           '<radialGradient id="'+n+'"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.75"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>'+
+           '<clipPath id="'+c+'"><path d="'+KOERPER+'"/></clipPath></defs>'+
+      // Der Blas: zwei Nebelwolken, weich.
+      '<ellipse cx="9.6" cy="9.4" rx="3.2" ry="4" fill="url(#'+n+')"/><ellipse cx="11.6" cy="7.4" rx="2.4" ry="3" fill="url(#'+n+')"/>'+
+      '<path d="'+KOERPER+'" fill="url(#'+k+')"/>'+
+      '<g clip-path="url(#'+c+')">'+
+        '<path d="M2 22 C6 27.6 14 29.6 22 28.4 C16 27.4 9 26 2 22 Z" fill="url(#'+b+')"/>'+
+        '<path d="M2.6 23.4 C8 27.8 16 29 24 27.8 L24 31 L2 31 Z" fill="url(#'+b+')"/>'+
+        '<g stroke="#7E97A8" stroke-width="0.32" fill="none" opacity=".7">'+furchen+'</g>'+
+        '<ellipse cx="16" cy="16" rx="10" ry="2.6" fill="url(#'+g+')" transform="rotate(-3 16 16)"/>'+
+        // Die Hoecker auf dem Kopf des Buckelwals.
+        '<g fill="#6E8BA2" opacity=".7"><circle cx="5.6" cy="18.6" r="0.5"/><circle cx="7.4" cy="17.4" r="0.5"/><circle cx="9.4" cy="16.6" r="0.5"/></g>'+
+      '</g>'+
+      // Maullinie, lang und geschwungen — das hat der echte Wal.
+      '<path d="M2.8 22.4 Q7.6 23.6 12.6 22.9" stroke="#1E3040" stroke-width="0.6" fill="none" opacity=".8"/>'+
+      '<g class="fig-augen">'+figTierAuge(13.8, 21.5, 0.75, {iris:'#14202A'}, 1)+'</g>'+
+      // Rueckenflosse, und die lange Brustflosse mit hellem Rand.
+      '<path d="M26.4 15.2 C27.6 13 29.4 12.8 30 15.6 Z" fill="#2E4A60"/>'+
+      '<path d="M15.6 25.6 C18.6 30 22.4 33.2 26.6 33.8 C24 31.2 20.6 28 18.6 25.4 Z" fill="#344E64"/>'+
+      '<path d="M18.6 25.4 C20.6 28 24 31.2 26.6 33.8 C25.2 32.2 22.4 29.4 20.2 26.4 Z" fill="#D4E2EA" opacity=".85"/>';
+  }
+
+  // Uhu, von vorn. Echt: der runde Gesichtsschleier mit dunklem Rand, die gefiederten Ohrbueschel,
+  // der kurze Hakenschnabel, der zur Haelfte im Gefieder steckt, und die Laengsstreifen auf der Brust.
+  function figEule(){
+    var s = figSid();
+    var feder = '';
+    [[15.6,30.2],[19,31.6],[22.4,30.2],[25.6,31.8],[13.2,33],[17.6,34.4],[21.6,34],[26.4,34.6]].forEach(function(q){
+      feder += '<path d="M'+q[0]+' '+q[1]+' Q'+(q[0]+0.5)+' '+(q[1]+1.4)+' '+q[0]+' '+(q[1]+2.6)+' Q'+(q[0]-0.5)+' '+(q[1]+1.4)+' '+q[0]+' '+q[1]+' Z"/>';
+    });
+    return '<defs><radialGradient id="'+s+'" cx="0.5" cy="0.45" r="0.55"><stop offset="0" stop-color="#EBD8B8"/>'+
+           '<stop offset="0.72" stop-color="#D2B48A"/><stop offset="1" stop-color="#6E5236"/></radialGradient></defs>'+
+      '<path d="M20 30 C13.6 30 8.6 33.8 7.4 40 L32.6 40 C31.4 33.8 26.4 30 20 30 Z" fill="#9C7C54"/>'+
+      // Ohrbueschel: mehrere Federspitzen statt eines Dreiecks.
+      '<path d="M9.6 13.6 L9.4 5.4 L11.6 9 L12.4 4.6 L14 9.6 L16.4 11.2 Z" fill="#7A5C3C"/>'+
+      '<path d="M30.4 13.6 L30.6 5.4 L28.4 9 L27.6 4.6 L26 9.6 L23.6 11.2 Z" fill="#7A5C3C"/>'+
+      figPlastisch(20, 22, 13.5, 13, '#A28058')+
+      // Gesichtsschleier: zwei helle Scheiben mit dunklem Rand.
+      '<circle cx="14.6" cy="20.2" r="6.8" fill="#5A4028" opacity=".55"/><circle cx="25.4" cy="20.2" r="6.8" fill="#5A4028" opacity=".55"/>'+
+      '<circle cx="14.6" cy="20.2" r="6.1" fill="url(#'+s+')"/><circle cx="25.4" cy="20.2" r="6.1" fill="url(#'+s+')"/>'+
+      figTierAugen(14.6, 25.4, 20, 2.6, {iris:'#E8901E'})+
+      // Hakenschnabel, halb im Gefieder.
+      '<path d="M18.6 23.6 Q20 22.4 21.4 23.6 Q21 26.4 20 27.6 Q19 26.4 18.6 23.6 Z" fill="#3E3428"/>'+
+      '<path d="M19.2 23.8 Q20 23.2 20.6 23.8" stroke="#8A7A64" stroke-width="0.35" fill="none"/>'+
+      '<g fill="#5A4028" opacity=".55">'+feder+'</g>';
+  }
+
   // Die Figuren. Reihenfolge: erst Menschen, dann Tiere — wer sich selbst sucht, sucht nicht
   // zuerst nach einem Fuchs. Jede traegt jetzt eine eigene Miene; dieselbe Frisur mit einem
   // anderen Mund ist ein anderer Mensch.
@@ -526,12 +709,12 @@
     {id:'fuchs', feld:'#F6E6D8', svg:function(){ return figTier({iris:'#C8862E', augenForm:'mandel', form:'spitz', nase:'dreieck', schnurrhaare:true, ohr:'spitz', fell:'#D97A45', innen:'#F5E2D2', schnauze:'#F8EFE6',
                   // Runde 116, am echten Rotfuchs: schwarze Ohrspitzen, weisse Wangen bis zum Kinn,
                   // weisse Brust, Schlitzpupillen.
-                  ohrSpitze:'#2A211C', kinn:'#F8EFE6', brust:'#F8EFE6', pupille:'schlitz',
+                  ohrSpitze:'#2A211C', kinn:'#F8EFE6', brust:'#F8EFE6', pupille:'schlitz', backenfell:'#F4E6DA',
                   wange:'#E9A177',}); }},
     {id:'katze', feld:'#E6E4EA', svg:function(){ return figTier({iris:'#B5BD3E', augenForm:'mandel', form:'katze', nase:'dreieck', schnurrhaare:true, ohr:'spitz', fell:'#8E8B95', innen:'#E3C8CE', schnauze:'#F1EFF3',
                   // Runde 116, an der echten getigerten Hauskatze: Schlitzpupillen, rosa Nase und das
                   // "M" auf der Stirn — drei weiche, spitz zulaufende Streifen, Flaechen statt Striche.
-                  pupille:'schlitz', naseFarbe:'#D98E98',
+                  pupille:'schlitz', naseFarbe:'#D98E98', backenfell:'#9A97A2',
                   maske:'<g fill="#5E5B66" opacity=".55"><path d="M18.9 9.6 Q20 8.8 21.1 9.6 L20.4 15.2 Q20 15.6 19.6 15.2 Z"/>'+
                         '<path d="M14.6 10.6 Q15.8 10 16.6 10.9 L17.4 15.4 Q17 15.8 16.6 15.4 Z"/>'+
                         '<path d="M25.4 10.6 Q24.2 10 23.4 10.9 L22.6 15.4 Q23 15.8 23.4 15.4 Z"/></g>',
@@ -544,10 +727,10 @@
                   ohrFarbe:'#2A211C', koerper:'#2A211C',
                   maske:'<ellipse cx="14.6" cy="20.8" rx="4.3" ry="5.6" transform="rotate(28 14.6 20.8)" fill="#2A211C"/>'+
                         '<ellipse cx="25.4" cy="20.8" rx="4.3" ry="5.6" transform="rotate(-28 25.4 20.8)" fill="#2A211C"/>'}); }},
-    {id:'hase',  feld:'#F1E7EC', svg:function(){ return figTier({iris:'#3A2420', form:'schmal', nase:'klein', schnurrhaare:true, ohr:'lang',  fell:'#E4DAD3', innen:'#E7B9C4', schnauze:'#F7F1EE',
+    {id:'hase',  feld:'#F1E7EC', svg:function(){ return figTier({augenAbstand:7.4, augenHoehe:-1.2, auge:1.9, iris:'#3A2420', form:'schmal', nase:'klein', schnurrhaare:true, ohr:'lang',  fell:'#E4DAD3', innen:'#E7B9C4', schnauze:'#F7F1EE',
                   naseFarbe:'#D98E98',
                   wange:'#EFC3CD',}); }},
-    {id:'reh',   feld:'#EEE7D9', svg:function(){ return figTier({iris:'#24160E', form:'schmal', nase:'klein', ohr:'geweih',fell:'#C99A6A', innen:'#7A5B3E', schnauze:'#EFE0CD',
+    {id:'reh',   feld:'#EEE7D9', svg:function(){ return figTier({augenAbstand:7.2, augenHoehe:-0.6, auge:1.95, iris:'#24160E', form:'schmal', nase:'klein', ohr:'geweih',fell:'#C99A6A', innen:'#7A5B3E', schnauze:'#EFE0CD',
                   // Runde 116, am echten Reh: Hier standen weisse Punkte auf der Stirn. Die gibt es
                   // nicht — Flecken traegt nur das Kitz, am Ruecken, und nie zusammen mit einem
                   // Geweih. Was das Reh tatsaechlich kennzeichnet, ist die helle Kehle. Die rosa
@@ -562,53 +745,11 @@
     {id:'retriever', feld:'#F7EBD6', svg:function(){ return figTier({iris:'#4A2C14', form:'hund', nase:'dreieck', ohr:'schlapp', fell:'#E3B26B', innen:'#C08F4C', schnauze:'#F6E3C4',
                   zunge:true,}); }},
     // Drei, die nicht in den Kopf-Bauplan passen und deshalb eigene Formen bekommen.
-    {id:'eule', feld:'#E3E7E4', svg:function(){
-       return '<path d="M20 30 C13.6 30 8.6 33.8 7.4 40 L32.6 40 C31.4 33.8 26.4 30 20 30 Z" fill="#8B7355"/>'+
-              '<path d="M9 12 L12.5 5 L16.5 10.5 Z" fill="#8B7355"/><path d="M31 12 L27.5 5 L23.5 10.5 Z" fill="#8B7355"/>'+
-              figPlastisch(20, 22, 13.5, 13, '#A08463')+
-              figVolumen(20, 22, 13.5, 13)+
-              '<circle cx="14.6" cy="20" r="6.2" fill="#F3EADD"/><circle cx="25.4" cy="20" r="6.2" fill="#F3EADD"/>'+
-              // Die Eule sieht als Einzige den Betrachter direkt und weit an — das ist das
-              // Einzige, was eine Eule tut.
-              figTierAugen(14.6, 25.4, 20, 2.9, {iris:'#E8A030'})+
-              '<path d="M20 24.5 L16.8 29 L23.2 29 Z" fill="#D89A45"/>'+
-              '<path d="M11 30 Q20 34.5 29 30" stroke="#8B7355" stroke-width="1.6" fill="none" stroke-linecap="round"/>'; }},
-    {id:'wal', feld:'#DCE7EE', svg:function(){
-       return '<path d="M17 6 Q20 9 23 6" stroke="#9FC2D8" stroke-width="1.8" fill="none" stroke-linecap="round"/>'+
-              '<path d="M20 6 L20 10" stroke="#9FC2D8" stroke-width="1.8" stroke-linecap="round"/>'+
-              figPlastisch(19, 23, 14, 11, '#5E8FB0')+
-              figVolumen(19, 23, 14, 11)+
-              '<path d="M31 19 L37 14 L36 26 Z" fill="#4A7A9A"/>'+
-              '<path d="M8 26 Q19 33 30 26 Q19 30 8 26 Z" fill="#CFE2EE"/>'+
-              '<ellipse cx="19" cy="27" rx="10" ry="5.5" fill="#CFE2EE"/>'+
-              '<path d="M9.6 24.6 Q12.4 26.6 15.4 24.8" stroke="'+FIG_INK+'" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".7"/>'+
-              '<g class="fig-augen">'+figTierAuge(13, 21, 1.4, {iris:'#1E2A30'}, 1)+'</g>'; }},
-    {id:'goldfisch', feld:'#FCEAD5', svg:function(){
-       return '<path d="M6 22 L1.5 15 L2.4 29 Z" fill="#E8933C"/>'+
-              '<path d="M20 9.5 Q23 4 26.5 10.5 Z" fill="#F2AE5C" opacity=".9"/>'+
-              figPlastisch(21, 22, 14, 11, '#F2953A')+
-              figVolumen(21, 22, 14, 11)+
-              '<path d="M15 27.5 Q21 31.5 27.5 27" stroke="#D97C25" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".55"/>'+
-              '<path d="M22.5 30 Q25.5 34.5 29 30 Z" fill="#F2AE5C" opacity=".9"/>'+
-              // Runde 117: Hier stand ein Laechelbogen an der Seite. Ein Goldfisch hat ein kleines,
-              // rundes Maul vorn an der Spitze — der Fisch schaut nach rechts, also dort.
-              '<ellipse cx="34.3" cy="23.6" rx="0.9" ry="1.1" fill="#9A4A18"/>'+
-              // Runde 117: Hier lag eine weisse Scheibe hinter dem Auge — ein Augapfel wie beim Menschen.
-              // Ein Goldfischauge hat einen goldenen Ring um die Pupille; den traegt jetzt die Iris.
-              '<g class="fig-augen">'+figTierAuge(26.5, 19.5, 2.2, {iris:'#C8A040'}, 1)+'</g>'+
-              '<g fill="#FFFFFF" opacity=".5"><circle cx="9.5" cy="12" r="1.5"/><circle cx="13.5" cy="8.5" r="1"/></g>'; }},
-    {id:'schildkroete', feld:'#DFEADD', svg:function(){
-       return '<ellipse cx="8.5" cy="26" rx="4" ry="3.2" fill="#8FBE7E"/><ellipse cx="31.5" cy="26" rx="4" ry="3.2" fill="#8FBE7E"/>'+
-              figPlastisch(20, 24, 14, 10.5, '#5E8C4A')+
-              '<g fill="none" stroke="#48703A" stroke-width="1.1" opacity=".8">'+
-              '<path d="M20 13.8 L20 34.4 M8.2 21.5 Q20 24.5 31.8 21.5 M9.4 28.6 Q20 26 30.6 28.6"/></g>'+
-              figVolumen(20, 24, 14, 10.5)+
-              figPlastisch(20, 13, 7, 6.4, '#8FBE7E')+
-              '<ellipse cx="20" cy="11.2" rx="5" ry="2.8" fill="#FFFFFF" opacity=".15"/>'+
-              figTierAugen(17.2, 22.8, 12.2, 1.35, {iris:'#3A3418'})+
-              // Runde 117: Schildkroeten laecheln nicht — ihr Mund ist eine gerade, leicht nach unten
-              // gezogene Schnabelkante.
-              '<path d="M17.6 15.6 Q20 16.4 22.4 15.6" stroke="#2E3A1E" stroke-width="0.8" fill="none" stroke-linecap="round" opacity=".8"/>'; }}
+    // Runde 118: die vier eigenen Formen, gebaut nach der Anatomie der echten Tiere (siehe oben).
+    {id:'eule', feld:'#E3E7E4', svg:figEule},
+    {id:'wal', feld:'#DCE7EE', svg:figWal},
+    {id:'goldfisch', feld:'#FCEAD5', svg:figGoldfisch},
+    {id:'schildkroete', feld:'#DFEADD', svg:figSchildkroete}
   ];
 
   // ---------- Die Feldfarbe im Dunkelmodus ----------

@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 117)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 118)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -375,6 +375,47 @@ Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 1
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 118 — Fische, Schildkroete, Wal und Eule nach ihrer echten Anatomie
+
+Rueckmeldung des Inhabers: „Vor allem die Fische und die Schildkroete muessen realistischer an den
+echten Tieren sein. Aber generell die anderen Tiere auch."
+
+**Zutreffend, und hier war es nicht Feinarbeit, sondern Form.** Der Goldfisch war eine orange
+Ellipse mit zwei Flossenecken, die Schildkroete ein gruener Halbkreis mit drei Linien und einem
+runden Kopf obendrauf, der Wal ein blaues Ei mit einer Strichfontaene. Keine dieser Formen kommt in
+der Natur vor. Alle vier sind neu gebaut, je als eigene Funktion vor der Tabelle:
+
+- **Goldfisch** (`figGoldfisch`): hochovaler Koerper, oben rotorange, zum Bauch gold; Schuppen in
+  versetzten Reihen; Kiemendeckel als Bogen hinter dem Auge; durchscheinende Faecherflosse mit
+  Strahlen; Ruecken-, Brust-, Bauch- und Afterflosse; Maul vorn an der Spitze.
+- **Schildkroete** (`figSchildkroete`): von der Seite — gewoelbter Panzer mit Wirbel- und
+  Rippenschilden (jeder mit hellerem Kern), Randschilde, gelblicher Bauchpanzer; Kopf am Hals mit
+  schuppiger Haut und Hornschnabel; kurze Beine mit Krallen; Schwanz.
+- **Wal** (`figWal`): Buckelwal — gestreckt, oben blaugrau, unten hell; Kehlfurchen; lange
+  Brustflosse mit hellem Rand; kleine Rueckenflosse; Fluke; die Hoecker auf dem Kopf; kleines Auge
+  hinter dem Maulwinkel; der Blas als Nebel.
+- **Eule** (`figEule`): Uhu — Gesichtsschleier mit dunklem Rand, gefiederte Ohrbueschel statt
+  Dreiecken, Hakenschnabel halb im Gefieder, Laengsstreifen auf der Brust.
+
+Feine Linien stehen hier dort, wo das echte Tier Linien HAT — Flossenstrahlen, Schildnaehte,
+Kehlfurchen —, sehr duenn, stumpf, mit geringer Deckung. Die Lehre aus CLAUDE.md betrifft
+aufgemalte Glanz- und Kantenstriche, nicht die Naht zwischen zwei Panzerschilden. Im ersten
+Entwurf waren die Schildnaehte trotzdem zu hart und das Sechseckraster las sich als Fussball;
+jetzt gerundet und gedaempft.
+
+**Die uebrigen Tiere, am echten Tier gemessen:**
+- Fuchs und Katze: **Backenfell**, das seitlich absteht — das echte Gesicht ist dort breiter als
+  der Schaedel.
+- Hase und Reh: **die Augen seitlich**. Sie sind Fluchttiere und sehen fast rundum; mit dem
+  frontalen Abstand der Katze sahen sie aus wie Pluesch. Neuer Parameter `augenAbstand`.
+
+### Was offen bleibt
+
+Ob die Tiere jetzt echt genug sind, ist ein Urteil am Geraet. Ergebnisseite und Fragebogen tragen
+bis auf die Schrift noch die Kartenoptik aus Runde 69.
 
 ---
 
