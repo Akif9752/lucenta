@@ -99,16 +99,6 @@
   // Konstruktion des Auges (der Lichtpunkt sitzt dort links oben) — nur hat sich der Rest der
   // Figur nicht daran gehalten.
   var FIG_LICHT_X = 0.33, FIG_LICHT_Y = 0.26;
-  function figKugel(id, farbe){
-    return '<radialGradient id="'+id+'" cx="0.5" cy="0.5" r="0.74" '+
-           'fx="'+FIG_LICHT_X+'" fy="'+FIG_LICHT_Y+'">'+
-           '<stop offset="0" stop-color="'+figTon(farbe, 1.17)+'"/>'+
-           '<stop offset="0.38" stop-color="'+figTon(farbe, 1.06)+'"/>'+
-           '<stop offset="0.74" stop-color="'+farbe+'"/>'+
-           '<stop offset="0.93" stop-color="'+figTon(farbe, 0.84)+'"/>'+
-           '<stop offset="1" stop-color="'+figTon(farbe, 0.90)+'"/>'+
-           '</radialGradient>';
-  }
   // Runde 115, Auftrag des Inhabers: "die Tiere in ihrem Modell realistischer, so wie Memojis von
   // Apple". Was Animoji plastisch macht, ist nicht mehr Detail, sondern mehr VOLUMEN: Jede Form
   // sieht aus wie ein beleuchteter Koerper. Die Kugel oben hob den Ton im Licht um 17 % und senkte
@@ -142,33 +132,6 @@
         '" rx="'+(rx*0.55).toFixed(2)+'" ry="'+(ry*0.32).toFixed(2)+'" fill="url(#'+gl+')" transform="rotate(-18 '+
         (cx - rx*0.32).toFixed(2)+' '+(cy - ry*0.48).toFixed(2)+')"/></g>';
   }
-  // Der Lichtsaum. Der erste Versuch hat dieselbe Form versetzt HINTER die eigentliche gelegt —
-  // und damit einen zweiten Umriss erzeugt, der an der Schattenseite als heller Rand hervorsah
-  // und an der Lichtseite gar nicht. Ein Saum darf den Umriss aber nicht veraendern; er liegt
-  // INNEN.
-  //
-  // Deshalb umgekehrt: Die Form wird ausgeschnitten, mit der Saumfarbe gefuellt, und darauf
-  // kommt dieselbe Form mit der eigentlichen Farbe, ein Stueck zum Licht hin verschoben. Was
-  // an der Schattenseite nicht mehr ueberdeckt wird, ist der Saum — genau breit genug, um
-  // gesehen zu werden, und mit der Aussenkante der Form, nicht daneben.
-  var FIG_SAUM_LAUF = 0;
-  function figSaum(d, fuellung, saumFarbe){
-    var c = FIG_UID + 'sm' + (FIG_SAUM_LAUF++);
-    return '<defs><clipPath id="'+c+'"><path d="'+d+'"/></clipPath></defs>'+
-           '<g clip-path="url(#'+c+')">'+
-             '<path d="'+d+'" fill="'+saumFarbe+'"/>'+
-             '<path d="'+d+'" fill="'+fuellung+'" transform="translate(-0.75,-0.95)"/>'+
-           '</g>';
-  }
-  // Der Kernschatten liegt KURZ VOR dem Rand, nicht auf ihm. Als Verlauf, damit er keine Kante
-  // hat: Eine Kante waere wieder eine Zeichnung statt einer Woelbung.
-  function figKern(id){
-    return '<radialGradient id="'+id+'" cx="0.5" cy="0.5" r="0.72" fx="0.68" fy="0.72">'+
-           '<stop offset="0.42" stop-color="'+FIG_INK+'" stop-opacity="0"/>'+
-           '<stop offset="0.86" stop-color="'+FIG_INK+'" stop-opacity="0.20"/>'+
-           '<stop offset="1" stop-color="'+FIG_INK+'" stop-opacity="0.04"/>'+
-           '</radialGradient>';
-  }
   // Eine Farbe abdunkeln oder aufhellen, ohne eine zweite Farbe von Hand zu waehlen: Der Verlauf
   // auf einem Kopf muss zur Grundfarbe gehoeren, sonst sieht er aus wie ein Fleck.
   function figTon(hex, faktor){
@@ -183,107 +146,7 @@
   }
 
 
-  // Licht oben, Schatten unten. Beides sehr zurueckhaltend: Es soll Koerper geben, nicht
-  // auffallen — ab etwa 0,2 Deckkraft sieht es nach Verschmutzung aus.
-  // Runde 94, zweiter Anlauf. Die beiden Ellipsen lagen bei 13 und 7 Prozent Deckung — auf
-  // heller Haut vier von 255 Stufen, also nichts. Der erste Versuch hat schlicht die Deckung
-  // erhoeht, und im Bild stand danach eine harte Diagonale quer ueber jedem Gesicht: Eine
-  // Ellipse mit 22 Prozent Deckung hat einen RAND, und ein Rand mitten auf einer Wange ist
-  // eine Kante, kein Licht.
-  //
-  // Licht hat keine Kante. Beide Flaechen sind deshalb jetzt Verlaeufe, die nach aussen
-  // restlos auslaufen — dieselbe Lehre wie beim Sonnenfaecher in Runde 88, nur ist der Fehler
-  // hier nicht die Farbe, sondern die Form gewesen.
-  var FIG_VOL_LAUF = 0;
-  function figVolumen(cx, cy, rx, ry){
-    var a = FIG_UID + 'vl' + (FIG_VOL_LAUF++), b = a + 'd';
-    return '<defs>'+
-      '<radialGradient id="'+a+'"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.30"/>'+
-      '<stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0.13"/>'+
-      '<stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>'+
-      '<radialGradient id="'+b+'"><stop offset="0" stop-color="'+FIG_INK+'" stop-opacity="0.17"/>'+
-      '<stop offset="0.6" stop-color="'+FIG_INK+'" stop-opacity="0.07"/>'+
-      '<stop offset="1" stop-color="'+FIG_INK+'" stop-opacity="0"/></radialGradient></defs>'+
-      '<ellipse cx="'+(cx - rx*0.24).toFixed(2)+'" cy="'+(cy - ry*0.42).toFixed(2)+'" rx="'+(rx*0.62).toFixed(2)+'" ry="'+(ry*0.44).toFixed(2)+'" fill="url(#'+a+')"/>'+
-      '<ellipse cx="'+(cx + rx*0.28).toFixed(2)+'" cy="'+(cy + ry*0.42).toFixed(2)+'" rx="'+(rx*0.66).toFixed(2)+'" ry="'+(ry*0.50).toFixed(2)+'" fill="url(#'+b+')"/>';
-  }
 
-  // Runde 116: ohrSpitze faerbt die oberen Enden (Fuchs: schwarz), ohrFarbe das ganze Ohr anders als
-  // den Kopf (Panda: ganz schwarz). Beides sind die Stellen, an denen man diese Tiere aus der Ferne
-  // erkennt.
-  function figOhren(art, fell, innen, ohrSpitze){
-    if (art === 'spitz')
-      return '<path d="M8.5 17 L11 4 L19.5 11.5 Z" fill="'+fell+'"/>'+
-             '<path d="M31.5 17 L29 4 L20.5 11.5 Z" fill="'+fell+'"/>'+
-             '<path d="M11.4 14.6 L12.6 8.2 L16.8 12.4 Z" fill="'+innen+'"/>'+
-             '<path d="M28.6 14.6 L27.4 8.2 L23.2 12.4 Z" fill="'+innen+'"/>'+
-             (ohrSpitze ? '<path d="M10.1 9.6 L11 4 L14.6 7.2 Z" fill="'+ohrSpitze+'"/>'+
-                          '<path d="M29.9 9.6 L29 4 L25.4 7.2 Z" fill="'+ohrSpitze+'"/>' : '');
-    if (art === 'rund')
-      return '<circle cx="9.5" cy="11" r="6.2" fill="'+fell+'"/><circle cx="30.5" cy="11" r="6.2" fill="'+fell+'"/>'+
-             '<circle cx="9.5" cy="11" r="3.1" fill="'+innen+'"/><circle cx="30.5" cy="11" r="3.1" fill="'+innen+'"/>';
-    if (art === 'lang')
-      return '<ellipse cx="13.5" cy="8.5" rx="3.5" ry="8" fill="'+fell+'"/>'+
-             '<ellipse cx="26.5" cy="8.5" rx="3.5" ry="8" fill="'+fell+'"/>'+
-             '<ellipse cx="13.5" cy="9.2" rx="1.7" ry="5.4" fill="'+innen+'"/>'+
-             '<ellipse cx="26.5" cy="9.2" rx="1.7" ry="5.4" fill="'+innen+'"/>';
-    if (art === 'geweih')
-      return '<path d="M13.5 12 L11 4 M11 6.5 L7.5 4.5 M26.5 12 L29 4 M29 6.5 L32.5 4.5" '+
-             'stroke="'+innen+'" stroke-width="1.9" stroke-linecap="round" fill="none"/>'+
-             '<ellipse cx="10.5" cy="15" rx="3.4" ry="5" transform="rotate(-18 10.5 15)" fill="'+fell+'"/>'+
-             '<ellipse cx="29.5" cy="15" rx="3.4" ry="5" transform="rotate(18 29.5 15)" fill="'+fell+'"/>';
-    // Schlappohren fuer Hunde: haengen seitlich am Kopf herunter statt aufzustehen.
-    if (art === 'schlapp')
-      return '<ellipse cx="7.6" cy="24" rx="4.6" ry="9.5" transform="rotate(9 7.6 24)" fill="'+fell+'"/>'+
-             '<ellipse cx="32.4" cy="24" rx="4.6" ry="9.5" transform="rotate(-9 32.4 24)" fill="'+fell+'"/>'+
-             '<ellipse cx="7.9" cy="25.5" rx="2.3" ry="6" transform="rotate(9 7.9 25.5)" fill="'+innen+'" opacity=".55"/>'+
-             '<ellipse cx="32.1" cy="25.5" rx="2.3" ry="6" transform="rotate(-9 32.1 25.5)" fill="'+innen+'" opacity=".55"/>';
-    return '';
-  }
-  // ---------- Tiere (Runde 99 neu gefasst) ----------
-  //
-  // Rueckmeldung: "die tiere und menschen sehen immernoch zu unrealistisch aus". Bei den Tieren
-  // liess sich der Grund in einer Zeile benennen: Alle zwoelf teilten sich EINE Kopfform und
-  // EINE Schnauze. Fuchs, Katze, Baer, Panda, Hase, Reh und beide Hunde hatten denselben
-  // Umriss; unterschieden hat sie nur, was oben draufgesteckt war. Genau daran erkennt man ein
-  // Tier aber zuerst — ein Fuchs ist am Umriss ein Fuchs, bevor man die Ohren sieht.
-  //
-  // Jetzt traegt jede Art ihren eigenen Kopf, ihre eigene Schnauze und ihre eigene Nase. Dazu
-  // drei Dinge, die vorher ganz fehlten und die ein Fell von einer Flaeche unterscheiden:
-  // eine ausgefranste Fellkante, Schnurrhaare und ein Wangenflaum.
-  var KOEPFE = {
-    // Breit und hoch: Baer, Panda. Ein Baerenkopf ist breiter als hoch und hat eine flache
-    // Stirn — die beiden oberen Kontrollpunkte liegen deshalb weit aussen.
-    breit:  'M20 8.6 C28.8 8.6 34.4 13.8 34.4 20.8 C34.4 28.2 28.4 34.2 20 34.2 '+
-            'C11.6 34.2 5.6 28.2 5.6 20.8 C5.6 13.8 11.2 8.6 20 8.6 Z',
-    // Der Fuchs: breite Backen auf Augenhoehe, von dort scharf zur schmalen Schnauze. Der Knick
-    // bei y=27 ist der Punkt, an dem beim echten Tier der Wangenflaum aufhoert.
-    spitz:  'M20 8.2 C28.6 8.2 34.0 13.2 34.0 19.6 C34.0 23.4 32.0 26.2 28.6 27.8 '+
-            'C26.6 31.8 23.6 34.8 20 34.8 C16.4 34.8 13.4 31.8 11.4 27.8 '+
-            'C8.0 26.2 6.0 23.4 6.0 19.6 C6.0 13.2 11.4 8.2 20 8.2 Z',
-    // Katze: kleiner und runder als der Fuchs, mit angedeuteten Wangenbacken.
-    katze:  'M20 9.2 C27.2 9.2 32.4 13.8 32.4 19.8 C32.4 23.2 30.8 25.8 28.2 27.6 '+
-            'C26.4 31.4 23.4 34.2 20 34.2 C16.6 34.2 13.6 31.4 11.8 27.6 '+
-            'C9.2 25.8 7.6 23.2 7.6 19.8 C7.6 13.8 12.8 9.2 20 9.2 Z',
-    // Schmal und lang: Hase und Reh. Deutlich schmaler als alles andere — 21 statt 29 Einheiten.
-    schmal: 'M20 8.4 C26.2 8.4 30.6 13.0 30.6 19.6 C30.6 25.0 28.6 29.2 25.8 32.0 '+
-            'C24.0 33.8 22.1 34.8 20 34.8 C17.9 34.8 16.0 33.8 14.2 32.0 '+
-            'C11.4 29.2 9.4 25.0 9.4 19.6 C9.4 13.0 13.8 8.4 20 8.4 Z',
-    // Hund: breite Stirn, dann laenger auslaufend zur Schnauze hin.
-    hund:   'M20 8.8 C28.4 8.8 33.6 13.8 33.6 20.2 C33.6 24.0 31.8 26.8 28.8 28.6 '+
-            'C26.8 32.4 23.6 35.0 20 35.0 C16.4 35.0 13.2 32.4 11.2 28.6 '+
-            'C8.2 26.8 6.4 24.0 6.4 20.2 C6.4 13.8 11.6 8.8 20 8.8 Z'
-  };
-  // Die Schnauzen. Vorher eine Ellipse fuer alle (7,5 auf 6); jetzt je Art eine eigene Form und
-  // Lage. Der Unterschied zwischen einer Katzenschnauze (breit und flach, hoch sitzend) und
-  // einer Hundeschnauze (schmal und lang, tief sitzend) traegt mehr als jede Fellfarbe.
-  var SCHNAUZEN = {
-    breit:  {cx:20, cy:26.8, rx:8.0, ry:6.2},
-    spitz:  {cx:20, cy:27.6, rx:5.6, ry:5.6},
-    katze:  {cx:20, cy:26.6, rx:6.8, ry:4.8},
-    schmal: {cx:20, cy:27.4, rx:5.2, ry:4.6},
-    hund:   {cx:20, cy:28.0, rx:6.4, ry:5.8}
-  };
   // Hier stand in Runde 99 eine "Fellkante": kurze Striche quer ueber den Umriss, damit das
   // Fell ausfranst statt an einer Linie zu enden. Zwei Fassungen, beide verworfen — die erste
   // waren graue Striche rund um den Kopf (auf dem weissen Panda nicht zu uebersehen), die
@@ -292,55 +155,6 @@
   // wie blass sie ist. Den Rand macht jetzt allein figSaum() — ein heller Saum an der
   // Lichtseite, der ohne einen einzigen Strich auskommt.
 
-  // Die Nasen. Eine Katzennase ist ein abgerundetes Dreieck mit einer Kerbe oben, eine
-  // Baerennase ein breites Oval, eine Hasennase ein kleines Y. Sie alle als dasselbe Oval zu
-  // malen war der zweite Grund, warum die Tiere austauschbar aussahen.
-  // Runde 115: Die Nase glaenzt. Bei Animoji ist sie das feuchteste Teil des Gesichts, und genau
-  // daran liest man "Tier" statt "Pluesch": oben heller (der Verlauf), darauf ein breiter Glanz.
-  var FIG_NASE_LAUF = 0;
-  function figNase(art, x, y, haut, farbe){
-    var gn = FIG_UID + 'nv' + (FIG_NASE_LAUF++);
-    var NASE = 'url(#'+gn+')';
-    var verlauf = '<defs><radialGradient id="'+gn+'" cx="0.5" cy="0.35" r="0.75" fx="0.38" fy="0.22">'+
-      // Runde 116: eine eigene Nasenfarbe, wo das echte Tier eine hat — Katze und Hase rosa.
-      (farbe ? '<stop offset="0" stop-color="'+figTon(farbe, 1.30)+'"/><stop offset="0.6" stop-color="'+farbe+'"/>'+
-               '<stop offset="1" stop-color="'+figTon(farbe, 0.70)+'"/>'
-             : '<stop offset="0" stop-color="#6E5E55"/><stop offset="0.55" stop-color="'+FIG_INK+'"/>'+
-               '<stop offset="1" stop-color="#140E0B"/>')+'</radialGradient></defs>';
-    var glanz = verlauf + '<ellipse cx="'+(x-0.55)+'" cy="'+(y-0.55)+'" rx="0.95" ry="0.5" fill="#FFFFFF" opacity=".62"/>';
-    // Der Philtrumstrich von der Nase zum Mund. Bei jedem Saeugetier da, und ohne ihn schwebt
-    // die Nase ueber der Schnauze, statt auf ihr zu sitzen.
-    var rinne = '<path d="M'+x+' '+(y+1.1)+' L'+x+' '+(y+2.6)+'" stroke="'+figTon(haut||'#E8D5C0', 0.72)+
-                '" stroke-width="0.55" stroke-linecap="round" opacity=".7"/>';
-    if (art === 'dreieck')
-      // Katze, Fuchs, Hund: abgerundetes Dreieck, oben am breitesten, unten in eine Spitze.
-      return '<path d="M'+(x-2.0)+' '+(y-1.0)+' Q'+x+' '+(y-1.7)+' '+(x+2.0)+' '+(y-1.0)+
-             ' Q'+(x+2.0)+' '+(y+0.9)+' '+x+' '+(y+1.5)+' Q'+(x-2.0)+' '+(y+0.9)+' '+(x-2.0)+' '+(y-1.0)+' Z" fill="'+NASE+'"/>'+
-             glanz + rinne;
-    if (art === 'breit')
-      // Baer und Panda: breites, flaches Oval.
-      return '<ellipse cx="'+x+'" cy="'+y+'" rx="2.8" ry="1.7" fill="'+NASE+'"/>'+ glanz + rinne;
-    if (art === 'klein')
-      // Hase und Reh: klein, hoch, mit dem Y-Spalt.
-      return '<path d="M'+(x-1.3)+' '+(y-0.7)+' Q'+x+' '+(y-1.3)+' '+(x+1.3)+' '+(y-0.7)+
-             ' Q'+(x+1.1)+' '+(y+0.9)+' '+x+' '+(y+1.2)+' Q'+(x-1.1)+' '+(y+0.9)+' '+(x-1.3)+' '+(y-0.7)+' Z" fill="'+NASE+'"/>'+
-             glanz + rinne;
-    return '<ellipse cx="'+x+'" cy="'+y+'" rx="2.1" ry="1.5" fill="'+NASE+'"/>'+ glanz + rinne;
-  }
-  // Schnurrhaare. Sie stehen nicht waagerecht ab, sondern faechern leicht — und die oberen
-  // haengen staerker als die unteren. Drei je Seite; mehr sieht bei dieser Groesse nach Besen aus.
-  function figSchnurrhaare(y, farbe){
-    var f = farbe || '#FFFFFF';
-    var s = function(d, deck, w){
-      return '<path d="'+d+'" stroke="'+f+'" stroke-width="'+w+'" fill="none" stroke-linecap="round" opacity="'+deck+'"/>';
-    };
-    return s('M14.6 '+(y-1.2)+' Q9.0 '+(y-2.4)+' 4.6 '+(y-2.0), 0.55, 0.5) +
-           s('M14.4 '+y+' Q8.6 '+y+' 3.8 '+(y+0.8), 0.62, 0.55) +
-           s('M14.8 '+(y+1.2)+' Q9.4 '+(y+2.4)+' 5.2 '+(y+3.6), 0.5, 0.45) +
-           s('M25.4 '+(y-1.2)+' Q31.0 '+(y-2.4)+' 35.4 '+(y-2.0), 0.55, 0.5) +
-           s('M25.6 '+y+' Q31.4 '+y+' 36.2 '+(y+0.8), 0.62, 0.55) +
-           s('M25.2 '+(y+1.2)+' Q30.6 '+(y+2.4)+' 34.8 '+(y+3.6), 0.5, 0.45);
-  }
 
   // ---------- Das Tierauge (Runde 117) ----------
   //
@@ -398,125 +212,6 @@
   function figTierAugen(x1, x2, y, r, o){
     return '<g class="fig-augen">' + figTierAuge(x1, y, r, o, 1) + figTierAuge(x2, y, r, o, -1) + '</g>';
   }
-  // ---------- Das Tiermaul (Runde 117) ----------
-  // Der gebogene Laechelmund kam ebenfalls von den Menschen. Fuchs, Katze, Hund, Baer, Hase und Reh
-  // haben ein gespaltenes Maul: von der Nase ein kurzer Strich nach unten (der steht schon in
-  // figNase), dann zwei Boegen nach links und rechts — das "ω". Hunde mit Zunge zeigen es geoeffnet.
-  function figTierMaul(cx, ny, o){
-    var y = ny + 2.6, w = o.maulBreite || 2.5;
-    var linie = '<path d="M'+(cx-w)+' '+(y+0.9)+' Q'+(cx-w*0.45)+' '+(y+1.6)+' '+cx+' '+y+
-                ' Q'+(cx+w*0.45)+' '+(y+1.6)+' '+(cx+w)+' '+(y+0.9)+'" stroke="#2A1A14" stroke-width="0.85" '+
-                'fill="none" stroke-linecap="round" opacity=".85"/>';
-    if (!o.zunge) return linie;
-    // Hechelnd: das Maul offen, die Zunge haengt heraus — so sieht ein froehlicher Hund wirklich aus.
-    return '<path d="M'+(cx-w)+' '+(y+0.8)+' Q'+cx+' '+(y+4.6)+' '+(cx+w)+' '+(y+0.8)+' Q'+cx+' '+(y+1.8)+' '+(cx-w)+' '+(y+0.8)+' Z" fill="#3A1A16"/>'+
-           '<path d="M'+(cx-1.3)+' '+(y+2.0)+' Q'+cx+' '+(y+6.0)+' '+(cx+1.3)+' '+(y+2.0)+' Z" fill="#E4899A"/>'+
-           '<path d="M'+cx+' '+(y+2.6)+' L'+cx+' '+(y+4.4)+'" stroke="#C86A7C" stroke-width="0.4" opacity=".7"/>' + linie;
-  }
-  function figTier(o){
-    var g = FIG_UID + 'fell', gk = FIG_UID + 'fkern', gs = FIG_UID + 'schn';
-    // Runde 115: drei weitere Verlaeufe fuer das Animoji-Volumen — Stirnglanz, Koerper, und die
-    // Schablone des Kopfes, damit der Glanz nirgends ueber den Umriss hinauslaeuft.
-    var gg = FIG_UID + 'glanz', gb = FIG_UID + 'koerper', gc = FIG_UID + 'kopfform';
-    var art = o.form || 'breit';
-    var TKOPF = KOEPFE[art] || KOEPFE.breit;
-    var sn = SCHNAUZEN[art] || SCHNAUZEN.breit;
-    return '<defs>'+figKugelPlastisch(g, o.fell)+figKern(gk)+
-      // Der Koerper bekommt dasselbe Licht wie der Kopf: oben links hell, nach unten dunkel. Flach
-      // gefuellt lag er als Pappe unter einem Kopf, der jetzt rund ist.
-      '<linearGradient id="'+gb+'" x1="0.2" y1="0" x2="0.8" y2="1">'+
-        '<stop offset="0" stop-color="'+figTon(o.koerper || o.fell, 1.06)+'"/>'+
-        '<stop offset="1" stop-color="'+figTon(o.koerper || o.fell, 0.62)+'"/></linearGradient>'+
-      // Der Stirnglanz. Weiss, weil ein Glanzlicht die Farbe des Lichts hat und nicht die der
-      // Flaeche, und mit restlos auslaufendem Rand — eine Flaeche mit Kante waere eine Pfuetze.
-      '<radialGradient id="'+gg+'"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.50"/>'+
-        '<stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.18"/>'+
-        '<stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>'+
-      '<clipPath id="'+gc+'"><path d="'+TKOPF+'"/></clipPath>'+
-      '</defs>' +
-      // Ein angedeuteter Koerper unter dem Kopf, angeschnitten wie beim Menschen. Ohne ihn
-      // schwebt auch ein Tierkopf.
-      '<path d="M20 31 C12.6 31 7.2 34.8 5.8 40 L34.2 40 C32.8 34.8 27.4 31 20 31 Z" fill="url(#'+gb+')"/>' +
-      // Runde 115: Der Schatten unter dem Kinn ist kraeftiger — bei Animoji ist genau diese
-      // Kontaktstelle der dunkelste Punkt der ganzen Figur, und sie ist es, die den Kopf auf den
-      // Koerper setzt statt davor.
-      // Runde 116: der helle Brustlatz, wo das echte Tier einen hat (Fuchs). Er liegt UNTER dem
-      // Kinnschatten, damit der Kopf weiterhin auf dem Koerper aufsitzt.
-      (o.brust ? '<ellipse cx="20" cy="38.5" rx="6.2" ry="6" fill="'+o.brust+'"/>' : '') +
-      '<ellipse cx="20" cy="34.4" rx="8.2" ry="2.8" fill="'+FIG_INK+'" opacity=".30"/>' +
-      figOhren(o.ohr, o.ohrFarbe || o.fell, o.innen, o.ohrSpitze) +
-      figSaum(TKOPF, 'url(#'+g+')', figTon(o.fell, 1.28)) +
-      '<path d="'+TKOPF+'" fill="url(#'+gk+')"/>' +
-      // Runde 118: Backenfell. Beim echten Fuchs und bei der Katze steht das Fell an den Wangen
-      // seitlich ab, sodass das Gesicht breiter ist als der Schaedel — die Silhouette laeuft dort
-      // in zwei Spitzen aus statt in einem glatten Bogen. Als Flaeche in Fell- bzw. Wangenfarbe,
-      // HINTER dem Kopf, damit nur die Spitzen hervorstehen.
-      (o.backenfell ? '<path d="M9.4 21 L4.6 25.4 L8.6 25.2 L5.6 28.6 L10.6 27 Z" fill="'+o.backenfell+'"/>'+
-                      '<path d="M30.6 21 L35.4 25.4 L31.4 25.2 L34.4 28.6 L29.4 27 Z" fill="'+o.backenfell+'"/>' : '') +
-      // Runde 116: helle Wangen und Kinn. Beim Fuchs reicht das Weiss von den Wangen bis unter das
-      // Kinn, beim Reh ist die Kehle weiss — eine weiche Flaeche in der unteren Kopfhaelfte, in
-      // die Kopfform geschnitten, damit sie den Umriss nicht veraendert.
-      // Zweiter Anlauf: als Verlauf mit kurzem, weichem Rand (beim Fuchs lag sonst eine harte Kante
-      // quer uebers Gesicht), und mit zwei Formen — 'wange' fuer den Fuchs, bei dem das Weiss von
-      // den Wangen bis unters Kinn reicht, und 'kehle' fuer das Reh, bei dem nur die Kehle unter
-      // dem Kinn hell ist. Mit derselben breiten Form trug das Reh eine weisse Maske.
-      (o.kinn ? '<defs><radialGradient id="'+gc+'k"><stop offset="0" stop-color="'+o.kinn+'"/>'+
-                  '<stop offset="0.8" stop-color="'+o.kinn+'"/><stop offset="1" stop-color="'+o.kinn+'" stop-opacity="0"/>'+
-                '</radialGradient></defs>'+
-                '<g clip-path="url(#'+gc+')">'+(o.kinnForm === 'kehle'
-                  ? '<ellipse cx="20" cy="33.6" rx="6.4" ry="3.6" fill="url(#'+gc+'k)"/>'
-                  : '<ellipse cx="20" cy="30.6" rx="12" ry="6.8" fill="url(#'+gc+'k)"/>')+'</g>' : '') +
-      (o.maske ? o.maske : '') +
-      // Runde 115: der Stirnglanz, in die Kopfform geschnitten.
-      '<g clip-path="url(#'+gc+')"><ellipse cx="15.2" cy="12.6" rx="7.2" ry="4.4" fill="url(#'+gg+')" '+
-        'transform="rotate(-18 15.2 12.6)"/></g>' +
-      // Runde 117: Die rosa Wangen sind entfallen — ein Mittel der Comicfigur, keines Tieres.
-      // Runde 99: Die Schnauze hatte eine harte Ellipsenkante — ein heller Fleck mit Rand.
-      // Bei einem Tier geht das helle Fell der Schnauze weich ins dunklere ueber. Der Verlauf
-      // haelt die Farbe bis 72 Prozent und blendet dann aus; erst dadurch waechst die Schnauze
-      // aus dem Kopf, statt darauf zu liegen.
-      // Runde 115: Die Schnauze hat jetzt ihr EIGENES Licht — oben links heller als ihre Farbe,
-      // der Brennpunkt dorthin verschoben. Vorher war sie innen gleichfarbig und lag als heller
-      // Schein auf dem Kopf; im vergroesserten Bild ein verwischter Fleck. Mit eigenem Licht ist
-      // sie eine Form, die aus dem Kopf herauskommt.
-      '<defs><radialGradient id="'+gs+'" fx="0.40" fy="0.30">'+
-        '<stop offset="0" stop-color="'+figTon(o.schnauze, 1.25)+'" stop-opacity="1"/>'+
-        '<stop offset="0.86" stop-color="'+o.schnauze+'" stop-opacity="1"/>'+
-        '<stop offset="1" stop-color="'+o.schnauze+'" stop-opacity="0"/>'+
-      '</radialGradient></defs>'+
-      // Runde 115, zweiter Anlauf: Die Farbe haelt jetzt bis 86 statt 72 Prozent, und die Ellipse
-      // ist nur noch 4 statt 12 Prozent groesser als die Schnauze. Mit dem breiten Auslauf blieb
-      // sie trotz eigenem Licht ein verwischter Schein — im Bild bei Fuchs und Hund deutlich.
-      // Animoji-Schnauzen sind klar umrissene Formen mit WEICHEM, aber kurzem Rand.
-      '<ellipse cx="'+sn.cx+'" cy="'+sn.cy+'" rx="'+(sn.rx*1.04)+'" ry="'+(sn.ry*1.04)+'" fill="url(#'+gs+')"/>' +
-      // Der Schatten, mit dem die Schnauze auf dem Kopf aufliegt. Ohne ihn ist sie ein heller
-      // Fleck IM Gesicht statt eine Form, die daraus hervorsteht.
-      '<ellipse cx="'+sn.cx+'" cy="'+(sn.cy - sn.ry*0.86)+'" rx="'+(sn.rx*0.92)+'" ry="'+(sn.ry*0.42)+
-        '" fill="'+figTon(o.fell, 0.66)+'" opacity=".22"/>' +
-      // Runde 115: und der Schatten UNTER ihr, auf dem Kinn. Oben liegt sie auf, unten wirft sie
-      // ihren Schatten — erst beides zusammen macht sie zu einem Koerper.
-      '<ellipse cx="'+sn.cx+'" cy="'+(sn.cy + sn.ry*0.98).toFixed(2)+'" rx="'+(sn.rx*0.80).toFixed(2)+'" ry="'+(sn.ry*0.36).toFixed(2)+
-        '" fill="'+figTon(o.fell, 0.55)+'" opacity=".14"/>' +
-      // Runde 99: Die Brauen der Tiere sind Fellbueschel geworden statt gezeichneter Boegen.
-      // Ein glatter Bogen ueber dem Auge ist eine MENSCHENbraue; auf einem Fuchs oder einer
-      // Katze war er das deutlichste Zeichen dafuer, dass hier etwas gezeichnet und nicht
-      // beobachtet wurde. Die Miene bleibt trotzdem lesbar, weil die Bueschel derselben
-      // Stellung folgen — nur eben in Fellfarbe, dreigeteilt und halb so kraeftig.
-      // Runde 117: keine Brauen mehr. Auch Fellbueschel in der Stellung einer Braue geben einem Tier
-      // ein menschliches Gesicht; echte Fuechse, Katzen und Baeren haben dort nichts. Abzeichen, die
-      // es wirklich gibt (die lohfarbenen Punkte des Dackels), stehen in seiner maske.
-
-      // Runde 115: die Augen 30 % groesser. Animoji-Augen sind gross und glaenzend; bei 2,3
-      // Einheiten auf einem 23 Einheiten breiten Kopf blieben sie Knoepfe. 15 % waren im ersten
-      // Anlauf zu wenig, um im Bild ueberhaupt aufzufallen.
-      // Runde 118: der Augenabstand je Tier. Raubtiere (Fuchs, Katze, Baer, Hund) schauen nach vorn;
-      // Fluchttiere (Hase, Reh) tragen die Augen seitlich am Kopf, um fast rundum zu sehen. Mit
-      // demselben frontalen Abstand wie die Katze sahen Hase und Reh aus wie Pluesch.
-      figTierAugen(20 - (o.augenAbstand || 5), 20 + (o.augenAbstand || 5), 20.2 + (o.augenHoehe || 0), (o.auge || 2.3) * 1.20, {iris:o.iris || '#3A2416', pupille:o.pupille, augenForm:o.augenForm}) +
-      (o.schnurrhaare ? figSchnurrhaare(sn.cy - 0.6, figTon(o.schnauze, 1.18)) : '') +
-      figNase(o.nase || 'oval', 20, sn.cy - sn.ry*0.42, o.schnauze, o.naseFarbe) +
-      figTierMaul(20, sn.cy - sn.ry*0.42, o);
-  }
 
 
   // Runde 114: Hier stand figMensch(), der Bauplan der zehn Menschenfiguren. Auf Entscheidung
@@ -527,6 +222,275 @@
   // verspielte Wahl; sie hatten nie eine Rueckmeldung, weil ihre Konstruktion zu ihnen passt.
   // Gespeicherte Profile mit einer Menschenfigur (m1 bis m10) fallen ueber figurFinden() von
   // selbst auf das Monogramm zurueck — es gibt nichts zu bereinigen.
+
+  // ================= Jedes Tier einzeln gezeichnet (Runde 119) =================
+  //
+  // Rueckmeldung des Inhabers, nach vier Ueberarbeitungen: "immer noch zu unrealistisch, vom
+  // gesamten Modell schon — nicht nur wegen 3D oder Licht." Der Satz trifft den Kern. Alle neun
+  // Saeugetiere entstanden aus EINER Schablone (figTier): runder Kopf, frontal und symmetrisch,
+  // ovale Schnauze in der Mitte, zwei Augen daneben, angedeutete Schultern. Die Tiere
+  // unterschieden sich nur in Farben, Ohren und Abzeichen — dieselbe Figur in neun Kostuemen. Die
+  // Runden 115 bis 118 haben das Kostuem verbessert, nicht das Modell.
+  //
+  // Auf Entscheidung des Inhabers jetzt: jedes Tier eine eigene Zeichnung mit eigener Kopfform,
+  // in Dreiviertelansicht (leicht nach links gedreht — eine streng frontale, symmetrische Ansicht
+  // ist das Kennzeichen von Emblemen und Plueschtieren), mit Fellstruktur. Geteilt werden nur noch
+  // Werkzeuge: das Tierauge, der Fellfilter, die Verlaeufe. Die Formen sind je Tier von Hand.
+  //
+  // Der Fellfilter ist neu und der groesste Einzelschritt. Glatte Vektorkanten sind der
+  // Hauptgrund, warum gezeichnete Tiere wie Plastik wirken: Fell hat keinen Umriss, es hat einen
+  // Saum. feTurbulence + feDisplacementMap zerfransen die Kante um Bruchteile einer Einheit, eine
+  // zweite, gestreckte Turbulenz legt feine gerichtete Haarstriche auf die Flaeche. Beides in
+  // Nutzereinheiten, also auf jeder Groesse gleich fein.
+  var FIG_FELL_LAUF = 0;
+  function figFellFilter(id, staerke){
+    var st = staerke || 1;
+    return '<filter id="'+id+'" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">'+
+      '<feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="2" seed="4" result="rausch"/>'+
+      '<feDisplacementMap in="SourceGraphic" in2="rausch" scale="'+(0.85*st).toFixed(2)+'" xChannelSelector="R" yChannelSelector="G" result="saum"/>'+
+      '<feTurbulence type="fractalNoise" baseFrequency="1.1 2.6" numOctaves="1" seed="9" result="haar"/>'+
+      '<feColorMatrix in="haar" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.25" result="haarmaske"/>'+
+      '<feComposite in="haarmaske" in2="saum" operator="in" result="haarinnen"/>'+
+      '<feFlood flood-color="#1A100A" flood-opacity="'+(0.11*st).toFixed(2)+'"/>'+
+      '<feComposite in2="haarinnen" operator="in" result="haardunkel"/>'+
+      '<feMerge><feMergeNode in="saum"/><feMergeNode in="haardunkel"/></feMerge></filter>';
+  }
+  function figKopfVerlauf(id, hell, dunkel){
+    return '<radialGradient id="'+id+'" cx="0.62" cy="0.38" r="0.78" fx="0.66" fy="0.30">'+
+      '<stop offset="0" stop-color="'+hell+'"/><stop offset="0.6" stop-color="'+figTon(dunkel, 1.18)+'"/>'+
+      '<stop offset="1" stop-color="'+dunkel+'"/></radialGradient>';
+  }
+
+  // Rotfuchs, Dreiviertel nach links. Keilfoermiger Kopf mit langer, spitzer Schnauze; grosse
+  // Ohren mit schwarzen Rueckseiten; weiss an Kehle, Unterkiefer und Wangen bis zur Schnauze; die
+  // dunkle "Traenenlinie" vom Auge zur Schnauze; Bernsteinaugen mit Schlitzpupille.
+  function figFuchsEinzeln(){
+    var f = figSid(), v = figSid(), w = figSid();
+    return '<defs>'+figFellFilter(f)+figKopfVerlauf(v, '#F2A066', '#B8541E')+
+             figLinear(w, '#FFFFFF', '#E8DCCC')+'</defs>'+
+      '<g filter="url(#'+f+')">'+
+        // Koerper: Schulter und weisse Brust.
+        '<path d="M14 40 C14 33 18 29.4 24 29.4 C31 29.4 36 33.6 37 40 Z" fill="#B85622"/>'+
+        '<path d="M17.6 40 C17.4 35 19.6 31.6 23.6 31 C26 32.6 27 36 26.4 40 Z" fill="url(#'+w+')"/>'+
+        // Fernes Ohr (links, kleiner) und nahes Ohr (rechts, groesser), Rueckseiten schwarz.
+        '<path d="M15.6 14 L13.2 3.8 L21.4 10.6 Z" fill="#2A1A12"/>'+
+        '<path d="M16.2 13 L14.6 6.6 L19.6 10.8 Z" fill="#E8D6C4"/>'+
+        '<path d="M23.6 11 L30.6 1.6 L33.4 13.2 Z" fill="#2A1A12"/>'+
+        '<path d="M25.4 11.2 L30 4.4 L31.8 12.6 Z" fill="#EFDCCB"/>'+
+        // Kopf: Stirn rund rechts, nach links zur spitzen Schnauze auslaufend.
+        '<path d="M31 11.6 C35.6 14.4 36.2 22.6 32 27.8 C28.4 31.6 21.6 31.8 16.8 29.2 L8.6 25.8 '+
+          'C6.6 25.1 6.2 23.2 7.6 22.4 L14.8 18.2 C16.8 13 23.6 9.4 31 11.6 Z" fill="url(#'+v+')"/>'+
+        // Weiss: Unterkiefer, Kehle, Wangen bis nach vorn.
+        '<path d="M8.4 25.6 L16.8 29.2 C21.6 31.8 28.4 31.6 32 27.8 C30.6 28.6 27.4 27.4 24.6 25.6 '+
+          'C21 23.6 17 23.8 13 24.4 C11.2 24.7 9.6 25 8.4 25.6 Z" fill="url(#'+w+')"/>'+
+        '<path d="M32 27.8 C33.8 25.6 34.6 23.4 34.8 21.6 C33.2 24.2 30.4 26 27.6 26.4 Z" fill="#F4E8DA"/>'+
+      '</g>'+
+      // Traenenlinie: vom vorderen Augenwinkel zur Schnauze, als weiche Flaeche.
+      '<path d="M18.6 19.8 C16.2 20.6 13.4 21.6 10.4 23.2 C13.6 22.6 16.6 22 19.2 21.2 Z" fill="#5A2A10" opacity=".55"/>'+
+      '<g class="fig-augen">'+
+        figTierAuge(17.0, 18.8, 1.25, {iris:'#C8862E', pupille:'schlitz', augenForm:'mandel'}, 1)+
+        figTierAuge(24.4, 18.0, 1.75, {iris:'#C8862E', pupille:'schlitz', augenForm:'mandel'}, -1)+
+      '</g>'+
+      // Nase an der Spitze, mit Glanz; die Maullinie laeuft den Kiefer entlang zurueck.
+      '<ellipse cx="7.4" cy="23.1" rx="1.5" ry="1.15" fill="#1A120E"/>'+
+      '<ellipse cx="7.0" cy="22.6" rx="0.55" ry="0.32" fill="#FFFFFF" opacity=".6"/>'+
+      '<path d="M8.2 24.4 Q12 25.6 15.4 25.2" stroke="#2A1A14" stroke-width="0.55" fill="none" opacity=".7"/>'+
+      '<g stroke="#FFFFFF" stroke-width="0.22" opacity=".55" fill="none">'+
+        '<path d="M10.6 23.8 Q6 22.8 2.4 23.6"/><path d="M10.8 24.4 Q6.4 24.6 3 26"/></g>';
+  }
+
+  // Hauskatze (getigert), Dreiviertel nach links. Runder Kopf mit kurzer Schnauze; grosse,
+  // aufrechte Dreiecksohren mit Haarbueschel innen; abstehendes Backenfell; das "M" auf der
+  // Stirn und Streifen; gruengelbe Augen mit Schlitzpupille; kleine rosa Nase.
+  function figKatzeEinzeln(){
+    var f = figSid(), v = figSid(), w = figSid();
+    var streifen = '<g fill="#4C4A54" opacity=".6">'+
+      '<path d="M22 9.6 Q23 9 23.8 9.8 L23 15 Q22.6 15.4 22.2 15 Z"/>'+
+      '<path d="M18.4 10.8 Q19.4 10.2 20 11 L20.2 15.4 Q19.8 15.8 19.4 15.4 Z"/>'+
+      '<path d="M26 10.6 Q26.8 10.4 27.4 11.2 L26 15.4 Q25.6 15.6 25.4 15.2 Z"/>'+
+      '<path d="M30.6 17 Q32.6 17.4 33.6 18.6 L30.4 19 Z"/><path d="M30.8 21 Q32.8 21.6 33.8 22.8 L30.6 22.6 Z"/></g>';
+    return '<defs>'+figFellFilter(f)+figKopfVerlauf(v, '#B4B2BC', '#6C6A76')+figLinear(w, '#FAF8FA', '#DCD8DE')+'</defs>'+
+      '<g filter="url(#'+f+')">'+
+        '<path d="M11 40 C11 33.6 15.6 30 21.6 30 C28.6 30 33.6 34 34.6 40 Z" fill="#6E6C78"/>'+
+        '<path d="M16.6 40 C16.6 35.6 18.6 32.4 22 32 C24.6 33.4 25.6 36.4 25.2 40 Z" fill="url(#'+w+')"/>'+
+        '<path d="M11.6 15.6 L10.4 4.4 L19 10.8 Z" fill="#7C7A86"/>'+
+        '<path d="M12.6 14 L12 7.6 L16.8 11.2 Z" fill="#E6C4CC"/>'+
+        '<path d="M24 10 L32.2 3.4 L32.6 15.2 Z" fill="#888692"/>'+
+        '<path d="M25.6 10.6 L31 6.4 L31.2 13.6 Z" fill="#EAC8D0"/>'+
+        // Backenfell: die Wangen stehen seitlich ab.
+        '<path d="M9.6 20 L5.2 23.6 L8.8 23.8 L6.2 27 L11 26 Z" fill="#9A98A4"/>'+
+        '<path d="M33.4 20.4 L37.4 24.6 L34 24.4 L36.2 28 L31.8 26.6 Z" fill="#8A8894"/>'+
+        '<path d="M31.4 11.6 C35.4 14.6 35.8 22.4 32.4 26.8 C29.4 30.6 22.6 31.4 17.4 29.6 '+
+          'C12.4 27.8 9.4 24.4 9.6 20 C9.8 14.6 14.4 10.4 20.6 9.8 C24.6 9.4 28.6 10 31.4 11.6 Z" fill="url(#'+v+')"/>'+
+        // Helle Schnauze und Kinn, nach links verschoben (Drehung).
+        '<path d="M12.6 23.4 C12.4 20.8 15 19.6 18 20.2 C20.8 20.8 22.6 22.8 22.2 25.4 C21.8 28.2 18.6 29.6 15.6 28.8 C13.6 28.2 12.8 25.8 12.6 23.4 Z" fill="url(#'+w+')"/>'+
+        streifen+
+      '</g>'+
+      '<g class="fig-augen">'+
+        figTierAuge(15.2, 18.2, 1.55, {iris:'#B5BD3E', pupille:'schlitz', augenForm:'mandel'}, 1)+
+        figTierAuge(23.6, 17.6, 1.95, {iris:'#B5BD3E', pupille:'schlitz', augenForm:'mandel'}, -1)+
+      '</g>'+
+      '<path d="M15.6 22 L17.8 22 L16.7 23.4 Z" fill="#D98E98"/>'+
+      '<path d="M16.7 23.4 L16.7 24.6 M16.7 24.6 Q15.6 25.6 14.4 25 M16.7 24.6 Q17.8 25.6 19 25" stroke="#4A3A3E" stroke-width="0.45" fill="none" stroke-linecap="round" opacity=".8"/>'+
+      '<g stroke="#FFFFFF" stroke-width="0.2" opacity=".7" fill="none">'+
+        '<path d="M14.6 24 Q9 22.6 4.4 23.2"/><path d="M14.6 24.6 Q9.2 25 5 26.6"/>'+
+        '<path d="M19 24 Q25 23.2 30.4 24.2"/><path d="M19 24.6 Q24.6 25.4 29.6 27.2"/></g>';
+  }
+
+  // Braunbaer, Dreiviertel nach links. Massiger, breiter Kopf mit flacher Stirn, die in eine lange,
+  // breite Schnauze uebergeht; kleine runde Ohren weit oben; kleine dunkle Augen; grosse Nase.
+  function figBaerEinzeln(){
+    var f = figSid(), v = figSid(), m = figSid();
+    return '<defs>'+figFellFilter(f, 1.2)+figKopfVerlauf(v, '#A87448', '#5A361C')+figKopfVerlauf(m, '#D6B08A', '#9A6E48')+'</defs>'+
+      '<g filter="url(#'+f+')">'+
+        '<path d="M8 40 C8 32.6 14 28.4 21.6 28.4 C30 28.4 36.4 33 37.4 40 Z" fill="#5E3A1E"/>'+
+        '<circle cx="14.4" cy="10.6" r="3.6" fill="#6A4222"/><circle cx="14.4" cy="10.8" r="1.8" fill="#8E623C"/>'+
+        '<circle cx="28.6" cy="9.4" r="4.2" fill="#704626"/><circle cx="28.6" cy="9.6" r="2.1" fill="#94683F"/>'+
+        '<path d="M33.6 13.6 C37 18 36.4 25.6 32 29.4 C27.6 33 19.6 32.8 14.6 30 C11.4 28.2 9.4 25.6 8.6 23 '+
+          'C7.8 19.6 9.4 15.6 12.6 12.8 C17 9 27.6 8.4 33.6 13.6 Z" fill="url(#'+v+')"/>'+
+        // Die lange Schnauze, nach links vorn.
+        '<path d="M6 22.4 C5.4 19.6 8 17.6 12 17.6 C16.4 17.6 19.6 19.8 19.8 23.2 C20 26.6 16.6 28.6 12.4 28.4 C8.6 28.2 6.4 25.6 6 22.4 Z" fill="url(#'+m+')"/>'+
+      '</g>'+
+      '<g class="fig-augen">'+
+        figTierAuge(15.6, 16.2, 1.1, {iris:'#2A1A10'}, 1)+
+        figTierAuge(23.4, 15.6, 1.35, {iris:'#2A1A10'}, -1)+
+      '</g>'+
+      '<path d="M6.4 20.8 C6.2 19.2 7.8 18.4 9.8 18.6 C11.6 18.8 12.4 20 12 21.4 C11.6 22.6 9.6 23 8 22.6 C7 22.4 6.5 21.7 6.4 20.8 Z" fill="#1A120E"/>'+
+      '<ellipse cx="8.4" cy="19.6" rx="1" ry="0.45" fill="#FFFFFF" opacity=".5"/>'+
+      '<path d="M9.6 22.8 L9.8 24.6 Q8.4 25.8 7 25.2 M9.8 24.6 Q11.4 25.8 13.2 25.4" stroke="#2A1A14" stroke-width="0.55" fill="none" stroke-linecap="round" opacity=".8"/>';
+  }
+
+  // Grosser Panda, Dreiviertel nach links. Runder, breiter Kopf; ganz schwarze Ohren; die
+  // Augenflecken als schraege Tropfen, der nahe groesser; weisse, vorstehende Schnauze mit
+  // schwarzer Nase; schwarzes Schulterband.
+  function figPandaEinzeln(){
+    var f = figSid(), v = figSid();
+    return '<defs>'+figFellFilter(f, 1.1)+figKopfVerlauf(v, '#FFFFFF', '#C8C6C2')+'</defs>'+
+      '<g filter="url(#'+f+')">'+
+        '<path d="M8 40 C8 32.6 14 28.6 21.6 28.6 C30 28.6 36.4 33 37.4 40 Z" fill="#221A16"/>'+
+        '<circle cx="12.6" cy="10.8" r="4.2" fill="#221A16"/><circle cx="29.4" cy="9.6" r="4.8" fill="#221A16"/>'+
+        '<path d="M34 13.4 C37.6 17.8 37 25.8 32.4 29.6 C27.6 33.4 18.6 33.2 13.6 30 C10 27.8 8 24.4 8 20.8 '+
+          'C8.2 15 13.6 10.2 21 9.8 C25.8 9.6 31 10.6 34 13.4 Z" fill="url(#'+v+')"/>'+
+        '<ellipse cx="14.8" cy="18.6" rx="3.2" ry="4.4" transform="rotate(32 14.8 18.6)" fill="#221A16"/>'+
+        '<ellipse cx="24.6" cy="17.8" rx="3.8" ry="5.2" transform="rotate(-26 24.6 17.8)" fill="#221A16"/>'+
+        '<path d="M8.4 23.6 C8.2 21 10.6 19.8 13.6 20 C16.8 20.2 19 22 19 24.6 C19 27.4 16 29 12.8 28.6 C10.2 28.2 8.6 26 8.4 23.6 Z" fill="#FAFAF8"/>'+
+      '</g>'+
+      '<g class="fig-augen">'+
+        figTierAuge(15.4, 18.2, 1.0, {iris:'#2A1A12'}, 1)+
+        figTierAuge(24.0, 17.4, 1.25, {iris:'#2A1A12'}, -1)+
+      '</g>'+
+      '<path d="M9.2 22.2 C9 21 10.2 20.4 11.8 20.6 C13.2 20.8 13.8 21.6 13.4 22.6 C13 23.4 11.6 23.8 10.4 23.4 C9.7 23.2 9.3 22.8 9.2 22.2 Z" fill="#1A120E"/>'+
+      '<ellipse cx="10.8" cy="21.2" rx="0.8" ry="0.35" fill="#FFFFFF" opacity=".5"/>'+
+      '<path d="M11.4 23.6 L11.5 25 Q10.4 26 9.2 25.4 M11.5 25 Q12.8 26 14.2 25.6" stroke="#2A1A14" stroke-width="0.5" fill="none" stroke-linecap="round" opacity=".8"/>';
+  }
+
+  // Feldhase, Dreiviertel nach links. Laenglicher Kopf; sehr lange Ohren, weit nach hinten
+  // gestellt, mit schwarzen Spitzen; das grosse Auge seitlich am Kopf; gespaltene Oberlippe;
+  // graubraunes Wildfell (Agouti), hell an Kinn und Kehle.
+  function figHaseEinzeln(){
+    var f = figSid(), v = figSid();
+    // Die ganze Zeichnung um 15 % verkleinert und nach unten gerueckt: Im ersten Entwurf war der
+    // Kopf so gross, dass er wie eine Kugel wirkte, und die Ohrspitzen lagen ausserhalb des Kreises.
+    return '<defs>'+figFellFilter(f)+figKopfVerlauf(v, '#C8B296', '#7E6A52')+'</defs>'+
+      '<g transform="translate(3.6 5.2) scale(0.85)">'+
+      '<g filter="url(#'+f+')">'+
+        '<path d="M12 40 C12 33.4 16.6 29.6 22.4 29.6 C29 29.6 33.8 33.6 34.8 40 Z" fill="#8A745A"/>'+
+        // Ohren: das ferne schmaler, beide weit nach hinten.
+        '<path d="M20.4 12.6 C18.6 7 19.4 1.4 21.8 0.6 C24 1.6 24.4 7.4 23.2 12.4 Z" fill="#9A846A"/>'+
+        '<path d="M21.6 2 C22.6 1.6 23.4 3 23.2 4.6 L21.4 4.4 Z" fill="#2A1E14"/>'+
+        '<path d="M24.6 12 C25.6 5.8 28.6 0.6 31.4 0.8 C33 2.8 31.2 8.6 27.8 13.4 Z" fill="#A89074"/>'+
+        '<path d="M26 10.8 C26.8 6.2 28.8 2.8 30.6 2.6 C31.4 4.2 29.8 8.6 27.4 12 Z" fill="#E0B8B0" opacity=".7"/>'+
+        '<path d="M29.6 1.2 C30.8 0.8 31.8 1.8 31.4 3.4 L29.4 3 Z" fill="#2A1E14"/>'+
+        '<path d="M30.6 13.2 C34.4 16 34.6 23 31.2 27.2 C28 31 20.6 31.6 15.8 29 C12.4 27.2 9.6 24.4 9 21.4 '+
+          'C8.4 17.6 11 14 15.4 12.4 C20.4 10.6 26.8 10.6 30.6 13.2 Z" fill="url(#'+v+')"/>'+
+        '<path d="M9.6 23.2 C10.6 27 15.2 29.6 19.8 29.6 C17 27.8 14.2 25.6 12.8 23.4 Z" fill="#EDE2D4"/>'+
+      '</g>'+
+      // Das Auge seitlich, gross, mit hellem Ring — so sitzt es beim Hasen.
+      '<ellipse cx="22.2" cy="18.2" rx="2.9" ry="2.6" fill="#E8DCC8" opacity=".75"/>'+
+      '<g class="fig-augen">'+figTierAuge(22.2, 18.2, 1.95, {iris:'#3A2414'}, -1)+'</g>'+
+      '<path d="M9.2 20.8 C9.4 19.8 10.6 19.6 11.2 20.4 C11.4 21.2 10.4 21.8 9.6 21.6 Z" fill="#C88A8E"/>'+
+      '<path d="M10.4 21.6 L10.6 23 M10.6 23 Q9.6 23.8 8.8 23.4 M10.6 23 Q11.6 23.8 12.6 23.6" stroke="#4A3A30" stroke-width="0.42" fill="none" stroke-linecap="round" opacity=".8"/>'+
+      '<g stroke="#F4EEE6" stroke-width="0.2" opacity=".7" fill="none">'+
+        '<path d="M11.6 22.4 Q6.4 21 2.2 21.8"/><path d="M11.8 23 Q7 23.4 3 25"/></g>'+
+      '</g>';
+  }
+
+  // Reh (Bock im Sommerfell), Dreiviertel nach links. Langer, schmaler Kopf, nach vorn unten;
+  // grosse, weit abstehende Ohren mit hellem Inneren; das grosse dunkle Auge seitlich; schwarze,
+  // glaenzende Nase und schwarzer Bart; weisses Kinn; ein kurzes Gehoern mit Perlen.
+  function figRehEinzeln(){
+    var f = figSid(), v = figSid();
+    return '<defs>'+figFellFilter(f, 0.8)+figKopfVerlauf(v, '#D69A62', '#8A5428')+'</defs>'+
+      '<path d="M22.8 10.6 L22 4.4 L20.4 2.6 M22 4.4 L23.8 2.8 M26.2 10.8 L27.6 4.2 L26.4 2.4 M27.6 4.2 L29.6 3" '+
+        'stroke="#6A4A30" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'+
+      '<g filter="url(#'+f+')">'+
+        // Der Hals: lang und schraeg — im ersten Entwurf sass der Kopf ohne ihn auf einem Ring.
+        '<path d="M15.6 40 C16.4 35 17.2 31 18.6 26.6 L28.6 22.6 C30 28 31.6 34 33 40 Z" fill="#9A5E2C"/>'+
+        // Der weisse Kehlfleck vorn am Hals, wo er beim Reh sitzt.
+        '<path d="M18.4 27.4 C17.6 30.4 17 33 16.6 35.6 C18.8 33.8 20 30.8 20.6 27.8 Z" fill="#F2E8DA"/>'+
+        '<path d="M18 13.4 C13.6 10.4 10 9.6 9 11 C9.6 13.6 13.4 15.8 17.4 16.4 Z" fill="#B67A44"/>'+
+        '<path d="M16.4 14.4 C13.6 12.6 11.4 12 10.8 12.6 C11.4 14 13.8 15.2 16.2 15.6 Z" fill="#EAD8C2"/>'+
+        '<path d="M28.6 12.2 C32.4 8.6 36.6 7.6 37.8 9.2 C37.2 12.4 33.2 15 29.4 15.8 Z" fill="#B67A44"/>'+
+        '<path d="M30 12.8 C32.6 10.6 35.4 9.8 36.2 10.6 C35.6 12.6 32.8 14.4 30.4 14.8 Z" fill="#EAD8C2"/>'+
+        // Langer Kopf, die Schnauze nach links unten.
+        '<path d="M30.4 13.6 C32.8 17.2 32.2 22.4 29 25.8 C25.4 29.4 19 31.4 14 30.8 C10.8 30.4 8.2 29 7.6 27.4 '+
+          'C7.2 25.8 8.6 24.4 10.8 22.8 C13.2 21 15.2 17.6 17.2 14.6 C20.4 10.2 27.4 9.4 30.4 13.6 Z" fill="url(#'+v+')"/>'+
+        '<path d="M8.2 28 C10 30.4 14.6 31.2 18.4 30.4 C15.6 29.6 12.4 28.8 10.6 27.4 Z" fill="#F4ECE0"/>'+
+      '</g>'+
+      '<g class="fig-augen">'+figTierAuge(21.6, 18.6, 1.85, {iris:'#22140C'}, -1)+'</g>'+
+      // Nase und Bart schwarz, glaenzend.
+      '<path d="M7.2 25.6 C7 24.2 8.4 23.4 10 23.8 C11 24.2 11.2 25.4 10.4 26.2 C9.4 27 7.6 26.8 7.2 25.6 Z" fill="#14100C"/>'+
+      '<ellipse cx="8.4" cy="24.6" rx="0.8" ry="0.35" fill="#FFFFFF" opacity=".55"/>'+
+      '<path d="M8 27.4 C9.4 28.4 11.2 28.4 12.2 27.8" stroke="#14100C" stroke-width="0.6" fill="none" stroke-linecap="round" opacity=".7"/>';
+  }
+
+  // Dackel (rot, Langhaar-freier Kurzhaar), Dreiviertel nach links. Langer Kopf mit langer,
+  // schmaler Schnauze und kaum Stopp; lange, weich haengende Ohren; dunkle Mandelaugen; grosse
+  // schwarze Nase.
+  function figDackelEinzeln(){
+    var f = figSid(), v = figSid();
+    return '<defs>'+figFellFilter(f, 0.75)+figKopfVerlauf(v, '#C07A42', '#6E3A16')+'</defs>'+
+      '<g filter="url(#'+f+')">'+
+        '<path d="M12 40 C12 33.2 16.8 29.4 23 29.4 C30 29.4 35 33.6 36 40 Z" fill="#7A4220"/>'+
+        '<path d="M15.6 31 C17 26.6 20 24.8 24 24.6 L30.4 22 C31.6 26 31.4 30 30.6 33 Z" fill="#7E4422"/>'+
+        '<path d="M30.4 13.6 C34.4 16 35.6 21.6 34.8 27 C34.2 31 32.4 33.4 30.6 33 C28.6 32.6 28.4 28.4 28.6 24.4 Z" fill="#5E3014"/>'+
+        '<path d="M31.6 12.6 C34 16.8 33 22.4 29.6 25.6 C25.6 29.2 18.4 30 13.2 28.6 L5.6 26.6 '+
+          'C4.2 26.2 3.8 24.4 5 23.6 L12.4 19.6 C14.6 14.2 20 10.6 25.6 10.6 C28.2 10.6 30.4 11.2 31.6 12.6 Z" fill="url(#'+v+')"/>'+
+        '<path d="M5.6 26.6 L13.2 28.6 C17 29.6 21.4 29.6 25 28.6 C20 28 14.6 26.6 10.6 25.2 Z" fill="#A86434"/>'+
+      '</g>'+
+      '<g class="fig-augen">'+
+        figTierAuge(15.6, 18.6, 1.2, {iris:'#3A2210'}, 1)+
+        figTierAuge(22.8, 17.6, 1.55, {iris:'#3A2210'}, -1)+
+      '</g>'+
+      '<path d="M3.4 23.8 C3.2 22.4 4.6 21.6 6.4 22 C7.6 22.4 7.8 23.6 7 24.4 C6 25.2 4 25 3.4 23.8 Z" fill="#14100C"/>'+
+      '<ellipse cx="4.8" cy="22.8" rx="0.8" ry="0.35" fill="#FFFFFF" opacity=".55"/>'+
+      '<path d="M5.6 25.6 Q9.6 27 14.4 26.4" stroke="#2A1A14" stroke-width="0.55" fill="none" opacity=".7"/>';
+  }
+
+  // Golden Retriever, Dreiviertel nach links. Breiter Schaedel mit deutlichem Stopp; mittellange,
+  // kraeftige Schnauze; Hangohren mit langem, welligem Fell; gutmuetige dunkle Augen; das offene,
+  // hechelnde Maul mit Zunge — so sieht ein froehlicher Retriever wirklich aus.
+  function figRetrieverEinzeln(){
+    var f = figSid(), v = figSid(), m = figSid();
+    return '<defs>'+figFellFilter(f, 1.2)+figKopfVerlauf(v, '#F0C682', '#B07A36')+figKopfVerlauf(m, '#F8DCA8', '#C89650')+'</defs>'+
+      '<g filter="url(#'+f+')">'+
+        '<path d="M10 40 C10 32.8 15.4 28.8 22.4 28.8 C30 28.8 35.6 33.2 36.6 40 Z" fill="#C08A44"/>'+
+        '<path d="M31.6 12.8 C35.8 15 37.4 21.4 36.4 27.6 C35.8 31.4 33.6 33.6 31.6 33 C29.4 32.4 29 28 29.4 23.4 Z" fill="#B47C38"/>'+
+        '<path d="M32.6 13 C35.6 17 35 23.6 31.4 27.4 C27.4 31.4 19.6 32 14.6 30 C11.8 28.8 10 26.8 9.8 24.6 '+
+          'C9.6 21.6 11.6 19.4 13.8 17.6 C15.4 13.6 20 10.2 25.6 10 C28.8 9.9 31.2 11 32.6 13 Z" fill="url(#'+v+')"/>'+
+        // Die Schnauze, nach links vorn.
+        '<path d="M5 22.8 C4.6 20.2 7.2 18.6 10.8 18.8 C14.6 19 17.4 21 17.4 24 C17.4 27 14.4 28.6 10.6 28.2 C7.4 27.8 5.4 25.6 5 22.8 Z" fill="url(#'+m+')"/>'+
+      '</g>'+
+      '<g class="fig-augen">'+
+        figTierAuge(16.6, 17.4, 1.2, {iris:'#3A2210'}, 1)+
+        figTierAuge(24.2, 16.8, 1.5, {iris:'#3A2210'}, -1)+
+      '</g>'+
+      '<path d="M4.4 21.6 C4.2 20.2 5.6 19.4 7.4 19.8 C8.6 20.2 8.8 21.4 8 22.2 C7 23 5 22.8 4.4 21.6 Z" fill="#1A120E"/>'+
+      '<ellipse cx="5.8" cy="20.6" rx="0.8" ry="0.35" fill="#FFFFFF" opacity=".55"/>'+
+      // Offenes Maul, Zunge.
+      '<path d="M6.4 24.4 C9 27.8 13.4 28.6 16.2 26.2 C13.4 26.4 9.6 25.6 6.4 24.4 Z" fill="#4A1E16"/>'+
+      '<path d="M9.4 25.8 C9.8 28.6 11.4 30.2 13 29.8 C14 29.2 14 27.4 13.6 26.4 Z" fill="#E4899A"/>';
+  }
 
   // ---------- Vier Tiere nach ihrer echten Anatomie (Runde 118) ----------
   //
@@ -680,13 +644,16 @@
   // Uhu, von vorn. Echt: der runde Gesichtsschleier mit dunklem Rand, die gefiederten Ohrbueschel,
   // der kurze Hakenschnabel, der zur Haelfte im Gefieder steckt, und die Laengsstreifen auf der Brust.
   function figEule(){
-    var s = figSid();
+    var s = figSid(), fe = figSid();
     var feder = '';
     [[15.6,30.2],[19,31.6],[22.4,30.2],[25.6,31.8],[13.2,33],[17.6,34.4],[21.6,34],[26.4,34.6]].forEach(function(q){
       feder += '<path d="M'+q[0]+' '+q[1]+' Q'+(q[0]+0.5)+' '+(q[1]+1.4)+' '+q[0]+' '+(q[1]+2.6)+' Q'+(q[0]-0.5)+' '+(q[1]+1.4)+' '+q[0]+' '+q[1]+' Z"/>';
     });
     return '<defs><radialGradient id="'+s+'" cx="0.5" cy="0.45" r="0.55"><stop offset="0" stop-color="#EBD8B8"/>'+
-           '<stop offset="0.72" stop-color="#D2B48A"/><stop offset="1" stop-color="#6E5236"/></radialGradient></defs>'+
+           '<stop offset="0.72" stop-color="#D2B48A"/><stop offset="1" stop-color="#6E5236"/></radialGradient>'+
+           // Runde 119: dieselbe Struktur wie beim Fell — auf Gefieder wirkt sie genauso.
+           figFellFilter(fe, 0.9)+'</defs>'+
+      '<g filter="url(#'+fe+')">'+
       '<path d="M20 30 C13.6 30 8.6 33.8 7.4 40 L32.6 40 C31.4 33.8 26.4 30 20 30 Z" fill="#9C7C54"/>'+
       // Ohrbueschel: mehrere Federspitzen statt eines Dreiecks.
       '<path d="M9.6 13.6 L9.4 5.4 L11.6 9 L12.4 4.6 L14 9.6 L16.4 11.2 Z" fill="#7A5C3C"/>'+
@@ -695,6 +662,7 @@
       // Gesichtsschleier: zwei helle Scheiben mit dunklem Rand.
       '<circle cx="14.6" cy="20.2" r="6.8" fill="#5A4028" opacity=".55"/><circle cx="25.4" cy="20.2" r="6.8" fill="#5A4028" opacity=".55"/>'+
       '<circle cx="14.6" cy="20.2" r="6.1" fill="url(#'+s+')"/><circle cx="25.4" cy="20.2" r="6.1" fill="url(#'+s+')"/>'+
+      '</g>'+
       figTierAugen(14.6, 25.4, 20, 2.6, {iris:'#E8901E'})+
       // Hakenschnabel, halb im Gefieder.
       '<path d="M18.6 23.6 Q20 22.4 21.4 23.6 Q21 26.4 20 27.6 Q19 26.4 18.6 23.6 Z" fill="#3E3428"/>'+
@@ -706,44 +674,16 @@
   // zuerst nach einem Fuchs. Jede traegt jetzt eine eigene Miene; dieselbe Frisur mit einem
   // anderen Mund ist ein anderer Mensch.
   var FIGUREN = [
-    {id:'fuchs', feld:'#F6E6D8', svg:function(){ return figTier({iris:'#C8862E', augenForm:'mandel', form:'spitz', nase:'dreieck', schnurrhaare:true, ohr:'spitz', fell:'#D97A45', innen:'#F5E2D2', schnauze:'#F8EFE6',
-                  // Runde 116, am echten Rotfuchs: schwarze Ohrspitzen, weisse Wangen bis zum Kinn,
-                  // weisse Brust, Schlitzpupillen.
-                  ohrSpitze:'#2A211C', kinn:'#F8EFE6', brust:'#F8EFE6', pupille:'schlitz', backenfell:'#F4E6DA',
-                  wange:'#E9A177',}); }},
-    {id:'katze', feld:'#E6E4EA', svg:function(){ return figTier({iris:'#B5BD3E', augenForm:'mandel', form:'katze', nase:'dreieck', schnurrhaare:true, ohr:'spitz', fell:'#8E8B95', innen:'#E3C8CE', schnauze:'#F1EFF3',
-                  // Runde 116, an der echten getigerten Hauskatze: Schlitzpupillen, rosa Nase und das
-                  // "M" auf der Stirn — drei weiche, spitz zulaufende Streifen, Flaechen statt Striche.
-                  pupille:'schlitz', naseFarbe:'#D98E98', backenfell:'#9A97A2',
-                  maske:'<g fill="#5E5B66" opacity=".55"><path d="M18.9 9.6 Q20 8.8 21.1 9.6 L20.4 15.2 Q20 15.6 19.6 15.2 Z"/>'+
-                        '<path d="M14.6 10.6 Q15.8 10 16.6 10.9 L17.4 15.4 Q17 15.8 16.6 15.4 Z"/>'+
-                        '<path d="M25.4 10.6 Q24.2 10 23.4 10.9 L22.6 15.4 Q23 15.8 23.4 15.4 Z"/></g>',
-                  wange:'#C7A9B2',}); }},
-    {id:'baer',  feld:'#EFE3D6', svg:function(){ return figTier({auge:1.85, iris:'#3A2416', form:'breit', nase:'breit', ohr:'rund',  fell:'#A5714B', innen:'#D9A87F', schnauze:'#E7CDB2',}); }},
-    {id:'panda', feld:'#D8DAD6', svg:function(){ return figTier({iris:'#2A1A12', form:'breit', nase:'breit', ohr:'rund',  fell:'#F4F3F1', innen:'#2A211C', schnauze:'#FFFFFF', auge:1.85,
-                  // Runde 116, am echten Grossen Panda: Die Ohren sind GANZ schwarz (vorher weiss mit
-                  // schwarzer Mitte), die Schultern tragen das schwarze Band, und die Augenflecken
-                  // sind schraege Tropfen, die nach aussen unten auslaufen — nicht nach innen.
-                  ohrFarbe:'#2A211C', koerper:'#2A211C',
-                  maske:'<ellipse cx="14.6" cy="20.8" rx="4.3" ry="5.6" transform="rotate(28 14.6 20.8)" fill="#2A211C"/>'+
-                        '<ellipse cx="25.4" cy="20.8" rx="4.3" ry="5.6" transform="rotate(-28 25.4 20.8)" fill="#2A211C"/>'}); }},
-    {id:'hase',  feld:'#F1E7EC', svg:function(){ return figTier({augenAbstand:7.4, augenHoehe:-1.2, auge:1.9, iris:'#3A2420', form:'schmal', nase:'klein', schnurrhaare:true, ohr:'lang',  fell:'#E4DAD3', innen:'#E7B9C4', schnauze:'#F7F1EE',
-                  naseFarbe:'#D98E98',
-                  wange:'#EFC3CD',}); }},
-    {id:'reh',   feld:'#EEE7D9', svg:function(){ return figTier({augenAbstand:7.2, augenHoehe:-0.6, auge:1.95, iris:'#24160E', form:'schmal', nase:'klein', ohr:'geweih',fell:'#C99A6A', innen:'#7A5B3E', schnauze:'#EFE0CD',
-                  // Runde 116, am echten Reh: Hier standen weisse Punkte auf der Stirn. Die gibt es
-                  // nicht — Flecken traegt nur das Kitz, am Ruecken, und nie zusammen mit einem
-                  // Geweih. Was das Reh tatsaechlich kennzeichnet, ist die helle Kehle. Die rosa
-                  // Wangen sind ebenfalls entfallen; ein Reh errötet nicht.
-                  kinn:'#F2E6D3', kinnForm:'kehle', brust:'#F2E6D3'}); }},
+    {id:'fuchs', feld:'#F6E6D8', svg:figFuchsEinzeln},
+    {id:'katze', feld:'#E6E4EA', svg:figKatzeEinzeln},
+    {id:'baer',  feld:'#EFE3D6', svg:figBaerEinzeln},
+    {id:'panda', feld:'#D8DAD6', svg:figPandaEinzeln},
+    {id:'hase',  feld:'#F1E7EC', svg:figHaseEinzeln},
+    {id:'reh',   feld:'#EEE7D9', svg:figRehEinzeln},
     // Zwei Hunde. Beide teilen den Kopf-Bauplan und unterscheiden sich in Fell, Schnauze und
     // Miene — genau das, was sie auch in echt unterscheidet.
-    {id:'dackel', feld:'#F0E3D2', svg:function(){ return figTier({iris:'#3A2210', form:'hund', nase:'dreieck', braue:'keine', ohr:'schlapp', fell:'#8C5A33', innen:'#6B4324',
-                  schnauze:'#C08B5C', zunge:true,
-                  maske:'<ellipse cx="20" cy="19" rx="6.4" ry="4.4" fill="#A96E3F" opacity=".55"/>'+
-                        '<g fill="#D9A76F" opacity=".85"><ellipse cx="14.4" cy="16.6" rx="2.2" ry="1.6"/><ellipse cx="25.6" cy="16.6" rx="2.2" ry="1.6"/></g>'}); }},
-    {id:'retriever', feld:'#F7EBD6', svg:function(){ return figTier({iris:'#4A2C14', form:'hund', nase:'dreieck', ohr:'schlapp', fell:'#E3B26B', innen:'#C08F4C', schnauze:'#F6E3C4',
-                  zunge:true,}); }},
+    {id:'dackel', feld:'#F0E3D2', svg:figDackelEinzeln},
+    {id:'retriever', feld:'#F7EBD6', svg:figRetrieverEinzeln},
     // Drei, die nicht in den Kopf-Bauplan passen und deshalb eigene Formen bekommen.
     // Runde 118: die vier eigenen Formen, gebaut nach der Anatomie der echten Tiere (siehe oben).
     {id:'eule', feld:'#E3E7E4', svg:figEule},

@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 118)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 119)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -375,6 +375,55 @@ Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 1
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 119 — keine Schablone mehr: jedes Tier einzeln gezeichnet, mit Fell
+
+Rueckmeldung des Inhabers nach vier Ueberarbeitungen der Tiere: „immer noch zu unrealistisch, vom
+gesamten Modell schon — nicht nur wegen 3D oder Licht."
+
+**Der Satz traf den Kern.** Alle neun Saeugetiere entstanden aus EINER Schablone (`figTier`):
+runder Kopf, frontal und symmetrisch, ovale Schnauze in der Mitte, zwei Augen daneben,
+angedeutete Schultern. Unterschiede nur in Farben, Ohren und Abzeichen — dieselbe Figur in neun
+Kostuemen. Die Runden 115 bis 118 haben das Kostuem verbessert, nicht das Modell.
+
+Gefragt, mit drei Wegen (echte Fotos von Wikimedia Commons, einzeln gezeichnet, Tiere
+entfernen) — der Inhaber hat **einzeln gezeichnet** gewaehlt, im Wissen, dass es eine Illustration
+bleibt.
+
+### Was jetzt anders ist
+
+- **Jedes Tier hat eine eigene Zeichnung** (`figFuchsEinzeln` … `figRetrieverEinzeln`), mit
+  eigener Kopfform und in **Dreiviertelansicht** nach links. Eine streng frontale, symmetrische
+  Ansicht ist das Kennzeichen von Emblemen und Plueschtieren. Der Fuchs hat einen keilfoermigen
+  Kopf mit langer Schnauze und Traenenlinie, der Baer einen massigen Kopf mit langer, breiter
+  Schnauze, das Reh einen langen schmalen Kopf am langen Hals mit Kehlfleck und Gehoern, der Dackel
+  die lange Schnauze ohne Stopp und das Hangohr, der Retriever den breiten Schaedel und das
+  hechelnde Maul, der Hase graubraunes Wildfell mit seitlichem Auge und schwarzen Ohrspitzen.
+- **Ein Fellfilter** (`figFellFilter`): feTurbulence + feDisplacementMap zerfransen die Kante um
+  Bruchteile einer Einheit, eine zweite, gestreckte Turbulenz legt feine Haarstriche auf die
+  Flaeche. Glatte Vektorkanten waren der Hauptgrund fuer den Plastik-Eindruck. Auch der Uhu traegt
+  ihn — auf Gefieder wirkt er genauso. Wal, Fisch und Schildkroete bleiben glatt; ihre Haut ist es.
+- Geteilt werden nur noch Werkzeuge: Tierauge, Fellfilter, Verlaeufe.
+
+Im ersten Entwurf drei Fehler, alle im Bild gefunden: Das Reh sass ohne Hals auf einem Ring mit
+einem weissen Loch, der Hase war so gross, dass er wie eine Kugel wirkte und die Ohren aus dem
+Kreis liefen, und die Haarstruktur war zu kraeftig und zu waagerecht. Alle behoben; in echter
+Groesse (62 und 96 Punkt) nachgesehen — dort wird die Struktur zu einem feinen Fellschimmer, nicht
+zu Kruemeln.
+
+**Die Schablone ist entfernt**, mit allem, was nur sie benutzte (Ohren, Nase, Schnurrhaare,
+Kopf- und Schnauzenformen, Maul, Lichtsaum, Kernschatten) und zwei aelteren Lichtfunktionen ohne
+Aufruf: `13-figuren.js` 1045 -> 740 Zeilen. Gezaehlt wurden dabei Bezuege OHNE Kommentare — die
+reine Trefferzahl hatte `figTier` noch dreimal gemeldet, zweimal davon in Begruendungen.
+
+### Was offen bleibt
+
+Ob das jetzt realistisch genug ist, entscheidet der Inhaber am Geraet. Falls nicht, steht der
+naechste Weg schon fest und ist der einzige, der danach noch bleibt: **echte Fotos** (gemeinfrei,
+von Wikimedia Commons, fest eingebaut, kein Netzabruf). Wikimedia ist von diesem Rechner aus
+erreichbar, und `sips` kann zuschneiden — beides in dieser Runde nachgesehen.
 
 ---
 
