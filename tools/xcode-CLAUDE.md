@@ -59,8 +59,8 @@ Die neun einzeln, falls eine davon nachzufahren ist:
     node tests/run.js              # 11 Reihen
     python3 tools/audit_i18n.py    # 8 statische Pruefungen ueber alle 8 Sprachen
     npm run pruef-store            # Zeichenzahlen der Store-Texte
-    npm run pruef-app              # 26 Pruefungen an dist/index.html (die Fassung im App-Bundle)
-    npm run pruef-nativ            # 49 Pruefungen, stellt Capacitor im Browser nach
+    npm run pruef-app              # 27 Pruefungen an dist/index.html (die Fassung im App-Bundle)
+    npm run pruef-nativ            # 51 Pruefungen, stellt Capacitor im Browser nach
     npm run pruef-bewegung
     npm run diff-sprachen          # ein BERICHT, kein Bestanden/Durchgefallen
     npm run fehlersuche            # 26 Durchlaeufe: 13 Konfigurationen x WebKit + Chromium
