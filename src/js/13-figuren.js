@@ -109,6 +109,39 @@
            '<stop offset="1" stop-color="'+figTon(farbe, 0.90)+'"/>'+
            '</radialGradient>';
   }
+  // Runde 115, Auftrag des Inhabers: "die Tiere in ihrem Modell realistischer, so wie Memojis von
+  // Apple". Was Animoji plastisch macht, ist nicht mehr Detail, sondern mehr VOLUMEN: Jede Form
+  // sieht aus wie ein beleuchteter Koerper. Die Kugel oben hob den Ton im Licht um 17 % und senkte
+  // ihn im Schatten um 16 % — genug fuer eine Woelbung, zu wenig fuer einen Gegenstand. Diese
+  // Fassung spannt das Band auf +38 / -30 und legt das Licht weiter nach aussen. Eigene Funktion
+  // statt geaenderter Werte, weil figKugel auch an Stellen sitzt, die flacher bleiben sollen.
+  function figKugelPlastisch(id, farbe){
+    return '<radialGradient id="'+id+'" cx="0.5" cy="0.52" r="0.72" '+
+           'fx="'+(FIG_LICHT_X - 0.03)+'" fy="'+(FIG_LICHT_Y - 0.04)+'">'+
+           '<stop offset="0" stop-color="'+figTon(farbe, 1.38)+'"/>'+
+           '<stop offset="0.30" stop-color="'+figTon(farbe, 1.14)+'"/>'+
+           '<stop offset="0.62" stop-color="'+farbe+'"/>'+
+           '<stop offset="0.88" stop-color="'+figTon(farbe, 0.72)+'"/>'+
+           '<stop offset="1" stop-color="'+figTon(farbe, 0.80)+'"/>'+
+           '</radialGradient>';
+  }
+  // Runde 115: derselbe Koerper fuer die vier Figuren, die nicht in den Kopf-Bauplan passen (Eule,
+  // Wal, Goldfisch, Schildkroete). Sie bestanden aus flach gefuellten Ellipsen und standen neben
+  // den plastischen Tieren sichtbar flach da. Eine Ellipse mit dem Kugellicht von oben und einem
+  // weichen Glanz, der in die Form geschnitten ist — dieselben zwei Mittel wie bei figTier.
+  var FIG_PLAST_LAUF = 0;
+  function figPlastisch(cx, cy, rx, ry, farbe){
+    var id = FIG_UID + 'pl' + (FIG_PLAST_LAUF++), gl = id + 'g', cl = id + 'c';
+    return '<defs>'+figKugelPlastisch(id, farbe)+
+      '<radialGradient id="'+gl+'"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.48"/>'+
+        '<stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.16"/>'+
+        '<stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>'+
+      '<clipPath id="'+cl+'"><ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'"/></clipPath></defs>'+
+      '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="url(#'+id+')"/>'+
+      '<g clip-path="url(#'+cl+')"><ellipse cx="'+(cx - rx*0.32).toFixed(2)+'" cy="'+(cy - ry*0.48).toFixed(2)+
+        '" rx="'+(rx*0.55).toFixed(2)+'" ry="'+(ry*0.32).toFixed(2)+'" fill="url(#'+gl+')" transform="rotate(-18 '+
+        (cx - rx*0.32).toFixed(2)+' '+(cy - ry*0.48).toFixed(2)+')"/></g>';
+  }
   // Der Lichtsaum. Der erste Versuch hat dieselbe Form versetzt HINTER die eigentliche gelegt —
   // und damit einen zweiten Umriss erzeugt, der an der Schattenseite als heller Rand hervorsah
   // und an der Lichtseite gar nicht. Ein Saum darf den Umriss aber nicht veraendern; er liegt
@@ -172,7 +205,9 @@
                '" stroke="'+farbe+'" stroke-width="'+w.toFixed(2)+'" fill="none" stroke-linecap="round"'+
                (deck != null ? ' opacity="'+deck+'"' : '')+'/>';
       };
-      return bogen(0, FIG_INK, r*0.5) + bogen(r*0.44, figTon(haut, 1.14), r*0.24, 0.7);
+      // Runde 115: Bei den Tieren nur der dunkle Bogen. Die helle Kante darunter ist ein Strich in
+      // der Hautfarbe und lag bei Fuchs und Hund als blasses Band unter dem geschlossenen Auge.
+      return bogen(0, FIG_INK, r*0.5) + (o.grossIris ? '' : bogen(r*0.44, figTon(haut, 1.14), r*0.24, 0.7));
     }
     // Wie weit das Lid offen steht. Als ZAHL statt als Auswahl aus vier Namen: Der Ausdruck
     // liegt zwischen den Stufen, nicht auf ihnen.
@@ -219,7 +254,13 @@
       // Zwei Lichtpunkte statt einem: der grosse dort, wo die Lichtquelle steht, der winzige
       // gegenueber als zweite Spiegelung. Ein einzelner Punkt liest sich als Aufkleber, zwei
       // lesen sich als nasse Oberflaeche.
-      '<circle cx="'+(ix - ir*0.40).toFixed(2)+'" cy="'+(iy - ir*0.46).toFixed(2)+'" r="'+(ir*0.34).toFixed(2)+'" fill="#FFFFFF" opacity=".96"/>'+
+      '<circle cx="'+(ix - ir*0.40).toFixed(2)+'" cy="'+(iy - ir*0.46).toFixed(2)+'" r="'+(ir*(o.grossIris ? 0.42 : 0.34)).toFixed(2)+'" fill="#FFFFFF" opacity=".96"/>'+
+      // Runde 115: Bei den Tieren zusaetzlich das Fensterlicht — ein weicher, breiter Glanz ueber
+      // der oberen Haelfte des Augapfels. Das ist das Zeichen der Animoji-Augen: Sie sehen nass
+      // und gewoelbt aus, weil auf ihnen die ganze Lichtquelle als Flaeche liegt, nicht nur als
+      // Punkt. Als Flaeche mit Deckung und nicht als Strich (siehe CLAUDE.md, zweite Lehre).
+      (o.grossIris ? '<ellipse cx="'+(x - rx*0.18).toFixed(2)+'" cy="'+(y - ry*0.38).toFixed(2)+'" rx="'+(rx*0.62).toFixed(2)+
+        '" ry="'+(ry*0.30).toFixed(2)+'" fill="#FFFFFF" opacity=".22" transform="rotate(-14 '+x+' '+y+')"/>' : '')+
       '<circle cx="'+(ix + ir*0.42).toFixed(2)+'" cy="'+(iy + ir*0.40).toFixed(2)+'" r="'+(ir*0.15).toFixed(2)+'" fill="#FFFFFF" opacity=".55"/>'+
       // Der Schatten, den das Oberlid auf den Augapfel wirft. Er liegt AUF dem Auge und ist der
       // Grund, warum ein Auge in einer Hoehle sitzt statt auf dem Gesicht zu kleben.
@@ -236,13 +277,19 @@
       // einer glatten Flaeche; mit ihr liegt es in einer Hoehle. Sie ist der billigste Schritt
       // von "Auge gezeichnet" zu "Auge gebaut" — eine Linie, halb so dunkel wie die
       // Wimpernkante und deutlich weiter oben.
+      // Runde 115: Bei den Tieren entfaellt die Lidfalte. Animoji haben keine, und sie ist ein
+      // STRICH in der Hautfarbe — auf dem dunklen Augenfleck des Pandas stand sie als blasser
+      // Bogen ueber dem Auge. Dieselbe Lehre wie bei Haarglanz und Fellkante.
+      (o.grossIris ? '' :
       '<path d="M'+(x-rx*0.94).toFixed(2)+' '+(y - ry*(offen<0.9?0.62:1.02)).toFixed(2)+
       ' Q'+x+' '+(y - ry*(offen>1.2?2.05:1.82)).toFixed(2)+' '+(x+rx*0.94).toFixed(2)+' '+(y - ry*(offen<0.9?0.62:1.02)).toFixed(2)+
-      '" stroke="'+figTon(haut, 0.72)+'" stroke-width="'+(r*0.17).toFixed(2)+'" fill="none" stroke-linecap="round" opacity=".55"/>'+
-      // Das Unterlid, sehr hell und sehr fein: die Kante, auf der das Auge aufliegt.
+      '" stroke="'+figTon(haut, 0.72)+'" stroke-width="'+(r*0.17).toFixed(2)+'" fill="none" stroke-linecap="round" opacity=".55"/>')+
+      // Das Unterlid, sehr hell und sehr fein: die Kante, auf der das Auge aufliegt. Runde 115:
+      // nicht bei Tieren — auf der hellen Schnauze des Baeren stand es als Strich unter dem Auge.
+      (o.grossIris ? '' :
       '<path d="M'+(x-rx*0.82).toFixed(2)+' '+(y + ry*0.92).toFixed(2)+
       ' Q'+x+' '+(y + ry*1.16).toFixed(2)+' '+(x+rx*0.82).toFixed(2)+' '+(y + ry*0.92).toFixed(2)+
-      '" stroke="'+figTon(haut, 1.16)+'" stroke-width="'+(r*0.22).toFixed(2)+'" fill="none" stroke-linecap="round" opacity=".85"/>';
+      '" stroke="'+figTon(haut, 1.16)+'" stroke-width="'+(r*0.22).toFixed(2)+'" fill="none" stroke-linecap="round" opacity=".85"/>');
   }
   var FIG_AUGE_LAUF = 0;
   // Runde 111: die Neigung der Lidachse, je Figur. Bis hierher war jedes Auge dieselbe Ellipse —
@@ -529,8 +576,16 @@
   // Die Nasen. Eine Katzennase ist ein abgerundetes Dreieck mit einer Kerbe oben, eine
   // Baerennase ein breites Oval, eine Hasennase ein kleines Y. Sie alle als dasselbe Oval zu
   // malen war der zweite Grund, warum die Tiere austauschbar aussahen.
+  // Runde 115: Die Nase glaenzt. Bei Animoji ist sie das feuchteste Teil des Gesichts, und genau
+  // daran liest man "Tier" statt "Pluesch": oben heller (der Verlauf), darauf ein breiter Glanz.
+  var FIG_NASE_LAUF = 0;
   function figNase(art, x, y, haut){
-    var glanz = '<ellipse cx="'+(x-0.6)+'" cy="'+(y-0.5)+'" rx="0.62" ry="0.4" fill="#FFFFFF" opacity=".5"/>';
+    var gn = FIG_UID + 'nv' + (FIG_NASE_LAUF++);
+    var NASE = 'url(#'+gn+')';
+    var verlauf = '<defs><radialGradient id="'+gn+'" cx="0.5" cy="0.35" r="0.75" fx="0.38" fy="0.22">'+
+      '<stop offset="0" stop-color="#6E5E55"/><stop offset="0.55" stop-color="'+FIG_INK+'"/>'+
+      '<stop offset="1" stop-color="#140E0B"/></radialGradient></defs>';
+    var glanz = verlauf + '<ellipse cx="'+(x-0.55)+'" cy="'+(y-0.55)+'" rx="0.95" ry="0.5" fill="#FFFFFF" opacity=".62"/>';
     // Der Philtrumstrich von der Nase zum Mund. Bei jedem Saeugetier da, und ohne ihn schwebt
     // die Nase ueber der Schnauze, statt auf ihr zu sitzen.
     var rinne = '<path d="M'+x+' '+(y+1.1)+' L'+x+' '+(y+2.6)+'" stroke="'+figTon(haut||'#E8D5C0', 0.72)+
@@ -538,17 +593,17 @@
     if (art === 'dreieck')
       // Katze, Fuchs, Hund: abgerundetes Dreieck, oben am breitesten, unten in eine Spitze.
       return '<path d="M'+(x-2.0)+' '+(y-1.0)+' Q'+x+' '+(y-1.7)+' '+(x+2.0)+' '+(y-1.0)+
-             ' Q'+(x+2.0)+' '+(y+0.9)+' '+x+' '+(y+1.5)+' Q'+(x-2.0)+' '+(y+0.9)+' '+(x-2.0)+' '+(y-1.0)+' Z" fill="'+FIG_INK+'"/>'+
+             ' Q'+(x+2.0)+' '+(y+0.9)+' '+x+' '+(y+1.5)+' Q'+(x-2.0)+' '+(y+0.9)+' '+(x-2.0)+' '+(y-1.0)+' Z" fill="'+NASE+'"/>'+
              glanz + rinne;
     if (art === 'breit')
       // Baer und Panda: breites, flaches Oval.
-      return '<ellipse cx="'+x+'" cy="'+y+'" rx="2.8" ry="1.7" fill="'+FIG_INK+'"/>'+ glanz + rinne;
+      return '<ellipse cx="'+x+'" cy="'+y+'" rx="2.8" ry="1.7" fill="'+NASE+'"/>'+ glanz + rinne;
     if (art === 'klein')
       // Hase und Reh: klein, hoch, mit dem Y-Spalt.
       return '<path d="M'+(x-1.3)+' '+(y-0.7)+' Q'+x+' '+(y-1.3)+' '+(x+1.3)+' '+(y-0.7)+
-             ' Q'+(x+1.1)+' '+(y+0.9)+' '+x+' '+(y+1.2)+' Q'+(x-1.1)+' '+(y+0.9)+' '+(x-1.3)+' '+(y-0.7)+' Z" fill="'+FIG_INK+'"/>'+
+             ' Q'+(x+1.1)+' '+(y+0.9)+' '+x+' '+(y+1.2)+' Q'+(x-1.1)+' '+(y+0.9)+' '+(x-1.3)+' '+(y-0.7)+' Z" fill="'+NASE+'"/>'+
              glanz + rinne;
-    return '<ellipse cx="'+x+'" cy="'+y+'" rx="2.1" ry="1.5" fill="'+FIG_INK+'"/>'+ glanz + rinne;
+    return '<ellipse cx="'+x+'" cy="'+y+'" rx="2.1" ry="1.5" fill="'+NASE+'"/>'+ glanz + rinne;
   }
   // Schnurrhaare. Sie stehen nicht waagerecht ab, sondern faechern leicht — und die oberen
   // haengen staerker als die unteren. Drei je Seite; mehr sieht bei dieser Groesse nach Besen aus.
@@ -597,63 +652,82 @@
   function figTier(o){
     mieneAnwenden(o);
     var g = FIG_UID + 'fell', gk = FIG_UID + 'fkern', gs = FIG_UID + 'schn';
+    // Runde 115: drei weitere Verlaeufe fuer das Animoji-Volumen — Stirnglanz, Koerper, und die
+    // Schablone des Kopfes, damit der Glanz nirgends ueber den Umriss hinauslaeuft.
+    var gg = FIG_UID + 'glanz', gb = FIG_UID + 'koerper', gc = FIG_UID + 'kopfform';
     var art = o.form || 'breit';
     var TKOPF = KOEPFE[art] || KOEPFE.breit;
     var sn = SCHNAUZEN[art] || SCHNAUZEN.breit;
-    return '<defs>'+figKugel(g, o.fell)+figKern(gk)+'</defs>' +
+    return '<defs>'+figKugelPlastisch(g, o.fell)+figKern(gk)+
+      // Der Koerper bekommt dasselbe Licht wie der Kopf: oben links hell, nach unten dunkel. Flach
+      // gefuellt lag er als Pappe unter einem Kopf, der jetzt rund ist.
+      '<linearGradient id="'+gb+'" x1="0.2" y1="0" x2="0.8" y2="1">'+
+        '<stop offset="0" stop-color="'+figTon(o.fell, 1.06)+'"/>'+
+        '<stop offset="1" stop-color="'+figTon(o.fell, 0.62)+'"/></linearGradient>'+
+      // Der Stirnglanz. Weiss, weil ein Glanzlicht die Farbe des Lichts hat und nicht die der
+      // Flaeche, und mit restlos auslaufendem Rand — eine Flaeche mit Kante waere eine Pfuetze.
+      '<radialGradient id="'+gg+'"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.50"/>'+
+        '<stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.18"/>'+
+        '<stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>'+
+      '<clipPath id="'+gc+'"><path d="'+TKOPF+'"/></clipPath>'+
+      '</defs>' +
       // Ein angedeuteter Koerper unter dem Kopf, angeschnitten wie beim Menschen. Ohne ihn
       // schwebt auch ein Tierkopf.
-      '<path d="M20 31 C12.6 31 7.2 34.8 5.8 40 L34.2 40 C32.8 34.8 27.4 31 20 31 Z" fill="'+figTon(o.fell, 0.82)+'"/>' +
-      '<ellipse cx="20" cy="34.6" rx="8.4" ry="2.8" fill="'+FIG_INK+'" opacity=".20"/>' +
+      '<path d="M20 31 C12.6 31 7.2 34.8 5.8 40 L34.2 40 C32.8 34.8 27.4 31 20 31 Z" fill="url(#'+gb+')"/>' +
+      // Runde 115: Der Schatten unter dem Kinn ist kraeftiger — bei Animoji ist genau diese
+      // Kontaktstelle der dunkelste Punkt der ganzen Figur, und sie ist es, die den Kopf auf den
+      // Koerper setzt statt davor.
+      '<ellipse cx="20" cy="34.4" rx="8.2" ry="2.8" fill="'+FIG_INK+'" opacity=".30"/>' +
       figOhren(o.ohr, o.fell, o.innen) +
       figSaum(TKOPF, 'url(#'+g+')', figTon(o.fell, 1.28)) +
       '<path d="'+TKOPF+'" fill="url(#'+gk+')"/>' +
       (o.maske ? o.maske : '') +
+      // Runde 115: der Stirnglanz, in die Kopfform geschnitten.
+      '<g clip-path="url(#'+gc+')"><ellipse cx="15.2" cy="12.6" rx="7.2" ry="4.4" fill="url(#'+gg+')" '+
+        'transform="rotate(-18 15.2 12.6)"/></g>' +
       (o.wange ? '<ellipse cx="9.8" cy="24.5" rx="3" ry="2.2" fill="'+o.wange+'" opacity=".75"/>'+
                  '<ellipse cx="30.2" cy="24.5" rx="3" ry="2.2" fill="'+o.wange+'" opacity=".75"/>' : '') +
       // Runde 99: Die Schnauze hatte eine harte Ellipsenkante — ein heller Fleck mit Rand.
       // Bei einem Tier geht das helle Fell der Schnauze weich ins dunklere ueber. Der Verlauf
       // haelt die Farbe bis 72 Prozent und blendet dann aus; erst dadurch waechst die Schnauze
       // aus dem Kopf, statt darauf zu liegen.
-      '<defs><radialGradient id="'+gs+'">'+
-        '<stop offset="0" stop-color="'+o.schnauze+'" stop-opacity="1"/>'+
-        '<stop offset="0.72" stop-color="'+o.schnauze+'" stop-opacity="1"/>'+
+      // Runde 115: Die Schnauze hat jetzt ihr EIGENES Licht — oben links heller als ihre Farbe,
+      // der Brennpunkt dorthin verschoben. Vorher war sie innen gleichfarbig und lag als heller
+      // Schein auf dem Kopf; im vergroesserten Bild ein verwischter Fleck. Mit eigenem Licht ist
+      // sie eine Form, die aus dem Kopf herauskommt.
+      '<defs><radialGradient id="'+gs+'" fx="0.40" fy="0.30">'+
+        '<stop offset="0" stop-color="'+figTon(o.schnauze, 1.25)+'" stop-opacity="1"/>'+
+        '<stop offset="0.86" stop-color="'+o.schnauze+'" stop-opacity="1"/>'+
         '<stop offset="1" stop-color="'+o.schnauze+'" stop-opacity="0"/>'+
       '</radialGradient></defs>'+
-      '<ellipse cx="'+sn.cx+'" cy="'+sn.cy+'" rx="'+(sn.rx*1.12)+'" ry="'+(sn.ry*1.12)+'" fill="url(#'+gs+')"/>' +
+      // Runde 115, zweiter Anlauf: Die Farbe haelt jetzt bis 86 statt 72 Prozent, und die Ellipse
+      // ist nur noch 4 statt 12 Prozent groesser als die Schnauze. Mit dem breiten Auslauf blieb
+      // sie trotz eigenem Licht ein verwischter Schein — im Bild bei Fuchs und Hund deutlich.
+      // Animoji-Schnauzen sind klar umrissene Formen mit WEICHEM, aber kurzem Rand.
+      '<ellipse cx="'+sn.cx+'" cy="'+sn.cy+'" rx="'+(sn.rx*1.04)+'" ry="'+(sn.ry*1.04)+'" fill="url(#'+gs+')"/>' +
       // Der Schatten, mit dem die Schnauze auf dem Kopf aufliegt. Ohne ihn ist sie ein heller
       // Fleck IM Gesicht statt eine Form, die daraus hervorsteht.
       '<ellipse cx="'+sn.cx+'" cy="'+(sn.cy - sn.ry*0.86)+'" rx="'+(sn.rx*0.92)+'" ry="'+(sn.ry*0.42)+
         '" fill="'+figTon(o.fell, 0.66)+'" opacity=".22"/>' +
+      // Runde 115: und der Schatten UNTER ihr, auf dem Kinn. Oben liegt sie auf, unten wirft sie
+      // ihren Schatten — erst beides zusammen macht sie zu einem Koerper.
+      '<ellipse cx="'+sn.cx+'" cy="'+(sn.cy + sn.ry*0.98).toFixed(2)+'" rx="'+(sn.rx*0.80).toFixed(2)+'" ry="'+(sn.ry*0.36).toFixed(2)+
+        '" fill="'+figTon(o.fell, 0.55)+'" opacity=".14"/>' +
       // Runde 99: Die Brauen der Tiere sind Fellbueschel geworden statt gezeichneter Boegen.
       // Ein glatter Bogen ueber dem Auge ist eine MENSCHENbraue; auf einem Fuchs oder einer
       // Katze war er das deutlichste Zeichen dafuer, dass hier etwas gezeichnet und nicht
       // beobachtet wurde. Die Miene bleibt trotzdem lesbar, weil die Bueschel derselben
       // Stellung folgen — nur eben in Fellfarbe, dreigeteilt und halb so kraeftig.
       figTierbrauen(o.braue, o.fell) +
-      figAugen(15, 25, 20, o.auge || 2.3, {blick:o.blick, iris:o.iris || figTon(o.fell, 0.55), seite:o.seite, hoehe:o.hoehe, oeffnung:o.oeffnung, haut:o.schnauze, grossIris:true}) +
+      // Runde 115: die Augen 30 % groesser. Animoji-Augen sind gross und glaenzend; bei 2,3
+      // Einheiten auf einem 23 Einheiten breiten Kopf blieben sie Knoepfe. 15 % waren im ersten
+      // Anlauf zu wenig, um im Bild ueberhaupt aufzufallen.
+      figAugen(15, 25, 20, (o.auge || 2.3) * 1.30, {blick:o.blick, iris:o.iris || figTon(o.fell, 0.55), seite:o.seite, hoehe:o.hoehe, oeffnung:o.oeffnung, haut:o.schnauze, grossIris:true}) +
       (o.schnurrhaare ? figSchnurrhaare(sn.cy - 0.6, figTon(o.schnauze, 1.18)) : '') +
       figNase(o.nase || 'oval', 20, sn.cy - sn.ry*0.42, o.schnauze) +
       figMund(o.mund, FIG_INK, 1.1, o.schnauze) +
       (o.zunge ? '<path d="M18.6 29.4 Q20 32.6 21.4 29.4 Z" fill="#E4899A"/>' : '');
   }
-  // Menschen: Kopf, Haar, Gesicht. Die Haarform ist der groesste Unterschied, aber nicht mehr
-  // der einzige — Brauen, Miene, Sommersprossen und Brille tragen jetzt genauso viel.
-  // ---------- Haar (Runde 97) ----------
-  //
-  // Rueckmeldung: die Frisuren sollen realistischer aussehen. Der Grund, warum sie es nicht
-  // taten, liess sich benennen: Jede Frisur war EINE Flaeche in EINER Farbe mit einem weissen
-  // Strich darauf. Haar ist aber nie einfarbig — es ist am Ansatz dunkel, faengt oben Licht
-  // und besteht aus Straehnen, die man einzeln sieht.
-  //
-  // Drei Dinge dagegen, in dieser Reihenfolge, weil jedes auf dem vorigen liegt:
-  //   1. Ein Verlauf statt der flachen Fuellung. Oben links hell (dort steht das Licht der
-  //      ganzen Zeichnung), unten rechts deutlich dunkler.
-  //   2. Straehnen: feine Boegen in einem dunkleren Ton, die dem Rund des Kopfes folgen.
-  //      Sie liegen auf dem Verlauf und machen aus der Flaeche eine Oberflaeche.
-  //   3. Ein Glanz, der ein BAND ist und kein Strich. Ein Strich auf Haar liest sich als
-  //      Kratzer — genau der Fehler, der in Runde 94 an den Wangen behoben wurde.
-  var FIG_HAAR_LAUF = 0;
 
 
   // Runde 114: Hier stand figMensch(), der Bauplan der zehn Menschenfiguren. Auf Entscheidung
@@ -674,7 +748,7 @@
     {id:'katze', feld:'#E6E4EA', svg:function(){ return figTier({form:'katze', nase:'dreieck', schnurrhaare:true, miene:'zufrieden', ohr:'spitz', fell:'#8E8B95', innen:'#E3C8CE', schnauze:'#F1EFF3',
                   wange:'#C7A9B2', iris:'#7A8C4A'}); }},
     {id:'baer',  feld:'#EFE3D6', svg:function(){ return figTier({form:'breit', nase:'breit', miene:'ruhe', ohr:'rund',  fell:'#A5714B', innen:'#D9A87F', schnauze:'#E7CDB2', iris:'#4A3220'}); }},
-    {id:'panda', feld:'#D8DAD6', svg:function(){ return figTier({form:'breit', nase:'breit', miene:'wach', ohr:'rund',  fell:'#F4F3F1', innen:'#2A211C', schnauze:'#FFFFFF', auge:2.6, iris:'#3A302A',
+    {id:'panda', feld:'#D8DAD6', svg:function(){ return figTier({form:'breit', nase:'breit', miene:'wach', ohr:'rund',  fell:'#F4F3F1', innen:'#2A211C', schnauze:'#FFFFFF', auge:2.15, iris:'#3A302A',
                   maske:'<ellipse cx="15" cy="20" rx="4.6" ry="5.2" transform="rotate(-14 15 20)" fill="#2A211C"/>'+
                         '<ellipse cx="25" cy="20" rx="4.6" ry="5.2" transform="rotate(14 25 20)" fill="#2A211C"/>'}); }},
     {id:'hase',  feld:'#F1E7EC', svg:function(){ return figTier({form:'schmal', nase:'klein', schnurrhaare:true, miene:'scheu', ohr:'lang',  fell:'#E4DAD3', innen:'#E7B9C4', schnauze:'#F7F1EE',
@@ -694,7 +768,7 @@
     {id:'eule', feld:'#E3E7E4', svg:function(){
        return '<path d="M20 30 C13.6 30 8.6 33.8 7.4 40 L32.6 40 C31.4 33.8 26.4 30 20 30 Z" fill="#8B7355"/>'+
               '<path d="M9 12 L12.5 5 L16.5 10.5 Z" fill="#8B7355"/><path d="M31 12 L27.5 5 L23.5 10.5 Z" fill="#8B7355"/>'+
-              '<ellipse cx="20" cy="22" rx="13.5" ry="13" fill="#A08463"/>'+
+              figPlastisch(20, 22, 13.5, 13, '#A08463')+
               figVolumen(20, 22, 13.5, 13)+
               '<circle cx="14.6" cy="20" r="6.2" fill="#F3EADD"/><circle cx="25.4" cy="20" r="6.2" fill="#F3EADD"/>'+
               // Die Eule sieht als Einzige den Betrachter direkt und weit an — das ist das
@@ -705,33 +779,33 @@
     {id:'wal', feld:'#DCE7EE', svg:function(){
        return '<path d="M17 6 Q20 9 23 6" stroke="#9FC2D8" stroke-width="1.8" fill="none" stroke-linecap="round"/>'+
               '<path d="M20 6 L20 10" stroke="#9FC2D8" stroke-width="1.8" stroke-linecap="round"/>'+
-              '<ellipse cx="19" cy="23" rx="14" ry="11" fill="#5E8FB0"/>'+
+              figPlastisch(19, 23, 14, 11, '#5E8FB0')+
               figVolumen(19, 23, 14, 11)+
               '<path d="M31 19 L37 14 L36 26 Z" fill="#4A7A9A"/>'+
               '<path d="M8 26 Q19 33 30 26 Q19 30 8 26 Z" fill="#CFE2EE"/>'+
               '<ellipse cx="19" cy="27" rx="10" ry="5.5" fill="#CFE2EE"/>'+
               '<path d="M9.6 24.6 Q12.4 26.6 15.4 24.8" stroke="'+FIG_INK+'" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".7"/>'+
-              '<g class="fig-augen">'+figAuge(13, 21, 2, {blick:'schmal', iris:'#2E4E66'})+'</g>'; }},
+              '<g class="fig-augen">'+figAuge(13, 21, 2, {blick:'schmal', iris:'#2E4E66', grossIris:true})+'</g>'; }},
     {id:'goldfisch', feld:'#FCEAD5', svg:function(){
        return '<path d="M6 22 L1.5 15 L2.4 29 Z" fill="#E8933C"/>'+
               '<path d="M20 9.5 Q23 4 26.5 10.5 Z" fill="#F2AE5C" opacity=".9"/>'+
-              '<ellipse cx="21" cy="22" rx="14" ry="11" fill="#F2953A"/>'+
+              figPlastisch(21, 22, 14, 11, '#F2953A')+
               figVolumen(21, 22, 14, 11)+
               '<path d="M15 27.5 Q21 31.5 27.5 27" stroke="#D97C25" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".55"/>'+
               '<path d="M22.5 30 Q25.5 34.5 29 30 Z" fill="#F2AE5C" opacity=".9"/>'+
               '<path d="M25.6 24.6 Q28 26.6 30.4 24.8" stroke="'+FIG_INK+'" stroke-width="1.2" fill="none" stroke-linecap="round"/>'+
               '<circle cx="26.5" cy="19.5" r="3.6" fill="#FFFFFF"/>'+
-              '<g class="fig-augen">'+figAuge(26.5, 19.5, 2, {blick:'offen', seite:1, iris:'#3A2A1A'})+'</g>'+
+              '<g class="fig-augen">'+figAuge(26.5, 19.5, 2, {blick:'offen', seite:1, iris:'#3A2A1A', grossIris:true})+'</g>'+
               '<g fill="#FFFFFF" opacity=".5"><circle cx="9.5" cy="12" r="1.5"/><circle cx="13.5" cy="8.5" r="1"/></g>'; }},
     {id:'schildkroete', feld:'#DFEADD', svg:function(){
        return '<ellipse cx="8.5" cy="26" rx="4" ry="3.2" fill="#8FBE7E"/><ellipse cx="31.5" cy="26" rx="4" ry="3.2" fill="#8FBE7E"/>'+
-              '<ellipse cx="20" cy="24" rx="14" ry="10.5" fill="#5E8C4A"/>'+
+              figPlastisch(20, 24, 14, 10.5, '#5E8C4A')+
               '<g fill="none" stroke="#48703A" stroke-width="1.1" opacity=".8">'+
               '<path d="M20 13.8 L20 34.4 M8.2 21.5 Q20 24.5 31.8 21.5 M9.4 28.6 Q20 26 30.6 28.6"/></g>'+
               figVolumen(20, 24, 14, 10.5)+
-              '<ellipse cx="20" cy="13" rx="7" ry="6.4" fill="#8FBE7E"/>'+
+              figPlastisch(20, 13, 7, 6.4, '#8FBE7E')+
               '<ellipse cx="20" cy="11.2" rx="5" ry="2.8" fill="#FFFFFF" opacity=".15"/>'+
-              figAugen(17.4, 22.6, 12.4, 1.6, {blick:'offen', iris:'#2E4A22'})+
+              figAugen(17.4, 22.6, 12.4, 1.6, {blick:'offen', iris:'#2E4A22', grossIris:true})+
               '<path d="M18 15.8 Q20 17.2 22 15.8" stroke="'+FIG_INK+'" stroke-width="1.1" fill="none" stroke-linecap="round"/>'; }}
   ];
 

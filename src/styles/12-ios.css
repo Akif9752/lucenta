@@ -164,3 +164,72 @@
   }
   #view-settings #btnResetData:active{ transform:none; background:var(--surface-2); }
   #view-settings #btnResetData.armed{ font-weight:600; }
+
+/* ================= Die Schublade als iOS-Liste (Runde 115) =================
+     Bis hierher war jeder Eintrag ein kleiner Abschnitt: Titel in Mono-Grossbuchstaben, ein
+     erklaerender Satz und darunter ein umrandeter Pillenknopf ("Verstehen oeffnen"). Fuenf
+     Eintraege, fuenf Knoepfe, fuenf Trennlinien von Kante zu Kante — die Form einer Inhaltsseite,
+     nicht die einer Navigation. In iOS ist eine Navigation eine Liste: Jeder Eintrag eine Zeile mit
+     Titel und Winkel, die GANZE Zeile antippbar, die Eintraege einer Gruppe auf einer Flaeche.
+
+     Dasselbe Mittel wie bei der Profilzeile der Einstellungen: Der vorhandene Knopf wird ueber die
+     ganze Zeile gelegt und zeigt nur den Winkel; seine Beschriftung bleibt fuer VoiceOver. Damit
+     aendert sich am Markup und an der Verdrahtung nichts — jede Pruefung, die einen dieser Knoepfe
+     antippt, tippt weiterhin denselben. */
+
+  /* Gruppentitel wie in den Einstellungen: klein, grau, ueber der Flaeche. */
+  #drawerPanel .drawer-group-title{
+    margin-top:26px; padding:0 16px 7px; border-top:none;
+    font-family:var(--sans); font-size:13px; font-weight:400; line-height:1.3;
+    text-transform:uppercase; letter-spacing:.02em; color:var(--muted);
+  }
+  #drawerPanel .drawer-profile-row + .drawer-group-title{ margin-top:26px; }
+
+  /* Jeder Eintrag eine Zeile. Die Unterzeile bleibt — iOS kennt die zweizeilige Zelle, und der
+     Satz sagt, was hinter dem Eintrag liegt, bevor man ihn oeffnet. */
+  #drawerPanel .drawer-section{
+    position:relative; gap:2px; margin:0; padding:11px 40px 11px 16px; border-top:none;
+    background:var(--surface);
+  }
+  #drawerPanel .drawer-section + .drawer-section{ margin-top:0; padding-top:11px; border-top:none; }
+  #drawerPanel .drawer-section + .drawer-section::before{
+    content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
+  }
+  /* Die Ecken der Gruppe: Die erste Zeile nach einem Titel traegt die oberen, die letzte vor dem
+     naechsten Titel (oder am Ende) die unteren. :has() ab iOS 15.4 — davor bleiben die Ecken
+     eckig, sonst aendert sich nichts. */
+  #drawerPanel .drawer-group-title + .drawer-section{
+    margin-top:0; border-top-left-radius:var(--radius-m); border-top-right-radius:var(--radius-m);
+  }
+  #drawerPanel .drawer-section:has(+ .drawer-group-title),
+  #drawerPanel .drawer-section:last-child{
+    border-bottom-left-radius:var(--radius-m); border-bottom-right-radius:var(--radius-m);
+  }
+  #drawerPanel .drawer-label{
+    font-family:var(--sans); font-size:16px; font-weight:400; text-transform:none;
+    letter-spacing:0; color:var(--ink);
+  }
+  #drawerPanel .drawer-copy{ font-size:13px; line-height:1.35; margin:0; }
+
+  /* Der Knopf ueber der ganzen Zeile, sichtbar nur der Winkel. */
+  #drawerPanel .drawer-section > .btn{
+    position:absolute; inset:0; width:100%; height:100%; margin:0; padding:0 16px;
+    display:flex; align-items:center; justify-content:flex-end; align-self:auto !important;
+    background:transparent; border:none; border-radius:inherit; box-shadow:none;
+    font-size:0; color:var(--muted-soft);
+  }
+  #drawerPanel .drawer-section > .btn::after{ content:'\203A'; font-size:24px; line-height:1; font-family:var(--sans); }
+  #drawerPanel .drawer-section > .btn:active{
+    transform:none; background:color-mix(in srgb, var(--ink) 6%, transparent);
+  }
+
+  /* Die Pfeilknoepfe (Profilzeile der Einstellungen, Zeilen der Schublade) tragen den Winkel im
+     ::after — und das ist bei .btn-sm bereits belegt: Runde 60 vergroessert damit die
+     Trefferflaeche jedes kleinen Knopfs auf 44x44, als absolut positionierte, MITTIGE Flaeche.
+     Der Winkel landete im ersten Entwurf genau dort, mitten in der Zeile statt am rechten Rand.
+     Ein Knopf, der ueber der ganzen Zeile liegt, braucht keine vergroesserte Trefferflaeche; das
+     ::after kehrt hier deshalb in den normalen Fluss zurueck. */
+  #drawerPanel .drawer-section > .btn::after,
+  #view-settings #btnSettingsEditProfile::after{
+    position:static; transform:none; width:auto; height:auto; top:auto; left:auto;
+  }

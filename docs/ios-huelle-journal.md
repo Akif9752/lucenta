@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 114)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 115)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -375,6 +375,69 @@ Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 1
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 115 — die Tiere so plastisch wie Animoji, und die Schublade als iOS-Liste
+
+### 1. Die Tiere
+
+Auftrag des Inhabers, nach einer Rueckfrage: „die bisherigen Tiere in deren Modell realistischer
+gestalten, so wie Memojis von Apple". Also keine Fotos und kein neuer Stil, sondern dieselbe
+Konstruktion mit mehr Koerper.
+
+Was Animoji plastisch macht, ist nicht Detail, sondern **Volumen** — jede Form sieht aus wie ein
+beleuchteter Gegenstand. Im vergroesserten Bild der zwoelf Tiere (vorher/nachher nebeneinander)
+fehlte genau das, und es liess sich benennen: das Kugellicht hob den Ton nur um 17 % und senkte
+ihn um 16 %; die Schnauzen waren ein verwischter Schein; die Augen klein und matt; die Nasen ohne
+Glanz; der Koerper flach gefuellt.
+
+Geaendert, alles in `13-figuren.js`:
+- `figKugelPlastisch`: Licht +38 / Schatten -30 statt +17 / -16, Brennpunkt weiter nach aussen.
+- Stirnglanz: weiche weisse Flaeche, in die Kopfform geschnitten.
+- Schnauze mit eigenem Licht, Farbe haelt bis 86 statt 72 Prozent, Ellipse 4 statt 12 Prozent
+  groesser als die Form. Mit breitem Auslauf blieb sie trotz eigenem Licht ein Schein (im Bild
+  bei Fuchs und Hund).
+- Augen 30 % groesser (15 % fielen im ersten Anlauf nicht auf), groesserer Lichtpunkt und ein
+  breites Fensterlicht als Flaeche.
+- Nase mit Verlauf und breitem Glanz; Koerper mit Verlauf; kraeftigerer Kinnschatten.
+- Eule, Wal, Goldfisch, Schildkroete: neuer Baustein `figPlastisch` mit demselben Licht — ohne ihn
+  standen sie neben den anderen flach da.
+
+**Drei Striche entfernt, alle im Bild gefunden** (die zweite Lehre aus CLAUDE.md, zum vierten
+Mal): die Lidfalte (auf dem dunklen Fleck des Pandas ein blasser Bogen), das Unterlid (beim Baeren
+ein Strich unter dem Auge) und die helle Kante unter geschlossenen Augen (bei Fuchs und Hund ein
+blasses Band). Alle drei waren Linien in Hautfarbe, alle drei gibt es bei Animoji nicht; sie
+entfallen fuer Tiere (`grossIris`). Dazu hatte der Panda eine eigene Augengroesse, die mit den
+30 % aus seinen Flecken herauswuchs — zurueckgenommen auf 2,15.
+
+Aufgeraeumt: ein Kommentarblock und `FIG_HAAR_LAUF` aus der Zeit der Menschenfiguren.
+
+### 2. Die Schublade
+
+Jeder Eintrag war ein kleiner Abschnitt: Titel in Mono-Grossbuchstaben, ein Satz, darunter ein
+umrandeter Pillenknopf. Jetzt die iOS-Liste (`12-ios.css`, auf `#drawerPanel` beschraenkt):
+Gruppentitel klein und grau ueber der Flaeche, eine Flaeche je Gruppe, jeder Eintrag eine Zeile
+mit Titel, leiser Unterzeile und Winkel, die ganze Zeile antippbar.
+
+Gebaut wie die Profilzeile der Einstellungen: Der vorhandene Knopf liegt ueber der ganzen Zeile,
+die Beschriftung bleibt fuer VoiceOver. Markup und Verdrahtung sind unveraendert — jede Pruefung,
+die einen dieser Knoepfe antippt, tippt weiterhin denselben.
+
+**Eine Falle, die auch die Einstellungen betraf:** Der Winkel steht im `::after`, und das ist bei
+`.btn-sm` seit Runde 60 belegt — als absolut positionierte, MITTIGE Trefferflaeche von 44x44. Der
+Winkel stand dadurch mitten in der Zeile. In den Einstellungen war das nach dem Umbau in Runde 114
+nicht mehr im Bild nachgesehen worden. Fuer Knoepfe ueber der ganzen Zeile kehrt das `::after`
+jetzt in den normalen Fluss zurueck; beide Stellen im Bild nachgeprueft.
+
+Eine scheinbare Fehlstelle, die keine ist: Im Dunkelmodus zeichnet sich hinter einer Gruppe eine
+grosse abgerundete Flaeche ab — das ist der Startknopf der Startseite, der durch das Milchglas der
+Schublade scheint (82 % deckend seit Runde 103). Vergroessert und per Elementabfrage geklaert.
+
+### Was offen bleibt
+
+Profil, Ergebnisseite und Fragebogen tragen bis auf die Schrift noch die Kartenoptik aus Runde 69.
+Ob die Tiere jetzt „wie Memoji" wirken, ist ein Urteil am Geraet.
 
 ---
 
