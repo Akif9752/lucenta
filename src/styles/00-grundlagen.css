@@ -218,7 +218,12 @@
     --cjk: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
     --cjk-sans: 'Hiragino Sans', 'Yu Gothic', Meiryo, 'Noto Sans JP', sans-serif;
     --serif: 'Fraunces', ui-serif, Georgia, var(--cjk);
-    --sans: 'Work Sans', ui-sans-serif, system-ui, var(--cjk-sans);
+    /* Runde 114, Auftrag des Inhabers "insgesamt wie iOS": Text und Bedienung stehen in der
+       Systemschrift — auf dem iPhone SF Pro. Das ist der einzelne groesste Schritt in Richtung
+       iOS, weil jede Beschriftung, jede Zeile und jeder Knopf ihn mitmacht. Fraunces bleibt die
+       Schrift der grossen Titel (--serif) und damit die Marke; IBM Plex Mono bleibt fuer Codes
+       und Zahlen. Work Sans ist damit nirgends mehr gesetzt. */
+    --sans: -apple-system, system-ui, 'SF Pro Text', ui-sans-serif, var(--cjk-sans);
     --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, var(--cjk-sans), monospace;
   }
   @media (prefers-color-scheme: dark){

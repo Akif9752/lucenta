@@ -146,7 +146,7 @@
     sortedTraits.forEach(function(f,i){
       var col = i % 2, row = Math.floor(i/2);
       var x = M + col*(colW+colGap), y = listTop + row*62;
-      ctx.textAlign = 'left'; ctx.fillStyle = C.muted; ctx.font = '500 23px "Work Sans", sans-serif';
+      ctx.textAlign = 'left'; ctx.fillStyle = C.muted; ctx.font = '500 23px -apple-system, system-ui, sans-serif';
       ctx.fillText(LABELS[f], x, y);
       ctx.textAlign = 'right'; ctx.fillStyle = C.accent; ctx.font = '700 25px "IBM Plex Mono", monospace';
       ctx.fillText(String(scores[f]), x+colW, y);

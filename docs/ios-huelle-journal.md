@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-10, nach Runde 113)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 114)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -375,6 +375,75 @@ Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 1
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 114 — Avatare wie in iOS, und die Einstellungen in iOS-Form
+
+Zwei Auftraege des Inhabers: „die Avatare realistischer" und „insgesamt wie iOS von Apple, zum
+Beispiel die Sprachauswahl in den Einstellungen als Liste wie bei iOS".
+
+### 1. Die Avatare: kein fuenfter Nachschliff
+
+Das war die **fuenfte** Rueckmeldung „zu unrealistisch". Das Journal hielt seit Runde 111 fest,
+dass dann nicht wieder an derselben Konstruktion gearbeitet wird. Gefragt, mit drei Wegen; der
+Inhaber hat den iOS-Weg gewaehlt: **Das realistischste Bild ist ein eigenes Foto** (konnte
+Lucenta schon), sonst ein **Monogramm im Verlaufskreis wie in iOS-Kontakten**. Die gezeichneten
+Menschen sind entfallen, die zwoelf Tiere bleiben.
+
+- `13-figuren.js` 1086 -> 783 Zeilen: `figMensch` und sechs Helfer, die nur er benutzte
+  (`figSchultern`, `figHaarVerlauf`, `figStraehnen`, `FIG_GLATT`, `figBrauen`, `FIG_LACHT`) —
+  gezaehlt, nicht vermutet: Jeder kam nach dem Entfernen nur noch in seiner eigenen Definition vor.
+- 80 Zeilen Beschriftung (`figur_m1` bis `figur_m10`) aus den acht Paketen.
+- Gespeicherte Profile mit einer Menschenfigur fallen ueber `figurFinden()` von selbst auf das
+  Monogramm zurueck; zu bereinigen ist nichts.
+- Monogramm: zwei Buchstaben in SF, Verlauf von hell nach dunkel, aus vorhandenen Marken gemischt.
+  Ueber `background-image` statt `background`, damit das eigene Foto (Inline-Stil) es schlaegt und
+  beim Entfernen die Farbe zurueckkehrt. „Ruhig" ist jetzt das Grau der iOS-Kontakte.
+- Die Halspruefung aus Runde 111 ist mit ihrem Gegenstand entfallen (`pruef-app`).
+
+### 2. iOS-Formensprache, mit den Einstellungen als Vorlage
+
+Neu: `src/styles/12-ios.css`, bewusst auf `#view-settings` beschraenkt — dieselben Klassen kommen
+im Profil vor, und dort ist die Form eine eigene Frage.
+
+Die Bausteine waren schon nah an iOS (Schieber 51x31, Liste mit Haken seit Runde 97/104). Was
+fehlte, war die Anordnung: jede Gruppe eine Karte mit Fraunces-Titel DARIN, die Sprachliste als
+zweiter Kasten in der Karte. Jetzt die eingerueckte, gruppierte Liste: Titel klein und grau
+UEBER der Gruppe, eine Flaeche je Gruppe, Trennlinien ab der Textkante, Erklaerungen als
+Fussnote darunter, Aktionen als Zeilen in der Akzentfarbe statt als Pillen, Zuruecksetzen als
+eigene rote Zeile, die Profilzeile ganz antippbar mit Winkel.
+
+**Text und Bedienung stehen in der ganzen App in der Systemschrift** (`--sans`: -apple-system,
+auf dem iPhone SF Pro). Fraunces bleibt fuer die grossen Titel, Plex Mono fuer Codes und Zahlen.
+Work Sans ist aus `00-schriften.css` entfernt — Ein-Datei-Fassung 1558 -> 1505 KB, App-Fassung
+eine Schriftdatei weniger.
+
+**Eine Falle dabei:** Das Ergebnisbild setzte seine Fusszeile ausdruecklich in „Work Sans". Auf
+einer Zeichenflaeche wird eine Schrift nur benutzt, wenn sie schon geladen ist — bisher tat das
+die Seite. Ohne sie waere das Bild lautlos auf eine Ersatzschrift gefallen. Jetzt ebenfalls SF.
+
+`pruef-app`: „mindestens drei Schriftfamilien" ersetzt durch Namen statt Zahl — Fraunces und
+Plex Mono geladen, Work Sans nicht, Fliesstext in der Systemschrift. Gegengeprueft: mit Work Sans
+zurueck schlaegt die letzte an.
+
+### Zwei Funde des Sammellaufs, beide echt
+
+1. **32 Funde, alle derselbe Knopf**: „Profil bearbeiten" 34 statt 44 Punkte hoch und bei 320px
+   mit langem Namen seitlich heraus. Behoben mit der iOS-Form selbst — der Knopf liegt ueber der
+   ganzen Zeile, sichtbar bleibt der Winkel, die Beschriftung bleibt fuer VoiceOver.
+2. **Die Schublade sah mit und ohne Glas byte-gleich aus.** Ursache war Runde 113: Der Himmel
+   steht unter der Schublade still — oeffnete sie vor dem ersten gemalten Bild, blieb die Flaeche
+   leer und hinter dem Glas lag nur Papier. Die Pruefung oeffnet gleich nach dem Laden und hat
+   genau das gesehen. Jetzt wird beim Start sofort ein Bild gemalt.
+
+### Was offen bleibt
+
+Die iOS-Form steht in den **Einstellungen**. Die anderen Ansichten (Schublade, Profil,
+Ergebnisseite, Fragebogen) tragen bis auf die Schrift noch die Formensprache aus Runde 69 —
+Karten mit kraeftigem Rand und harter Unterkante. Die naechste Stelle nach demselben Muster waere
+die Schublade, die in iOS eine Liste mit Winkeln ist. Das Urteil, ob die Einstellungen sich nach
+iOS anfuehlen, gehoert ans Geraet.
 
 ---
 

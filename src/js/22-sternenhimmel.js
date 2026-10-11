@@ -857,8 +857,12 @@
     // Vor dem ersten Bild die Farben lesen, nicht erst nach 60 Bildern: Sonst zeigt das erste
     // gezeichnete Bild nach der Rueckkehr die Atmosphaere des vorigen Farbmodus.
     farbenLesen();
-    if (still){ zeichnen(); }
-    else { rafId = window.requestAnimationFrame(schritt); }
+    // Runde 114: Auch im bewegten Takt wird SOFORT ein Bild gemalt. Seit Runde 113 steht der
+    // Himmel unter der Schublade still — oeffnete sie, bevor das erste Bild gemalt war, blieb die
+    // Flaeche leer, und hinter dem Glas lag nur einfarbiges Papier. Gefunden hat das pruef-app:
+    // Die Schublade sah mit und ohne Glas byte-gleich aus.
+    zeichnen();
+    if (!still){ rafId = window.requestAnimationFrame(schritt); }
   }
 
   var groesseTimer = null;

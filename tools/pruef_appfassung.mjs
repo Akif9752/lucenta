@@ -76,6 +76,7 @@ const befund = await seite.evaluate(() => {
     h1Text: h1 ? h1.innerText.trim().slice(0, 30) : null,
     h1Schrift: h1 ? getComputedStyle(h1).fontFamily.split(',')[0].replace(/['"]/g, '') : null,
     geladeneFamilien: [...new Set(geladen)],
+    textSchrift: getComputedStyle(document.body).fontFamily.split(',')[0].trim(),
     // Die Sprachwahl im DOM ist der einzige Weg von aussen an die Sprachliste: CONTENT liegt in
     // der gemeinsamen IIFE der App und ist absichtlich nicht global.
     sprachen: [...document.querySelectorAll('[data-lang]')].map(b => b.getAttribute('data-lang'))
@@ -85,8 +86,17 @@ const befund = await seite.evaluate(() => {
 ok(befund.landing, 'die Startansicht ist aktiv');
 ok(!!befund.h1Text, 'die Ueberschrift steht', befund.h1Text || '(leer)');
 ok(befund.h1Schrift === 'Fraunces', 'die Ueberschrift traegt die Markenschrift', befund.h1Schrift);
-ok(befund.geladeneFamilien.length >= 3, 'mindestens drei Schriftfamilien sind geladen',
+// Runde 114: Hier stand "mindestens drei Schriftfamilien". Seit dieser Runde stehen Text und
+// Bedienung in der Systemschrift (iOS: SF), und Work Sans ist aus der Datei entfernt. Eingebettet
+// sind damit genau zwei Familien — und genau die werden jetzt verlangt, mit Namen statt mit einer
+// Zahl: Eine Zahl wuerde auch zwei falsche Familien durchlassen.
+ok(['Fraunces', 'IBM Plex Mono'].every(f => befund.geladeneFamilien.includes(f)),
+   'die beiden eingebetteten Schriften sind geladen (Fraunces, IBM Plex Mono)',
    befund.geladeneFamilien.join(', '));
+ok(!befund.geladeneFamilien.includes('Work Sans'), 'Work Sans wird nicht mehr geladen',
+   befund.geladeneFamilien.join(', '));
+ok(/^-apple-system/.test(befund.textSchrift), 'Fliesstext steht in der Systemschrift (auf dem iPhone SF)',
+   befund.textSchrift);
 
 // Die Zahl steht bewusst ausgeschrieben da — genau wie in tests/lang_test.js. Ein Sprachpaket,
 // das beim Umbau der App-Fassung verschwindet, wuerde sonst lautlos fehlen.
@@ -273,60 +283,9 @@ ok(!/user-scalable\s*=\s*no|maximum-scale/.test(anmutung.viewport),
    'Aufziehen mit zwei Fingern bleibt erlaubt: kein user-scalable=no, kein maximum-scale',
    anmutung.viewport);
 
-// --- Der Hals der Menschenfiguren ist SICHTBAR (Runde 111)
-//
-// Warum das eine eigene Pruefung wert ist: Der Hals war seit Runde 99 gebaut und lief von
-// y=28,5 bis 35,45 — das Kinn endete bei 35,1. Er lag also vollstaendig hinter dem Gesicht und
-// hat zwoelf Runden lang nichts getan. Gemerkt hat es niemand, weil im Quelltext alles richtig
-// aussah; gefunden wurde es erst, als jemand gefragt hat, welches Element an dieser Stelle
-// eigentlich OBEN liegt.
-//
-// Genau das fragt diese Pruefung, und nicht, ob es einen Halspfad gibt. "Vorhanden" und
-// "sichtbar" sind bei uebereinanderliegenden Formen zwei verschiedene Dinge — das ist dieselbe
-// Lehre wie bei den CSS-Regeln, die von spaeteren Teilen ueberschrieben werden.
-//
-// Gemessen wird die HOEHE des sichtbaren Halses als Zahl. Drei Wege sind in Runde 111
-// ausprobiert worden, und die ersten zwei taugen hier nicht — das gehoert dazu, damit sie
-// niemand noch einmal versucht:
-//   - getBoundingClientRect liefert fuer Knoten in einer skalierten SVG-Gruppe auf WebKit
-//     wiederholt 0.
-//   - elementFromPoint meldet an der Halsstelle die Formen, die DARUEBER liegen (Kinnschatten,
-//     Kopfsaum); der Halspfad steht dort nie obenauf, obwohl der Hals klar zu sehen ist.
-//   - Ein Bildvergleich "mit und ohne Hals" bestand die Gegenprobe faelschlich: Mit dem alten,
-//     verdeckten Hals blieb ein Rest der verbreiterten Unterkante sichtbar, und zwei Byte
-//     Unterschied genuegten dem Vergleich. "Das Bild aendert sich" ist ohne Schwelle keine
-//     Aussage.
-// getBBox dagegen ist reine Geometrie, unabhaengig vom Layout, und der Massstab der Kopfgruppe
-// steht als Zahl in ihrem transform. Beides zusammen ergibt die Zahl, um die es geht.
-await anmutungSeite.evaluate(() => { document.getElementById('btnDrawerToggle')?.click(); });
-await anmutungSeite.waitForTimeout(400);
-await anmutungSeite.evaluate(() => { document.getElementById('btnDrawerProfileRow')?.click(); });
-await anmutungSeite.waitForTimeout(800);
-const hals = await anmutungSeite.evaluate(() => {
-  // Das zweite Feld der Figurenauswahl ist die erste Menschenfigur (das erste ist "kein Bild").
-  const feld = document.querySelectorAll('.figur-raster .figur-wahl')[1];
-  const svg = feld && feld.querySelector('svg');
-  if (!svg) return { fehler: 'keine Menschenfigur gefunden' };
-  const kopf = Array.from(svg.querySelectorAll('path'))
-    .find((e) => (e.getAttribute('d') || '').startsWith('M20 8.2'));
-  if (!kopf) return { fehler: 'kein Kopfpfad gefunden' };
-  // Nach OBEN laufen, bis eine Gruppe mit scale() kommt: Zwischen dem Kopfpfad und der
-  // Kopfgruppe kann noch eine Gruppe liegen (figSaum bringt eine eigene mit). Genau daran ist
-  // der erste Anlauf gescheitert — parentNode allein las den Massstab als 1 und meldete den
-  // Fehler auch im gesunden Zustand.
-  let skala = 1;
-  for (let el = kopf.parentNode; el && el !== svg; el = el.parentNode) {
-    const m = /scale\(([\d.]+)\)/.exec((el.getAttribute && el.getAttribute('transform')) || '');
-    if (m) { skala = parseFloat(m[1]); break; }
-  }
-  const bb = kopf.getBBox();
-  // Die Kopfgruppe wird um (20 / 8,2) skaliert — derselbe Drehpunkt wie in figMensch.
-  const kinn = 8.2 + ((bb.y + bb.height) - 8.2) * skala;
-  return { skala, kinn: +kinn.toFixed(2), SCHULTER: 33.4, halsHoehe: +(33.4 - kinn).toFixed(2) };
-});
-ok(!hals.fehler && hals.halsHoehe >= 1.5,
-   'zwischen Kinn und Schulter bleibt Platz fuer einen sichtbaren Hals (mindestens 1,5 Einheiten)',
-   hals.fehler || `Kinn bei ${hals.kinn}, Schulter bei 33.4 — ${hals.halsHoehe} Einheiten Hals`);
+// Runde 114: Hier stand die Pruefung "der Hals der Menschenfiguren ist sichtbar" (Runde 111).
+// Die Menschenfiguren sind auf Entscheidung des Inhabers entfallen; die Pruefung haette keinen
+// Gegenstand mehr. Die Lehre aus ihren drei Anlaeufen steht im Journal unter Runde 111.
 await anmutungCtx.close();
 
 await browser.close();

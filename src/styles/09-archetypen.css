@@ -91,6 +91,49 @@
      angehoben, denselben etwas kräftigeren Ton, den auch .stat-tile für denselben Zweck nutzt. Die
      zusätzliche Ansehen-Klasse hebt die Spezifität sicher über die geteilte Regel direkt darüber.*/
   .drawer-profile-row .drawer-profile-avatar.avatar-color-quiet{background:var(--surface-3);}
+  /* ---------- Das Monogramm wie in iOS (Runde 114) ----------
+     Auf Entscheidung des Inhabers sind die gezeichneten Menschen entfallen; ohne Foto und ohne
+     Tier steht jetzt das, was iOS in Kontakten und beim Apple-Account zeigt: zwei Buchstaben in
+     einem Kreis mit einem Verlauf, der oben heller ist. Der Verlauf ist das, was den Kreis zu
+     einem Gegenstand macht statt zu einem Farbfleck — genau die Flaechigkeit, die bei den alten
+     Figuren als "Wii" gemeldet wurde.
+     Die Buchstaben stehen in der Systemschrift, nicht in Fraunces: In iOS ist das Monogramm SF,
+     und eine Serifenschrift in einem Kreis liest sich als Siegel.
+     background-image und nicht background: Das eigene Foto setzt renderAvatarInto() als
+     Inline-Stil background-image, und ein Inline-Stil schlaegt diese Regel. Mit "background"
+     hier waere die Farbe mit ueberschrieben worden; so bleibt sie unter dem Foto unsichtbar und
+     kehrt zurueck, sobald das Foto entfernt wird.
+     Kein neues Farbtoken: Beide Enden entstehen aus den vorhandenen Marken, die drei Farbmodi
+     gelten damit von selbst. */
+  .avatar:not(.hat-figur), .drawer-profile-avatar:not(.hat-figur), .settings-account-avatar:not(.hat-figur){
+    font-family:var(--sans); font-weight:500; letter-spacing:.01em;
+  }
+  .avatar.avatar-color-accent:not(.hat-figur), .drawer-profile-avatar.avatar-color-accent:not(.hat-figur),
+  .settings-account-avatar.avatar-color-accent:not(.hat-figur){
+    background-image:linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, #FFFFFF), var(--accent));
+  }
+  .avatar.avatar-color-ink:not(.hat-figur), .drawer-profile-avatar.avatar-color-ink:not(.hat-figur),
+  .settings-account-avatar.avatar-color-ink:not(.hat-figur){
+    background-image:linear-gradient(180deg, color-mix(in srgb, var(--ink) 74%, var(--paper)), var(--ink));
+  }
+  /* "Ruhig" ist jetzt das Grau der iOS-Kontakte: helle Buchstaben auf einem gedeckten Verlauf
+     statt dunkler Buchstaben auf fast Seitenfarbe. Das loest nebenbei den Fehler aus Runde 39,
+     der Initialen-Kreis verschwimme mit seiner Umgebung — er hat jetzt eine eigene Flaeche. */
+  .avatar.avatar-color-quiet:not(.hat-figur), .drawer-profile-avatar.avatar-color-quiet:not(.hat-figur),
+  .settings-account-avatar.avatar-color-quiet:not(.hat-figur){
+    background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));
+    color:var(--paper);
+  }
+  .avatar-color-swatch.avatar-color-accent{background-image:linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, #FFFFFF), var(--accent));}
+  .avatar-color-swatch.avatar-color-ink{background-image:linear-gradient(180deg, color-mix(in srgb, var(--ink) 74%, var(--paper)), var(--ink));}
+  .avatar-color-swatch.avatar-color-quiet{background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));}
+  /* Das Feld "kein Bild" in der Figurenauswahl zeigt dasselbe Monogramm, das danach im Kreis
+     steht — also in derselben Schrift und auf demselben Verlauf, nicht in der Schreibmaschinen-
+     schrift auf flacher Flaeche. Sonst waehlt man etwas anderes, als man bekommt. */
+  .figur-wahl.figur-keine{
+    font-family:var(--sans); font-weight:500; font-size:16px; color:var(--paper);
+    background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));
+  }
   .profile-name-label{margin-top:20px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
   .name-input{
     margin-top:6px;border:none;border-bottom:1px solid var(--line);background:none;

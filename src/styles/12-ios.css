@@ -1,0 +1,166 @@
+/* ================= iOS-Formensprache (Runde 114) =================
+     Auftrag des Inhabers: "mache es mehr so wie das neue iOS ist — zum Beispiel in den
+     Einstellungen bei der Sprachauswahl, dass es so wie bei iOS sein soll, wenn man etwas aus
+     einer Art Liste aussucht. Insgesamt wie iOS von Apple."
+
+     Die Einstellungen sind die Vorlage, weil sie das genannte Beispiel sind und weil iOS fuer
+     genau diese Art Ansicht eine feste, allen bekannte Form hat: die eingerueckte, gruppierte
+     Liste ("inset grouped"). Ihre Regeln, und warum jede hier steht:
+
+       1. Der Abschnittstitel steht UEBER der Gruppe, klein, grau, in Grossbuchstaben — nicht in
+          ihr. Bis hierher trug jede Gruppe eine Ueberschrift in Fraunces innerhalb der Karte;
+          das ist die Form einer Zeitschrift, nicht die einer Einstellung.
+       2. Eine Gruppe ist EINE Flaeche. Bis hierher lag die Sprachliste als zweiter Kasten in
+          einer Karte — zwei Raender, zwei Radien, zwei Flaechen fuer eine Sache.
+       3. Zeilen sind mindestens 44 Punkt hoch, die Trennlinie beginnt an der Textkante.
+       4. Erklaerungen stehen als Fussnote UNTER der Gruppe, nicht zwischen den Zeilen.
+       5. Knoepfe in einer Liste sind Zeilen in der Akzentfarbe, keine Pillen. "Kaeufe
+          wiederherstellen" ist in iOS eine blaue Zeile, kein umrandeter Knopf.
+       6. Zuruecksetzen ist eine eigene Gruppe, in Warnfarbe, mittig — die iOS-Form fuer eine
+          Handlung, die nicht rueckgaengig zu machen ist.
+
+     Bewusst auf #view-settings beschraenkt. Die gleichen Klassen (.settings-zeile, .schalter,
+     .daten-knoepfe) kommen auch im Profil vor; dort ist die Form eine andere Frage, und eine
+     Aenderung an den gemeinsamen Regeln haette sie ungefragt mitentschieden.
+
+     Keine neuen Farbmarken: Gruppenflaeche ist --surface, Grund ist --paper, Akzent ist
+     --accent-strong. Damit gelten Hell, Dunkel und "wie das System" von selbst. */
+
+  #view-settings .settings-group{
+    background:none; border:none; box-shadow:none; padding:0; margin-top:30px;
+  }
+  #view-settings .archetypes-head + .settings-group{ margin-top:22px; }
+
+  /* 1. Der Abschnittstitel. 13 Punkt, Grossbuchstaben, gedeckt, auf der Einrueckung der Zeilen —
+        so steht er in jeder Einstellung von iOS. Die Systemschrift kommt ueber --sans. */
+  #view-settings .settings-group > h2,
+  #view-settings .settings-sub > h3{
+    font-family:var(--sans); font-size:13px; font-weight:400; line-height:1.3;
+    text-transform:uppercase; letter-spacing:.02em; color:var(--muted);
+    margin:0 0 7px; padding:0 16px;
+  }
+  #view-settings .settings-sub{ margin-top:30px; padding-top:0; border-top:none; }
+
+  /* 2. Die Flaechen. Was in einer Gruppe bedient wird, liegt auf genau einer Flaeche. */
+  #view-settings .wahlliste,
+  #view-settings .settings-account-row,
+  #view-settings .settings-row,
+  #view-settings .faq-item-list,
+  #view-settings .settings-datalist,
+  #view-settings .daten-knoepfe,
+  #view-settings .settings-restore{
+    background:var(--surface); border:none; border-radius:var(--radius-m);
+    margin-top:0; box-shadow:none; overflow:hidden;
+  }
+
+  /* 3. Zeilen. Die Sprachliste hatte die Form schon (Runde 97/104) — sie verliert hier nur
+        ihren eigenen Rahmen, weil die Gruppe jetzt selbst die Flaeche ist. */
+  #view-settings .wahl-zeile{ font-size:16px; min-height:46px; padding:12px 16px; }
+  #view-settings .wahl-zeile::before{ left:16px; }
+
+  /* Die Schieberzeilen. Sie stehen als Geschwister in der Gruppe, also traegt jede ihren Teil
+     der Flaeche: die erste die oberen Ecken, die letzte die unteren, jede ausser der ersten eine
+     eingerueckte Trennlinie. ":nth-child(n of S)" zaehlt dabei nur die Zeilen und nicht die
+     Ueberschrift davor — dieselbe Falle wie in der Schublade (10-druckzustaende.css). */
+  #view-settings .settings-zeile{
+    position:relative; margin:0; padding:11px 16px; gap:14px;
+    background:var(--surface); align-items:center; flex-wrap:nowrap;
+  }
+  #view-settings .settings-zeile:nth-child(1 of .settings-zeile){
+    border-top-left-radius:var(--radius-m); border-top-right-radius:var(--radius-m);
+  }
+  #view-settings .settings-zeile:nth-last-child(1 of .settings-zeile){
+    border-bottom-left-radius:var(--radius-m); border-bottom-right-radius:var(--radius-m);
+  }
+  #view-settings .settings-zeile:not(:nth-child(1 of .settings-zeile))::before{
+    content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
+  }
+  #view-settings .settings-zeile-text{ min-width:0; gap:2px; }
+  #view-settings .settings-zeile-text strong{ font-family:var(--sans); font-weight:400; font-size:16px; }
+  /* Die Beschreibung bleibt in der Zeile, als zweite, leisere Zeile — die "Untertitel"-Form,
+     die iOS selbst fuer Schalter mit Erklaerung benutzt. */
+  #view-settings .settings-zeile-text .settings-hint{ margin-top:0; font-size:13px; line-height:1.35; }
+
+  /* Konto: Bild, Name und der Weg ins Profil auf einer Zeile, wie der Apple-Account ganz oben
+     in den iPhone-Einstellungen. */
+  #view-settings .settings-account-row{ padding:12px 16px; gap:14px; flex-wrap:nowrap; }
+  #view-settings .settings-account-info strong{ font-family:var(--sans); font-weight:500; font-size:17px; }
+
+  #view-settings .settings-row{ padding:12px 16px; }
+  #view-settings .settings-row .l{ font-size:16px; }
+
+  /* 4. Fussnoten. Was ausserhalb einer Flaeche erklaert, steht auf der Einrueckung der Zeilen,
+        klein und gedeckt. */
+  #view-settings .settings-group > .settings-hint,
+  #view-settings .settings-group > .settings-group-desc,
+  #view-settings .settings-group > .settings-empty,
+  #view-settings .settings-sub > .settings-hint{
+    font-size:13px; line-height:1.4; color:var(--muted); font-style:normal;
+    margin:7px 0 0; padding:0 16px;
+  }
+  /* Eine Erklaerung VOR der Gruppe (Lucenta+, Datenschutz) steht unter dem Titel und ueber der
+     Flaeche — mit etwas Luft nach unten, damit sie nicht an der Flaeche klebt. */
+  #view-settings .settings-group > h2 + .settings-group-desc{ margin:0 0 8px; }
+
+  /* 5. Knoepfe in einer Liste sind Zeilen. Die Pillenform, die Unterkante und der Druck durch
+        Verkleinern kommen aus der allgemeinen Knopfregel; in einer Liste gehoert stattdessen
+        die Zeile beim Druecken dunkler hinterlegt — genau wie bei der Sprachwahl. */
+  #view-settings .daten-knoepfe{ display:flex; flex-direction:column; gap:0; }
+  #view-settings .daten-knoepfe .btn{
+    position:relative; width:100%; min-height:46px; margin:0; padding:12px 16px;
+    justify-content:flex-start; text-align:left;
+    background:transparent; border:none; border-radius:0; box-shadow:none;
+    font-family:var(--sans); font-size:16px; font-weight:400; color:var(--accent-strong);
+  }
+  #view-settings .daten-knoepfe .btn + .btn::before{
+    content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
+  }
+  #view-settings .daten-knoepfe .btn:active{ transform:none; background:var(--surface-2); }
+  #view-settings .daten-knoepfe[hidden]{ display:none; }
+
+  /* Der Weg ins Profil: die ganze Zeile, wie der Apple-Account ganz oben in den
+     iPhone-Einstellungen — rechts nur ein Winkel.
+     Erster Entwurf: ein Textknopf "Profil bearbeiten >" am Zeilenende. Die Fehlersuche fand ihn
+     32-mal: 34 statt 44 Punkte hoch, und bei 320px Breite mit langem Namen ragte er seitlich
+     heraus. Beides loest dieselbe Aenderung, und es ist zugleich die iOS-Form: Der Knopf liegt
+     jetzt ueber der GANZEN Zeile (position:absolute; inset:0), ist damit so hoch und so breit
+     wie sie, und sichtbar bleibt nur der Winkel. Die Beschriftung bleibt im DOM — font-size:0
+     verbirgt sie fuers Auge, nicht fuer VoiceOver. */
+  #view-settings .settings-account-row{ position:relative; padding-right:40px; }
+  #view-settings #btnSettingsEditProfile{
+    position:absolute; inset:0; width:100%; height:100%; margin:0; padding:0 16px;
+    display:flex; align-items:center; justify-content:flex-end;
+    background:transparent; border:none; border-radius:inherit; box-shadow:none;
+    font-size:0; color:var(--muted);
+  }
+  #view-settings #btnSettingsEditProfile::after{ content:'\203A'; font-size:24px; line-height:1; font-family:var(--sans); }
+  #view-settings #btnSettingsEditProfile:active{ transform:none; background:color-mix(in srgb, var(--ink) 6%, transparent); }
+
+  /* Die Datenliste: jeder gespeicherte Eintrag eine Zeile statt ein Kaestchen. */
+  #view-settings .settings-datalist{ gap:0; }
+  #view-settings .settings-datalist li{
+    position:relative; background:none; border:none; border-radius:0; padding:12px 16px; font-size:15px;
+  }
+  #view-settings .settings-datalist li + li::before{
+    content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
+  }
+
+  #view-settings .settings-restore{ padding:14px 16px; margin-top:10px; }
+  #view-settings .settings-restore-label{ font-family:var(--sans); font-size:16px; }
+
+  /* Hilfe: die Fragen als Zeilen mit Winkel, aufklappbar. */
+  #view-settings .faq-item summary{ padding:13px 16px; font-size:16px; }
+  #view-settings .faq-item p{ padding:0 16px; }
+  #view-settings .faq-item{ position:relative; border-top:none; }
+  #view-settings .faq-item + .faq-item::before{
+    content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
+  }
+
+  /* 6. Zuruecksetzen: eine eigene Gruppe, Warnfarbe, mittig. */
+  #view-settings #btnResetData{
+    display:flex; justify-content:center; width:100%; min-height:46px; margin-top:30px !important;
+    background:var(--surface); border:none; border-radius:var(--radius-m); box-shadow:none;
+    font-family:var(--sans); font-size:16px; font-weight:400; color:var(--danger);
+  }
+  #view-settings #btnResetData:active{ transform:none; background:var(--surface-2); }
+  #view-settings #btnResetData.armed{ font-weight:600; }

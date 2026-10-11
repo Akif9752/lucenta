@@ -12,7 +12,8 @@
   "08-formulare-und-dialoge.css",
   "09-archetypen.css",
   "10-druckzustaende.css",
-  "11-feier.css"
+  "11-feier.css",
+  "12-ios.css"
  ],
  "js": [
   "00-start.js",
