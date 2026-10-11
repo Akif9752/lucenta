@@ -233,3 +233,122 @@
   #view-settings #btnSettingsEditProfile::after{
     position:static; transform:none; width:auto; height:auto; top:auto; left:auto;
   }
+
+/* ================= Das Profil als iOS-Kontaktkarte (Runde 116) =================
+     Vorbild ist die Kontaktkarte von iOS beim Bearbeiten: grosses Bild oben, darunter Gruppen.
+     Dieselben Regeln wie in den Einstellungen — Titel klein und grau ueber der Gruppe, eine
+     Flaeche je Gruppe, Trennlinien ab der Textkante —, auf #view-profile beschraenkt.
+
+     Zwei Stellen brauchen !important, und das ist keine Bequemlichkeit: Die Formensprache aus
+     Runde 69 setzt fuer .history-row und .trend-list `border-width:2px !important` und fuer
+     .history-row eine harte Unterkante (10-druckzustaende.css). Ohne Gegengewicht bliebe jede
+     Verlaufszeile eine eigene Karte mit Rand, wo iOS eine Liste zeigt. */
+
+  /* Abschnittstitel wie ueberall in iOS. */
+  #view-profile .section-title{
+    margin-top:30px; padding:0 16px 7px; display:block;
+    font-family:var(--sans); font-size:13px; font-weight:400; line-height:1.3;
+    text-transform:uppercase; letter-spacing:.02em; color:var(--muted);
+  }
+  #view-profile .section-title .n{ border:none; padding:0; margin-left:6px; font-size:13px; }
+  #view-profile .section-lead{ margin:0 0 8px; padding:0 16px; font-size:13px; line-height:1.4; max-width:none; }
+
+  /* Name: ein Textfeld in einer Zeile, wie "Vorname" in der Kontaktkarte — keine Unterstrich-Linie,
+     sondern eine Flaeche mit dem Text linksbuendig. */
+  #view-profile .profile-name-label{
+    align-self:stretch; text-align:left; margin-top:26px; padding:0 16px 7px;
+    font-family:var(--sans); font-size:13px; letter-spacing:.02em;
+  }
+  #view-profile .name-input{
+    max-width:none; width:100%; box-sizing:border-box; margin:0; padding:12px 16px;
+    background:var(--surface); border:none; border-radius:var(--radius-m);
+    font-family:var(--sans); font-size:17px; text-align:left;
+  }
+  #view-profile .name-input:focus{ border:none; }
+
+  /* Bildwahl: Farbtupfer und Figuren auf einer gemeinsamen Flaeche. */
+  #view-profile .figur-raster,
+  #view-profile .hg-raster{
+    max-width:none; width:100%; box-sizing:border-box; padding:14px;
+    background:var(--surface); border-radius:var(--radius-m);
+  }
+  #view-profile .figur-raster{ margin-top:14px; }
+
+  /* Ergebnis: eine Zeile wie jede andere Gruppe. */
+  #view-profile .profile-result-card,
+  #view-profile .profile-empty{
+    margin-top:0; background:var(--surface); border:none; border-radius:var(--radius-m);
+    box-shadow:none; padding:12px 16px;
+  }
+  #view-profile .profile-result-card strong{ font-family:var(--sans); font-weight:500; }
+
+  /* Verlauf: eine Liste statt einzelner Karten. */
+  #view-profile .trend-list{
+    margin-top:0; border:none !important; box-shadow:none !important; border-radius:var(--radius-m);
+  }
+  #view-profile .history-list{
+    gap:0; margin-top:10px; background:var(--surface); border-radius:var(--radius-m); overflow:hidden;
+  }
+  #view-profile #historyContent .history-row{
+    position:relative; border:none !important; border-radius:0; box-shadow:none !important;
+    background:transparent; padding:11px 16px;
+  }
+  #view-profile #historyContent .history-row:active{ transform:none; box-shadow:none !important; }
+  #view-profile #historyContent .history-row + .history-row::before{
+    content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
+  }
+  /* Die Kante links aus Runde 108 traegt den Pol der fuehrenden Dimension. In einer Liste ohne
+     Raender wird sie zum Punkt vor dem Titel — dieselbe Information, in der Form, in der iOS
+     Zustaende in Listen zeigt. */
+  #view-profile #historyContent .history-pol-high .history-title::before,
+  #view-profile #historyContent .history-pol-low .history-title::before{
+    content:''; display:inline-block; width:8px; height:8px; border-radius:50%;
+    margin-right:8px; vertical-align:1px; background:var(--accent);
+  }
+  #view-profile #historyContent .history-pol-low .history-title::before{ background:var(--accent-2); }
+  #view-profile #historyContent .history-neu{ background:transparent; }
+
+  /* Der Entwicklerbereich unten (Beispieldaten, Plus-Schalter) wie eine Einstellungsgruppe. */
+  #view-profile #demoBlock{ background:none; border:none; box-shadow:none; padding:0; margin-top:30px; }
+  #view-profile #demoBlock > h2{
+    font-family:var(--sans); font-size:13px; font-weight:400; text-transform:uppercase;
+    letter-spacing:.02em; color:var(--muted); margin:0 0 7px; padding:0 16px;
+  }
+  #view-profile #demoBlock > .settings-group-desc{ font-size:13px; padding:0 16px; margin:0 0 8px; }
+  #view-profile #demoBlock .daten-knoepfe{
+    margin-top:0; background:var(--surface); border-radius:var(--radius-m); overflow:hidden;
+  }
+  #view-profile #demoBlock .daten-knoepfe .btn{
+    width:100%; min-height:46px; justify-content:flex-start; padding:12px 16px;
+    background:transparent; border:none; border-radius:0; box-shadow:none;
+    font-family:var(--sans); font-size:16px; font-weight:400; color:var(--accent-strong);
+  }
+  #view-profile #demoBlock .daten-knoepfe .btn:active{ transform:none; background:var(--surface-2); }
+  #view-profile #demoBlock .settings-row{
+    margin-top:10px; background:var(--surface); border:none; border-radius:var(--radius-m); padding:12px 16px;
+  }
+
+  /* Das Ergebnis fuehrt wie jede andere Zeile mit einem Winkel weiter: Der Knopf "Ansehen" liegt
+     ueber der ganzen Zeile, seine Beschriftung bleibt fuer VoiceOver. */
+  #view-profile .profile-result-card{ position:relative; padding-right:40px; flex-wrap:nowrap; }
+  #view-profile #btnProfileViewResult{
+    position:absolute; inset:0; width:100%; height:100%; margin:0; padding:0 16px;
+    display:flex; align-items:center; justify-content:flex-end;
+    background:transparent; border:none; border-radius:inherit; box-shadow:none;
+    font-size:0; color:var(--muted-soft);
+  }
+  #view-profile #btnProfileViewResult::after{
+    content:'\203A'; font-size:24px; line-height:1; font-family:var(--sans);
+    position:static; transform:none; width:auto; height:auto; top:auto; left:auto;
+  }
+  #view-profile #btnProfileViewResult:active{ transform:none; background:color-mix(in srgb, var(--ink) 6%, transparent); }
+  #view-profile .settings-row-text strong{ font-family:var(--sans); font-weight:400; font-size:16px; }
+
+  /* "Kein Bild" zeigt dasselbe Monogramm, das danach im Kreis steht. Die Regel stand in Runde 114
+     in 09-archetypen.css und kam dort nie an: Eine spaetere Regel derselben Datei setzt fuer
+     .figur-keine `background` als Kurzform und loescht damit jeden Verlauf davor. Hier, am Ende
+     der Kaskade und mit hoeherer Spezifitaet, greift sie. */
+  .figur-raster .figur-wahl.figur-keine{
+    font-family:var(--sans); font-weight:500; font-size:16px; color:var(--paper);
+    background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));
+  }

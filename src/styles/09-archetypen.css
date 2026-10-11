@@ -127,13 +127,6 @@
   .avatar-color-swatch.avatar-color-accent{background-image:linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, #FFFFFF), var(--accent));}
   .avatar-color-swatch.avatar-color-ink{background-image:linear-gradient(180deg, color-mix(in srgb, var(--ink) 74%, var(--paper)), var(--ink));}
   .avatar-color-swatch.avatar-color-quiet{background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));}
-  /* Das Feld "kein Bild" in der Figurenauswahl zeigt dasselbe Monogramm, das danach im Kreis
-     steht — also in derselben Schrift und auf demselben Verlauf, nicht in der Schreibmaschinen-
-     schrift auf flacher Flaeche. Sonst waehlt man etwas anderes, als man bekommt. */
-  .figur-wahl.figur-keine{
-    font-family:var(--sans); font-weight:500; font-size:16px; color:var(--paper);
-    background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));
-  }
   .profile-name-label{margin-top:20px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
   .name-input{
     margin-top:6px;border:none;border-bottom:1px solid var(--line);background:none;

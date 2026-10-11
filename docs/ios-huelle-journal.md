@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 115)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 116)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -375,6 +375,59 @@ Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 1
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 116 — die Tiere am echten Tier, und das Profil als iOS-Kontaktkarte
+
+### 1. Die Tiere: Merkmale des echten Tiers
+
+Auftrag des Inhabers: Die Avatare sollen sich „mehr am realen Aussehen der Tiere orientieren" —
+im Animoji-Stil aus Runde 115. Runde 115 hatte Volumen gebracht; was fehlte, waren die Merkmale,
+an denen man ein Tier auch auf Avatargroesse erkennt. Jedes Tier mit seinem Vorbild verglichen:
+
+| Tier | echtes Merkmal | vorher |
+|---|---|---|
+| Panda | Ohren ganz schwarz, schwarzes Schulterband, Augenflecken als schraege Tropfen nach aussen unten | weisse Ohren mit schwarzer Mitte, weisser Koerper, Flecken nach innen geneigt |
+| Fuchs | schwarze Ohrspitzen, weisse Wangen bis unters Kinn, weisse Brust, Schlitzpupillen | nur weisse Schnauze, runde Pupillen |
+| Katze | Schlitzpupillen, rosa Nase, das "M" auf der Stirn | runde Pupillen, schwarze Nase |
+| Reh | helle Kehle und Brust | weisse Punkte auf der Stirn (gibt es nur beim Kitz, am Ruecken, nie mit Geweih), rosa Wangen |
+| Hase | rosa Nase | schwarze Nase |
+
+Baer, Dackel und Retriever stimmen mit ihren Vorbildern ueberein und sind unveraendert.
+
+Neue Merkmale im Bauplan (`figTier`, alle wahlweise): `pupille:'schlitz'`, `naseFarbe`,
+`ohrFarbe`, `ohrSpitze`, `kinn` mit `kinnForm` ('wange' oder 'kehle'), `brust`, `koerper`. Die
+Stirnzeichnung der Katze ist aus drei weichen Flaechen gebaut, nicht aus Strichen.
+
+Zwei Korrekturen im Bild gefunden: Die erste Fassung der hellen Wangen bedeckte beim Reh die
+ganze untere Gesichtshaelfte — eine weisse Maske. Daher die zweite Form 'kehle'. Und beim Fuchs
+lag eine harte Kante quer uebers Gesicht; jetzt ein Verlauf mit kurzem, weichem Rand.
+
+### 2. Das Profil
+
+Vorbild ist die Kontaktkarte von iOS beim Bearbeiten (`12-ios.css`, auf `#view-profile`
+beschraenkt): grosses Bild oben, darunter Gruppen. Titel klein und grau, Name als Textfeld-Zeile
+statt Unterstrich-Feld, Figuren und Hintergruende auf je einer Flaeche, das Ergebnis als Zeile mit
+Winkel, der Verlauf als Liste statt einzelner Karten, der Entwicklerbereich wie eine
+Einstellungsgruppe.
+
+Zwei Stellen mit `!important`, begruendet: Die Formensprache aus Runde 69 setzt fuer
+`.history-row` und `.trend-list` `border-width:2px !important` und eine harte Unterkante. Ohne
+Gegengewicht bliebe jede Verlaufszeile eine Karte mit Rand. Die Kante links, die seit Runde 108
+den Pol der fuehrenden Dimension traegt, ist in der randlosen Liste ein Punkt vor dem Titel —
+dieselbe Information.
+
+**Ein Fehler aus Runde 114, erst jetzt sichtbar:** Die Regel, die dem Feld „kein Bild" den
+Monogramm-Verlauf gab, kam nie an — eine spaetere Regel derselben Datei setzt `background` als
+Kurzform und loescht damit den Verlauf. Die wirkungslose Regel ist entfernt, die neue steht am
+Ende der Kaskade. Dieselbe Sorte Fehler wie `q-enter` (Runde 108) und `input, textarea`
+(Runde 109): eine Regel, die aussieht, als wirke sie.
+
+### Was offen bleibt
+
+Ergebnisseite und Fragebogen tragen bis auf die Schrift noch die Kartenoptik aus Runde 69. Ob die
+Tiere jetzt echt genug wirken, ist ein Urteil am Geraet.
 
 ---
 
