@@ -182,144 +182,6 @@
     return '#' + [f(r), f(g), f(b)].map(function(v){ return ('0'+v.toString(16)).slice(-2); }).join('');
   }
 
-  // ---------- Das Auge ----------
-  // Der groesste einzelne Unterschied zwischen "Piktogramm" und "Gesicht". Ein volles schwarzes
-  // Rund ist ein Loch; ein Auge hat ein Weiss, eine farbige Iris, eine Pupille, einen Lichtpunkt
-  // und — das Entscheidende — ein OBERLID. Wo das Lid steht, entsteht der Ausdruck: hoch heisst
-  // wach, tief heisst ruhig oder muede, ganz zu heisst zufrieden.
-  //
-  // Der Lichtpunkt sitzt bei allen links oben, weil das Licht in dieser Zeichnung immer von dort
-  // kommt. Die Blickrichtung dagegen darf abweichen — ein Blick leicht zur Seite ist einer der
-  // billigsten und staerksten Belebungstricks, solange BEIDE Augen in dieselbe Richtung sehen.
-  function figAuge(x, y, r, o){
-    o = o || {};
-    var art = o.blick || 'offen';
-    var haut = o.haut || '#E8BE9A';
-    if (art === 'zu' || art === 'schmal'){
-      // Zugekniffen: ein Bogen nach oben, mit einer feinen helleren Linie darunter — das
-      // geschlossene Lid hat eine Kante und eine Woelbung, nicht nur einen Strich.
-      var hoch = art === 'zu' ? r * 1.0 : r * 0.62;
-      var bogen = function(dy, farbe, w, deck){
-        return '<path d="M'+(x-r*1.2).toFixed(2)+' '+(y+r*0.34+dy).toFixed(2)+
-               ' Q'+x.toFixed(2)+' '+(y-hoch+dy).toFixed(2)+' '+(x+r*1.2).toFixed(2)+' '+(y+r*0.34+dy).toFixed(2)+
-               '" stroke="'+farbe+'" stroke-width="'+w.toFixed(2)+'" fill="none" stroke-linecap="round"'+
-               (deck != null ? ' opacity="'+deck+'"' : '')+'/>';
-      };
-      // Runde 115: Bei den Tieren nur der dunkle Bogen. Die helle Kante darunter ist ein Strich in
-      // der Hautfarbe und lag bei Fuchs und Hund als blasses Band unter dem geschlossenen Auge.
-      return bogen(0, FIG_INK, r*0.5) + (o.grossIris ? '' : bogen(r*0.44, figTon(haut, 1.14), r*0.24, 0.7));
-    }
-    // Wie weit das Lid offen steht. Als ZAHL statt als Auswahl aus vier Namen: Der Ausdruck
-    // liegt zwischen den Stufen, nicht auf ihnen.
-    var offen = art === 'weit' ? 1.30 : (art === 'halb' ? 0.80 : 1.06);
-    if (o.oeffnung != null) offen = o.oeffnung;
-    var ry = r * offen, rx = r * 0.99;
-    var seit = (o.seite || 0) * r * 0.34;
-    var hoehe = (o.hoehe || 0) * r * 0.22;
-    var ix = x + seit, iy = y + hoehe + (offen < 0.9 ? r * 0.06 : r * 0.03);
-    var iris = o.iris || '#4A352A';
-    // Runde 99: Die Iris war zu gross. Bei einem echten Auge fuellt sie rund zwei Drittel der
-    // sichtbaren Lidoeffnung, nicht neun Zehntel — der Rest ist Weiss, und genau dieses Weiss
-    // links und rechts der Iris ist es, was ein Auge menschlich statt gezeichnet aussehen
-    // laesst. Tiere behalten die groessere Iris (o.grossIris), denn bei ihnen stimmt sie.
-    var irF = o.grossIris ? (offen < 0.9 ? 0.76 : 0.86) : (offen < 0.9 ? 0.64 : 0.72);
-    var ir = Math.min(rx, ry) * irF;
-    var gA = FIG_UID + 'ir' + (FIG_AUGE_LAUF++);
-    var gW = gA + 'w';
-    // Die Iris ist keine Scheibe. Sie hat einen dunklen Rand (den Limbusring), wird zur Mitte
-    // hin heller und ist UNTEN am hellsten: Dort faellt das Licht ein, das von unten in das
-    // Auge zurueckgeworfen wird. Ohne dieses Gefaelle bleibt jede Iris ein farbiger Punkt.
-    var defs = '<defs>'+
-      '<radialGradient id="'+gA+'" cx="0.5" cy="0.62" r="0.62">'+
-        '<stop offset="0" stop-color="'+figTon(iris, 1.42)+'"/>'+
-        '<stop offset="0.55" stop-color="'+iris+'"/>'+
-        '<stop offset="0.88" stop-color="'+figTon(iris, 0.62)+'"/>'+
-        '<stop offset="1" stop-color="'+figTon(iris, 0.45)+'"/>'+
-      '</radialGradient>'+
-      // Das Weiss ist nicht weiss: Oben liegt der Schatten des Oberlids, unten steht es hell.
-      '<radialGradient id="'+gW+'" cx="0.5" cy="0.78" r="0.78">'+
-        '<stop offset="0" stop-color="#FFFDF9"/>'+
-        '<stop offset="0.62" stop-color="#F4EFE6"/>'+
-        '<stop offset="1" stop-color="#D9CEBF"/>'+
-      '</radialGradient>'+
-    '</defs>';
-    return defs +
-      '<ellipse cx="'+x+'" cy="'+y+'" rx="'+rx.toFixed(2)+'" ry="'+ry.toFixed(2)+'" fill="url(#'+gW+')"/>'+
-      '<circle cx="'+ix.toFixed(2)+'" cy="'+iy.toFixed(2)+'" r="'+ir.toFixed(2)+'" fill="url(#'+gA+')"/>'+
-      // Der Limbusring als eigene Linie: Er trennt die Iris vom Weiss und ist der Unterschied
-      // zwischen einem gemalten Auge und einem aufgeklebten Punkt.
-      '<circle cx="'+ix.toFixed(2)+'" cy="'+iy.toFixed(2)+'" r="'+(ir*0.94).toFixed(2)+'" fill="none" stroke="'+
-        figTon(iris, 0.42)+'" stroke-width="'+(ir*0.16).toFixed(2)+'" opacity=".75"/>'+
-      // Runde 116: Katzen und Fuechse haben senkrechte Schlitzpupillen. Es ist das Merkmal, an dem
-      // man ein Katzenauge von jedem anderen unterscheidet — mit runder Pupille war die Katze ein
-      // Pluesch mit Katzenohren.
-      (o.pupille === 'schlitz'
-        ? '<ellipse cx="'+ix.toFixed(2)+'" cy="'+iy.toFixed(2)+'" rx="'+(ir*0.20).toFixed(2)+'" ry="'+(ir*0.86).toFixed(2)+'" fill="#120C08"/>'
-        : '<circle cx="'+ix.toFixed(2)+'" cy="'+iy.toFixed(2)+'" r="'+(ir*0.46).toFixed(2)+'" fill="#120C08"/>')+
-      // Zwei Lichtpunkte statt einem: der grosse dort, wo die Lichtquelle steht, der winzige
-      // gegenueber als zweite Spiegelung. Ein einzelner Punkt liest sich als Aufkleber, zwei
-      // lesen sich als nasse Oberflaeche.
-      '<circle cx="'+(ix - ir*0.40).toFixed(2)+'" cy="'+(iy - ir*0.46).toFixed(2)+'" r="'+(ir*(o.grossIris ? 0.42 : 0.34)).toFixed(2)+'" fill="#FFFFFF" opacity=".96"/>'+
-      // Runde 115: Bei den Tieren zusaetzlich das Fensterlicht — ein weicher, breiter Glanz ueber
-      // der oberen Haelfte des Augapfels. Das ist das Zeichen der Animoji-Augen: Sie sehen nass
-      // und gewoelbt aus, weil auf ihnen die ganze Lichtquelle als Flaeche liegt, nicht nur als
-      // Punkt. Als Flaeche mit Deckung und nicht als Strich (siehe CLAUDE.md, zweite Lehre).
-      (o.grossIris ? '<ellipse cx="'+(x - rx*0.18).toFixed(2)+'" cy="'+(y - ry*0.38).toFixed(2)+'" rx="'+(rx*0.62).toFixed(2)+
-        '" ry="'+(ry*0.30).toFixed(2)+'" fill="#FFFFFF" opacity=".22" transform="rotate(-14 '+x+' '+y+')"/>' : '')+
-      '<circle cx="'+(ix + ir*0.42).toFixed(2)+'" cy="'+(iy + ir*0.40).toFixed(2)+'" r="'+(ir*0.15).toFixed(2)+'" fill="#FFFFFF" opacity=".55"/>'+
-      // Der Schatten, den das Oberlid auf den Augapfel wirft. Er liegt AUF dem Auge und ist der
-      // Grund, warum ein Auge in einer Hoehle sitzt statt auf dem Gesicht zu kleben.
-      '<path d="M'+(x-rx).toFixed(2)+' '+(y - ry*0.30).toFixed(2)+
-        ' Q'+x+' '+(y - ry*1.30).toFixed(2)+' '+(x+rx).toFixed(2)+' '+(y - ry*0.30).toFixed(2)+
-        ' Q'+x+' '+(y - ry*0.55).toFixed(2)+' '+(x-rx).toFixed(2)+' '+(y - ry*0.30).toFixed(2)+' Z" '+
-        'fill="'+FIG_INK+'" opacity=".16"/>'+
-      // Die Wimpernkante: der dunkle Rand des Oberlids.
-      '<path d="M'+(x-rx*1.06).toFixed(2)+' '+(y - ry*(offen<0.9?0.06:0.52)).toFixed(2)+
-      ' Q'+x+' '+(y - ry*(offen>1.2?1.52:1.30)).toFixed(2)+' '+(x+rx*1.06).toFixed(2)+' '+(y - ry*(offen<0.9?0.06:0.52)).toFixed(2)+
-      '" stroke="'+FIG_INK+'" stroke-width="'+(r*(offen<0.9?0.40:0.34)).toFixed(2)+'" fill="none" stroke-linecap="round"/>'+
-      // Runde 97: die Lidfalte. Der feine Bogen ueber dem Lid, an dem das bewegliche Lid
-      // endet und die Augenhoehle beginnt. Ohne sie sitzt ein noch so gut gemaltes Auge auf
-      // einer glatten Flaeche; mit ihr liegt es in einer Hoehle. Sie ist der billigste Schritt
-      // von "Auge gezeichnet" zu "Auge gebaut" — eine Linie, halb so dunkel wie die
-      // Wimpernkante und deutlich weiter oben.
-      // Runde 115: Bei den Tieren entfaellt die Lidfalte. Animoji haben keine, und sie ist ein
-      // STRICH in der Hautfarbe — auf dem dunklen Augenfleck des Pandas stand sie als blasser
-      // Bogen ueber dem Auge. Dieselbe Lehre wie bei Haarglanz und Fellkante.
-      (o.grossIris ? '' :
-      '<path d="M'+(x-rx*0.94).toFixed(2)+' '+(y - ry*(offen<0.9?0.62:1.02)).toFixed(2)+
-      ' Q'+x+' '+(y - ry*(offen>1.2?2.05:1.82)).toFixed(2)+' '+(x+rx*0.94).toFixed(2)+' '+(y - ry*(offen<0.9?0.62:1.02)).toFixed(2)+
-      '" stroke="'+figTon(haut, 0.72)+'" stroke-width="'+(r*0.17).toFixed(2)+'" fill="none" stroke-linecap="round" opacity=".55"/>')+
-      // Das Unterlid, sehr hell und sehr fein: die Kante, auf der das Auge aufliegt. Runde 115:
-      // nicht bei Tieren — auf der hellen Schnauze des Baeren stand es als Strich unter dem Auge.
-      (o.grossIris ? '' :
-      '<path d="M'+(x-rx*0.82).toFixed(2)+' '+(y + ry*0.92).toFixed(2)+
-      ' Q'+x+' '+(y + ry*1.16).toFixed(2)+' '+(x+rx*0.82).toFixed(2)+' '+(y + ry*0.92).toFixed(2)+
-      '" stroke="'+figTon(haut, 1.16)+'" stroke-width="'+(r*0.22).toFixed(2)+'" fill="none" stroke-linecap="round" opacity=".85"/>');
-  }
-  var FIG_AUGE_LAUF = 0;
-  // Runde 111: die Neigung der Lidachse, je Figur. Bis hierher war jedes Auge dieselbe Ellipse —
-  // verschieden waren nur ihre Groesse, ihre Oeffnung und was DARIN stand. Damit unterschieden
-  // sich zehn Gesichter in allem ausser der Augenform, und die Augenform ist das, was man an
-  // einem Gesicht zuerst liest.
-  //
-  // Ein Winkel genuegt dafuer, und zwar der zwischen innerem und aeusserem Augenwinkel: Ob die
-  // Achse nach aussen ansteigt (mandelfoermig, wach) oder abfaellt (sanft, muede), ist der
-  // groesste Formunterschied, den zwei Augenpaare haben koennen. Gedreht wird um den
-  // Augenmittelpunkt und SPIEGELBILDLICH — beide Augen in dieselbe Richtung zu drehen ergaebe
-  // ein schiefes Gesicht statt einer Augenform.
-  //
-  // Die Werte bleiben klein (hoechstens 7 Grad). Darueber wird aus Vielfalt eine Karikatur —
-  // dieselbe Grenze, die in Runde 97 schon fuer Augenabstand und Augengroesse gezogen wurde.
-  // Tiere geben keine Neigung mit und bleiben damit unveraendert.
-  function figAugen(x1, x2, y, r, o){
-    var n = (o && o.neigung) || 0;
-    var eins = function(x, vz){
-      if (!n) return figAuge(x, y, r, o);
-      return '<g transform="rotate('+(vz * n).toFixed(2)+' '+x.toFixed(2)+' '+y.toFixed(2)+')">'+
-             figAuge(x, y, r, o)+'</g>';
-    };
-    return '<g class="fig-augen">' + eins(x1, -1) + eins(x2, 1) + '</g>';
-  }
 
   // Licht oben, Schatten unten. Beides sehr zurueckhaltend: Es soll Koerper geben, nicht
   // auffallen — ab etwa 0,2 Deckkraft sieht es nach Verschmutzung aus.
@@ -344,159 +206,6 @@
       '<stop offset="1" stop-color="'+FIG_INK+'" stop-opacity="0"/></radialGradient></defs>'+
       '<ellipse cx="'+(cx - rx*0.24).toFixed(2)+'" cy="'+(cy - ry*0.42).toFixed(2)+'" rx="'+(rx*0.62).toFixed(2)+'" ry="'+(ry*0.44).toFixed(2)+'" fill="url(#'+a+')"/>'+
       '<ellipse cx="'+(cx + rx*0.28).toFixed(2)+'" cy="'+(cy + ry*0.42).toFixed(2)+'" rx="'+(rx*0.66).toFixed(2)+'" ry="'+(ry*0.50).toFixed(2)+'" fill="url(#'+b+')"/>';
-  }
-  // Die Mienen. Bewusst eine kleine, feste Auswahl statt freier Kurven: Vier Muender, die
-  // zueinander passen, sind besser als zwanzig, von denen drei schief sitzen.
-  function figMund(art, farbe, breite, haut){
-    var f = farbe || FIG_INK, w = breite || 1.25;
-    var linie = function(d, farbe2, w2, deck){
-      return '<path d="'+d+'" stroke="'+(farbe2||f)+'" stroke-width="'+(w2||w)+'" fill="none" stroke-linecap="round" stroke-linejoin="round"'+
-             (deck != null ? ' opacity="'+deck+'"' : '')+'/>';
-    };
-    var flaeche = function(d, farbe2, deck){
-      return '<path d="'+d+'" fill="'+(farbe2||f)+'"'+(deck != null ? ' opacity="'+deck+'"' : '')+'/>';
-    };
-    // Runde 94: Die Muender waren Striche und gefuellte Sicheln — Formen ohne Dicke. Ein Mund
-    // hat aber zwei Lippen, und die untere faengt Licht: Genau dieser eine helle Streifen ist
-    // der Unterschied zwischen "Strich im Gesicht" und "Mund". Die Lippenfarbe wird aus der
-    // Haut abgeleitet statt gewaehlt — zweiundzwanzig von Hand gesetzte Lippenfarben waeren
-    // zweiundzwanzig Gelegenheiten, dass eine nicht zum Gesicht passt.
-    var lippe = haut ? figTon(haut, 0.82) : '#C98F7E';
-    var glanz = haut ? figTon(haut, 1.22) : '#FFFFFF';
-    var innen = '#4A241F';
-    // Runde 97: das Philtrum — die Rinne zwischen Nase und Oberlippe. Zwei sehr blasse
-    // senkrechte Kanten mit einer helleren Mitte dazwischen. Es steht VOR jedem Mund, weil es
-    // zum Gesicht gehoert und nicht zum Mund: Es ist auch da, wenn der Mund geschlossen ist,
-    // und es ist der Grund, warum die Partie zwischen Nase und Lippe eine Form hat statt eine
-    // Flaeche zu sein. Zusammen mit dem Amorbogen weiter unten ist das die Stelle, an der ein
-    // gezeichneter Mund aufhoert, ein Symbol zu sein.
-    // Runde 99: Von den drei Linien des Philtrums sind die beiden aeusseren raus. Im
-    // vergroesserten Bild standen sie als zwei dunkle Striche unter der Nase und lasen sich
-    // als angedeuteter Schnurrbart — bei den Figuren mit heller Haut besonders. Uebrig bleibt
-    // nur die HELLE Mitte: Sie zeigt die Rinne, ohne sie zu umranden.
-    var rinne = haut ?
-      ('<path d="M20 25.9 L20 27.3" stroke="'+figTon(haut, 1.18)+'" stroke-width="0.62" '+
-         'fill="none" stroke-linecap="round" opacity=".26"/>') : '';
-    // Der Amorbogen: die doppelte Wellung der Oberlippenkante. Nur bei geschlossenen Muendern —
-    // bei einem offenen liegt dort die Zahnreihe, und beides uebereinander waere Matsch.
-    var bogen = function(y){
-      return '<path d="M17.9 '+y+' Q19.1 '+(y-0.34).toFixed(2)+' 20 '+(y-0.06).toFixed(2)+
-             ' Q20.9 '+(y-0.34).toFixed(2)+' 22.1 '+y+'" stroke="'+lippe+'" stroke-width="0.46" '+
-             'fill="none" stroke-linecap="round" opacity=".62"/>';
-    };
-    if (art === 'lachen')
-      // Weit offen. Der Rachen ist nicht schwarz, sondern sehr dunkelrot; oben stehen die
-      // Zaehne als heller Bogen, unten liegt die Zunge. Ohne die Zaehne ist ein offener Mund
-      // ein Loch.
-      return rinne + flaeche('M14.4 26.6 Q20 25.4 25.6 26.6 Q24.6 33.0 20 33.0 Q15.4 33.0 14.4 26.6 Z', innen) +
-             flaeche('M15.4 26.8 Q20 25.9 24.6 26.8 Q20 28.6 15.4 26.8 Z', '#FBF6EF') +
-             flaeche('M16.8 30.2 Q20 31.8 23.2 30.2 Q22 33.0 20 33.0 Q18 33.0 16.8 30.2 Z', '#D9707F') +
-             linie('M14.4 26.6 Q20 25.4 25.6 26.6', lippe, 0.9, 0.9);
-    if (art === 'breit')
-      // Breites geschlossenes Lachen: die Zaehne stehen, die Unterlippe faengt Licht.
-      return rinne + flaeche('M14.8 26.8 Q20 33.2 25.2 26.8 Q20 28.4 14.8 26.8 Z', innen) +
-             flaeche('M15.6 27.1 Q20 28.0 24.4 27.1 Q20 29.4 15.6 27.1 Z', '#FBF6EF') +
-             linie('M15.2 30.6 Q20 33.0 24.8 30.6', glanz, 0.7, 0.55);
-    if (art === 'laecheln')
-      // Die Oberlippe traegt die Linie, die Unterlippe das Licht — und zwar DICHT darunter.
-      // Im ersten Entwurf lag der Glanz zwei Einheiten tiefer und las sich als zweites Kinn.
-      return rinne + bogen(27.5) +
-             linie('M15.8 27.6 Q20 31.2 24.2 27.6', f, w * 0.82) +
-             linie('M17.0 29.6 Q20 31.4 23.0 29.6', glanz, 0.85, 0.6);
-    if (art === 'sanft')
-      return rinne + bogen(28.0) +
-             linie('M16.6 28.1 Q20 30.3 23.4 28.1', f, w * 0.8) +
-             linie('M17.4 29.3 Q20 30.6 22.6 29.3', glanz, 0.75, 0.55);
-    if (art === 'strich')
-      return rinne + bogen(28.5) +
-             linie('M16.8 28.6 L23.2 28.6', f, w) +
-             linie('M17.4 29.6 L22.6 29.6', glanz, 0.6, 0.4);
-    if (art === 'o')
-      // Staunen: ein kleiner offener Mund. Rund, nicht breit, mit Lippenrand.
-      return rinne + '<ellipse cx="20" cy="28.8" rx="2.1" ry="2.6" fill="'+innen+'"/>'+
-             '<ellipse cx="20" cy="29.7" rx="1.2" ry="1.4" fill="#D9707F" opacity=".85"/>'+
-             '<ellipse cx="20" cy="28.8" rx="2.1" ry="2.6" fill="none" stroke="'+lippe+'" stroke-width="0.8" opacity=".85"/>';
-    if (art === 'schief')
-      // Halbes Laecheln, nur auf einer Seite hochgezogen. Die Asymmetrie ist der Punkt.
-      return rinne + linie('M15.8 28.8 Q19.2 30.2 24.2 26.8', f, w) +
-             linie('M16.6 29.9 Q19.4 31.0 23.2 28.3', glanz, 0.7, 0.45);
-    if (art === 'klein')
-      return rinne + bogen(28.3) +
-             linie('M17.8 28.4 Q20 29.8 22.2 28.4', f, w) +
-             linie('M18.2 29.3 Q20 30.3 21.8 29.3', glanz, 0.6, 0.4);
-    if (art === 'schmollen')
-      // Zurueckgenommen. Der erste Entwurf zog die Mundwinkel um 1,8 Einheiten nach unten, und
-      // im Bild sah die Figur nicht skeptisch aus, sondern veraergert — derselbe Fehler wie bei
-      // den Brauen in Runde 88, nur eine Zeile tiefer. Jetzt fast waagerecht, mit einem
-      // hoeheren Mundwinkel auf einer Seite: Das ist Zweifel, nicht Aerger.
-      return rinne + linie('M16.4 29.0 Q19.4 29.9 23.6 28.5', f, w * 0.85) +
-             flaeche('M17.2 29.7 Q19.6 31.0 22.8 29.4 Q19.8 30.2 17.2 29.7 Z', lippe, 0.55);
-    if (art === 'zahn')
-      // Ein schiefes Grinsen, bei dem auf einer Seite die Zaehne blitzen. Der erste Entwurf
-      // setzte EINEN Zahn in die Mitte, und der las sich als Zahnluecke.
-      return rinne + flaeche('M15.6 27.6 Q20.4 31.4 24.4 27.0 Q20 28.6 15.6 27.6 Z', innen) +
-             flaeche('M16.6 27.9 Q20.2 29.2 23.4 27.4 Q20 28.6 16.6 27.9 Z', '#FBF6EF') +
-             linie('M16.4 29.6 Q20.2 31.6 23.6 28.9', glanz, 0.7, 0.5);
-    // Die Tierschnauze: senkrechter Strich unter der Nase, dann zwei Boegen.
-    return linie('M20 26.4 L20 28 M20 28 Q17.4 30.2 15.4 28.4 M20 28 Q22.6 30.2 24.6 28.4', f, w);
-  }
-  // ---------- Die Mienen ----------
-  //
-  // Rueckmeldung Runde 88: "haben keine expression in den gesichtsausdruecken." Das stimmte,
-  // obwohl seit Runde 87 jede Figur eigene Werte fuer Lid, Braue und Mund trug — und der Grund
-  // ist genau das: EIGENE Werte, aber unabhaengig voneinander gewaehlt.
-  //
-  // So funktioniert ein Gesicht nicht. Eine Miene ist ein Zusammenspiel: Wer lacht, kneift die
-  // Augen zusammen und hebt die Brauen; wer staunt, reisst die Augen auf UND oeffnet den Mund.
-  // Eine halbgeschlossene Lidstellung mit hochgezogenen Brauen und einem breiten Lachen ist
-  // keine Emotion, sondern drei Einstellungen — und genau so sah es aus.
-  //
-  // Deshalb gibt es jetzt zehn benannte Mienen. Eine Figur waehlt EINE davon; Lid, Braue,
-  // Blickrichtung und Mund kommen zusammen daraus. Zehn stimmige Ausdruecke sind mehr wert als
-  // hundert Kombinationen, von denen neunzig nach nichts aussehen.
-  // Runde 94: Zehn Mienen auf zweiundzwanzig Figuren heisst, dass die Haelfte sich wiederholt —
-  // und zwei Figuren mit derselben Miene unterscheidet nur noch die Frisur. Jetzt achtzehn, und
-  // jede Figur traegt eine EIGENE. Dazu zwei neue Stellschrauben, die es vorher nicht gab:
-  //
-  //   oeffnung — wie weit das Lid steht, als Zahl statt als Auswahl aus vier Namen. Der
-  //              Unterschied zwischen 0,74 und 0,86 ist im Gesicht deutlich sichtbar und liegt
-  //              zwischen den alten Stufen, nicht auf ihnen.
-  //   hoehe    — wohin die Iris im Auge steht, senkrecht. Nach oben heisst versonnen, nach
-  //              unten heisst zurueckhaltend. Das ist der billigste Ausdruck ueberhaupt: eine
-  //              Verschiebung um ein halbes Mass, und dasselbe Gesicht ist ein anderes.
-  var MIENEN = {
-    freude:        {blick:'zu',    braue:'hoch',    mund:'lachen'},
-    staunen:       {blick:'weit',  braue:'hoch',    mund:'o'},
-    neugier:       {blick:'offen', braue:'gehoben', mund:'schief', seite:1},
-    ruhe:          {blick:'halb',  braue:'weich',   mund:'sanft'},
-    nachdenklich:  {blick:'offen', braue:'schraeg', mund:'klein',  seite:-1},
-    schelmisch:    {blick:'schmal',braue:'gehoben', mund:'schief'},
-    zufrieden:     {blick:'zu',    braue:'weich',   mund:'laecheln'},
-    warm:          {blick:'offen', braue:'weich',   mund:'laecheln', oeffnung:1.02},
-    wach:          {blick:'weit',  braue:'neutral', mund:'breit'},
-    versonnen:     {blick:'halb',  braue:'hoch',    mund:'klein',  seite:1, hoehe:-1},
-    // Die acht neuen.
-    stolz:         {blick:'offen', braue:'neutral', mund:'klein',  oeffnung:0.92, hoehe:-0.6},
-    skeptisch:     {blick:'offen', braue:'gehoben', mund:'schmollen', seite:-1, oeffnung:0.84},
-    verschmitzt:   {blick:'schmal',braue:'weich',   mund:'zahn'},
-    traeumerisch:  {blick:'halb',  braue:'hoch',    mund:'sanft', hoehe:-1.2, seite:-1},
-    entschlossen:  {blick:'offen', braue:'schraeg', mund:'strich', oeffnung:0.96},
-    begeistert:    {blick:'weit',  braue:'hoch',    mund:'breit', oeffnung:1.34},
-    scheu:         {blick:'halb',  braue:'weich',   mund:'klein', seite:-1, hoehe:1, oeffnung:0.78},
-    belustigt:     {blick:'schmal',braue:'neutral', mund:'breit'}
-  };
-  // Setzt die vier Werte aus der Miene, ohne ausdrueckliche Angaben zu ueberschreiben: Der
-  // Dackel traegt seine Flecken statt Brauen, und das soll die Miene nicht zurueckholen.
-  function mieneAnwenden(o){
-    var m = MIENEN[o.miene];
-    if (!m) return o;
-    if (o.blick == null) o.blick = m.blick;
-    if (o.braue == null) o.braue = m.braue;
-    if (o.mund  == null) o.mund  = m.mund;
-    if (o.seite == null && m.seite != null) o.seite = m.seite;
-    if (o.hoehe == null && m.hoehe != null) o.hoehe = m.hoehe;
-    if (o.oeffnung == null && m.oeffnung != null) o.oeffnung = m.oeffnung;
-    return o;
   }
 
   // Runde 116: ohrSpitze faerbt die oberen Enden (Fuchs: schwarz), ohrFarbe das ganze Ohr anders als
@@ -632,38 +341,79 @@
            s('M25.6 '+y+' Q31.4 '+y+' 36.2 '+(y+0.8), 0.62, 0.55) +
            s('M25.2 '+(y+1.2)+' Q30.6 '+(y+2.4)+' 34.8 '+(y+3.6), 0.5, 0.45);
   }
-  // Die Braue eines Tieres, dritter und letzter Anlauf.
-  //
-  // Zuerst stand hier ein glatter Bogen — das ist eine MENSCHENbraue und auf einem Fuchs das
-  // deutlichste Zeichen dafuer, dass hier gezeichnet und nicht beobachtet wurde. Dann drei
-  // kurze Striche je Seite als "Fellbueschel"; im vergroesserten Bild las sich das als
-  // Strichliste ueber dem Auge.
-  //
-  // Was ein Tier ueber dem Auge wirklich hat, ist kein Strich, sondern eine STELLE: eine
-  // Partie Fell, die etwas dunkler oder heller liegt. Genau das ist es jetzt — ein weicher
-  // Fleck ohne Rand, dessen Hoehe und Neigung die Brauenstellung der Miene tragen. Damit
-  // bleibt der Ausdruck lesbar, ohne dass irgendwo eine Linie steht.
-  var FIG_TBRAUE_LAUF = 0;
-  function figTierbrauen(art, fell){
-    if (!art || art === 'keine') return '';
-    var id = FIG_UID + 'tb' + (FIG_TBRAUE_LAUF++);
-    var f = figTon(fell, 0.66);
-    // Neigung und Hoehe je Stellung. Gehoben zieht die Innenseite hoch und den Fleck nach oben,
-    // schraeg kippt ihn zur Aussenseite, weich laesst ihn tief und flach liegen.
-    var dreh = art === 'gehoben' ? -13 : (art === 'schraeg' ? 12 : (art === 'weich' ? -5 : 0));
-    var hoch = art === 'gehoben' ? -0.9 : (art === 'weich' ? 0.4 : 0);
-    var fleck = function(x, sp){
-      return '<ellipse cx="'+x+'" cy="'+(16.7 + hoch)+'" rx="3.2" ry="1.25" transform="rotate('+
-             (dreh * sp)+' '+x+' '+(16.7 + hoch)+')" fill="url(#'+id+')"/>';
-    };
-    return '<defs><radialGradient id="'+id+'">'+
-             '<stop offset="0" stop-color="'+f+'" stop-opacity="0.42"/>'+
-             '<stop offset="1" stop-color="'+f+'" stop-opacity="0"/>'+
-           '</radialGradient></defs>' + fleck(15, 1) + fleck(25, -1);
-  }
 
+  // ---------- Das Tierauge (Runde 117) ----------
+  //
+  // Rueckmeldung des Inhabers: "Die Avatare sehen noch nicht aus wie die echten Tiere — z. B. die
+  // Augen sind die von Menschen." Woertlich zutreffend: Die Tiere bekamen bis hierher figAuge(),
+  // das fuer die Menschenfiguren gebaut war — weisser Augapfel, farbige Iris mit Limbusring, kleine
+  // runde Pupille, Wimpernkante. Genau das liest sich als Mensch.
+  //
+  // Ein Tierauge ist anders gebaut, und die Unterschiede sind die, die man sieht:
+  //   1. Kein Weiss. Bei Fuchs, Katze, Hund, Baer, Reh und Hase ist die sichtbare Oeffnung fast
+  //      ganz Iris. Der weisse Augapfel ist das menschlichste Merkmal ueberhaupt.
+  //   2. Ein dunkler Lidrand rings um das Auge, bei Fuchs und Katze besonders deutlich.
+  //   3. Die Iris ist je Tier verschieden: Fuchs bernstein, Katze gruengelb — beide mit
+  //      Schlitzpupille —, Hund, Baer, Reh und Hase fast schwarzbraun, sodass sich die Pupille
+  //      kaum abhebt. Das ist bei diesen Tieren echt so und der Grund fuer ihren "dunklen Blick".
+  //   4. Die Form: mandelfoermig und schraeg bei Fuchs und Katze, rund bei den uebrigen.
+  // Was vom Animoji-Stil bleibt, ist der Glanz: Lichtpunkt und Fensterlicht — ein feuchtes Auge
+  // glaenzt bei jedem Tier.
+  var FIG_TAUGE_LAUF = 0;
+  function figTierAuge(x, y, r, o, spiegel){
+    var id = FIG_UID + 'ta' + (FIG_TAUGE_LAUF++);
+    var iris = o.iris || '#3A2416';
+    var mandel = o.augenForm === 'mandel';
+    var rx = r * (mandel ? 1.16 : 1.0), ry = r * (mandel ? 0.80 : 0.94);
+    var neig = mandel ? -16 * spiegel : 0;            // aeusserer Winkel hoeher
+    var form = function(sx, sy){
+      var a = rx * sx, b = ry * sy;
+      return mandel
+        ? 'M'+(x-a).toFixed(2)+' '+(y+b*0.10).toFixed(2)+
+          ' Q'+(x-a*0.30).toFixed(2)+' '+(y-b*1.35).toFixed(2)+' '+(x+a).toFixed(2)+' '+(y-b*0.10).toFixed(2)+
+          ' Q'+(x+a*0.30).toFixed(2)+' '+(y+b*1.35).toFixed(2)+' '+(x-a).toFixed(2)+' '+(y+b*0.10).toFixed(2)+' Z'
+        : 'M'+(x-a).toFixed(2)+' '+y.toFixed(2)+' A'+a.toFixed(2)+' '+b.toFixed(2)+' 0 1 1 '+(x+a).toFixed(2)+' '+y.toFixed(2)+
+          ' A'+a.toFixed(2)+' '+b.toFixed(2)+' 0 1 1 '+(x-a).toFixed(2)+' '+y.toFixed(2)+' Z';
+    };
+    var pupille = o.pupille === 'schlitz'
+      ? '<ellipse cx="'+x+'" cy="'+y+'" rx="'+(r*0.17).toFixed(2)+'" ry="'+(ry*0.92).toFixed(2)+'" fill="#0A0605"/>'
+      : '<circle cx="'+x+'" cy="'+y+'" r="'+(r*0.50).toFixed(2)+'" fill="#0A0605" opacity=".92"/>';
+    return '<g transform="rotate('+neig+' '+x+' '+y+')">'+
+      '<defs><radialGradient id="'+id+'" cx="0.5" cy="0.62" r="0.66">'+
+        '<stop offset="0" stop-color="'+figTon(iris, 1.30)+'"/><stop offset="0.6" stop-color="'+iris+'"/>'+
+        '<stop offset="1" stop-color="'+figTon(iris, 0.45)+'"/></radialGradient>'+
+        '<clipPath id="'+id+'c"><path d="'+form(1,1)+'"/></clipPath></defs>'+
+      // Der Lidrand: dieselbe Form, groesser und dunkel, HINTER dem Auge — eine Flaeche, kein Strich.
+      '<path d="'+form(1.18, 1.26)+'" fill="#1A120E" opacity=".88"/>'+
+      '<path d="'+form(1,1)+'" fill="url(#'+id+')"/>'+
+      '<g clip-path="url(#'+id+'c)">'+ pupille +
+        // Der Schatten des Oberlids auf dem Auge: Er setzt es in die Hoehle, statt es aufzukleben.
+        '<ellipse cx="'+x+'" cy="'+(y - ry*0.95).toFixed(2)+'" rx="'+(rx*1.1).toFixed(2)+'" ry="'+(ry*0.55).toFixed(2)+'" fill="#000000" opacity=".16"/>'+
+        '<ellipse cx="'+(x - rx*0.15).toFixed(2)+'" cy="'+(y - ry*0.30).toFixed(2)+'" rx="'+(rx*0.70).toFixed(2)+'" ry="'+(ry*0.32).toFixed(2)+'" fill="#FFFFFF" opacity=".18"/>'+
+      '</g>'+
+      '<circle cx="'+(x - rx*0.34).toFixed(2)+'" cy="'+(y - ry*0.36).toFixed(2)+'" r="'+(r*0.27).toFixed(2)+'" fill="#FFFFFF" opacity=".95"/>'+
+      '<circle cx="'+(x + rx*0.34).toFixed(2)+'" cy="'+(y + ry*0.32).toFixed(2)+'" r="'+(r*0.10).toFixed(2)+'" fill="#FFFFFF" opacity=".6"/>'+
+    '</g>';
+  }
+  function figTierAugen(x1, x2, y, r, o){
+    return '<g class="fig-augen">' + figTierAuge(x1, y, r, o, 1) + figTierAuge(x2, y, r, o, -1) + '</g>';
+  }
+  // ---------- Das Tiermaul (Runde 117) ----------
+  // Der gebogene Laechelmund kam ebenfalls von den Menschen. Fuchs, Katze, Hund, Baer, Hase und Reh
+  // haben ein gespaltenes Maul: von der Nase ein kurzer Strich nach unten (der steht schon in
+  // figNase), dann zwei Boegen nach links und rechts — das "ω". Hunde mit Zunge zeigen es geoeffnet.
+  function figTierMaul(cx, ny, o){
+    var y = ny + 2.6, w = o.maulBreite || 2.5;
+    var linie = '<path d="M'+(cx-w)+' '+(y+0.9)+' Q'+(cx-w*0.45)+' '+(y+1.6)+' '+cx+' '+y+
+                ' Q'+(cx+w*0.45)+' '+(y+1.6)+' '+(cx+w)+' '+(y+0.9)+'" stroke="#2A1A14" stroke-width="0.85" '+
+                'fill="none" stroke-linecap="round" opacity=".85"/>';
+    if (!o.zunge) return linie;
+    // Hechelnd: das Maul offen, die Zunge haengt heraus — so sieht ein froehlicher Hund wirklich aus.
+    return '<path d="M'+(cx-w)+' '+(y+0.8)+' Q'+cx+' '+(y+4.6)+' '+(cx+w)+' '+(y+0.8)+' Q'+cx+' '+(y+1.8)+' '+(cx-w)+' '+(y+0.8)+' Z" fill="#3A1A16"/>'+
+           '<path d="M'+(cx-1.3)+' '+(y+2.0)+' Q'+cx+' '+(y+6.0)+' '+(cx+1.3)+' '+(y+2.0)+' Z" fill="#E4899A"/>'+
+           '<path d="M'+cx+' '+(y+2.6)+' L'+cx+' '+(y+4.4)+'" stroke="#C86A7C" stroke-width="0.4" opacity=".7"/>' + linie;
+  }
   function figTier(o){
-    mieneAnwenden(o);
     var g = FIG_UID + 'fell', gk = FIG_UID + 'fkern', gs = FIG_UID + 'schn';
     // Runde 115: drei weitere Verlaeufe fuer das Animoji-Volumen — Stirnglanz, Koerper, und die
     // Schablone des Kopfes, damit der Glanz nirgends ueber den Umriss hinauslaeuft.
@@ -714,8 +464,7 @@
       // Runde 115: der Stirnglanz, in die Kopfform geschnitten.
       '<g clip-path="url(#'+gc+')"><ellipse cx="15.2" cy="12.6" rx="7.2" ry="4.4" fill="url(#'+gg+')" '+
         'transform="rotate(-18 15.2 12.6)"/></g>' +
-      (o.wange ? '<ellipse cx="9.8" cy="24.5" rx="3" ry="2.2" fill="'+o.wange+'" opacity=".75"/>'+
-                 '<ellipse cx="30.2" cy="24.5" rx="3" ry="2.2" fill="'+o.wange+'" opacity=".75"/>' : '') +
+      // Runde 117: Die rosa Wangen sind entfallen — ein Mittel der Comicfigur, keines Tieres.
       // Runde 99: Die Schnauze hatte eine harte Ellipsenkante — ein heller Fleck mit Rand.
       // Bei einem Tier geht das helle Fell der Schnauze weich ins dunklere ueber. Der Verlauf
       // haelt die Farbe bis 72 Prozent und blendet dann aus; erst dadurch waechst die Schnauze
@@ -747,15 +496,17 @@
       // Katze war er das deutlichste Zeichen dafuer, dass hier etwas gezeichnet und nicht
       // beobachtet wurde. Die Miene bleibt trotzdem lesbar, weil die Bueschel derselben
       // Stellung folgen — nur eben in Fellfarbe, dreigeteilt und halb so kraeftig.
-      figTierbrauen(o.braue, o.fell) +
+      // Runde 117: keine Brauen mehr. Auch Fellbueschel in der Stellung einer Braue geben einem Tier
+      // ein menschliches Gesicht; echte Fuechse, Katzen und Baeren haben dort nichts. Abzeichen, die
+      // es wirklich gibt (die lohfarbenen Punkte des Dackels), stehen in seiner maske.
+
       // Runde 115: die Augen 30 % groesser. Animoji-Augen sind gross und glaenzend; bei 2,3
       // Einheiten auf einem 23 Einheiten breiten Kopf blieben sie Knoepfe. 15 % waren im ersten
       // Anlauf zu wenig, um im Bild ueberhaupt aufzufallen.
-      figAugen(15, 25, 20, (o.auge || 2.3) * 1.30, {blick:o.blick, iris:o.iris || figTon(o.fell, 0.55), seite:o.seite, hoehe:o.hoehe, oeffnung:o.oeffnung, haut:o.schnauze, grossIris:true, pupille:o.pupille}) +
+      figTierAugen(15, 25, 20.2, (o.auge || 2.3) * 1.20, {iris:o.iris || '#3A2416', pupille:o.pupille, augenForm:o.augenForm}) +
       (o.schnurrhaare ? figSchnurrhaare(sn.cy - 0.6, figTon(o.schnauze, 1.18)) : '') +
       figNase(o.nase || 'oval', 20, sn.cy - sn.ry*0.42, o.schnauze, o.naseFarbe) +
-      figMund(o.mund, FIG_INK, 1.1, o.schnauze) +
-      (o.zunge ? '<path d="M18.6 29.4 Q20 32.6 21.4 29.4 Z" fill="#E4899A"/>' : '');
+      figTierMaul(20, sn.cy - sn.ry*0.42, o);
   }
 
 
@@ -772,31 +523,31 @@
   // zuerst nach einem Fuchs. Jede traegt jetzt eine eigene Miene; dieselbe Frisur mit einem
   // anderen Mund ist ein anderer Mensch.
   var FIGUREN = [
-    {id:'fuchs', feld:'#F6E6D8', svg:function(){ return figTier({form:'spitz', nase:'dreieck', schnurrhaare:true, miene:'schelmisch', ohr:'spitz', fell:'#D97A45', innen:'#F5E2D2', schnauze:'#F8EFE6',
+    {id:'fuchs', feld:'#F6E6D8', svg:function(){ return figTier({iris:'#C8862E', augenForm:'mandel', form:'spitz', nase:'dreieck', schnurrhaare:true, ohr:'spitz', fell:'#D97A45', innen:'#F5E2D2', schnauze:'#F8EFE6',
                   // Runde 116, am echten Rotfuchs: schwarze Ohrspitzen, weisse Wangen bis zum Kinn,
                   // weisse Brust, Schlitzpupillen.
                   ohrSpitze:'#2A211C', kinn:'#F8EFE6', brust:'#F8EFE6', pupille:'schlitz',
-                  wange:'#E9A177', iris:'#7A4520'}); }},
-    {id:'katze', feld:'#E6E4EA', svg:function(){ return figTier({form:'katze', nase:'dreieck', schnurrhaare:true, miene:'zufrieden', ohr:'spitz', fell:'#8E8B95', innen:'#E3C8CE', schnauze:'#F1EFF3',
+                  wange:'#E9A177',}); }},
+    {id:'katze', feld:'#E6E4EA', svg:function(){ return figTier({iris:'#B5BD3E', augenForm:'mandel', form:'katze', nase:'dreieck', schnurrhaare:true, ohr:'spitz', fell:'#8E8B95', innen:'#E3C8CE', schnauze:'#F1EFF3',
                   // Runde 116, an der echten getigerten Hauskatze: Schlitzpupillen, rosa Nase und das
                   // "M" auf der Stirn — drei weiche, spitz zulaufende Streifen, Flaechen statt Striche.
                   pupille:'schlitz', naseFarbe:'#D98E98',
                   maske:'<g fill="#5E5B66" opacity=".55"><path d="M18.9 9.6 Q20 8.8 21.1 9.6 L20.4 15.2 Q20 15.6 19.6 15.2 Z"/>'+
                         '<path d="M14.6 10.6 Q15.8 10 16.6 10.9 L17.4 15.4 Q17 15.8 16.6 15.4 Z"/>'+
                         '<path d="M25.4 10.6 Q24.2 10 23.4 10.9 L22.6 15.4 Q23 15.8 23.4 15.4 Z"/></g>',
-                  wange:'#C7A9B2', iris:'#7A8C4A'}); }},
-    {id:'baer',  feld:'#EFE3D6', svg:function(){ return figTier({form:'breit', nase:'breit', miene:'ruhe', ohr:'rund',  fell:'#A5714B', innen:'#D9A87F', schnauze:'#E7CDB2', iris:'#4A3220'}); }},
-    {id:'panda', feld:'#D8DAD6', svg:function(){ return figTier({form:'breit', nase:'breit', miene:'wach', ohr:'rund',  fell:'#F4F3F1', innen:'#2A211C', schnauze:'#FFFFFF', auge:2.15, iris:'#3A302A',
+                  wange:'#C7A9B2',}); }},
+    {id:'baer',  feld:'#EFE3D6', svg:function(){ return figTier({auge:1.85, iris:'#3A2416', form:'breit', nase:'breit', ohr:'rund',  fell:'#A5714B', innen:'#D9A87F', schnauze:'#E7CDB2',}); }},
+    {id:'panda', feld:'#D8DAD6', svg:function(){ return figTier({iris:'#2A1A12', form:'breit', nase:'breit', ohr:'rund',  fell:'#F4F3F1', innen:'#2A211C', schnauze:'#FFFFFF', auge:1.85,
                   // Runde 116, am echten Grossen Panda: Die Ohren sind GANZ schwarz (vorher weiss mit
                   // schwarzer Mitte), die Schultern tragen das schwarze Band, und die Augenflecken
                   // sind schraege Tropfen, die nach aussen unten auslaufen — nicht nach innen.
                   ohrFarbe:'#2A211C', koerper:'#2A211C',
                   maske:'<ellipse cx="14.6" cy="20.8" rx="4.3" ry="5.6" transform="rotate(28 14.6 20.8)" fill="#2A211C"/>'+
                         '<ellipse cx="25.4" cy="20.8" rx="4.3" ry="5.6" transform="rotate(-28 25.4 20.8)" fill="#2A211C"/>'}); }},
-    {id:'hase',  feld:'#F1E7EC', svg:function(){ return figTier({form:'schmal', nase:'klein', schnurrhaare:true, miene:'scheu', ohr:'lang',  fell:'#E4DAD3', innen:'#E7B9C4', schnauze:'#F7F1EE',
+    {id:'hase',  feld:'#F1E7EC', svg:function(){ return figTier({iris:'#3A2420', form:'schmal', nase:'klein', schnurrhaare:true, ohr:'lang',  fell:'#E4DAD3', innen:'#E7B9C4', schnauze:'#F7F1EE',
                   naseFarbe:'#D98E98',
-                  wange:'#EFC3CD', iris:'#8C5A66'}); }},
-    {id:'reh',   feld:'#EEE7D9', svg:function(){ return figTier({form:'schmal', nase:'klein', miene:'versonnen', ohr:'geweih',fell:'#C99A6A', innen:'#7A5B3E', schnauze:'#EFE0CD', iris:'#3E2C1C',
+                  wange:'#EFC3CD',}); }},
+    {id:'reh',   feld:'#EEE7D9', svg:function(){ return figTier({iris:'#24160E', form:'schmal', nase:'klein', ohr:'geweih',fell:'#C99A6A', innen:'#7A5B3E', schnauze:'#EFE0CD',
                   // Runde 116, am echten Reh: Hier standen weisse Punkte auf der Stirn. Die gibt es
                   // nicht — Flecken traegt nur das Kitz, am Ruecken, und nie zusammen mit einem
                   // Geweih. Was das Reh tatsaechlich kennzeichnet, ist die helle Kehle. Die rosa
@@ -804,12 +555,12 @@
                   kinn:'#F2E6D3', kinnForm:'kehle', brust:'#F2E6D3'}); }},
     // Zwei Hunde. Beide teilen den Kopf-Bauplan und unterscheiden sich in Fell, Schnauze und
     // Miene — genau das, was sie auch in echt unterscheidet.
-    {id:'dackel', feld:'#F0E3D2', svg:function(){ return figTier({form:'hund', nase:'dreieck', miene:'nachdenklich', braue:'keine', ohr:'schlapp', fell:'#8C5A33', innen:'#6B4324',
-                  schnauze:'#C08B5C', zunge:true, iris:'#4A2E16',
+    {id:'dackel', feld:'#F0E3D2', svg:function(){ return figTier({iris:'#3A2210', form:'hund', nase:'dreieck', braue:'keine', ohr:'schlapp', fell:'#8C5A33', innen:'#6B4324',
+                  schnauze:'#C08B5C', zunge:true,
                   maske:'<ellipse cx="20" cy="19" rx="6.4" ry="4.4" fill="#A96E3F" opacity=".55"/>'+
                         '<g fill="#D9A76F" opacity=".85"><ellipse cx="14.4" cy="16.6" rx="2.2" ry="1.6"/><ellipse cx="25.6" cy="16.6" rx="2.2" ry="1.6"/></g>'}); }},
-    {id:'retriever', feld:'#F7EBD6', svg:function(){ return figTier({form:'hund', nase:'dreieck', miene:'belustigt', ohr:'schlapp', fell:'#E3B26B', innen:'#C08F4C', schnauze:'#F6E3C4',
-                  zunge:true, iris:'#6B4520'}); }},
+    {id:'retriever', feld:'#F7EBD6', svg:function(){ return figTier({iris:'#4A2C14', form:'hund', nase:'dreieck', ohr:'schlapp', fell:'#E3B26B', innen:'#C08F4C', schnauze:'#F6E3C4',
+                  zunge:true,}); }},
     // Drei, die nicht in den Kopf-Bauplan passen und deshalb eigene Formen bekommen.
     {id:'eule', feld:'#E3E7E4', svg:function(){
        return '<path d="M20 30 C13.6 30 8.6 33.8 7.4 40 L32.6 40 C31.4 33.8 26.4 30 20 30 Z" fill="#8B7355"/>'+
@@ -819,7 +570,7 @@
               '<circle cx="14.6" cy="20" r="6.2" fill="#F3EADD"/><circle cx="25.4" cy="20" r="6.2" fill="#F3EADD"/>'+
               // Die Eule sieht als Einzige den Betrachter direkt und weit an — das ist das
               // Einzige, was eine Eule tut.
-              figAugen(14.6, 25.4, 20, 3.1, {blick:'weit', iris:'#D89A45', grossIris:true})+
+              figTierAugen(14.6, 25.4, 20, 2.9, {iris:'#E8A030'})+
               '<path d="M20 24.5 L16.8 29 L23.2 29 Z" fill="#D89A45"/>'+
               '<path d="M11 30 Q20 34.5 29 30" stroke="#8B7355" stroke-width="1.6" fill="none" stroke-linecap="round"/>'; }},
     {id:'wal', feld:'#DCE7EE', svg:function(){
@@ -831,7 +582,7 @@
               '<path d="M8 26 Q19 33 30 26 Q19 30 8 26 Z" fill="#CFE2EE"/>'+
               '<ellipse cx="19" cy="27" rx="10" ry="5.5" fill="#CFE2EE"/>'+
               '<path d="M9.6 24.6 Q12.4 26.6 15.4 24.8" stroke="'+FIG_INK+'" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".7"/>'+
-              '<g class="fig-augen">'+figAuge(13, 21, 2, {blick:'schmal', iris:'#2E4E66', grossIris:true})+'</g>'; }},
+              '<g class="fig-augen">'+figTierAuge(13, 21, 1.4, {iris:'#1E2A30'}, 1)+'</g>'; }},
     {id:'goldfisch', feld:'#FCEAD5', svg:function(){
        return '<path d="M6 22 L1.5 15 L2.4 29 Z" fill="#E8933C"/>'+
               '<path d="M20 9.5 Q23 4 26.5 10.5 Z" fill="#F2AE5C" opacity=".9"/>'+
@@ -839,9 +590,12 @@
               figVolumen(21, 22, 14, 11)+
               '<path d="M15 27.5 Q21 31.5 27.5 27" stroke="#D97C25" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".55"/>'+
               '<path d="M22.5 30 Q25.5 34.5 29 30 Z" fill="#F2AE5C" opacity=".9"/>'+
-              '<path d="M25.6 24.6 Q28 26.6 30.4 24.8" stroke="'+FIG_INK+'" stroke-width="1.2" fill="none" stroke-linecap="round"/>'+
-              '<circle cx="26.5" cy="19.5" r="3.6" fill="#FFFFFF"/>'+
-              '<g class="fig-augen">'+figAuge(26.5, 19.5, 2, {blick:'offen', seite:1, iris:'#3A2A1A', grossIris:true})+'</g>'+
+              // Runde 117: Hier stand ein Laechelbogen an der Seite. Ein Goldfisch hat ein kleines,
+              // rundes Maul vorn an der Spitze — der Fisch schaut nach rechts, also dort.
+              '<ellipse cx="34.3" cy="23.6" rx="0.9" ry="1.1" fill="#9A4A18"/>'+
+              // Runde 117: Hier lag eine weisse Scheibe hinter dem Auge — ein Augapfel wie beim Menschen.
+              // Ein Goldfischauge hat einen goldenen Ring um die Pupille; den traegt jetzt die Iris.
+              '<g class="fig-augen">'+figTierAuge(26.5, 19.5, 2.2, {iris:'#C8A040'}, 1)+'</g>'+
               '<g fill="#FFFFFF" opacity=".5"><circle cx="9.5" cy="12" r="1.5"/><circle cx="13.5" cy="8.5" r="1"/></g>'; }},
     {id:'schildkroete', feld:'#DFEADD', svg:function(){
        return '<ellipse cx="8.5" cy="26" rx="4" ry="3.2" fill="#8FBE7E"/><ellipse cx="31.5" cy="26" rx="4" ry="3.2" fill="#8FBE7E"/>'+
@@ -851,8 +605,10 @@
               figVolumen(20, 24, 14, 10.5)+
               figPlastisch(20, 13, 7, 6.4, '#8FBE7E')+
               '<ellipse cx="20" cy="11.2" rx="5" ry="2.8" fill="#FFFFFF" opacity=".15"/>'+
-              figAugen(17.4, 22.6, 12.4, 1.6, {blick:'offen', iris:'#2E4A22', grossIris:true})+
-              '<path d="M18 15.8 Q20 17.2 22 15.8" stroke="'+FIG_INK+'" stroke-width="1.1" fill="none" stroke-linecap="round"/>'; }}
+              figTierAugen(17.2, 22.8, 12.2, 1.35, {iris:'#3A3418'})+
+              // Runde 117: Schildkroeten laecheln nicht — ihr Mund ist eine gerade, leicht nach unten
+              // gezogene Schnabelkante.
+              '<path d="M17.6 15.6 Q20 16.4 22.4 15.6" stroke="#2E3A1E" stroke-width="0.8" fill="none" stroke-linecap="round" opacity=".8"/>'; }}
   ];
 
   // ---------- Die Feldfarbe im Dunkelmodus ----------

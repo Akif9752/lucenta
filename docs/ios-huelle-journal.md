@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 116)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 117)
 
 **Lies NUR diesen Block.** Er ist so geschrieben, dass er allein genuegt; die Eintraege darunter
 sind Begruendungen zum Nachschlagen, keine Pflichtlektuere. Dazu `tools/xcode-CLAUDE.md` (liegt als
@@ -375,6 +375,49 @@ Fluessigkeit). Runde 109: `3eb06f4` (die drei zurueckgestellten Punkte). Runde 1
 `03f60b7` (Einzeichnen + Achse).
 Der Arbeitsbaum ist sauber — bis auf `ios/App/App.xcworkspace/xcshareddata/`, das schon seit
 mehreren Runden unversioniert dalag und absichtlich nicht mitcommittet wurde.
+
+---
+
+## Runde 117 — die Tiere hatten Menschenaugen
+
+Rueckmeldung des Inhabers: „Die Avatare sehen noch nicht aus wie die echten Tiere — z. B. die
+Augen sind die von Menschen usw."
+
+**Woertlich zutreffend, und im Code genau benennbar.** Die Tiere bekamen bis hierher `figAuge()`,
+das fuer die Menschenfiguren gebaut war: weisser Augapfel, farbige Iris mit Limbusring, kleine
+runde Pupille, Wimpernkante, Lidfalte. Runde 115 hatte es vergroessert und glaenzender gemacht,
+Runde 116 Schlitzpupillen hineingesetzt — beides Arbeit an einem Menschenauge. Dazu kam vom
+Menschen: geschlossene „^ ^"-Lachaugen, Brauen (seit Runde 99 als Fellbueschel), der gebogene
+Laechelmund und rosa Wangen.
+
+| menschlich, beim Tier falsch | echt beim Tier |
+|---|---|
+| weisser Augapfel | Auge fast ganz Iris, dunkler Lidrand |
+| Lachaugen „^ ^" | offene Augen |
+| Brauen aus Fell | keine Brauen |
+| Laechelmund | gespaltenes „ω"-Maul unter der Nase |
+| rosa Wangen | gibt es bei keinem dieser Tiere |
+
+**Geaendert:** Ein eigenes `figTierAuge` — kein Weiss, dunkler Lidrand als Flaeche hinter dem
+Auge, Iris je Tier (Fuchs bernstein, Katze gruengelb, beide mandelfoermig, schraeg und mit
+Schlitzpupille; Hund, Baer, Reh, Hase, Panda fast schwarzbraun und rund), dazu Glanzpunkt und
+Fensterlicht aus dem Animoji-Stil. Ein eigenes `figTierMaul` — das „ω", bei den Hunden geoeffnet
+mit Zunge. Brauen und Wangen entfallen. Baer und Panda haben kleinere Augen, wie das echte Tier.
+
+Auch die Sonderformen: Eule mit gelben Augen ohne Augapfel (der helle Gesichtsschleier bleibt,
+den gibt es wirklich), Wal und Schildkroete mit kleinen dunklen Augen, der Goldfisch ohne die
+weisse Scheibe hinter dem Auge und mit einem kleinen runden Maul vorn statt eines Laechelbogens
+an der Seite, die Schildkroete mit einer Schnabelkante statt eines Laechelns. Der lange Mundbogen
+des Wals bleibt; Wale haben ihn.
+
+**Aufgeraeumt, gezaehlt statt vermutet:** `figAuge`, `figAugen`, `figMund`, `figTierbrauen`,
+`mieneAnwenden` und die Tabelle `MIENEN` hatten danach keinen Aufruf mehr — `13-figuren.js`
+980 -> 659 Zeilen. Die Angaben `miene:` in der Tiertabelle sind mit entfernt; sie hatten keine
+Wirkung mehr.
+
+**Die Lehre, die hier teuer war:** Drei Runden haben am falschen Auge gearbeitet. Jede hat das
+Auge besser gemacht und keine hat gefragt, ob es das richtige ist. Dieselbe Form wie bei den
+Menschenfiguren in Runde 111 — dort war es die Proportion, hier der Bauteil selbst.
 
 ---
 
