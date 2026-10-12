@@ -24,8 +24,8 @@ import Capacitor
 /// DOM-Elementen, nicht ueber diesen ScrollView — sie bleiben von beidem unberuehrt.
 ///
 /// 3. **Themengerechte Hintergrundfarbe fuer die Ladeluecke.** Vom Geraet gemeldet: Beim Start ein
-///    paar Sekunden schwarz. Ursache ist nicht die LaunchScreen (die zeigt das weisse Standard-
-///    Splashbild), sondern die Luecke danach — iOS zeigt bereits das App-Fenster mit der WKWebView,
+///    paar Sekunden schwarz. Ursache hier ist die Luecke nach dem Startbild (ein zweites Schwarz
+///    VOR dem Startbild kam vom zu grossen Splash-Bild, Runde 122) — iOS zeigt bereits das App-Fenster mit der WKWebView,
 ///    die die ~1,5-MB-Ein-Datei samt eingebetteter Schriften aber noch nicht gezeichnet hat; eine
 ///    ungemalte WebView ist im Dunkelmodus schwarz. Wir faerben View/WebView/ScrollView auf die
 ///    Papierfarbe der App (hell #F2F2F7, dunkel #000000, passend zu --paper; seit Runde 120 Apples Farbsystem), damit die Wartezeit
@@ -60,6 +60,7 @@ class MainViewController: CAPBridgeViewController {
         bridge?.registerPluginInstance(LucentaKaeufePlugin())
         transparenzVorzeichnen()
         transparenzBeobachten()
+        themaEmpfangen()
         #if DEBUG
         entwicklungsbauMelden()
         #endif
@@ -102,6 +103,44 @@ class MainViewController: CAPBridgeViewController {
         view.backgroundColor = papierfarbe
         webView?.backgroundColor = papierfarbe
         webView?.scrollView.backgroundColor = papierfarbe
+    }
+
+    // MARK: - Das in der App gewaehlte Farbschema (Runde 122)
+    //
+    // Am Simulator gemessen: Steht die App auf "Dunkel" und das System auf "Hell", zeigten
+    // Startbild und Ladeluecke ~2 s lang die HELLE Papierfarbe, danach sprang die Seite auf Dunkel.
+    // Die Wahl liegt in localStorage, und das kann die Huelle vor dem Laden nicht lesen.
+    //
+    // Deshalb meldet die Seite jede Wahl (`saveThemeMode()` in 03-speicherung.js, auch beim Start)
+    // ueber den Empfaenger `lucentaThema`. Die Huelle legt sie in UserDefaults ab und setzt
+    // `overrideUserInterfaceStyle` am Fenster — `SceneDelegate` tut das beim naechsten Start, bevor
+    // irgendetwas gezeichnet wird. Damit folgen Plugin-Splash (dieselbe Storyboard-Datei mit der
+    // dynamischen Farbe "Papier"), `papierfarbe` und die WebView der Wahl in der App.
+    //
+    // Was das NICHT erreicht: das allererste Startbild, das iOS selbst zeigt, bevor die App laeuft.
+    // Das richtet sich nach dem System, und daran kommt keine App vorbei.
+
+    /// Schluessel in UserDefaults; Werte wie in der Seite: "dark", "light", "system".
+    static let themaSchluessel = "lucenta_thema"
+
+    /// Der gespeicherte Stil fuer das Fenster. Ohne Eintrag (erster Start) folgt es dem System.
+    static func gespeicherterStil() -> UIUserInterfaceStyle {
+        switch UserDefaults.standard.string(forKey: themaSchluessel) {
+        case "dark": return .dark
+        case "light": return .light
+        default: return .unspecified
+        }
+    }
+
+    private func themaEmpfangen() {
+        guard let inhalt = webView?.configuration.userContentController else { return }
+        inhalt.add(ThemaEmpfaenger(ansicht: self), name: "lucentaThema")
+    }
+
+    fileprivate func themaUebernehmen(_ wert: String) {
+        guard ["dark", "light", "system"].contains(wert) else { return }
+        UserDefaults.standard.set(wert, forKey: Self.themaSchluessel)
+        view.window?.overrideUserInterfaceStyle = Self.gespeicherterStil()
     }
 
     // MARK: - "Transparenz reduzieren" (Runde 106)
@@ -185,5 +224,22 @@ class MainViewController: CAPBridgeViewController {
         guard let webView, webView.url != nil, !webView.isLoading else { return }
         let zeile = Self.transparenzZeile(UIAccessibility.isReduceTransparencyEnabled)
         webView.evaluateJavaScript("if (document.documentElement) { \(zeile) }")
+    }
+}
+
+/// Nimmt die Meldung `lucentaThema` der Seite an. Eine eigene Klasse, weil der
+/// `WKUserContentController` seinen Empfaenger fest haelt — haelte er die Ansicht selbst, gaebe
+/// es einen Kreis, der nie freigegeben wird. Die Ansicht steht deshalb hier nur schwach.
+private final class ThemaEmpfaenger: NSObject, WKScriptMessageHandler {
+    private weak var ansicht: MainViewController?
+
+    init(ansicht: MainViewController) {
+        self.ansicht = ansicht
+    }
+
+    func userContentController(_ userContentController: WKUserContentController,
+                               didReceive message: WKScriptMessage) {
+        guard let wert = message.body as? String else { return }
+        ansicht?.themaUebernehmen(wert)
     }
 }

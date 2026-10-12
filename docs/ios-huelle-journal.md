@@ -7,14 +7,14 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-11, nach Runde 121)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 122)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis.
 
 Bis Runde 120 stand hier noch der Stand nach Runde 111 — nur die Ueberschrift war mitgewandert.
-Dieser Block ist in Runde 121 neu geschrieben.
+Dieser Block ist in Runde 121 neu geschrieben und in Runde 122 nachgezogen.
 
 ### Wie der Inhaber arbeitet
 
@@ -32,6 +32,7 @@ Zwei Regeln, die er ausdruecklich gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 122 | (dieser) | Startbild nur noch Papierflaeche (kein Schwarz, kein beiges Quadrat), Huelle kennt das gewaehlte Farbschema (`lucentaThema` -> UserDefaults), Glas hell durchsichtiger, keine Silbentrennung in der Schublade |
 | 121 | `67b5e67` | Liquid Glass (Schublade, Knoepfe, Toast, Plus-Dialog), Startbewegung, Verlaufskurve nach Apple Health, Meeresschildkroete, Abbruch beim Wiederherstellen nimmt Lucenta+ nicht mehr weg |
 | 120 | `a3b504a` | Auswahl-Haekchen an Avatar/Hintergrund, Apples Farbsystem hell/dunkel, Federbewegung |
 | 119 | `355f90a` | Jedes Tier einzeln gezeichnet (keine Schablone), Fellfilter |
@@ -47,21 +48,24 @@ gemeinsame Werkzeuge `figTierAuge`, `figFellFilter`, `figLinear`, `figGlanz`); d
 `trendKurveSVG()` in `05-verlauf.js`; die Startbewegung in `startBewegung()` in
 `21-beta-rueckmeldung.js` mit `#startOverlay` in `index.body.html`.
 
-### Was offen ist — aus Runde 121, am Simulator gesehen
+### Was offen ist — nach Runde 122
 
-1. **Glas im Hellmodus** wirkt fast weiss (weisses Glas ueber #F2F2F7). Im Dunkelmodus ist es
-   deutlich Milchglas. Falls der Inhaber „noch durchsichtiger" auch fuer Hell meint: `--glas-zeile`
-   und `--glas` im HELLEN Block senken — aber Lesbarkeit am Simulator pruefen, nicht headless
-   (headless WebKit zeichnet `backdrop-filter` nicht).
-2. **Vor der Startbewegung** ~2 s Schwarz (WebView laedt; im Debug-Bau laenger), dann kurz der
-   native Startbildschirm **hell**, obwohl die App auf Dunkel steht — er folgt dem System. Nicht
-   aus Runde 121, nicht behoben. Am echten Geraet im Release-Bau beurteilen, bevor man es angeht.
-3. **Silbentrennung** in den Untertiteln der Schublade („Ergeb-nis", „Einordnun-gen") — wiederholt
-   im Simulator gesehen, nie Auftrag gewesen.
+Die drei offenen Punkte aus Runde 121 (Glas hell, Schwarz vor dem Start, Silbentrennung in der
+Schublade) sind in Runde 122 behoben und am Simulator nachgesehen — Einzelheiten im Eintrag
+Runde 122. Was davon bleibt:
+
+1. **Steht die App auf eine andere Farbe als das System**, zeigt das allererste Startbild die
+   Systemfarbe; danach folgt alles der App. Das Startbild zeichnet iOS, bevor die App laeuft —
+   daran kommt keine App vorbei. Nicht noch einmal suchen.
+2. **Die Ladeluecke selbst** (im Debug-Bau ~3 s Startbild + ~2 s leere Papierflaeche, bevor die
+   Startbewegung beginnt) ist nicht kuerzer geworden, nur nicht mehr schwarz. Am echten Geraet im
+   Release-Bau beurteilen, bevor man an der Ladezeit arbeitet.
+3. **Glas hell**: Toenung und Zeilen gesenkt, am Simulator lesbar. Ob es „durchsichtig genug" ist,
+   ist ein Urteil des Inhabers.
 4. **Lucenta+ ist im Simulator aus** (beim Finden des Wiederherstellen-Fehlers verloren); ueber
-   den Umschalter im Profil wieder einschaltbar.
-5. **Urteil des Inhabers ausstehend** zu allem aus Runde 119–121: Tiere, Haekchen, Farben, Glas,
-   Kurve, Schildkroete, Startbewegung.
+   den Umschalter im Profil wieder einschaltbar. Im Simulator steht die App auf Dunkel und Englisch.
+5. **Urteil des Inhabers ausstehend** zu allem aus Runde 119–122: Tiere, Haekchen, Farben, Glas,
+   Kurve, Schildkroete, Startbewegung, das bildlose Startbild.
 
 **Falls die Avatare wieder als „unrealistisch" zurueckkommen:** Sie sind seit Runde 111 sieben Mal
 ueberarbeitet. Nicht wieder dieselbe Vektor-Konstruktion nachschleifen, sondern den Weg ansprechen,
@@ -81,12 +85,14 @@ Entscheidung des Inhabers, keine Aufgabe.
 - **Bewegung nur ueber Lage/Strich, nie ueber Deckkraft** bei allem, was kurz nach einem
   Ansichtswechsel gemessen wird (Runde 108/120).
 - **Striche mit runden Enden auf Avatargroesse: nein** (dreimal geloescht). Flaechen ja.
+- **Kein grosses Bild im Startbild** (Runde 122): Das 2732²-Bild liess iOS Schwarz zeigen. Das
+  Startbild ist die Papierflaeche; die Marke kommt mit der Startbewegung.
 - **Keine Nachbildung fremder Figuren** (Runde 121, Schildkroete „wie in Findet Nemo"): im Geist
   ja, Kopie und Name nein — Markenrecht im Store.
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
+`npm run pruef-alles` nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
 auf WebKit und Chromium, `pruef-nativ` 51/51, `pruef-app` 27/27, `pruef-store` 32/32,
 `pruef-bewegung` bestanden, `tests` 11 Reihen, `diff-sprachen` 130 (ein Bericht). iOS-Bau
 SUCCEEDED, am gebauten Bundle nachgeprueft (`startOverlay`, `trend-kurve`, `r.abgebrochen`).
@@ -135,6 +141,85 @@ recommended settings" akzeptieren. `npm run mac:entlasten` nach jedem `npm insta
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht** (weit voraus), kein Pull
 Request ohne Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/`
 (absichtlich unversioniert).
+
+---
+
+## Runde 122 — Startbild, Farbschema in der Huelle, Glas hell, Silbentrennung
+
+Auftrag: die drei offenen Punkte aus Runde 121. Alle am Simulator (iPhone 18 Pro, System hell,
+App dunkel) vorher und nachher gemessen.
+
+### 1. Das Schwarz vor dem Start (`LaunchScreen.storyboard`, `Splash.imageset` entfernt)
+
+**Gemessen statt geschaetzt:** Kaltstart ueber `simctl launch`, danach Bildschirmfotos im
+Halbsekundentakt, je Bild die Randfarbe (40x40-Ausschnitt, auf 1 Bildpunkt gemittelt). Vorher:
+
+| Zeit | Rand | was |
+| --- | --- | --- |
+| 1,9–5,6 s | 0,0,0 | **Schwarz** — kein Startbild |
+| 6,4–8,1 s | 242,242,247 | Plugin-Splash hell, darauf ein **beiges Quadrat** |
+| ab 8,6 s | 0,0,0 | App dunkel |
+
+Zwei Fehler, beide nicht in der WebView, wie Runde 121 vermutet hatte:
+- **Das beige Quadrat**: `Splash` (2732x2732) trug die Papierfarbe von vor Runde 120 (#E4E6DB).
+  Runde 107 hatte die Bildkante unsichtbar gemacht, indem Bild- und Flaechenfarbe uebereinstimmten;
+  Runde 120 aenderte nur die Flaeche (`Papier.colorset` -> #F2F2F7/#000000). Seitdem war die Kante
+  sichtbar.
+- **Das Schwarz**: `Library/SplashBoard` der App war leer — iOS hatte nie einen Startbild-
+  Schnappschuss abgelegt und zeigte Schwarz. Das Bild ist entpackt ~30 MB (RGBA); Startbilder haben
+  eine Speichergrenze, und ein zu grosses Bild ist die bekannte Ursache genau dafuer. **Unsicher:**
+  belegt ist nur, dass das Schwarz ohne Bild weg ist, nicht welcher Grenzwert es ausloeste.
+
+Geaendert: Das Startbild ist nur noch die Flaeche „Papier", ohne Bild; `Splash.imageset` ist
+geloescht (nirgends sonst benutzt; das Splash-Plugin laedt die Storyboard-Datei, nicht das Bild).
+Ein kleineres neues Bild haette beides auch behoben, aber den Namen gezeigt, der eine halbe Sekunde
+spaeter in der Startbewegung noch einmal erscheint und sich dort erst zeichnet. Apples HIG sieht im
+Startbild keine Marke vor. **Das ist eine Gestaltungsentscheidung** — wenn der Inhaber das Logo dort
+zurueckwill, dann als kleines Bild (hoechstens ~600 px, Hintergrund durchsichtig), nie wieder 2732².
+
+Nachher: ab 0,3 s die helle Flaeche (System), ab 3,6 s dunkel, dann zeichnet sich Zeichen + Name.
+Kein Schwarz, kein Quadrat. Im Bundle muss dafuer nichts weiter stimmen.
+
+### 2. Die Huelle kennt das Farbschema der App (`MainViewController.swift`, `SceneDelegate.swift`, `03-speicherung.js`)
+
+Die Wahl Hell/Dunkel/System lag nur in `localStorage`; die Huelle folgte dem System. Jetzt meldet
+`saveThemeMode()` jede Wahl (auch die beim Start) an den Empfaenger `lucentaThema`;
+`MainViewController` legt sie unter `lucenta_thema` in UserDefaults ab und setzt
+`overrideUserInterfaceStyle` am Fenster, `SceneDelegate` setzt es beim naechsten Start vor dem
+ersten Bild. Damit folgen Plugin-Splash, Ladeluecke und WebView der App. Nachgesehen: Nach dem
+ersten Lauf steht `"lucenta_thema" => "dark"` in der plist der App, und der Kaltstart danach ist ab
+dem Plugin-Splash dunkel.
+
+Kein Plugin, sondern ein `WKScriptMessageHandler`: Er laeuft ohne Capacitor-Aufruf und kann nicht
+an der `packageClassList` haengen. Der Empfaenger haelt die Ansicht nur schwach (sonst ein Kreis).
+Nach aussen geht dabei nichts — es ist ein Aufruf innerhalb der App.
+
+**Bleibt:** Das allererste Startbild zeichnet iOS vor dem Start der App nach dem System. Bei
+„App dunkel, System hell" gibt es also weiterhin einen Wechsel von hell nach dunkel — einen statt
+vorher drei (schwarz, hell, dunkel).
+
+### 3. Glas im Hellmodus (`00-grundlagen.css`, heller Block)
+
+`--glas` .26 -> .12, `--glas-tief` .08 -> .02, `--glas-zeile` .50 -> .34. Kante und Glanz
+unveraendert. Am Simulator mit offener Schublade angesehen: Der gruene Knopf und die Seitenkante
+scheinen jetzt durch das Glas, die Zeilen bleiben gut lesbar. Dunkel unveraendert.
+
+### 4. Keine Silbentrennung in der Schublade (`12-ios.css`)
+
+`#drawerPanel p, #drawerPanel li{ hyphens:manual }`. Am Simulator ausgelesen: „Kurze,
+forschungsbasierte / Einordnungen passend zu deinem / eigenen Ergebnis." — keine Trennung mehr;
+der einzige Bindestrich am Zeilenende ist der echte in „Titel-Kombinationen".
+`overflow-wrap:break-word` bleibt, bei 200 % Textgroesse laeuft also nichts heraus.
+
+### Pruefungen
+
+`npm run pruef-alles`: ALLE 9 BESTANDEN (9,5 Minuten), losgeloest gestartet und einmal gelesen.
+iOS-Bau ueber Xcode erfolgreich, Kaltstart am Simulator gemessen (siehe 1.).
+
+### Nebenbei
+
+Zum Ansehen musste der Simulator kurz auf Hell und Deutsch; beides ist zurueckgestellt (Dunkel,
+Englisch).
 
 ---
 

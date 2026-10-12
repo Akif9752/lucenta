@@ -355,6 +355,15 @@
       if (mode==='system') localStorage.removeItem('lucenta_theme');
       else localStorage.setItem('lucenta_theme', mode);
     }catch(e){}
+    // Runde 122: Die iOS-Huelle muss die Wahl kennen, BEVOR die Seite geladen ist — sonst zeigen
+    // Startbild und Ladeluecke die Systemfarbe, auch wenn hier "Dunkel" gewaehlt ist (am Simulator
+    // gesehen: hell, dann dunkel). localStorage kann sie vor dem Laden nicht lesen; deshalb meldet
+    // die Seite jede Wahl an MainViewController.swift, der sie in UserDefaults ablegt. Ausserhalb
+    // der App gibt es den Empfaenger nicht, und dann geschieht nichts.
+    try{
+      var empf = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.lucentaThema;
+      if (empf) empf.postMessage(mode);
+    }catch(e){}
   }
   function loadThemeMode(){
     try{

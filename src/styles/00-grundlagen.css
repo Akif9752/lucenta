@@ -221,9 +221,12 @@
     /* Die Unterkante, die in dieser Formensprache den weichen Schatten ersetzt. */
     --kante:#D1D1D6;
     /* Runde 121: Liquid Glass. Tönung oben/unten, Lichtkante, Glanz, Zeilenfläche auf Glas. */
-    --glas:rgba(255,255,255,.26); --glas-tief:rgba(255,255,255,.08);
+    /* Runde 122: Hell wirkte das Glas fast weiss — weisse Toenung ueber einem ohnehin hellen
+       Grund, dazu halbweisse Zeilen. Toenung und Zeilen sind gesenkt, damit der abgedunkelte
+       Grund durchscheint; Kante und Glanz bleiben, sie machen das Glas als Glas lesbar. */
+    --glas:rgba(255,255,255,.12); --glas-tief:rgba(255,255,255,.02);
     --glas-rand:rgba(255,255,255,.78); --glas-licht:rgba(255,255,255,.9);
-    --glas-zeile:rgba(255,255,255,.50);
+    --glas-zeile:rgba(255,255,255,.34);
     /* Runde 78, mit Japanisch dazugekommen: Fraunces, Work Sans und IBM Plex Mono bringen keine
        CJK-Zeichen mit. Ohne ausdruecklichen Rueckfall waehlt der Browser dafuer irgendeine
        Schrift — auf Windows haeufig eine, die neben der lateinischen Schrift sichtbar fremd

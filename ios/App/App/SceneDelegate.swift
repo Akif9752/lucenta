@@ -28,6 +28,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = UIStoryboard(name: "Main", bundle: nil)
             .instantiateInitialViewController()
+        // Runde 122: Das in der App gewaehlte Farbschema gilt ab dem ersten Bild des Fensters —
+        // Begruendung bei `themaUebernehmen()` in MainViewController.swift.
+        window.overrideUserInterfaceStyle = MainViewController.gespeicherterStil()
         self.window = window
         window.makeKeyAndVisible()
     }

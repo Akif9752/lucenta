@@ -518,6 +518,13 @@
   /* Zeilen auf dem Glas: halbdeckend, damit die Schrift auf jedem Grund lesbar bleibt. */
   #drawerPanel .drawer-section{ background:var(--glas-zeile); }
   #drawerPanel .drawer-profile-row:not([data-hg]){ background:var(--glas-zeile); border-color:var(--glas-rand); }
+  /* Runde 122: Keine Silbentrennung in der Schublade. Die Untertitel sind kurze Saetze in einer
+     schmalen Spalte; hyphens:auto (00-grundlagen.css) trennte dort "Ergeb-nis" und
+     "Einordnun-gen", wo ein ganzes Wort in die naechste Zeile passt. iOS trennt in Listen nicht.
+     overflow-wrap:break-word bleibt, also laeuft bei 200 % Textgroesse trotzdem nichts heraus. */
+  #drawerPanel p, #drawerPanel li{
+    -webkit-hyphens:manual; hyphens:manual;
+  }
 
   /* Runde Knoepfe (Schublade oeffnen und schliessen) als Glaskugeln, wie die Knoepfe der
      Navigationsleisten in iOS 26. */
