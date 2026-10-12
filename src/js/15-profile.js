@@ -202,8 +202,14 @@
     var el = $('plusStand');
     if (el) el.innerHTML = tx(istPlus() ? 'plus_stand_plus' : 'plus_stand_frei');
   }
+  function landingPlusKarteAnwenden(){
+    var k = $('landingPlusKarte');
+    if (!k) return;
+    k.hidden = istPlus() || !loadResult();
+  }
   function plusAnsichtenAuffrischen(){
     syncWortmarke();
+    landingPlusKarteAnwenden();
     plusStandAnwenden();
     refreshDrawerState();
     var aktiv = document.querySelector('.view.active');

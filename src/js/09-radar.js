@@ -40,9 +40,13 @@
     // Die ausführliche Erklärung des Modells ist Text für den ersten Besuch.
     sub.style.display = hatErgebnis ? 'none' : '';
 
+    var plusKarte = $('landingPlusKarte');
     var soll = hatErgebnis
       ? [hero, state, portrait, verstehen, why]
       : [hero, why, state, verstehen, portrait];
+    // Runde 127: Die Lucenta+-Karte steht mit Ergebnis gleich nach der Tagesform — dort, wo jemand
+    // gerade gesehen hat, was die App kann.
+    if (plusKarte && hatErgebnis) soll.splice(2, 0, plusKarte);
     // Nur umhängen, wenn die Reihenfolge tatsächlich abweicht — appendChild verschiebt den
     // Knoten auch dann, wenn er schon richtig steht, und würde die Einblendungen der Karten
     // bei jeder Rückkehr zur Startseite neu auslösen.

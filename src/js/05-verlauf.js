@@ -56,6 +56,20 @@
       '<button type="button" class="btn btn-primary btn-sm schloss-btn" data-plus-info>'+
       tx('plus_knopf')+'</button></div></div>';
   }
+  // Runde 127, Auftrag des Inhabers: Die freie Fassung soll staerker zum Kauf fuehren — an
+  // gesperrten Stellen steht deshalb der ECHTE Inhalt verschwommen da, darueber ein kleiner Kasten
+  // mit dem Knopf. Wer sieht, was dahinter liegt, will es eher als wer ein Schloss sieht. Der Inhalt
+  // ist fuer Vorleseprogramme verborgen (aria-hidden), und er faengt keine Beruehrung — nur der
+  // Knopf ist bedienbar. Was hier verschwimmt, liegt ohnehin auf dem Geraet: verschleiert wird
+  // die Darstellung, nicht ein Geheimnis.
+  function vorschauHTML(innenHTML, text){
+    return '<div class="plus-vorschau">'+
+      '<div class="plus-unscharf" aria-hidden="true" inert>'+innenHTML+'</div>'+
+      '<div class="plus-vorschau-karte">'+
+        '<p class="plus-vorschau-text">'+text+'</p>'+
+        '<button type="button" class="btn btn-primary btn-sm" data-plus-info>'+tx('plus_freischalten')+'</button>'+
+      '</div></div>';
+  }
   // Ein Tipp auf einen dieser Knoepfe oeffnet das Lucenta+-Fenster. Mehr passiert hier nicht:
   // Der Kauf selbst gehoert in die App-Store-Fassung, nicht in die Seite.
   //

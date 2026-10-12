@@ -182,8 +182,12 @@
       '<span><i class="tf-lg-mittel"></i>'+tx('tf_bandbreite_lg_mittel')+'</span>'+
       (res ? '<span><i class="tf-lg-test"></i>'+tx('tf_bandbreite_lg_test')+'</span>' : '')+
     '</div>';
-    wrap.innerHTML = titel + '<div class="tf-band-karte">'+ zeilen + legende + '</div>' + satz +
+    var inhalt = '<div class="tf-band-karte">'+ zeilen + legende + '</div>' + satz +
       '<p class="tf-hinweis">'+tx(res ? 'tf_bandbreite_grenze' : 'tf_bandbreite_ohne_test')+'</p>';
+    // Runde 127, Entscheidung des Inhabers: Bandbreite nur mit Lucenta+, frei als verschwommene
+    // Vorschau der EIGENEN Bandbreite — gerechnet wird sie trotzdem, sonst gaebe es nichts zu zeigen.
+    wrap.innerHTML = titel + (istPlus() ? inhalt : vorschauHTML(inhalt, tx('tf_bandbreite_plus')));
+    schloesserVerdrahten(wrap);
   }
 
   // ---------- Monatskalender ----------
@@ -250,8 +254,7 @@
         (z.day === heute ? ' tf-kal-tag0' : '')+'" role="img" '+
         'aria-label="'+z.nr+'. '+monatName+': '+label+'"><span aria-hidden="true">'+name+'</span></span>';
     }).join('');
-    wrap.innerHTML =
-      '<h2 class="section-title section-title-sub">'+tx('tf_kal_titel')+'</h2>'+
+    var karte =
       '<div class="tf-kal-karte">'+
         '<div class="tf-kal-kopf">'+
           '<button type="button" class="tf-kal-pfeil" data-kal="-1" aria-label="'+tx('tf_kal_vormonat')+'"'+(zurueckMoeglich?'':' disabled')+'>‹</button>'+
@@ -268,8 +271,11 @@
         '<div class="tf-kal-raster">'+zellen+'</div>'+
         '<div class="tf-kal-skala" aria-hidden="true"><span>1</span>'+
           [1,2,3,4,5].map(function(s){ return '<i class="tf-kal-st'+s+'"></i>'; }).join('')+'<span>5</span></div>'+
-        (plus ? '' : '<p class="tf-hinweis">'+tx('tf_kal_frei')+'</p>')+
       '</div>';
+    // Runde 127: Kalender nur mit Lucenta+, frei verschwommen (laufender Monat, echte Tage).
+    wrap.innerHTML = '<h2 class="section-title section-title-sub">'+tx('tf_kal_titel')+'</h2>'+
+      (plus ? karte : vorschauHTML(karte, tx('tf_kal_plus')));
+    schloesserVerdrahten(wrap);
     if (!wrap.querySelectorAll) return;
     wrap.querySelectorAll('[data-kal]').forEach(function(b){
       b.addEventListener('click', function(){
@@ -331,13 +337,6 @@
     // Unter sieben Tagen gibt es nichts zu verschliessen und nichts zu zeigen — der Abschnitt
     // bleibt dann leer, statt eine Kaufaufforderung vor ein leeres Bild zu stellen.
     if (tage.length < 7){ wrap.innerHTML = ''; return; }
-    // Frei: eine leise Zeile, kein Schloss-Kasten. Am Simulator gesehen: Direkt darunter steht im
-    // Verlauf schon der Kasten "weitere Tage mit Lucenta+" — zwei Verkaufsflaechen untereinander
-    // waeren genau der zweite Hinweis an derselben Stelle, den schlossHTML() ausschliessen soll.
-    if (!istPlus()){
-      wrap.innerHTML = titel + '<p class="tf-leer">'+tx('tf_muster_plus')+'</p>';
-      return;
-    }
     var teile = [];
     var wt = tfWochentagMittel(tage);
     if (wt.filter(Boolean).length >= 3){
@@ -375,6 +374,14 @@
       '<p class="tf-hinweis">'+tx('tf_stichwort_grenze')+'</p>');
     } else if (tage.filter(function(t){ return !!t.tags; }).length){
       teile.push('<p class="tf-leer">'+tx('tf_stichwort_noch')+'</p>');
+    }
+    // Runde 127, Entscheidung des Inhabers: frei als verschwommene Vorschau der ECHTEN Muster.
+    // Die leise Zeile aus Runde 124 bleibt nur, wo es noch nichts zu zeigen gibt.
+    if (!istPlus()){
+      wrap.innerHTML = titel + (teile.length ? vorschauHTML(teile.join(''), tx('tf_muster_plus'))
+                                             : '<p class="tf-leer">'+tx('tf_muster_plus')+'</p>');
+      schloesserVerdrahten(wrap);
+      return;
     }
     wrap.innerHTML = teile.length ? titel + teile.join('') : '';
   }

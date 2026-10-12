@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 127)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 128)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -32,7 +32,8 @@ Zwei Regeln, die er ausdruecklich gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 127 | (dieser) | Tagesform-Liste aufklappbar; Lucenta+ als Kaufseite (fester Kaufbereich, Preiskarten mit Monatspreis/Ersparnis, persönliche Zeile) |
+| 128 | (dieser) | Strengere Bezahlgrenze (Bericht, Tagesform 7 Tage, ein Vergleich, verschwommene Vorschauen, Angebot nach dem Test, Startseiten-Karte), Strahlenkranz am Titel |
+| 127 | `0abb566` | Tagesform-Liste aufklappbar; Lucenta+ als Kaufseite (fester Kaufbereich, Preiskarten mit Monatspreis/Ersparnis, persönliche Zeile) |
 | 126 | `4e69bcb` | Kein Zoom in der App (Felder 16 pt, Hülle sperrt Zoom), Haptik bei jedem Tipp, Hilfe aufklappbar, überall SF, Rechtliches als leise Zeile |
 | 125 | `5645f4a` | Eigene 3D-Tiere im Pixar-Stil: `tools/figuren_rendern/` (SceneKit, Abstandsfelder), wieder Dackel/Golden Retriever, Fluent und Lizenzhinweis entfallen |
 | 124 | `7f29388` | Tagesform neu: fünf Big-Five-Fragen je Tag, Stichworte, Bandbreite um das Testergebnis, Monatskalender, Muster (Plus), Erinnerung in der Ansicht, Tipp auf Mitteilung öffnet sie, Zeile in der Schublade |
@@ -100,7 +101,7 @@ Wunsch des Inhabers im Pixar-Stil, aber keine Nachbildung von Filmfiguren). Änd
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 127: **ALLE 9 BESTANDEN** (11,2 Minuten; erster Lauf: `audit-i18n` meldete das Literal `'monat'` im Code, umgeschrieben). Nach Runde 126: 8 von 9 bestanden, `pruef-app` 3 Funde — die Pruefung hielt die alte Schriftentscheidung fest (Titel in Fraunces, Plex Mono geladen); angepasst, danach `pruef-app` 29/29 auf demselben `src/`-Stand. Nach Runde 125: **ALLE 9 BESTANDEN** (11,1 Minuten), `fehlersuche` KEINE FUNDE. Nach Runde 124: **ALLE 9 BESTANDEN** (11,4 Minuten), `fehlersuche` KEINE FUNDE (nach zwei Laeufen mit 274 und 46 Funden, siehe Runde 124), `tests` Tagesform 40/40, `diff-sprachen` 141 (Bericht; vorher 130, die neuen Texte). Nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
+`npm run pruef-alles` nach Runde 128: **ALLE 9 BESTANDEN** (11,3 Minuten; vorher `fehlersuche` 12 Funde — beide Arten in der Pruefung: sie zaehlte 4 statt 5 Plus-Vorteile und mass Knoepfe in stillgelegten (`inert`) Vorschauen als Tippziele). Nach Runde 127: **ALLE 9 BESTANDEN** (11,2 Minuten; erster Lauf: `audit-i18n` meldete das Literal `'monat'` im Code, umgeschrieben). Nach Runde 126: 8 von 9 bestanden, `pruef-app` 3 Funde — die Pruefung hielt die alte Schriftentscheidung fest (Titel in Fraunces, Plex Mono geladen); angepasst, danach `pruef-app` 29/29 auf demselben `src/`-Stand. Nach Runde 125: **ALLE 9 BESTANDEN** (11,1 Minuten), `fehlersuche` KEINE FUNDE. Nach Runde 124: **ALLE 9 BESTANDEN** (11,4 Minuten), `fehlersuche` KEINE FUNDE (nach zwei Laeufen mit 274 und 46 Funden, siehe Runde 124), `tests` Tagesform 40/40, `diff-sprachen` 141 (Bericht; vorher 130, die neuen Texte). Nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
 auf WebKit und Chromium, `pruef-nativ` 51/51, `pruef-app` 27/27, `pruef-store` 32/32,
 `pruef-bewegung` bestanden, `tests` 11 Reihen, `diff-sprachen` 130 (ein Bericht). iOS-Bau
 SUCCEEDED, am gebauten Bundle nachgeprueft (`startOverlay`, `trend-kurve`, `r.abgebrochen`).
@@ -149,6 +150,55 @@ recommended settings" akzeptieren. `npm run mac:entlasten` nach jedem `npm insta
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht** (weit voraus), kein Pull
 Request ohne Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/`
 (absichtlich unversioniert).
+
+---
+
+## Runde 128 — Strengere Bezahlgrenze (Entscheidung des Inhabers), Strahlenkranz mittig
+
+### 1. Strahlenkranz nicht mittig bei zweizeiligem Ergebnistyp
+**Ursache:** Der Kranz (`::before`/`::after`) hing am ganzen Kopfbereich (Aufmacher, Titel, Motto,
+Kurzfassung) und stand bei 54 % von dessen Höhe. Bei zwei Titelzeilen rutschte der Titel, der Kranz
+nicht. **Jetzt** hängt er am Titel (`#view-result .archetype`), `top:50%`, `z-index:-1` im eigenen
+Stapel des Titels (`isolation:isolate`). `tools/mess_kranz.mjs` zeigt auf den neuen Selektor. Am
+Simulator: mittig hinter „Visionär:in · warmherzig" (zwei Zeilen). Die Strahlen sind auf
+Avatargröße weiter sehr zart — das ist die Abstimmung aus Runde 98–100, nicht neu; nicht geändert.
+
+### 2. „Zu viel kostenlos" — die Bezahlgrenze
+Auftrag: Die freie Fassung soll „mehr in Richtung Kauf drücken … man stößt nicht wirklich an eine
+Paywall". Das berührte die **Grundsätze aus Runde 84** („Niemand zahlt für … den vollständigen
+Bericht"), deshalb dem Inhaber vorgelegt. **Entschieden: alle vier Vorschläge.**
+
+| Bereich | frei bis Runde 127 | frei ab Runde 128 |
+| --- | --- | --- |
+| Bericht | alle fünf Dimensionen ausführlich | Kopfzeile, Wert, Kernsatz, erster Satz „Im Alltag"; Rest verschwommen |
+| Tagesform | 14 Tage, Kalender (Monat), Bandbreite | **7 Tage**; Bandbreite, Kalender, Muster verschwommen |
+| Vergleich | Grundform beliebig oft | **eine** andere Person (Code gemerkt in `lucenta_vergleich_frei`), weitere verschwommen |
+| Archiv | Liste frei, Auswertung gesperrt | leer → Kaufhinweis; vorhandene Einträge bleiben lesbar (Versprechen „bleibt lesbar") |
+| Verstehen | Zusammenspiel gesperrt | als verschwommene Vorschau |
+| Angebot | nur an Schlössern | **einmal** 4 s nach dem ersten Testergebnis (nur App), **Karte auf der Startseite** nach der Tagesform |
+
+- Neuer Baustein **`vorschauHTML()`** (`05-verlauf.js`): echter Inhalt verschwommen (`aria-hidden`,
+  `inert`, abgeschnitten), darüber eine Glas-Karte mit „Mit Lucenta+ freischalten". Türen für
+  „Transparenz reduzieren" stehen doppelt (`pruefeTransparenzTueren`).
+- Frei bleiben: Test, Ergebnistyp, Motto, Kurzfassung, Radar, Teilen, Code, Tagesform-Eintragen,
+  Erinnerung, ein Vergleich.
+- Geänderte Versprechen: `plus_modal_versprechen`, `plus_stand_frei`, `plus_dev_aus`, die Überschrift
+  „Deine fünf Dimensionen" (vorher „voller Bericht"); der Kommentar zu den Grundsätzen in
+  `03-speicherung.js` nennt die Änderung. Lucenta+-Fenster: „Dein vollständiger Bericht" als erster
+  Vorteil. 11 neue Texte × 8 Sprachen.
+- **Unsicher:** Das Angebot nach dem Test erscheint nur einmal je Gerät (`lucenta_plus_angebot`);
+  wer es wegtippt, sieht es nie wieder von selbst. Am Gerät ansehen, ob 4 s der richtige Moment ist.
+
+### Am Simulator gesehen und korrigiert
+Frei angesehen: Startseiten-Karte (nach der Tagesform), Bericht mit erstem Satz und Vorschau,
+Bandbreite/Kalender/Muster verschwommen. Korrigiert: widersprüchliche Texte („Freie Fassung — … der
+volle Bericht", Etikett „voller Bericht"), die Unschärfe ragte über die Kartenkante.
+
+### Pruefungen
+Erster Lauf: `fehlersuche` 12 Funde, alle in der Pruefung selbst — sie verlangte 4 Vorteile im
+Lucenta+-Fenster (jetzt 5) und mass Knoepfe INNERHALB der verschwommenen Vorschauen (`inert`, nicht
+bedienbar) als zu kleine Tippziele. Beides angepasst (`tools/fehlersuche.mjs`); danach ALLE 9
+BESTANDEN. iOS-Bau erfolgreich, am Simulator frei angesehen.
 
 ---
 

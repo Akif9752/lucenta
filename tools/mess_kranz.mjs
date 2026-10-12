@@ -91,7 +91,7 @@ const STILL = '*{animation-duration:0s !important;animation-delay:0s !important;
 
 async function aufnahme(p, mitKranz){
   if (!mitKranz){
-    await p.addStyleTag({content:'#view-result .result-head::after{ display:none !important; }'});
+    await p.addStyleTag({content:'#view-result .archetype::after{ display:none !important; }'});
   }
   await p.waitForTimeout(250);
   return await p.screenshot({clip: AUSSCHNITT});

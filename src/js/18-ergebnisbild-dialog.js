@@ -55,6 +55,7 @@
   // spart vier Zeilen und kostet dafuer die Auffindbarkeit — wer im Quelltext nach
   // 'plus_v_verlauf_titel' sucht, faende die Stelle nicht mehr.
   var PLUS_VORTEILE = [
+    {titel:'plus_v_bericht_titel',    text:'plus_v_bericht_text'},   // Runde 127: zuerst, das staerkste
     {titel:'plus_v_verlauf_titel',    text:'plus_v_verlauf_text'},
     {titel:'plus_v_tagesform_titel',  text:'plus_v_tagesform_text'},
     {titel:'plus_v_vergleich_titel',  text:'plus_v_vergleich_text'},

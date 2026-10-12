@@ -250,6 +250,10 @@ const suchTippflaechen = (min) => {
     let r = el.getBoundingClientRect();
     if (r.width === 0 || r.height === 0) return;
     if (getComputedStyle(el).visibility === 'hidden') return;
+    // Runde 128: Was in einem stillgelegten Bereich steht (inert — die verschwommenen Vorschauen
+    // der freien Fassung), ist kein Bedienelement: Es nimmt absichtlich keinen Tipp an. Gemessen
+    // wird, was jemand bedienen kann; der Knopf ueber der Vorschau wird weiter gemessen.
+    if (el.closest('[inert]')) return;
     // Am oberen oder unteren Bildrand laege ein Tastpunkt ausserhalb des Fensters, und
     // elementFromPoint gibt dort nichts zurueck — der erste Entwurf zaehlte das als zu klein
     // und meldete jedes Bedienelement am Seitenende. Uebergehen waere der bequeme Ausweg
@@ -578,7 +582,9 @@ const NACHBEREITUNG = {
     }
     await p.waitForTimeout(600);
     const zahl = await p.evaluate(() => document.querySelectorAll('#plusVorteile .plus-vorteil').length);
-    if (zahl !== 4) throw new Error('Lucenta+-Fenster zeigt ' + zahl + ' statt 4 Vorteile');
+    // Runde 128: fuenf statt vier — "Dein vollstaendiger Bericht" ist seit der strengeren
+    // Bezahlgrenze der erste Vorteil (PLUS_VORTEILE in 18-ergebnisbild-dialog.js).
+    if (zahl !== 5) throw new Error('Lucenta+-Fenster zeigt ' + zahl + ' statt 5 Vorteile');
   }}
 };
 

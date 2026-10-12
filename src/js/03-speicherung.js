@@ -99,9 +99,12 @@
   // erst aus mehreren Messungen entsteht — Verlauf, Muster, Tiefe im Vergleich.
   //
   // Was daraus folgt, und was NICHT verhandelbar ist:
-  //   - Niemand zahlt fuer sein Ergebnis. Wer fuenfzig Aussagen beantwortet hat, sieht das
-  //     vollstaendige Portraet, sofort und ohne Konto. Ein Ergebnis hinter eine Zahlung zu
-  //     stellen waere Erpressung, keine Preisgestaltung.
+  //   - Niemand zahlt fuer sein Ergebnis. Wer fuenfzig Aussagen beantwortet hat, sieht Ergebnistyp,
+  //     Motto, Kurzfassung, Radar und je Dimension Wert und Kernsatz, sofort und ohne Konto.
+  //     Runde 127, Entscheidung des Inhabers ("zu viel kostenlos"): Der AUSFUEHRLICHE Bericht je
+  //     Dimension (Alltag, Beziehungen, Wachstum) gehoert seither zu Lucenta+ und steht frei als
+  //     verschwommene Vorschau da. Dazu frei nur noch 7 Tage Tagesform, ein Vergleich, kein Archiv.
+  //     Das Versprechen im Lucenta+-Fenster (plus_modal_versprechen) ist entsprechend geaendert.
   //   - Es wird nichts geloescht und nichts weggenommen. Die freie Fassung ZEIGT weniger; alles
   //     Eingetragene bleibt liegen und ist wieder da, sobald jemand kauft. Daten, die jemand
   //     selbst erzeugt hat, sind seine.
@@ -125,10 +128,14 @@
   // So viele Tage der Tagesform zeigt die freie Fassung. Vierzehn ist nicht gegriffen: Der erste
   // Befund braucht sieben Tage, der zweite vierzehn — wer die Grenze erreicht, hat also gerade
   // gesehen, dass es hier etwas zu holen gibt.
-  var FREI_TAGE = 14;
+  // Runde 127, Entscheidung des Inhabers ("zu viel kostenlos"): 14 -> 7. Eine Woche reicht, um zu
+  // sehen, dass die Tagesform etwas zeigt; alles, was ueber Wochen entsteht, ist Lucenta+.
+  var FREI_TAGE = 7;
   // So viele Durchlaeufe zeigt die freie Fassung im Verlauf: der aktuelle und der davor. Genug,
   // um zu sehen DASS sich etwas bewegt, zu wenig, um zu sehen WIE.
   var FREI_DURCHLAEUFE = 2;
+  // Runde 127: Der Code der einen Person, mit der die freie Fassung vergleichen darf.
+  var FREI_VERGLEICH_SCHLUESSEL = 'lucenta_vergleich_frei';
 
   // ---------- Nutzungsmessung (Runde 96) ----------
   //

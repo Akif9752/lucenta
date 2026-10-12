@@ -25,7 +25,8 @@
     // Messung bzw. aus dem Zusammenlesen mehrerer Werte.
     wrap.innerHTML = html +
       (istPlus() ? (kombiBlock(last) + eigeneDatenBlock(last))
-                 : schlossHTML(tx('plus_verstehen'))) +
+                 // Runde 127: frei als verschwommene Vorschau des ECHTEN Zusammenspiels.
+                 : vorschauHTML(kombiBlock(last) + eigeneDatenBlock(last), tx('plus_verstehen'))) +
       tx('js_diese_einordnungen_fassen');
     schloesserVerdrahten(wrap);
   }

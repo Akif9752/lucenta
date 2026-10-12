@@ -121,9 +121,16 @@
      rechnerisch noch so nah an --paper, dass der Kontrast unter der Messgrenze bleibt. */
   #view-result .result-head{ position:relative; }
   #view-result .result-head > *{ position:relative; z-index:1; }
-  #view-result .result-head::before{
-    content:''; position:absolute; z-index:0; pointer-events:none;
-    left:50%; top:54%; transform:translate(-50%,-50%);
+  /* Runde 127, gemeldet: "der strahlenkranz ist je nachdem, ob das ergebnis eine oder zwei zeilen
+     braucht, nicht zentriert hinter dem ergebnistyp." Er hing am ganzen Kopfbereich (Aufmacher,
+     Titel, Motto, Kurzfassung) und stand bei 54 % von dessen Hoehe — bei zwei Titelzeilen
+     rutschte der Titel, der Kranz nicht. Jetzt haengt er am Titel selbst und steht in dessen
+     Mitte, gleich wie viele Zeilen er hat. z-index:-1 legt ihn hinter die Schrift: Der Titel ist
+     positioniert und hat einen z-index, bildet also einen eigenen Stapel, aus dem er nicht faellt. */
+  #view-result .archetype{ isolation:isolate; }
+  #view-result .archetype::before{
+    content:''; position:absolute; z-index:-1; pointer-events:none;
+    left:50%; top:50%; transform:translate(-50%,-50%);
     /* Nie breiter als der Kasten darum. Der erste Entwurf stand auf 118 %, und das waren bei
        390 px Fensterbreite 413 px in einem 350 px breiten Kasten: Das Dokument wuchs dadurch
        auf 402 px und lief seitlich ueber. Sichtbar war davon nichts (die Verdeckung fing es ab)
@@ -186,9 +193,9 @@
      gedrehte Box beansprucht keine Diagonale, also begrenzt auch nichts mehr die Breite ausser
      der Seite selbst. */
   @property --kranz-winkel{ syntax:'<angle>'; inherits:false; initial-value:0deg; }
-  #view-result .result-head::after{
-    content:''; position:absolute; z-index:0; pointer-events:none;
-    left:50%; top:54%; transform:translate(-50%,-50%);
+  #view-result .archetype::after{
+    content:''; position:absolute; z-index:-1; pointer-events:none;
+    left:50%; top:50%; transform:translate(-50%,-50%);
     /* Breit und flach, ohne Stauchung. Das Verhaeltnis 3,8 zu 1 entspricht dem, was die
        Stauchung zuletzt erzeugt hat — nur eben als Form der Maske statt als Verzerrung der
        Strahlen. */
@@ -229,10 +236,10 @@
     50%     { opacity:.85; transform:translate(-50%,-50%) scale(1.06); }
   }
   @media (prefers-reduced-motion: reduce){
-    #view-result .result-head::before{ animation:none; opacity:.6; }
+    #view-result .archetype::before{ animation:none; opacity:.6; }
     /* Die Strahlen bleiben stehen, verschwinden aber nicht: Sie sind Teil des Bildes, nur ihre
        Drehung ist Bewegung. */
     /* Runde 98: Die Stauchung ist weg, also bleibt hier nur, die Drehung anzuhalten. Der
        Kranz selbst bleibt stehen — er ist Teil des Bildes, nur seine Drehung ist Bewegung. */
-    #view-result .result-head::after{ animation:none; }
+    #view-result .archetype::after{ animation:none; }
   }

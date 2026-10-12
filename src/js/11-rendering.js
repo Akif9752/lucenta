@@ -148,6 +148,23 @@
     }, 220);
   }
 
+  // Runde 127, Entscheidung des Inhabers: Nach dem Test EINMAL das Kaufangebot — nicht sofort,
+  // sondern wenn das Ergebnis ein paar Sekunden zu sehen war (zuerst das Ergebnis, dann das
+  // Angebot), schliessbar, und nie wieder von selbst. Nur in der App: Im Browser laesst sich nichts
+  // kaufen, und die Pruefungen messen dort die Ergebnisseite ohne Fenster davor.
+  var PLUS_ANGEBOT_SCHLUESSEL = 'lucenta_plus_angebot';
+  function plusAngebotNachTest(){
+    if (guestRun || istPlus() || !nativVorhanden()) return;
+    try{
+      if (localStorage.getItem(PLUS_ANGEBOT_SCHLUESSEL)) return;
+      localStorage.setItem(PLUS_ANGEBOT_SCHLUESSEL, '1');
+    }catch(e){ return; }
+    setTimeout(function(){
+      var v = $('view-result'), m = $('plusModal');
+      if (v && v.classList.contains('active') && m && !m.classList.contains('open') && !istPlus()) openPlusModal();
+    }, 4000);
+  }
+
   function finishQuiz(){
     var previous = loadResult();
     scores = computeScores();
@@ -171,6 +188,7 @@
     function reveal(){
       renderResult(previous);
       showView('result');
+      plusAngebotNachTest();
       if (pendingCompareScroll){
         pendingCompareScroll = false;
         setTimeout(function(){
@@ -314,13 +332,10 @@
             '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>'+
           '</div>'+
         '</summary>'+
-        '<div class="trait-sections">'+
-          '<div class="trait-section"><div class="trait-section-label">'+tx('js_im_alltag')+'</div><p>'+pr.alltag+'</p></div>'+
-          '<div class="trait-section"><div class="trait-section-label">'+tx('js_in_beziehungen')+'</div><p>'+pr.beziehungen+'</p></div>'+
-          '<div class="trait-section"><div class="trait-section-label">'+tx('js_wachstumsimpuls')+'</div><p>'+pr.wachstum+'</p></div>'+
-        '</div>';
+        berichtTeileHTML(pr);
       list.appendChild(card);
     });
+    schloesserVerdrahten(list);
     renderRhythmus();
     revealOnScroll(list.children);
     // Erst hier, nachdem beide Aufrufstellen von gaugeBarHTML im Baum stehen: die Kennzahlenreihe
@@ -328,6 +343,33 @@
     startGauges($('view-result'));
 
     renderDelta(previous);
+  }
+
+  // Runde 127, Entscheidung des Inhabers: Der ausfuehrliche Bericht gehoert zu Lucenta+. Frei
+  // bleiben Ergebnistyp, Motto, Kurzfassung, Radar, Teilen, Code und je Dimension Kopfzeile,
+  // Messbalken und der zusammenfassende Satz — dazu der erste Satz von "Im Alltag", damit sichtbar
+  // ist, in welcher Art der Bericht spricht. Der Rest steht verschwommen darunter.
+  // Damit faellt das Versprechen aus Runde 84 ("Niemand zahlt fuer den vollstaendigen Bericht");
+  // der Satz im Lucenta+-Fenster ist entsprechend geaendert.
+  function ersterSatz(text){
+    var t = String(text || '');
+    var m = /^(.{40,}?[.!?。])(\s|$)/.exec(t);
+    return m ? [m[1], t.slice(m[1].length)] : [t, ''];
+  }
+  function berichtTeileHTML(pr){
+    var abschnitt = function(label, text){
+      return '<div class="trait-section"><div class="trait-section-label">'+tx(label)+'</div><p>'+text+'</p></div>';
+    };
+    if (istPlus()){
+      return '<div class="trait-sections">'+abschnitt('js_im_alltag', pr.alltag)+
+        abschnitt('js_in_beziehungen', pr.beziehungen)+abschnitt('js_wachstumsimpuls', pr.wachstum)+'</div>';
+    }
+    var teile = ersterSatz(pr.alltag);
+    return '<div class="trait-sections">'+
+      '<div class="trait-section"><div class="trait-section-label">'+tx('js_im_alltag')+'</div><p>'+teile[0]+'</p></div>'+
+      vorschauHTML('<p>'+teile[1]+'</p>'+abschnitt('js_in_beziehungen', pr.beziehungen)+abschnitt('js_wachstumsimpuls', pr.wachstum),
+                   tx('plus_bericht_weiter'))+
+      '</div>';
   }
 
   // Runde 79: Der Satz, der aus einem einmaligen Test eine wiederkehrende Nutzung macht.
@@ -396,6 +438,18 @@
     // sind Prozentwert, Fuenfeck und der eine Satz je Dimension; die drei Lebensbereiche
     // dahinter sind die gekaufte Tiefe.
     var cmpPlus = istPlus();
+    // Runde 127, Entscheidung des Inhabers: Ein Vergleich ist frei, jeder weitere ist Lucenta+.
+    // "Ein Vergleich" heisst: mit EINER anderen Person — dieselbe Person darf man so oft ansehen,
+    // wie man will. Gemerkt wird nur deren Code, auf dem Geraet, wie alles hier.
+    var vergleichGesperrt = false;
+    if (!cmpPlus){
+      try{
+        var ersterAnderer = localStorage.getItem(FREI_VERGLEICH_SCHLUESSEL);
+        var dieserAndere = $('cmpOther').value.trim();
+        if (!ersterAnderer) localStorage.setItem(FREI_VERGLEICH_SCHLUESSEL, dieserAndere);
+        else if (ersterAnderer !== dieserAndere) vergleichGesperrt = true;
+      }catch(e){}
+    }
     var lines = ORDER.map(function(f, i){
       var d = Math.abs(me[f]-other[f]);
       var isSim = d<15;
@@ -435,7 +489,8 @@
             ? abschnitt('cmp_feld_alltag', fe.alltag)+
               abschnitt('cmp_feld_gespraech', fe.gespraech)+
               abschnitt('cmp_feld_gemeinsam', fe.gemeinsam)
-            : schlossHTML(tx('plus_vergleich_karte')))+
+            : vorschauHTML(abschnitt('cmp_feld_alltag', fe.alltag)+abschnitt('cmp_feld_gespraech', fe.gespraech)+
+                           abschnitt('cmp_feld_gemeinsam', fe.gemeinsam), tx('plus_vergleich_karte')))+
         '</div>'+
       '</details>';
     });
@@ -467,6 +522,11 @@
       '</div>';
     // Der frueher hier stehende Hinweiskasten ist raus: Er saesse unter fuenf Karten, die den
     // gleichen Hinweis schon in sich tragen, und wuerde denselben Satz sechsmal sagen.
+    if (vergleichGesperrt){
+      box.innerHTML = vorschauHTML(scoreBlock + radarBlock + summary, tx('plus_vergleich_weitere'));
+      schloesserVerdrahten(box);
+      return;
+    }
     box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note +
       (cmpPlus ? saveRow : '');
     startCompatBars(box);

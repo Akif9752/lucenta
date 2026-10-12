@@ -427,7 +427,8 @@
     if ($('btnPlusWiederherstellen')) $('btnPlusWiederherstellen').addEventListener('click', kaeufeWiederherstellen);
     if ($('btnAboVerwalten')) $('btnAboVerwalten').addEventListener('click', aboVerwalten);
     plusStandAnwenden();
-    renderPreviewCard(); ordneStartseite();
+    renderPreviewCard(); landingPlusKarteAnwenden(); ordneStartseite();
+    schloesserVerdrahten($('landingPlusKarte'));
     renderLandingUnderstandTeaser();
     renderLandingStateTeaser();
     renderArchetypeGroups();

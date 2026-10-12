@@ -723,3 +723,37 @@
   .plus-preis-unter span, .plus-preis-unter s, .plus-preis-betrag{ white-space:nowrap; }
   #plusModal p, #plusModal li{ -webkit-hyphens:manual; hyphens:manual; }
   #plusPreisWahl, #plusPreisWahl .segment-opt{ width:100%; max-width:100%; box-sizing:border-box; }
+
+  /* ---------- Runde 127: verschwommene Vorschau an gesperrten Stellen ---------- */
+  .plus-vorschau{ position:relative; }
+  .plus-unscharf{
+    filter:blur(6px); -webkit-user-select:none; user-select:none; pointer-events:none;
+    -webkit-mask-image:linear-gradient(#000 55%, transparent 100%); mask-image:linear-gradient(#000 55%, transparent 100%);
+    max-height:340px; overflow:hidden;
+  }
+  .plus-vorschau-karte{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(300px, 88%);
+    display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;
+    padding:16px 18px; border-radius:var(--radius-m);
+    background:color-mix(in srgb, var(--surface) 88%, transparent);
+    -webkit-backdrop-filter:blur(14px) saturate(160%); backdrop-filter:blur(14px) saturate(160%);
+    border:1px solid var(--glas-rand); box-shadow:0 10px 30px -12px rgba(0,0,0,.35);
+  }
+  .plus-vorschau-text{ margin:0; font-size:14px; line-height:1.45; color:var(--ink); font-weight:500; }
+  /* Die Tueren fuer die Vorschaukarte (pruefeTransparenzTueren haelt beide zusammen). */
+  @media (prefers-reduced-transparency: reduce){
+    .plus-vorschau-karte{ background:var(--surface); -webkit-backdrop-filter:none; backdrop-filter:none; }
+  }
+  :root[data-transparenz="reduziert"] .plus-vorschau-karte{ background:var(--surface); -webkit-backdrop-filter:none; backdrop-filter:none; }
+
+  /* Runde 127: die Lucenta+-Karte auf der Startseite — dieselbe Karte wie die anderen, mit einem
+     Hauch Akzent, damit sie als Angebot erkennbar ist, ohne zu schreien. */
+  .plus-start-karte{
+    background:linear-gradient(160deg, color-mix(in srgb, var(--accent) 16%, var(--surface)) 0%, var(--surface) 70%);
+    border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  .plus-start-karte[hidden]{ display:none; }
+  .plus-start-karte .understand-group-label span span{ color:var(--accent-strong); }
+  .plus-start-karte .btn{ margin-top:12px; }
+  /* Am Simulator gesehen: Die Unschaerfe ragte ueber die Kartenkante. Der Rand schneidet sie ab. */
+  .plus-vorschau{ overflow:hidden; border-radius:var(--radius-m); }
