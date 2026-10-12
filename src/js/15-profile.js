@@ -38,7 +38,7 @@
         el.style.setProperty('--figur-feld', fig.feld);
         el.style.setProperty('--figur-feld-dunkel', figFeldDunkel(fig.feld));
       }catch(e){}
-      el.innerHTML = figurSVG(fig);
+      el.innerHTML = figurHTML(fig);
       return;
     }
     el.textContent = avatarInitials(profile.name);
@@ -60,7 +60,7 @@
       teile.push('<button type="button" class="figur-wahl" data-figur="'+f.id+'" '+
         'style="--figur-feld:'+f.feld+';--figur-feld-dunkel:'+figFeldDunkel(f.feld)+'" '+
         'aria-pressed="'+(aktiv===f.id?'true':'false')+'" '+
-        'aria-label="'+tx('figur_'+f.id)+'">'+figurSVG(f)+'</button>');
+        'aria-label="'+tx('figur_'+f.id)+'">'+figurHTML(f)+'</button>');
     });
     wrap.innerHTML = teile.join('');
     wrap.querySelectorAll('[data-figur]').forEach(function(b){

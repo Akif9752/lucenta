@@ -283,6 +283,25 @@ ok(!/user-scalable\s*=\s*no|maximum-scale/.test(anmutung.viewport),
    'Aufziehen mit zwei Fingern bleibt erlaubt: kein user-scalable=no, kein maximum-scale',
    anmutung.viewport);
 
+// Runde 123: Die Tierbilder liegen in der App-Fassung als Dateien in figuren/ (build.js). Ein
+// falscher Pfad, eine fehlende Datei oder ein Bild, das WebKit nicht dekodiert, ergaebe leere
+// Kreise — und nichts sonst wuerde es melden, weil lucenta.html die Bilder eingebettet traegt.
+// Gefragt wird deshalb hier, an der App-Fassung, und nach dem Ergebnis: ob jedes Bild LAEDT.
+const figurPfade = await anmutungSeite.evaluate(async () => {
+  const quelltext = await (await fetch('index.html')).text();
+  const pfade = [...new Set(quelltext.match(/figuren\/[a-z]+-[0-9a-f]{10}\.png/g) || [])];
+  const geladen = await Promise.all(pfade.map(p => new Promise(fertig => {
+    const b = new Image();
+    b.onload = () => fertig(b.naturalWidth > 0 ? null : p);
+    b.onerror = () => fertig(p);
+    b.src = p;
+  })));
+  return { anzahl: pfade.length, kaputt: geladen.filter(Boolean) };
+});
+ok(figurPfade.anzahl === 12 && figurPfade.kaputt.length === 0,
+   'alle 12 Tierbilder der App-Fassung laden aus figuren/',
+   `${figurPfade.anzahl} Pfade, nicht geladen: ${figurPfade.kaputt.join(', ') || 'keins'}`);
+
 // Runde 114: Hier stand die Pruefung "der Hals der Menschenfiguren ist sichtbar" (Runde 111).
 // Die Menschenfiguren sind auf Entscheidung des Inhabers entfallen; die Pruefung haette keinen
 // Gegenstand mehr. Die Lehre aus ihren drei Anlaeufen steht im Journal unter Runde 111.

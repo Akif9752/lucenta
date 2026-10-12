@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 122)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 123)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -32,7 +32,8 @@ Zwei Regeln, die er ausdruecklich gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 122 | (dieser) | Startbild nur noch Papierflaeche (kein Schwarz, kein beiges Quadrat), Huelle kennt das gewaehlte Farbschema (`lucentaThema` -> UserDefaults), Glas hell durchsichtiger, keine Silbentrennung in der Schublade |
+| 123 | (dieser) | Tier-Avatare als Fluent-Emoji-3D-Bilder (`src/figuren/`, `tools/figuren_holen.py`), Vektorzeichnung entfallen, Pudel/Hund statt Dackel/Retriever, MIT-Hinweis in Ueber Lucenta |
+| 122 | `5d6aaa6` | Startbild nur noch Papierflaeche (kein Schwarz, kein beiges Quadrat), Huelle kennt das gewaehlte Farbschema (`lucentaThema` -> UserDefaults), Glas hell durchsichtiger, keine Silbentrennung in der Schublade |
 | 121 | `67b5e67` | Liquid Glass (Schublade, Knoepfe, Toast, Plus-Dialog), Startbewegung, Verlaufskurve nach Apple Health, Meeresschildkroete, Abbruch beim Wiederherstellen nimmt Lucenta+ nicht mehr weg |
 | 120 | `a3b504a` | Auswahl-Haekchen an Avatar/Hintergrund, Apples Farbsystem hell/dunkel, Federbewegung |
 | 119 | `355f90a` | Jedes Tier einzeln gezeichnet (keine Schablone), Fellfilter |
@@ -43,8 +44,8 @@ Zwei Regeln, die er ausdruecklich gesetzt hat und die weiter gelten:
 
 Wo was steht: iOS-Formensprache, Bewegung und Liquid Glass in **`src/styles/12-ios.css`** (letzte
 Datei im Manifest, schlaegt die aelteren); Farbmarken einschliesslich `--glas*` in
-`00-grundlagen.css` (je drei Bloecke!); die Tiere in `src/js/13-figuren.js` (eine Funktion je Tier,
-gemeinsame Werkzeuge `figTierAuge`, `figFellFilter`, `figLinear`, `figGlanz`); die Verlaufskurve in
+`00-grundlagen.css` (je drei Bloecke!); die Tiere seit Runde 123 als Bilder in `src/figuren/` (erzeugt von
+`tools/figuren_holen.py`, eingesetzt von `build.js` in `FIGUR_BILDER` in `13-figuren.js`); die Verlaufskurve in
 `trendKurveSVG()` in `05-verlauf.js`; die Startbewegung in `startBewegung()` in
 `21-beta-rueckmeldung.js` mit `#startOverlay` in `index.body.html`.
 
@@ -67,11 +68,11 @@ Runde 122. Was davon bleibt:
 5. **Urteil des Inhabers ausstehend** zu allem aus Runde 119–122: Tiere, Haekchen, Farben, Glas,
    Kurve, Schildkroete, Startbewegung, das bildlose Startbild.
 
-**Falls die Avatare wieder als „unrealistisch" zurueckkommen:** Sie sind seit Runde 111 sieben Mal
-ueberarbeitet. Nicht wieder dieselbe Vektor-Konstruktion nachschleifen, sondern den Weg ansprechen,
-der noch nicht gegangen ist: **echte Fotos** (CC0, z. B. Wikimedia Commons, einmalig beim BAU
-eingebettet — **nie** zur Laufzeit geladen, sonst ist „Data Not Collected" falsch). Das ist eine
-Entscheidung des Inhabers, keine Aufgabe.
+**Die Avatare sind seit Runde 123 Bilder** (Fluent Emoji 3D, Entscheidung des Inhabers). Die
+Vektorzeichnung gibt es nicht mehr. Falls sie als „nicht realistisch genug" zurueckkommen: echte
+Fotos (CC0) ueber dasselbe Werkzeug (`tools/figuren_holen.py`, nur `TIERE` aendern) — einmalig beim
+Erzeugen geholt, **nie** zur Laufzeit, sonst ist „Data Not Collected" falsch. Wieder eine
+Entscheidung des Inhabers.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
@@ -92,7 +93,7 @@ Entscheidung des Inhabers, keine Aufgabe.
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
+`npm run pruef-alles` nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` jetzt 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
 auf WebKit und Chromium, `pruef-nativ` 51/51, `pruef-app` 27/27, `pruef-store` 32/32,
 `pruef-bewegung` bestanden, `tests` 11 Reihen, `diff-sprachen` 130 (ein Bericht). iOS-Bau
 SUCCEEDED, am gebauten Bundle nachgeprueft (`startOverlay`, `trend-kurve`, `r.abgebrochen`).
@@ -141,6 +142,63 @@ recommended settings" akzeptieren. `npm run mac:entlasten` nach jedem `npm insta
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht** (weit voraus), kein Pull
 Request ohne Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/`
 (absichtlich unversioniert).
+
+---
+
+## Runde 123 — Die Tier-Avatare sind 3D-Bilder (Fluent Emoji)
+
+Auftrag: "die avatare tiere sehen immernoch zu gezeichnet und unrealistisch aus. es muss mehr wie
+ein 3d modell sein". Wie im Uebergabeblock vorgesehen, wurde nicht noch einmal die Vektorzeichnung
+nachgeschliffen, sondern dem Inhaber der Weg zur Wahl gestellt (echte Fotos / Fluent-Emoji-3D /
+freigestellte Fotos). **Entschieden: Microsoft Fluent Emoji 3D** (MIT-Lizenz) — echte 3D-Renderings
+mit Licht und Material, verspielt statt naturgetreu.
+
+### Was sich geaendert hat
+
+- **`src/figuren/*.png`** — zwoelf Bilder, eingecheckt, dazu `LIZENZ-fluent-emoji.txt`. Erzeugt
+  von **`tools/figuren_holen.py`** (einmal von Hand, nie beim Bau; nur Standardbibliothek):
+  holen, auf den Inhalt zuschneiden und mittig ins Quadrat setzen, auf eine Palette mit 256
+  Eintraegen (je eigene Deckkraft) bringen. 452 KB -> 164 KB.
+- **`13-figuren.js`**: ~750 Zeilen Vektorzeichnung entfallen (Tierfunktionen, Licht, Fell,
+  Tieraugen). Geblieben: `FIGUREN` (Kennung + Feldfarbe), `figFeldDunkel`, `figurFinden`, und
+  `figurHTML()` statt `figurSVG()` — ein `<img>`. `FIGUR_BILDER` ist im Quelltext leer.
+- **`build.js`** fuellt `FIGUR_BILDER`: in `lucenta.html` als eingebettete Daten, in der
+  App-Fassung als Pfade nach `dist/figuren/<kennung>-<hash>.png`. Fehlt ein Bild zu einer Kennung
+  oder die Stelle selbst, bricht der Bau ab.
+- **`09-archetypen.css`**: `.figur-bild` mit 14 % Rand im Kreis und weichem Schatten; der Lidschlag
+  (`.fig-augen`) ist entfallen — er hatte keinen Gegenstand mehr.
+- **Namen**: Fluent hat keinen Dackel und keinen Retriever. Die **Kennungen** `dackel` und
+  `retriever` bleiben (sie stehen in gespeicherten Profilen), sie zeigen jetzt **Pudel** und
+  **Hund**, die Namen sind in allen acht Sprachen entsprechend geaendert. Der **Goldfisch** ist
+  Fluents blauer Fisch mit gedrehtem Farbton.
+- **Lizenz**: MIT verlangt Hinweis und Lizenztext in jeder Kopie. Unter Einstellungen > Ueber
+  Lucenta steht eine Zeile (8 Sprachen) und, zugeklappt, der Lizenztext. Im Bundle liegt die
+  Datei zusaetzlich in `figuren/`.
+- **`pruef-app`** hat eine 28. Pruefung: Jedes der 12 Bilder der App-Fassung muss aus `figuren/`
+  **laden** (nicht nur im Quelltext stehen).
+
+### Was am Bild auffiel und korrigiert wurde
+
+1. **Korn**: Die erste Palette (Median-Schnitt nach Spannweite, volle Fehlerstreuung) zeigte in der
+   Vergroesserung sichtbares Korn auf den Verlaeufen. Geteilt wird jetzt nach Spannweite mal Wurzel
+   der Punktzahl, gestreut nur 55 % des Fehlers — in der Vergroesserung glatt, ohne Stufen.
+2. **Goldfisch gelbgruen**: Der erste Farbdreh (0,58) landete bei Gelb; 0,47 ergibt Orange.
+3. **Schildkroete, Reh, Pudel zu tief/klein**: Fluent legt jedes Tier anders ins Quadrat. Das
+   Werkzeug schneidet jetzt auf den Inhalt zu und setzt ihn mittig. Am Simulator (dunkel)
+   nachgesehen: alle zwoelf mittig, kein Ohr vom Kreis beschnitten.
+
+### Pruefungen
+
+`npm run pruef-alles`: ALLE 9 BESTANDEN (11,0 Minuten), `pruef-app` 28/28 mit der neuen
+Bildpruefung. iOS-Bau erfolgreich, Bilder im installierten Bundle nachgesehen (`public/figuren/`).
+
+### Was offen bleibt
+
+- **Hellmodus nicht am Simulator angesehen** — nur dunkel (der Simulator stand so). Die hellen
+  Feldfarben sind dieselben Pastelltoene wie vorher.
+- Ob „verspielt statt naturgetreu" das ist, was der Inhaber mit „realistischer" meinte, ist sein
+  Urteil. Falls nicht: Der naechste Schritt waeren echte Fotos (CC0), Werkzeug und Bauschritt
+  bleiben dieselben — nur `TIERE` in `figuren_holen.py` zeigt woanders hin.
 
 ---
 

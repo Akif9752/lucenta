@@ -28,8 +28,33 @@ const i18nDateien = fs.readdirSync(path.join(SRC, 'i18n'))
   .filter(f => f.endsWith('.js'))
   .sort((a, b) => (a === 'de.js' ? -1 : b === 'de.js' ? 1 : a.localeCompare(b)));
 const i18n = i18nDateien.map(f => read('i18n', f)).join('');
+// ---------- Runde 123: Die Tier-Avatare sind Bilder (src/figuren/*.png) ----------
+//
+// 13-figuren.js traegt `var FIGUR_BILDER = {};`, und hier wird es gefuellt — fuer die zwei
+// Fassungen verschieden, aus demselben Grund wie bei Schriften und Sprachen: lucenta.html muss
+// allein funktionieren (eingebettet), die App-Fassung soll beim Start nichts dekodieren, was sie
+// nicht zeigt (Dateien in dist/figuren/, Name aus dem Inhalt). Fehlt die Stelle oder ein Bild,
+// bricht der Bau ab — sonst zeigte die App leere Kreise, und keine Pruefung saehe es.
+const FIGUR_ORDNER = 'figuren';
+const FIGUR_STELLE = 'var FIGUR_BILDER = {};';
+const figurDateien = fs.readdirSync(path.join(SRC, FIGUR_ORDNER)).filter(f => f.endsWith('.png')).sort();
+const figurKennungen = [...read('js', '13-figuren.js').matchAll(/\{id:'([a-z]+)',\s*feld:/g)].map(m => m[1]);
+const fehlendeFiguren = figurKennungen.filter(k => !figurDateien.includes(k + '.png'));
+if (!read('js', '13-figuren.js').includes(FIGUR_STELLE) || !figurKennungen.length || fehlendeFiguren.length) {
+  console.error('\nBau abgebrochen: Die Tierbilder lassen sich nicht einsetzen.\n' +
+                (fehlendeFiguren.length ? 'Ohne Bild in src/figuren/: ' + fehlendeFiguren.join(', ') + '\n'
+                                        : '`' + FIGUR_STELLE + '` oder FIGUREN fehlt in src/js/13-figuren.js.\n'));
+  process.exit(1);
+}
+function figurenEinsetzen(quelltext, wert) {
+  const bilder = {};
+  for (const k of figurKennungen) bilder[k] = wert(k, fs.readFileSync(path.join(SRC, FIGUR_ORDNER, k + '.png')));
+  return quelltext.replace(FIGUR_STELLE, 'var FIGUR_BILDER = ' + JSON.stringify(bilder) + ';');
+}
+
 const jsRoh = man.js.map(f => read('js', f)).join('');
-const js = jsRoh.replace('@@I18N@@\n', i18n);
+const js = figurenEinsetzen(jsRoh, (_k, d) => 'data:image/png;base64,' + d.toString('base64'))
+             .replace('@@I18N@@\n', i18n);
 
 // ---------- Der Bau prueft, ob das Ergebnis ueberhaupt laeuft (Runde 90) ----------
 //
@@ -499,7 +524,18 @@ const i18nApp = read('i18n', 'de.js') +
 // bekommt esbuild das CSS als CSS und das JavaScript als JavaScript. Ueber die fertige Seite
 // koennte es nicht unterscheiden.
 const cssApp = fuerAppEntschlacken(css, 'css');
-const jsApp  = fuerAppEntschlacken(jsRoh.replace('@@I18N@@\n', i18nApp), 'js');
+const figurZiel = path.join(path.dirname(OUT), FIGUR_ORDNER);
+fs.rmSync(figurZiel, { recursive: true, force: true });   // Reste vom letzten Bau
+fs.mkdirSync(figurZiel, { recursive: true });
+let figurBytes = 0;
+const jsMitFiguren = figurenEinsetzen(jsRoh, (k, d) => {
+  const name = `${k}-${require('crypto').createHash('sha256').update(d).digest('hex').slice(0, 10)}.png`;
+  fs.writeFileSync(path.join(figurZiel, name), d);
+  figurBytes += d.length;
+  return `${FIGUR_ORDNER}/${name}`;
+});
+fs.copyFileSync(path.join(SRC, FIGUR_ORDNER, 'LIZENZ-fluent-emoji.txt'), path.join(figurZiel, 'LIZENZ-fluent-emoji.txt'));
+const jsApp  = fuerAppEntschlacken(jsMitFiguren.replace('@@I18N@@\n', i18nApp), 'js');
 const htmlRoh = read('index.head.html') + '<style>' + cssApp + '</style>' +
                 read('index.body.html') + '<script>' + jsApp + '</script>' + read('index.tail.html');
 
@@ -536,3 +572,4 @@ console.log('dist/index.html    %s KB (App-Fassung) + %d Schriften als Dateien (
   (Buffer.byteLength(htmlApp) / 1024).toFixed(1), schriftNr, (schriftBytes / 1024).toFixed(1));
 console.log('dist/sprachen/     %d Pakete zum Nachladen (%s KB), Deutsch bleibt eingebettet',
   Object.keys(sprachQuellen).length, (sprachBytes / 1024).toFixed(1));
+console.log('dist/figuren/      %d Tierbilder (%s KB)', figurKennungen.length, (figurBytes / 1024).toFixed(1));

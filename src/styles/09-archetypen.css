@@ -350,8 +350,14 @@
      beides gleichzeitig waere doppelt belegt. */
   .avatar.hat-figur, .drawer-profile-avatar.hat-figur,
   .settings-account-avatar.hat-figur{ background:var(--figur-feld, var(--surface-2)); padding:0; }
-  .avatar.hat-figur > svg, .drawer-profile-avatar.hat-figur > svg,
-  .settings-account-avatar.hat-figur > svg{ width:100%; height:100%; }
+  /* Runde 123: Die Figur ist ein Bild (Fluent Emoji 3D). Es liegt mit Rand im Kreis, weil die
+     Gesichter das Quadrat bis in die Ecken fuellen — randlos schnitte der Kreis Ohren ab. Der
+     weiche Schatten setzt das Modell auf die Flaeche, statt es aufzukleben. */
+  .figur-bild{
+    display:block; width:72%; height:72%; margin:14%; object-fit:contain;
+    filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.16));
+    -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; pointer-events:none;
+  }
 
   .figur-raster{
     margin-top:14px; display:grid; gap:8px;
@@ -382,7 +388,7 @@
     :root:not([data-theme="light"]) .figur-wahl{
       background:var(--figur-feld-dunkel, var(--surface-2));
     }
-    :root:not([data-theme="light"]) .figur-svg{ filter:brightness(.94) saturate(.94); }
+    :root:not([data-theme="light"]) .figur-bild{ filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.3)) brightness(.94) saturate(.94); }
   }
   :root[data-theme="dark"] .avatar.hat-figur,
   :root[data-theme="dark"] .drawer-profile-avatar.hat-figur,
@@ -390,30 +396,8 @@
   :root[data-theme="dark"] .figur-wahl{
     background:var(--figur-feld-dunkel, var(--surface-2));
   }
-  :root[data-theme="dark"] .figur-svg{ filter:brightness(.94) saturate(.94); }
+  :root[data-theme="dark"] .figur-bild{ filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.3)) brightness(.94) saturate(.94); }
 
-  /* ---------- Der Lidschlag ----------
-     "besser animiert": Eine Figur, die blinzelt, ist lebendig; eine, die es nicht tut, ist ein
-     Bild. Es ist die sparsamste Belebung, die es gibt — kein Schweben, kein Wackeln, nichts,
-     was Aufmerksamkeit zieht. 96 Prozent der Zeit passiert nichts.
-
-     Gestaucht wird um den Augenmittelpunkt (transform-box/transform-origin), sonst rutschen die
-     Augen beim Zusammenziehen ins Gesicht. Die Verzoegerung haengt am Element, damit nicht
-     zweiundzwanzig Figuren in der Auswahl im Gleichtakt blinzeln — das saehe nach Fehlfunktion
-     aus, nicht nach Leben. */
-  .fig-augen{
-    transform-box:fill-box; transform-origin:center;
-    animation:fig-blinzeln 6.4s infinite;
-  }
-  .figur-wahl:nth-child(3n) .fig-augen{ animation-delay:1.7s; animation-duration:7.1s; }
-  .figur-wahl:nth-child(3n+1) .fig-augen{ animation-delay:3.4s; animation-duration:5.8s; }
-  @keyframes fig-blinzeln{
-    0%, 95%, 100%{ transform:scaleY(1); }
-    97.2%        { transform:scaleY(.08); }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .fig-augen{ animation:none; }
-  }
   .figur-wahl:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
   .figur-wahl:active{ transform:scale(.9); transition-duration:0s; }
   @media (prefers-reduced-motion: reduce){ .figur-wahl:active{ transform:none; } }

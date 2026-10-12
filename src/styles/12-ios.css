@@ -619,3 +619,9 @@
   }
   #startOverlay.show .start-name{ animation:start-name .5s cubic-bezier(.2,.8,.2,1) .5s forwards; }
   @keyframes start-name{ to{ opacity:1; transform:none; } }
+
+  /* Runde 123: Der Lizenztext der Tierbilder unter "Ueber Lucenta" — zugeklappt, klein, gedaempft.
+     Er muss da sein, nicht auffallen. */
+  .lizenz-details{ margin-top:8px; }
+  .lizenz-details summary{ cursor:pointer; color:var(--muted); font-size:13px; }
+  .lizenz-text{ margin-top:6px; font-size:11px; line-height:1.45; color:var(--muted); hyphens:manual; -webkit-hyphens:manual; }
