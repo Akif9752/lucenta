@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 124)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 125)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -32,7 +32,8 @@ Zwei Regeln, die er ausdruecklich gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 124 | (dieser) | Tagesform neu: fünf Big-Five-Fragen je Tag, Stichworte, Bandbreite um das Testergebnis, Monatskalender, Muster (Plus), Erinnerung in der Ansicht, Tipp auf Mitteilung öffnet sie, Zeile in der Schublade |
+| 125 | (dieser) | Eigene 3D-Tiere im Pixar-Stil: `tools/figuren_rendern/` (SceneKit, Abstandsfelder), wieder Dackel/Golden Retriever, Fluent und Lizenzhinweis entfallen |
+| 124 | `7f29388` | Tagesform neu: fünf Big-Five-Fragen je Tag, Stichworte, Bandbreite um das Testergebnis, Monatskalender, Muster (Plus), Erinnerung in der Ansicht, Tipp auf Mitteilung öffnet sie, Zeile in der Schublade |
 | 123 | `c417abe` | Tier-Avatare als Fluent-Emoji-3D-Bilder (`src/figuren/`, `tools/figuren_holen.py`), Vektorzeichnung entfallen, Pudel/Hund statt Dackel/Retriever, MIT-Hinweis in Ueber Lucenta |
 | 122 | `5d6aaa6` | Startbild nur noch Papierflaeche (kein Schwarz, kein beiges Quadrat), Huelle kennt das gewaehlte Farbschema (`lucentaThema` -> UserDefaults), Glas hell durchsichtiger, keine Silbentrennung in der Schublade |
 | 121 | `67b5e67` | Liquid Glass (Schublade, Knoepfe, Toast, Plus-Dialog), Startbewegung, Verlaufskurve nach Apple Health, Meeresschildkroete, Abbruch beim Wiederherstellen nimmt Lucenta+ nicht mehr weg |
@@ -71,11 +72,10 @@ Tagesform neu gebaut. Was bleibt:
 6. Zwei aeltere Kleinigkeiten in der Tagesform: „12-mal" bricht am Bindestrich; die Datumsmarken
    unter der Verlaufskurve stehen ungleichmaessig.
 
-**Die Avatare sind seit Runde 123 Bilder** (Fluent Emoji 3D, Entscheidung des Inhabers). Die
-Vektorzeichnung gibt es nicht mehr. Falls sie als „nicht realistisch genug" zurueckkommen: echte
-Fotos (CC0) ueber dasselbe Werkzeug (`tools/figuren_holen.py`, nur `TIERE` aendern) — einmalig beim
-Erzeugen geholt, **nie** zur Laufzeit, sonst ist „Data Not Collected" falsch. Wieder eine
-Entscheidung des Inhabers.
+**Die Avatare sind seit Runde 125 eigene 3D-Renderings** (SceneKit, `tools/figuren_rendern/`, auf
+Wunsch des Inhabers im Pixar-Stil, aber keine Nachbildung von Filmfiguren). Ändern: das Tier in
+`Tiere.swift` nachformen, `tools/figuren_rendern/bauen.sh <tier>`, Bild ANSEHEN, dann
+`python3 tools/figuren_holen.py <tier>`. Nie zur Laufzeit etwas laden („Data Not Collected").
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
@@ -96,7 +96,7 @@ Entscheidung des Inhabers.
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 124: **ALLE 9 BESTANDEN** (11,4 Minuten), `fehlersuche` KEINE FUNDE (nach zwei Laeufen mit 274 und 46 Funden, siehe Runde 124), `tests` Tagesform 40/40, `diff-sprachen` 141 (Bericht; vorher 130, die neuen Texte). Nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
+`npm run pruef-alles` nach Runde 125: **ALLE 9 BESTANDEN** (11,1 Minuten), `fehlersuche` KEINE FUNDE. Nach Runde 124: **ALLE 9 BESTANDEN** (11,4 Minuten), `fehlersuche` KEINE FUNDE (nach zwei Laeufen mit 274 und 46 Funden, siehe Runde 124), `tests` Tagesform 40/40, `diff-sprachen` 141 (Bericht; vorher 130, die neuen Texte). Nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
 auf WebKit und Chromium, `pruef-nativ` 51/51, `pruef-app` 27/27, `pruef-store` 32/32,
 `pruef-bewegung` bestanden, `tests` 11 Reihen, `diff-sprachen` 130 (ein Bericht). iOS-Bau
 SUCCEEDED, am gebauten Bundle nachgeprueft (`startOverlay`, `trend-kurve`, `r.abgebrochen`).
@@ -145,6 +145,68 @@ recommended settings" akzeptieren. `npm run mac:entlasten` nach jedem `npm insta
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht** (weit voraus), kein Pull
 Request ohne Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/`
 (absichtlich unversioniert).
+
+---
+
+## Runde 125 — Eigene 3D-Tiere im Pixar-Stil (SceneKit), Fluent entfällt
+
+Auftrag: „die avatartiere sehen noch zu unrealistisch aus. mache sie erstens realistischer und
+zweitens orientiere sich sehr an den tieren von findet nemo vom optischen". Nachgefragt:
+**gemeint ist der Stil** (plastisch, weich beleuchtet, große ausdrucksvolle Augen, naturnahe Farben),
+die zwölf Tiere bleiben. Hingewiesen auf die Entscheidung aus Runde 121 (keine Nachbildung fremder
+Figuren — Urheber- und Markenrecht im Store): Es gibt keine Nemo-, Dorie- oder Crush-Figuren, nur den
+Stil. Auf die Frage nach der Bildquelle (Lizenzpaket / KI-Bilder / Fotos) **entschied der Inhaber:
+„du baust die selber in diesem stil hier so gut wie es geht".**
+
+### Wie sie entstehen
+
+Auf diesem Mac gibt es kein 3D-Programm. macOS bringt aber **SceneKit** mit (physikalisch basiertes
+Licht, Rendern ohne Bildschirm mit durchsichtigem Hintergrund). Neu: **`tools/figuren_rendern/`**
+(Swift, `bauen.sh` übersetzt mit `-O` und rendert, ~20 s für alle zwölf):
+- **Modell.swift** — Formen als Abstandsfelder (Ellipsoide, Rundkegel, je mit Drehung/Stauchung),
+  **weich verschmolzen** („smooth union", Mulden per weicher Differenz), daraus eine glatte Oberfläche
+  („surface nets", 170³ Raster, jeder Punkt auf die echte Fläche nachgezogen). Dazu
+  **Umgebungsverdeckung aus dem Abstandsfeld** (SceneKits eigene greift im Schnappschuss nicht —
+  ohne sie fehlte jede Tiefe in Augenhöhlen und Ohransätzen), feine Fellstruktur in den Normalen,
+  Wert-Rauschen und Zellmuster (Panzerplatten, Schuppen, Federn).
+- **Szene.swift** — Augen als eigener Körper: Augapfel mit **von vorn projizierter Iris** (Verlauf,
+  Fasern, Limbusring, Pupille), durchsichtige **Hornhaut mit Klarlack**, zwei Lichtpunkte. Studio:
+  Umgebungsbild mit Softbox, Haupt-, Füll- und Kantenlicht, weiche Schatten.
+- **Tiere.swift** — eine Funktion je Tier: Anatomie, Farbe als Funktion des Ortes (Fuchs-Weiß,
+  Katzentigerung mit „M", Panda-Augenflecken, Rehohren …), Augen so tief gesetzt, dass die Haut ihren
+  Rand überdeckt (das ergibt die Lider), Lidwülste darüber.
+
+`tools/figuren_holen.py` liest jetzt die Renderings (statt Fluent herunterzuladen), schneidet zu,
+verkleinert auf 256 px (sips) und bringt sie auf die Palette — 215 KB für alle zwölf. Bau und
+`pruef-app` (alle 12 laden) unverändert.
+
+### Am Bild gesehen und korrigiert (jede Runde gerendert und angesehen)
+
+1. Erster Fuchs: Schnauze in der Frontansicht unsichtbar, Licht flach und überstrahlt, Fell glitzerte
+   wie Sand → Dreiviertelansicht, mehr Kontrast, Fellstruktur gröber und schwächer.
+2. Iris unsichtbar — die Irisscheibe lag INNERHALB des undurchsichtigen Augapfels (eigener Fehler) →
+   eigener Augapfel mit projizierter Iris.
+3. Augen wirkten aufgeklebt → in die Fläche gesetzt, Lidwülste.
+4. Panda ohne Augenflecken, Hase mit Röhrenohren, Reh wie ein Ameisenbär, Pudel klumpig, Hund ohne
+   sichtbare Ohren (wie eine Robbe), Schildkrötenkopf zu klein → jeweils nachgeformt.
+5. Mit dem eigenen Renderer gilt Fluents Lücke nicht mehr: **wieder Dackel und Golden Retriever**
+   (statt Pudel/Hund aus Runde 123), Namen in allen acht Sprachen zurück. Der Dackel brauchte drei
+   Anläufe (Nase in der Schnauze versunken, Rüssel, Ohren als Platten bzw. ganz verschmolzen).
+6. **Fluent entfällt vollständig**: Lizenzdatei, Hinweis und Lizenztext unter „Über Lucenta" (drei
+   Schlüssel × 8 Sprachen) und der Kopierschritt im Bau sind entfernt — die Bilder sind eigene Arbeit.
+
+### Pruefungen
+
+`npm run pruef-alles`: ALLE 9 BESTANDEN (11,1 Minuten). iOS-Bau erfolgreich; im Simulator alle zwoelf
+Tiere in der Auswahl gesehen (dunkel).
+
+### Was offen bleibt
+
+- Das ist **so gut, wie es mit SceneKit und Grundformen hier geht** — kein Pixar-Rendering mit echtem
+  Fell und Subsurface-Streuung. Wer den Stil wirklich treffen will, braucht ein Modellierprogramm
+  oder lizenzierte Modelle; das Werkzeug kann dann Modelle (USDZ/OBJ) laden statt Formen zu bauen.
+- Schwächste nach eigenem Urteil: Dackel und Golden Retriever (Köpfe noch etwas kugelig).
+- Die Polwörter der Tagesform und alles aus Runde 119–124 warten weiter auf das Urteil des Inhabers.
 
 ---
 

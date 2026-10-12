@@ -534,7 +534,6 @@ const jsMitFiguren = figurenEinsetzen(jsRoh, (k, d) => {
   figurBytes += d.length;
   return `${FIGUR_ORDNER}/${name}`;
 });
-fs.copyFileSync(path.join(SRC, FIGUR_ORDNER, 'LIZENZ-fluent-emoji.txt'), path.join(figurZiel, 'LIZENZ-fluent-emoji.txt'));
 const jsApp  = fuerAppEntschlacken(jsMitFiguren.replace('@@I18N@@\n', i18nApp), 'js');
 const htmlRoh = read('index.head.html') + '<style>' + cssApp + '</style>' +
                 read('index.body.html') + '<script>' + jsApp + '</script>' + read('index.tail.html');

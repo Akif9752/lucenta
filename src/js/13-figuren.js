@@ -4,20 +4,19 @@
 // Schublade.
 //
 // Runde 123, auf Entscheidung des Inhabers: Die Figuren sind BILDER, keine Vektorzeichnungen mehr.
-// Von Runde 79 bis 121 standen hier zwoelf Tiere als SVG-Bauplan — Licht, Fell, Tieraugen,
-// Anatomie, sieben Ueberarbeitungen seit Runde 111 —, und jede kam mit demselben Urteil zurueck:
-// "zu gezeichnet", "mehr wie ein 3D-Modell". Auf 40 mal 40 Einheiten ist mit Pfaden kein Modell zu
-// bauen. Die Bilder sind Microsoft Fluent Emoji 3D (MIT-Lizenz, Hinweis in src/figuren/ und unter
-// Einstellungen > Ueber Lucenta), umgesetzt von tools/figuren_holen.py.
+// Von Runde 79 bis 121 standen hier zwoelf Tiere als SVG-Bauplan, sieben Mal ueberarbeitet und jedes
+// Mal "zu gezeichnet". Runde 123 nahm Microsoft Fluent Emoji 3D; Runde 125 ("realistischer, im Stil
+// von Findet Nemo") ersetzt sie durch eigene 3D-Renderings: tools/figuren_rendern/ modelliert jedes
+// Tier als Volumen und rendert es mit SceneKit, tools/figuren_holen.py setzt die Bilder um.
 //
 // Woher die Bilder kommen, entscheidet der Bau, nicht dieser Code: `FIGUR_BILDER` ist hier leer
 // und wird von build.js gefuellt — in lucenta.html mit eingebetteten Daten (die Datei muss allein
 // funktionieren), in der App-Fassung mit Pfaden nach figuren/ im Bundle. Geladen wird beides
 // lokal; nach aussen geht nichts.
 //
-// Die Kennungen sind geblieben, auch wo das Tier gewechselt hat (Fluent hat keinen Dackel und
-// keinen Retriever): Sie stehen in gespeicherten Profilen, und ein Profil mit 'dackel' soll nach
-// dem Update ein Tier zeigen, keinen Buchstaben. Was sich geaendert hat, sind die Namen.
+// Die Kennungen stehen in gespeicherten Profilen und aendern sich deshalb nie. In Runde 123 zeigten
+// 'dackel' und 'retriever' einen Pudel und einen Hund (Fluent hatte beide nicht); seit Runde 125
+// sind es wieder Dackel und Golden Retriever.
 
   var FIGUR_BILDER = {};
 
@@ -28,8 +27,8 @@
     {id:'panda', feld:'#E2E4EC'},
     {id:'hase',  feld:'#F1E7EC'},
     {id:'reh',   feld:'#EEE7D9'},
-    {id:'dackel', feld:'#E6E6EE'},     // zeigt einen Pudel
-    {id:'retriever', feld:'#F7EBD6'},  // zeigt einen Hund
+    {id:'dackel', feld:'#F0E3D2'},
+    {id:'retriever', feld:'#F7EBD6'},
     {id:'eule', feld:'#E3E7E4'},
     {id:'wal', feld:'#DCE7EE'},
     {id:'goldfisch', feld:'#FCEAD5'},

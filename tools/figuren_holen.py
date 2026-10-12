@@ -1,45 +1,27 @@
 #!/usr/bin/env python3
-"""Runde 123: Die Tier-Avatare als 3D-Bilder (Microsoft Fluent Emoji, MIT-Lizenz).
+"""Setzt die Tier-Avatare fuer die App um: zuschneiden, verkleinern, auf eine Palette bringen.
 
-Auf Entscheidung des Inhabers ersetzen sie die Vektorzeichnungen, die seit Runde 111 sieben Mal
-ueberarbeitet und jedes Mal als "zu gezeichnet" zurueckgekommen waren.
+Runde 125: Die Bilder kommen nicht mehr von Fluent Emoji (Runde 123), sondern aus dem eigenen
+Renderer tools/figuren_rendern/ (SceneKit, selbst modelliert, Stil auf Wunsch des Inhabers "wie aus
+einem Pixar-Film"). Dieses Werkzeug liest dessen Ausgabe aus ROH, verkleinert auf 256 px und legt
+das Ergebnis nach src/figuren/. Eingecheckt wird nur das Ergebnis. Es laedt nichts aus dem Netz.
 
-Dieses Werkzeug laeuft EINMAL von Hand, nicht beim Bau: Es holt die Bilder, setzt sie um und legt
-sie nach src/figuren/. Das Ergebnis ist eingecheckt. Der Bau selbst laedt nie etwas aus dem Netz,
-und die App erst recht nicht — "Data Not Collected" bleibt wahr.
+Palette statt Echtfarben (256 Eintraege mit eigener Deckkraft, Fehlerstreuung): die Bilder sind dann
+etwa halb so gross. WebP kann ImageIO auf dem Mac nicht schreiben, AVIF zeigt WebKit erst ab iOS 16
+(die App laeuft ab iOS 15) — PNG mit Palette ist das kleinste Format, das ueberall angezeigt wird.
 
-Umgesetzt wird zweierlei:
-  1. Goldfisch: Fluent hat nur einen BLAUEN Fisch. Der Farbton wird gedreht (Blau -> Orange),
-     Helligkeit und Saettigung bleiben, also auch Licht und Schatten des Modells.
-  2. Palette statt Echtfarben (256 Eintraege mit eigener Deckkraft, Fehlerstreuung): Die Bilder
-     sind dann etwa halb so gross. WebP kann ImageIO auf dem Mac nicht schreiben, AVIF zeigt WebKit
-     erst ab iOS 16 (die App laeuft ab iOS 15) — PNG mit Palette ist das kleinste Format, das
-     ueberall angezeigt wird.
-
-Aufruf:  python3 tools/figuren_holen.py
+Aufruf:  tools/figuren_rendern/bauen.sh && python3 tools/figuren_holen.py [tier ...]
 """
-import colorsys, os, struct, sys, urllib.parse, urllib.request, zlib
+import colorsys, os, struct, subprocess, sys, tempfile, zlib
 
-QUELLE = 'https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/'
+ROH = '/tmp/lucenta-figuren-roh'
 ZIEL = os.path.join(os.path.dirname(__file__), '..', 'src', 'figuren')
+GROESSE = 256
 
-# Kennung in FIGUREN (13-figuren.js) -> Ordner bei Fluent. Die Kennungen bleiben, auch wo das Tier
-# wechselt: Sie stehen in gespeicherten Profilen (lucenta_profile.figur).
-TIERE = {
-    'fuchs':        'Fox/3D/fox_3d.png',
-    'katze':        'Cat face/3D/cat_face_3d.png',
-    'baer':         'Bear/3D/bear_3d.png',
-    'panda':        'Panda/3D/panda_3d.png',
-    'hase':         'Rabbit face/3D/rabbit_face_3d.png',
-    'reh':          'Deer/3D/deer_3d.png',
-    'dackel':       'Poodle/3D/poodle_3d.png',      # Fluent hat keinen Dackel -> Pudel
-    'retriever':    'Dog face/3D/dog_face_3d.png',  # und keinen Retriever -> Hund
-    'eule':         'Owl/3D/owl_3d.png',
-    'wal':          'Whale/3D/whale_3d.png',
-    'goldfisch':    'Fish/3D/fish_3d.png',
-    'schildkroete': 'Turtle/3D/turtle_3d.png',
-}
-FARBTON_DREHEN = {'goldfisch': 0.47}   # Anteil eines Vollkreises: Blau (~0,6) -> Orange (~0,07)
+# Die Kennungen in FIGUREN (13-figuren.js). Sie stehen in gespeicherten Profilen und bleiben, auch
+# wo das Tier zwischenzeitlich gewechselt hat (Runde 123: Pudel/Hund statt Dackel/Retriever).
+TIERE = ['fuchs', 'katze', 'baer', 'panda', 'hase', 'reh', 'dackel', 'retriever',
+         'eule', 'wal', 'goldfisch', 'schildkroete']
 
 
 # ---------- PNG lesen und schreiben, nur mit der Standardbibliothek ----------
@@ -88,17 +70,6 @@ def png_palette_schreiben(breite, hoehe, palette, indizes):
             _block(b'PLTE', bytes(v for f in palette for v in f[:3])) +
             _block(b'tRNS', bytes(f[3] for f in palette)) +
             _block(b'IDAT', zlib.compress(roh, 9)) + _block(b'IEND', b''))
-
-
-# ---------- Farbton drehen ----------
-
-def farbton_drehen(pixel, anteil):
-    aus = []
-    for r, g, b, a in pixel:
-        h, s, v = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
-        r2, g2, b2 = colorsys.hsv_to_rgb((h + anteil) % 1.0, s, v)
-        aus.append((round(r2 * 255), round(g2 * 255), round(b2 * 255), a))
-    return aus
 
 
 # ---------- Auf den Inhalt zuschneiden und mittig setzen ----------
@@ -181,25 +152,34 @@ def main():
     os.makedirs(ZIEL, exist_ok=True)
     summe = 0
     nur = sys.argv[1:]
-    for kennung, pfad in TIERE.items():
+    for kennung in TIERE:
         if nur and kennung not in nur: continue
-        url = QUELLE + urllib.parse.quote(pfad)
-        daten = urllib.request.urlopen(url, timeout=30).read()
-        b, h, pixel = png_lesen(daten)
-        if kennung in FARBTON_DREHEN:
-            pixel = farbton_drehen(pixel, FARBTON_DREHEN[kennung])
+        quelle = os.path.join(ROH, kennung + '.png')
+        if not os.path.exists(quelle):
+            sys.exit('Fehlt: %s — erst tools/figuren_rendern/bauen.sh laufen lassen.' % quelle)
+        with open(quelle, 'rb') as f: b, h, pixel = png_lesen(f.read())
         b, h, pixel = zuschneiden(b, h, pixel)
+        # Verkleinern ueber sips (Apples Bildwerkzeug, gute Filterung) — auf dem zugeschnittenen Bild,
+        # damit jedes Tier dieselbe Groesse im Kreis bekommt.
+        with tempfile.TemporaryDirectory() as tmp:
+            zw = os.path.join(tmp, 'z.png'); kl = os.path.join(tmp, 'k.png')
+            with open(zw, 'wb') as f:
+                f.write(png_palette_schreiben_rgba(b, h, pixel))
+            subprocess.run(['sips', '-Z', str(GROESSE), zw, '--out', kl], check=True, capture_output=True)
+            with open(kl, 'rb') as f: b, h, pixel = png_lesen(f.read())
         palette = palette_bilden(pixel)
         aus = png_palette_schreiben(b, h, palette, abbilden(b, h, pixel, palette))
         with open(os.path.join(ZIEL, kennung + '.png'), 'wb') as f:
             f.write(aus)
         summe += len(aus)
-        print('%-13s %4d KB -> %3d KB  %s' % (kennung, len(daten) // 1024, len(aus) // 1024, pfad))
-    lizenz = urllib.request.urlopen(QUELLE.replace('/assets/', '/LICENSE'), timeout=30).read()
-    with open(os.path.join(ZIEL, 'LIZENZ-fluent-emoji.txt'), 'wb') as f:
-        f.write(b'Die Tierbilder in diesem Ordner stammen aus Microsoft Fluent Emoji\n'
-                b'(https://github.com/microsoft/fluentui-emoji), Goldfisch im Farbton veraendert.\n\n' + lizenz)
+        print('%-13s %3d x %3d  %3d KB' % (kennung, b, h, len(aus) // 1024))
     print('zusammen %d KB' % (summe // 1024))
+
+
+def png_palette_schreiben_rgba(breite, hoehe, pixel):
+    roh = b''.join(b'\x00' + bytes(v for p in pixel[y * breite:(y + 1) * breite] for v in p) for y in range(hoehe))
+    return (b'\x89PNG\r\n\x1a\n' + _block(b'IHDR', struct.pack('>IIBBBBB', breite, hoehe, 8, 6, 0, 0, 0)) +
+            _block(b'IDAT', zlib.compress(roh, 6)) + _block(b'IEND', b''))
 
 
 if __name__ == '__main__':
