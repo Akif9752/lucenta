@@ -768,35 +768,61 @@
      gleicher Verdunkler, gleiche Tastensteuerung. Ein zweites, anders funktionierendes Fenster
      waere fuer die Bedienung eine zweite Sache zum Lernen. -->
 <div id="plusModal" role="dialog" aria-modal="true" aria-labelledby="plusModalTitel" aria-hidden="true">
-  <div class="plus-modal-inner">
-    <button type="button" class="drawer-close" id="btnPlusModalClose" aria-label="Schließen" data-i18n-aria="aria_schließen" style="position:absolute;top:-4px;right:-4px;">
+  <!-- Runde 126: das Kreuz sitzt am Fenster, nicht im Bildlauf — es scrollte sonst mit weg. -->
+  <button type="button" class="drawer-close" id="btnPlusModalClose" aria-label="Schließen" data-i18n-aria="aria_schließen" >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
     </button>
+  <div class="plus-modal-inner">
+
     <p class="plus-modal-marke" data-i18n="plus_marke">Lucenta<span>+</span></p>
     <h2 id="plusModalTitel" class="plus-modal-titel" data-i18n="plus_modal_titel">Alles, was aus mehreren Messungen entsteht</h2>
     <p class="plus-modal-lead" data-i18n="plus_modal_lead">Ein einzelner Test ist eine Momentaufnahme. Was daraus über Zeit wird, ist das, was dich wirklich beschreibt &mdash; und genau das liegt hier.</p>
+    <p class="plus-persoenlich" id="plusPersoenlich" hidden></p>
     <ul class="plus-vorteile" id="plusVorteile"></ul>
     <div class="plus-modal-fuss">
       <p data-i18n-html="plus_modal_versprechen"><b>Dein Ergebnis bleibt frei.</b> Niemand zahlt für den Test, sein Porträt oder den vollständigen Bericht.</p>
       <p data-i18n-html="plus_modal_nichts_weg"><b>Es wird nichts gelöscht.</b> Was du erfasst hast, liegt gespeichert &mdash; auch das, was gerade verschlossen ist.</p>
       <p data-i18n-html="plus_modal_preis"><b>Was während deiner Laufzeit entsteht, bleibt lesbar.</b> Das Abo öffnet, was fortlaufend dazukommt. Es nimmt dir nie wieder weg, was du bereits gesehen hast.</p>
     </div>
-    <!-- Runde 97: Ein Segmentwähler statt zweier Knöpfe — die Form, in der iOS eine Wahl zwischen
-         zwei gleichrangigen Möglichkeiten zeigt. role="radiogroup" ist die Entsprechung dafür für
-         Vorleseprogramme; zwei aria-pressed-Knöpfe sagten nicht, dass sie einander ausschließen. -->
-    <div class="segment" id="plusPreisWahl" role="radiogroup" aria-label="Laufzeit wählen" data-i18n-aria="aria_plus_preis">
-      <button type="button" class="segment-opt" role="radio" aria-checked="false" data-laufzeit="monat">
-        <span class="segment-preis" data-i18n="plus_preis_monat">4,99 € im Monat</span>
+  </div>
+  <!-- Runde 126: Der Kaufbereich steht FEST am unteren Rand, der Inhalt darueber scrollt — die Form
+       einer Kaufseite in iOS. Vorher lag alles in einem Bildlauf, und ein klebender Verlauf sollte
+       "es geht weiter" zeigen; er lag aber auch am Ende noch ueber der letzten Zeile, und die war
+       nicht mehr zu lesen (vom Inhaber gemeldet).
+       Die Preise sind zwei Karten statt eines Segmentwaehlers: das Jahr oben und vorgewaehlt, mit
+       Monatspreis und der echten Ersparnis gegenueber zwoelf Monaten. Alles, was dort steht, ist
+       nachrechenbar — keine Countdowns, keine erfundene Beliebtheit (schlossHTML, Runde 89).
+       role="radiogroup" und die Klasse .segment-opt bleiben: Der Code (laufzeitFaecher) und die
+       Pruefungen lesen die Wahl genau darueber. -->
+  <div class="plus-modal-kauf">
+    <div class="plus-preise" id="plusPreisWahl" role="radiogroup" aria-label="Laufzeit wählen" data-i18n-aria="aria_plus_preis">
+      <button type="button" class="segment-opt plus-preis" role="radio" aria-checked="true" data-laufzeit="jahr" data-standard>
+        <span class="plus-preis-abzeichen" data-i18n="plus_abzeichen_jahr">Bester Preis</span>
+        <span class="plus-preis-radio" aria-hidden="true"></span>
+        <span class="plus-preis-text">
+          <span class="plus-preis-name" data-i18n="plus_name_jahr">Jährlich</span>
+          <span class="plus-preis-unter"><span data-i18n="plus_jahr_pro_monat">nur 2,50 € im Monat</span> · <s data-i18n="plus_jahr_statt">59,88 €</s></span>
+        </span>
+        <span class="plus-preis-rechts">
+          <span class="plus-preis-betrag" data-i18n="plus_betrag_jahr">29,99 €</span>
+          <span class="plus-preis-spar" data-i18n="plus_jahr_spar">Spare 29 €</span>
+        </span>
       </button>
-      <button type="button" class="segment-opt" role="radio" aria-checked="true" data-laufzeit="jahr" data-standard>
-        <span class="segment-preis" data-i18n="plus_preis_jahr">29,99 € im Jahr</span>
-        <span class="segment-spar" data-i18n="plus_preis_jahr_spar">spart die Hälfte</span>
+      <button type="button" class="segment-opt plus-preis" role="radio" aria-checked="false" data-laufzeit="monat">
+        <span class="plus-preis-radio" aria-hidden="true"></span>
+        <span class="plus-preis-text">
+          <span class="plus-preis-name" data-i18n="plus_name_monat">Monatlich</span>
+          <span class="plus-preis-unter" data-i18n="plus_monat_unter">flexibel, monatlich kündbar</span>
+        </span>
+        <span class="plus-preis-rechts">
+          <span class="plus-preis-betrag" data-i18n="plus_betrag_monat">4,99 €</span>
+        </span>
       </button>
     </div>
     <button type="button" class="btn btn-primary plus-modal-cta" id="btnPlusAktivieren" data-i18n="plus_aktivieren">Lucenta+ aktivieren</button>
-    <p class="plus-modal-kuendigen" data-i18n-html="plus_kuendigen">Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
+    <p class="plus-modal-kuendigen" data-i18n-html="plus_kuendigen">Verlängert sich automatisch. Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
+    <p class="plus-vertrauen" data-i18n="plus_vertrauen">Kein Konto · Keine Werbung · Deine Daten bleiben auf dem Gerät</p>
   </div>
-  <div class="plus-modal-verlauf" aria-hidden="true"></div>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

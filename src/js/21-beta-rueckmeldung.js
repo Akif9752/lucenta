@@ -271,6 +271,7 @@
     if (!b) return;
     schalterSetzen(LAUFZEIT_SCHLUESSEL, b.getAttribute('data-laufzeit'), null);
     laufzeitAnwenden();
+    plusKnopfAnwenden();   // Runde 126: der Knopf nennt die gewaehlte Laufzeit
     tapFeedback();
   });
   if ($('btnPlusAktivieren')) $('btnPlusAktivieren').addEventListener('click', function(){

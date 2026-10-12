@@ -654,3 +654,72 @@
     text-decoration-color:color-mix(in srgb, var(--muted-soft) 40%, transparent); text-underline-offset:3px;
   }
   .recht-leise:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
+
+  /* ---------- Runde 126: Lucenta+ als Kaufseite ----------
+     Oben scrollt der Inhalt, unten steht der Kaufbereich fest (Preise, Knopf, Abo-Hinweis). Der
+     alte klebende Verlauf (.plus-modal-verlauf) ist entfallen: Er lag auch am Ende noch ueber der
+     letzten Zeile. */
+  #plusModal{ display:flex; flex-direction:column; padding:0; overflow:hidden; max-height:88vh; }
+  #plusModal .plus-modal-inner{ overflow-y:auto; -webkit-overflow-scrolling:touch; padding:22px 22px 14px; min-height:0; }
+  .plus-modal-kauf{
+    flex-shrink:0; padding:14px 16px 14px;
+    border-top:1px solid var(--glas-rand);
+    background:color-mix(in srgb, var(--surface) 92%, transparent);
+  }
+  .plus-persoenlich{
+    margin:0 0 16px; padding:11px 14px; border-radius:var(--radius-s);
+    background:color-mix(in srgb, var(--accent) 14%, transparent);
+    font-size:14px; line-height:1.45; color:var(--ink); font-weight:500;
+  }
+  .plus-persoenlich[hidden]{ display:none; }
+
+  /* Die zwei Preise als Karten, das Jahr oben. Die gewaehlte Karte traegt Rahmen und Punkt in
+     der Akzentfarbe; die Wahl ist damit nicht allein an der Farbe zu erkennen (Punkt gefuellt). */
+  #plusPreisWahl{ display:flex; flex-direction:column; gap:8px; margin:0; padding:0; background:none; }
+  #plusPreisWahl .segment-opt{
+    position:relative; flex-direction:row; align-items:center; justify-content:flex-start; gap:12px;
+    min-height:60px; padding:12px 14px; border-radius:var(--radius-s); text-align:left;
+    background:var(--surface); color:var(--ink); border:1.5px solid var(--line-strong); box-shadow:none;
+  }
+  #plusPreisWahl .segment-opt[aria-checked="true"]{
+    border-color:var(--accent-strong);
+    background:color-mix(in srgb, var(--accent) 10%, var(--surface));
+    box-shadow:none;
+  }
+  #plusPreisWahl .segment-opt:active{ background:color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+  .plus-preis-radio{
+    width:22px; height:22px; border-radius:50%; flex-shrink:0;
+    border:2px solid var(--line-strong); display:flex; align-items:center; justify-content:center;
+  }
+  #plusPreisWahl .segment-opt[aria-checked="true"] .plus-preis-radio{ border-color:var(--accent-strong); }
+  #plusPreisWahl .segment-opt[aria-checked="true"] .plus-preis-radio::after{
+    content:''; width:12px; height:12px; border-radius:50%; background:var(--accent-strong);
+  }
+  .plus-preis-text{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:0; }
+  .plus-preis-name{ font-size:16px; font-weight:600; }
+  .plus-preis-unter{ font-size:12.5px; color:var(--muted-soft); }
+  .plus-preis-unter s{ color:var(--muted-soft); }
+  .plus-preis-rechts{ display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; }
+  .plus-preis-betrag{ font-size:17px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .plus-preis-spar{
+    font-size:11.5px; font-weight:600; color:var(--accent-ink); background:var(--accent-strong);
+    border-radius:100px; padding:2px 8px;
+  }
+  .plus-preis-abzeichen{
+    position:absolute; top:-9px; left:14px; font-size:11px; font-weight:600; letter-spacing:.02em;
+    color:var(--accent-ink); background:var(--accent-strong); border-radius:100px; padding:2px 9px;
+  }
+  #plusPreisWahl .segment-opt[data-laufzeit="jahr"]{ margin-top:8px; }
+  #plusModal .plus-modal-cta{ margin-top:12px; min-height:50px; font-size:17px; font-weight:600; }
+  #plusModal .plus-modal-kuendigen{ margin:8px 0 0; font-size:11.5px; line-height:1.45; color:var(--muted-soft); }
+  .plus-vertrauen{ margin:4px 0 0; font-size:11.5px; line-height:1.45; color:var(--muted-soft); text-align:center; }
+
+  /* Runde 126: die aufklappbare Eintragsliste der Tagesform (Form wie .hilfe-sammlung). */
+  .tf-liste-sammlung{ margin-top:4px; }
+  .tf-liste-sammlung > .history-list{ margin-top:0; background:var(--surface); border-radius:0 0 var(--radius-m) var(--radius-m); padding:0 4px 4px; }
+  /* Runde 126, am Simulator gesehen: das Kreuz fest an der Fensterecke; Preise brechen nicht um
+     (ein einzelnes "€" stand sonst allein in der zweiten Zeile); keine Silbentrennung im Fenster. */
+  #btnPlusModalClose{ position:absolute; top:12px; right:12px; z-index:2; }
+  .plus-preis-unter span, .plus-preis-unter s, .plus-preis-betrag{ white-space:nowrap; }
+  #plusModal p, #plusModal li{ -webkit-hyphens:manual; hyphens:manual; }
+  #plusPreisWahl, #plusPreisWahl .segment-opt{ width:100%; max-width:100%; box-sizing:border-box; }

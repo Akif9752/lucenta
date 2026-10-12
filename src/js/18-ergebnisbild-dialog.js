@@ -127,11 +127,30 @@
   function plusKnopfAnwenden(){
     var b = $('btnPlusAktivieren');
     if (!b) return;
-    b.textContent = tx(istPlus() ? 'plus_verwalten' : 'plus_aktivieren');
+    // Runde 126: Der Knopf nennt, was man bekommt — "Jahresabo starten" statt "aktivieren".
+    var cta = {monat:'plus_cta_monat', jahr:'plus_cta_jahr'};
+    b.textContent = tx(istPlus() ? 'plus_verwalten' : (cta[laufzeitLesen()] || 'plus_cta_jahr'));
     b.classList.toggle('btn-primary', !istPlus());
     b.classList.toggle('btn-ghost', istPlus());
   }
-  function plusModalAnwenden(){ laufzeitAnwenden(); plusKnopfAnwenden(); }
+  // Runde 126: eine Zeile, die sagt, was schon wartet — aus den eigenen Daten, also wahr. Nur wenn es
+  // etwas gibt: verborgene Tage der Tagesform (frei sind FREI_TAGE sichtbar) oder fruehere
+  // Durchlaeufe (frei FREI_DURCHLAEUFE). Kein Druck, keine Frist — eine Tatsache.
+  function plusPersoenlichAnwenden(){
+    var el = $('plusPersoenlich');
+    if (!el) return;
+    var tage = 0, laeufe = 0;
+    try{ tage = Math.max(0, stateTage(loadStateHistory()).length - FREI_TAGE); }catch(e){}
+    try{ laeufe = Math.max(0, loadHistory().length - FREI_DURCHLAEUFE); }catch(e){}
+    var text = '';
+    if (!istPlus()){
+      if (tage > 0) text = tx('plus_persoenlich_tage').split('{n}').join(String(tage));
+      else if (laeufe > 0) text = tx('plus_persoenlich_laeufe').split('{n}').join(String(laeufe));
+    }
+    el.textContent = text;
+    el.hidden = !text;
+  }
+  function plusModalAnwenden(){ laufzeitAnwenden(); plusKnopfAnwenden(); plusPersoenlichAnwenden(); }
 
   // Runde 99: Der Knopf "In Fotos sichern" erscheint nur mit nativer Bruecke. Er wird bei
   // jedem Oeffnen des Bildfensters neu gesetzt und nicht einmal beim Start: Ob eine Bruecke da

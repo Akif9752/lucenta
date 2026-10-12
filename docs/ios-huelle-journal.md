@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 126)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 127)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -32,7 +32,8 @@ Zwei Regeln, die er ausdruecklich gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 126 | (dieser) | Kein Zoom in der App (Felder 16 pt, Hülle sperrt Zoom), Haptik bei jedem Tipp, Hilfe aufklappbar, überall SF, Rechtliches als leise Zeile |
+| 127 | (dieser) | Tagesform-Liste aufklappbar; Lucenta+ als Kaufseite (fester Kaufbereich, Preiskarten mit Monatspreis/Ersparnis, persönliche Zeile) |
+| 126 | `4e69bcb` | Kein Zoom in der App (Felder 16 pt, Hülle sperrt Zoom), Haptik bei jedem Tipp, Hilfe aufklappbar, überall SF, Rechtliches als leise Zeile |
 | 125 | `5645f4a` | Eigene 3D-Tiere im Pixar-Stil: `tools/figuren_rendern/` (SceneKit, Abstandsfelder), wieder Dackel/Golden Retriever, Fluent und Lizenzhinweis entfallen |
 | 124 | `7f29388` | Tagesform neu: fünf Big-Five-Fragen je Tag, Stichworte, Bandbreite um das Testergebnis, Monatskalender, Muster (Plus), Erinnerung in der Ansicht, Tipp auf Mitteilung öffnet sie, Zeile in der Schublade |
 | 123 | `c417abe` | Tier-Avatare als Fluent-Emoji-3D-Bilder (`src/figuren/`, `tools/figuren_holen.py`), Vektorzeichnung entfallen, Pudel/Hund statt Dackel/Retriever, MIT-Hinweis in Ueber Lucenta |
@@ -99,7 +100,7 @@ Wunsch des Inhabers im Pixar-Stil, aber keine Nachbildung von Filmfiguren). Änd
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 126: 8 von 9 bestanden, `pruef-app` 3 Funde — die Pruefung hielt die alte Schriftentscheidung fest (Titel in Fraunces, Plex Mono geladen); angepasst, danach `pruef-app` 29/29 auf demselben `src/`-Stand. Nach Runde 125: **ALLE 9 BESTANDEN** (11,1 Minuten), `fehlersuche` KEINE FUNDE. Nach Runde 124: **ALLE 9 BESTANDEN** (11,4 Minuten), `fehlersuche` KEINE FUNDE (nach zwei Laeufen mit 274 und 46 Funden, siehe Runde 124), `tests` Tagesform 40/40, `diff-sprachen` 141 (Bericht; vorher 130, die neuen Texte). Nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
+`npm run pruef-alles` nach Runde 127: **ALLE 9 BESTANDEN** (11,2 Minuten; erster Lauf: `audit-i18n` meldete das Literal `'monat'` im Code, umgeschrieben). Nach Runde 126: 8 von 9 bestanden, `pruef-app` 3 Funde — die Pruefung hielt die alte Schriftentscheidung fest (Titel in Fraunces, Plex Mono geladen); angepasst, danach `pruef-app` 29/29 auf demselben `src/`-Stand. Nach Runde 125: **ALLE 9 BESTANDEN** (11,1 Minuten), `fehlersuche` KEINE FUNDE. Nach Runde 124: **ALLE 9 BESTANDEN** (11,4 Minuten), `fehlersuche` KEINE FUNDE (nach zwei Laeufen mit 274 und 46 Funden, siehe Runde 124), `tests` Tagesform 40/40, `diff-sprachen` 141 (Bericht; vorher 130, die neuen Texte). Nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
 auf WebKit und Chromium, `pruef-nativ` 51/51, `pruef-app` 27/27, `pruef-store` 32/32,
 `pruef-bewegung` bestanden, `tests` 11 Reihen, `diff-sprachen` 130 (ein Bericht). iOS-Bau
 SUCCEEDED, am gebauten Bundle nachgeprueft (`startOverlay`, `trend-kurve`, `r.abgebrochen`).
@@ -148,6 +149,48 @@ recommended settings" akzeptieren. `npm run mac:entlasten` nach jedem `npm insta
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht** (weit voraus), kein Pull
 Request ohne Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/`
 (absichtlich unversioniert).
+
+---
+
+## Runde 127 — Eintragsliste aufklappbar, Lucenta+ als Kaufseite
+
+### 1. „Letzte Einträge" der Tagesform klappt auf
+Die Liste (bis 60 Zeilen) steht hinter „Alle Einträge anzeigen" — dieselbe Form wie „Häufige
+Fragen". Die Überschrift mit der Zahl bleibt sichtbar; Befunde und Schloss werden wie bisher davor
+eingesetzt (`.history-list` bleibt). Am Simulator auf- und zugeklappt.
+
+### 2. „Was ist Lucenta+?" — unten nicht lesbar
+**Ursache:** Ein klebender Verlauf (`.plus-modal-verlauf`, Runde 103) sollte „es geht weiter" zeigen,
+lag aber auch am Ende noch über der letzten Zeile — und endete in deckender Fläche über einem
+Glasfenster. **Neu:** Das Fenster ist eine Kaufseite wie in iOS: Inhalt oben scrollt, der
+Kaufbereich (Preise, Knopf, Abo-Hinweis) steht fest unten; das Kreuz sitzt fest an der Ecke (es
+scrollte zuerst mit weg — am Simulator gesehen und korrigiert). Der Verlauf ist entfernt.
+
+### 3. Preise „marketingpsychologisch" — und wo die Grenze liegt
+Umgesetzt, was wirkt UND stimmt:
+- zwei Karten statt Segmentwähler; **Jahr oben**, Abzeichen „Bester Preis", vorgewählt (sofern
+  niemand vorher „Monat" gewählt hat — die Wahl wird gemerkt, `lucenta_laufzeit`);
+- **Monatspreis des Jahres** („nur 2,50 € im Monat") und **Ankerpreis** „~~59,88 €~~" (= 12 × 4,99)
+  und **„Spare 29 €"** (tatsächlich 29,89 € — abgerundet, nie aufgerundet);
+- der Knopf nennt, was man bekommt: „Jahresabo starten" / „Monatsabo starten";
+- **persönliche Zeile** aus den eigenen Daten: „71 erfasste Tage deiner Tagesform liegen schon
+  bereit" (bzw. frühere Durchläufe) — eine Tatsache, die Daten liegen schon auf dem Gerät;
+- **Vertrauen unter dem Knopf:** „Kein Konto · Keine Werbung · Deine Daten bleiben auf dem Gerät";
+- **Richtlinie 3.1.2:** Preis, Laufzeit und „Verlängert sich automatisch" stehen direkt am Knopf.
+Bewusst NICHT: Countdown, „nur heute", erfundene Beliebtheit („Die meisten wählen …" — keine Daten),
+ein Probezeitraum (in App Store Connect nicht angelegt; ihn zu versprechen wäre falsch).
+Die Preise stehen weiter als Text in den Sprachpaketen (EUR). **Offen:** Sobald die Produkte in App
+Store Connect angelegt sind, sollten Beträge aus StoreKit (`displayPrice`) kommen — sonst stimmen
+sie in anderen Ländern nicht.
+
+Texte: 13 neue Schlüssel × 8 Sprachen, drei alte (`plus_preis_*`) entfernt, `plus_kuendigen` mit
+automatischer Verlängerung neu.
+
+### Pruefungen
+
+`pruef-alles` im zweiten Lauf ALLE 9 BESTANDEN; der erste fand in `audit-i18n` das Literal `'monat'`
+(Vergleich der Laufzeit) — jetzt ueber eine Zuordnung. Am Simulator: Kaufseite frei und mit
+Lucenta+, beide Karten, Knopftext je Laufzeit, Ende des Bildlaufs lesbar, Kreuz bleibt sichtbar.
 
 ---
 

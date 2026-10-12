@@ -1009,19 +1009,6 @@
   .plus-modal-kuendigen{
     margin:10px 0 0;font-size:11.5px;line-height:1.5;color:var(--muted-soft);text-align:center;
   }
-  /* Der Inhalt ist hoeher als das Fenster (gemessen: 900 gegen 726 Bildpunkte), also wird
-     gescrollt. Ohne Hinweis darauf endet der Text mitten im Satz an der abgerundeten Kante —
-     das liest sich als Darstellungsfehler und nicht als "hier geht es weiter". Ein klebender
-     Verlauf am unteren Rand ist die schmalste Loesung: Er liegt IM Bildlauf, wandert also mit
-     und verschwindet von selbst, sobald man unten angekommen ist.
-
-     pointer-events:none, sonst faengt er den Tipp auf den letzten Absatz ab. Und er sitzt in
-     einem eigenen Element statt in ::after, weil ein Pseudoelement am Fenster selbst nicht
-     kleben kann — es haengt am Rahmen, nicht am Inhalt. */
-  .plus-modal-verlauf{
-    position:sticky;bottom:-22px;height:34px;margin:-34px -22px 0;pointer-events:none;
-    background:linear-gradient(to bottom, color-mix(in srgb, var(--surface) 0%, transparent), var(--surface));
-  }
 
   .img-modal-hint{font-size:12.5px;color:var(--muted);line-height:1.5;}
   .img-modal-actions{display:flex;justify-content:flex-end;}

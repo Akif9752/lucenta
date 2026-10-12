@@ -468,7 +468,14 @@
     }).join('');
     wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
       tx('js_letzte_einträge')+hist.length+'</span></h2>'+
-      '<div class="history-list">'+listRows+'</div>';
+      // Runde 126, Auftrag des Inhabers: Die Liste klappt erst auf Tipp auf — bei vielen
+      // Eintraegen zog sie die Ansicht sonst um Dutzende Zeilen in die Laenge. Dieselbe Form wie
+      // "Haeufige Fragen" in den Einstellungen. Die Liste selbst bleibt .history-list, damit die
+      // Einschuebe oben (Befunde, Schloss) ihren Platz finden wie bisher.
+      '<details class="hilfe-sammlung tf-liste-sammlung"><summary><span>'+tx('tf_liste_zeigen')+'</span>'+
+        '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '+
+        'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></summary>'+
+      '<div class="history-list">'+listRows+'</div></details>';
     // Die Befunde sind der Kern der gekauften Fassung: Sie sind das, was aus mehreren Messungen
     // entsteht, und genau daran verlaeuft die Grenze.
     if (!plus){
