@@ -11,145 +11,147 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
-und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis.
-
-Bis Runde 120 stand hier noch der Stand nach Runde 111 — nur die Ueberschrift war mitgewandert.
-Dieser Block ist in Runde 121 neu geschrieben und in Runde 122 nachgezogen.
+und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Dieser Block ist nach Runde
+128 vollstaendig neu geschrieben.
 
 ### Wie der Inhaber arbeitet
 
-Kein Listenauftrag mehr. Die 18-Punkte-Liste aus Runde 107 ist **vollstaendig abgearbeitet**
-(Runde 107–112). Seit Runde 113 kommen die Auftraege **einzeln, im Gespraech**, meist mehrere in
-einer Nachricht, oft mit „weiter". Die Richtung aller Auftraege seit Runde 114 ist dieselbe:
-**„mach es wie iOS von Apple"** — Formensprache, Farben, Bewegung, Liquid Glass — und **Avatare,
-die wie die echten Tiere aussehen**.
+Auftraege kommen **einzeln im Gespraech**, oft mehrere in einer Nachricht, manchmal nur „weiter".
+Die Richtungen seit Runde 114:
+- **„wie iOS von Apple"** — Formensprache, Farben, Bewegung, Liquid Glass, Systemschrift.
+- **Die Tagesform ist eine Saeule der App** (Runde 124) und soll weiter wachsen.
+- **Lucenta+ soll sich verkaufen** (Runde 127/128): Die freie Fassung soll spuerbar an eine Grenze
+  stossen und zum Kauf fuehren — ehrlich (keine Countdowns, keine erfundene Beliebtheit, keine
+  erfundenen Zahlen), aber deutlich.
+- **Avatare** sollen realistisch/plastisch wirken (seit Runde 125 eigene 3D-Renderings).
 
-Zwei Regeln, die er ausdruecklich gesetzt hat und die weiter gelten:
-- **Nichts stillschweigend gegen eine dokumentierte Entscheidung aendern.** Fragen, nicht raten.
+Regeln, die er gesetzt hat und die weiter gelten:
+- **Nichts stillschweigend gegen eine dokumentierte Entscheidung aendern.** Bei Gestaltungs-, Abo-
+  oder Rechtsfragen mit Optionen fragen (AskUserQuestion) — so sind Runde 123–128 entschieden worden.
 - **Kontingent sparen:** Pruefungen buendeln, nicht pollen; Bildschirmfotos sparsam und beschnitten.
+- Er antwortet knapp; was er gewaehlt hat, gilt woertlich.
 
 ### Was die letzten Runden gebaut haben (nicht neu erfinden)
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 128 | (dieser) | Strengere Bezahlgrenze (Bericht, Tagesform 7 Tage, ein Vergleich, verschwommene Vorschauen, Angebot nach dem Test, Startseiten-Karte), Strahlenkranz am Titel |
-| 127 | `0abb566` | Tagesform-Liste aufklappbar; Lucenta+ als Kaufseite (fester Kaufbereich, Preiskarten mit Monatspreis/Ersparnis, persönliche Zeile) |
-| 126 | `4e69bcb` | Kein Zoom in der App (Felder 16 pt, Hülle sperrt Zoom), Haptik bei jedem Tipp, Hilfe aufklappbar, überall SF, Rechtliches als leise Zeile |
-| 125 | `5645f4a` | Eigene 3D-Tiere im Pixar-Stil: `tools/figuren_rendern/` (SceneKit, Abstandsfelder), wieder Dackel/Golden Retriever, Fluent und Lizenzhinweis entfallen |
-| 124 | `7f29388` | Tagesform neu: fünf Big-Five-Fragen je Tag, Stichworte, Bandbreite um das Testergebnis, Monatskalender, Muster (Plus), Erinnerung in der Ansicht, Tipp auf Mitteilung öffnet sie, Zeile in der Schublade |
-| 123 | `c417abe` | Tier-Avatare als Fluent-Emoji-3D-Bilder (`src/figuren/`, `tools/figuren_holen.py`), Vektorzeichnung entfallen, Pudel/Hund statt Dackel/Retriever, MIT-Hinweis in Ueber Lucenta |
-| 122 | `5d6aaa6` | Startbild nur noch Papierflaeche (kein Schwarz, kein beiges Quadrat), Huelle kennt das gewaehlte Farbschema (`lucentaThema` -> UserDefaults), Glas hell durchsichtiger, keine Silbentrennung in der Schublade |
-| 121 | `67b5e67` | Liquid Glass (Schublade, Knoepfe, Toast, Plus-Dialog), Startbewegung, Verlaufskurve nach Apple Health, Meeresschildkroete, Abbruch beim Wiederherstellen nimmt Lucenta+ nicht mehr weg |
-| 120 | `a3b504a` | Auswahl-Haekchen an Avatar/Hintergrund, Apples Farbsystem hell/dunkel, Federbewegung |
-| 119 | `355f90a` | Jedes Tier einzeln gezeichnet (keine Schablone), Fellfilter |
-| 118 | `54644d9` | Fische, Schildkroete, Wal, Eule nach echter Anatomie |
-| 117 | `04e3b37` | Tieraugen statt Menschenaugen (`figTierAuge`) |
-| 114–116 | `4958bc8` … `69d8024` | Menschenfiguren entfallen (Monogramm wie in Kontakte), Einstellungen/Schublade/Profil als iOS-Liste, Systemschrift fuer Text |
-| 113 | `752168b` | Plus-Umschalter im Profil — **nur im Entwicklungsbau** (`#if DEBUG` in `MainViewController.swift`) |
+| 128 | `8363244` | Strengere Bezahlgrenze (Bericht, Tagesform 7 Tage, ein Vergleich, verschwommene Vorschauen `vorschauHTML()`, Angebot nach dem Test, Startseiten-Karte), Strahlenkranz am Ergebnistyp |
+| 127 | `0abb566` | Tagesform-Liste aufklappbar; Lucenta+ als Kaufseite (fester Kaufbereich, Preiskarten mit Monatspreis/Ersparnis, persoenliche Zeile) |
+| 126 | `4e69bcb` | Kein Zoom in der App (Felder 16 pt, Huelle sperrt Zoom), Haptik bei jedem Tipp, Hilfe aufklappbar, ueberall SF, Rechtliches als leise Zeile |
+| 125 | `5645f4a` | Eigene 3D-Tiere im Pixar-Stil: `tools/figuren_rendern/` (SceneKit, Abstandsfelder), wieder Dackel/Golden Retriever, Fluent entfallen |
+| 124 | `7f29388` | Tagesform neu: fuenf Big-Five-Fragen je Tag, Stichworte, Bandbreite, Monatskalender, Muster, Erinnerung in der Ansicht, Tipp auf Mitteilung oeffnet sie |
+| 123 | `c417abe` | Avatare als Bilder (`src/figuren/`), Vektorzeichnung entfallen |
+| 122 | `5d6aaa6` | Startbild nur Papierflaeche, Huelle kennt das Farbschema (`lucentaThema`), Glas hell, keine Trennung in der Schublade |
+| 121 | `67b5e67` | Liquid Glass, Startbewegung, Verlaufskurve nach Apple Health |
+| 113–120 | … | Monogramm statt Menschenfiguren, iOS-Listen, Apples Farbsystem, Plus-Umschalter nur im Entwicklungsbau |
 
-Wo was steht: iOS-Formensprache, Bewegung und Liquid Glass in **`src/styles/12-ios.css`** (letzte
-Datei im Manifest, schlaegt die aelteren); Farbmarken einschliesslich `--glas*` in
-`00-grundlagen.css` (je drei Bloecke!); die Tiere seit Runde 123 als Bilder in `src/figuren/` (erzeugt von
-`tools/figuren_holen.py`, eingesetzt von `build.js` in `FIGUR_BILDER` in `13-figuren.js`); die Verlaufskurve in
-`trendKurveSVG()` in `05-verlauf.js`; die Tagesform in `07-tagesform.js` (Erfassung, Verlauf, Befunde) und seit Runde 124
-`07b-tagesform-alltag.js` (Big-Five-Fragen, Stichworte, Bandbreite, Kalender, Muster); die Startbewegung in `startBewegung()` in
-`21-beta-rueckmeldung.js` mit `#startOverlay` in `index.body.html`.
+### Wo was steht
 
-### Was offen ist — nach Runde 124
+- iOS-Form, Glas, Kaufseite, Vorschauen: **`src/styles/12-ios.css`** (letzte Datei, schlaegt alle).
+  Farbmarken in `00-grundlagen.css` — **je drei Bloecke**. Schrift: `--sans` ueberall, `--serif`/
+  `--mono` zeigen darauf, `--marke` (Fraunces) nur die Wortmarke, `--code` (SF Mono) die Codes.
+- Bezahlgrenze: `istPlus()`, `FREI_TAGE = 7`, `FREI_DURCHLAEUFE`, `FREI_VERGLEICH_SCHLUESSEL`
+  (`03-speicherung.js`); `vorschauHTML()` und `schlossHTML()` (`05-verlauf.js`); Bericht
+  `berichtTeileHTML()` und Angebot `plusAngebotNachTest()` (`11-rendering.js`); Kaufseite
+  `PLUS_VORTEILE`, `plusKnopfAnwenden()`, `plusPersoenlichAnwenden()` (`18-ergebnisbild-dialog.js`);
+  Startseiten-Karte `#landingPlusKarte` (`landingPlusKarteAnwenden()` in `15-profile.js`).
+- Tagesform: `07-tagesform.js` (Erfassung, Verlauf, Befunde) + `07b-tagesform-alltag.js`
+  (Big-Five-Fragen, Stichworte, Bandbreite, Kalender, Muster).
+- Tiere: Modelle in `tools/figuren_rendern/Tiere.swift` → `bauen.sh <tier>` → Bild ANSEHEN →
+  `python3 tools/figuren_holen.py <tier>` → `src/figuren/*.png` → `build.js` setzt `FIGUR_BILDER`.
+- Huelle: `MainViewController.swift` (Bildlauf, Zoomsperre, Farbschema, Transparenz, Kauf-Bruecke),
+  `LucentaKaeufePlugin.swift` (StoreKit 2).
 
-Runde 122 hat die drei offenen Punkte aus Runde 121 behoben (Glas hell, Schwarz vor dem Start,
-Silbentrennung in der Schublade), Runde 123 die Avatare durch 3D-Bilder ersetzt, Runde 124 die
-Tagesform neu gebaut. Was bleibt:
+### Was offen ist
 
-1. **Tagesform am echten Geraet**: vor allem der Tipp auf die Mitteilung, der die Tagesform oeffnen
-   soll — im Simulator nicht ausgeloest. Und die Polwoerter der fuenf Fragen („kuehl ↔ herzlich",
-   „locker ↔ gruendlich" …) brauchen das Urteil des Inhabers, bevor viele Tage damit erfasst sind.
-2. **Steht die App auf eine andere Farbe als das System**, zeigt das allererste Startbild die
-   Systemfarbe; danach folgt alles der App. Das zeichnet iOS vor dem Start der App — nicht noch
-   einmal suchen.
-3. **Die Ladeluecke** (Debug-Bau ~3 s Startbild + ~2 s leere Flaeche vor der Startbewegung) ist
-   nicht kuerzer, nur nicht mehr schwarz. Am echten Geraet im Release-Bau beurteilen.
-4. **Simulator-Stand**: Lucenta+ an, Dunkel, Deutsch, Beispieldaten geladen (mit den neuen Feldern).
-5. **Urteil des Inhabers ausstehend** zu Runde 119–124: Haekchen, Farben, Glas, Kurve,
-   Startbewegung, das bildlose Startbild, die 3D-Tiere, die neue Tagesform.
-6. Zwei aeltere Kleinigkeiten in der Tagesform: „12-mal" bricht am Bindestrich; die Datumsmarken
-   unter der Verlaufskurve stehen ungleichmaessig.
-
-**Die Avatare sind seit Runde 125 eigene 3D-Renderings** (SceneKit, `tools/figuren_rendern/`, auf
-Wunsch des Inhabers im Pixar-Stil, aber keine Nachbildung von Filmfiguren). Ändern: das Tier in
-`Tiere.swift` nachformen, `tools/figuren_rendern/bauen.sh <tier>`, Bild ANSEHEN, dann
-`python3 tools/figuren_holen.py <tier>`. Nie zur Laufzeit etwas laden („Data Not Collected").
+1. **Preise kommen als fester Euro-Text** aus den Sprachpaketen. Sobald die Produkte in App Store
+   Connect stehen, Betraege aus StoreKit (`displayPrice`) holen — sonst falsch in anderen Laendern.
+2. **Am echten iPhone pruefen:** Haptik (am Simulator nicht fuehlbar), Tipp auf die Erinnerung,
+   Angebot 4 s nach dem ersten Testergebnis (einmal je Geraet, `lucenta_plus_angebot`), Ladeluecke
+   im Release-Bau.
+3. **Urteil des Inhabers ausstehend:** Polwoerter der fuenf Tagesform-Fragen („kuehl ↔ herzlich" …),
+   die 3D-Tiere (Dackel und Golden Retriever die schwaechsten, Koepfe kugelig), die zarten Strahlen
+   des Kranzes (Abstimmung Runde 98–100, nicht geaendert).
+4. Nicht beauftragt, aber naheliegend: Plex-Mono-Schriftdatei aus dem Bau nehmen (~60 KB,
+   `tools/schriften_holen.mjs`); Fusszeilen-Link „Impressum & Datenschutz" gleich benennen wie die
+   Zeile in den Einstellungen („… & Lizenzen").
+5. Kleinigkeiten in der Tagesform: „12-mal" bricht am Bindestrich; Datumsmarken unter der
+   Verlaufskurve ungleichmaessig.
+6. Das allererste Startbild zeigt die Systemfarbe, wenn die App anders eingestellt ist — iOS zeichnet
+   es vor dem App-Start. **Nicht noch einmal suchen.**
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
-- **Zoom (Runde 126, auf ausdrücklichen Wunsch):** In der **App** gar kein Zoom — gesperrt in der Hülle
-  (`MainViewController`), nicht in der Quelle. In der **Quelle** bleibt der Viewport ohne
-  `user-scalable=no` (WCAG 1.4.4 für `lucenta.html` im Browser); `pruef-app` prüft das. Eingabefelder
-  nie unter 16 pt, sonst zoomt iOS beim Antippen von selbst.
-- **Fliesstext nicht markierbar**, Ausnahme `#myCode`.
-- **Genau EIN Teilbild-Format 1080x1350 (4:5)**, Zahlen in `tests/share_test.js`.
-- **Plus-Umschalter nur im Entwicklungsbau.** In einem Release-Bau waere er ein verschenktes Abo.
-- **Weggenommen wird Lucenta+ nur bei einer klaren Antwort des Stores** — Start, Wiederherstellen,
-  Abbruch (Runde 121), Stoerung. `pruef-nativ` prueft alle Faelle (51 Pruefungen).
-- **Bewegung nur ueber Lage/Strich, nie ueber Deckkraft** bei allem, was kurz nach einem
-  Ansichtswechsel gemessen wird (Runde 108/120).
-- **Striche mit runden Enden auf Avatargroesse: nein** (dreimal geloescht). Flaechen ja.
-- **Kein grosses Bild im Startbild** (Runde 122): Das 2732²-Bild liess iOS Schwarz zeigen. Das
-  Startbild ist die Papierflaeche; die Marke kommt mit der Startbewegung.
-- **Keine Nachbildung fremder Figuren** (Runde 121, Schildkroete „wie in Findet Nemo"): im Geist
-  ja, Kopie und Name nein — Markenrecht im Store.
+- **Bezahlgrenze (Runde 128, Inhaber):** frei sind Test, Ergebnistyp, Motto, Kurzfassung, Radar,
+  Teilen, Code, je Dimension Wert + Kernsatz + erster Satz, Tagesform-Eintragen + 7 Tage,
+  Erinnerung, EIN Vergleich. Alles andere Lucenta+, an gesperrten Stellen als **verschwommene
+  Vorschau des echten Inhalts** (`vorschauHTML`). Bereits Gespeichertes (Archiv) bleibt lesbar.
+- **Ehrliche Verkaufsmittel:** keine Countdowns, keine erfundene Beliebtheit, kein versprochener
+  Probezeitraum (nicht angelegt). Preis, Laufzeit und „verlaengert sich automatisch" stehen am Knopf
+  (Richtlinie 3.1.2). Ersparnis abgerundet („Spare 29 €" bei 29,89 €).
+- **Kein Beleg-Server, nichts nach aussen** — „Data Not Collected". Bilder, Schriften, Sprachen liegen
+  im Bundle; nie zur Laufzeit laden.
+- **Zoom:** In der App keiner (Huelle sperrt ihn); in der Quelle bleibt der Viewport zoombar
+  (WCAG 1.4.4, `pruef-app`). Eingabefelder nie unter 16 pt.
+- **Eine Schrift** (Runde 126): SF ueberall; Fraunces nur Wortmarke; `pruef-app` prueft das.
+- **Impressum/Datenschutz** in wenigen Schritten erreichbar (§ 5 DDG) — leise, aber nicht weiter
+  versteckt.
+- **Weggenommen wird Lucenta+ nur bei klarer Store-Antwort**; Plus-Umschalter nur im
+  Entwicklungsbau (`#if DEBUG`).
+- **Keine Nachbildung fremder Figuren** (Pixar/Nemo: Stil ja, Figuren nein).
+- **Kein grosses Bild im Startbild**; Startbild = Papierflaeche.
+- Fliesstext nicht markierbar (ausser `#myCode`); ein Teilbild-Format 1080×1350; Bewegung nie ueber
+  Deckkraft bei Ansichtswechseln; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 128: **ALLE 9 BESTANDEN** (11,3 Minuten; vorher `fehlersuche` 12 Funde — beide Arten in der Pruefung: sie zaehlte 4 statt 5 Plus-Vorteile und mass Knoepfe in stillgelegten (`inert`) Vorschauen als Tippziele). Nach Runde 127: **ALLE 9 BESTANDEN** (11,2 Minuten; erster Lauf: `audit-i18n` meldete das Literal `'monat'` im Code, umgeschrieben). Nach Runde 126: 8 von 9 bestanden, `pruef-app` 3 Funde — die Pruefung hielt die alte Schriftentscheidung fest (Titel in Fraunces, Plex Mono geladen); angepasst, danach `pruef-app` 29/29 auf demselben `src/`-Stand. Nach Runde 125: **ALLE 9 BESTANDEN** (11,1 Minuten), `fehlersuche` KEINE FUNDE. Nach Runde 124: **ALLE 9 BESTANDEN** (11,4 Minuten), `fehlersuche` KEINE FUNDE (nach zwei Laeufen mit 274 und 46 Funden, siehe Runde 124), `tests` Tagesform 40/40, `diff-sprachen` 141 (Bericht; vorher 130, die neuen Texte). Nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
-auf WebKit und Chromium, `pruef-nativ` 51/51, `pruef-app` 27/27, `pruef-store` 32/32,
-`pruef-bewegung` bestanden, `tests` 11 Reihen, `diff-sprachen` 130 (ein Bericht). iOS-Bau
-SUCCEEDED, am gebauten Bundle nachgeprueft (`startOverlay`, `trend-kurve`, `r.abgebrochen`).
-
-Ein Lauf schlug in Runde 121 zuerst fehl: `pruef-bewegung` verlangte woertlich `blur(20px)`. Wer
-die Glasstaerke aendert, muss nichts an der Pruefung aendern — sie fragt jetzt, OB Glas da ist.
+`npm run pruef-alles` nach Runde 128: **ALLE 9 BESTANDEN** (11,3 Minuten), `fehlersuche` KEINE
+FUNDE auf WebKit und Chromium, `pruef-app` 29/29, `pruef-nativ` 51/51, `tests` 11 Reihen
+(Tagesform 40), `diff-sprachen` 141 (nur Bericht). Erfahrung: Neue Bedienelemente fallen in der
+`fehlersuche` an Tippzielen (44 pt) und Kontrast auf — gleich so bauen; Pruefungen, die alte
+Entscheidungen festhalten (Schrift, Zahl der Vorteile), muessen mit der Entscheidung mitgehen.
 
 ### Was nur der Inhaber kann
 
 - Die zwei Abo-Produkte in App Store Connect: `lucenta.plus.monat` (4,99 EUR) und
   `lucenta.plus.jahr` (29,99 EUR), genau so, in derselben Abo-Gruppe. Ein echter Kauf ist noch nie
   gelaufen.
-- Die App auf einem **echten iPhone** (freie Apple-ID genuegt). Dort erst sind Glas-Fluessigkeit,
-  Druckzustand und die Ladeluecke beim Start zu beurteilen.
-- Der Fusszeilen-Link „Impressum & Datenschutz" auf der Ergebnisseite: bleiben oder weg (Runde 109
-  hat ihn gelassen).
+- Die App auf einem **echten iPhone** (freie Apple-ID genuegt).
+- Impressum/Datenschutz mit echten Angaben fuellen (dort stehen Platzhalter wie `[name]`).
 - Der Rest der Einreichung: `docs/app-store-start.md`.
 
 ### Arbeitsweise, die sich bewaehrt hat
 
-- `pruef-alles` losgeloest starten (`nohup … > /tmp/x.log 2>&1 &`) und **einmal** am Ende lesen,
-  z. B. mit einer Schleife, die auf „Minuten. Vollstaendige" wartet. Nicht parallel zu anderer
-  schwerer Arbeit — und nicht bauen, waehrend sie laeuft.
-- **Aussehen am Bild beurteilen, nicht an der Kennzahl.** Tiere: Figurdatei in Node per `vm`
-  ausfuehren, SVG in Playwright gross zeichnen (400/88/44 px). Kurven: Seite mit eingesetztem
-  `lucenta_history` (Datum als **Zahl**!) und `lucenta_plus=1` fotografieren. Hilfsskripte als
-  `tools/_*.mjs` und vor dem Commit loeschen — und pruefen, dass sie nicht im Index stehen.
-- **Glas nur im Simulator beurteilen.** Geraetebedienung ueber einen Unteragenten, der zuerst den
-  Skill `xcode-integration:device-interaction` laedt. Er soll knapp in Text berichten, keine Bilder
-  zurueckgeben. Achtung: Steht die App-Einstellung auf „Dunkel", aendert `simctl ui appearance`
-  nichts.
-- Lange Bash-Heredocs scheitern hier gelegentlich am Hook („did not respond") — Inhalt mit dem
-  Write-Werkzeug nach `/tmp` schreiben, dann kurzer Python-Einzeiler.
-- Journal-Eintrag als `/tmp/rundeNNN.md` schreiben und vor dem Anker `---\n\n## Runde <vorige> — `
-  einsetzen; die Ueberschrift dieses Blocks nachziehen — **und den Inhalt**.
+- `pruef-alles` losgeloest starten (`(nohup npm run pruef-alles > /tmp/pruef.log 2>&1 &)`) und
+  **einmal** am Ende lesen (Schleife bis „Minuten" im Log; ein Befehl laeuft hoechstens 10 Minuten).
+  Waehrend sie laeuft, `src/` nicht aendern — sonst misst sie einen Stand, den es nicht mehr gibt.
+- **Aussehen am Bild beurteilen, nicht an der Kennzahl.** Simulator-Bedienung nur ueber einen
+  Unteragenten (zuerst Skill `xcode-integration:device-interaction` laden lassen); knapp in Text
+  berichten lassen, Bilder nach `/tmp` kopieren und beschnitten selbst ansehen. Sitzungen enden nach
+  einer Neuinstallation — dann neue starten. Ein Bildschirmfoto geht auch ohne Sitzung:
+  `xcrun simctl io <id> screenshot`.
+- Freie Fassung ansehen: Profil → „Fassung wechseln" (nur Entwicklungsbau) aus, danach wieder an.
+- Texte fuer alle acht Sprachen mit `tools/_addkeys.py` (`add({...}, anker=...)`); Saetze mit
+  Platzhaltern (`{n}`), nicht aus Bruchstuecken. Das i18n-Audit meldet deutsch aussehende
+  Literale im Code (`'monat'`, `'heute'`) und fremde Anfuehrungszeichen (Spanisch: « »).
+- Lange Bash-Heredocs koennen am Hook scheitern — Inhalt mit Write nach `/tmp`, dann kurzer Python.
+  Vorher pruefen, ob die Datei in `/tmp` schon existiert (Write auf eine ungelesene Datei scheitert,
+  und ein alter Stand wird dann still weiterverwendet — so geschehen beim Schreiben dieses Blocks).
+- Journal: Eintrag vor `## Runde <vorige>` einsetzen, Tabelle und **diesen Block mit Inhalt**
+  nachziehen.
 
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), Bundle-ID
-`app.lucenta.ios`, installieren mit `xcrun simctl install/launch`. Bau:
-`LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 npm run ios:sync`, dann `BuildProject`, dann am Bundle in
-`DerivedData/App-*/Build/Products/Debug-iphonesimulator/App.app/public/index.html` nachsehen.
-Deployment Target 15.0, `ENABLE_USER_SCRIPT_SANDBOXING = NO` — in Xcode **nicht** „Update to
-recommended settings" akzeptieren. `npm run mac:entlasten` nach jedem `npm install`/`pod install`.
+`app.lucenta.ios`. Stand dort: Lucenta+ an, Dunkel, Deutsch, Beispieldaten geladen. Bau:
+`LANG=en_US.UTF-8 npm run ios:sync`, dann `BuildProject`; der Bau meldet sich oft in < 1 s — am
+Bundle (`DerivedData/App-*/Build/Products/Debug-iphonesimulator/App.app/public/index.html`)
+nachsehen, ob der neue Stand drin ist, dann `xcrun simctl install` + `launch`. Deployment Target
+15.0, in Xcode **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein
+Bildgenerator auf diesem Mac; SceneKit ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht** (weit voraus), kein Pull
-Request ohne Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/`
-(absichtlich unversioniert).
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull Request ohne Bitte.
+Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
 
