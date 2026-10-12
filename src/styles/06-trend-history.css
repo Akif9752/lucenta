@@ -114,12 +114,10 @@
     font-variant-numeric:tabular-nums;
   }
   /* Die Marken liegen absolut auf ihrem Prozentwert — dieselbe Rechnung wie die Punkte im
-     Diagramm (verlaufAchseHTML in 08-code.js). Die aeusseren beiden werden an ihrer Kante
-     ausgerichtet statt mittig: Mittig gesetzt liefe die erste zur Haelfte nach links und die
-     letzte zur Haelfte nach rechts aus der Flaeche. */
+     Diagramm (verlaufAchseHTML in 08-code.js) — und stehen ALLE mittig ueber ihrem Tag. Seit
+     Runde 129 rueckt die Kurve dafuer um VERLAUF_RAND ein; vorher standen die aeusseren beiden
+     kantenbuendig, und die Luecken zwischen den Marken waren ungleich. */
   .vl-achse-marke{position:absolute; top:0; transform:translateX(-50%); white-space:nowrap;}
-  .vl-achse-marke.vl-achse-erst{transform:none;}
-  .vl-achse-marke.vl-achse-letzt{transform:translateX(-100%);}
 
   /* Ablesehilfe: Die Trefferfläche ist die ganze Diagrammfläche, nicht die 2px-Linie. */
   .verlauf-flaeche{touch-action:pan-y; cursor:crosshair;}

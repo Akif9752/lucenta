@@ -133,9 +133,15 @@
   //
   // Die beiden Farben stammen aus --daten-energie und --daten-stimmung, nicht aus den Akzenten
   // der Oberfläche. Begründung steht bei den Marken in 00-grundlagen.css.
+  // Runde 129, auf Wahl des Inhabers: Die Kurve beginnt und endet VERLAUF_RAND Einheiten vor dem
+  // Rand, damit auch die aeusseren Datumsmarken mittig ueber ihrem Tag stehen koennen (vorher 4 —
+  // die Marken mussten aussen buendig stehen, und die mittlere Luecke war dadurch sichtbar breiter).
+  // 24 Einheiten sind bei der schmalsten Flaeche (320 pt Geraet, 225 px Diagramm) 17 px, also eine
+  // halbe Marke "07.10.". Gilt an allen drei Stellen, die x(i) rechnen: Diagramm, Achse, Ablesen.
+  var VERLAUF_RAND = 24;
   function verlaufDiagrammSVG(eintraege, breite, hoehe){
     breite = breite || 320; hoehe = hoehe || 150;
-    var links = 4, rechts = 4, oben = 10, unten = 18;
+    var links = VERLAUF_RAND, rechts = VERLAUF_RAND, oben = 10, unten = 18;
     var iw = breite - links - rechts, ih = hoehe - oben - unten;
     var n = eintraege.length;
     var x = function(i){ return n < 2 ? links + iw/2 : links + (i/(n-1))*iw; };
@@ -145,7 +151,8 @@
     // nicht mit den Datenlinien konkurrieren.
     var raster = '';
     for (var w2 = 1; w2 <= 5; w2++){
-      raster += '<line x1="'+links+'" y1="'+y(w2).toFixed(1)+'" x2="'+(links+iw)+'" y2="'+y(w2).toFixed(1)+
+      // Die Rasterlinien bleiben voll breit; nur die Kurve rueckt ein.
+      raster += '<line x1="0" y1="'+y(w2).toFixed(1)+'" x2="'+breite+'" y2="'+y(w2).toFixed(1)+
                 '" stroke="var(--line)" stroke-width="1" '+(w2===1||w2===5?'':'stroke-dasharray="2 4" ')+'opacity="'+(w2===1||w2===5?'0.9':'0.55')+'"/>';
     }
     // Runde 107, gemeldet: "Die Tagesform-Graphen sollen sich beim Wechsel der verschiedenen
@@ -234,38 +241,36 @@
   //   verschiebt sich die Achse gegen die Kurve; deshalb liegt die Funktion hier, direkt neben
   //   verlaufDiagrammSVG, und nicht bei der Tagesform.
   //
-  //   DIE ZAHL DER MARKEN. Vier passen bei 320px Geraetebreite (gemessen: je Marke rund 38px in
-  //   der Monospace, verfuegbar rund 280px). Mehr waere eine Zahlenreihe, weniger liesse die
-  //   Mitte wieder offen. Bei weniger als vier Punkten wird je Punkt eine Marke gesetzt: Zwei
-  //   Punkte und vier Datumsangaben waeren erfundene Zwischenwerte.
+  //   DIE ZAHL DER MARKEN. Hoechstens vier, und nie dichter als ACHSE_ABSTAND Einheiten
+  //   (bei 320 pt Geraet 45 px fuer eine Marke von 33 px). Mehr waere eine Zahlenreihe. Bei
+  //   wenigen Punkten wird je Punkt eine Marke gesetzt: Zwei Punkte und vier Datumsangaben waeren
+  //   erfundene Zwischenwerte.
   //
-  // Die erste Marke steht linksbuendig, die letzte rechtsbuendig, die beiden mittleren zentriert
-  // — mittig gesetzt wuerden die aeusseren je zur Haelfte aus der Flaeche laufen.
-  var ACHSE_MARKEN = 4;
+  // Runde 129: DIE ABSTAENDE SIND GLEICH — in Tagen und auf dem Bildschirm. Vorher wurden vier
+  // Indizes ueber den Zeitraum gerundet (14 Tage: Punkt 0, 4, 9, 13 — also 4, 5, 4 Tage), und die
+  // aeusseren Marken standen kantenbuendig, die mittleren mittig; die Luecken waren dadurch z. B.
+  // 18, 51, 18 px. Jetzt geht ein fester Schritt von HEUTE rueckwaerts (14 Tage: 13, 9, 5, 1), und
+  // jede Marke steht mittig ueber ihrem Punkt. Dass dafuer der allererste Tag nicht immer eine
+  // Marke traegt, ist der Preis; der juengste Tag ist der, den man sucht. Mittig passt auch
+  // aussen, weil die Kurve um VERLAUF_RAND einrueckt.
+  var ACHSE_MARKEN = 4, ACHSE_ABSTAND = 64;
   function verlaufAchseHTML(eintraege, breite){
     breite = breite || 320;
-    var links = 4, rechts = 4, iw = breite - links - rechts;
+    var links = VERLAUF_RAND, rechts = VERLAUF_RAND, iw = breite - links - rechts;
     var n = eintraege.length;
     if (!n) return '';
     var fmt = achsenDatumFmt();
-    var anzahl = Math.min(ACHSE_MARKEN, n);
-    var stellen = [];
-    for (var m = 0; m < anzahl; m++){
-      // Gleichmaessig verteilte Punkt-Indizes, Anfang und Ende immer dabei.
-      stellen.push(anzahl < 2 ? 0 : Math.round(m * (n - 1) / (anzahl - 1)));
+    var stellen = [n - 1];
+    if (n > 1){
+      var schritt = Math.max(1, Math.floor((n - 1) / (ACHSE_MARKEN - 1)),
+                             Math.ceil(ACHSE_ABSTAND * (n - 1) / iw));
+      for (var i = n - 1 - schritt; i >= 0 && stellen.length < ACHSE_MARKEN; i -= schritt) stellen.unshift(i);
     }
-    // Bei sehr wenigen Punkten kann das Runden denselben Index zweimal treffen.
-    stellen = stellen.filter(function(i, k){ return stellen.indexOf(i) === k; });
-    return '<div class="verlauf-achse" aria-hidden="true">' + stellen.map(function(i, k){
+    return '<div class="verlauf-achse" aria-hidden="true">' + stellen.map(function(i){
       var e = eintraege[i], text = '';
       try{ text = fmt.format(new Date(e.ts)); }catch(x){ text = e.day || ''; }
       var anteil = (n < 2 ? links + iw/2 : links + (i/(n-1))*iw) / breite * 100;
-      // Volles Klassenattribut je Zweig, aus demselben Grund wie bei vl-zeichnet oben: Der
-      // i18n-Audit erkennt einen Bezeichner an class="...", nicht an seiner Schreibweise.
-      var lage = k === 0 ? 'class="vl-achse-marke vl-achse-erst"'
-               : (k === stellen.length - 1 ? 'class="vl-achse-marke vl-achse-letzt"'
-                                           : 'class="vl-achse-marke"');
-      return '<span '+lage+' style="left:'+anteil.toFixed(2)+'%">'+text+'</span>';
+      return '<span class="vl-achse-marke" style="left:'+anteil.toFixed(2)+'%">'+text+'</span>';
     }).join('') + '</div>';
   }
 
@@ -285,7 +290,7 @@
     var wertS = flaeche.parentNode.querySelector('.vl-stimmung-wert');
     var datum = flaeche.parentNode.querySelector('.vl-datum');
     if (!svg || !kreuz || !pe || !ps) return;
-    var n = eintraege.length, links = 4, rechts = 4, oben = 10, unten = 18;
+    var n = eintraege.length, links = VERLAUF_RAND, rechts = VERLAUF_RAND, oben = 10, unten = 18;
     var breite = 320, hoehe = 150, iw = breite - links - rechts, ih = hoehe - oben - unten;
     // Runde 84: Seit die Tagesform mehrere Eintraege je Tag kennt (Runde 82), sind diese Werte
     // MITTELWERTE und damit Bruchzahlen. Hier standen sie roh — auf dem Bildschirm erschien

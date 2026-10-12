@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 128)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 129)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -35,6 +35,7 @@ Regeln, die er gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 129 | (dieser) | Plex Mono aus dem Bau (Teilbild in SF), Fusszeilen-Link = Einstellungszeile, „12‑mal“ bricht nicht mehr, Datumsachse gleichmaessig (Kurve eingerueckt, `VERLAUF_RAND`) |
 | 128 | `8363244` | Strengere Bezahlgrenze (Bericht, Tagesform 7 Tage, ein Vergleich, verschwommene Vorschauen `vorschauHTML()`, Angebot nach dem Test, Startseiten-Karte), Strahlenkranz am Ergebnistyp |
 | 127 | `0abb566` | Tagesform-Liste aufklappbar; Lucenta+ als Kaufseite (fester Kaufbereich, Preiskarten mit Monatspreis/Ersparnis, persoenliche Zeile) |
 | 126 | `4e69bcb` | Kein Zoom in der App (Felder 16 pt, Huelle sperrt Zoom), Haptik bei jedem Tipp, Hilfe aufklappbar, ueberall SF, Rechtliches als leise Zeile |
@@ -72,12 +73,8 @@ Regeln, die er gesetzt hat und die weiter gelten:
 3. **Urteil des Inhabers ausstehend:** Polwoerter der fuenf Tagesform-Fragen („kuehl ↔ herzlich" …),
    die 3D-Tiere (Dackel und Golden Retriever die schwaechsten, Koepfe kugelig), die zarten Strahlen
    des Kranzes (Abstimmung Runde 98–100, nicht geaendert).
-4. Nicht beauftragt, aber naheliegend: Plex-Mono-Schriftdatei aus dem Bau nehmen (~60 KB,
-   `tools/schriften_holen.mjs`); Fusszeilen-Link „Impressum & Datenschutz" gleich benennen wie die
-   Zeile in den Einstellungen („… & Lizenzen").
-5. Kleinigkeiten in der Tagesform: „12-mal" bricht am Bindestrich; Datumsmarken unter der
-   Verlaufskurve ungleichmaessig.
-6. Das allererste Startbild zeigt die Systemfarbe, wenn die App anders eingestellt ist — iOS zeichnet
+4. ~~Plex Mono, Fusszeilen-Link, „12-mal“, Datumsmarken~~ — erledigt in Runde 129.
+5. Das allererste Startbild zeigt die Systemfarbe, wenn die App anders eingestellt ist — iOS zeichnet
    es vor dem App-Start. **Nicht noch einmal suchen.**
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
@@ -105,7 +102,7 @@ Regeln, die er gesetzt hat und die weiter gelten:
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 128: **ALLE 9 BESTANDEN** (11,3 Minuten), `fehlersuche` KEINE
+`npm run pruef-alles` nach Runde 129: **ALLE 9 BESTANDEN** (11,3 Minuten), `fehlersuche` KEINE
 FUNDE auf WebKit und Chromium, `pruef-app` 29/29, `pruef-nativ` 51/51, `tests` 11 Reihen
 (Tagesform 40), `diff-sprachen` 141 (nur Bericht). Erfahrung: Neue Bedienelemente fallen in der
 `fehlersuche` an Tippzielen (44 pt) und Kontrast auf — gleich so bauen; Pruefungen, die alte
@@ -154,6 +151,75 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 129 — Plex Mono entfernt, Rechtslink vereinheitlicht, zwei Kleinigkeiten der Tagesform
+
+Auftrag des Inhabers: Punkt 4 und 5 der offenen Liste.
+
+### 1. IBM Plex Mono aus dem Bau
+
+Seit Runde 126 setzt die Oberflaeche ueberall SF (`--mono` zeigt auf `--sans`, die Codes stehen in
+SF Mono). Die Schrift reiste trotzdem mit, weil das **Teilbild** (`10-ergebnisbild.js`, Canvas) sie
+an vier Stellen noch anforderte: Achsenbeschriftung des Radars, Untertitel, Werte der Liste,
+Fusszeile. Ein Canvas steht in keinem Stilblatt, deshalb hat `pruef-app` (prueft die *geladenen*
+Familien der Oberflaeche) das nicht gesehen.
+
+- Das Teilbild nimmt dort jetzt `SHARE_SANS` (dieselbe Kette wie `--sans`, mit Hiragino Sans fuer
+  Japanisch). Ueberschrift, Motto und Radarwerte bleiben in Fraunces (`SHARE_SERIF`), wie bisher.
+- Die zwei `@font-face`-Bloecke sind aus `00-schriften.css` entfernt, mit Vermerk wie damals bei Work
+  Sans; `tools/schriften_holen.mjs` fordert nur noch Fraunces an, damit ein neuer Abruf die Schrift
+  nicht zurueckholt. **Nicht neu abgerufen** — das haette auch Fraunces von Google neu geholt und
+  moeglicherweise veraendert.
+- Gewinn, gemessen: **20 KB** in der App-Fassung (`dist/schriften/` 4 → 2 Dateien, 127 → 107 KB),
+  27 KB in `lucenta.html`. Im Uebergabeblock stand „~60 KB“; das war geschaetzt, nicht gezaehlt.
+- Angesehen: das Teilbild in WebKit gerendert (halbe Groesse). Sauber; die Zahlen in SF sind
+  schmaler als in Plex, nichts laeuft an.
+
+### 2. Fusszeilen-Link heisst wie die Zeile in den Einstellungen
+
+`#btnRechtFuss` trug „Impressum & Datenschutz“ (`impressum_datenschutz_kurz`), die Einstellungen
+„Impressum, Datenschutz & Lizenzen“ (`recht_leise`) — beide oeffnen dieselbe Ansicht. Der Fuss nimmt
+jetzt denselben Schluessel; `impressum_datenschutz_kurz` ist aus allen acht Paketen entfernt (sonst
+verwaist). Im Englischen stand im Fuss uebrigens „Provider info“, in den Einstellungen „Legal
+notice“ — auch das ist jetzt eins. Der Link wird dadurch laenger; gemessen in WebKit bei 320 pt
+bleibt er in allen acht Sprachen einzeilig (laengster: Franzoesisch, 256 von 280 px).
+
+### 3. „12-mal“ bricht nicht mehr am Bindestrich
+
+Der Erholungs-Befund setzt Zahl und `js_befund_erholung_b` zusammen; dort stand ein gewoehnlicher
+Bindestrich, an dem WebKit trennen darf. Jetzt `&#8209;` (geschuetzter Bindestrich, SF hat das
+Zeichen). In den sieben anderen Sprachen stand zwischen Zahl und „times/veces/fois/…“ ein normales
+Leerzeichen — gleiche Falle, jetzt `&nbsp;`. Im Deutschen ebenso vor dem Prozentzeichen
+(`js_befund_erholung_c`), das die anderen sieben schon hatten.
+
+### 4. Datumsmarken unter der Verlaufskurve gleichmaessig
+
+**Gemessen statt geraten** (WebKit, 320/390/430 pt, 2 bis 100 Tage). Zwei Ursachen, nicht eine:
+
+- Die vier Marken lagen auf **gerundeten** Indizes: 14 Tage → Punkt 0, 4, 9, 13, also 4/5/4 Tage.
+- Die aeusseren Marken standen **kantenbuendig**, die mittleren **mittig** — die mittlere Luecke war
+  dadurch immer um eine halbe Marke breiter, auch bei glatten 7 Tagen. Zusammen bei 320 pt und
+  14 Tagen: Luecken von 18, 51, 18 px.
+
+Gefragt (drei Optionen), gewaehlt: **„Kurve einruecken“.** Umsetzung in `08-code.js`:
+
+- `VERLAUF_RAND = 24` statt 4 an allen drei Stellen, die x(i) rechnen (Diagramm, Achse, Ablesen).
+  24 Einheiten = 17 px bei der schmalsten Flaeche, eine halbe Marke „07.10.“. Die Rasterlinien
+  gehen weiter ueber die volle Breite.
+- Fester Schritt **von heute rueckwaerts** (14 Tage: 13, 9, 5, 1), hoechstens vier Marken, nie
+  dichter als `ACHSE_ABSTAND` = 64 Einheiten. Alle Marken mittig ueber ihrem Punkt; die Klassen
+  `vl-achse-erst/-letzt` sind entfallen.
+- Nachgemessen: Luecken in allen 24 Faellen gleich (±1 px Rundung), etwa 31/31/31 px bei 320 pt und
+  7 Tagen, 44/44/44 bei 390 pt und 14 Tagen. Bei 320 pt beruehren die aeusseren Marken den Rand,
+  laufen aber nicht darueber.
+- **Der Preis:** Der allererste Tag des Fensters traegt nicht immer eine Marke (bei 14 und 30 Tagen
+  nicht). Der juengste immer.
+
+### Pruefungen
+
+`npm run pruef-alles`: **ALLE 9 BESTANDEN** (11,3 Minuten), `fehlersuche` 26 Durchlaeufe auf WebKit und
+Chromium KEINE FUNDE, `pruef-app` 29/29, `pruef-nativ` 51/51, `diff-sprachen` 141 (unveraendert,
+nur Bericht). Nicht am echten iPhone gesehen; die Achse und das Teilbild in WebKit (Playwright).
 
 ## Runde 128 — Strengere Bezahlgrenze (Entscheidung des Inhabers), Strahlenkranz mittig
 

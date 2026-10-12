@@ -33,6 +33,11 @@
   //      00-schriften.css) — auf Japanisch greift sonst irgendeine Systemschrift statt der
   //      Mincho, die die App dort im Fliesstext benutzt. Die Kette ist dieselbe wie in --serif.
   var SHARE_SERIF = "Fraunces, ui-serif, Georgia, 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif";
+  // Runde 129: Achsen, Zahlen und Fusszeile standen hier in IBM Plex Mono — die letzte Stelle, die
+  // die Schrift noch brauchte, seit die App in Runde 126 ueberall SF setzt. Jetzt steht auch das
+  // Bild in der Systemschrift, die Schriftdatei ist aus dem Bau entfallen. Die Kette ist dieselbe
+  // wie --sans, damit Japanisch in Hiragino Sans landet statt in irgendeinem Rueckfall.
+  var SHARE_SANS = "-apple-system, system-ui, 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif";
 
   function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
     var words = text.split(' ');
@@ -82,7 +87,7 @@
       var ang = -Math.PI/2 + i*(2*Math.PI/5);
       var lx = cx + labelR*Math.cos(ang), ly = cy + labelR*Math.sin(ang);
       ctx.textAlign = Math.abs(Math.cos(ang))<0.2 ? 'center' : (Math.cos(ang)>0 ? 'left':'right');
-      ctx.fillStyle = C.muted; ctx.font = '600 21px "IBM Plex Mono", monospace';
+      ctx.fillStyle = C.muted; ctx.font = '600 21px '+SHARE_SANS;
       ctx.fillText(RADAR_LABELS[f], lx, ly-6);
       ctx.fillStyle = C.ink; ctx.font = '600 32px '+SHARE_SERIF;
       ctx.fillText(String(sc[f]), lx, ly+30);
@@ -125,7 +130,7 @@
     ctx.beginPath(); ctx.arc(M+8, M-4, 9, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = C.ink; ctx.font = '600 46px '+SHARE_SERIF;
     ctx.fillText('Lucenta', M+30, M+8);
-    ctx.fillStyle = C.muted; ctx.font = '600 21px "IBM Plex Mono", monospace';
+    ctx.fillStyle = C.muted; ctx.font = '600 21px '+SHARE_SANS;
     // Canvas-Text steht in keinem DOM: weder die zehn Reihen noch ein Vergleich der
     // gerenderten Ansichten koennen ihn sehen. Runde 59 hat ihn deshalb nur beim Lesen des
     // Codes gefunden — das Ergebnisbild ist ausgerechnet das, was Leute weitergeben.
@@ -146,14 +151,14 @@
     sortedTraits.forEach(function(f,i){
       var col = i % 2, row = Math.floor(i/2);
       var x = M + col*(colW+colGap), y = listTop + row*62;
-      ctx.textAlign = 'left'; ctx.fillStyle = C.muted; ctx.font = '500 23px -apple-system, system-ui, sans-serif';
+      ctx.textAlign = 'left'; ctx.fillStyle = C.muted; ctx.font = '500 23px '+SHARE_SANS;
       ctx.fillText(LABELS[f], x, y);
-      ctx.textAlign = 'right'; ctx.fillStyle = C.accent; ctx.font = '700 25px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'right'; ctx.fillStyle = C.accent; ctx.font = '700 25px '+SHARE_SANS;
       ctx.fillText(String(scores[f]), x+colW, y);
     });
     ctx.textAlign = 'left';
 
-    ctx.fillStyle = C.muted; ctx.font = '500 20px "IBM Plex Mono", monospace';
+    ctx.fillStyle = C.muted; ctx.font = '500 20px '+SHARE_SANS;
     ctx.fillText(decodeEntities(tx('js_bildfuss')), M, H-M+8);
 
     return canvas;

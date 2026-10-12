@@ -29,12 +29,14 @@
 import fs from 'fs';
 import path from 'path';
 
-const ABRUF = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,500&family=Work+Sans:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap';
+const ABRUF = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,500&display=swap';
 // Ohne diese Kennung liefert Google ein Stilblatt fuer alte Browser ohne woff2.
 const KENNUNG = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
 // Nur diese Schnitte werden gebraucht. Alles andere aus der Antwort faellt weg.
-const GEWOLLT = new Set(['Fraunces|normal','Fraunces|italic','Work Sans|normal','IBM Plex Mono|normal']);
+// Runde 114 ist Work Sans entfallen, Runde 129 IBM Plex Mono: Text, Zahlen und das Teilbild stehen
+// in der Systemschrift; Fraunces traegt nur noch die Wortmarke.
+const GEWOLLT = new Set(['Fraunces|normal','Fraunces|italic']);
 
 const antwort = await fetch(ABRUF, {headers:{'User-Agent': KENNUNG}});
 if (!antwort.ok) throw new Error('Stilblatt nicht erreichbar: ' + antwort.status);
