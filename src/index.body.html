@@ -18,7 +18,7 @@
     <button type="button" class="wordmark" id="btnHome"><span class="brandmark" aria-hidden="true"><svg viewBox="0 0 24 24" width="21" height="21"><rect x="0" y="0" width="24" height="24" rx="5.4" fill="var(--accent)"></rect><polygon points="12,5.26 19.09,10.41 16.38,18.74 7.62,18.74 4.91,10.41" fill="var(--paper)" stroke="var(--paper)" stroke-width="1.7" stroke-linejoin="round"></polygon></svg></span>Lucenta<span class="wordmark-plus" id="wortmarkePlus" hidden>+</span></button>
     <div class="header-right">
       <div class="tagline" id="viewLabel"></div>
-      <button type="button" class="drawer-tab" id="btnDrawerToggle" aria-haspopup="dialog" aria-expanded="false" aria-controls="drawerPanel" aria-label="Weitere Funktionen: Profil, Verstehen, Archetypen, Vergleichen, Vergleichsarchiv, Einstellungen" data-i18n-aria="aria_weitere_funktionen_profil_ve">
+      <button type="button" class="drawer-tab" id="btnDrawerToggle" aria-haspopup="dialog" aria-expanded="false" aria-controls="drawerPanel" aria-label="Weitere Funktionen: Profil, Tagesform, Verstehen, Archetypen, Vergleichen, Vergleichsarchiv, Einstellungen" data-i18n-aria="aria_weitere_funktionen_profil_ve">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="15" y1="4" x2="15" y2="20"></line></svg>
       </button>
     </div>
@@ -102,7 +102,7 @@
         </div>
         <button type="button" class="btn btn-ghost btn-sm" id="btnLandingStateEdit" data-i18n="ändern">Ändern</button>
       </div>
-      <button type="button" class="btn btn-ghost btn-sm" id="btnLandingStateHistory" style="align-self:flex-start;" data-i18n="tagesformverlauf_ansehen">Tagesform-Verlauf ansehen</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="btnLandingStateHistory" style="align-self:flex-start;" data-i18n="tagesformverlauf_ansehen">Fünf Fragen, Kalender &amp; Bandbreite</button>
     </div>
 
     <div class="understand-card" id="landingUnderstandTeaser" style="animation:none;opacity:1;">
@@ -278,7 +278,9 @@
     <div class="archetypes-head">
       <div class="eyebrow" data-i18n="tagesform_2">Tagesform</div>
       <h1 data-i18n="wie_geht_es_dir_gerade">Wie geht es dir gerade?</h1>
-      <p data-i18n="deine_fünf_oceandimensionen">Deine fünf OCEAN-Dimensionen sind stabile Eigenschaften und ändern sich nicht von Tag zu Tag. Stimmung und Energie dagegen schon — das ist ein eigener, kurzfristiger Zustand, kein neues Testergebnis. Ein kurzer täglicher Check macht sichtbar, wie sich das über die Zeit bewegt, unabhängig von deinem Profil.</p>
+      <!-- Runde 124: Der alte Satz ("Deine fuenf Dimensionen aendern sich nicht von Tag zu Tag") stimmt
+           fuer das Mittel, nicht fuer den Tag — und die Tagesform fragt jetzt genau danach. -->
+      <p data-i18n="tf_einleitung">Dein Testergebnis beschreibt, wie du im Schnitt bist. Der Alltag schwankt darum herum: an manchen Tagen bist du geselliger, an anderen ruhiger. Die Tagesform hält beides fest – wie es dir geht und wie du heute warst. So entsteht mit der Zeit dein eigenes Bild.</p>
     </div>
 
     <div class="state-check-card">
@@ -293,9 +295,40 @@
         <div class="state-q-sub" data-i18n-html="angespanntentspannt_2"><span>Angespannt</span><span>Entspannt</span></div>
         <div class="scale-row" id="stateValenceRow" role="group" aria-label="Stimmung von 1 (angespannt) bis 5 (entspannt)" data-i18n-aria="aria_stimmung_von_1_angespannt_bi"></div>
       </div>
+      <!-- Runde 124: fuenf Fragen, je Dimension eine, freiwillig. Gerendert von tfFragenRendern(). -->
+      <div class="tf-teil">
+        <div class="tf-teil-kopf">
+          <span class="state-q-label" data-i18n="tf_fragen_titel">Heute war ich eher …</span>
+          <span class="tf-freiwillig" data-i18n="tf_freiwillig">freiwillig</span>
+        </div>
+        <p class="tf-teil-text" data-i18n="tf_fragen_text">Eine Frage je Dimension, aus dem Bauch heraus. Nach ein paar Tagen siehst du, wie weit dein Alltag um dein Ergebnis schwankt.</p>
+        <div class="tf-fragen" id="tfOceanFragen"></div>
+      </div>
+      <div class="tf-teil">
+        <div class="tf-teil-kopf">
+          <span class="state-q-label" data-i18n="tf_stichworte_titel">Was war heute?</span>
+          <span class="tf-freiwillig" data-i18n="tf_freiwillig_2">freiwillig</span>
+        </div>
+        <div class="tf-chips" id="tfStichworte" role="group" aria-label="Stichworte zum Tag" data-i18n-aria="aria_tf_stichworte"></div>
+      </div>
       <button type="button" class="btn btn-primary btn-sm" id="btnStateSave" style="align-self:flex-start;" data-i18n="speichern">Speichern</button>
     </div>
 
+    <!-- Runde 124: die Erinnerung dort, wo sie gebraucht wird. Derselbe Stand wie in den
+         Einstellungen (erinnerungAnwenden() setzt beide). -->
+    <div class="tf-erinnerung">
+      <div class="settings-zeile-text">
+        <strong data-i18n="tf_erinnerung_titel">Tägliche Erinnerung</strong>
+        <span class="settings-hint" id="tfErinnerungHinweis"></span>
+      </div>
+      <input type="time" class="zeit-feld tf-erinnerung-zeit" id="tfErinnerungZeit" value="20:00" aria-label="Uhrzeit der Erinnerung" data-i18n-aria="aria_erinnerung_zeit_tf">
+      <button type="button" class="schalter" id="tfErinnerungSchalter" role="switch" aria-checked="false" aria-label="Tägliche Erinnerung" data-i18n-aria="aria_erinnerung_tf"><span class="schalter-knopf"></span></button>
+    </div>
+
+    <div id="tfBandbreite"></div>
+    <div id="tfKalender"></div>
+    <div id="tfMuster"></div>
+    <h2 class="section-title section-title-sub tf-verlauf-titel" data-i18n="tf_verlauf_titel">Verlauf</h2>
     <div id="stateTrendContent"></div>
   </section>
 
@@ -667,6 +700,14 @@
        sind hier raus — die Schublade zeigt nur noch, was nirgendwo sonst schon einen Platz hat.
        "Dein Ergebnis" als eigene Gruppe entfiel dadurch; Verstehen zieht zu Archetypen. -->
   <div class="drawer-group-title" data-i18n="entdecken">Entdecken</div>
+  <!-- Runde 124: Die Tagesform hatte keinen Platz in der Schublade — erreichbar nur ueber die Karte
+       auf der Startseite. Als Saeule der App steht sie hier an erster Stelle. -->
+  <div class="drawer-section">
+    <div class="drawer-label" data-i18n="tagesform_3">Tagesform</div>
+    <p class="drawer-copy" data-i18n="tf_schublade_text">Wie es dir geht und wie du heute warst – mit Kalender und deiner Bandbreite.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerState" style="align-self:flex-start;" data-i18n="tf_schublade_oeffnen">Tagesform öffnen</button>
+  </div>
+
   <div class="drawer-section">
     <div class="drawer-label" data-i18n="verstehen_2">Verstehen</div>
     <p class="drawer-copy" data-i18n="kurze_forschungsbasierte_ein">Kurze, forschungsbasierte Einordnungen passend zu deinem eigenen Ergebnis.</p>

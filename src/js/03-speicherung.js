@@ -231,7 +231,40 @@
     };
   }
 
-  var MAX_STATE_EINTRAEGE = 150;
+  // Runde 124: 150 -> 800. Der Monatskalender blaettert zurueck, und 150 Eintraege sind bei
+  // zwei am Tag zweieinhalb Monate — der Kalender haette Monate gezeigt, deren Tage stillschweigend
+  // geloescht waren. 800 Eintraege mit Big-Five-Fragen und Stichworten sind rund 130 KB.
+  var MAX_STATE_EINTRAEGE = 800;
+
+  // ---------- Runde 124: Die Tagesform kennt die fuenf Dimensionen ----------
+  //
+  // Jeder Eintrag kann neben Energie und Stimmung zwei optionale Teile tragen:
+  //   ocean: {O:1-5, E:..., C:..., A:..., S:...} — "Heute war ich eher ..." je Dimension. Einzelne
+  //          duerfen fehlen; wer nur drei beantwortet, hat drei beantwortet.
+  //   tags:  Stichworte aus der festen Liste STICHWORTE (keine freie Eingabe: Freitext liesse sich
+  //          nicht auswerten, und er ist das, was man am wenigsten auf einem Geraet liegen haben will).
+  // Beides wird beim Lesen geprueft und bereinigt, damit kein anderer Teil des Codes einen kaputten
+  // Wert sehen muss. Eintraege ohne beides (alle vor Runde 124) bleiben gueltig.
+  var TF_DIMENSIONEN = ['O','E','C','A','S'];
+  var STICHWORTE = ['arbeit','lernen','sport','draussen','freunde','familie','allein',
+                    'kreativ','unterwegs','erholung','schlaf_gut','schlaf_wenig'];
+  function tfOceanBereinigen(o){
+    if (!o || typeof o !== 'object') return null;
+    var aus = {}, n = 0;
+    TF_DIMENSIONEN.forEach(function(d){
+      var v = o[d];
+      if (typeof v === 'number' && v >= 1 && v <= 5){ aus[d] = v; n++; }
+    });
+    return n ? aus : null;
+  }
+  function tfTagsBereinigen(t){
+    if (!Array.isArray(t)) return [];
+    var gesehen = {};
+    return t.filter(function(x){
+      if (STICHWORTE.indexOf(x) < 0 || gesehen[x]) return false;
+      gesehen[x] = 1; return true;
+    });
+  }
   // Drei Abschnitte statt Uhrzeiten: Eine Uhrzeit im Verlauf zu zeigen waere eine Genauigkeit,
   // die die Angabe nicht hat. Die Grenzen sind bewusst grob und liegen dort, wo die meisten
   // Menschen den Tag selbst teilen.
@@ -261,6 +294,10 @@
         // Zeitstempel ergaenzt, damit der gesamte uebrige Code nur EINE Form kennt — sonst
         // muesste jede Auswertung den Sonderfall selbst behandeln und eine davon vergaesse ihn.
         if (!e.slot) e.slot = zeitabschnitt(e.ts);
+        var o = tfOceanBereinigen(e.ocean);
+        if (o) e.ocean = o; else delete e.ocean;
+        var t = tfTagsBereinigen(e.tags);
+        if (t.length) e.tags = t; else delete e.tags;
         return e;
       });
     }catch(e){ return []; }
@@ -268,10 +305,15 @@
   function saveStateHistoryList(h){
     try{ localStorage.setItem('lucenta_state', JSON.stringify(h)); return true; }catch(e){ return false; }
   }
-  function addStateEntry(energy, valence){
+  function addStateEntry(energy, valence, extra){
     var h = loadStateHistory();
     var jetzt = Date.now();
-    h.push({day:todayKey(), ts:jetzt, energy:energy, valence:valence, slot:zeitabschnitt(jetzt)});
+    var eintrag = {day:todayKey(), ts:jetzt, energy:energy, valence:valence, slot:zeitabschnitt(jetzt)};
+    var o = tfOceanBereinigen(extra && extra.ocean);
+    var t = tfTagsBereinigen(extra && extra.tags);
+    if (o) eintrag.ocean = o;
+    if (t.length) eintrag.tags = t;
+    h.push(eintrag);
     h.sort(function(a,b){ return a.ts-b.ts; });
     if (h.length>MAX_STATE_EINTRAEGE) h = h.slice(h.length-MAX_STATE_EINTRAEGE);
     return saveStateHistoryList(h);
@@ -279,18 +321,36 @@
   // Fasst die Eintraege zu Tagen zusammen. Diagramm, Liste und die Befunde ueber Tage rechnen
   // damit weiter in Tagen — sonst haette ein Tag mit drei Eintraegen im Diagramm dreimal so viel
   // Gewicht wie einer mit einem, und "7 Tage" bedeutete ploetzlich "7 Eintraege".
+  // Runde 124: Auch die Big-Five-Fragen werden je Tag gemittelt — aber jede Dimension nur ueber
+  // die Eintraege, die sie tragen. Ein Tag mit einem Eintrag MIT und einem OHNE Fragen hat fuer
+  // Extraversion einen Wert, nicht den halben. Stichworte eines Tages sind die Vereinigung.
   function stateTage(hist){
     var proTag = {}, reihenfolge = [];
     (hist||[]).forEach(function(e){
-      if (!proTag[e.day]){ proTag[e.day] = {day:e.day, ts:e.ts, energy:0, valence:0, anzahl:0}; reihenfolge.push(e.day); }
+      if (!proTag[e.day]){
+        proTag[e.day] = {day:e.day, ts:e.ts, energy:0, valence:0, anzahl:0, o:{}, on:{}, tags:{}};
+        reihenfolge.push(e.day);
+      }
       var t = proTag[e.day];
       t.energy += e.energy; t.valence += e.valence; t.anzahl++;
       if (e.ts > t.ts) t.ts = e.ts;
+      if (e.ocean) TF_DIMENSIONEN.forEach(function(d){
+        if (typeof e.ocean[d] === 'number'){ t.o[d] = (t.o[d]||0) + e.ocean[d]; t.on[d] = (t.on[d]||0) + 1; }
+      });
+      (e.tags||[]).forEach(function(x){ t.tags[x] = 1; });
     });
     return reihenfolge.map(function(k){
       var t = proTag[k];
-      return {day:t.day, ts:t.ts, anzahl:t.anzahl,
-              energy: t.energy/t.anzahl, valence: t.valence/t.anzahl};
+      var tag = {day:t.day, ts:t.ts, anzahl:t.anzahl,
+                 energy: t.energy/t.anzahl, valence: t.valence/t.anzahl};
+      var dims = Object.keys(t.on);
+      if (dims.length){
+        tag.ocean = {};
+        dims.forEach(function(d){ tag.ocean[d] = t.o[d] / t.on[d]; });
+      }
+      var tags = STICHWORTE.filter(function(x){ return t.tags[x]; });
+      if (tags.length) tag.tags = tags;
+      return tag;
     }).sort(function(a,b){ return a.ts-b.ts; });
   }
   function todayStateEntries(){

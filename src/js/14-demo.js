@@ -123,8 +123,31 @@
         var zeit = new Date(d.getFullYear(), d.getMonth(), d.getDate(), ab.h, 0, 0);
         var e = Math.round(Math.max(1, Math.min(5, 3.1 + trend + wochen + ab.ab + (demoZufall(i*3+k+1) - 0.5) * 1.2)));
         var s = Math.round(Math.max(1, Math.min(5, 3.3 + trend + wochen*0.6 + ab.ab*0.5 + (demoZufall(i*3+k+50) - 0.5) * 1.3)));
-        zustand.push({day: tagKey, ts: zeit.getTime(), energy: e, valence: s,
-                      slot: ab.h < 11 ? 'morgen' : (ab.h < 17 ? 'mittag' : 'abend')});
+        var eintrag = {day: tagKey, ts: zeit.getTime(), energy: e, valence: s,
+                       slot: ab.h < 11 ? 'morgen' : (ab.h < 17 ? 'mittag' : 'abend')};
+        // Runde 124: Die letzten acht Wochen tragen am Abend die fuenf Fragen und Stichworte —
+        // die Funktion ist neu, aeltere Tage haetten sie nicht. Die Antworten streuen um das
+        // Ergebnis oben (Stufe 1-5 um ergebnis/25+1), Extraversion an Freundes-Tagen hoeher, damit
+        // Bandbreite und Stichwort-Befund etwas zu zeigen haben, das man nachpruefen kann.
+        if (i < 56 && k === abschnitte.length - 1){
+          var tags = [];
+          if (wt >= 1 && wt <= 5) tags.push('arbeit');
+          if (wt === 5 || wt === 6 || demoZufall(i*7+3) > 0.8) tags.push('freunde');
+          if (i % 3 === 1) tags.push('sport');
+          if (wt === 0) tags.push('draussen', 'erholung');
+          if (demoZufall(i*7+5) > 0.85) tags.push('schlaf_wenig');
+          var stufe = function(wert, extra, n){
+            return Math.round(Math.max(1, Math.min(5, wert/25 + 1 + extra + (demoZufall(i*11+n) - 0.5) * 1.8)));
+          };
+          var gesellig = tags.indexOf('freunde') >= 0 ? 0.9 : -0.2;
+          eintrag.ocean = {O: stufe(ergebnis.O, 0, 1), E: stufe(ergebnis.E, gesellig, 2),
+                           C: stufe(ergebnis.C, wt === 0 ? -0.6 : 0, 3), A: stufe(ergebnis.A, 0, 4),
+                           S: stufe(ergebnis.S, tags.indexOf('schlaf_wenig') >= 0 ? -1 : 0, 5)};
+          eintrag.tags = tags;
+          if (tags.indexOf('sport') >= 0) eintrag.energy = Math.min(5, eintrag.energy + 1);
+          if (tags.indexOf('schlaf_wenig') >= 0) eintrag.energy = Math.max(1, eintrag.energy - 1);
+        }
+        zustand.push(eintrag);
       });
     }
     // Vier Vergleiche. Drei sind die Untergrenze, ab der das Archiv auswertet — mit vier sieht

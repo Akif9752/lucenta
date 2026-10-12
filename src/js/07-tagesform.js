@@ -314,7 +314,11 @@
           ? (tx('js_heute_schon_a') + today.anzahl + tx('js_heute_schon_b'))
           : tx('js_heute_bereits_erfasst__du'));
     renderStateRows();
+    tfFragenRendern();
+    tfStichworteRendern();
+    erinnerungAnwenden();
     renderStateTrend();
+    tfAuswertungenRendern();
   }
   // ---------- Das Zeitfenster der Kurve (Runde 97) ----------
   //
@@ -350,6 +354,7 @@
       schalterSetzen(FENSTER_SCHLUESSEL, b.getAttribute('data-fenster'), null);
       tapFeedback();
       renderStateTrend();
+      tfBandbreiteRendern();   // dasselbe Fenster (tfSichtbareTage)
     });
   }
   // Tage zu Wochen zusammenfassen. Der Zeitstempel der Woche ist der ihres LETZTEN Tages, damit
@@ -454,8 +459,12 @@
       try{ dateStr = fmt.format(new Date(e.ts)); }catch(ex){ dateStr = e.day; }
       return '<div class="history-row"><div class="history-date">'+dateStr+
              (e.anzahl > 1 ? ' <span class="tf-anzahl mono">'+e.anzahl+'&times;</span>' : '')+
-             '</div><div class="history-title">'+tx('js_energie')+' '+tagWert(e.energy)+'/5 &middot; '+
-             tx('js_stimmung')+' '+tagWert(e.valence)+'/5</div></div>';
+             // Runde 124: geschuetzte Leerzeichen, damit beim Umbruch nicht "3,7/5" allein in der
+             // zweiten Zeile steht (am Simulator gesehen, bei Tagen mit Nachkommastelle).
+             '</div><div class="history-title">'+tx('js_energie')+'&nbsp;'+tagWert(e.energy)+'/5 &middot; '+
+             tx('js_stimmung')+'&nbsp;'+tagWert(e.valence)+'/5'+
+             (e.tags ? '<span class="tf-liste-tags">'+e.tags.map(function(t){ return tx('tf_tag_'+t); }).join(' · ')+'</span>' : '')+
+             '</div></div>';
     }).join('');
     wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
       tx('js_letzte_einträge')+hist.length+'</span></h2>'+

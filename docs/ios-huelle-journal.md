@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 123)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 124)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -32,7 +32,8 @@ Zwei Regeln, die er ausdruecklich gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 123 | (dieser) | Tier-Avatare als Fluent-Emoji-3D-Bilder (`src/figuren/`, `tools/figuren_holen.py`), Vektorzeichnung entfallen, Pudel/Hund statt Dackel/Retriever, MIT-Hinweis in Ueber Lucenta |
+| 124 | (dieser) | Tagesform neu: fünf Big-Five-Fragen je Tag, Stichworte, Bandbreite um das Testergebnis, Monatskalender, Muster (Plus), Erinnerung in der Ansicht, Tipp auf Mitteilung öffnet sie, Zeile in der Schublade |
+| 123 | `c417abe` | Tier-Avatare als Fluent-Emoji-3D-Bilder (`src/figuren/`, `tools/figuren_holen.py`), Vektorzeichnung entfallen, Pudel/Hund statt Dackel/Retriever, MIT-Hinweis in Ueber Lucenta |
 | 122 | `5d6aaa6` | Startbild nur noch Papierflaeche (kein Schwarz, kein beiges Quadrat), Huelle kennt das gewaehlte Farbschema (`lucentaThema` -> UserDefaults), Glas hell durchsichtiger, keine Silbentrennung in der Schublade |
 | 121 | `67b5e67` | Liquid Glass (Schublade, Knoepfe, Toast, Plus-Dialog), Startbewegung, Verlaufskurve nach Apple Health, Meeresschildkroete, Abbruch beim Wiederherstellen nimmt Lucenta+ nicht mehr weg |
 | 120 | `a3b504a` | Auswahl-Haekchen an Avatar/Hintergrund, Apples Farbsystem hell/dunkel, Federbewegung |
@@ -46,27 +47,29 @@ Wo was steht: iOS-Formensprache, Bewegung und Liquid Glass in **`src/styles/12-i
 Datei im Manifest, schlaegt die aelteren); Farbmarken einschliesslich `--glas*` in
 `00-grundlagen.css` (je drei Bloecke!); die Tiere seit Runde 123 als Bilder in `src/figuren/` (erzeugt von
 `tools/figuren_holen.py`, eingesetzt von `build.js` in `FIGUR_BILDER` in `13-figuren.js`); die Verlaufskurve in
-`trendKurveSVG()` in `05-verlauf.js`; die Startbewegung in `startBewegung()` in
+`trendKurveSVG()` in `05-verlauf.js`; die Tagesform in `07-tagesform.js` (Erfassung, Verlauf, Befunde) und seit Runde 124
+`07b-tagesform-alltag.js` (Big-Five-Fragen, Stichworte, Bandbreite, Kalender, Muster); die Startbewegung in `startBewegung()` in
 `21-beta-rueckmeldung.js` mit `#startOverlay` in `index.body.html`.
 
-### Was offen ist — nach Runde 122
+### Was offen ist — nach Runde 124
 
-Die drei offenen Punkte aus Runde 121 (Glas hell, Schwarz vor dem Start, Silbentrennung in der
-Schublade) sind in Runde 122 behoben und am Simulator nachgesehen — Einzelheiten im Eintrag
-Runde 122. Was davon bleibt:
+Runde 122 hat die drei offenen Punkte aus Runde 121 behoben (Glas hell, Schwarz vor dem Start,
+Silbentrennung in der Schublade), Runde 123 die Avatare durch 3D-Bilder ersetzt, Runde 124 die
+Tagesform neu gebaut. Was bleibt:
 
-1. **Steht die App auf eine andere Farbe als das System**, zeigt das allererste Startbild die
-   Systemfarbe; danach folgt alles der App. Das Startbild zeichnet iOS, bevor die App laeuft —
-   daran kommt keine App vorbei. Nicht noch einmal suchen.
-2. **Die Ladeluecke selbst** (im Debug-Bau ~3 s Startbild + ~2 s leere Papierflaeche, bevor die
-   Startbewegung beginnt) ist nicht kuerzer geworden, nur nicht mehr schwarz. Am echten Geraet im
-   Release-Bau beurteilen, bevor man an der Ladezeit arbeitet.
-3. **Glas hell**: Toenung und Zeilen gesenkt, am Simulator lesbar. Ob es „durchsichtig genug" ist,
-   ist ein Urteil des Inhabers.
-4. **Lucenta+ ist im Simulator aus** (beim Finden des Wiederherstellen-Fehlers verloren); ueber
-   den Umschalter im Profil wieder einschaltbar. Im Simulator steht die App auf Dunkel und Englisch.
-5. **Urteil des Inhabers ausstehend** zu allem aus Runde 119–122: Tiere, Haekchen, Farben, Glas,
-   Kurve, Schildkroete, Startbewegung, das bildlose Startbild.
+1. **Tagesform am echten Geraet**: vor allem der Tipp auf die Mitteilung, der die Tagesform oeffnen
+   soll — im Simulator nicht ausgeloest. Und die Polwoerter der fuenf Fragen („kuehl ↔ herzlich",
+   „locker ↔ gruendlich" …) brauchen das Urteil des Inhabers, bevor viele Tage damit erfasst sind.
+2. **Steht die App auf eine andere Farbe als das System**, zeigt das allererste Startbild die
+   Systemfarbe; danach folgt alles der App. Das zeichnet iOS vor dem Start der App — nicht noch
+   einmal suchen.
+3. **Die Ladeluecke** (Debug-Bau ~3 s Startbild + ~2 s leere Flaeche vor der Startbewegung) ist
+   nicht kuerzer, nur nicht mehr schwarz. Am echten Geraet im Release-Bau beurteilen.
+4. **Simulator-Stand**: Lucenta+ an, Dunkel, Deutsch, Beispieldaten geladen (mit den neuen Feldern).
+5. **Urteil des Inhabers ausstehend** zu Runde 119–124: Haekchen, Farben, Glas, Kurve,
+   Startbewegung, das bildlose Startbild, die 3D-Tiere, die neue Tagesform.
+6. Zwei aeltere Kleinigkeiten in der Tagesform: „12-mal" bricht am Bindestrich; die Datumsmarken
+   unter der Verlaufskurve stehen ungleichmaessig.
 
 **Die Avatare sind seit Runde 123 Bilder** (Fluent Emoji 3D, Entscheidung des Inhabers). Die
 Vektorzeichnung gibt es nicht mehr. Falls sie als „nicht realistisch genug" zurueckkommen: echte
@@ -93,7 +96,7 @@ Entscheidung des Inhabers.
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` jetzt 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
+`npm run pruef-alles` nach Runde 124: **ALLE 9 BESTANDEN** (11,4 Minuten), `fehlersuche` KEINE FUNDE (nach zwei Laeufen mit 274 und 46 Funden, siehe Runde 124), `tests` Tagesform 40/40, `diff-sprachen` 141 (Bericht; vorher 130, die neuen Texte). Nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
 auf WebKit und Chromium, `pruef-nativ` 51/51, `pruef-app` 27/27, `pruef-store` 32/32,
 `pruef-bewegung` bestanden, `tests` 11 Reihen, `diff-sprachen` 130 (ein Bericht). iOS-Bau
 SUCCEEDED, am gebauten Bundle nachgeprueft (`startOverlay`, `trend-kurve`, `r.abgebrochen`).
@@ -142,6 +145,93 @@ recommended settings" akzeptieren. `npm run mac:entlasten` nach jedem `npm insta
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht** (weit voraus), kein Pull
 Request ohne Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/`
 (absichtlich unversioniert).
+
+---
+
+## Runde 124 — Die Tagesform als Säule: Big-Five-Fragen, Bandbreite, Kalender, Muster, Alltag
+
+Auftrag: Die Tagesform „soll umfänglich reformiert und geupdated werden, da sie ein essentieller
+Bestandteil und eine wichtige Säule der ganzen App ist". Dem Inhaber zur Wahl gestellt, **gewählt:**
+(1) Brücke zu den Big Five, (2) Muster & Einsichten, (3) Alltag & Erinnerung — nicht gewählt: „mehr
+Dimensionen" (Schlaf/Anspannung als eigene Skalen, Freitext-Notiz). Zur Abo-Grenze **entschieden:
+gestaffelt** — frei: Eintragen, Erinnerung, die letzten 14 Tage, Kalender des laufenden Monats und
+die Bandbreite über diese Tage; Lucenta+: ganzer Verlauf, alle Monate, Stichwort-Zusammenhänge,
+Wochentagsmuster.
+
+### Der fachliche Kern, und was er umdreht
+
+Die App sagte bisher: „Deine fünf OCEAN-Dimensionen … ändern sich nicht von Tag zu Tag." Für das
+**Mittel** stimmt das; für den Tag nicht. Die Forschung zu Persönlichkeitszuständen (Fleeson 2001,
+*density distributions*) zeigt, dass Menschen innerhalb einer Woche einen großen Teil einer Dimension
+durchlaufen und das Mittel dieser Tage stabil ist. Die Tagesform fragt deshalb jetzt **fünf Dinge je
+Tag** („Heute war ich eher …", zwei Pole je Dimension, freiwillig) und zeigt das Testergebnis als
+Mitte, den Alltag als Band darum. Die Einleitung der Ansicht ist entsprechend neu geschrieben.
+
+**Was es bewusst nicht ist:** ein zweiter Test. Die Tageswerte (1–5) werden nur auf 0–100 gelegt,
+damit sie auf derselben Linie stehen; gezeigt wird die Lage, keine Differenz („Lies die Lage, nicht
+die genaue Zahl" steht darunter). Keine Diagnosesprache, keine Serien, kein Druck (Runde 46 gilt).
+
+### Was gebaut wurde
+
+- **Daten** (`03-speicherung.js`): Ein Eintrag trägt optional `ocean` (je Dimension 1–5, einzelne
+  dürfen fehlen) und `tags` (feste Liste `STICHWORTE`, 12 Stück, keine freie Eingabe). Beides wird
+  beim Lesen bereinigt; Einträge von vor Runde 124 bleiben gültig. `stateTage()` mittelt jede
+  Dimension nur über die Einträge, die sie tragen. Deckel 150 → 800 Einträge (der Kalender blättert
+  zurück; 150 wären bei zwei Einträgen am Tag zweieinhalb Monate gewesen).
+- **Neue Datei `07b-tagesform-alltag.js`**: Fragen und Stichworte in der Erfassung, **Bandbreite**
+  (ab 3 Tagen je Dimension: ganzes Band, mittlere Hälfte, Mittel als Ring, Testergebnis als Strich —
+  verschiedene Formen, nicht nur Farben), **Monatskalender** (Montag vorn, Stimmung/Energie
+  umschaltbar, fünf Stufen einer Farbe — bewusst kein Rot für niedrige Tage; jedes Feld trägt
+  seine Werte als Namen für den Bildschirmleser), **Muster** (Wochentage als Säulenbild; Stichwort-Befunde ab je 3 Tagen mit und ohne
+  und ½ Skalenpunkt Unterschied, höchstens vier, ausdrücklich „Zusammenhang, keine Ursache").
+- **Alltag**: Erinnerung direkt in der Tagesform (dieselbe wie in den Einstellungen,
+  `erinnerungAnwenden()` setzt beide); **ein Tipp auf die Mitteilung öffnet die Tagesform**
+  (`erinnerungTippVerdrahten`); neue Zeile **Tagesform** in der Schublade an erster Stelle unter
+  „Entdecken"; die Karte auf der Startseite verweist mit „Fünf Fragen, Kalender & Bandbreite".
+- **Sätze mit Platzhaltern** (`tfText`), nicht aus Bruchstücken — sonst wären Japanisch und
+  Türkisch nur falsch zu übersetzen. ~63 neue Schlüssel in 8 Sprachen.
+- **Beispieldaten**: Die letzten acht Wochen tragen Fragen und Stichworte (Extraversion an
+  Freundes-Tagen höher, Sport hebt die Energie), damit Bandbreite und Befund etwas Nachprüfbares zeigen.
+- **Tests**: `state_test.js` 23 → 40 Prüfungen (Bereinigung, Mittel je Dimension, Bandbreite,
+  Schwellen des Stichwort-Befunds, Kalenderraster, Platzhalter).
+
+### Am Simulator gesehen und korrigiert
+
+1. Fünf Fragen mit Kreisen in Fragebogengröße machten die Erfassung länger als den Rest → 44 Punkt.
+2. „Muster" stand unter einer Liste von 85 Einträgen → vor den Verlauf gerückt.
+3. Kalenderstufen 3/4 im Dunkelmodus kaum zu unterscheiden → weiter auseinander.
+4. Frei standen zwei Kauf-Kästen untereinander (Muster + „weitere Tage") → Muster frei nur als leise
+   Zeile. Der Verlauf hat jetzt eine eigene Überschrift (sah sonst aus wie ein Teil von „Muster").
+5. In der Liste stand „3,7/5" allein in der zweiten Zeile → geschützte Leerzeichen; die Liste zeigt
+   jetzt auch die Stichworte des Tages.
+6. Der Bildschirmleser-Name des Schubladenknopfs nannte die Tagesform nicht → ergänzt (8 Sprachen).
+7. i18n-Audit: zwei Bezeichner sahen wie deutsche Literale aus, Spanisch hatte englische
+   Anführungszeichen → behoben.
+8. **Fehlersuche, erster Lauf: 274 Funde**, alle in den neuen Teilen und alle berechtigt:
+   Stichwort-Knöpfe 36 statt 44 Punkt hoch (210), der inaktive Kalenderpfeil mit 1,7:1 (26, jetzt
+   ausgeblendet statt blass), die Ziffer auf Kalenderstufe 4 mit 3,62:1 (22 — nachgerechnet: hell
+   braucht sie `--ink` 5,2:1, dunkel `--accent-ink` 4,7:1, jetzt je Modus), die Dimensionsnamen in
+   der Flächenfarbe statt deren `-text`-Fassung (16).
+9. **Zweiter Lauf: 46 Funde**, alle die Kalenderfelder als Knöpfe: 42 Punkt bei 390 px, 32 bei
+   320 px. Sieben Spalten zu je 44 Punkt passen auf 320 Punkt nicht — Geometrie, kein Feinschliff.
+   Die Felder sind jetzt **Anzeige statt Knopf**; das Antippen eines Tages (Detailzeile) ist
+   entfallen. Jedes Feld nennt seine Werte, und „Letzte Einträge" führt dieselben Tage in Worten.
+
+Angesehen: dunkel mit Lucenta+, dunkel frei, hell frei. Gespeichert wurde ein Eintrag mit zwei Fragen
+und zwei Stichworten (Simulator: Lucenta+ an, Dunkel — wie vorgefunden zurückgestellt).
+
+### Pruefungen
+
+`npm run pruef-alles`: ALLE 9 BESTANDEN (11,4 Minuten) im dritten Lauf; die ersten beiden fanden
+274 bzw. 46 Stellen (oben unter 8. und 9.). iOS-Bau erfolgreich.
+
+### Was offen bleibt
+
+- **Nicht am echten Gerät** — insbesondere der Tipp auf die Mitteilung (im Simulator nicht ausgelöst).
+- Zwei ältere Kleinigkeiten in derselben Ansicht, nicht Teil des Auftrags: „12-mal" bricht im
+  Erholungs-Befund am Bindestrich; die Datumsmarken unter der Verlaufskurve stehen ungleichmäßig.
+- Die Polwörter („kühl ↔ herzlich", „locker ↔ gründlich" …) sind eine Wahl, keine validierte Skala.
+  Ein Urteil des Inhabers dazu wäre gut, bevor viele Tage damit erfasst sind.
 
 ---
 

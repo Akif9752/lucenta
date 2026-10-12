@@ -46,3 +46,133 @@
     margin-left:6px; font-size:10.5px; color:var(--muted);
     border:1px solid var(--line); border-radius:100px; padding:1px 5px;
   }
+
+/* ---------- Runde 124: die neue Tagesform ----------
+     Alles hier benutzt vorhandene Marken (--surface, --line, --accent, --dim-*). Neue Farbmarken
+     braeuchten je drei Bloecke (pruefeDunkelbloecke); die Abstufungen werden deshalb mit
+     color-mix() aus den bestehenden gerechnet und gelten damit hell, dunkel und "wie das System". */
+
+  /* Die freiwilligen Teile der Erfassung: Fragen und Stichworte. */
+  .tf-teil{ display:flex; flex-direction:column; gap:10px; padding-top:18px; border-top:1px solid var(--line); }
+  .tf-teil-kopf{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+  .tf-freiwillig{ font-size:12px; color:var(--muted); }
+  .tf-teil-text{ margin:0; font-size:13px; line-height:1.45; color:var(--muted); }
+  .tf-fragen{ display:flex; flex-direction:column; gap:18px; margin-top:4px; }
+  .tf-frage-kopf{ display:flex; align-items:center; gap:8px; }
+  .tf-frage-punkt{ width:9px; height:9px; border-radius:50%; background:var(--tf-farbe); flex-shrink:0; }
+  .tf-frage-name{ font-size:14px; font-weight:500; color:var(--ink); }
+  /* Die gewaehlte Stufe traegt die Farbe der Dimension, wie im Radar — so sind fuenf gleich
+     gebaute Reihen auf einen Blick auseinanderzuhalten. */
+  /* Am Simulator gesehen: fuenf Reihen mit Kreisen in Fragebogengroesse (rund 60 Punkt) machten
+     die Erfassung laenger als den ganzen Rest der Ansicht. 44 Punkt ist Apples Mindestmass fuer
+     ein Tippziel — kleiner nicht, groesser braucht es fuer eine Frage aus dem Bauch nicht. */
+  .tf-frage .scale-btn{ flex:0 0 44px; width:44px; height:44px; aspect-ratio:auto; }
+  .tf-frage .scale-btn.picked{ border-color:var(--tf-farbe); }
+  .tf-frage .scale-btn.picked .fill{ background:var(--tf-farbe); }
+
+  .tf-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tf-chip{
+    /* 44 Punkt hoch: Apples Mindestmass fuer ein Tippziel (die Fehlersuche fand 36). */
+    min-height:44px; padding:9px 15px; border-radius:100px; cursor:pointer;
+    font:inherit; font-size:14px; color:var(--ink);
+    background:var(--surface-2); border:1px solid transparent;
+    transition:background-color .15s ease, color .15s ease, transform .18s cubic-bezier(.2,.8,.2,1);
+  }
+  .tf-chip[aria-pressed="true"]{ background:var(--accent); color:var(--accent-ink); }
+  .tf-chip:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
+  .tf-chip:active{ transform:scale(.95); transition-duration:0s; }
+  @media (prefers-reduced-motion: reduce){ .tf-chip:active{ transform:none; } }
+
+  /* Die Erinnerung als eine Zeile, wie in den Einstellungen. */
+  .tf-erinnerung{
+    margin-top:14px; padding:12px 16px; display:flex; align-items:center; gap:12px;
+    background:var(--surface); border-radius:var(--radius-m);
+  }
+  .tf-erinnerung .settings-zeile-text{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .tf-erinnerung strong{ font-weight:400; font-size:16px; }
+  .tf-erinnerung .settings-hint{ font-size:12.5px; color:var(--muted); }
+  .tf-erinnerung-zeit{ flex-shrink:0; }
+
+  .tf-leer, .tf-hinweis{ margin:8px 0 0; font-size:13px; line-height:1.45; color:var(--muted); }
+
+  /* ---------- Bandbreite ---------- */
+  .tf-band-karte{ background:var(--surface); border-radius:var(--radius-m); padding:16px; display:flex; flex-direction:column; gap:16px; }
+  .tf-band-kopf{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:7px; }
+  /* Als Schrift die -text-Fassung der Datenfarbe: Die Flaechenfarbe erreicht als kleine Schrift
+     4,5:1 nicht (Fehlersuche). Dieselbe Trennung wie im Radar (--dim-aktiv-text). */
+  .tf-band-name{ font-size:14.5px; font-weight:500; color:var(--tf-farbe-text, var(--ink)); }
+  .tf-band-werte{ font-size:12px; color:var(--muted-soft); text-align:right; }
+  .tf-band-spur{ position:relative; height:12px; border-radius:6px; background:var(--surface-2); }
+  /* Die Mitte der Skala als feine Linie: ohne sie ist "ueber" und "unter" nicht abzulesen. */
+  .tf-band-mitte50{ position:absolute; left:50%; top:-2px; bottom:-2px; width:1px; background:var(--line); }
+  .tf-band-ganz, .tf-band-kern{ position:absolute; top:0; bottom:0; border-radius:6px; min-width:6px; }
+  .tf-band-ganz{ background:color-mix(in srgb, var(--tf-farbe) 26%, transparent); }
+  .tf-band-kern{ background:color-mix(in srgb, var(--tf-farbe) 62%, transparent); }
+  .tf-band-mittel{
+    position:absolute; top:50%; width:8px; height:8px; margin:-4px 0 0 -4px; border-radius:50%;
+    background:var(--surface); box-shadow:0 0 0 2px var(--tf-farbe);
+  }
+  /* Das Testergebnis als Strich ueber die ganze Hoehe — eine andere FORM als das Mittel, damit
+     beide nicht allein an der Farbe zu unterscheiden sind. */
+  .tf-band-test{ position:absolute; top:-4px; bottom:-4px; width:3px; margin-left:-1.5px; border-radius:2px; background:var(--ink); }
+  .tf-band-legende{ display:flex; flex-wrap:wrap; gap:6px 14px; font-size:11.5px; color:var(--muted-soft); }
+  .tf-band-legende span{ display:inline-flex; align-items:center; gap:6px; }
+  .tf-band-legende i{ display:inline-block; }
+  .tf-lg-band{ width:18px; height:8px; border-radius:4px; background:color-mix(in srgb, var(--muted) 45%, transparent); }
+  .tf-lg-mittel{ width:8px; height:8px; border-radius:50%; box-shadow:0 0 0 2px var(--muted); }
+  .tf-lg-test{ width:3px; height:12px; border-radius:2px; background:var(--ink); }
+  .tf-band-satz{ margin:10px 0 0; font-size:14px; line-height:1.45; color:var(--ink); }
+
+  /* ---------- Kalender ---------- */
+  .tf-kal-karte{ background:var(--surface); border-radius:var(--radius-m); padding:14px 14px 16px; display:flex; flex-direction:column; gap:12px; }
+  .tf-kal-kopf{ display:flex; align-items:center; justify-content:space-between; }
+  .tf-kal-monat{ font-size:16px; font-weight:600; color:var(--ink); }
+  .tf-kal-pfeil{
+    width:44px; height:44px; border-radius:50%; border:none; background:transparent; cursor:pointer;
+    font-size:24px; line-height:1; color:var(--accent-strong);
+  }
+  /* Ein Pfeil, der nicht weiterfuehrt, wird ausgeblendet statt blass gezeigt — blass erreichte er
+     1,7:1 und sah trotzdem bedienbar aus. Der Platz bleibt, damit der Monatsname nicht springt. */
+  .tf-kal-pfeil:disabled{ visibility:hidden; }
+  .tf-kal-pfeil:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:-2px; }
+  .tf-kal-wochentage, .tf-kal-raster{ display:grid; grid-template-columns:repeat(7, 1fr); gap:5px; }
+  .tf-kal-wochentage span{ text-align:center; font-size:11px; color:var(--muted-soft); }
+  .tf-kal-zelle{
+    aspect-ratio:1; border-radius:50%; border:none; padding:0; font:inherit; font-size:13px;
+    display:flex; align-items:center; justify-content:center; color:var(--muted-soft);
+    background:transparent;
+  }
+  .tf-kal-leer{ visibility:hidden; }
+  /* Fuenf Stufen aus der Akzentfarbe, hell nach kraeftig. Bewusst EINE Farbe und kein Rot fuer
+     niedrige Werte: Ein Kalender voller Rot waere ein Urteil, keine Beschreibung. */
+  /* Am Simulator (dunkel) waren 52 % und 74 % kaum zu unterscheiden; die Stufen liegen jetzt
+     weiter auseinander, die mittleren drei tragen den groessten Abstand. */
+  .tf-kal-st1{ background:color-mix(in srgb, var(--accent) 10%, var(--surface-2)); color:var(--ink); }
+  .tf-kal-st2{ background:color-mix(in srgb, var(--accent) 26%, var(--surface-2)); color:var(--ink); }
+  .tf-kal-st3{ background:color-mix(in srgb, var(--accent) 46%, var(--surface-2)); color:var(--ink); }
+  .tf-kal-st4{ background:color-mix(in srgb, var(--accent) 76%, var(--surface-2)); color:var(--ink); }
+  /* Die Schrift auf Stufe 4 wechselt mit dem Modus (nachgerechnet): hell traegt --ink 5,2:1,
+     dunkel --accent-ink 4,7:1 — die jeweils andere laege unter 4,5:1 (Fehlersuche: 3,62:1). */
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .tf-kal-st4{ color:var(--accent-ink); }
+  }
+  :root[data-theme="dark"] .tf-kal-st4{ color:var(--accent-ink); }
+  .tf-kal-st5{ background:var(--accent); color:var(--accent-ink); }
+  .tf-kal-tag0{ box-shadow:inset 0 0 0 2px var(--ink); font-weight:600; }
+  .tf-kal-skala{ display:flex; align-items:center; gap:4px; justify-content:center; font-size:11px; color:var(--muted-soft); }
+  .tf-kal-skala i{ width:16px; height:10px; border-radius:3px; display:inline-block; }
+
+  /* ---------- Muster ---------- */
+  .tf-muster-karte{ background:var(--surface); border-radius:var(--radius-m); padding:14px 16px; margin-bottom:12px; }
+  .tf-wt-bild{ display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; margin:12px 0 8px; }
+  .tf-wt-tag{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .tf-wt-saeulen{ height:80px; width:100%; display:flex; align-items:flex-end; justify-content:center; gap:3px; }
+  .tf-wt-saeule{ display:block; width:9px; min-height:3px; border-radius:4px 4px 2px 2px; }
+  .tf-wt-energie{ background:var(--daten-energie); }
+  .tf-wt-stimmung{ background:var(--daten-stimmung); }
+  .tf-wt-ohne{ height:3px; background:var(--line); }
+  .tf-wt-name{ font-size:11px; color:var(--muted-soft); }
+  .tf-wt-legende{ margin-top:4px; }
+
+  /* Runde 124: die Stichworte eines Tages unter seinen Werten in der Liste. */
+  .tf-liste-tags{ display:block; margin-top:2px; font-size:12px; color:var(--muted); font-family:var(--sans); }

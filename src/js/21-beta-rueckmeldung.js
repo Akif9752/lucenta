@@ -100,6 +100,7 @@
   // btnDrawerState ersetzt durch btnLandingStateHistory — der Tagesform-Kurzcheck läuft jetzt direkt
   // auf der Startseite; dieser Button öffnet nur noch die ausführlichere Verlaufsansicht mit Trend.
   $('btnLandingStateHistory').addEventListener('click', function(){ renderStateView(); showView('state'); });
+  if ($('btnDrawerState')) $('btnDrawerState').addEventListener('click', function(){ closeDrawer(true); renderStateView(); showView('state'); });
   // „Ändern" klappt die Skalen wieder auf, mit den gespeicherten Werten bereits gesetzt — ohne
   // diesen Weg wäre der Erledigt-Zustand eine Sackgasse für den Rest des Tages.
   $('btnLandingStateEdit').addEventListener('click', function(){
@@ -113,9 +114,10 @@
       toast(tx('js_bitte_beide_fragen'));
       return;
     }
-    var ok = addStateEntry(statePickedEnergy, statePickedValence);
+    var ok = addStateEntry(statePickedEnergy, statePickedValence, tfErfassungExtra());
     if (ok){
       toast(tx('js_tagesform_gespeichert'));
+      tfErfassungZuruecksetzen();
       renderStateView();
       refreshDrawerState();
     } else {
@@ -401,10 +403,16 @@
     nutzungTagVermerken();
     // Runde 99: die native Bruecke verdrahten. Alles darin prueft selbst, ob es nativ laeuft.
     erinnerungAnwenden();
-    if ($('erinnerungSchalter')) $('erinnerungSchalter').addEventListener('click', erinnerungUmschalten);
-    if ($('erinnerungZeit')) $('erinnerungZeit').addEventListener('change', function(){
-      erinnerungZeitGesetzt($('erinnerungZeit').value);
+    ['erinnerungSchalter','tfErinnerungSchalter'].forEach(function(id){
+      if ($(id)) $(id).addEventListener('click', erinnerungUmschalten);
     });
+    ['erinnerungZeit','tfErinnerungZeit'].forEach(function(id){
+      if ($(id)) $(id).addEventListener('change', function(){
+        erinnerungZeitGesetzt($(id).value);
+        erinnerungAnwenden();
+      });
+    });
+    erinnerungTippVerdrahten(function(){ renderStateView(); showView('state'); });
     if ($('btnPlusWiederherstellen')) $('btnPlusWiederherstellen').addEventListener('click', kaeufeWiederherstellen);
     if ($('btnAboVerwalten')) $('btnAboVerwalten').addEventListener('click', aboVerwalten);
     plusStandAnwenden();

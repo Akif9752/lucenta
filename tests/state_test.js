@@ -67,6 +67,56 @@
      "und bekommt seinen Abschnitt aus der Uhrzeit (ist: "+gelesen[0].slot+"/"+gelesen[1].slot+")");
   console.log("  ergaenzt: "+gelesen[0].slot+", "+gelesen[1].slot);
 
+  console.log("\n=== Runde 124: Big-Five-Fragen und Stichworte am Eintrag ===");
+  __store = {};
+  ok(addStateEntry(4, 3, {ocean:{O:5, E:2, C:9, X:3}, tags:['sport','sport','erfunden','freunde']}),
+     "ein Eintrag mit Fragen und Stichworten wird gespeichert");
+  var mitTeilen = loadStateHistory()[0];
+  ok(mitTeilen.ocean && mitTeilen.ocean.O===5 && mitTeilen.ocean.E===2,
+     "gueltige Antworten bleiben");
+  ok(!('C' in mitTeilen.ocean) && !('X' in mitTeilen.ocean),
+     "Stufe 9 und eine unbekannte Dimension fallen weg (ist: "+JSON.stringify(mitTeilen.ocean)+")");
+  ok(JSON.stringify(mitTeilen.tags)==='["sport","freunde"]',
+     "Stichworte: doppelte und unbekannte fallen weg (ist: "+JSON.stringify(mitTeilen.tags)+")");
+  addStateEntry(2, 2, {ocean:{}, tags:[]});
+  ok(!('ocean' in loadStateHistory()[1]) && !('tags' in loadStateHistory()[1]),
+     "leere Teile werden gar nicht erst gespeichert");
+  addStateEntry(3, 4, {ocean:{O:3, E:4}});
+  var tagMit = todayStateEntry();
+  ok(tagMit.ocean && Math.abs(tagMit.ocean.O - 4) < 0.001 && Math.abs(tagMit.ocean.E - 3) < 0.001,
+     "der Tag mittelt jede Dimension NUR ueber die Eintraege, die sie tragen (ist: "+JSON.stringify(tagMit.ocean)+")");
+  ok(JSON.stringify(tagMit.tags)==='["sport","freunde"]', "Stichworte eines Tages: die Vereinigung, in fester Reihenfolge");
+  console.log("  Tag: O "+tagMit.ocean.O+", E "+tagMit.ocean.E+", Stichworte "+tagMit.tags.join(', '));
+
+  console.log("\n=== Bandbreite: erst ab drei Tagen, Lage auf 0-100 ===");
+  var tage3 = [{ocean:{E:1}}, {ocean:{E:3}}, {ocean:{E:5, O:4}}, {energy:3, valence:3}];
+  var bb = tfBandbreite(tage3);
+  ok(bb.E && bb.E.min===0 && bb.E.max===100 && Math.abs(bb.E.mittel-50) < 0.001,
+     "drei Tage E (1/3/5) ergeben 0 bis 100, Mittel 50 (ist: "+JSON.stringify(bb.E)+")");
+  ok(!bb.O, "eine Dimension mit nur EINEM Tag bekommt keine Bandbreite");
+  ok(Math.abs(bb.E.q1-25) < 0.001 && Math.abs(bb.E.q3-75) < 0.001, "mittlere Haelfte 25 bis 75");
+
+  console.log("\n=== Stichwort-Befund: genug Tage auf beiden Seiten, halber Punkt ===");
+  var tageSt = [];
+  for (var ti = 0; ti < 8; ti++) tageSt.push({energy: ti < 4 ? 4.5 : 3, valence:3, tags: ti < 4 ? ['sport'] : []});
+  var sbf = tfStichwortBefunde(tageSt);
+  ok(sbf.length===1 && sbf[0].tag==='sport' && sbf[0].groesse==='energy' && sbf[0].mit > sbf[0].ohne,
+     "Sport an 4 von 8 Tagen mit +1,5 Energie wird gefunden (ist: "+JSON.stringify(sbf)+")");
+  var zuWenig = tageSt.slice(2);   // nur noch 2 Tage mit Sport
+  ok(tfStichwortBefunde(zuWenig).length===0, "mit nur zwei Tagen MIT dem Stichwort: kein Befund");
+  var flach = tageSt.map(function(t){ return {energy:3.2, valence:3, tags:t.tags}; });
+  ok(tfStichwortBefunde(flach).length===0, "ohne halben Punkt Unterschied: kein Befund");
+
+  console.log("\n=== Kalender: Montag vorn, jeder Tag des Monats ===");
+  var zellen = tfKalenderZellen(0, {});
+  var anf = tfMonatsAnfang(0);
+  var vorlauf = (anf.getDay() + 6) % 7;
+  ok(zellen.slice(0, vorlauf).every(function(z){ return z === null; }) && zellen[vorlauf] && zellen[vorlauf].nr===1,
+     "der Erste steht unter seinem Wochentag (Vorlauf "+vorlauf+")");
+  ok(zellen.length - vorlauf === new Date(anf.getFullYear(), anf.getMonth()+1, 0).getDate(),
+     "so viele Tage wie der Monat hat");
+  ok(tfText('tf_bandbreite_noch', {n:2, min:3}).indexOf('{') < 0, "Platzhalter werden ersetzt");
+
   console.log("\n==================================================");
   console.log(fails===0 ? ("ALLE "+checks+" PRUEFUNGEN BESTANDEN") : (fails+" von "+checks+" PRUEFUNGEN FEHLGESCHLAGEN"));
   console.log("==================================================");

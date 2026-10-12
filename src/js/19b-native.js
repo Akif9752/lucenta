@@ -59,14 +59,33 @@
   function erinnerungAn(){
     return schalterLesen(ERINNERUNG_AN, 'aus') === 'an';
   }
+  // Runde 124: Die Erinnerung steht an ZWEI Stellen — in den Einstellungen und direkt in der
+  // Tagesform, wo sie gebraucht wird. Beide zeigen denselben Stand; deshalb setzt diese eine
+  // Funktion beide, und wer an einer Stelle schaltet, sieht es an der anderen.
+  var ERINNERUNG_STELLEN = [['erinnerungSchalter','erinnerungZeit','erinnerungHinweis'],
+                            ['tfErinnerungSchalter','tfErinnerungZeit','tfErinnerungHinweis']];
   function erinnerungAnwenden(){
-    var s = $('erinnerungSchalter'), z = $('erinnerungZeit'), h = $('erinnerungHinweis');
-    if (!s) return;
     var moeglich = nativVorhanden();
-    s.setAttribute('aria-checked', (moeglich && erinnerungAn()) ? 'true' : 'false');
-    s.disabled = !moeglich;
-    if (z){ z.value = erinnerungZeit(); z.disabled = !moeglich || !erinnerungAn(); }
-    if (h) h.textContent = decodeEntities(tx(moeglich ? 'erinnerung_hinweis' : 'erinnerung_nur_app'));
+    ERINNERUNG_STELLEN.forEach(function(ids){
+      var s = $(ids[0]), z = $(ids[1]), h = $(ids[2]);
+      if (!s) return;
+      s.setAttribute('aria-checked', (moeglich && erinnerungAn()) ? 'true' : 'false');
+      s.disabled = !moeglich;
+      if (z){ z.value = erinnerungZeit(); z.disabled = !moeglich || !erinnerungAn(); }
+      if (h) h.textContent = decodeEntities(tx(moeglich ? 'erinnerung_hinweis' : 'erinnerung_nur_app'));
+    });
+  }
+  // Runde 124: Ein Tipp auf die Mitteilung oeffnet die Tagesform, nicht die Startseite. Sie ist der
+  // einzige Grund, aus dem die Mitteilung kommt; auf der Startseite muesste man sie erst suchen.
+  function erinnerungTippVerdrahten(oeffnen){
+    var lm = nativModul('LocalNotifications');
+    if (!lm || !lm.addListener) return;
+    try{
+      lm.addListener('localNotificationActionPerformed', function(ev){
+        var id = ev && ev.notification && ev.notification.id;
+        if (id === ERINNERUNG_ID) oeffnen();
+      });
+    }catch(e){}
   }
   function erinnerungPlanen(){
     var lm = nativModul('LocalNotifications');
