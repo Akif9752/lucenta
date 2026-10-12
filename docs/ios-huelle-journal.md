@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 125)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-12, nach Runde 126)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -32,7 +32,8 @@ Zwei Regeln, die er ausdruecklich gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 125 | (dieser) | Eigene 3D-Tiere im Pixar-Stil: `tools/figuren_rendern/` (SceneKit, Abstandsfelder), wieder Dackel/Golden Retriever, Fluent und Lizenzhinweis entfallen |
+| 126 | (dieser) | Kein Zoom in der App (Felder 16 pt, Hülle sperrt Zoom), Haptik bei jedem Tipp, Hilfe aufklappbar, überall SF, Rechtliches als leise Zeile |
+| 125 | `5645f4a` | Eigene 3D-Tiere im Pixar-Stil: `tools/figuren_rendern/` (SceneKit, Abstandsfelder), wieder Dackel/Golden Retriever, Fluent und Lizenzhinweis entfallen |
 | 124 | `7f29388` | Tagesform neu: fünf Big-Five-Fragen je Tag, Stichworte, Bandbreite um das Testergebnis, Monatskalender, Muster (Plus), Erinnerung in der Ansicht, Tipp auf Mitteilung öffnet sie, Zeile in der Schublade |
 | 123 | `c417abe` | Tier-Avatare als Fluent-Emoji-3D-Bilder (`src/figuren/`, `tools/figuren_holen.py`), Vektorzeichnung entfallen, Pudel/Hund statt Dackel/Retriever, MIT-Hinweis in Ueber Lucenta |
 | 122 | `5d6aaa6` | Startbild nur noch Papierflaeche (kein Schwarz, kein beiges Quadrat), Huelle kennt das gewaehlte Farbschema (`lucentaThema` -> UserDefaults), Glas hell durchsichtiger, keine Silbentrennung in der Schublade |
@@ -79,8 +80,10 @@ Wunsch des Inhabers im Pixar-Stil, aber keine Nachbildung von Filmfiguren). Änd
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
-- **Doppeltipp-Zoom aus, Aufziehen NICHT** (`touch-action:manipulation`; Viewport unveraendert,
-  `user-scalable=no` waere WCAG 1.4.4). `pruef-app` schlaegt sonst fehl.
+- **Zoom (Runde 126, auf ausdrücklichen Wunsch):** In der **App** gar kein Zoom — gesperrt in der Hülle
+  (`MainViewController`), nicht in der Quelle. In der **Quelle** bleibt der Viewport ohne
+  `user-scalable=no` (WCAG 1.4.4 für `lucenta.html` im Browser); `pruef-app` prüft das. Eingabefelder
+  nie unter 16 pt, sonst zoomt iOS beim Antippen von selbst.
 - **Fliesstext nicht markierbar**, Ausnahme `#myCode`.
 - **Genau EIN Teilbild-Format 1080x1350 (4:5)**, Zahlen in `tests/share_test.js`.
 - **Plus-Umschalter nur im Entwicklungsbau.** In einem Release-Bau waere er ein verschenktes Abo.
@@ -96,7 +99,7 @@ Wunsch des Inhabers im Pixar-Stil, aber keine Nachbildung von Filmfiguren). Änd
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 125: **ALLE 9 BESTANDEN** (11,1 Minuten), `fehlersuche` KEINE FUNDE. Nach Runde 124: **ALLE 9 BESTANDEN** (11,4 Minuten), `fehlersuche` KEINE FUNDE (nach zwei Laeufen mit 274 und 46 Funden, siehe Runde 124), `tests` Tagesform 40/40, `diff-sprachen` 141 (Bericht; vorher 130, die neuen Texte). Nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
+`npm run pruef-alles` nach Runde 126: 8 von 9 bestanden, `pruef-app` 3 Funde — die Pruefung hielt die alte Schriftentscheidung fest (Titel in Fraunces, Plex Mono geladen); angepasst, danach `pruef-app` 29/29 auf demselben `src/`-Stand. Nach Runde 125: **ALLE 9 BESTANDEN** (11,1 Minuten), `fehlersuche` KEINE FUNDE. Nach Runde 124: **ALLE 9 BESTANDEN** (11,4 Minuten), `fehlersuche` KEINE FUNDE (nach zwei Laeufen mit 274 und 46 Funden, siehe Runde 124), `tests` Tagesform 40/40, `diff-sprachen` 141 (Bericht; vorher 130, die neuen Texte). Nach Runde 123: **ALLE 9 BESTANDEN** (11,0 Minuten), `pruef-app` 28/28. Nach Runde 122: **ALLE 9 BESTANDEN** (9,5 Minuten). Nach Runde 121: **ALLE 9 BESTANDEN** (9,2 Minuten), `fehlersuche` KEINE FUNDE
 auf WebKit und Chromium, `pruef-nativ` 51/51, `pruef-app` 27/27, `pruef-store` 32/32,
 `pruef-bewegung` bestanden, `tests` 11 Reihen, `diff-sprachen` 130 (ein Bericht). iOS-Bau
 SUCCEEDED, am gebauten Bundle nachgeprueft (`startOverlay`, `trend-kurve`, `r.abgebrochen`).
@@ -145,6 +148,58 @@ recommended settings" akzeptieren. `npm run mac:entlasten` nach jedem `npm insta
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht** (weit voraus), kein Pull
 Request ohne Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/`
 (absichtlich unversioniert).
+
+---
+
+## Runde 126 — Kein Zoom, Haptik überall, Hilfe zum Aufklappen, eine Schrift, Rechtliches leiser
+
+Fünf Aufträge in einer Nachricht.
+
+### 1. „Die App zoomt rein und man kann nicht wieder auszoomen"
+**Ursache:** iOS vergrößert die Seite von selbst, sobald ein Eingabefeld mit weniger als **16 Punkt**
+Schrift den Fokus bekommt — die Codefelder im Vergleich hatten 14. **Behoben:** alle Eingabefelder
+16 Punkt (`12-ios.css`), Codefelder in SF Mono.
+**„Generell nicht zoombar":** Das widerspricht der Entscheidung „Doppeltipp-Zoom aus, Aufziehen NICHT"
+(WCAG 1.4.4). Der Inhaber hat es ausdrücklich verlangt; umgesetzt **nur in der iOS-Hülle**
+(`MainViewController`: Pinch-Erkenner aus, Zoomgrenzen 1, und ein Benutzerskript ergänzt den Viewport
+um `maximum-scale=1, user-scalable=no`, weil WKWebView die Grenzen bei jedem Laden aus der Seite
+neu liest). Die **Quelle** bleibt unverändert: `lucenta.html` im Browser ist weiter zoombar, und
+`pruef-app` prüft das weiter. In der App gilt damit, was für jede iOS-App gilt: Vergrößern über die
+Systemfunktionen (Zoom, Textgröße). Am Simulator: Fokus ins Codefeld → kein Zoom; Aufziehen → kein Zoom.
+
+### 2. Haptik bei jedem Antippen
+Ein zentraler Zuhörer (Fang-Phase, `21-beta-rueckmeldung.js`) ruft `tapFeedback()` für jedes
+Bedienelement (Knopf, Link, Aufklapper, Schalter, Auswahl …); deaktivierte schweigen.
+`tapFeedback()` ist auf 90 ms entprellt, damit die bisherigen Einzelaufrufe nicht doppelt vibrieren.
+Der Haptik-Schalter in den Einstellungen und „weniger Bewegung" gelten weiter. **Am Simulator nicht
+fühlbar** — am Gerät nachprüfen.
+
+### 3. Hilfe zum Aufklappen
+Die zehn Fragen stehen hinter einer Zeile „Häufige Fragen" (8 Sprachen). Am Simulator auf- und
+zugeklappt.
+
+### 4. Eine Schrift
+Bis hier drei Familien: Fraunces (Titel), SF (Text), IBM Plex Mono (Zahlen, Daten, kleine Titel) —
+so in Runde 114 festgelegt, jetzt auf Wunsch des Inhabers geändert. `--serif` und `--mono` zeigen
+auf `--sans` (77 Stellen benutzen die Namen); Fraunces trägt nur noch die Wortmarke (`--marke`),
+SF Mono die persönlichen Codes (`--code`). Titel in SF fett (h1 700, h2/h3 600). Die Schriftdateien
+von Fraunces und Plex Mono liegen weiter im Bau (`00-schriften.css` ist erzeugt) — Plex Mono wird
+nicht mehr benutzt und könnte mit `tools/schriften_holen.mjs` entfallen (~60 KB); nicht gemacht.
+
+### 5. Impressum, Datenschutz, Lizenzen leiser
+Der eigene Abschnitt „Rechtliches" in den Einstellungen ist weg; stattdessen eine kleine,
+unterstrichene Zeile am Ende von „Über Lucenta". **Nicht weiter versteckt**, weil das Impressum
+nach § 5 DDG „leicht erkennbar und unmittelbar erreichbar" sein muss (im Code steht dazu seit Runde
+79: in zwei Schritten erreichbar). Der Weg ist so lang wie vorher (Schublade → Einstellungen → Zeile).
+
+### Pruefungen
+
+`pruef-alles`: 8 von 9 beim ersten Lauf; `pruef-app` fand 3 Stellen, alle die alte Schriftregel
+(„Ueberschrift traegt Fraunces", „Plex Mono geladen"). Die Pruefung verlangt jetzt: Titel in der
+Systemschrift, Wortmarke in Fraunces, Plex Mono NICHT geladen (29 statt 28 Pruefungen). Danach
+`pruef-app` 29/29; die anderen acht liefen auf identischem `src/`. Am Simulator: Codefeld fokussiert →
+kein Zoom, Aufziehen → kein Zoom, Hilfe klappt auf und zu, Rechtliches oeffnet. Haptik am Simulator
+nicht fuehlbar — am Geraet pruefen.
 
 ---
 

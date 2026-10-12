@@ -61,6 +61,7 @@ class MainViewController: CAPBridgeViewController {
         transparenzVorzeichnen()
         transparenzBeobachten()
         themaEmpfangen()
+        zoomAbschalten()
         #if DEBUG
         entwicklungsbauMelden()
         #endif
@@ -97,12 +98,37 @@ class MainViewController: CAPBridgeViewController {
         scrollView.bounces = false
         scrollView.alwaysBounceVertical = false
         scrollView.contentInsetAdjustmentBehavior = .never
+        // Runde 126, Auftrag des Inhabers: "generell sollte sie nicht zoombar sein." Die App verhaelt
+        // sich damit wie jede iOS-App: Vergroessern laeuft ueber die Systemfunktionen (Zoom,
+        // Textgroesse), nicht ueber Aufziehen der Seite. Die Viewport-Angabe in der QUELLE bleibt
+        // unveraendert — dist/lucenta.html im Browser bleibt zoombar (WCAG 1.4.4), und pruef-app prueft
+        // weiter genau das. Abgeschaltet wird nur hier, in der Huelle (dazu zoomAbschalten()).
+        scrollView.pinchGestureRecognizer?.isEnabled = false
+        scrollView.minimumZoomScale = 1
+        scrollView.maximumZoomScale = 1
+        scrollView.setZoomScale(1, animated: false)
     }
 
     private func faerbeLadeluecke() {
         view.backgroundColor = papierfarbe
         webView?.backgroundColor = papierfarbe
         webView?.scrollView.backgroundColor = papierfarbe
+    }
+
+    /// Runde 126: WKWebView liest die Zoomgrenzen bei jedem Laden aus der Viewport-Angabe der Seite
+    /// und setzt die Werte aus `stelleBildlaufEin()` damit wieder zurueck. Deshalb wird die Angabe in
+    /// der App — und nur hier — um `maximum-scale=1, user-scalable=no` ergaenzt. WKWebView haelt sich
+    /// daran, solange `ignoresViewportScaleLimits` aus ist (Standard).
+    private func zoomAbschalten() {
+        guard let inhalt = webView?.configuration.userContentController else { return }
+        let quelle = """
+        (function(){
+          var m = document.querySelector('meta[name="viewport"]');
+          if (m && !/user-scalable/.test(m.content)) m.content += ', maximum-scale=1, user-scalable=no';
+        })();
+        """
+        inhalt.addUserScript(WKUserScript(source: quelle, injectionTime: .atDocumentEnd, forMainFrameOnly: true))
+        webView?.configuration.ignoresViewportScaleLimits = false
     }
 
     // MARK: - Das in der App gewaehlte Farbschema (Runde 122)

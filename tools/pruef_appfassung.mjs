@@ -63,7 +63,9 @@ const schlecht = schriftAntworten.filter(a => a.status >= 400);
 // Bewusst nicht "alle fuenf": Mit font-display:swap holt WebKit nur die Schnitte, die die
 // Startseite wirklich braucht — beim ersten Messen waren es vier von fuenf, und das ist richtig so.
 // Geprueft wird deshalb, dass ueberhaupt Schriften geholt werden und KEINE ins Leere zeigt.
-ok(schriftAntworten.length >= 3, 'die Startseite holt ihre Schriften',
+// Runde 126: Seit der einheitlichen Schrift braucht die Startseite genau EINE Datei — Fraunces fuer
+// die Wortmarke. Verlangt wird, dass sie geholt wird und keine Datei ins Leere zeigt.
+ok(schriftAntworten.length >= 1, 'die Startseite holt ihre Schrift (Wortmarke)',
    `${schriftAntworten.length} von ${dateien.length} Dateien angefordert`);
 ok(schlecht.length === 0, 'keine Schrift antwortet mit Fehler',
    schlecht.map(a => a.status + ' ' + a.url.split('/').pop()).join(', '));
@@ -74,7 +76,9 @@ const befund = await seite.evaluate(() => {
   return {
     landing: !!document.querySelector('#view-landing.active'),
     h1Text: h1 ? h1.innerText.trim().slice(0, 30) : null,
-    h1Schrift: h1 ? getComputedStyle(h1).fontFamily.split(',')[0].replace(/['"]/g, '') : null,
+    h1Schrift: h1 ? getComputedStyle(h1).fontFamily.split(',')[0].replace(/['"]/g, '').trim() : null,
+    markeSchrift: (function(){ const m = document.querySelector('.wordmark');
+      return m ? getComputedStyle(m).fontFamily.split(',')[0].replace(/['"]/g, '').trim() : null; })(),
     geladeneFamilien: [...new Set(geladen)],
     textSchrift: getComputedStyle(document.body).fontFamily.split(',')[0].trim(),
     // Die Sprachwahl im DOM ist der einzige Weg von aussen an die Sprachliste: CONTENT liegt in
@@ -85,13 +89,18 @@ const befund = await seite.evaluate(() => {
 
 ok(befund.landing, 'die Startansicht ist aktiv');
 ok(!!befund.h1Text, 'die Ueberschrift steht', befund.h1Text || '(leer)');
-ok(befund.h1Schrift === 'Fraunces', 'die Ueberschrift traegt die Markenschrift', befund.h1Schrift);
+// Runde 126, Auftrag des Inhabers: "die schrift ist nicht einheitlich". Titel stehen jetzt in der
+// Systemschrift wie der Text; Fraunces bleibt allein der Wortmarke.
+ok(/^-apple-system/.test(befund.h1Schrift || ''), 'die Ueberschrift steht in der Systemschrift', befund.h1Schrift);
+ok(befund.markeSchrift === 'Fraunces', 'die Wortmarke traegt die Markenschrift', befund.markeSchrift);
 // Runde 114: Hier stand "mindestens drei Schriftfamilien". Seit dieser Runde stehen Text und
 // Bedienung in der Systemschrift (iOS: SF), und Work Sans ist aus der Datei entfernt. Eingebettet
 // sind damit genau zwei Familien — und genau die werden jetzt verlangt, mit Namen statt mit einer
 // Zahl: Eine Zahl wuerde auch zwei falsche Familien durchlassen.
-ok(['Fraunces', 'IBM Plex Mono'].every(f => befund.geladeneFamilien.includes(f)),
-   'die beiden eingebetteten Schriften sind geladen (Fraunces, IBM Plex Mono)',
+// Runde 126: IBM Plex Mono ist nirgends mehr gesetzt (Zahlen und Daten in SF, Codes in SF Mono) —
+// geladen werden darf sie deshalb auch nicht mehr; sonst stuende sie irgendwo doch noch.
+ok(befund.geladeneFamilien.includes('Fraunces') && !befund.geladeneFamilien.includes('IBM Plex Mono'),
+   'geladen ist Fraunces (Wortmarke), IBM Plex Mono nicht mehr',
    befund.geladeneFamilien.join(', '));
 ok(!befund.geladeneFamilien.includes('Work Sans'), 'Work Sans wird nicht mehr geladen',
    befund.geladeneFamilien.join(', '));

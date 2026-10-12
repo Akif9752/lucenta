@@ -78,8 +78,17 @@
   // Ein Tick, kein Brummen: nativ der leichteste Impuls (LIGHT), im Web 8 ms. Bei reduzierter
   // Bewegung bleibt es aus: Wer visuelle Reize zurückdreht, will in aller Regel auch keine
   // körperlichen.
+  // Runde 126, Auftrag des Inhabers: "bei jedem touch mit dem man etwas auswaehlt immer ein haptic
+  // feedback". Bis hier riefen nur einzelne Stellen tapFeedback() auf. Jetzt gibt ein zentraler
+  // Zuhoerer (hapticsUeberall in 21-beta-rueckmeldung.js) bei JEDEM Bedienelement einen Impuls; die
+  // bestehenden Aufrufe bleiben, und die Entprellung hier sorgt dafuer, dass ein Tipp nie zweimal
+  // vibriert.
+  var letzteHaptik = 0;
   function tapFeedback(){
     if (haptikAbgeschaltet() || prefersReducedMotion()) return;
+    var jetzt = Date.now();
+    if (jetzt - letzteHaptik < 90) return;
+    letzteHaptik = jetzt;
     try{
       if (nativVorhanden()){
         var h = nativModul('Haptics');

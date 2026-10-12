@@ -235,14 +235,22 @@
        sich nichts: Sie finden ihre Zeichen in der ersten Familie und kommen nie so weit. */
     --cjk: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
     --cjk-sans: 'Hiragino Sans', 'Yu Gothic', Meiryo, 'Noto Sans JP', sans-serif;
-    --serif: 'Fraunces', ui-serif, Georgia, var(--cjk);
+    /* Runde 126, Auftrag des Inhabers: "die schrift ist nicht einheitlich in der app." Bis hier
+       standen drei Familien nebeneinander — Fraunces in Titeln, SF im Text, IBM Plex Mono in Zahlen,
+       Daten und kleinen Ueberschriften. Jetzt steht ueberall die Systemschrift, wie in iOS selbst.
+       --serif und --mono bleiben als Namen (77 Stellen benutzen sie) und zeigen auf --sans.
+       Fraunces traegt nur noch die Wortmarke (--marke); fuer die persoenlichen Codes steht SF Mono
+       (--code), weil dort "l" und "1" beim Abtippen unterscheidbar bleiben muessen. */
+    --marke: 'Fraunces', ui-serif, Georgia, var(--cjk);
     /* Runde 114, Auftrag des Inhabers "insgesamt wie iOS": Text und Bedienung stehen in der
        Systemschrift — auf dem iPhone SF Pro. Das ist der einzelne groesste Schritt in Richtung
        iOS, weil jede Beschriftung, jede Zeile und jeder Knopf ihn mitmacht. Fraunces bleibt die
        Schrift der grossen Titel (--serif) und damit die Marke; IBM Plex Mono bleibt fuer Codes
        und Zahlen. Work Sans ist damit nirgends mehr gesetzt. */
     --sans: -apple-system, system-ui, 'SF Pro Text', ui-sans-serif, var(--cjk-sans);
-    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, var(--cjk-sans), monospace;
+    --serif: var(--sans);
+    --mono: var(--sans);
+    --code: ui-monospace, SFMono-Regular, var(--cjk-sans), monospace;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
@@ -493,7 +501,10 @@
   /* Die Druckzustände selbst stehen gesammelt am Ende dieses Stylesheets (Abschnitt
      „Druckzustände"), damit sie nicht von später notierten :hover-Regeln einzelner Komponenten
      überschrieben werden — genau das war bei .btn-hero der Fall. */
-  h1,h2,h3{font-family:var(--serif);font-weight:500;text-wrap:balance;margin:0;}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;text-wrap:balance;margin:0;}
+  /* Runde 126: Titel in SF tragen das Gewicht von iOS (grosse Titel fett). Fraunces war mit 500
+     kraeftig genug; SF wirkt bei 500 duenn. */
+  h1{font-weight:700;letter-spacing:-.01em;}
 
   /* Backlog Runde 28, Punkt 2 — Textvergrößerung/Reflow nach WCAG 1.4.4, erstmals tatsächlich
      bei 200 % nachgestellt (390px Gerätebreite entspricht dann rund 195px Layoutbreite). Befund:
@@ -667,7 +678,7 @@
   }
   header.top.scrolled{border-bottom-color:var(--line);}
   .wordmark{
-    font-family:var(--serif); font-size:20px; font-weight:600; letter-spacing:.01em;
+    font-family:var(--marke); font-size:20px; font-weight:600; letter-spacing:.01em;
     display:flex; align-items:center; gap:8px;
     background:none; border:none; padding:0; margin:0; color:inherit; cursor:pointer;
   }

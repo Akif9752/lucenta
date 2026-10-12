@@ -413,6 +413,16 @@
       });
     });
     erinnerungTippVerdrahten(function(){ renderStateView(); showView('state'); });
+    // Runde 126: ein leichter Impuls bei jedem Bedienelement (siehe tapFeedback). Im Fang-Schritt
+    // (capture), damit er auch dort kommt, wo ein Knopf die Ausbreitung anhaelt. Deaktivierte
+    // Elemente schweigen — ein Impuls auf etwas, das nicht reagiert, waere eine falsche Rueckmeldung.
+    document.addEventListener('click', function(e){
+      var z = e.target && e.target.closest ? e.target.closest(
+        'button, a[href], summary, label, select, [role="button"], [role="switch"], [role="radio"], [role="tab"], ' +
+        'input[type="checkbox"], input[type="radio"]') : null;
+      if (!z || z.disabled || z.getAttribute('aria-disabled') === 'true') return;
+      tapFeedback();
+    }, true);
     if ($('btnPlusWiederherstellen')) $('btnPlusWiederherstellen').addEventListener('click', kaeufeWiederherstellen);
     if ($('btnAboVerwalten')) $('btnAboVerwalten').addEventListener('click', aboVerwalten);
     plusStandAnwenden();

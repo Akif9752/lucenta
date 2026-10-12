@@ -620,3 +620,37 @@
   #startOverlay.show .start-name{ animation:start-name .5s cubic-bezier(.2,.8,.2,1) .5s forwards; }
   @keyframes start-name{ to{ opacity:1; transform:none; } }
 
+
+  /* Runde 126, gemeldet: "wenn man einige sachen drueckt (zb beim vergleichsfeld) zoomt die app rein
+     und man kann nicht wieder auszoomen." Ursache: iOS vergroessert die Seite selbsttaetig, sobald
+     ein Eingabefeld mit weniger als 16 Punkt Schrift den Fokus bekommt — die Codefelder hatten 14.
+     16 Punkt ist zugleich die Textgroesse von iOS-Eingabefeldern. Die Felder fuer Codes stehen in
+     der Monospace-Systemschrift, damit "l" und "1" beim Abtippen unterscheidbar bleiben. */
+  input[type="text"], input[type="time"], input[type="search"], input:not([type]), textarea, select{
+    font-size:16px !important;
+  }
+  .field input[type="text"], #restoreCodeInput, #myCode{ font-family:var(--code); }
+
+  /* Runde 126: Die Hilfe als EINE Zeile, die aufklappt — die zehn Fragen standen vorher offen
+     untereinander und zogen die Einstellungen in die Laenge. Gleiche Form wie die Fragen selbst. */
+  .hilfe-sammlung > summary{
+    list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
+    min-height:46px; padding:12px 16px; background:var(--surface); border-radius:var(--radius-m);
+    font-size:16px; color:var(--ink);
+  }
+  .hilfe-sammlung > summary::-webkit-details-marker{ display:none; }
+  .hilfe-sammlung > summary .chev{ transition:transform .2s ease; color:var(--muted); }
+  .hilfe-sammlung[open] > summary{ border-bottom-left-radius:0; border-bottom-right-radius:0; }
+  .hilfe-sammlung[open] > summary .chev{ transform:rotate(90deg); }
+  .hilfe-sammlung[open] > .faq-item-list{ border-top-left-radius:0; border-top-right-radius:0; }
+  @media (prefers-reduced-motion: reduce){ .hilfe-sammlung > summary .chev{ transition:none; } }
+
+  /* Runde 126: Impressum, Datenschutz und Lizenzen als leise Zeile am Ende von "Ueber Lucenta",
+     nicht mehr als eigener Abschnitt. Erreichbar bleiben sie in zwei Schritten (Impressumspflicht),
+     ueber die Fusszeile der Startseite und hier. */
+  .recht-leise{
+    margin:10px 0 0; padding:6px 16px; min-height:44px; background:none; border:none; cursor:pointer;
+    font:inherit; font-size:13px; color:var(--muted-soft); text-align:left; text-decoration:underline;
+    text-decoration-color:color-mix(in srgb, var(--muted-soft) 40%, transparent); text-underline-offset:3px;
+  }
+  .recht-leise:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
