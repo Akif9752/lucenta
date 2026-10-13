@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 134)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 135)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 134 | — | Tierkoerper statt Menschenoberkoerper: `vierbeiner(Bau(...))` — schmale tiefe Brust, Vorderbeine, Ruecken nach hinten; je Art eigene Masse und Zeichnung |
+| 135 | — | Suesser Blick: Lider, Blick zum Betrachter, groessere Augen und Lichtpunkte, Wangenroete; je Tier ein eigener `Ausdruck` |
+| 134 | `ef36e7a` | Tierkoerper statt Menschenoberkoerper: `vierbeiner(Bau(...))` — schmale tiefe Brust, Vorderbeine, Ruecken nach hinten; je Art eigene Masse und Zeichnung |
 | 133 | `9bad4bd` | Tiere mit Oberkoerper: fester Zuschnittrahmen (`rahmen.json`), Bild randlos im Kreis, Kopf deckungsgleich mit Runde 132 |
 | 132 | `7457d8f` | Funkeln statt Konfetti: vierzackige Sterne + Lichtpunkte, schweben statt zu fallen (`funkelStoss`, `.funkeln`) |
 | 131 | `f2938a4` | Startseiten-Titel wieder Fraunces; Name im Startbild in `--marke`; Symbol #5CB4AD; Hilfe als eigene Seite (`view-hilfe`); Beispieldaten 14/30/90/120; Verlauf „Gesamt"; Erinnerungen 9/14/20 + Nacherinnerung 11/16/22, Tageszeiten bis 12/18; Erfassung klappt nach dem Eintrag zu |
@@ -196,6 +197,44 @@ SceneKit und CoreGraphics ja (`swiftc`).
 
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull Request ohne Bitte.
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 135 — Suesser Blick statt starrem
+
+**Auftrag:** "die tiere haben alle einen sehr starren und unheimlichen blick, lass sie alle auf
+unterschiedliche weise suess gucken."
+
+**Warum starr (am Bild abgelesen):** kreisrunde, ganz offene Augen ohne Lid — nichts, das eine
+Stimmung traegt; beide Augen parallel in Kopfrichtung, also knapp am Betrachter vorbei; ein kleiner,
+hoch sitzender Lichtpunkt. Beim Fuchs dazu eine kleine Pupille in gelber Iris — ein Raubtierblick.
+
+**Was geaendert ist (`Tiere.swift`, `Szene.swift`, `main.swift`):**
+1. **Lider** (`lid()`, `lider(an:…)`): Kappen knapp ueber dem Augapfel in Fellfarbe, zur Kante dunkler
+   (Wimpernlinie als Verlauf, kein Strich). Sie sitzen im Rahmen des Kopfes, der Augapfel dreht sich
+   darunter. Oberlid mit Bogen nach oben; Unterlid mit Kante nach OBEN gewoelbt — das "laechelnde Auge".
+2. **Blick** wird in `main.swift` gesetzt, wenn die Kamera feststeht: beide Augen auf denselben Punkt,
+   den Betrachter oder mit Absicht daneben (`blickVersatz`).
+3. **Groessere Augen** (×1,15) und **groessere, tiefere Lichtpunkte** (`funke`).
+4. **Wangenroete** (`mitWangen`) — eine weiche Flaeche.
+5. **Je Tier ein `Ausdruck`:** Fuchs freundlich, Pupille groesser, Blick leicht nach oben; Katze
+   zufrieden laechelnd; Baer treuherzig nach oben, Aussenwinkel tief; Panda verschlafen-zufrieden, Blick
+   zur Seite nach unten; Hase staunend, weit offen, nach oben; Reh schuechtern zur Seite weg; Dackel
+   bittend nach oben, stark schraege Aussenwinkel; Retriever froehlich mit hohem Unterlid; Eule
+   zwinkert; Wal laechelnd; Goldfisch staunend nach oben; Schildkroete gemuetlich mit schweren Lidern.
+
+**Zwei Funde beim Ansehen:** (a) Die erste Fassung der Lider deckte in der Augenmitte fast nichts —
+die Woelbung zog die Kante vorn hoch; jetzt wird die Kante in der Augenmitte festgelegt. (b) Halb
+gesenkte Oberlider wirkten gelangweilt oder genervt, nicht suess; die Oberlider sind deshalb fast offen,
+den Ausdruck tragen Unterlid, Schraege und Blick. Nur Panda und Schildkroete bleiben schlaefrig.
+
+Kopflage, Rahmen und Koerper unveraendert.
+
+**Unsicher:** Ob "suess" getroffen ist, entscheidet der Inhaber — ich habe auf 150–300 Punkten im
+Kreis geurteilt. Das geschlossene Auge der Eule liest sich auf 52 pt eher als "zu" denn als
+Zwinkern. Am iPhone nicht gesehen.
+
+**Pruefungen:** `npm run pruef-alles` **ALLE 9 BESTANDEN** (11,5 Minuten), `fehlersuche` KEINE FUNDE.
 
 ---
 

@@ -104,7 +104,7 @@ func augapfel(_ r: CGFloat, _ bild: NSImage) -> SCNGeometry {
 }
 
 func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, quer: Bool = false,
-          irisAnteil: CGFloat = 0.86) -> SCNNode {
+          irisAnteil: CGFloat = 0.86, funke f: CGFloat = 1) -> SCNNode {
     let knoten = SCNNode()
     // Das Bild traegt aussen die dunkle Randfarbe, innen die Iris (Anteil irisAnteil).
     let g: CGFloat = 512
@@ -126,13 +126,15 @@ func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bo
     mh.blendMode = .alpha; mh.writesToDepthBuffer = false
     horn.materials = [mh]
     knoten.addChildNode(SCNNode(geometry: horn))
-    // Der Funke.
+    // Der Funke. Runde 135: groesser (`f`) und tiefer gesetzt — ein grosser Lichtpunkt macht einen
+    // Blick weich, ein kleiner laesst ihn starren; und unter einem halb gesenkten Oberlid waere der
+    // alte, hoch sitzende Punkt verschwunden.
     let mf = SCNMaterial(); mf.lightingModel = .constant; mf.diffuse.contents = NSColor(white: 1, alpha: 0.95)
-    let funke = SCNSphere(radius: r * 0.12); funke.materials = [mf]
-    let fk = SCNNode(geometry: funke); fk.position = SCNVector3(-r * 0.30, r * 0.34, r * 0.92)
+    let funke = SCNSphere(radius: r * 0.13 * f); funke.materials = [mf]
+    let fk = SCNNode(geometry: funke); fk.position = SCNVector3(-r * 0.30, r * 0.18, r * 0.94)
     knoten.addChildNode(fk)
-    let funke2 = SCNSphere(radius: r * 0.05); funke2.materials = [mf]
-    let fk2 = SCNNode(geometry: funke2); fk2.position = SCNVector3(r * 0.28, -r * 0.28, r * 0.95)
+    let funke2 = SCNSphere(radius: r * 0.06 * f); funke2.materials = [mf]
+    let fk2 = SCNNode(geometry: funke2); fk2.position = SCNVector3(r * 0.26, -r * 0.30, r * 0.92)
     knoten.addChildNode(fk2)
     return knoten
 }
