@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 133)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 134)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 133 | — | Tiere mit Oberkoerper: fester Zuschnittrahmen (`rahmen.json`), Bild randlos im Kreis, Kopf deckungsgleich mit Runde 132 |
+| 134 | — | Tierkoerper statt Menschenoberkoerper: `vierbeiner(Bau(...))` — schmale tiefe Brust, Vorderbeine, Ruecken nach hinten; je Art eigene Masse und Zeichnung |
+| 133 | `9bad4bd` | Tiere mit Oberkoerper: fester Zuschnittrahmen (`rahmen.json`), Bild randlos im Kreis, Kopf deckungsgleich mit Runde 132 |
 | 132 | `7457d8f` | Funkeln statt Konfetti: vierzackige Sterne + Lichtpunkte, schweben statt zu fallen (`funkelStoss`, `.funkeln`) |
 | 131 | `f2938a4` | Startseiten-Titel wieder Fraunces; Name im Startbild in `--marke`; Symbol #5CB4AD; Hilfe als eigene Seite (`view-hilfe`); Beispieldaten 14/30/90/120; Verlauf „Gesamt"; Erinnerungen 9/14/20 + Nacherinnerung 11/16/22, Tageszeiten bis 12/18; Erfassung klappt nach dem Eintrag zu |
 | 130 | `370d20c` | Tagesform: drei Tageszeiten, je ein Eintrag (ersetzen); Erinnerungen einzeln geplant; groessere Animationen (Ergebnis-Enthuellung, Haken, Startkarten, Fragebogen, Tier wippt); weiche Vorschau-Raender; Legende des Graphen mit fester Hoehe |
@@ -77,7 +78,7 @@ Regeln, die er gesetzt hat:
 - **Symbol:** `tools/symbol_rendern.swift` (Anleitung im Kopf der Datei) → `assets/icon/`, Asset-
   Katalog, apple-touch-icon in `src/index.head.html`.
 - **Tiere:** `tools/figuren_rendern/Tiere.swift` → `bauen.sh <tier>` → ansehen →
-  `python3 tools/figuren_holen.py <tier>`. Seit Runde 133 mit Oberkoerper (`rumpf()`/`brustbild()`) und
+  `python3 tools/figuren_holen.py <tier>`. Seit Runde 133/134 mit Koerper (`vierbeiner(Bau(...))`/`brustbild()`) und
   **festem** Rahmen (`figuren_rendern/rahmen.json` — nie neu messen, sonst wandert der Kopf);
   Vergleich alt/neu im Kreis: `python3 tools/figuren_rendern/vorschau.py <alter-ordner> <tier>`.
 - **Huelle:** `MainViewController.swift` (Bildlauf, Zoomsperre, Farbschema, Transparenz,
@@ -195,6 +196,40 @@ SceneKit und CoreGraphics ja (`swiftc`).
 
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull Request ohne Bitte.
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 134 — Tierkoerper statt Menschenoberkoerper
+
+**Rueckmeldung des Inhabers zu Runde 133:** "die koerper sind nicht angepasst an die jeweilige
+tierart, es sieht so aus wie ein menschlicher oberkoerper."
+
+**Warum:** `rumpf()` setzte breite Schultern QUER zur Blickrichtung an, links und rechts weit
+ausladend — das ist der Bau eines Menschen. Ein Vierbeiner hat eine schmale, tiefe Brust, zwei
+Vorderbeine dicht beieinander, darueber die Schulterblaetter, und der Rumpf laeuft hinter dem Kopf
+nach HINTEN. Durch die Drehung des Tieres erscheint der Ruecken dann seitlich hinter dem Kopf.
+
+**Was geaendert ist:** `rumpf()` ersetzt durch `vierbeiner(Bau(...))` in `Tiere.swift`. `Bau` traegt
+je Art die Masse: Brustbreite und -tiefe, Hals (Reh lang und duenn), Beine (Dackel kurz und tief
+angesetzt, Bär und Panda dick), Ruecken (Dackel lang, Hase rund und kurz). Dazu die Zeichnung am
+Koerper: Fuchs weisse Kehle und dunkle "Struempfe", Katze getigert mit Ringen an den Beinen und
+weisser Brust, Panda schwarze Vorderbeine und schwarzer Guertel ueber die Schultern, Reh heller
+Kehlfleck gleich unter dem Kinn, Retriever hellere Brust. Raster jetzt bis z = -3 (`grenze: 3.1`,
+gleiche Rasterweite wie der Kopf), weil der Dackelruecken sonst hinten abgeschnitten wuerde.
+
+Kopfrahmen, Zuschnitt und CSS sind unveraendert — der Kopf liegt weiter deckungsgleich mit Runde 132
+(`vorschau.py` nachgesehen).
+
+**Am Bild gesehen:** im Kreis (`vorschau.py`) und im Raster in WebKit. Unterwegs korrigiert: Panda war
+fast nur weiss (Schwarz jetzt ab der Schulter), Reh-Kehlfleck sass als Fleck auf der Brust, unter der
+Fuchsschnauze blieb eine Luecke (Brust tiefer gewoelbt), Hase zu schmaechtig (runder Rumpf).
+
+**Unsicher:** Im Kreis ist nur wenig unter dem Kinn sichtbar — Beine sieht man praktisch nicht, der
+Eindruck "Tier" kommt vor allem vom Ruecken hinter dem Kopf und der schmalen Brust. Am Panda ist die
+Grenze zwischen Schwarz und Weiss etwas hart. Am iPhone nicht gesehen.
+
+**Pruefungen:** `npm run pruef-alles` **ALLE 9 BESTANDEN** (11,5 Minuten), `fehlersuche` KEINE FUNDE.
+Tierbilder zusammen 199 KB.
 
 ---
 

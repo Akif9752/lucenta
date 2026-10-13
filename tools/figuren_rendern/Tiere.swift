@@ -72,21 +72,52 @@ func farbeMitRauschen(_ c: V, _ p: V, _ staerke: Float = 0.12) -> V { c * (1 - s
 // EINEM Abstandsfeld (keine Naht am Hals), und der Kreis schneidet den Rumpf unten ab wie bei einem
 // Brustbild. Der Kopf behaelt seine Farbe; unterhalb des Kinns gilt die des Rumpfes.
 //
-// `breite` skaliert die Schultern, `vor` schiebt die Brust nach vorn. Die Augen werden weiter am
-// Kopf allein eingesetzt — der Rumpf liegt nie auf Augenhoehe, aber er darf die Suche nicht stoeren.
-func rumpf(breite b: Float = 1, hals: Float = 0.45, vor: Float = 0, hoehe h: Float = 0) -> [Form] {
-    [
-        Form(art: .rundkegel(V(0, -0.80, 0.05), hals, hals + 0.18), mitte: V(0, -0.35 + h, -0.10), weich: 0.30),
-        Form(art: .ellipsoid(V(1.70 * b, 1.05, 1.00)), mitte: V(0, -1.65 + h, -0.05), weich: 0.35),
-        Form(art: .ellipsoid(V(0.85 * b, 0.85, 0.62)), mitte: V(0, -1.20 + h, 0.40 + vor), weich: 0.30),
-        // Schultern: tragen die Breite bis an den Kreisrand, sonst steht unter dem Kopf nur ein Hals.
-        Form(art: .ellipsoid(V(0.62, 0.55, 0.60)), mitte: V(-1.05 * b, -1.10 + h, 0.0), weich: 0.35),
-        Form(art: .ellipsoid(V(0.62, 0.55, 0.60)), mitte: V(1.05 * b, -1.10 + h, 0.0), weich: 0.35),
+// Erste Fassung (breite Schultern quer zur Blickrichtung) sah aus "wie ein menschlicher Oberkoerper"
+// (Inhaber). Ein Vierbeiner ist anders gebaut: Die Brust ist SCHMAL und TIEF, darunter stehen zwei
+// Vorderbeine dicht beieinander, ueber ihnen die Schulterblaetter, und der Rumpf laeuft hinter dem
+// Kopf nach HINTEN weg, nicht zur Seite. Durch die Drehung des Tieres erscheint der Ruecken dann
+// seitlich hinter dem Kopf — genau das Bild eines sitzenden Tieres im Portraet.
+//
+// Die Augen werden weiter am Kopf allein eingesetzt — der Rumpf liegt nie auf Augenhoehe.
+struct Bau {
+    var brust: Float = 1            // Breite der Brust (1 = schmal wie bei Fuchs und Katze)
+    var tiefe: Float = 1            // wie weit die Brust nach vorn gewoelbt ist
+    var hals: Float = 0.40          // Halsradius oben
+    var halsLaenge: Float = 1       // >1: langer Hals (Reh)
+    var bein: Float = 0.18          // Radius der Vorderbeine
+    var beinAbstand: Float = 0.24   // halber Abstand der Vorderbeine
+    var beinOben: Float = -1.25     // wo die Beine aus der Brust kommen
+    var ruecken: Float = 0.62       // Radius des Rumpfes
+    var rueckenLaenge: Float = 1.7
+    var rueckenHoehe: Float = -1.0  // Hoehe des Widerrists
+}
+func vierbeiner(_ b: Bau) -> [Form] {
+    let l = b.halsLaenge
+    var f: [Form] = [
+        // Hals: vom Hinterkopf schraeg nach vorn unten zur Brust.
+        Form(art: .rundkegel(V(0, -0.75 * l, 0.30), b.hals, b.hals + 0.12), mitte: V(0, -0.30, -0.30), weich: 0.28),
+        // Brust: schmal und tief, vorn unter dem Kinn.
+        Form(art: .ellipsoid(V(0.50 * b.brust, 0.62, 0.55 * b.tiefe)), mitte: V(0, -0.95 - 0.30 * l, 0.15 + 0.20 * (b.tiefe - 1)), weich: 0.28),
+        // Rumpf: hinter dem Kopf nach hinten, leicht abfallend.
+        Form(art: .rundkegel(V(0, -0.35, -b.rueckenLaenge), b.ruecken, b.ruecken * 0.92),
+             mitte: V(0, b.rueckenHoehe - 0.25 * (l - 1), -0.30), weich: 0.35),
     ]
+    for s: Float in [-1, 1] {
+        // Schulterblatt ueber dem Bein, dann das Bein senkrecht nach unten.
+        f.append(Form(art: .ellipsoid(V(0.24, 0.44, 0.36)), mitte: V(s * (b.beinAbstand + 0.14), b.beinOben + 0.30, -0.02), weich: 0.25))
+        f.append(Form(art: .rundkegel(V(0, -1.40, 0.06), b.bein, b.bein * 0.85),
+                      mitte: V(s * b.beinAbstand, b.beinOben, 0.22), weich: 0.10))
+    }
+    return f
+}
+// Wie weit unten ein Punkt am Bein liegt (0 oben an der Brust, 1 tief unten) — fuer Fussfarben.
+func beinUnten(_ p: V, _ b: Bau, ab: Float = 0.5) -> Float {
+    let amBein = glatt(b.beinAbstand + b.bein + 0.10, b.beinAbstand + b.bein - 0.05, abs(abs(p.x) - b.beinAbstand) + b.beinAbstand)
+    return amBein * glatt(b.beinOben - ab, b.beinOben - ab - 0.30, p.y) * glatt(-0.2, 0.1, p.z)
 }
 // Der Brustlatz, die helle Flaeche vorn, die viele dieser Tiere tragen.
-func latz(_ p: V, breite: Float = 0.42, hoehe h: Float = 0) -> Float {
-    region(p, V(0, -1.10 + h, 0.90), V(breite, 0.70, 0.50), 0.35)
+func latz(_ p: V, breite: Float = 0.30, hoehe h: Float = 0) -> Float {
+    region(p, V(0, -0.95 + h, 0.70), V(breite, 0.75, 0.45), 0.35)
 }
 // Kopf und Rumpf in einem Koerper. Die Farbe richtet sich nach dem ABSTAND zum Kopf, nicht nach der
 // Hoehe: Nach der Hoehe trugen die Schultern die Kopffarbe unter dem Kinn (beim Fuchs weisse Flecken),
@@ -98,7 +129,8 @@ func brustbild(_ kopf: Koerper, _ formen: [Form], farbe: @escaping (V, V) -> V) 
     k.farbe = { p, n in mische(kopfFarbe(p, n), farbe(p, n), glatt(0.02, 0.16, kopf.abstand(p))) }
     return k
 }
-func brustKnoten(_ k: Koerper) -> SCNNode { kopfKnoten(k, grenze: 2.6, n: 236) }
+// Der Rumpf reicht nach hinten bis z = -3 (Dackel); die Rasterweite bleibt die des Kopfes.
+func brustKnoten(_ k: Koerper) -> SCNNode { kopfKnoten(k, grenze: 3.1, n: 282) }
 
 // ---------- Fuchs ----------
 
@@ -127,8 +159,11 @@ func fuchs() -> (SCNNode, Float, V) {
         c *= 1 - 0.25 * glatt(1.1, 1.6, p.z) * glatt(-0.30, -0.05, p.y)
         return c
     }, rauheit: 0.72, fell: 0.07)
-    let koerper = brustbild(kopf, rumpf(breite: 0.95, hals: 0.42), farbe: { p, _ in
-        mische(farbeMitRauschen(rot, p, 0.08), farbeMitRauschen(weiss, p, 0.04), latz(p, breite: 0.32))
+    let bau = Bau(tiefe: 1.45)
+    let koerper = brustbild(kopf, vierbeiner(bau), farbe: { p, _ in
+        // Weisse Kehle und Brust, dunkle "Struempfe" an den Vorderbeinen.
+        let c = mische(farbeMitRauschen(rot, p, 0.08), farbeMitRauschen(weiss, p, 0.04), latz(p, breite: 0.28))
+        return mische(c, dunkel, beinUnten(p, bau, ab: 0.30) * 0.85)
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     nase(w, [Form(art: .ellipsoid(V(0.115, 0.08, 0.10)), mitte: V(0, -0.27, 1.64))], farbe: hex("#161112"))
@@ -166,8 +201,14 @@ func katze() -> (SCNNode, Float, V) {
         c = mische(c, rosa, ohr * 0.85)
         return c
     }, rauheit: 0.72, fell: 0.06)
-    let koerper = brustbild(kopf, rumpf(breite: 0.95, hals: 0.42), farbe: { p, _ in
-        mische(farbeMitRauschen(rot, p, 0.07), farbeMitRauschen(weiss, p, 0.04), latz(p, breite: 0.34))
+    let bau = Bau(bein: 0.17, ruecken: 0.60)
+    let koerper = brustbild(kopf, vierbeiner(bau), farbe: { p, _ in
+        // Getigert auch am Koerper: Ringe um die Beine, Streifen ueber den Ruecken; weisse Brust.
+        var c = farbeMitRauschen(rot, p, 0.07)
+        let ringe = glatt(0.72, 0.85, sinf(p.y * 11 + abs(p.x) * 2) * 0.5 + 0.5) * glatt(-1.3, -1.5, p.y)
+        let ruecken = glatt(0.74, 0.86, sinf(p.z * 8 + p.y * 2) * 0.5 + 0.5) * glatt(0.0, -0.4, p.z)
+        c = mische(c, streifen, max(ringe, ruecken) * 0.8)
+        return mische(c, farbeMitRauschen(weiss, p, 0.04), latz(p, breite: 0.30))
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     nase(w, [Form(art: .rundkegel(V(0, -0.10, 0.02), 0.07, 0.03), mitte: V(0, -0.06, 0.92), stauchung: V(1.6, 1, 1))], farbe: hex("#D98A88"), lack: 0.6)
@@ -198,8 +239,9 @@ func baer() -> (SCNNode, Float, V) {
         c = mische(c, innen, glatt(0.62, 0.72, p.y) * glatt(0.48, 0.58, abs(p.x)) * glatt(0.2, 0.6, n.z) * 0.6)
         return c
     }, rauheit: 0.78, fell: 0.08)
-    let koerper = brustbild(kopf, rumpf(breite: 1.05, hals: 0.50), farbe: { p, _ in
-        mische(farbeMitRauschen(braun, p, 0.09), farbeMitRauschen(hell, p, 0.05), latz(p, breite: 0.40) * 0.35)
+    let bau = Bau(brust: 1.45, tiefe: 1.1, hals: 0.52, bein: 0.27, beinAbstand: 0.33, ruecken: 0.85, rueckenHoehe: -0.85)
+    let koerper = brustbild(kopf, vierbeiner(bau), farbe: { p, _ in
+        mische(farbeMitRauschen(braun, p, 0.09), farbeMitRauschen(hell, p, 0.05), latz(p, breite: 0.40) * 0.25)
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     nase(w, [Form(art: .ellipsoid(V(0.20, 0.13, 0.13)), mitte: V(0, -0.07, 1.12))], farbe: hex("#1A1312"))
@@ -234,8 +276,13 @@ func panda() -> (SCNNode, Float, V) {
         }
         return c
     }, rauheit: 0.78, fell: 0.07)
-    let koerper = brustbild(kopf, rumpf(breite: 1.05, hals: 0.50), farbe: { p, _ in
-        mische(farbeMitRauschen(schwarz, p, 0.05), farbeMitRauschen(weiss, p, 0.04), glatt(0.62, 0.38, abs(p.x)) * glatt(-1.55, -1.05, p.y))
+    let bau = Bau(brust: 1.45, tiefe: 1.1, hals: 0.52, bein: 0.27, beinAbstand: 0.33, ruecken: 0.85, rueckenHoehe: -0.90)
+    let koerper = brustbild(kopf, vierbeiner(bau), farbe: { p, _ in
+        // Das Pandamuster: weisser Koerper, schwarze Vorderbeine, und ein schwarzer Guertel ueber die
+        // Schultern, der beide Beine ueber den Ruecken verbindet.
+        let guertel = glatt(0.42, 0.30, abs(p.z + 0.40)) * glatt(-0.50, -0.72, p.y)
+        let beine = max(glatt(-0.80, -0.95, p.y) * glatt(0.10, 0.26, abs(p.x)), glatt(-1.25, -1.40, p.y))
+        return mische(farbeMitRauschen(weiss, p, 0.04), farbeMitRauschen(schwarz, p, 0.05), max(guertel, beine))
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     nase(w, [Form(art: .ellipsoid(V(0.16, 0.10, 0.11)), mitte: V(0, -0.10, 1.06))], farbe: hex("#141212"))
@@ -268,8 +315,9 @@ func hase() -> (SCNNode, Float, V) {
         c = mische(c, rosa, ohrInnen * 0.8)
         return c
     }, rauheit: 0.80, fell: 0.07)
-    let koerper = brustbild(kopf, rumpf(breite: 1.10, hals: 0.40, hoehe: 0.05), farbe: { p, _ in
-        mische(farbeMitRauschen(grau, p, 0.10), farbeMitRauschen(hell, p, 0.04), latz(p, breite: 0.34))
+    let bau = Bau(hals: 0.42, halsLaenge: 0.7, bein: 0.15, beinAbstand: 0.20, beinOben: -1.05, ruecken: 0.90, rueckenLaenge: 1.1, rueckenHoehe: -1.05)
+    let koerper = brustbild(kopf, vierbeiner(bau), farbe: { p, _ in
+        mische(farbeMitRauschen(grau, p, 0.10), farbeMitRauschen(hell, p, 0.04), latz(p, breite: 0.30, hoehe: 0.10) * 0.85)
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     nase(w, [Form(art: .ellipsoid(V(0.09, 0.06, 0.06)), mitte: V(0, -0.06, 0.98))], farbe: hex("#D28E8C"), lack: 0.5)
@@ -309,8 +357,11 @@ func reh() -> (SCNNode, Float, V) {
         c = mische(c, weiss, (region(p, V(-0.36, 0.42, 0.55), V(0.12, 0.06, 0.1), 0.6) + region(p, V(0.36, 0.42, 0.55), V(0.12, 0.06, 0.1), 0.6)) * 0.6)
         return c
     }, rauheit: 0.75, fell: 0.06)
-    let koerper = brustbild(kopf, rumpf(breite: 1.05, hals: 0.36), farbe: { p, _ in
-        mische(farbeMitRauschen(braun, p, 0.08), farbeMitRauschen(weiss, p, 0.04), latz(p, breite: 0.26) * 0.9)
+    let bau = Bau(brust: 0.9, hals: 0.30, halsLaenge: 1.5, bein: 0.12, beinAbstand: 0.20, beinOben: -1.55, ruecken: 0.62, rueckenHoehe: -1.10)
+    let koerper = brustbild(kopf, vierbeiner(bau), farbe: { p, _ in
+        // Rehe tragen einen hellen Kehlfleck gleich unter dem Kinn, die Brust bleibt braun.
+        let kehle = region(p, V(0, -0.60, 0.50), V(0.26, 0.20, 0.45), 0.4)
+        return mische(farbeMitRauschen(braun, p, 0.08), farbeMitRauschen(weiss, p, 0.04), kehle * 0.9)
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     nase(w, [Form(art: .ellipsoid(V(0.18, 0.12, 0.10)), mitte: V(0, -0.30, 1.22))], farbe: hex("#141011"))
@@ -348,8 +399,9 @@ func dackel() -> (SCNNode, Float, V) {
         c *= 1 - 0.20 * glatt(1.1, 1.45, p.z)                                    // Schnauzenspitze dunkler
         return c
     }, rauheit: 0.62, fell: 0.05)
-    let koerper = brustbild(kopf, rumpf(breite: 0.90, hals: 0.42), farbe: { p, _ in
-        mische(farbeMitRauschen(rot, p, 0.07), hell, latz(p, breite: 0.30) * 0.30)
+    let bau = Bau(brust: 1.05, tiefe: 1.25, bein: 0.17, beinAbstand: 0.22, beinOben: -1.45, ruecken: 0.58, rueckenLaenge: 2.0, rueckenHoehe: -0.95)
+    let koerper = brustbild(kopf, vierbeiner(bau), farbe: { p, _ in
+        mische(farbeMitRauschen(rot, p, 0.07), hell, latz(p, breite: 0.30) * 0.25)
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     nase(w, [Form(art: .ellipsoid(V(0.14, 0.10, 0.10)), mitte: V(0, -0.17, 1.44))], farbe: hex("#161010"))
@@ -382,8 +434,9 @@ func hund() -> (SCNNode, Float, V) {
         c = mische(c, dunkel, glatt(0.74, 0.86, abs(p.x)) * 0.75)   // Ohren dunkler golden
         return c
     }, rauheit: 0.78, fell: 0.08)
-    let koerper = brustbild(kopf, rumpf(breite: 1.00, hals: 0.46), farbe: { p, _ in
-        mische(farbeMitRauschen(gold, p, 0.08), farbeMitRauschen(hell, p, 0.05), latz(p, breite: 0.46) * 0.8)
+    let bau = Bau(brust: 1.2, tiefe: 1.1, hals: 0.48, bein: 0.20, beinAbstand: 0.26, ruecken: 0.70)
+    let koerper = brustbild(kopf, vierbeiner(bau), farbe: { p, _ in
+        mische(farbeMitRauschen(gold, p, 0.08), farbeMitRauschen(hell, p, 0.05), latz(p, breite: 0.38) * 0.7)
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     nase(w, [Form(art: .ellipsoid(V(0.18, 0.12, 0.12)), mitte: V(0, -0.04, 1.18))], farbe: hex("#171112"))
