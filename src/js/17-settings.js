@@ -47,6 +47,7 @@
     refreshDrawerState();
     drawerLastFocus = document.activeElement;
     $('drawerPanel').classList.add('open');
+    setTimeout(function(){ tierWippen($('drawerAvatar')); }, 260);   // Runde 129
     $('drawerPanel').setAttribute('aria-hidden','false');
     $('drawerScrim').classList.add('show');
     $('btnDrawerToggle').setAttribute('aria-expanded','true');

@@ -71,6 +71,8 @@
     <div class="understand-card state-teaser-card" id="landingStateTeaser" style="animation:none;opacity:1;">
       <div class="understand-group-label" data-i18n="tagesform">Tagesform</div>
       <p class="state-teaser-copy" id="landingStateCopy">&mdash;</p>
+      <!-- Runde 129: drei feste Tageszeiten, je eine Eintragung. Gerendert von tfAbschnitteRendern(). -->
+      <div class="tf-abschnitte" id="landingTfAbschnitte"></div>
       <!-- Feedback-Runde 43: Die Frage-Bezeichnungen („Energie" / „Stimmung") fehlten hier, obwohl
            die vollständige Tagesform-Ansicht sie hat. Zwei optisch identische Reihen aus je fünf
            leeren Kreisen, darüber nur die Endpunkte — was gefragt ist, musste man sich erschließen.
@@ -96,9 +98,10 @@
       </div>
       <div class="state-done" id="landingStateDone" style="display:none;" role="status">
         <span class="state-done-check" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
-        <div class="state-done-text" data-i18n-html="heute_erfasst">
-          <strong>Heute erfasst</strong>
+        <div class="state-done-text">
+          <strong id="landingStateDoneTitel"></strong>
           <span class="state-done-vals mono" id="landingStateDoneVals"></span>
+          <span class="state-done-naechster" id="landingStateNaechster"></span>
         </div>
         <button type="button" class="btn btn-ghost btn-sm" id="btnLandingStateEdit" data-i18n="ändern">Ändern</button>
       </div>
@@ -292,6 +295,7 @@
     </div>
 
     <div class="state-check-card">
+      <div class="tf-abschnitte" id="stateTfAbschnitte"></div>
       <p class="state-today-note" id="stateTodayNote"></p>
       <div class="state-question">
         <div class="state-q-label" data-i18n="energie_2">Energie</div>
@@ -329,7 +333,6 @@
         <strong data-i18n="tf_erinnerung_titel">Tägliche Erinnerung</strong>
         <span class="settings-hint" id="tfErinnerungHinweis"></span>
       </div>
-      <input type="time" class="zeit-feld tf-erinnerung-zeit" id="tfErinnerungZeit" value="20:00" aria-label="Uhrzeit der Erinnerung" data-i18n-aria="aria_erinnerung_zeit_tf">
       <button type="button" class="schalter" id="tfErinnerungSchalter" role="switch" aria-checked="false" aria-label="Tägliche Erinnerung" data-i18n-aria="aria_erinnerung_tf"><span class="schalter-knopf"></span></button>
     </div>
 
@@ -508,15 +511,9 @@
       <div class="settings-zeile">
         <div class="settings-zeile-text">
           <strong data-i18n="erinnerung_titel">Tägliche Erinnerung</strong>
-          <span class="settings-hint" id="erinnerungHinweis" data-i18n="erinnerung_hinweis">Einmal am Tag eine Mitteilung, die an die Tagesform erinnert. Genau eine — kein Nachfassen.</span>
+          <span class="settings-hint" id="erinnerungHinweis"></span>
         </div>
         <button type="button" class="schalter" id="erinnerungSchalter" role="switch" aria-checked="false" aria-label="Tägliche Erinnerung" data-i18n-aria="aria_erinnerung"><span class="schalter-knopf"></span></button>
-      </div>
-      <div class="settings-zeile">
-        <div class="settings-zeile-text">
-          <label class="settings-hint" for="erinnerungZeit" data-i18n="erinnerung_uhrzeit">Uhrzeit</label>
-        </div>
-        <input type="time" id="erinnerungZeit" class="zeit-feld" value="20:00" disabled aria-label="Uhrzeit der Erinnerung" data-i18n-aria="aria_erinnerung_zeit">
       </div>
     </div>
 

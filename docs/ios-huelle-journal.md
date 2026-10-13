@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 129)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 130)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -35,7 +35,8 @@ Regeln, die er gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 129 | (dieser) | Plex Mono aus dem Bau (Teilbild in SF), Fusszeilen-Link = Einstellungszeile, „12‑mal“ bricht nicht mehr, Datumsachse gleichmaessig (Kurve eingerueckt, `VERLAUF_RAND`) |
+| 130 | (dieser) | Tagesform: drei feste Tageszeiten (je ein Eintrag, ersetzen), drei Erinnerungen 8/13/19 Uhr fuer 14 Tage einzeln geplant; groessere Animationen (Ergebnis, Tagesform, Startseite, Fragebogen, Tier); weiche Vorschau-Raender; Legende des Graphen mit fester Hoehe |
+| 129 | `9af69cb` | Plex Mono aus dem Bau (Teilbild in SF), Fusszeilen-Link = Einstellungszeile, „12‑mal“ bricht nicht mehr, Datumsachse gleichmaessig (Kurve eingerueckt, `VERLAUF_RAND`) |
 | 128 | `8363244` | Strengere Bezahlgrenze (Bericht, Tagesform 7 Tage, ein Vergleich, verschwommene Vorschauen `vorschauHTML()`, Angebot nach dem Test, Startseiten-Karte), Strahlenkranz am Ergebnistyp |
 | 127 | `0abb566` | Tagesform-Liste aufklappbar; Lucenta+ als Kaufseite (fester Kaufbereich, Preiskarten mit Monatspreis/Ersparnis, persoenliche Zeile) |
 | 126 | `4e69bcb` | Kein Zoom in der App (Felder 16 pt, Huelle sperrt Zoom), Haptik bei jedem Tipp, Hilfe aufklappbar, ueberall SF, Rechtliches als leise Zeile |
@@ -67,7 +68,7 @@ Regeln, die er gesetzt hat und die weiter gelten:
 
 1. **Preise kommen als fester Euro-Text** aus den Sprachpaketen. Sobald die Produkte in App Store
    Connect stehen, Betraege aus StoreKit (`displayPrice`) holen — sonst falsch in anderen Laendern.
-2. **Am echten iPhone pruefen:** Haptik (am Simulator nicht fuehlbar), Tipp auf die Erinnerung,
+2. **Am echten iPhone pruefen:** Haptik (am Simulator nicht fuehlbar), die drei Erinnerungen (kommen sie, bleiben sie nach einem Eintrag aus?), Tipp auf die Erinnerung, die neuen Animationen in Bewegung,
    Angebot 4 s nach dem ersten Testergebnis (einmal je Geraet, `lucenta_plus_angebot`), Ladeluecke
    im Release-Bau.
 3. **Urteil des Inhabers ausstehend:** Polwoerter der fuenf Tagesform-Fragen („kuehl ↔ herzlich" …),
@@ -93,6 +94,7 @@ Regeln, die er gesetzt hat und die weiter gelten:
 - **Eine Schrift** (Runde 126): SF ueberall; Fraunces nur Wortmarke; `pruef-app` prueft das.
 - **Impressum/Datenschutz** in wenigen Schritten erreichbar (§ 5 DDG) — leise, aber nicht weiter
   versteckt.
+- **Tagesform (Runde 130, Inhaber):** hoechstens drei Eintraege am Tag, je Tageszeit einer (morgens < 11, mittags < 17, abends); ein zweiter ersetzt. Erinnerung: EIN Schalter, feste Zeiten 8/13/19, bleibt aus, wenn die Tageszeit schon eingetragen ist — keine Uhrzeitwahl.
 - **Weggenommen wird Lucenta+ nur bei klarer Store-Antwort**; Plus-Umschalter nur im
   Entwicklungsbau (`#if DEBUG`).
 - **Keine Nachbildung fremder Figuren** (Pixar/Nemo: Stil ja, Figuren nein).
@@ -102,7 +104,7 @@ Regeln, die er gesetzt hat und die weiter gelten:
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 129: **ALLE 9 BESTANDEN** (11,3 Minuten), `fehlersuche` KEINE
+`npm run pruef-alles` nach Runde 130: **ALLE 9 BESTANDEN** (11,2 Minuten), `pruef-nativ` jetzt 60, `fehlersuche` KEINE
 FUNDE auf WebKit und Chromium, `pruef-app` 29/29, `pruef-nativ` 51/51, `tests` 11 Reihen
 (Tagesform 40), `diff-sprachen` 141 (nur Bericht). Erfahrung: Neue Bedienelemente fallen in der
 `fehlersuche` an Tippzielen (44 pt) und Kontrast auf — gleich so bauen; Pruefungen, die alte
@@ -139,6 +141,8 @@ Entscheidungen festhalten (Schrift, Zahl der Vorteile), muessen mit der Entschei
 
 ### Stand der Umgebung
 
+Runde 130: `BuildProject` kopiert `public/` oft nicht neu — `xcodebuild -workspace App.xcworkspace -scheme App -destination 'id=…' -derivedDataPath /tmp/lucenta-dd build`, dann `simctl install`.
+
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), Bundle-ID
 `app.lucenta.ios`. Stand dort: Lucenta+ an, Dunkel, Deutsch, Beispieldaten geladen. Bau:
 `LANG=en_US.UTF-8 npm run ios:sync`, dann `BuildProject`; der Bau meldet sich oft in < 1 s — am
@@ -151,6 +155,106 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 130 — Drei Tageszeiten, groessere Animationen, weiche Vorschauen, ruhige Legende
+
+Auftrag des Inhabers, vier Punkte in einer Nachricht. Entscheidungen per Rueckfrage, woertlich
+uebernommen.
+
+### 1. Verschwommene Lucenta+-Vorschauen: Raender zu scharf
+
+**Fehler:** Die Maske von `.plus-unscharf` lief nur nach unten aus. Oben und seitlich schnitt
+`overflow:hidden` an `.plus-vorschau` die Unschaerfe hart ab — am Bild als harte, gerundete Ecke
+oben links. **Zweiter Fehler, erst gemessen gefunden:** Derselbe Zuschnitt schnitt auch den
+Schatten der Hinweiskarte ab (Helligkeit springt an der Unterkante von 221 auf 255).
+**Aenderung:** zwei Verlaeufe als Maske (`mask-composite:intersect`, fuer WebKit
+`-webkit-mask-composite:source-in`), alle vier Seiten laufen aus; Unschaerfe 6 → 7 px;
+`overflow:hidden` entfallen (die Maske haelt die Unschaerfe selbst im Kasten). Ein erster
+Versuch mit breiterem Auslauf liess kaum noch Inhalt sehen — zurueckgenommen auf 9 %/10 %.
+Angesehen in WebKit hell und dunkel.
+
+### 2. Tagesform: hoechstens drei Eintraege, morgens/mittags/abends, mit Erinnerungen
+
+Gefragt, gewaehlt: **ersetzen erlaubt** (statt sperren); **ein Schalter, feste Zeiten 8, 13,
+19 Uhr**; **Erinnerung bleibt aus, wenn die Tageszeit schon eingetragen ist.**
+
+- `addStateEntry` ersetzt einen Eintrag desselben Tages und Abschnitts (`03-speicherung.js`).
+  Die Abschnitte gab es seit Runde 82 (`zeitabschnitt`: < 11, < 17, sonst). Neu:
+  `TF_ABSCHNITTE`, `TF_ABSCHNITT_BEGINN`, `aktuellerAbschnitt()`, `heuteEingetragen()`.
+- Startkarte und Tagesform-Ansicht: drei Punkte (gefuellt / Ring = jetzt / leer, mit Wort daneben),
+  „Morgens eingetragen · Energie 3 · Stimmung 4 · Naechster Eintrag ab 11:00". „Erledigt" gilt
+  jetzt fuer den LAUFENDEN Abschnitt; mittags stehen die Skalen wieder da. Uhrzeiten ueber `Intl`.
+  Gezeigt wird der Wert des Abschnitts, nicht mehr das Tagesmittel.
+- **Erinnerung (`19b-native.js`), der eigentliche Aufwand:** Eine taeglich wiederholte Mitteilung
+  kann iOS nicht fuer einen Tag aussetzen. Deshalb werden die naechsten **14 Tage einzeln** geplant
+  (3 × 14 = 42, unter Apples Grenze von 64), bei jedem Eintrag und jedem Oeffnen neu
+  (`erinnerungNachziehen`, auch auf `visibilitychange`). Erst alle alten Kennungen absagen
+  (einschliesslich der alten 4711), dann planen — verkettet, nicht gleichzeitig. Folge, bewusst:
+  Wer die App zwei Wochen nicht oeffnet, bekommt danach keine Erinnerung mehr. Je Tageszeit ein
+  eigener Titel. Das Uhrzeitfeld ist an beiden Stellen entfallen (samt CSS und drei Schluesseln).
+- Dass Capacitor ein JS-`Date` als `NSDate` durchreicht und das Plugin `schedule.at` daraus liest,
+  ist im Quelltext des Plugins nachgesehen, **nicht am Geraet gemessen**.
+- Damit faellt die Begruendung „genau EINE Erinnerung, sonst draengt die App" (Runde 46/99) — auf
+  ausdruecklichen Wunsch. Was davon bleibt, steht im Kommentar: keine Erinnerung fuer Erledigtes,
+  keine nach zwei Wochen Stille.
+- Texte in allen acht Sprachen; entfernt: `heute_erfasst`, `js_heute_*`, `js_mittel_aus_*`,
+  `erinnerung_uhrzeit`, `aria_erinnerung_zeit(_tf)`, `erinnerung_titel_mitteilung`.
+- Pruefungen umgeschrieben, weil sie die alte Zusage festhielten („ein zweiter Eintrag ergaenzt"):
+  `tests/tests.js` [7], `tests/state_test.js` (jetzt mit festgehaltenem Abschnitt, damit die Reihe
+  nicht morgens anders ausgeht als abends), `pruef-nativ` 51 → **60** (14 Tage, nur 8/13/19, keine
+  Vergangenheit, eigene Kennungen, erst absagen, heute Erledigtes wird ausgelassen).
+- Am Simulator gesehen (07:42, Beispieldaten mit Morgeneintrag): Punkte und Zeile wie gedacht.
+
+### 3. Groessere, verspieltere Animationen
+
+Gefragt, gewaehlt: alle vier Stellen. Dabei ein Fehler von mir: In den Optionen stand „Tier
+huepft herein" (Ergebnis) und „Tier auf der Startseite winkt" — dort gibt es aber kein Tier.
+Nachgefragt, gewaehlt: das Tier wippt dort, wo es schon steht.
+
+- **Ergebnis direkt nach dem Test** (`ergebnisEnthuellen`, Klasse `enthuellung`): Titel federt
+  herein (Massstab .55 → 1,08 → 1), Motto folgt, Strahlenkranz blitzt auf, Radar entfaltet sich
+  mit Drehung, Konfetti aus dem Titel. Nur nach dem Test, nicht beim spaeteren Oeffnen; die Klasse
+  bleibt bis zum naechsten `renderResult`, weil ein frueheres Entfernen die Grundbewegungen neu
+  startete. In WebKit bei 250/650/1400 ms angesehen.
+- **Tagesform gespeichert:** Haken springt gross auf (bis 1,38, mit Drehung), Text gleitet nach,
+  Funken rundum in Energie-/Stimmungsfarbe (`funkenAn`, `konfettiStoss` hat dafuer Optionen
+  bekommen), der Punkt der Tageszeit fuellt sich mit Ring.
+- **Startseite:** Kopf und Karten fliegen beim Oeffnen gestaffelt herein (`startkartenEinfliegen`,
+  nach dem Startbild). Unter Playwright (`navigator.webdriver`) nicht — die Fehlersuche misst Lagen
+  gleich nach dem Laden. Darin steckt Deckkraft; die Regel „nie ueber Deckkraft" gilt fuer
+  Ansichtswechsel, das hier ist das Ankommen der App. Falls der Inhaber das anders sieht: eine
+  Zeile in `karte-flug`.
+- **Fragebogen:** Frage kommt mit 54 statt 26 px und Ueberschwung (`q-schwung`), Antwort federt
+  tiefer und hoeher (`antwort-feder`), Meilenstein-Konfetti doppelt so gross. `pruef-bewegung`
+  nachgezogen (Namen) und um zwei Pruefungen erweitert (Radar entfaltet, Titel federt).
+- **Tier:** wippt beim Antippen des Profilbilds und beim Oeffnen der Schublade.
+- Alles aus bei reduzierter Bewegung (System und Schalter in der App).
+- **Unsicher:** Wie es sich in Bewegung anfuehlt, sieht man nur am Geraet; hier sind es Standbilder.
+
+### 4. Legende ueber dem Graphen aenderte beim Ablesen ihre Hoehe
+
+**Gemessen** (WebKit, 8 Sprachen, 320/390 pt): 17 → 48 px beim Ablesen bei 320 pt, im
+Franzoesischen schon im Ruhezustand umgebrochen. Ursache: Datum mit Jahr („10. Okt. 2026") neben
+zwei Werten. Ein kuerzeres Datum allein reichte nicht (Bedarf ~265 px, Platz 240). **Aenderung:**
+Das Datum steht wie in Apple Health als eigene kleine Zeile UEBER den Werten, immer („heute" oder
+der Tag) — damit ist die Hoehe in jedem Zustand 32 px; Werte mit Mindestbreite, beim Ablesen Tag
+und Monat ohne Jahr (`ableseDatumFmt`). Nachgemessen: 32 px vor und waehrend, nichts gekuerzt.
+
+### Umgebung
+
+`BuildProject` meldete „erfolgreich" in 0,5 s und kopierte `public/` NICHT neu (im Produkt der
+Stand von 00:16). Verlaesslich war: `xcodebuild … -derivedDataPath /tmp/lucenta-dd build`, dann
+`simctl install` + `launch`. Die Gerate-Sitzung der Xcode-Werkzeuge verlangt einen Unteragenten;
+fuer Standbilder genuegt `xcrun simctl io … screenshot` + `sips -Z`.
+
+### Pruefungen
+
+`npm run pruef-alles`: **ALLE 9 BESTANDEN** (11,2 Minuten), `fehlersuche` 26 Durchlaeufe auf WebKit
+und Chromium KEINE FUNDE, `pruef-nativ` **60/60**, `pruef-app` 29/29, `tests` 11 Reihen
+(Kernlogik 6856, Tagesform 44), `diff-sprachen` 141 (unveraendert, nur Bericht). Der erste Lauf
+fiel in `audit-i18n` durch: Die Klasse `' voll'` im Code galt als deutscher Text; jetzt
+`data-belegt="1"` usw. Danach die ganze Runde noch einmal. Nicht am Geraet: Erinnerungen, Haptik,
+die Bewegung selbst.
 
 ## Runde 129 — Plex Mono entfernt, Rechtslink vereinheitlicht, zwei Kleinigkeiten der Tagesform
 

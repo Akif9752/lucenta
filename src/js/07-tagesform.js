@@ -40,15 +40,52 @@
   // Wechselt die Karte in den Erledigt-Zustand. `animate` nur direkt nach dem Speichern: beim
   // Zurückkehren auf die Startseite ist es kein Ereignis mehr, und eine Bestätigung, die sich
   // ohne Anlass wiederholt, verliert ihre Bedeutung.
+  // ---------- Runde 129: drei Tageszeiten ----------
+  //
+  // Uhrzeiten ueber Intl aus dem Gebietsschema, nicht ausgeschrieben: "11:00" hier, "11:00 AM" im
+  // Englischen. Die Grenzen selbst stehen einmal, in TF_ABSCHNITT_BEGINN (03-speicherung.js).
+  function tfUhrzeit(stunde){
+    var d = new Date(2000, 0, 1, stunde, 0, 0);
+    try{ return new Intl.DateTimeFormat(tx('datum_gebietsschema'), {hour:'numeric', minute:'2-digit'}).format(d); }
+    catch(e){ return String(stunde).padStart(2,'0') + ':00'; }
+  }
+  // "Naechster Eintrag ab 17:00" bzw. nach dem Abend "Morgen frueh geht es weiter".
+  function tfNaechsterText(abschnitt){
+    var i = TF_ABSCHNITTE.indexOf(abschnitt);
+    if (i < 0 || i === TF_ABSCHNITTE.length - 1) return tx('tf_naechster_morgen');
+    return tfText('tf_naechster_ab', {zeit: tfUhrzeit(TF_ABSCHNITT_BEGINN[TF_ABSCHNITTE[i+1]])});
+  }
+  // Drei Punkte mit Namen: gefuellt = eingetragen, Ring = jetzt dran. `neu` bekommt die
+  // Fuell-Animation — nur direkt nach dem Speichern, aus demselben Grund wie bei just-saved.
+  function tfAbschnitteRendern(neu){
+    var heute = heuteEingetragen(), jetzt = aktuellerAbschnitt();
+    ['landingTfAbschnitte', 'stateTfAbschnitte'].forEach(function(id){
+      var wrap = $(id);
+      if (!wrap) return;
+      wrap.innerHTML = TF_ABSCHNITTE.map(function(s){
+        // Zustaende als vollstaendige data-Attribute: audit_i18n.py erkennt Bezeichner am Kontext,
+        // und ein nacktes ' voll' im Code liest es — zu Recht — als moeglichen deutschen Text.
+        var zustand = (heute[s] ? ' data-belegt="1"' : '') + (s === jetzt ? ' data-jetzt="1"' : '') +
+                      (s === neu && !prefersReducedMotion() ? ' data-neu="1"' : '');
+        return '<span class="tf-abschnitt"'+zustand+' role="img" aria-label="'+tx('tf_abschnitt_'+s)+': '+
+                 tx(heute[s] ? 'tf_abschnitt_voll' : 'tf_abschnitt_offen')+'">'+
+                 '<span class="tf-abschnitt-punkt" aria-hidden="true"></span>'+
+                 '<span aria-hidden="true">'+tx('tf_abschnitt_'+s)+'</span></span>';
+      }).join('');
+    });
+  }
   function showLandingStateDone(entry, animate){
     $('landingStateInputs').style.display = 'none';
     $('landingStateCopy').style.display = 'none';
     var done = $('landingStateDone');
+    // Runde 129: Die Karte bestaetigt den ABSCHNITT, nicht den Tag — "Mittags eingetragen" mit dem
+    // Wert genau dieses Eintrags, darunter, wann der naechste moeglich ist.
     // Ohne „/5": Die Skala hat man gerade selbst angetippt, und die Kurzform bleibt neben der
     // „Ändern"-Schaltfläche einzeilig, statt umzubrechen.
+    $('landingStateDoneTitel').textContent = tfText('tf_abschnitt_eingetragen', {abschnitt: tx('tf_abschnitt_'+entry.slot)});
     $('landingStateDoneVals').textContent =
-      tx('js_energie_praefix')+tagWert(entry.energy)+tx('js_trenner_stimmung')+tagWert(entry.valence)+
-      (entry.anzahl > 1 ? (' ' + tx('js_mittel_aus_a') + entry.anzahl + tx('js_mittel_aus_b')) : '');
+      tx('js_energie_praefix')+tagWert(entry.energy)+tx('js_trenner_stimmung')+tagWert(entry.valence);
+    $('landingStateNaechster').textContent = tfNaechsterText(entry.slot);
     done.style.display = 'flex';
     done.classList.remove('just-saved');
     if (animate){
@@ -70,26 +107,30 @@
       toast(tx('js_konnte_nicht_gespeichert_w'));
       return;
     }
+    var abschnitt = aktuellerAbschnitt();
     // Kein Erfolgs-Toast mehr: Die Karte bestätigt jetzt selbst, an der Stelle, auf die
     // tatsächlich geschaut wird. Zwei Bestätigungen für dasselbe wären Lärm.
     //
-    // Runde 82: Gezeigt wird der zusammengefasste Stand des Tages, nicht das eben Angetippte.
-    // Beim zweiten Eintrag eines Tages sind das verschiedene Zahlen, und die richtige ist die
-    // zusammengefasste — sonst behauptete die Karte, der Tag stehe bei 4, obwohl er im Mittel
-    // bei 3 steht.
-    showLandingStateDone(todayStateEntry(), true);
+    // Runde 129: Gezeigt wird der Eintrag des Abschnitts (bis Runde 128: das Tagesmittel). Seit
+    // es je Abschnitt genau einen gibt, ist er die Zahl, die man gerade eingegeben hat.
+    showLandingStateDone(heuteEingetragen()[abschnitt], true);
+    tfAbschnitteRendern(abschnitt);
+    setTimeout(function(){ funkenAn(document.querySelector('#landingStateDone .state-done-check')); }, 200);
     landingStatePickedEnergy = null; landingStatePickedValence = null;
     renderLandingStateRows();
     refreshDrawerState();
+    erinnerungNachziehen();
   }
   function renderLandingStateTeaser(){
-    var today = todayStateEntry();
-    // Die Skalen stehen beim Wiederkommen leer: Ein weiterer Eintrag ist ein NEUER Eintrag,
-    // keine Korrektur des alten. Vorbelegte Werte wuerden das Gegenteil nahelegen.
+    // Runde 129: "erledigt" heisst jetzt: der LAUFENDE Abschnitt ist eingetragen. Wer morgens
+    // eingetragen hat, sieht mittags wieder die Skalen.
+    var eintrag = heuteEingetragen()[aktuellerAbschnitt()];
+    // Die Skalen stehen beim Wiederkommen leer; "Aendern" ersetzt den Eintrag des Abschnitts.
     landingStatePickedEnergy = null;
     landingStatePickedValence = null;
     renderLandingStateRows();
-    if (today){ showLandingStateDone(today, false); }
+    tfAbschnitteRendern(null);
+    if (eintrag){ showLandingStateDone(eintrag, false); }
     else { showLandingStateInputs(); }
   }
   // Runde 68: Die Brücke zwischen Tagesform und Profil.
@@ -304,15 +345,16 @@
   function resetWochentagFmt(){ WOCHENTAG_FMT = null; }
 
   function renderStateView(){
-    var today = todayStateEntry();
-    // Wie auf der Startseite: leere Skalen, weil ein weiterer Eintrag ein neuer ist.
+    // Runde 129: Die Zeile nennt den laufenden Abschnitt und sagt, ob Speichern ihn neu anlegt oder
+    // ersetzt. Die Skalen stehen leer — vorbelegt saehe ein Ersetzen wie ein Bestaetigen aus.
+    var abschnitt = aktuellerAbschnitt();
+    var name = tx('tf_abschnitt_'+abschnitt);
     statePickedEnergy = null;
     statePickedValence = null;
-    $('stateTodayNote').textContent = !today
-      ? tx('js_heute_noch_nicht_erfasst')
-      : (today.anzahl > 1
-          ? (tx('js_heute_schon_a') + today.anzahl + tx('js_heute_schon_b'))
-          : tx('js_heute_bereits_erfasst__du'));
+    $('stateTodayNote').textContent = heuteEingetragen()[abschnitt]
+      ? tfText('tf_note_ersetzt', {abschnitt: name})
+      : tfText('tf_note_offen', {abschnitt: name});
+    tfAbschnitteRendern(null);
     renderStateRows();
     tfFragenRendern();
     tfStichworteRendern();
@@ -486,7 +528,7 @@
       if (stelle) stelle.insertAdjacentHTML('beforebegin', hinweis);
       else wrap.insertAdjacentHTML('beforeend', hinweis);
       schloesserVerdrahten(wrap);
-      verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), kurve, fmt);
+      verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), kurve, ableseDatumFmt());
       return;
     }
     var befunde = tagesformBefunde(eintraege);
@@ -507,7 +549,7 @@
       else wrap.insertAdjacentHTML('beforeend', block);
     }
     fensterWahlVerdrahten(wrap);
-    verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), kurve, fmt);
+    verlaufAblesenAktivieren(wrap.querySelector('.verlauf-flaeche'), kurve, ableseDatumFmt());
   }
 
   

@@ -188,6 +188,7 @@
     function reveal(){
       renderResult(previous);
       showView('result');
+      ergebnisEnthuellen();
       plusAngebotNachTest();
       if (pendingCompareScroll){
         pendingCompareScroll = false;
@@ -260,6 +261,7 @@
   }
 
   function renderResult(previous){
+    try{ $('view-result').classList.remove('enthuellung'); }catch(e){}   // Runde 129, siehe ergebnisEnthuellen
     var arch = archetypeOf(scores);
     setzeDimensionsfarbe($('view-result'), scores);
     var pole1 = scores[arch.top1]>=50?'high':'low', pole2 = scores[arch.top2]>=50?'high':'low';

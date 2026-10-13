@@ -282,6 +282,24 @@
     if (h < 17) return 'mittag';
     return 'abend';
   }
+  // Runde 129, Auftrag des Inhabers: "Tagesform soll fest drei Mal maximal pro Tag eintragbar sein,
+  // morgens, mittags, abends." Die Abschnitte gab es seit Runde 82 schon (zeitabschnitt oben) —
+  // neu ist die Grenze: je Abschnitt EIN Eintrag. Ein zweiter im selben Abschnitt ersetzt den ersten
+  // (Wahl des Inhabers: "Aendern" statt Sperre), damit ein Vertipper nicht stehen bleibt.
+  // TF_ABSCHNITT_BEGINN muss zu zeitabschnitt() passen; die Erinnerungen (19b-native.js) kommen zu
+  // festen Zeiten INNERHALB des jeweiligen Abschnitts.
+  var TF_ABSCHNITTE = ['morgen', 'mittag', 'abend'];
+  var TF_ABSCHNITT_BEGINN = {morgen:0, mittag:11, abend:17};
+  function aktuellerAbschnitt(){ return zeitabschnitt(Date.now()); }
+  // Welche Abschnitte heute schon belegt sind, je Abschnitt der juengste Eintrag. Bestand von vor
+  // Runde 129 kann einen Abschnitt mehrfach tragen; gezeigt wird dann der letzte.
+  function heuteEingetragen(){
+    var key = todayKey(), belegt = {};
+    loadStateHistory().forEach(function(e){
+      if (e.day === key && (!belegt[e.slot] || e.ts >= belegt[e.slot].ts)) belegt[e.slot] = e;
+    });
+    return belegt;
+  }
   function todayKey(){
     var d = new Date();
     return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -316,6 +334,9 @@
     var h = loadStateHistory();
     var jetzt = Date.now();
     var eintrag = {day:todayKey(), ts:jetzt, energy:energy, valence:valence, slot:zeitabschnitt(jetzt)};
+    // Runde 129: Ein Eintrag im selben Abschnitt desselben Tages ersetzt den vorhandenen — so kann
+    // ein Tag nie mehr als drei tragen. Auch mehrfacher Altbestand im Abschnitt geht dabei auf.
+    h = h.filter(function(e){ return !(e.day === eintrag.day && e.slot === eintrag.slot); });
     var o = tfOceanBereinigen(extra && extra.ocean);
     var t = tfTagsBereinigen(extra && extra.tags);
     if (o) eintrag.ocean = o;

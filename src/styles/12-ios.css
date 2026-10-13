@@ -726,9 +726,21 @@
 
   /* ---------- Runde 127: verschwommene Vorschau an gesperrten Stellen ---------- */
   .plus-vorschau{ position:relative; }
+  /* Runde 129, gemeldet: "die verschwommenen Sachen haben zu scharfe Raender." Die Maske lief nur
+     nach unten aus; oben und an den Seiten schnitt der Kartenrand (overflow:hidden weiter unten)
+     die Unschaerfe hart ab — am Simulator als scharfe, gerundete Ecke oben links zu sehen. Jetzt
+     laufen alle vier Seiten aus: zwei Verlaeufe, deren Schnittmenge die Maske ist (intersect bzw.
+     source-in fuer WebKit). Die Maske wirkt NACH dem Filter (Reihenfolge filter, clip, mask), sie
+     blendet also das bereits verschwommene Bild aus, nicht die scharfe Vorlage. Etwas mehr
+     Unschaerfe (7 statt 6 px), damit auch die inneren Kanten der Karten weich werden. */
   .plus-unscharf{
-    filter:blur(6px); -webkit-user-select:none; user-select:none; pointer-events:none;
-    -webkit-mask-image:linear-gradient(#000 55%, transparent 100%); mask-image:linear-gradient(#000 55%, transparent 100%);
+    filter:blur(7px); -webkit-user-select:none; user-select:none; pointer-events:none;
+    -webkit-mask-image:linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%),
+                       linear-gradient(to bottom, transparent 0, #000 10%, #000 62%, transparent 100%);
+    -webkit-mask-composite:source-in;
+    mask-image:linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%),
+               linear-gradient(to bottom, transparent 0, #000 10%, #000 62%, transparent 100%);
+    mask-composite:intersect;
     max-height:340px; overflow:hidden;
   }
   .plus-vorschau-karte{
@@ -755,5 +767,8 @@
   .plus-start-karte[hidden]{ display:none; }
   .plus-start-karte .understand-group-label span span{ color:var(--accent-strong); }
   .plus-start-karte .btn{ margin-top:12px; }
-  /* Am Simulator gesehen: Die Unschaerfe ragte ueber die Kartenkante. Der Rand schneidet sie ab. */
-  .plus-vorschau{ overflow:hidden; border-radius:var(--radius-m); }
+  /* Runde 128 stand hier overflow:hidden, weil die Unschaerfe ueber die Kartenkante ragte. Seit
+     Runde 129 haelt die Maske sie selbst im Rahmen (ausserhalb des Kastens ist die Maske leer),
+     und der Zuschnitt schnitt nur noch etwas Falsches ab: den Schatten der Hinweiskarte — gemessen
+     als Sprung der Helligkeit von 221 auf 255 an der Unterkante. */
+  .plus-vorschau{ border-radius:var(--radius-m); }

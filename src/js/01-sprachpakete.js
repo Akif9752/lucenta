@@ -122,6 +122,7 @@
     renderPreviewCard(); ordneStartseite();
     renderLandingUnderstandTeaser();
     renderLandingStateTeaser();
+    erinnerungAnwenden();   // Runde 129: der Hinweis traegt Uhrzeiten im Format der Sprache
     syncHeroState();
     refreshDrawerState();
     renderSettings();

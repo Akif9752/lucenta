@@ -170,7 +170,7 @@ async function durchlauf(reduziert){
   // erwarteten Namen ENTHALTEN sind.
   const pulsTeile = puls.split(',').map(x => x.trim());
   pruefe(reduziert ? puls === 'none'
-                   : pulsTeile.includes('antwort-puls') && pulsTeile.includes('antwort-quetsch'),
+                   : pulsTeile.includes('antwort-puls') && pulsTeile.includes('antwort-feder'),
          reduziert ? 'Antwort ohne Impuls' : 'Antwort gibt einen Impuls', `(${puls})`);
   // Die Weiterschaltung braucht 220 ms. Ohne diese Pause beantwortet der nächste Klick dieselbe
   // Frage noch einmal, und am Ende fehlt eine — der Fragebogen bleibt bei 50 stehen, die
@@ -192,7 +192,8 @@ async function durchlauf(reduziert){
     pruefe(einlauf.karte === 'none' && einlauf.kreise.every(n => n === 'none'),
            'Fragewechsel ohne Bewegung', `(${einlauf.karte}/${einlauf.kreise[0]})`);
   } else {
-    pruefe(einlauf.karte === 'q-schub' && einlauf.kreise.every(n => n === 'kreis-ein') && versetzt,
+    pruefe(einlauf.karte === 'q-schwung' &&   // Runde 129: vorher q-schub
+            einlauf.kreise.every(n => n === 'kreis-ein') && versetzt,
            'Frage kommt herein, Antwortreihe folgt gestaffelt',
            `(${einlauf.karte}, ${einlauf.kreise[0]}, ${einlauf.verzug.join('/')})`);
   }
@@ -257,8 +258,16 @@ async function durchlauf(reduziert){
     const poly = document.querySelector('#radarWrap svg polygon:last-of-type');
     return poly ? getComputedStyle(poly).animationName : '-';
   });
-  pruefe(reduziert ? radar === 'none' : radar === 'radar-in',
-         reduziert ? 'Radar ohne Einblendung' : 'Radar blendet ein', `(${radar})`);
+  // Runde 129: Direkt nach dem Test laeuft die Enthuellung (ergebnisEnthuellen) — das Radar
+  // entfaltet sich mit Drehung statt nur einzublenden, und der Titel federt herein.
+  const titel = await p.evaluate(() => {
+    const t = document.getElementById('archTitle');
+    return t ? getComputedStyle(t).animationName : '-';
+  });
+  pruefe(reduziert ? radar === 'none' : radar === 'radar-entfalten',
+         reduziert ? 'Radar ohne Einblendung' : 'Radar entfaltet sich nach dem Test', `(${radar})`);
+  pruefe(reduziert ? titel === 'none' || titel === 'rise' || titel === '' : titel === 'titel-feder',
+         reduziert ? 'Ergebnistitel ohne Feder' : 'Ergebnistitel federt herein', `(${titel})`);
 
   // --- Abweisung: schuettelt das Feld, das den Code nicht annimmt?
   await p.click('#btnDrawerToggle'); await p.waitForTimeout(400);

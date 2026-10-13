@@ -33,26 +33,46 @@
   ok(!$('landingStateDone').classList.contains('just-saved'), "die Animation laeuft beim blossen Zurueckkehren NICHT erneut");
   console.log("  Bestaetigung sichtbar, ohne Animation");
 
-  console.log("\n=== Ein zweiter Eintrag am selben Tag ERGAENZT (Runde 82) ===");
-  // Bis Runde 82 loeschte der zweite Check-in eines Tages den ersten stillschweigend. Wer
-  // morgens bei Energie 2 eintrug und abends bei 4, hatte den Morgen nicht mehr. Diese Reihe
-  // haelt die neue Zusage fest, weil sie sonst beim naechsten Umbau unbemerkt zurueckfaellt.
-  showLandingStateInputs(); renderLandingStateRows();
-  ok($('landingStateInputs').style.display==='', "die Skalen sind wieder da");
-  ok($('landingStateDone').style.display==='none', "die Bestaetigung weicht");
-  ok(landingStatePickedEnergy===null && landingStatePickedValence===null,
-     "die Skalen stehen LEER: ein weiterer Eintrag ist ein neuer, keine Korrektur");
-  landingStatePickedEnergy = 2; landingStatePickedValence = 5; maybeSaveLandingState();
-  ok(loadStateHistory().length===2, "der zweite Eintrag kommt dazu, statt den ersten zu ersetzen (sind: "+loadStateHistory().length+")");
-  ok(loadStateHistory()[0].valence===3 && loadStateHistory()[1].valence===5,
-     "beide Werte stehen noch da, in ihrer Reihenfolge");
+  // Runde 129: Der Abschnitt haengt an der Uhrzeit. Fuer die Reihe wird er festgehalten, damit sie
+  // nicht morgens anders ausgeht als abends.
+  function imAbschnitt(a, f){
+    var alt = zeitabschnitt; zeitabschnitt = function(){ return a; };
+    try{ f(); } finally { zeitabschnitt = alt; }
+  }
+  console.log("\n=== Runde 129: je Tageszeit EIN Eintrag, ein zweiter ERSETZT ===");
+  // Bis Runde 128 kam jeder weitere Eintrag eines Tages dazu (Runde 82). Jetzt, auf Auftrag des
+  // Inhabers: morgens, mittags, abends je einer. "Aendern" ersetzt den Eintrag des Abschnitts.
+  __store = {};
+  imAbschnitt('morgen', function(){
+    landingStatePickedEnergy = 4; landingStatePickedValence = 3; maybeSaveLandingState();
+    ok(/Morgens/.test($('landingStateDoneTitel').textContent||''), "die Bestaetigung nennt den Abschnitt (ist: "+$('landingStateDoneTitel')._text+")");
+    ok(/11/.test($('landingStateNaechster').textContent||''), "und wann der naechste moeglich ist (ist: "+$('landingStateNaechster')._text+")");
+    showLandingStateInputs(); renderLandingStateRows();
+    ok(landingStatePickedEnergy===null && landingStatePickedValence===null, "die Skalen stehen LEER");
+    landingStatePickedEnergy = 2; landingStatePickedValence = 5; maybeSaveLandingState();
+    ok(loadStateHistory().length===1, "derselbe Abschnitt: ersetzt statt dazu (sind: "+loadStateHistory().length+")");
+    ok(loadStateHistory()[0].valence===5, "es gilt der neue Wert");
+  });
+  imAbschnitt('mittag', function(){
+    renderLandingStateTeaser();
+    ok($('landingStateInputs').style.display==='', "mittags stehen die Skalen wieder da, obwohl morgens eingetragen ist");
+    landingStatePickedEnergy = 4; landingStatePickedValence = 3; maybeSaveLandingState();
+  });
+  imAbschnitt('abend', function(){
+    landingStatePickedEnergy = 3; landingStatePickedValence = 4; maybeSaveLandingState();
+    ok(/morgen/i.test($('landingStateNaechster').textContent||''), "nach dem Abend: weiter morgen frueh (ist: "+$('landingStateNaechster')._text+")");
+    landingStatePickedEnergy = 3; landingStatePickedValence = 4; maybeSaveLandingState();
+  });
+  ok(loadStateHistory().length===3, "hoechstens drei am Tag (sind: "+loadStateHistory().length+")");
   var heute = todayStateEntry();
-  ok(heute.anzahl===2, "der Tag weiss, dass er aus zwei Eintraegen besteht");
+  ok(heute.anzahl===3, "der Tag weiss, dass er aus drei Eintraegen besteht");
   ok(Math.abs(heute.energy - 3) < 0.001 && Math.abs(heute.valence - 4) < 0.001,
      "und der Tageswert ist das Mittel (ist: "+heute.energy+"/"+heute.valence+")");
   ok(loadStateHistory().every(function(e){ return ['morgen','mittag','abend'].indexOf(e.slot) >= 0; }),
      "jeder Eintrag traegt einen Tagesabschnitt");
   ok(stateTage(loadStateHistory()).length===1, "zusammengefasst bleibt es EIN Tag");
+  tfAbschnitteRendern(null);
+  ok(($('landingTfAbschnitte').innerHTML.match(/data-belegt=/g)||[]).length===3, "alle drei Punkte gefuellt");
   console.log("  Eintraege: "+loadStateHistory().length+", Tag im Mittel "+heute.energy+"/"+heute.valence);
 
   console.log("\n=== Eintraege ohne Abschnitt (vor Runde 82) bekommen ihn beim Lesen ===");
@@ -78,10 +98,12 @@
      "Stufe 9 und eine unbekannte Dimension fallen weg (ist: "+JSON.stringify(mitTeilen.ocean)+")");
   ok(JSON.stringify(mitTeilen.tags)==='["sport","freunde"]',
      "Stichworte: doppelte und unbekannte fallen weg (ist: "+JSON.stringify(mitTeilen.tags)+")");
-  addStateEntry(2, 2, {ocean:{}, tags:[]});
+  // Die drei Eintraege in drei Abschnitten, sonst ersetzte jeder den vorigen (Runde 129).
+  __store['lucenta_state'] = JSON.stringify(loadStateHistory().map(function(e){ e.slot = 'morgen'; return e; }));
+  imAbschnitt('mittag', function(){ addStateEntry(2, 2, {ocean:{}, tags:[]}); });
   ok(!('ocean' in loadStateHistory()[1]) && !('tags' in loadStateHistory()[1]),
      "leere Teile werden gar nicht erst gespeichert");
-  addStateEntry(3, 4, {ocean:{O:3, E:4}});
+  imAbschnitt('abend', function(){ addStateEntry(3, 4, {ocean:{O:3, E:4}}); });
   var tagMit = todayStateEntry();
   ok(tagMit.ocean && Math.abs(tagMit.ocean.O - 4) < 0.001 && Math.abs(tagMit.ocean.E - 3) < 0.001,
      "der Tag mittelt jede Dimension NUR ueber die Eintraege, die sie tragen (ist: "+JSON.stringify(tagMit.ocean)+")");

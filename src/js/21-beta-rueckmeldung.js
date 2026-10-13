@@ -114,12 +114,18 @@
       toast(tx('js_bitte_beide_fragen'));
       return;
     }
+    var abschnitt = aktuellerAbschnitt(), ersetzt = !!heuteEingetragen()[abschnitt];
     var ok = addStateEntry(statePickedEnergy, statePickedValence, tfErfassungExtra());
     if (ok){
-      toast(tx('js_tagesform_gespeichert'));
+      toast(ersetzt ? tfText('tf_ersetzt_toast', {abschnitt: tx('tf_abschnitt_'+abschnitt)})
+                    : tx('js_tagesform_gespeichert'));
       tfErfassungZuruecksetzen();
       renderStateView();
+      tfAbschnitteRendern(abschnitt);
+      funkenAn($('btnStateSave'));
       refreshDrawerState();
+      renderLandingStateTeaser();
+      erinnerungNachziehen();
     } else {
       toast(tx('js_konnte_nicht_gespeichert_w_2'));
     }
@@ -128,6 +134,9 @@
   $('btnDrawerProfileRow').addEventListener('click', function(){ closeDrawer(true); renderProfile(); showView('profile'); });
   $('btnBackFromProfile').addEventListener('click', function(){ showView('landing'); });
   $('btnAvatarEdit').addEventListener('click', function(){ $('avatarFileInput').click(); });
+  ['profileAvatar', 'settingsAvatar'].forEach(function(id){    // Runde 129: das Tier wippt beim Antippen
+    if ($(id)) $(id).addEventListener('click', function(){ tierWippen($(id)); });
+  });
   $('avatarFileInput').addEventListener('change', function(e){
     var f = e.target.files && e.target.files[0];
     if (f) handleAvatarFile(f);
@@ -304,10 +313,10 @@
   // wartet, waere reine Verzoegerung.
   (function startBewegung(){
     var el = document.getElementById('startOverlay');
-    if (!el || !nativVorhanden() || prefersReducedMotion()) return;
+    if (!el || !nativVorhanden() || prefersReducedMotion()){ startkartenEinfliegen(); return; }
     el.hidden = false;
     el.classList.add('show');
-    setTimeout(function(){ el.classList.add('weg'); }, 1350);
+    setTimeout(function(){ el.classList.add('weg'); startkartenEinfliegen(); }, 1350);
     setTimeout(function(){ el.hidden = true; el.classList.remove('show', 'weg'); }, 1700);
   })();
   // Runde 79: Der Text-Weg ist der Rueckfall, nicht mehr ein eigener Knopf. Wo das Geraet keine
@@ -407,11 +416,15 @@
     ['erinnerungSchalter','tfErinnerungSchalter'].forEach(function(id){
       if ($(id)) $(id).addEventListener('click', erinnerungUmschalten);
     });
-    ['erinnerungZeit','tfErinnerungZeit'].forEach(function(id){
-      if ($(id)) $(id).addEventListener('change', function(){
-        erinnerungZeitGesetzt($(id).value);
-        erinnerungAnwenden();
-      });
+    // Runde 129: Die Mitteilungen sind fuer 14 Tage einzeln geplant. Jedes Oeffnen schiebt das
+    // Fenster nach und laesst die Abschnitte aus, die heute schon eingetragen sind.
+    erinnerungNachziehen();
+    document.addEventListener('visibilitychange', function(){
+      if (document.visibilityState !== 'visible') return;
+      erinnerungNachziehen();
+      // Der Abschnitt kann gewechselt haben (morgens weggelegt, mittags geoeffnet). Eine halb
+      // ausgefuellte Karte bleibt aber stehen — sonst verloere man den ersten Tipp.
+      if (!landingStatePickedEnergy && !landingStatePickedValence) renderLandingStateTeaser();
     });
     erinnerungTippVerdrahten(function(){ renderStateView(); showView('state'); });
     // Runde 126: ein leichter Impuls bei jedem Bedienelement (siehe tapFeedback). Im Fang-Schritt

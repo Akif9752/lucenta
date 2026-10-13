@@ -70,21 +70,37 @@
   __store['lucenta_history']='[{"kaputt":true},{"date":1,"scores":{"O":5,"C":1,"E":1,"A":1,"S":1}}]';
   ok(loadHistory().length===1, "loadHistory filtert kaputte Eintraege nicht");
 
-  console.log("\n[7] Tagesform: mehrere Eintraege pro Tag, Mittel statt Ueberschreiben (Runde 82)");
+  console.log("\n[7] Tagesform: je Tageszeit EIN Eintrag, hoechstens drei am Tag (Runde 129)");
+  // Bis Runde 128 kam jeder weitere Eintrag dazu (Runde 82). Seit Runde 129, auf Auftrag des
+  // Inhabers: morgens, mittags, abends je einer; ein zweiter im selben Abschnitt ersetzt.
   delete __store['lucenta_state'];
   addStateEntry(3,4); addStateEntry(5,2); addStateEntry(1,1);
   var sh=loadStateHistory();
-  ok(sh.length===3, "drei Eintraege muessen stehen bleiben, sind "+sh.length);
-  ok(sh[0].energy===3&&sh[2].energy===1, "die Reihenfolge stimmt nicht: "+JSON.stringify(sh.map(function(e){return e.energy;})));
+  ok(sh.length===1, "drei Eintraege im selben Abschnitt sind EINER, sind "+sh.length);
+  ok(sh[0].energy===1&&sh[0].valence===1, "der letzte ersetzt die frueheren: "+JSON.stringify(sh[0]));
+  // Die beiden anderen Abschnitte von heute als Bestand dazulegen, dann im laufenden eintragen.
+  var heuteK=todayKey(), jetztA=aktuellerAbschnitt(), andere=TF_ABSCHNITTE.filter(function(a){ return a!==jetztA; });
+  __store['lucenta_state']=JSON.stringify([
+    {day:heuteK, ts:Date.now()-2000, energy:3, valence:4, slot:andere[0]},
+    {day:heuteK, ts:Date.now()-1000, energy:5, valence:2, slot:andere[1]}]);
+  addStateEntry(1,1);
+  sh=loadStateHistory();
+  ok(sh.length===3, "drei Abschnitte ergeben drei Eintraege, sind "+sh.length);
+  addStateEntry(1,1);
+  ok(loadStateHistory().length===3, "ein vierter Eintrag am Tag ersetzt, statt dazuzukommen");
+  var belegt=heuteEingetragen();
+  ok(TF_ABSCHNITTE.every(function(a){ return !!belegt[a]; }), "heuteEingetragen kennt alle drei Abschnitte");
   var te=todayStateEntry();
   ok(te&&te.anzahl===3, "der Tag muss aus drei Eintraegen bestehen: "+JSON.stringify(te));
   ok(te&&Math.abs(te.energy-3)<0.001&&Math.abs(te.valence-(7/3))<0.001,
      "der Tageswert ist nicht das Mittel: "+JSON.stringify(te));
   ok(stateTage(sh).length===1, "drei Eintraege desselben Tages sind EIN Tag");
-  console.log("  3x gespeichert -> "+sh.length+" Eintraege, Tag im Mittel energy="+te.energy.toFixed(2)+", valence="+te.valence.toFixed(2));
-  // Der Deckel zaehlt jetzt Eintraege, nicht Tage.
-  delete __store['lucenta_state'];
-  for(var se=0; se<MAX_STATE_EINTRAEGE+10; se++) addStateEntry(3,3);
+  console.log("  3 Abschnitte -> "+sh.length+" Eintraege, Tag im Mittel energy="+te.energy.toFixed(2)+", valence="+te.valence.toFixed(2));
+  // Der Deckel zaehlt Eintraege. Bestand aus vergangenen Tagen, damit nichts ersetzt wird.
+  var alt=[]; for(var se=0; se<MAX_STATE_EINTRAEGE+10; se++){
+    var dd=new Date(2020,0,1+se,9); alt.push({day:dd.toISOString().slice(0,10)+'#'+se, ts:dd.getTime(), energy:3, valence:3, slot:'morgen'}); }
+  __store['lucenta_state']=JSON.stringify(alt);
+  addStateEntry(3,3);
   ok(loadStateHistory().length===MAX_STATE_EINTRAEGE,
      "Deckel greift nicht: "+loadStateHistory().length+" statt "+MAX_STATE_EINTRAEGE);
   console.log("  Deckel "+MAX_STATE_EINTRAEGE+" Eintraege eingehalten");

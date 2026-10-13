@@ -104,33 +104,51 @@ const zustand = await seite.evaluate(() => ({
 ok(zustand.aus === false, 'der Schalter ist nicht mehr gesperrt');
 ok(!/nur in der App|only in the App/i.test(zustand.hinweis), 'und der Browser-Hinweis ist weg');
 
-console.log('\n=== Einschalten fragt um Erlaubnis und plant genau EINE Mitteilung ===');
+// Runde 129: Statt EINER taeglichen Mitteilung zur gewaehlten Uhrzeit drei feste Zeiten (8, 13, 19 Uhr),
+// fuer 14 Tage einzeln geplant, damit ein schon eingetragener Abschnitt ausgelassen werden kann.
+console.log('\n=== Einschalten fragt um Erlaubnis und plant die drei Tageszeiten fuer 14 Tage ===');
 await seite.evaluate(() => document.getElementById('erinnerungSchalter').click());
 await seite.waitForTimeout(500);
 let log = await seite.evaluate(() => window.__nativLog);
 ok(log.some(e => e.was === 'erlaubnis'), 'die Erlaubnis wird erfragt');
 const geplant = log.filter(e => e.was === 'planen');
 ok(geplant.length === 1, 'genau ein schedule-Aufruf ('+geplant.length+')');
-const n = geplant[0]?.arg?.notifications?.[0];
-ok(!!n && n.schedule?.on?.hour === 20 && n.schedule?.on?.minute === 0,
-   'zur voreingestellten Zeit 20:00 (ist: '+n?.schedule?.on?.hour+':'+n?.schedule?.on?.minute+')');
-ok(!!n && !!n.title && !!n.body, 'mit Titel und Text: '+JSON.stringify([n?.title, n?.body]));
+const liste = geplant[0]?.arg?.notifications || [];
+const jetzt = Date.now();
+ok(liste.length >= 39 && liste.length <= 42, '3 x 14 Mitteilungen, abzueglich der heute schon vergangenen (sind: '+liste.length+')');
+const zeiten = liste.map(x => new Date(x.schedule?.at));
+ok(zeiten.every(d => [8,13,19].includes(d.getHours()) && d.getMinutes() === 0),
+   'nur 8:00, 13:00 und 19:00 (Stunden: '+[...new Set(zeiten.map(d => d.getHours()))].join(',')+')');
+ok(zeiten.every(d => d.getTime() > jetzt), 'keine Zeit in der Vergangenheit (iOS wiese den Aufruf ab)');
+ok(zeiten.every(d => d.getTime() < jetzt + 15 * 864e5), 'nicht weiter als 14 Tage voraus');
+ok(new Set(liste.map(x => x.id)).size === liste.length, 'jede Mitteilung mit eigener Kennung');
+ok(liste.every(x => !x.schedule?.on && !x.schedule?.repeats), 'keine Wiederholung — jede ist einzeln geplant');
+const titelJe = h => liste.find(x => new Date(x.schedule.at).getHours() === h)?.title;
+ok(titelJe(8) && titelJe(13) && titelJe(19) && new Set([titelJe(8), titelJe(13), titelJe(19)]).size === 3,
+   'je Tageszeit ein eigener Titel: '+JSON.stringify([titelJe(8), titelJe(13), titelJe(19)]));
+ok(liste.every(x => !!x.body), 'mit Text');
+const iAb = log.findIndex(e => e.was === 'absagen'), iPlan = log.findIndex(e => e.was === 'planen');
+ok(iAb >= 0 && iAb < iPlan, 'erst alle alten absagen, dann planen — sonst sammeln sie sich an');
+const abgesagt = (log[iAb]?.arg?.notifications || []).map(x => x.id);
+ok(abgesagt.includes(4711), 'auch die alte taegliche Mitteilung (4711) wird abgesagt');
+ok(liste.every(x => abgesagt.includes(x.id)), 'jede neue Kennung ist auch unter den abgesagten');
 ok(await seite.evaluate(() => localStorage.getItem('lucenta_erinnerung') === 'an'), 'und der Zustand ist gemerkt');
 
-console.log('\n=== Eine andere Uhrzeit sagt die alte ab, bevor sie die neue setzt ===');
-await seite.evaluate(() => { window.__nativLog = []; });
+console.log('\n=== Heute schon eingetragene Tageszeiten werden ausgelassen ===');
 await seite.evaluate(() => {
-  const f = document.getElementById('erinnerungZeit');
-  f.value = '07:30';
-  f.dispatchEvent(new Event('change'));
+  const d = new Date(), key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  localStorage.setItem('lucenta_state', JSON.stringify(['morgen','mittag','abend'].map((slot, k) =>
+    ({day:key, ts:Date.now() - 3000 + k, energy:3, valence:3, slot}))));
+  window.__nativLog = [];
+  document.dispatchEvent(new Event('visibilitychange'));   // = die App kommt in den Vordergrund
 });
 await seite.waitForTimeout(400);
 log = await seite.evaluate(() => window.__nativLog);
-const iAb = log.findIndex(e => e.was === 'absagen'), iPlan = log.findIndex(e => e.was === 'planen');
-ok(iAb >= 0 && iPlan >= 0 && iAb < iPlan, 'erst absagen, dann planen — sonst sammeln sie sich an');
-const n2 = log.filter(e => e.was === 'planen')[0]?.arg?.notifications?.[0];
-ok(n2?.schedule?.on?.hour === 7 && n2?.schedule?.on?.minute === 30,
-   'die neue Zeit ist 07:30 (ist: '+n2?.schedule?.on?.hour+':'+n2?.schedule?.on?.minute+')');
+const liste2 = log.filter(e => e.was === 'planen')[0]?.arg?.notifications || [];
+const heute = new Date().toDateString();
+ok(liste2.length === 39, 'Oeffnen zieht nach: 13 Tage x 3, heute keine (sind: '+liste2.length+')');
+ok(liste2.every(x => new Date(x.schedule.at).toDateString() !== heute), 'keine Erinnerung mehr fuer heute');
+await seite.evaluate(() => localStorage.removeItem('lucenta_state'));
 
 console.log('\n=== Ausschalten sagt ab und plant nichts Neues ===');
 await seite.evaluate(() => { window.__nativLog = []; });

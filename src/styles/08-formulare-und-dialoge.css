@@ -155,18 +155,8 @@
   .settings-zeile-text{flex:1; min-width:180px; display:flex; flex-direction:column; gap:3px;}
   .settings-zeile-text strong{font-family:var(--serif); font-weight:500; font-size:15.5px;}
   .settings-zeile .theme-toggle{flex-shrink:0;}
-  /* Runde 99: das Uhrzeitfeld der Erinnerung. iOS zeigt fuer type="time" seinen eigenen
-     Waehler; hier steht nur das Feld darum, damit es wie die uebrigen Bedienelemente aussieht
-     statt wie ein Fremdkoerper. -webkit-appearance:none nimmt ihm die graue Systemhuelle. */
-  .zeit-feld{
-    -webkit-appearance:none; appearance:none;
-    flex-shrink:0; min-height:44px; padding:8px 12px; box-sizing:border-box;
-    border:1px solid var(--line); border-radius:10px;
-    background:var(--surface-2); color:var(--ink);
-    font-family:var(--mono); font-size:15px; letter-spacing:.02em;
-  }
-  .zeit-feld:disabled{ opacity:.45; }
-  .zeit-feld:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
+  /* Runde 129: Hier stand das Uhrzeitfeld der Erinnerung (Runde 99). Die Erinnerung kommt jetzt zu
+     drei festen Zeiten (19b-native.js), das Feld ist entfallen. */
   /* Runde 96: Der Kasten mit den Nutzungszahlen. white-space:pre-line, weil der Inhalt aus
      Zeilen besteht, die genau so auch verschickt werden — wer sie hier anders umbrochen saehe
      als im Teilen-Text, muesste zweimal hinsehen, um dasselbe zu erkennen. */

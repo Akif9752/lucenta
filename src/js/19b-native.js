@@ -44,36 +44,51 @@
     }catch(e){ return null; }
   }
 
-  // ---------- Taegliche Erinnerung ----------
+  // ---------- Erinnerung: drei Tageszeiten (Runde 129) ----------
   //
-  // Eine einzige, wiederkehrende Mitteilung zur gewaehlten Uhrzeit. Ausdruecklich NICHT mehrere
-  // und ausdruecklich ohne Nachfassen: Die Grenze aus Runde 46 — kein Druck bei einer Anwendung
-  // rund um Befinden — gilt hier genauso wie beim Serien-Zaehler, der damals verworfen wurde.
-  // Eine App, die zweimal erinnert, erinnert nicht mehr, sie draengt.
-  var ERINNERUNG_AN = 'lucenta_erinnerung', ERINNERUNG_ZEIT = 'lucenta_erinnerung_zeit';
-  var ERINNERUNG_ID = 4711;
-  function erinnerungZeit(){
-    var w = schalterLesen(ERINNERUNG_ZEIT, '');
-    return /^([01]\d|2[0-3]):[0-5]\d$/.test(w) ? w : '20:00';
-  }
+  // Bis Runde 128 stand hier EINE taegliche Mitteilung zur gewaehlten Uhrzeit, mit der Begruendung
+  // aus Runde 46: kein Druck bei einer Anwendung rund um Befinden. Seit Runde 129 hat die Tagesform
+  // drei feste Abschnitte (03-speicherung.js), und der Inhaber hat ausdruecklich drei Erinnerungen
+  // gewaehlt — ein Schalter, feste Zeiten 8, 13 und 19 Uhr, keine Uhrzeitwahl.
+  //
+  // Der Gedanke von Runde 46 bleibt in einer anderen Form erhalten: Eine Erinnerung fuer einen
+  // Abschnitt, der schon eingetragen ist, kommt NICHT (Wahl des Inhabers). Das geht mit einer
+  // taeglich wiederholten Mitteilung nicht — iOS kann eine Wiederholung nicht fuer einen Tag
+  // aussetzen. Deshalb werden die Mitteilungen der naechsten ERINNERUNG_TAGE Tage EINZELN geplant
+  // (3 x 14 = 42, unter der Grenze von 64 ausstehenden Mitteilungen je App) und bei jedem Eintrag
+  // und jedem Oeffnen neu gesetzt. Folge: Wer die App zwei Wochen nicht oeffnet, bekommt danach
+  // keine Erinnerung mehr. Das ist gewollt — eine App, die nach zwei Wochen Stille weiter dreimal
+  // am Tag ruft, draengt.
+  var ERINNERUNG_AN = 'lucenta_erinnerung';
+  var ERINNERUNG_ID = 4711;            // die alte taegliche Mitteilung; wird beim Planen mit abgesagt
+  var ERINNERUNG_ID_BASIS = 47100, ERINNERUNG_TAGE = 14;
+  // Innerhalb der Abschnitte aus TF_ABSCHNITT_BEGINN: 8 im Morgen (bis 11), 13 im Mittag (bis 17).
+  var ERINNERUNG_STUNDE = {morgen:8, mittag:13, abend:19};
+  var ERINNERUNG_TITEL = {morgen:'erinnerung_titel_morgen', mittag:'erinnerung_titel_mittag', abend:'erinnerung_titel_abend'};
   function erinnerungAn(){
     return schalterLesen(ERINNERUNG_AN, 'aus') === 'an';
+  }
+  function erinnerungHinweisText(){
+    return tfText('erinnerung_hinweis', {morgen: tfUhrzeit(ERINNERUNG_STUNDE.morgen),
+      mittag: tfUhrzeit(ERINNERUNG_STUNDE.mittag), abend: tfUhrzeit(ERINNERUNG_STUNDE.abend)});
   }
   // Runde 124: Die Erinnerung steht an ZWEI Stellen — in den Einstellungen und direkt in der
   // Tagesform, wo sie gebraucht wird. Beide zeigen denselben Stand; deshalb setzt diese eine
   // Funktion beide, und wer an einer Stelle schaltet, sieht es an der anderen.
-  var ERINNERUNG_STELLEN = [['erinnerungSchalter','erinnerungZeit','erinnerungHinweis'],
-                            ['tfErinnerungSchalter','tfErinnerungZeit','tfErinnerungHinweis']];
+  var ERINNERUNG_STELLEN = [['erinnerungSchalter','erinnerungHinweis'],
+                            ['tfErinnerungSchalter','tfErinnerungHinweis']];
   function erinnerungAnwenden(){
     var moeglich = nativVorhanden();
     ERINNERUNG_STELLEN.forEach(function(ids){
-      var s = $(ids[0]), z = $(ids[1]), h = $(ids[2]);
+      var s = $(ids[0]), h = $(ids[1]);
       if (!s) return;
       s.setAttribute('aria-checked', (moeglich && erinnerungAn()) ? 'true' : 'false');
       s.disabled = !moeglich;
-      if (z){ z.value = erinnerungZeit(); z.disabled = !moeglich || !erinnerungAn(); }
-      if (h) h.textContent = decodeEntities(tx(moeglich ? 'erinnerung_hinweis' : 'erinnerung_nur_app'));
+      if (h) h.textContent = decodeEntities(moeglich ? erinnerungHinweisText() : tx('erinnerung_nur_app'));
     });
+  }
+  function istErinnerungsId(id){
+    return id === ERINNERUNG_ID || (id >= ERINNERUNG_ID_BASIS && id < ERINNERUNG_ID_BASIS + ERINNERUNG_TAGE * 3);
   }
   // Runde 124: Ein Tipp auf die Mitteilung oeffnet die Tagesform, nicht die Startseite. Sie ist der
   // einzige Grund, aus dem die Mitteilung kommt; auf der Startseite muesste man sie erst suchen.
@@ -83,31 +98,53 @@
     try{
       lm.addListener('localNotificationActionPerformed', function(ev){
         var id = ev && ev.notification && ev.notification.id;
-        if (id === ERINNERUNG_ID) oeffnen();
+        if (istErinnerungsId(id)) oeffnen();
       });
     }catch(e){}
+  }
+  // Die Liste, die geplant wird — getrennt vom Planen, damit pruef-nativ sie ohne Bruecke nachrechnen
+  // kann. `jetzt` als Parameter aus demselben Grund.
+  function erinnerungListe(jetzt){
+    var heute = heuteEingetragen(), liste = [];
+    for (var t = 0; t < ERINNERUNG_TAGE; t++){
+      TF_ABSCHNITTE.forEach(function(s, k){
+        var um = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() + t, ERINNERUNG_STUNDE[s], 0, 0);
+        if (um.getTime() <= jetzt.getTime()) return;      // iOS weist Zeiten in der Vergangenheit ab
+        if (t === 0 && heute[s]) return;                   // heute schon eingetragen: keine Erinnerung
+        liste.push({
+          id: ERINNERUNG_ID_BASIS + t * 3 + k,
+          title: decodeEntities(tx(ERINNERUNG_TITEL[s])),
+          body: decodeEntities(tx('erinnerung_text_mitteilung')),
+          schedule: {at: um, allowWhileIdle: true}
+        });
+      });
+    }
+    return liste;
+  }
+  function erinnerungAlleIds(){
+    var ids = [{id: ERINNERUNG_ID}];
+    for (var i = 0; i < ERINNERUNG_TAGE * 3; i++) ids.push({id: ERINNERUNG_ID_BASIS + i});
+    return ids;
   }
   function erinnerungPlanen(){
     var lm = nativModul('LocalNotifications');
     if (!lm) return;
-    var t = erinnerungZeit().split(':');
-    // Erst die alte loeschen, dann die neue setzen. Ohne das Loeschen sammelt sich bei jedem
-    // Umstellen der Uhrzeit eine weitere Mitteilung an, und nach einer Woche Herumprobieren
-    // meldet sich die App fuenfmal am Abend.
-    try{ lm.cancel({notifications:[{id:ERINNERUNG_ID}]}); }catch(e){}
+    // Erst ALLE alten absagen, dann neu setzen — nacheinander, nicht gleichzeitig: Kaeme das Absagen
+    // nach dem Setzen an, waeren die neuen gleich wieder weg.
+    var liste = erinnerungListe(new Date());
+    var setzen = function(){ if (liste.length){ try{ lm.schedule({notifications: liste}); }catch(e){} } };
     try{
-      lm.schedule({notifications:[{
-        id: ERINNERUNG_ID,
-        title: decodeEntities(tx('erinnerung_titel_mitteilung')),
-        body: decodeEntities(tx('erinnerung_text_mitteilung')),
-        schedule: {on:{hour:parseInt(t[0],10), minute:parseInt(t[1],10)}, allowWhileIdle:true}
-      }]});
-    }catch(e){}
+      Promise.resolve(lm.cancel({notifications: erinnerungAlleIds()})).then(setzen, setzen);
+    }catch(e){ setzen(); }
   }
   function erinnerungAbsagen(){
     var lm = nativModul('LocalNotifications');
     if (!lm) return;
-    try{ lm.cancel({notifications:[{id:ERINNERUNG_ID}]}); }catch(e){}
+    try{ lm.cancel({notifications: erinnerungAlleIds()}); }catch(e){}
+  }
+  // Nach jedem Eintrag und bei jedem Oeffnen: das Fenster nachziehen. Ausgeschaltet tut es nichts.
+  function erinnerungNachziehen(){
+    if (nativVorhanden() && erinnerungAn()) erinnerungPlanen();
   }
   function erinnerungUmschalten(){
     if (!nativVorhanden()) return;
@@ -137,11 +174,6 @@
     schalterSetzen(ERINNERUNG_AN, 'aus', null);
     erinnerungAbsagen();
     erinnerungAnwenden();
-  }
-  function erinnerungZeitGesetzt(wert){
-    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(wert || '')) return;
-    schalterSetzen(ERINNERUNG_ZEIT, wert, null);
-    if (erinnerungAn()) erinnerungPlanen();
   }
 
   // ---------- Ergebnisbild in die Foto-Mediathek ----------

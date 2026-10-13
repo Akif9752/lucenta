@@ -107,7 +107,19 @@
     }
     return ACHSE_DATE_FMT;
   }
-  function resetDateFmt(){ HISTORY_DATE_FMT = null; ACHSE_DATE_FMT = null; }
+  // Runde 129, gemeldet: Beim Ablesen am Graphen wurde die Zeile Energie/Stimmung/Datum zu lang,
+  // brach in eine zweite Zeile, und die Karte aenderte ihre Hoehe. Ursache war das Datum mit Jahr
+  // aus historyDateFmt ("10. Okt. 2026") — bei 320 pt passt das neben zwei Werten nicht. Beim
+  // Ablesen genuegen Tag und Monat, wie auf der Achse darunter; das Jahr steht in der Liste.
+  var ABLESE_DATE_FMT = null;
+  function ableseDatumFmt(){
+    if (!ABLESE_DATE_FMT){
+      try{ ABLESE_DATE_FMT = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {day:'numeric', month:'short'}); }
+      catch(e){ ABLESE_DATE_FMT = achsenDatumFmt(); }
+    }
+    return ABLESE_DATE_FMT;
+  }
+  function resetDateFmt(){ HISTORY_DATE_FMT = null; ACHSE_DATE_FMT = null; ABLESE_DATE_FMT = null; }
   // Runde 108, gemeldet: „Den Verlauf im Profil bitte visuell ueberarbeiten."
   //
   // Eine Zeile war Datum links, Titel rechts — und bei mehreren Eintraegen zehnmal dieselbe graue
