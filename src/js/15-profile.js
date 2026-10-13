@@ -140,12 +140,25 @@
     el.innerHTML =
       '<h2 data-demo-titel>'+tx('demo_titel')+'</h2>'+
       '<p class="settings-group-desc">'+(aktiv ? tx('demo_aktiv') : tx('demo_lead'))+'</p>'+
-      '<div class="daten-knoepfe">'+
-        '<button type="button" class="btn btn-ghost btn-sm" id="btnDemo">'+
-        (aktiv ? tx('demo_beenden') : tx('demo_laden'))+'</button>'+
-      '</div>';
-    var b = $('btnDemo');
-    if (b) b.addEventListener('click', function(){ aktiv ? demoBeenden() : demoLaden(); });
+      // Runde 131: vier Laengen statt eines Knopfs. #btnDemo bleibt der laengsten (bzw. dem Beenden),
+      // weil die Fehlersuche (tools/fehlersuche.mjs) ihn klickt und einen reichen Bestand messen soll.
+      (aktiv
+        ? '<div class="daten-knoepfe"><button type="button" class="btn btn-ghost btn-sm" id="btnDemo">'+
+            tx('demo_beenden')+'</button></div>'
+        : '<p class="settings-hint demo-laengen-titel">'+tx('demo_laden')+'</p>'+
+          '<div class="daten-knoepfe demo-laengen">'+DEMO_LAENGEN.map(function(n){
+            return '<button type="button" class="btn btn-ghost btn-sm" data-demo-tage="'+n+'"'+
+                   (n === DEMO_LAENGEN[DEMO_LAENGEN.length-1] ? ' id="btnDemo"' : '')+'>'+
+                   n+'&nbsp;'+tx('js_tagen_kurz')+'</button>';
+          }).join('')+'</div>');
+    if (aktiv){
+      var b = $('btnDemo');
+      if (b) b.addEventListener('click', demoBeenden);
+    } else if (el.querySelectorAll){
+      el.querySelectorAll('[data-demo-tage]').forEach(function(k){
+        k.addEventListener('click', function(){ demoLaden(parseInt(k.getAttribute('data-demo-tage'), 10)); });
+      });
+    }
 
     // Runde 84: Umschalter zwischen freier und gekaufter Fassung. Gehoert in denselben
     // Entwicklerbereich wie die Beispielnutzerin und aus demselben Grund: Beide Zustaende sind

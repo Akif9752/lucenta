@@ -77,6 +77,11 @@ const befund = await seite.evaluate(() => {
     landing: !!document.querySelector('#view-landing.active'),
     h1Text: h1 ? h1.innerText.trim().slice(0, 30) : null,
     h1Schrift: h1 ? getComputedStyle(h1).fontFamily.split(',')[0].replace(/['"]/g, '').trim() : null,
+    // Runde 131: Ein Titel ausserhalb der Startseite als Beleg fuer die Systemschrift.
+    titelSchrift: (function(){ const t = document.querySelector('#view-archetypes h1, #view-state h1, #view-result h1');
+      return t ? getComputedStyle(t).fontFamily.split(',')[0].replace(/['"]/g, '').trim() : null; })(),
+    startSchrift: (function(){ const m = document.querySelector('#startOverlay .start-name');
+      return m ? getComputedStyle(m).fontFamily.split(',')[0].replace(/['"]/g, '').trim() : null; })(),
     markeSchrift: (function(){ const m = document.querySelector('.wordmark');
       return m ? getComputedStyle(m).fontFamily.split(',')[0].replace(/['"]/g, '').trim() : null; })(),
     geladeneFamilien: [...new Set(geladen)],
@@ -91,8 +96,12 @@ ok(befund.landing, 'die Startansicht ist aktiv');
 ok(!!befund.h1Text, 'die Ueberschrift steht', befund.h1Text || '(leer)');
 // Runde 126, Auftrag des Inhabers: "die schrift ist nicht einheitlich". Titel stehen jetzt in der
 // Systemschrift wie der Text; Fraunces bleibt allein der Wortmarke.
-ok(/^-apple-system/.test(befund.h1Schrift || ''), 'die Ueberschrift steht in der Systemschrift', befund.h1Schrift);
+// Runde 131, ebenso Auftrag: Die Ueberschrift der Startseite steht wieder in Fraunces (wie bis Runde 125).
+ok(befund.h1Schrift === 'Fraunces', 'die Ueberschrift der Startseite steht in Fraunces', befund.h1Schrift);
+ok(/^-apple-system/.test(befund.titelSchrift || ''), 'die uebrigen Titel stehen in der Systemschrift', befund.titelSchrift);
 ok(befund.markeSchrift === 'Fraunces', 'die Wortmarke traegt die Markenschrift', befund.markeSchrift);
+// Runde 131: derselbe Name im Startbild in derselben Schrift.
+ok(befund.startSchrift === 'Fraunces', 'der Name im Startbild traegt die Markenschrift', befund.startSchrift);
 // Runde 114: Hier stand "mindestens drei Schriftfamilien". Seit dieser Runde stehen Text und
 // Bedienung in der Systemschrift (iOS: SF), und Work Sans ist aus der Datei entfernt. Eingebettet
 // sind damit genau zwei Familien — und genau die werden jetzt verlangt, mit Namen statt mit einer

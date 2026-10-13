@@ -46,7 +46,7 @@
   imAbschnitt('morgen', function(){
     landingStatePickedEnergy = 4; landingStatePickedValence = 3; maybeSaveLandingState();
     ok(/Morgens/.test($('landingStateDoneTitel').textContent||''), "die Bestaetigung nennt den Abschnitt (ist: "+$('landingStateDoneTitel')._text+")");
-    ok(/11/.test($('landingStateNaechster').textContent||''), "und wann der naechste moeglich ist (ist: "+$('landingStateNaechster')._text+")");
+    ok(/12/.test($('landingStateNaechster').textContent||''), "und wann der naechste moeglich ist (ist: "+$('landingStateNaechster')._text+")");
     showLandingStateInputs(); renderLandingStateRows();
     ok(landingStatePickedEnergy===null && landingStatePickedValence===null, "die Skalen stehen LEER");
     landingStatePickedEnergy = 2; landingStatePickedValence = 5; maybeSaveLandingState();

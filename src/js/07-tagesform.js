@@ -96,7 +96,7 @@
   }
   function showLandingStateInputs(){
     $('landingStateDone').style.display = 'none';
-    $('landingStateInputs').style.display = '';
+    aufklappen($('landingStateInputs'));     // Runde 131: wieder auf, wie es zugeklappt ist
     $('landingStateCopy').style.display = '';
     updateLandingStateCopy();
   }
@@ -113,11 +113,17 @@
     //
     // Runde 129: Gezeigt wird der Eintrag des Abschnitts (bis Runde 128: das Tagesmittel). Seit
     // es je Abschnitt genau einen gibt, ist er die Zahl, die man gerade eingegeben hat.
-    showLandingStateDone(heuteEingetragen()[abschnitt], true);
-    tfAbschnitteRendern(abschnitt);
-    setTimeout(function(){ funkenAn(document.querySelector('#landingStateDone .state-done-check')); }, 200);
-    landingStatePickedEnergy = null; landingStatePickedValence = null;
-    renderLandingStateRows();
+    // Runde 131: Erst klappen die Skalen zu, dann springt die Bestaetigung auf. Die Skalen werden
+    // erst danach geleert — sonst saehe man beim Zuklappen die eben getippten Kreise verschwinden.
+    var eintrag = heuteEingetragen()[abschnitt];
+    $('landingStateCopy').style.display = 'none';
+    zuklappen($('landingStateInputs'), function(){
+      showLandingStateDone(eintrag, true);
+      tfAbschnitteRendern(abschnitt);
+      setTimeout(function(){ funkenAn(document.querySelector('#landingStateDone .state-done-check')); }, 200);
+      landingStatePickedEnergy = null; landingStatePickedValence = null;
+      renderLandingStateRows();
+    });
     refreshDrawerState();
     erinnerungNachziehen();
   }
@@ -355,6 +361,7 @@
       ? tfText('tf_note_ersetzt', {abschnitt: name})
       : tfText('tf_note_offen', {abschnitt: name});
     tfAbschnitteRendern(null);
+    tfErledigtAnwenden(false, null);
     renderStateRows();
     tfFragenRendern();
     tfStichworteRendern();
@@ -362,13 +369,58 @@
     renderStateTrend();
     tfAuswertungenRendern();
   }
+  // Runde 131: In der Tagesform-Ansicht steht, wenn die laufende Tageszeit eingetragen ist, statt
+  // der Skalen die Bestaetigung mit "Aendern". `neu` = direkt nach dem Speichern: dann klappt die
+  // Erfassung sichtbar zu und die Bestaetigung springt auf; `danach` laeuft, wenn das vorbei ist.
+  var tfAendernOffen = false;
+  function tfErledigtAnwenden(neu, danach){
+    var erf = $('tfErfassung'), erl = $('tfErledigt');
+    var fertig = function(){ if (danach) danach(); };
+    if (!erf || !erl) return fertig();
+    var abschnitt = aktuellerAbschnitt(), eintrag = heuteEingetragen()[abschnitt];
+    // Die Zeile "… schon eingetragen – Speichern ersetzt" gehoert zur offenen Erfassung; neben der
+    // Bestaetigung waere sie doppelt und spraeche von einem Knopf, der gerade nicht da ist.
+    var notiz = $('stateTodayNote');
+    if (!eintrag || tfAendernOffen){
+      erl.style.display = 'none';
+      erf.style.display = '';
+      if (notiz) notiz.style.display = '';
+      return fertig();
+    }
+    if (notiz) notiz.style.display = 'none';
+    $('tfErledigtTitel').textContent = tfText('tf_abschnitt_eingetragen', {abschnitt: tx('tf_abschnitt_'+abschnitt)});
+    $('tfErledigtWerte').textContent = tx('js_energie_praefix')+tagWert(eintrag.energy)+tx('js_trenner_stimmung')+tagWert(eintrag.valence);
+    $('tfErledigtNaechster').textContent = tfNaechsterText(abschnitt);
+    var schonDa = erl.style.display === 'flex';
+    var zeigen = function(){
+      erl.style.display = 'flex';
+      if (neu){
+        erl.classList.remove('just-saved');
+        try{ void erl.offsetWidth; }catch(e){}
+        erl.classList.add('just-saved');
+        // Gespeichert wird ganz unten; nach dem Zuklappen (gut 1200 px weniger) stand die
+        // Bestaetigung ueber dem sichtbaren Bereich — gemessen in WebKit. Also dorthin, wo sie ist.
+        try{ erl.scrollIntoView({behavior: prefersReducedMotion() ? 'auto' : 'smooth', block:'center'}); }catch(e){}
+        setTimeout(function(){ funkenAn(erl.querySelector ? erl.querySelector('.state-done-check') : null); }, 380);
+      } else if (!schonDa){
+        erl.classList.remove('just-saved');
+      }
+      fertig();
+    };
+    if (neu) zuklappen(erf, zeigen);
+    else { erf.style.display = 'none'; zeigen(); }
+  }
+
   // ---------- Das Zeitfenster der Kurve (Runde 97) ----------
   //
   // Drei Laengen, als Segmentwaehler wie ueberall sonst in der App. Die Wahl steht im Speicher:
   // Wer den langen Blick gewaehlt hat, will ihn beim naechsten Oeffnen wiederfinden und nicht
   // jedes Mal neu einstellen.
   var FENSTER_SCHLUESSEL = 'lucenta_tf_fenster';
-  var FENSTER = [14, 30, 90];
+  // Runde 131 (Inhaber): nach 90 noch "Gesamt". Als 0 gespeichert, weil slice(-0) die ganze Liste
+  // liefert — die Stellen, die das Fenster anwenden (hier und tfSichtbareTage), brauchen damit
+  // keinen Sonderfall.
+  var FENSTER = [14, 30, 90, 0];
   function fensterLesen(){
     var w = parseInt(schalterLesen(FENSTER_SCHLUESSEL, ''), 10);
     return FENSTER.indexOf(w) >= 0 ? w : 30;
@@ -380,11 +432,15 @@
         // Eine Laenge, fuer die noch keine Daten da sind, waere ein Knopf, der nichts tut.
         // Sie bleibt sichtbar, aber abgeschaltet — verschwinden wuerde sie beim naechsten
         // Eintrag wieder auftauchen, und ein Waehler, dessen Faecher wandern, ist keiner.
-        var moeglich = vorhanden > n * 0.5 || n === 14;
+        // "Gesamt" erst, wenn es mehr zeigt als 90 Tage — sonst waere es dieselbe Kurve zweimal.
+        var moeglich = n === 0 ? vorhanden > 90 : (vorhanden > n * 0.5 || n === 14);
         return '<button type="button" class="segment-opt" role="radio" data-fenster="'+n+'" '+
                'aria-checked="'+(n===wahl?'true':'false')+'"'+(moeglich?'':' disabled')+'>'+
-               '<span class="segment-preis">'+n+'</span>'+
-               '<span class="segment-spar">'+tx('js_tagen_kurz')+'</span></button>';
+               (n === 0
+                 ? '<span class="segment-preis">'+tx('tf_fenster_gesamt')+'</span>'+
+                   '<span class="segment-spar">'+vorhanden+'&nbsp;'+tx('js_tagen_kurz')+'</span>'
+                 : '<span class="segment-preis">'+n+'</span>'+
+                   '<span class="segment-spar">'+tx('js_tagen_kurz')+'</span>')+'</button>';
       }).join('')+'</div>';
   }
   function fensterWahlVerdrahten(wurzel){

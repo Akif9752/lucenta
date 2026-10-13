@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 130)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 131)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -35,7 +35,8 @@ Regeln, die er gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 130 | (dieser) | Tagesform: drei feste Tageszeiten (je ein Eintrag, ersetzen), drei Erinnerungen 8/13/19 Uhr fuer 14 Tage einzeln geplant; groessere Animationen (Ergebnis, Tagesform, Startseite, Fragebogen, Tier); weiche Vorschau-Raender; Legende des Graphen mit fester Hoehe |
+| 131 | (dieser) | Startseiten-Titel wieder Fraunces, Name im Startbild in --marke, Symbol #5CB4AD, Hilfe als eigene Seite, Beispieldaten 14/30/90/120, Verlauf "Gesamt", Erinnerungen 9/14/20 + Nacherinnerung 11/16/22 (Grenzen 12/18), Erfassung klappt nach dem Eintrag zu |
+| 130 | `370d20c` | Tagesform: drei feste Tageszeiten (je ein Eintrag, ersetzen), drei Erinnerungen 8/13/19 Uhr fuer 14 Tage einzeln geplant; groessere Animationen (Ergebnis, Tagesform, Startseite, Fragebogen, Tier); weiche Vorschau-Raender; Legende des Graphen mit fester Hoehe |
 | 129 | `9af69cb` | Plex Mono aus dem Bau (Teilbild in SF), Fusszeilen-Link = Einstellungszeile, „12‑mal“ bricht nicht mehr, Datumsachse gleichmaessig (Kurve eingerueckt, `VERLAUF_RAND`) |
 | 128 | `8363244` | Strengere Bezahlgrenze (Bericht, Tagesform 7 Tage, ein Vergleich, verschwommene Vorschauen `vorschauHTML()`, Angebot nach dem Test, Startseiten-Karte), Strahlenkranz am Ergebnistyp |
 | 127 | `0abb566` | Tagesform-Liste aufklappbar; Lucenta+ als Kaufseite (fester Kaufbereich, Preiskarten mit Monatspreis/Ersparnis, persoenliche Zeile) |
@@ -94,7 +95,9 @@ Regeln, die er gesetzt hat und die weiter gelten:
 - **Eine Schrift** (Runde 126): SF ueberall; Fraunces nur Wortmarke; `pruef-app` prueft das.
 - **Impressum/Datenschutz** in wenigen Schritten erreichbar (§ 5 DDG) — leise, aber nicht weiter
   versteckt.
-- **Tagesform (Runde 130, Inhaber):** hoechstens drei Eintraege am Tag, je Tageszeit einer (morgens < 11, mittags < 17, abends); ein zweiter ersetzt. Erinnerung: EIN Schalter, feste Zeiten 8/13/19, bleibt aus, wenn die Tageszeit schon eingetragen ist — keine Uhrzeitwahl.
+- **Tagesform (Runde 130/131, Inhaber):** hoechstens drei Eintraege am Tag, je Tageszeit einer (morgens < 12, mittags < 18, abends); ein zweiter ersetzt. Erinnerung: EIN Schalter, feste Zeiten 9/14/20, Nacherinnerung 2 h spaeter (11/16/22), beides bleibt aus, wenn die Tageszeit schon eingetragen ist — keine Uhrzeitwahl. 10 Tage einzeln geplant (60 <= 64).
+- **Schrift (Runde 131):** SF ueberall, AUSSER Wortmarke/Name (--marke, Fraunces 600: Kopfzeile, Startbild, Teilbild) und dem Titel der Startseite (Fraunces 500, wie bis Runde 125). pruef-app prueft alle drei.
+- **Symbol (Runde 131):** Grund #5CB4AD (Test-Knopf im Dunkelmodus), Fuenfeck #F7ECDC, ohne Alpha. Quelle: `tools/symbol_rendern.swift`.
 - **Weggenommen wird Lucenta+ nur bei klarer Store-Antwort**; Plus-Umschalter nur im
   Entwicklungsbau (`#if DEBUG`).
 - **Keine Nachbildung fremder Figuren** (Pixar/Nemo: Stil ja, Figuren nein).
@@ -104,7 +107,7 @@ Regeln, die er gesetzt hat und die weiter gelten:
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 130: **ALLE 9 BESTANDEN** (11,2 Minuten), `pruef-nativ` jetzt 60, `fehlersuche` KEINE
+`npm run pruef-alles` nach Runde 131: **ALLE 9 BESTANDEN** (11,6 Minuten), `pruef-app` 31, `pruef-nativ` 61, `fehlersuche` KEINE
 FUNDE auf WebKit und Chromium, `pruef-app` 29/29, `pruef-nativ` 51/51, `tests` 11 Reihen
 (Tagesform 40), `diff-sprachen` 141 (nur Bericht). Erfahrung: Neue Bedienelemente fallen in der
 `fehlersuche` an Tippzielen (44 pt) und Kontrast auf — gleich so bauen; Pruefungen, die alte
@@ -155,6 +158,53 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 131 — Schrift, Symbol, Hilfe-Seite, Beispieldaten, Gesamt, Erinnerungszeiten, Zuklappen
+
+Acht Auftraege in einer Nachricht. Zwei Rueckfragen, woertlich uebernommen.
+
+1. **Titel der Startseite** („Lern dich kennen …") wieder in Fraunces 500 mit kursiver
+   Hervorhebung — so stand er bis Runde 125. Einzige Ausnahme von der einen Schrift neben der
+   Wortmarke. `pruef-app` prueft jetzt: dieser Titel Fraunces, ein anderer Titel SF.
+2. **Name im Startbild:** `.start-name` stand auf `var(--serif)`, und das zeigt seit Runde 126 auf
+   SF — beim Oeffnen kam „Lucenta" also in der Systemschrift. Jetzt `var(--marke)` wie die Kopfzeile;
+   `--marke` ist als Schrift des Namens dokumentiert, `pruef-app` prueft das Startbild mit (31).
+3. **Symbol:** gefragt, gewaehlt: #5CB4AD (Knopf im Dunkelmodus), ueberall. Das alte Symbol hatte
+   keine Quelle, nur das PNG. Neu gerendert mit CoreGraphics (`tools/symbol_rendern.swift`), ohne
+   Alphakanal (nachgemessen), Fuenfeck in Lage und Farbe wie bisher (Spitze bei 256 px, Fuss 780
+   statt 777 — auf drei Pixel nachgemessen). Alle Groessen in `assets/icon/`, der Asset-Katalog und
+   das eingebettete apple-touch-icon sind erneuert. **Unsicher:** Creme auf #5CB4AD hat deutlich
+   weniger Kontrast als auf dem alten Petrol (rund 2:1). Auf dem Homescreen nicht angesehen.
+4. **Haeufige Fragen** oeffnen eine eigene Seite (`view-hilfe`) statt aufzuklappen — wie eine
+   Unterseite in Apples Einstellungen, mit „← Einstellungen". Bewusst kein Blatt wie Lucenta+:
+   das haette alle Transparenz-Tueren des Dialogs verdoppelt. Angesehen bei 320 pt.
+5. **Beispieldaten 14/30/90/120 Tage** (`demoDaten(tage)`): Verlauf und Tagesform reichen genau so
+   weit zurueck. `#btnDemo` bleibt am laengsten, weil die Fehlersuche ihn klickt. **Zwei Funde
+   dabei:** (a) die Beispieldaten legten fuer HEUTE auch Eintraege um 13 und 20 Uhr an, also aus der
+   Zukunft — mit den Tageszeiten stand der Tag morgens schon als vollstaendig da; jetzt nur, was
+   vorbei ist. (b) 120 Tage im alten duennen Muster ergaben nur 72 Eintragstage, „Gesamt" war damit
+   gesperrt (gemessen) — die waehlbaren Laengen tragen jetzt taeglich ein.
+6. **„Gesamt"** nach 90 im Zeitraumwaehler, gespeichert als 0 (`slice(-0)` liefert alles). Frei
+   erst, wenn es mehr als 90 Eintragstage zeigt; darunter steht die Zahl der Tage. Passt bei 320 pt.
+7. **Erinnerungen 9/14/20, Nacherinnerung nach 2 Stunden.** Gefragt, gewaehlt: Grenzen der
+   Tageszeiten wandern mit (bis 12, bis 18), sonst laege die Morgen-Nacherinnerung um 11 schon im
+   Mittag. Sechs am Tag — Apples Grenze sind 64 ausstehende Mitteilungen, also **10 statt 14 Tage**
+   voraus (60). Eigene Titel fuer die Nacherinnerungen in acht Sprachen. `pruef-nativ` 61.
+8. **Erfassung klappt nach dem Eintrag zu** (`zuklappen()`/`aufklappen()` in `19-feier.js`): Die
+   Hoehe laeuft auf null, der Inhalt schrumpft nach oben weg, dann springt die Bestaetigung mit
+   Haken und Funken auf; „Aendern" klappt wieder auf. Auf der Startkarte und neu in der
+   Tagesform-Ansicht. **Fund beim Ansehen:** Die Karte wird um gut 1200 px kuerzer, die Bestaetigung
+   stand danach ueber dem sichtbaren Bereich — jetzt wird sie in die Mitte geholt. Und die Zeile
+   „… Speichern ersetzt diesen Eintrag" stand doppelt neben der Bestaetigung; sie erscheint nur
+   noch bei offener Erfassung.
+
+### Pruefungen
+
+`npm run pruef-alles`: **ALLE 9 BESTANDEN** (11,6 Minuten), `fehlersuche` 26 Durchlaeufe auf WebKit
+und Chromium KEINE FUNDE, `pruef-app` **31**, `pruef-nativ` **61**, `tests` 11 Reihen,
+`diff-sprachen` 141 (unveraendert). Angesehen in WebKit: Zeitraumwaehler mit „Gesamt", Hilfe-Seite,
+Beispieldaten-Knoepfe (320 pt), das Zuklappen. Nicht am Geraet: Erinnerungen und Nacherinnerungen,
+das Symbol auf dem Homescreen.
 
 ## Runde 130 — Drei Tageszeiten, groessere Animationen, weiche Vorschauen, ruhige Legende
 

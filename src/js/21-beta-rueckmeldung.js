@@ -109,6 +109,13 @@
     try{ $('landingStateEnergyRow').querySelector('button').focus(); }catch(e){}
   });
   $('btnBackFromState').addEventListener('click', function(){ showView('landing'); });
+  $('btnTfAendern').addEventListener('click', function(){
+    tfAendernOffen = true;
+    $('tfErledigt').style.display = 'none';
+    $('stateTodayNote').style.display = '';
+    aufklappen($('tfErfassung'));
+    try{ $('stateEnergyRow').querySelector('button').focus(); }catch(e){}
+  });
   $('btnStateSave').addEventListener('click', function(){
     if (!statePickedEnergy || !statePickedValence){
       toast(tx('js_bitte_beide_fragen'));
@@ -119,10 +126,13 @@
     if (ok){
       toast(ersetzt ? tfText('tf_ersetzt_toast', {abschnitt: tx('tf_abschnitt_'+abschnitt)})
                     : tx('js_tagesform_gespeichert'));
-      tfErfassungZuruecksetzen();
-      renderStateView();
-      tfAbschnitteRendern(abschnitt);
-      funkenAn($('btnStateSave'));
+      // Runde 131: erst zuklappen, dann neu zeichnen — sonst leerten sich die Skalen sichtbar.
+      tfAendernOffen = false;
+      tfErledigtAnwenden(true, function(){
+        tfErfassungZuruecksetzen();
+        renderStateView();
+        tfAbschnitteRendern(abschnitt);
+      });
       refreshDrawerState();
       renderLandingStateTeaser();
       erinnerungNachziehen();

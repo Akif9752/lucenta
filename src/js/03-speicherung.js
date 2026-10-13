@@ -278,8 +278,10 @@
   function zeitabschnitt(ts){
     var h;
     try{ h = new Date(ts).getHours(); }catch(e){ return 'mittag'; }
-    if (h < 11) return 'morgen';
-    if (h < 17) return 'mittag';
+    // Runde 131 (Inhaber): Grenzen eine Stunde spaeter, damit die Nacherinnerungen (11, 16 Uhr)
+    // noch in ihrer Tageszeit liegen. Vorher 11 und 17.
+    if (h < 12) return 'morgen';
+    if (h < 18) return 'mittag';
     return 'abend';
   }
   // Runde 129, Auftrag des Inhabers: "Tagesform soll fest drei Mal maximal pro Tag eintragbar sein,
@@ -289,7 +291,7 @@
   // TF_ABSCHNITT_BEGINN muss zu zeitabschnitt() passen; die Erinnerungen (19b-native.js) kommen zu
   // festen Zeiten INNERHALB des jeweiligen Abschnitts.
   var TF_ABSCHNITTE = ['morgen', 'mittag', 'abend'];
-  var TF_ABSCHNITT_BEGINN = {morgen:0, mittag:11, abend:17};
+  var TF_ABSCHNITT_BEGINN = {morgen:0, mittag:12, abend:18};
   function aktuellerAbschnitt(){ return zeitabschnitt(Date.now()); }
   // Welche Abschnitte heute schon belegt sind, je Abschnitt der juengste Eintrag. Bestand von vor
   // Runde 129 kann einen Abschnitt mehrfach tragen; gezeigt wird dann der letzte.

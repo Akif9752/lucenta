@@ -2,6 +2,13 @@
      vom stabilen Trait-Ergebnis oben ---------- */
   .state-check-card{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:20px 18px;display:flex;flex-direction:column;gap:22px;}
   .state-today-note{margin:0;font-size:12.5px;color:var(--muted);}
+  /* Runde 131: die Erfassung als eigener Block, damit sie als Ganzes zuklappen kann. */
+  .tf-erfassung{display:flex;flex-direction:column;gap:22px;transform-origin:top center;}
+  /* Das Zuklappen (zuklappen()/aufklappen() in 19-feier.js): Die Hoehe laeuft auf null, der Inhalt
+     schrumpft dabei leicht nach oben weg. Die Bestaetigung springt danach mit haken-feder auf. */
+  .klappt-zu{overflow:hidden;opacity:0;transform:scale(.94) translateY(-10px);
+    transition:height .48s cubic-bezier(.6,0,.25,1), opacity .32s ease, transform .48s cubic-bezier(.6,0,.25,1);}
+  .klappt-auf{overflow:hidden;transition:height .48s cubic-bezier(.2,.8,.2,1);}
   .state-question{display:flex;flex-direction:column;gap:8px;}
   .state-q-label{font-family:var(--serif);font-size:16px;}
   /* Bei 200 % Zoom liefen die beiden Skalenenden ineinander („Erschöpft" über „Voller Energie"),

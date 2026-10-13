@@ -242,6 +242,8 @@
        Fraunces traegt nur noch die Wortmarke (--marke); fuer die persoenlichen Codes steht SF Mono
        (--code), weil dort "l" und "1" beim Abtippen unterscheidbar bleiben muessen. */
     --marke: 'Fraunces', ui-serif, Georgia, var(--cjk);
+    /* Runde 131: --marke ist verbindlich die Schrift des NAMENS "Lucenta" — Kopfzeile, Startbild,
+       Teilbild (SHARE_SERIF in 10-ergebnisbild.js). Wo der Name als Marke steht, steht er so. */
     /* Runde 114, Auftrag des Inhabers "insgesamt wie iOS": Text und Bedienung stehen in der
        Systemschrift — auf dem iPhone SF Pro. Das ist der einzelne groesste Schritt in Richtung
        iOS, weil jede Beschriftung, jede Zeile und jeder Knopf ihn mitmacht. Fraunces bleibt die

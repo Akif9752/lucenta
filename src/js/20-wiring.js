@@ -14,3 +14,6 @@
     $('btnRecht').addEventListener('click', function(){ renderRecht(); showView('recht'); });
   $('btnRechtFuss').addEventListener('click', function(){ renderRecht(); showView('recht'); });
   $('btnBackFromRecht').addEventListener('click', function(){ showView('landing'); });
+  // Runde 131: die haeufigen Fragen als eigene Seite; zurueck geht es dorthin, woher man kam.
+  $('btnHilfeOeffnen').addEventListener('click', function(){ showView('hilfe'); });
+  $('btnBackFromHilfe').addEventListener('click', function(){ showView('settings'); });

@@ -115,17 +115,20 @@ const geplant = log.filter(e => e.was === 'planen');
 ok(geplant.length === 1, 'genau ein schedule-Aufruf ('+geplant.length+')');
 const liste = geplant[0]?.arg?.notifications || [];
 const jetzt = Date.now();
-ok(liste.length >= 39 && liste.length <= 42, '3 x 14 Mitteilungen, abzueglich der heute schon vergangenen (sind: '+liste.length+')');
+// Runde 131: 9/14/20 Uhr plus Nacherinnerung 11/16/22, fuer 10 Tage (6 x 10 = 60 <= 64, Apples Grenze).
+ok(liste.length >= 54 && liste.length <= 60, '6 x 10 Mitteilungen, abzueglich der heute schon vergangenen (sind: '+liste.length+')');
+ok(liste.length <= 64, 'unter Apples Grenze von 64 ausstehenden Mitteilungen');
 const zeiten = liste.map(x => new Date(x.schedule?.at));
-ok(zeiten.every(d => [8,13,19].includes(d.getHours()) && d.getMinutes() === 0),
-   'nur 8:00, 13:00 und 19:00 (Stunden: '+[...new Set(zeiten.map(d => d.getHours()))].join(',')+')');
+ok(zeiten.every(d => [9,11,14,16,20,22].includes(d.getHours()) && d.getMinutes() === 0),
+   'nur 9/11, 14/16 und 20/22 Uhr (Stunden: '+[...new Set(zeiten.map(d => d.getHours()))].join(',')+')');
 ok(zeiten.every(d => d.getTime() > jetzt), 'keine Zeit in der Vergangenheit (iOS wiese den Aufruf ab)');
-ok(zeiten.every(d => d.getTime() < jetzt + 15 * 864e5), 'nicht weiter als 14 Tage voraus');
+ok(zeiten.every(d => d.getTime() < jetzt + 11 * 864e5), 'nicht weiter als 10 Tage voraus');
 ok(new Set(liste.map(x => x.id)).size === liste.length, 'jede Mitteilung mit eigener Kennung');
 ok(liste.every(x => !x.schedule?.on && !x.schedule?.repeats), 'keine Wiederholung — jede ist einzeln geplant');
 const titelJe = h => liste.find(x => new Date(x.schedule.at).getHours() === h)?.title;
-ok(titelJe(8) && titelJe(13) && titelJe(19) && new Set([titelJe(8), titelJe(13), titelJe(19)]).size === 3,
-   'je Tageszeit ein eigener Titel: '+JSON.stringify([titelJe(8), titelJe(13), titelJe(19)]));
+const titel6 = [9,11,14,16,20,22].map(titelJe);
+ok(titel6.every(Boolean) && new Set(titel6).size === 6,
+   'je Erinnerung und Nacherinnerung ein eigener Titel: '+JSON.stringify(titel6));
 ok(liste.every(x => !!x.body), 'mit Text');
 const iAb = log.findIndex(e => e.was === 'absagen'), iPlan = log.findIndex(e => e.was === 'planen');
 ok(iAb >= 0 && iAb < iPlan, 'erst alle alten absagen, dann planen — sonst sammeln sie sich an');
@@ -146,7 +149,7 @@ await seite.waitForTimeout(400);
 log = await seite.evaluate(() => window.__nativLog);
 const liste2 = log.filter(e => e.was === 'planen')[0]?.arg?.notifications || [];
 const heute = new Date().toDateString();
-ok(liste2.length === 39, 'Oeffnen zieht nach: 13 Tage x 3, heute keine (sind: '+liste2.length+')');
+ok(liste2.length === 54, 'Oeffnen zieht nach: 9 Tage x 6, heute keine — auch keine Nacherinnerung (sind: '+liste2.length+')');
 ok(liste2.every(x => new Date(x.schedule.at).toDateString() !== heute), 'keine Erinnerung mehr fuer heute');
 await seite.evaluate(() => localStorage.removeItem('lucenta_state'));
 

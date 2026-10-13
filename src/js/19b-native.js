@@ -49,22 +49,30 @@
   // Bis Runde 128 stand hier EINE taegliche Mitteilung zur gewaehlten Uhrzeit, mit der Begruendung
   // aus Runde 46: kein Druck bei einer Anwendung rund um Befinden. Seit Runde 129 hat die Tagesform
   // drei feste Abschnitte (03-speicherung.js), und der Inhaber hat ausdruecklich drei Erinnerungen
-  // gewaehlt — ein Schalter, feste Zeiten 8, 13 und 19 Uhr, keine Uhrzeitwahl.
+  // gewaehlt — ein Schalter, feste Zeiten, keine Uhrzeitwahl (Runde 131: 9, 14, 20 Uhr, plus
+  // Nacherinnerung zwei Stunden spaeter).
   //
   // Der Gedanke von Runde 46 bleibt in einer anderen Form erhalten: Eine Erinnerung fuer einen
   // Abschnitt, der schon eingetragen ist, kommt NICHT (Wahl des Inhabers). Das geht mit einer
   // taeglich wiederholten Mitteilung nicht — iOS kann eine Wiederholung nicht fuer einen Tag
   // aussetzen. Deshalb werden die Mitteilungen der naechsten ERINNERUNG_TAGE Tage EINZELN geplant
-  // (3 x 14 = 42, unter der Grenze von 64 ausstehenden Mitteilungen je App) und bei jedem Eintrag
-  // und jedem Oeffnen neu gesetzt. Folge: Wer die App zwei Wochen nicht oeffnet, bekommt danach
-  // keine Erinnerung mehr. Das ist gewollt — eine App, die nach zwei Wochen Stille weiter dreimal
-  // am Tag ruft, draengt.
+  // (seit Runde 131: 6 x 10 = 60, unter der Grenze von 64 ausstehenden Mitteilungen je App) und bei
+  // jedem Eintrag und jedem Oeffnen neu gesetzt. Folge: Wer die App zehn Tage nicht oeffnet, bekommt
+  // danach keine Erinnerung mehr. Das ist gewollt — eine App, die nach Tagen der Stille weiter
+  // ruft, draengt.
   var ERINNERUNG_AN = 'lucenta_erinnerung';
   var ERINNERUNG_ID = 4711;            // die alte taegliche Mitteilung; wird beim Planen mit abgesagt
-  var ERINNERUNG_ID_BASIS = 47100, ERINNERUNG_TAGE = 14;
-  // Innerhalb der Abschnitte aus TF_ABSCHNITT_BEGINN: 8 im Morgen (bis 11), 13 im Mittag (bis 17).
-  var ERINNERUNG_STUNDE = {morgen:8, mittag:13, abend:19};
+  // Runde 131 (Inhaber): Zeiten 9, 14, 20 Uhr, und zwei Stunden spaeter eine Nacherinnerung, wenn
+  // die Tageszeit dann immer noch offen ist. Sechs am Tag — und iOS haelt hoechstens 64 ausstehende
+  // Mitteilungen je App. Deshalb 10 Tage statt 14 (60). Das Fenster wird ohnehin bei jedem Oeffnen
+  // und jedem Eintrag nachgezogen.
+  var ERINNERUNG_ID_BASIS = 47100, ERINNERUNG_TAGE = 10, ERINNERUNG_JE_TAG = 6;
+  var ERINNERUNG_ALT_ANZAHL = 42;      // Runde 130: 14 x 3 — beim Absagen mit erfasst
+  // Innerhalb der Abschnitte aus TF_ABSCHNITT_BEGINN (bis 12, bis 18): 9 und 11, 14 und 16, 20 und 22.
+  var ERINNERUNG_STUNDE = {morgen:9, mittag:14, abend:20};
+  var ERINNERUNG_NACH_STUNDEN = 2;
   var ERINNERUNG_TITEL = {morgen:'erinnerung_titel_morgen', mittag:'erinnerung_titel_mittag', abend:'erinnerung_titel_abend'};
+  var ERINNERUNG_NACH_TITEL = {morgen:'erinnerung_nach_morgen', mittag:'erinnerung_nach_mittag', abend:'erinnerung_nach_abend'};
   function erinnerungAn(){
     return schalterLesen(ERINNERUNG_AN, 'aus') === 'an';
   }
@@ -88,7 +96,8 @@
     });
   }
   function istErinnerungsId(id){
-    return id === ERINNERUNG_ID || (id >= ERINNERUNG_ID_BASIS && id < ERINNERUNG_ID_BASIS + ERINNERUNG_TAGE * 3);
+    return id === ERINNERUNG_ID ||
+      (id >= ERINNERUNG_ID_BASIS && id < ERINNERUNG_ID_BASIS + Math.max(ERINNERUNG_TAGE * ERINNERUNG_JE_TAG, ERINNERUNG_ALT_ANZAHL));
   }
   // Runde 124: Ein Tipp auf die Mitteilung oeffnet die Tagesform, nicht die Startseite. Sie ist der
   // einzige Grund, aus dem die Mitteilung kommt; auf der Startseite muesste man sie erst suchen.
@@ -108,14 +117,17 @@
     var heute = heuteEingetragen(), liste = [];
     for (var t = 0; t < ERINNERUNG_TAGE; t++){
       TF_ABSCHNITTE.forEach(function(s, k){
-        var um = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() + t, ERINNERUNG_STUNDE[s], 0, 0);
-        if (um.getTime() <= jetzt.getTime()) return;      // iOS weist Zeiten in der Vergangenheit ab
         if (t === 0 && heute[s]) return;                   // heute schon eingetragen: keine Erinnerung
-        liste.push({
-          id: ERINNERUNG_ID_BASIS + t * 3 + k,
-          title: decodeEntities(tx(ERINNERUNG_TITEL[s])),
-          body: decodeEntities(tx('erinnerung_text_mitteilung')),
-          schedule: {at: um, allowWhileIdle: true}
+        [0, 1].forEach(function(nach){
+          var um = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() + t,
+                            ERINNERUNG_STUNDE[s] + nach * ERINNERUNG_NACH_STUNDEN, 0, 0);
+          if (um.getTime() <= jetzt.getTime()) return;    // iOS weist Zeiten in der Vergangenheit ab
+          liste.push({
+            id: ERINNERUNG_ID_BASIS + t * ERINNERUNG_JE_TAG + k * 2 + nach,
+            title: decodeEntities(tx(nach ? ERINNERUNG_NACH_TITEL[s] : ERINNERUNG_TITEL[s])),
+            body: decodeEntities(tx('erinnerung_text_mitteilung')),
+            schedule: {at: um, allowWhileIdle: true}
+          });
         });
       });
     }
@@ -123,7 +135,8 @@
   }
   function erinnerungAlleIds(){
     var ids = [{id: ERINNERUNG_ID}];
-    for (var i = 0; i < ERINNERUNG_TAGE * 3; i++) ids.push({id: ERINNERUNG_ID_BASIS + i});
+    var n = Math.max(ERINNERUNG_TAGE * ERINNERUNG_JE_TAG, ERINNERUNG_ALT_ANZAHL);
+    for (var i = 0; i < n; i++) ids.push({id: ERINNERUNG_ID_BASIS + i});
     return ids;
   }
   function erinnerungPlanen(){

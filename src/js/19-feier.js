@@ -162,3 +162,36 @@
     if (!el || !el.classList || !el.classList.contains('hat-figur')) return;
     bewegungNeu(el, 'wippen', 900);
   }
+
+  // Runde 131, Auftrag des Inhabers: Nach einem Eintrag "muss dort nicht mehr die ganze Zeit die
+  // Ankreuzmoeglichkeit stehen — das kann in einer coolen Animation kleiner werden oder sich
+  // abschliessen". Die Hoehe wird gemessen und auf null gefahren (height ist nur mit Zahlen
+  // animierbar), danach liegt das Element auf display:none. Ohne Messwert (Ersatz-DOM der Tests)
+  // oder bei reduzierter Bewegung geschieht dasselbe sofort.
+  function zuklappen(el, fertig){
+    var ende = function(){ if (fertig) fertig(); };
+    if (!el || !el.style) return ende();
+    var h = el.scrollHeight;
+    if (prefersReducedMotion() || !h || el.style.display === 'none'){ el.style.display = 'none'; return ende(); }
+    el.style.height = h + 'px';
+    try{ void el.offsetHeight; }catch(e){}
+    el.classList.add('klappt-zu');
+    el.style.height = '0px';
+    setTimeout(function(){
+      el.style.display = 'none';
+      el.classList.remove('klappt-zu');
+      el.style.height = '';
+      ende();
+    }, 500);
+  }
+  function aufklappen(el){
+    if (!el || !el.style) return;
+    el.style.display = '';
+    var h = el.scrollHeight;
+    if (prefersReducedMotion() || !h) return;
+    el.style.height = '0px';
+    try{ void el.offsetHeight; }catch(e){}
+    el.classList.add('klappt-auf');
+    el.style.height = h + 'px';
+    setTimeout(function(){ el.classList.remove('klappt-auf'); el.style.height = ''; }, 500);
+  }

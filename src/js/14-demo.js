@@ -51,7 +51,12 @@
     return x - Math.floor(x);
   }
 
-  function demoDaten(){
+  // Runde 131 (Inhaber): Die Laenge ist waehlbar — 14, 30, 90 oder 120 Tage. Testdurchlaeufe und
+  // Tagesform reichen genau so weit zurueck; das Vergleichsarchiv bleibt, es ist keine Zeitreihe.
+  // Ohne Angabe wie bis Runde 130 ein halbes Jahr (183 Tage).
+  var DEMO_LAENGEN = [14, 30, 90, 120], DEMO_TAGE = 'lucenta_demo_tage';
+  function demoDaten(tage){
+    tage = tage || 183;
     var jetzt = Date.now();
     var ergebnis = {O:74, C:56, E:63, A:70, S:48};
     // Runde 83: sechs Monate statt fuenf Wochen. Der Unterschied ist nicht nur die Zahl —
@@ -84,7 +89,7 @@
       {date: jetzt -  58*TAG_MS, scores:{O:71, C:54, E:62, A:70, S:45}},  // ab hier Visionaer:in · warmherzig
       {date: jetzt -  27*TAG_MS, scores:{O:73, C:55, E:62, A:71, S:47}},
       {date: jetzt -   3*TAG_MS, scores:ergebnis}
-    ];
+    ].filter(function(v){ return v.date >= jetzt - tage * TAG_MS; });
     // Tagesform ueber dasselbe halbe Jahr, aber nicht gleichmaessig: dicht in den letzten
     // Wochen, duenner je weiter zurueck, mit zwei laengeren Luecken. Wer sechs Monate lang
     // jeden Tag eintraegt, ist die Ausnahme — und eine Ansicht, die nur mit luckenlosem
@@ -96,7 +101,7 @@
     // Warten brauchen. Das Muster ist bewusst deutlich (morgens niedriger).
     var zustand = [];
     var ABSCHNITTE = [{h:8, ab:-0.7}, {h:13, ab:0.1}, {h:20, ab:0.6}];
-    for (var i = 182; i >= 0; i--){
+    for (var i = Math.min(182, tage - 1); i >= 0; i--){
       // Zwei Luecken: eine Woche im Urlaub, und ein paar Tage, an denen es untergegangen ist.
       if (i >= 96 && i <= 103) continue;
       if (i >= 40 && i <= 42) continue;
@@ -105,7 +110,10 @@
       // Bewusst mit Luft zum Deckel (150 Eintraege): Bei 146 haette schon eine kleine Aenderung
       // am Muster dazu gefuehrt, dass die aeltesten Tage stillschweigend abgeschnitten werden
       // und die Spanne kuerzer aussieht, als sie gedacht war.
-      var abstand = i < 45 ? 1 : (i < 110 ? 2 : 5);
+      // Runde 131: Bei den waehlbaren Laengen (bis 120) taeglich — die Zeitfenster zaehlen Tage MIT
+      // Eintrag, und mit dem duennen Muster ergaben 120 Tage nur 72 Eintragstage: "Gesamt" waere
+      // dann dasselbe wie "90" gewesen und deshalb gesperrt (gemessen in WebKit).
+      var abstand = tage <= 120 ? 1 : (i < 45 ? 1 : (i < 110 ? 2 : 5));
       if (i % abstand !== 0) continue;
       var d = new Date(jetzt - i*TAG_MS);
       var wt = d.getDay();
@@ -121,10 +129,13 @@
       var abschnitte = (i % 3 === 0) ? ABSCHNITTE : [ABSCHNITTE[2]];
       abschnitte.forEach(function(ab, k){
         var zeit = new Date(d.getFullYear(), d.getMonth(), d.getDate(), ab.h, 0, 0);
+        // Runde 131: Heute nur, was schon vorbei ist — sonst staende der Tag morgens schon als
+        // vollstaendig da (drei Tageszeiten, je ein Eintrag), mit Eintraegen aus der Zukunft.
+        if (zeit.getTime() > jetzt) return;
         var e = Math.round(Math.max(1, Math.min(5, 3.1 + trend + wochen + ab.ab + (demoZufall(i*3+k+1) - 0.5) * 1.2)));
         var s = Math.round(Math.max(1, Math.min(5, 3.3 + trend + wochen*0.6 + ab.ab*0.5 + (demoZufall(i*3+k+50) - 0.5) * 1.3)));
         var eintrag = {day: tagKey, ts: zeit.getTime(), energy: e, valence: s,
-                       slot: ab.h < 11 ? 'morgen' : (ab.h < 17 ? 'mittag' : 'abend')};
+                       slot: ab.h < 12 ? 'morgen' : (ab.h < 18 ? 'mittag' : 'abend')};
         // Runde 124: Die letzten acht Wochen tragen am Abend die fuenf Fragen und Stichworte —
         // die Funktion ist neu, aeltere Tage haetten sie nicht. Die Antworten streuen um das
         // Ergebnis oben (Stufe 1-5 um ergebnis/25+1), Extraversion an Freundes-Tagen hoeher, damit
@@ -176,7 +187,7 @@
     };
   }
 
-  function demoLaden(){
+  function demoLaden(tage){
     if (demoAktiv()) return;
     try{
       // Erst sichern, dann schreiben. Die Reihenfolge ist der ganze Unterschied.
@@ -187,15 +198,17 @@
       });
       localStorage.setItem(DEMO_SICHERUNG, JSON.stringify(sicherung));
       DATEN_SCHLUESSEL.forEach(function(k){ localStorage.removeItem(k); });
-      var d = demoDaten();
+      var d = demoDaten(tage);
       Object.keys(d).forEach(function(k){ localStorage.setItem(k, d[k]); });
       localStorage.setItem(DEMO_MARKE, '1');
+      if (tage) localStorage.setItem(DEMO_TAGE, String(tage));
     }catch(e){ toast(tx('js_konnte_nicht_gespeichert_w')); return; }
     try{ location.reload(); }catch(e){}
   }
 
   function demoBeenden(){
     if (!demoAktiv()) return;
+    try{ localStorage.removeItem(DEMO_TAGE); }catch(e){}
     try{
       var roh = localStorage.getItem(DEMO_SICHERUNG);
       var sicherung = roh ? JSON.parse(roh) : {};
