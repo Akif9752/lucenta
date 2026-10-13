@@ -1,30 +1,16 @@
 
 /* ================= Feier, Schub, Abweisung =================
-     Runde 78, erneut mit Verweis auf Duolingo. Der Unterschied zwischen den bisherigen
-     Bewegungen und denen dort laesst sich in einem Satz sagen: Die App blendet ein, jene App
-     wirft. Ein Einblenden beantwortet eine Handlung hoeflich; ein Wurf mit Ueberschwung
-     beantwortet sie koerperlich — etwas hat Masse, kommt an, schwingt aus.
+   Bewegungen mit Masse und Ueberschwung, jede an einer Handlung. Kein Serien-Zaehler, kein XP.
+   Der Block steht zuletzt, weil er Bewegungen aus 02-quiz.css und 10-druckzustaende.css absichtlich
+   ersetzt. */
 
-     Uebernommen wird wieder das Handwerk, nicht die Bindungsmechanik: kein Serien-Zaehler,
-     kein XP, keine Herzen. Was hier steht, haengt ausnahmslos an einer Handlung, die gerade
-     stattgefunden hat.
-
-     Der Block steht zuletzt, weil er drei Bewegungen aus 02-quiz.css und 10-druckzustaende.css
-     bewusst ersetzt. Das Ueberschreiben ist gewollt und hier benannt, damit niemand die alte
-     Regel sucht und sich wundert, warum sie nicht greift. */
-
-  /* ---------- 1. Der Fragewechsel: Schub statt Einblenden ----------
-     Ersetzt "q-enter" aus 02-quiz.css. Die Frage stieg dort 9px auf. Jetzt kommt sie von rechts
-     herein und faengt sich mit leichtem Ueberschwung — dieselbe Richtung, in die der
-     Fragebogen laeuft. Die 26 Bildpunkte laufen in den Seitenrand hinein und nicht darueber
-     hinaus; seit Runde 91 wird das gemessen statt angenommen. */
+  /* ---------- 1. Der Fragewechsel ----------
+     Ersetzt q-enter aus 02-quiz.css: Die Frage kommt von rechts mit Ueberschwung. */
   /* Seit Runde 129 groesser: q-schwung in Abschnitt 8. */
 
-  /* ---------- 2. Die fuenf Antwortkreise kommen einzeln ----------
-     Ein knapper Versatz laesst die Reihe der Frage folgen, statt fertig unter ihr zu stehen.
-     34 ms je Kreis: die ganze Reihe ist nach 136 ms plus Laufzeit da und wird als EINE Bewegung
-     gelesen. Die Klasse setzt animateQuestionIn() und nimmt sie beim Antworten wieder weg —
-     sonst liefe der Einlauf bei jedem Tipp erneut. */
+  /* ---------- 2. Die Antwortkreise kommen einzeln ----------
+     34 ms Versatz je Kreis. Die Klasse setzt animateQuestionIn() und nimmt sie beim Antworten wieder
+     weg. */
   #scaleRow.row-in .scale-btn{ animation:kreis-ein .3s cubic-bezier(.34,1.56,.64,1) both; }
   #scaleRow.row-in .scale-btn:nth-child(1){ animation-delay:.04s; }
   #scaleRow.row-in .scale-btn:nth-child(2){ animation-delay:.074s; }
@@ -36,21 +22,14 @@
     to  { opacity:1; transform:none; }
   }
 
-  /* ---------- 3. Die Antwort selbst: zusammendruecken und aufspringen ----------
-     Ergaenzt "antwort-puls" aus 10-druckzustaende.css um die eigentliche Signatur: Der Kreis
-     geht kurz zusammen und federt darueber hinaus, bevor er sich setzt. Der Ring bleibt, beide
-     laufen zusammen als eine Antwort. */
+  /* ---------- 3. Die Antwort: zusammendruecken und aufspringen ----------
+     Ergaenzt antwort-puls aus 10-druckzustaende.css. */
   /* Seit Runde 129 deutlicher: antwort-feder in Abschnitt 8. */
 
-  /* ---------- 4. Funkeln statt Konfetti (Runde 132) ----------
-     Auftrag des Inhabers: Sparkles statt Konfetti, passend zum Konzept — Sternenhimmel, Kranz,
-     Licht. Gezeigt an den Meilensteinen im Fragebogen, bei der Ergebnis-Enthuellung und beim
-     Speichern der Tagesform (funkelStoss in 19-feier.js). Der Behaelter liegt punktgenau am
-     Ursprung und ist fuer Zeiger wie fuer Hilfstechnik unsichtbar.
-
-     Die Sternform ist ein vierzackiger, nach innen gewoelbter Stern als clip-path. Das Leuchten
-     sitzt am BEHAELTER (drop-shadow wirkt auf das fertig zugeschnittene Bild der Kinder); an den
-     Sternen selbst wuerde der Zuschnitt es mit abschneiden. */
+  /* ---------- 4. Funkeln statt Konfetti ----------
+     An Meilensteinen, bei der Ergebnis-Enthuellung und beim Speichern der Tagesform (funkelStoss in
+     19-feier.js). Vierzackiger Stern als clip-path; das Leuchten (drop-shadow) sitzt am BEHAELTER, an
+     den Sternen schnitte der Zuschnitt es ab. */
   .funkeln{
     position:fixed; z-index:60; width:0; height:0; pointer-events:none;
     filter:drop-shadow(0 0 3px color-mix(in srgb, var(--accent-2) 75%, transparent))
@@ -64,9 +43,7 @@
     animation-delay:var(--verzug, 0ms);
   }
   .funkeln i.funkel-punkt{ clip-path:none; border-radius:50%; }
-  /* Herausschweben, einmal aufblitzen, nachglimmen, verloeschen. Der Blitz (40 %) ist das, was
-     einen Stern von einem fliegenden Punkt unterscheidet; das leichte Steigen am Ende ersetzt den
-     Fall der Schnipsel. */
+  /* Herausschweben, einmal aufblitzen (40 %), verloeschen, leicht steigend. */
   @keyframes funkel-flug{
     0%  { opacity:0; transform:translate(-50%,-50%) scale(0) rotate(0deg); }
     18% { opacity:1; transform:translate(calc(-50% + var(--dx) * .45), calc(-50% + var(--dy) * .45)) scale(1.25) rotate(calc(var(--dreh) * .3)); }
@@ -76,9 +53,7 @@
   }
 
   /* ---------- 5. Der Fortschrittsbalken bekommt Koerper ----------
-     Ein hellerer Streifen in der oberen Haelfte der Fuellung. Das ist keine Bewegung, sondern
-     die zweite Haelfte derselben Formensprache: Eine Flaeche mit Glanzkante liest sich als
-     Koerper, eine ohne als Farbfeld. */
+     Ein hellerer Streifen oben (Glanzkante). */
   #focusline-fill{ position:relative; overflow:hidden; }
   #focusline-fill::after{
     content:''; position:absolute; left:4px; right:3px; top:2px; height:2.5px;
@@ -86,9 +61,7 @@
   }
 
   /* ---------- 6. Die Ergebniskacheln springen ----------
-     Ersetzt "card-in" fuer die fuenf Kacheln der Ergebnisseite. Sie stiegen bisher gerade auf;
-     jetzt kommen sie mit demselben Ueberschwung wie die Antwortkreise. Der Versatz je Kachel
-     steht im JavaScript (renderResult). */
+     Ersetzt card-in; der Versatz je Kachel steht in renderResult. */
   .stat-tile{
     animation-name:kachel-pop; animation-duration:.52s;
     animation-timing-function:cubic-bezier(.34,1.56,.64,1);
@@ -99,10 +72,7 @@
   }
 
   /* ---------- 7. Die Abweisung ----------
-     Ein abgelehnter Code hatte bisher nur eine Zeile Text als Antwort. Das Schuetteln sagt
-     dasselbe schneller und zeigt zugleich, WELCHES Feld gemeint ist. Kurz und abklingend, nicht
-     gleichmaessig: ein gleichmaessiges Wackeln wirkt wie ein Defekt, ein abklingendes wie ein
-     Kopfschuetteln. */
+     Abklingendes Schuetteln des betroffenen Felds. */
   .schuettel{ animation:schuettel-kf .44s cubic-bezier(.36,.07,.19,.97) both; }
   @keyframes schuettel-kf{
     0%,100%{ transform:translateX(0); }
@@ -114,15 +84,10 @@
   }
   input.schuettel, textarea.schuettel{ border-color:var(--danger); }
 
-  /* ---------- 8. Runde 129: groessere, verspieltere Bewegung ----------
-     Auftrag des Inhabers: "mehr verspielte Animationen, auch etwas groessere als nur kleine
-     Mini-Bewegungen." Die bisherigen Bewegungen lagen bei 9 bis 26 Bildpunkten und 0,3 Sekunden
-     — sauber, aber unterhalb dessen, was man als Ereignis wahrnimmt. Hier stehen die vier
-     gewaehlten Stellen mit deutlich mehr Weg, Ueberschwung und Dauer. */
+  /* ---------- 8. Groessere, verspieltere Bewegung ----------
+     Die vier vom Inhaber gewaehlten Stellen mit mehr Weg, Ueberschwung und Dauer. */
 
-  /* Fragebogen: die Frage kommt mit mehr Schwung und schwingt ueber ihr Ziel hinaus. Der Weg ist
-     von 26 auf 54 Bildpunkte gewachsen; seitlich ueberlaufen kann das Dokument trotzdem nicht,
-     html und body tragen overflow-x:clip (00-grundlagen.css, Runde 91). */
+  /* 54px Weg; ueberlaufen kann das Dokument nicht (overflow-x:clip in 00-grundlagen.css). */
   .qcard.q-in{ animation:q-schwung .58s cubic-bezier(.22,1.3,.36,1) both; }
   @keyframes q-schwung{
     0%  { opacity:0; transform:translateX(54px) rotate(1.2deg) scale(.95); }
@@ -170,10 +135,8 @@
     100%{ opacity:1; transform:none; }
   }
 
-  /* Startseite beim Oeffnen der App (startkartenEinfliegen): Kopf und Karten fliegen gestaffelt
-     von unten herein und federn aus. !important nur, weil die Tagesform-Karte ihr Einblenden
-     inline abschaltet (style="animation:none") — dort ist es fuer das Neuzeichnen gedacht, nicht
-     fuer das Ankommen der Seite. */
+  /* Startseite beim Oeffnen (startkartenEinfliegen). !important nur gegen das inline animation:none
+     der Tagesform-Karte. */
   #view-landing.karten-ein .hero,
   #view-landing.karten-ein .why,
   #view-landing.karten-ein .understand-card{

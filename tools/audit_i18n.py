@@ -235,7 +235,10 @@ for lit in re.findall(r"'((?:[^'\\\n]|\\.)*)'", rest):
     # Ein Literal, das nur als Vorgabe auftaucht, ist keine Aufzaehlung, sondern ein Text.
     STRENG  = r'[A-Za-z_$][\w$]*\s*(?::|===|==|!==|!=)\s*$'
     VORGABE = r'[A-Za-z_$][\w$.\[\]]*\s*\|\|\s*$'
-    teile = re.split(r"'" + re.escape(lit) + r"'", rest)[:-1]
+    # Runde 138: Nur das ENDE jedes Stuecks zaehlt — beide Muster sind am Ende verankert. Vorher lief
+    # die Suche ueber den ganzen Rest des Quelltexts, einmal je Literal: 3 bis 4 Minuten fuer eine
+    # Pruefung, die sonst Sekunden braucht. 200 Zeichen sind mehr als jeder Bezeichner davor.
+    teile = [v[-200:] for v in re.split(r"'" + re.escape(lit) + r"'", rest)[:-1]]
     if lit and teile and all(re.search(STRENG, v) or re.search(VORGABE, v) for v in teile) \
              and any(re.search(STRENG, v) for v in teile):
         continue

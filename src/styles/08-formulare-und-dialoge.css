@@ -5,19 +5,10 @@
     opacity:0;pointer-events:none;transition:opacity .25s ease;
   }
   #processingOverlay.show{opacity:1;pointer-events:auto;}
-  /* Runde 64: Vorher ein pulsierender Punkt — funktional, aber austauschbar; derselbe Punkt
-     stünde in jeder beliebigen App. Jetzt zeichnet sich das Fünfeck der Marke selbst und füllt
-     sich danach. Das ist wörtlich das Produktversprechen ("Lucenta zeichnet dein
-     Persönlichkeitsporträt") und dieselbe Form wie das App-Symbol und die fünf Radar-Achsen —
-     eine Bewegung, die etwas bedeutet, statt eine, die Wartezeit überbrückt.
-
-     Der Umfang des Fünfecks liegt bei rund 44 Einheiten im 24er-Koordinatensystem; 46 als
-     Strichmuster ist knapp darüber und schließt die Kontur damit sicher. */
+  /* Das Fuenfeck der Marke zeichnet und fuellt sich (das Produktversprechen als Bewegung).
+     Strichmuster 46 > Umfang ~44. */
   .processing-mark{color:var(--accent);}
-  /* Die Animation haengt an ".show", nicht am Element selbst. Zuerst stand sie direkt auf dem
-     Polygon — dann lief sie beim Laden der Seite los, in einer unsichtbaren Ueberlagerung, und
-     war laengst fertig, wenn der Moment kam. Gemessen: stroke-dashoffset war zu jedem Zeitpunkt
-     schon 0. Ein Fehler, den man nur im Browser sieht, nicht im Quelltext. */
+  /* Die Animation haengt an .show, sonst lief sie unsichtbar beim Laden ab. */
   .processing-mark polygon{ stroke-dasharray:46; stroke-dashoffset:46; }
   .processing-mark .processing-mark-fill{ opacity:0; stroke-dasharray:none; stroke-dashoffset:0; }
   #processingOverlay.show .processing-mark polygon{
@@ -43,9 +34,7 @@
 
   .traits{margin-top:34px;display:flex;flex-direction:column;gap:14px;}
   .trait-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:18px 18px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;}
-  /* Der gesamte Kopfbereich der Karte ist die Schaltfläche — Name, Messbalken und
-     Zusammenfassung zusammen ergeben eine große, auf dem Telefon leicht zu treffende Fläche,
-     statt nur ein kleines Pfeilsymbol am Rand. */
+  /* Der ganze Kopfbereich der Karte ist die Schaltflaeche. */
   .trait-card > summary{list-style:none;cursor:pointer;display:block;}
   .trait-card > summary::-webkit-details-marker{display:none;}
   .trait-card > summary:focus-visible{outline:2px solid var(--accent-strong);outline-offset:4px;border-radius:var(--radius-s);}
@@ -59,9 +48,7 @@
   }
   .trait-more .chev{color:var(--muted);flex-shrink:0;transition:transform .2s ease;transform:rotate(90deg);}
   .trait-card[open] .trait-more .chev{transform:rotate(-90deg);}
-  /* Zugeklappt kündigt die Zeile an, was dahinter liegt; aufgeklappt wäre dieselbe Aufzählung
-     überflüssig, weil die Abschnitte direkt darunter ihre eigenen Überschriften tragen — dort
-     wird sie deshalb zur Schaltfläche zum Wiederzuklappen. */
+  /* Aufgeklappt wird die Ankuendigung zur Schaltflaeche zum Zuklappen. */
   .trait-card .tm-open{display:none;}
   .trait-card[open] .tm-shut{display:none;}
   .trait-card[open] .tm-open{display:inline;color:var(--muted);}
@@ -70,27 +57,19 @@
   .trait-name{font-family:var(--serif);font-size:17px;}
   .trait-score{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
   .trait-teaser{margin-top:10px;font-size:14px;color:var(--muted);}
-  /* Feedback-Runde 53: Aufklappen war der zweite unbewegte Klick-Moment — der Inhalt sprang
-     schlagartig da. Die Karte selbst ändert ihre Höhe weiterhin sofort (eine Höhen-Animation auf
-     <details> ist ohne feste Höhen nicht sauber lösbar und ruckelt auf schwachen Geräten), aber
-     der Inhalt kommt gestaffelt herein. Das reicht, um den Klick beantwortet zu bekommen. */
+  /* Der Inhalt kommt gestaffelt herein; die Hoehe aendert sich sofort (Hoehenanimation auf <details>
+     ruckelt). */
   .trait-card[open] .trait-section{ animation:sec-in .3s cubic-bezier(.2,.8,.2,1) both; }
   .trait-card[open] .trait-section:nth-child(2){ animation-delay:.05s; }
   .trait-card[open] .trait-section:nth-child(3){ animation-delay:.1s; }
   @keyframes sec-in{ from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:none;} }
   @media (prefers-reduced-motion: reduce){ .trait-card[open] .trait-section{animation:none;} }
   .trait-sections{margin-top:14px;display:flex;flex-direction:column;gap:12px;}
-  /* Feedback-Runde 42: alle einzeiligen Mono-Versal-Mikrolabels liegen jetzt einheitlich auf 11px.
-     Zuvor waren es vier Größen für dieselbe Rolle (10,5 / 11 / 11,5 px), deren Unterschiede zu
-     klein sind, um als Hierarchie gelesen zu werden — sie wirkten nur unruhig. Bewusst
-     bzw. in einem Badge, wo die Größe eine Platzentscheidung ist, keine Hierarchieentscheidung. */
+  /* Alle einzeiligen Mono-Mikrolabels auf 11px. */
   .trait-section-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin-bottom:4px;}
   .trait-section p{font-size:14.5px;color:var(--ink);line-height:1.6;}
 
-  /* Feedback-Runde 41: .uniform-note teilt sich die Gestaltung mit .storage-warning, weil beide
-     dieselbe Rolle haben — ein echter, handlungsrelevanter Hinweis, kein bloßer Disclaimer (und
-     deshalb bewusst NICHT Teil der gedämpften .acronym-note-Gruppe weiter unten). Gemeinsame
-     Selektorliste statt kopierter Regel, damit beide optisch nicht auseinanderlaufen. */
+  /* .uniform-note teilt sich die Gestaltung mit .storage-warning (handlungsrelevante Hinweise). */
   .storage-warning, .uniform-note{
     margin-top:24px;display:flex;align-items:flex-start;gap:10px;
     background:color-mix(in srgb, var(--accent-2) 14%, var(--surface));
@@ -100,10 +79,7 @@
   .storage-warning b, .uniform-note b{color:var(--accent-2-text);}
   .uniform-note{margin:22px auto 0;max-width:46ch;text-align:left;}
 
-  /* Wahl zwischen eigenem Wiederholungslauf und Gastdurchlauf (Backlog Runde 27, Punkt 5).
-     Übernimmt bewusst das bereits etablierte Zeilen-Muster der Schublade (.drawer-profile-row):
-     Karte mit Rahmen, linksbündig, Titel plus erklärende Unterzeile — statt ein neues, nur hier
-     vorkommendes Aussehen zu erfinden. */
+  /* Wahl eigener Durchlauf / Gast im Zeilenmuster der Schublade. */
   .run-choice{
     margin-top:18px;display:flex;flex-direction:column;gap:10px;text-align:left;
     background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);padding:16px;
@@ -120,9 +96,7 @@
   .run-choice-opt-t{font-family:var(--sans);font-size:14.5px;font-weight:600;color:var(--ink);}
   .run-choice-opt-d{font-size:12.5px;line-height:1.45;color:var(--muted-soft);}
 
-  /* Hinweis auf der Ergebnisseite eines Gastdurchlaufs. Teilt die Gestaltung von .storage-warning,
-     weil es dieselbe Rolle hat: eine echte, handlungsrelevante Konsequenz (wird nicht gespeichert),
-     kein Kleingedrucktes. */
+  /* Gast-Hinweis wie .storage-warning (echte Konsequenz). */
   .guest-note{
     margin:0 auto 18px;max-width:46ch;text-align:left;
     display:flex;align-items:flex-start;gap:10px;
@@ -138,11 +112,7 @@
 
   .section-title{margin-top:40px;font-size:19px;font-family:var(--sans);font-weight:400;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
   .section-title .n{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:2px 8px;}
-  /* Feedback-Runde 42: Abschnittstitel hatten je nach Fundstelle 40px (Klasse), 36px und 30px
-     (beides per Inline-Style) Abstand — drei Werte für dieselbe Rolle. Der reguläre Abstand ist
-     jetzt durchgehend 40px; untergeordnete Titel innerhalb eines Abschnitts (z. B. "Frühere
-     Ergebnisse" unterhalb der Trendgrafik) bekommen mit dieser Modifikator-Klasse einen bewusst
-     engeren Abstand, statt ihn an Ort und Stelle zu improvisieren. */
+  /* Untergeordnete Abschnittstitel mit engerem Abstand (sonst einheitlich 40px). */
   .section-title-sub{margin-top:30px;}
   /* Einleitungsabsatz unter einem Abschnittstitel — identische Rolle wie .archetypes-head p, war
      auf der Ergebnisseite aber per Inline-Style mit abweichender Größe nachgebaut. */
@@ -157,9 +127,7 @@
   .settings-zeile .theme-toggle{flex-shrink:0;}
   /* Runde 129: Hier stand das Uhrzeitfeld der Erinnerung (Runde 99). Die Erinnerung kommt jetzt zu
      drei festen Zeiten (19b-native.js), das Feld ist entfallen. */
-  /* Runde 96: Der Kasten mit den Nutzungszahlen. white-space:pre-line, weil der Inhalt aus
-     Zeilen besteht, die genau so auch verschickt werden — wer sie hier anders umbrochen saehe
-     als im Teilen-Text, muesste zweimal hinsehen, um dasselbe zu erkennen. */
+  /* white-space:pre-line: dieselben Zeilen wie im verschickten Text. */
   .nutzung-zeile{margin-top:16px;}
   .nutzung-vorschau{
     margin-top:10px; padding:12px 14px; border:1px solid var(--line); border-radius:10px;
@@ -172,31 +140,14 @@
   .daten-knoepfe{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
   #importFeld{width:100%; margin-top:10px; font-family:var(--mono); font-size:12px;}
 
-  /* Sieben Sprachen passen nicht in eine Reihe. auto-fit mit einer Mindestbreite laesst das
-     Raster selbst entscheiden, wie viele Spalten die vorhandene Breite hergibt: auf 390px sind
-     es drei, auf dem Schreibtisch vier — ohne dass hier eine einzige Bildschirmbreite genannt
-     wird. 96px ist die Breite, ab der auch "Portugu&ecirc;s" einzeilig bleibt. */
-  /* Runde 97: An die Stelle des Rasters ist eine Auswahlliste getreten — die iOS-Form fuer
-     eine Wahl aus mehr als drei Moeglichkeiten. Eine Gruppe, Trennlinien dazwischen, ein Haken
-     an der gewaehlten Zeile. Der Haken sitzt in einem ::after und nicht als eigenes Element:
-     Er gehoert zum Zustand der Zeile, nicht zu ihrem Inhalt. */
+  /* Auswahlliste (iOS-Form fuer mehr als drei Moeglichkeiten); der Haken im ::after gehoert zum
+     Zustand. */
   .wahlliste{
     margin-top:14px; border:1px solid var(--line); border-radius:var(--radius-s);
     overflow:hidden; background:var(--surface);
   }
-  /* Runde 104, zwei Abweichungen von der Form, die hier nachgebaut werden soll:
-
-     1. Die Trennlinie lief ueber die ganze Breite. In einer gruppierten Liste auf iOS beginnt
-        sie an der Textkante und laeuft bis zum Rand — sie trennt EINTRAEGE, und der Einzug
-        zeigt, dass beide zur selben Gruppe gehoeren. Eine Linie von Kante zu Kante zerlegt die
-        Gruppe stattdessen in einzelne Streifen. Sie liegt jetzt in einem ::before mit
-        `left:15px`, also genau auf der Polsterung der Zeile; die erste Zeile hat keine.
-        Das ::after war schon vom Haken belegt, deshalb ::before.
-
-     2. Die gewaehlte Zeile war fett. iOS macht das nicht — die Wahl steht im Haken, und zwar
-        allein. Fett dazu ist doppelt gesagt, und es hat einen messbaren Preis: Beim Umschalten
-        aendert die Zeile ihre Textbreite und alles darunter rueckt, was bei acht Sprachen als
-        Zucken zu sehen ist. Der Haken traegt den Zustand; die Zeile bleibt, wie sie ist. */
+  /* Trennlinie im ::before ab der Textkante (left:15px), die erste Zeile ohne. Die gewaehlte Zeile
+     NICHT fett — der Haken traegt den Zustand, und fett liesse alles darunter zucken. */
   .wahl-zeile{
     position:relative;
     -webkit-appearance:none; appearance:none; cursor:pointer;
@@ -221,23 +172,11 @@
     border-radius:1px; transform:rotate(-45deg) translate(1px,-2px);
   }
 
-  /* ---------- Schieber (Runde 79) ----------
-     Ein Zustand mit genau zwei Werten braucht kein Knopfpaar mit Beschriftung — der Schieber
-     zeigt ihn und bedient ihn in einem, und jede Person kennt die Geste vom Telefon.
-
-     Bewusst ueber role="switch" statt ueber ein <input type="checkbox">: Der Rest der App
-     arbeitet durchgehend mit Knoepfen, und die Darstellung eines Kontrollkaestchens laesst sich
-     nur ueber Umwege (appearance:none, ::before) so weit zurechtbiegen. Die Rolle sagt
-     Vorleseprogrammen dasselbe.
-
-     52x32 ist das Bild. Die Trefferflaeche ist es NICHT: 32 Punkte Hoehe sind zwoelf zu wenig.
-     Der Satz, der hier stand, behauptete das Gegenteil und war eine Schaetzung; die Messung in
-     Runde 80 hat sie widerlegt. Die fehlende Hoehe kommt aus einem ::after in
-     10-druckzustaende.css, wo alle diese Faelle beieinanderstehen. */
-  /* Runde 97 auf die iOS-Masse gebracht: 51x31 Punkte, Knopf 27, Weg 20. Der Rahmen ist weg
-     — ein Schieber hat auf dem Telefon keine Kontur, sondern eine gefuellte Bahn; der Rahmen
-     liess ihn wie ein Eingabefeld aussehen. Statt seiner eine Innenkante ueber box-shadow, die
-     im Ausgeschaltet-Zustand die Bahn vom Grund abhebt und beim Einschalten verschwindet. */
+  /* ---------- Schieber ----------
+     role="switch" auf einem Knopf statt Checkbox. Die fehlende Trefferhoehe kommt aus einem ::after in
+     10-druckzustaende.css. */
+  /* iOS-Masse 51x31, Knopf 27, Weg 20. Kein Rahmen, eine Innenkante ueber box-shadow im
+     ausgeschalteten Zustand. */
   .schalter{
     position:relative; flex-shrink:0; cursor:pointer;
     width:51px; height:31px; padding:0; border:none; border-radius:100px;
@@ -256,28 +195,12 @@
   .schalter:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:3px; }
   /* Der Druck sitzt hier im Knopf, nicht in der ganzen Flaeche: Eine schrumpfende Bahn saehe
      aus, als wuerde der Schalter kleiner, statt dass man ihn drueckt. */
-  /* Auf dem Telefon wird der Knopf beim Druecken nicht kleiner, sondern BREITER — er dehnt
-     sich in die Richtung, in die er wandern wuerde. Genau das ist hier nachgebaut: mehr
-     Breite, gleiche Hoehe, und im eingeschalteten Zustand um dieselbe Strecke nach links
-     verschoben, damit er an der rechten Kante stehen bleibt und nach innen waechst. */
+  /* Beim Druecken wird der Knopf BREITER (wie in iOS), eingeschaltet nach innen. */
   .schalter:active .schalter-knopf{ width:33px; }
   .schalter[aria-checked="true"]:active .schalter-knopf{ width:33px; transform:translateX(14px); }
-  /* ---------- Runde 104: Liquid Glass Schritt 3 ----------
-     Der Schieber ist der Fall, den Apples Leitlinie woertlich nennt. Glas gehoert nicht in die
-     Inhaltsschicht — mit genau einer Ausnahme: "controls in the content layer with a transient
-     interactive element like sliders and TOGGLES; in these cases, the element takes on a Liquid
-     Glass appearance to emphasize its interactivity when a person activates it."
-     Ein Schieber in den Einstellungen ist ein Toggle in der Inhaltsschicht, und "when a person
-     activates it" ist :active. Deshalb hier und nicht am Ruhezustand.
-
-     Die Bahn wird beim Druck durchscheinend, nicht der Knopf: Der Knopf ist auf dem Telefon
-     weiss und deckend, und ein glaeserner Knopf auf 27 Punkten waere ein grauer Fleck. Die Bahn
-     ist die Flaeche, die den Zustand traegt — sie hellt unter dem Finger auf und laesst die Karte
-     darunter durchscheinen. Beide Zustaende ausdruecklich, weil `[aria-checked="true"]` und
-     `:active` gleich spezifisch sind.
-
-     Zusammen mit dem breiter werdenden Knopf darueber ergibt das eine Rueckmeldung aus zwei
-     Teilen — Form und Material —, die beide nur so lange dauern, wie der Finger liegt. */
+  /* ---------- Liquid Glass nur beim Druecken ----------
+     Apples Ausnahme fuer Toggles in der Inhaltsschicht ("when a person activates it" = :active). Die
+     Bahn wird durchscheinend, nicht der Knopf. Beide Zustaende ausdruecklich (gleiche Spezifitaet). */
   .schalter:active{
     background:color-mix(in srgb, var(--surface-3) 55%, transparent);
     -webkit-backdrop-filter:blur(8px) saturate(180%) brightness(1.06);
@@ -288,10 +211,8 @@
     -webkit-backdrop-filter:blur(8px) saturate(180%) brightness(1.06);
     backdrop-filter:blur(8px) saturate(180%) brightness(1.06);
   }
-  /* Die drei Rueckfaelle, am Bedienelement statt gesammelt (siehe die Begruendung beim
-     Segmentwaehler in 00-grundlagen.css): ohne Unschaerfe, bei "Transparenz reduzieren" und bei
-     "Kontrast erhoehen" bleibt die Bahn deckend. Sonst verliert der eingeschaltete Schieber
-     beim Druecken genau den Farbkontrast, an dem man ihn erkennt. */
+  /* Rueckfaelle am Bedienelement: ohne Unschaerfe, bei reduzierter Transparenz und mehr Kontrast
+     bleibt die Bahn deckend. */
   @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
     .schalter:active{ background:var(--surface-3); }
     .schalter[aria-checked="true"]:active{ background:var(--accent); }

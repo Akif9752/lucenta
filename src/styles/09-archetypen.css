@@ -3,16 +3,11 @@
   .archetypes-head h1{font-size:clamp(24px,6vw,32px);line-height:1.15;margin-top:8px;letter-spacing:-.01em;}
   .archetypes-head p{margin-top:14px;font-size:14.5px;color:var(--muted);max-width:56ch;line-height:1.6;}
   .archetypes-head b{color:var(--ink);}
-  /* Runde 108: Der Bereich hiess seit jeher .archetype-groups und hatte keine Gruppen. Jetzt
-     fuenf — je eine Dimension mit ihren zwei Polen. Der Abstand ZWISCHEN den Gruppen (26px) muss
-     deutlich groesser sein als der innerhalb (12px), sonst sind es wieder zehn Karten in einer
-     Reihe; die Ueberschrift allein traegt die Trennung nicht. Die Begruendung steht bei
-     renderArchetypeGroups() in 04-scoring.js. */
+  /* Fuenf Gruppen je Dimension; der Abstand ZWISCHEN den Gruppen (26px) deutlich groesser als
+     innerhalb (12px). */
   .archetype-groups{margin-top:26px;display:flex;flex-direction:column;gap:26px;}
   .arch-gruppe{display:flex;flex-direction:column;gap:12px;}
-  /* Eine Angabe, keine Aussage — deshalb in der Mono-Schrift wie alle Kennzeichnungen der App.
-     Die Linie dahinter fuellt den Rest der Zeile: Sie macht aus der Ueberschrift eine Trennung,
-     ohne dass darueber eine zweite Linie noetig waere. */
+  /* Die Linie hinter dem Titel macht ihn zur Trennung. */
   .arch-gruppe-titel{
     font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;
     text-transform:uppercase;color:var(--muted);margin:0;
@@ -20,12 +15,7 @@
   }
   .arch-gruppe-titel::after{content:'';flex:1;height:1px;background:var(--line);}
   .role-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:16px 18px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;transition:border-color .15s ease;}
-  /* Der Pol als Kante, nicht nur als Farbe eines Wortes: Zwei Karten einer Gruppe sind
-     Gegensaetze, und ein 11px kleines Adjektiv in Akzentfarbe ist dafuer zu leise. Dieselben
-     zwei Marken wie .role-tag-high/-low — es ist dieselbe Unterscheidung, nur groesser.
-     Nur die FARBE, nicht die Breite: Die Formensprache aus Runde 69 setzt fuer .role-card
-     border-width:2px !important (10-druckzustaende.css). Eine eigene Breite hier waere eine
-     Angabe, die nie ankommt — toter Code, der aussieht, als wirke er. */
+  /* Der Pol als Kante (nur die Farbe — die Breite setzt 10-druckzustaende.css mit !important). */
   .role-pol-high{border-left-color:var(--accent);}
   .role-pol-low{border-left-color:var(--accent-2);}
   @media (hover:hover){ .role-card:hover{border-color:var(--accent-strong);} }
@@ -61,12 +51,7 @@
   }
   @media (hover:hover){ .profile-remove-photo:hover{color:var(--ink);} }
   .avatar-color-row{margin-top:14px;display:flex;gap:10px;}
-  /* Feedback-Runde 44: Der Ring der Farbtupfer war in --line gehalten. Auf dem hellen Untergrund
-     ergibt das für den Ton „Ruhig" — dessen Füllung selbst nahezu Seitenfarbe hat — ein
-     Kontrastverhältnis von rund 1,1:1: eine der drei Auswahlmöglichkeiten war schlicht nicht zu
-     sehen. Der Ring liegt jetzt in --muted (5,6:1 gegen die Seite) und macht alle drei Tupfer
-     gleich sicher erkennbar; auf den beiden dunklen Füllungen tritt er ohnehin kaum in
-     Erscheinung, weil sie sich selbst deutlich genug abheben. */
+  /* Der Ring der Farbtupfer in --muted, sonst ist "Ruhig" auf hellem Grund unsichtbar. */
   .avatar-color-swatch{
     width:28px;height:28px;border-radius:50%;padding:0;cursor:pointer;
     border:2px solid transparent;box-shadow:0 0 0 1px var(--muted) inset;
@@ -77,34 +62,16 @@
   .avatar-color-swatch.avatar-color-accent{background:var(--accent);}
   .avatar-color-swatch.avatar-color-ink{background:var(--ink);}
   .avatar-color-swatch.avatar-color-quiet{background:var(--surface-2);}
-  /* Auf die tatsächlichen Avatar-Kreise (.avatar/.drawer-profile-avatar/.settings-account-avatar)
-     angewendet — als Doppelklassen-Selektor statt einfacher .avatar-color-x-Regel, damit die
-     Spezifität sicher über der jeweiligen Basisregel liegt, unabhängig von deren Reihenfolge im
-     Stylesheet (.settings-account-avatar steht z. B. erst weiter unten). */
+  /* Doppelklassen-Selektor, damit die Spezifitaet unabhaengig von der Reihenfolge ueber der Basisregel
+     liegt. */
   .avatar.avatar-color-ink, .drawer-profile-avatar.avatar-color-ink, .settings-account-avatar.avatar-color-ink{background:var(--ink);color:var(--paper);}
   .avatar.avatar-color-quiet, .drawer-profile-avatar.avatar-color-quiet, .settings-account-avatar.avatar-color-quiet{background:var(--surface-2);color:var(--ink);}
-  /* Bugfix Feedback-Runde 39: .drawer-profile-row hat selbst background:var(--surface-2) — exakt
-     derselbe Ton wie die "Ruhig"-Avatarfarbe oben. Ohne eigenes Foto verschwamm der Initialen-Kreis
-     dort fast vollständig mit seiner Umgebung; nur der dünne 1px-Rahmen blieb zur Unterscheidung.
-     Nur in diesem einen Kontext betroffen (Profil und Einstellungen haben einen abweichenden
-     Untergrund, siehe .settings-group/.profile-head) — dort per Ansehen-Selektor auf --surface-3
-     angehoben, denselben etwas kräftigeren Ton, den auch .stat-tile für denselben Zweck nutzt. Die
-     zusätzliche Ansehen-Klasse hebt die Spezifität sicher über die geteilte Regel direkt darüber.*/
+  /* "Ruhig" in der Schublade auf --surface-3, weil die Profilzeile selbst --surface-2 traegt. */
   .drawer-profile-row .drawer-profile-avatar.avatar-color-quiet{background:var(--surface-3);}
-  /* ---------- Das Monogramm wie in iOS (Runde 114) ----------
-     Auf Entscheidung des Inhabers sind die gezeichneten Menschen entfallen; ohne Foto und ohne
-     Tier steht jetzt das, was iOS in Kontakten und beim Apple-Account zeigt: zwei Buchstaben in
-     einem Kreis mit einem Verlauf, der oben heller ist. Der Verlauf ist das, was den Kreis zu
-     einem Gegenstand macht statt zu einem Farbfleck — genau die Flaechigkeit, die bei den alten
-     Figuren als "Wii" gemeldet wurde.
-     Die Buchstaben stehen in der Systemschrift, nicht in Fraunces: In iOS ist das Monogramm SF,
-     und eine Serifenschrift in einem Kreis liest sich als Siegel.
-     background-image und nicht background: Das eigene Foto setzt renderAvatarInto() als
-     Inline-Stil background-image, und ein Inline-Stil schlaegt diese Regel. Mit "background"
-     hier waere die Farbe mit ueberschrieben worden; so bleibt sie unter dem Foto unsichtbar und
-     kehrt zurueck, sobald das Foto entfernt wird.
-     Kein neues Farbtoken: Beide Enden entstehen aus den vorhandenen Marken, die drei Farbmodi
-     gelten damit von selbst. */
+  /* ---------- Das Monogramm wie in iOS ----------
+     Zwei Buchstaben in SF in einem Kreis mit Verlauf (oben heller). background-image statt background:
+     Das eigene Foto kommt als Inline-background-image und darf die Farbe nicht ueberschreiben. Keine
+     neuen Farbmarken. */
   .avatar:not(.hat-figur), .drawer-profile-avatar:not(.hat-figur), .settings-account-avatar:not(.hat-figur){
     font-family:var(--sans); font-weight:500; letter-spacing:.01em;
   }
@@ -116,9 +83,7 @@
   .settings-account-avatar.avatar-color-ink:not(.hat-figur){
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--ink) 74%, var(--paper)), var(--ink));
   }
-  /* "Ruhig" ist jetzt das Grau der iOS-Kontakte: helle Buchstaben auf einem gedeckten Verlauf
-     statt dunkler Buchstaben auf fast Seitenfarbe. Das loest nebenbei den Fehler aus Runde 39,
-     der Initialen-Kreis verschwimme mit seiner Umgebung — er hat jetzt eine eigene Flaeche. */
+  /* "Ruhig" ist das Grau der iOS-Kontakte (helle Buchstaben auf gedecktem Verlauf). */
   .avatar.avatar-color-quiet:not(.hat-figur), .drawer-profile-avatar.avatar-color-quiet:not(.hat-figur),
   .settings-account-avatar.avatar-color-quiet:not(.hat-figur){
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));
@@ -133,43 +98,17 @@
     font-family:var(--serif);font-size:22px;color:var(--ink);text-align:center;padding:4px 2px 8px;
     width:100%;max-width:280px;
   }
-  /* Backlog Runde 26, Punkt 4: Das war die einzige Stelle der App, die den Fokusring ersatzlos
-     abschaltete. Als Ersatz diente eine Farbänderung der 1px-Unterlinie — für ein Feld, das ohne
-     Rahmen und ohne Fläche auskommt, ist das als einziger Hinweis zu wenig, gerade neben dem
-     kräftigen Ring, den jedes andere Bedienelement der App zeigt. Der Ring kommt zurück; die
-     Unterlinie bleibt zusätzlich, weil sie beim Tippen mit der Maus (also ohne :focus-visible)
-     der einzige Hinweis ist, dass das Feld aktiv ist. */
+  /* Fokusring zurueck; die Unterlinie bleibt als Hinweis beim Tippen mit der Maus. */
   .name-input:focus{border-bottom-color:var(--accent-strong);}
   .name-input:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
-  /* Feedback-Runde 42: derselbe Fehler wie bei den Fußnoten — muted bei opacity .7 landet bei
-     rund 3:1. Platzhaltertext ist echter Text und fällt unter dieselbe Anforderung, deshalb jetzt
-     ebenfalls über die dafür berechnete Farbstufe statt über Transparenz. Das verbliebene
-     opacity:.7 im Leerzustands-Symbol bleibt: ein rein dekoratives, per aria-hidden ausgeblendetes
-     Icon trägt keine Textinformation und unterliegt der Anforderung nicht. */
+  /* Platzhalter ueber die berechnete Farbstufe statt Transparenz (Kontrast 4,5:1). */
   .name-input::placeholder{color:var(--muted-soft);opacity:1;}
   .profile-note{margin-top:14px;max-width:38ch;line-height:1.5;}
 
-  /* Feedback: die wissenschaftlichen/rechtlichen Absicherungs-Hinweise, die quer durch die App an
-     Ergebnis, Vergleich, Verstehen, Code-Teilen und Profil hängen, wirkten trotz kleiner Schrift zu
-     präsent — sie waren farblich/gewichtsmäßig kaum von wichtigerem Sekundärtext (z. B. Karten-
-     Untertiteln) zu unterscheiden und traten dadurch lauter auf, als ihrer eigentlich niedrigen
-     Priorität entspricht. Eine gemeinsame, bewusst zurückgenommene Stufe hier — reduzierte Deckkraft
-     statt eigener Farbe, damit sie eindeutig als unterste, am wenigsten dringende Textebene lesbar
-     bleiben, ohne komplett zu verschwinden (das wären echte Rechts-/Wissenschafts-Hinweise, die
-     sichtbar bleiben sollen — anders als z. B. die MBTI-Erklärung oben, die inhaltlich, nicht nur
-     optisch, entlastet werden konnte). .storage-warning bleibt bewusst ausgenommen: das ist ein
-     echter, handlungsrelevanter Hinweis (Speichern nicht möglich), kein bloßer Disclaimer, und soll
-     sichtbar bleiben. */
-  /* Korrektur Feedback-Runde 42: die ursprüngliche Fassung dämpfte per opacity:.7 bei 11px.
-     Nachgerechnet ergab das 2,92–3,17:1 im Hellmodus und 3,68–4,14:1 im Dunkelmodus — durchgehend
-     unter dem AA-Mindestwert von 4,5:1 für Fließtext. Transparenz ist dafür schlicht das falsche
-     Werkzeug: sie nimmt Betonung UND Lesbarkeit gleichzeitig zurück. Dieselbe visuelle Absicht
-     (unterste Textebene, leiser als normaler Sekundärtext) wird jetzt über eine eigene, dafür
-     berechnete Farbstufe erreicht — und der halbe Punkt mehr Schriftgröße gleicht aus, dass die
-     Farbe allein weniger stark zurücknimmt als die alte Transparenz.
-     Diese Regel ist zugleich die einzige Quelle für die Größe dieser sechs Klassen; die früheren
-     Einzelangaben in ihren jeweiligen Regeln wurden von hier ohnehin überschrieben und sind
-     deshalb entfernt worden, statt als irreführender toter Code stehen zu bleiben. */
+  /* Absicherungs-Hinweise (Wissenschaft, Recht) als unterste, leise Textebene. .storage-warning
+     ausgenommen — der ist handlungsrelevant. */
+  /* Leise per eigener Farbstufe (--muted-soft) statt opacity, sonst unter 4,5:1. Diese Regel ist die
+     einzige Quelle fuer die Groesse der sechs Klassen. */
   .acronym-note, .radar-note, .profile-note, .delta-note{
     color:var(--muted-soft); font-size:11.5px;
   }
@@ -187,12 +126,7 @@
   /* Runde 97: .theme-toggle traegt jetzt zusaetzlich .segment und damit dessen Aussehen. Was
      hier bleibt, ist nur der Abstand nach oben; alles Uebrige kommt aus dem Segmentwaehler. */
   .theme-toggle{margin-top:14px;}
-  /* Runde 104: Die 52 Punkte Hoehe aus .segment-opt sind fuer zwei Zeilen gemacht — Preis und
-     Ersparnis im Kauffenster. Hier steht ein einzelnes Wort. Solange der Waehler faelschlich
-     zwei Spalten hatte, war jedes Fach 150 Punkte breit und die Hoehe fiel nicht auf; mit drei
-     richtigen Spalten sind es rund 100, und 52 Punkte Hoehe auf 100 Breite ist ein Kasten statt
-     eines Fachs. 44 ist Apples Mindestmass fuer eine Trefferflaeche — also das Kleinste, das
-     hier erlaubt ist, und nicht weniger. */
+  /* Ein Wort je Fach: 44 pt Hoehe (Apples Mindestmass) statt 52. */
   .theme-toggle .segment-opt{min-height:44px;}
   .danger-btn{border-color:var(--accent-2);color:var(--accent-2-text);}
   @media (hover:hover){ .danger-btn:hover{background:color-mix(in srgb, var(--accent-2) 12%, transparent);} }
@@ -266,20 +200,10 @@
   .compat-line-total{background:transparent;border:1px solid var(--line);}
   .compat-save-row{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;}
   .compat-save-row .field{flex:1;min-width:160px;}
-  /* Live-Validierung der beiden Code-Felder (Feedback-Runde 32): bislang zeigte sich ein falscher
-     oder unvollständiger Code erst nach Klick auf "Vergleichen" — jetzt gibt ein dezenter Rahmen
-     sofort Rückmeldung, ohne aufdringlich zu sein (kein Rot bei bloß noch unvollständiger Eingabe,
-     nur bei tatsächlich zehnstelligem, aber ungültigem Code). */
+  /* Live-Pruefung der Code-Felder: dezenter Rahmen, Rot nur bei zehnstelligem, aber ungueltigem Code. */
   input.field-valid{border-color:var(--accent-strong);}
-  /* Feedback-Runde 42: war als #c0392b hartkodiert und damit im Dunkelmodus zu dunkel für seinen
-     eigenen Untergrund (gemessen 2,80:1, nötig sind 3,0:1 für Bedienelemente). Als Token mit
-     eigenem Dunkelmodus-Wert jetzt 3,40:1. */
+  /* Als Token mit eigenem Dunkelwert (3:1 fuer Bedienelemente). */
   input.field-invalid{border-color:var(--danger);}
-  /* Der Tastatur-Hinweis im Quiz ("Tipp: Die Zahlentasten 1–5 funktionieren auch", Feedback-Runde 32)
-     ist raus: Lucenta wird ausschließlich als iPhone-App gedacht, und ein Hinweis auf Tastenkürzel
-     passt nicht ins Bild einer reinen Touch-App, egal wie selten er sichtbar war. Der zugrunde
-     liegende globale keydown-Listener bleibt bestehen (schadet nicht, falls doch mal eine externe
-     Tastatur an einem iPhone/iPad hängt), wird aber nirgends mehr beworben. */
   .archive-empty-note{margin-top:14px;}
   .archive-row-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;}
   .archive-match{font-family:var(--mono);font-size:12.5px;color:var(--accent-strong);font-weight:600;white-space:nowrap;}
@@ -289,36 +213,19 @@
   .understand-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:18px 18px;margin-top:14px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;}
   @media (prefers-reduced-motion: reduce){ .understand-card{animation:none;opacity:1;} }
   .understand-group-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin:28px 0 4px;}
-  /* Feedback-Runde 44: Die Ausnahme für das erste Gruppenlabel war für die Karte auf der
-     Startseite gedacht, wo das Label das erste Element der Karte ist. Sie griff aber auch in der
-     Verstehen-Ansicht, wo das erste Label direkt unter dem Einleitungsabsatz steht — es klebte
-     dort mit 4px an dem Text darüber, während alle folgenden Gruppen 28px Luft bekamen. Jetzt auf
-     den Kartenkontext beschränkt, für den sie gemeint war. */
+  /* Die Ausnahme fuer das erste Gruppenlabel nur auf der Startseiten-Karte. */
   .understand-card .understand-group-label:first-child{margin-top:4px;}
   .understand-card h3{font-family:var(--serif);font-size:16.5px;font-weight:500;}
   .understand-card p{margin-top:8px;font-size:14px;color:var(--muted);line-height:1.6;}
 
-  /* Feedback: Tagesform sollte nicht als Schubladen-Reiter, sondern kreativ direkt auf der
-     Startseite ankommen. Statt nur eines Verweis-Buttons lässt sich der tägliche Kurz-Check hier
-     direkt ausfüllen — dieselben Skalen-Buttons wie in der vollständigen Tagesform-Ansicht
-     (.scale-row/.scale-btn/.state-q-sub, unverändert wiederverwendet), nur kompakter und ohne
-     eigenen Speichern-Klick: sobald beide Werte gesetzt sind, speichert die Karte automatisch. Der
-     ausführlichere Verlauf über mehrere Tage bleibt einen Klick entfernt erreichbar. */
+  /* Der Tagesform-Check direkt auf der Startseite, mit denselben Skalen; speichert, sobald beide Werte
+     gesetzt sind. */
   .state-teaser-card{display:flex;flex-direction:column;gap:16px;}
   .state-teaser-copy{margin-top:2px;font-size:13.5px;color:var(--muted);line-height:1.5;}
 
   footer.appfoot{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-  /* Runde 107, gemeldet: "die Benachrichtigungen sind in der Dark Version weiss und in der Light
-     Version schwarz. Das passt nicht zum jeweiligen Design."
-     Zutreffend, und die Ursache stand woertlich hier: --ink als Grund und --paper als Schrift ist
-     die UMKEHRUNG des Farbmodus. Im Hellmodus wurde daraus eine schwarze Pille auf hellem Papier,
-     im Dunkelmodus eine weisse auf dunklem — in beiden Faellen die einzige Flaeche der ganzen App,
-     die nicht zum Modus gehoert.
-     Der Hinweis erscheint im Fragebogen an den Meilensteinen, also mitten in einer Ansicht aus
-     Karten. Also wird er eine: dieselbe Flaeche, dieselbe Schriftfarbe, derselbe Schatten wie
-     .qcard. Getragen wird die Abgrenzung zum Papier jetzt von Rand und Schatten statt von der
-     Umkehrung — --surface liegt nur 1,087 ueber --paper, ohne Rand waere die Pille eine Ahnung.
-     --line-strong statt --line, weil der Rand hier die einzige Kante ist, die die Form haelt. */
+  /* Der Hinweis als Karte (wie .qcard), nicht als umgekehrte Pille; Rand --line-strong traegt die
+     Kante. */
   .toast{
     position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
     background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);
@@ -327,15 +234,8 @@
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-  /* Runde 95: Hier stand die Gestaltung der Bildlaufleiste (::-webkit-scrollbar). Sie ist raus,
-     und zwar nicht als Geschmacksfrage: iOS Safari zeichnet überhaupt keine dauerhafte
-     Bildlaufleiste, die Regeln haben auf dem Zielgerät also nie etwas bewirkt. Zusammen mit dem
-     schon in Runde 32 entfernten Druck-Stylesheet ist das dieselbe Sorte Rest — Bedienelemente
-     eines Fensters, das diese App nicht hat. */
 
-  /* Skip-Link (Feedback-Runde 32): Tastatur- und Screenreader-Nutzung mussten bislang immer erst
-     durch die Top-Bar (Logo, Drawer-Button) tabben, bevor der eigentliche Inhalt erreichbar war.
-     Standard-Muster: unsichtbar bis fokussiert, dann sichtbar oben links. */
+  /* Skip-Link: unsichtbar bis fokussiert. */
   .skip-link{
     position:absolute;left:12px;top:-48px;z-index:200;
     background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:var(--radius-s);
@@ -344,18 +244,12 @@
   .skip-link:focus{top:12px;}
 
   
-  /* ---------- Figur im Initialen-Kreis (Runde 79) ----------
-     Die Figur fuellt den Kreis vollstaendig; ihre eigene Feldfarbe steht als Eigenschaft am
-     Element, damit sie nicht als elfte Klasse im Stilblatt landet. Der Buchstabe weicht ihr —
-     beides gleichzeitig waere doppelt belegt. */
+  /* ---------- Figur im Initialen-Kreis ----------
+     Die Feldfarbe steht als Eigenschaft am Element; der Buchstabe weicht der Figur. */
   .avatar.hat-figur, .drawer-profile-avatar.hat-figur,
   .settings-account-avatar.hat-figur{ background:var(--figur-feld, var(--surface-2)); padding:0; }
-  /* Runde 123: Die Figur ist ein Bild (Fluent Emoji 3D). Es liegt mit Rand im Kreis, weil die
-     Gesichter das Quadrat bis in die Ecken fuellen — randlos schnitte der Kreis Ohren ab. Der
-     weiche Schatten setzt das Modell auf die Flaeche, statt es aufzukleben.
-     Runde 133: Die Tiere haben einen Oberkoerper, und der soll das Portraet unten ausfuellen —
-     das Bild liegt deshalb randlos im Kreis, der den Rumpf abschneidet. Der Rand von 14 % steckt
-     jetzt im Bild selbst (tools/figuren_holen.py, fester Rahmen), der Kopf sitzt wo vorher. */
+  /* Das Tierbild liegt randlos im Kreis, der den Rumpf abschneidet; der Rand steckt im Bild selbst
+     (tools/figuren_holen.py, fester Rahmen), der Kopf sitzt wie vor Runde 133. */
   .figur-bild{
     display:block; width:100%; height:100%; margin:0; object-fit:contain;
     filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.16));
@@ -375,15 +269,9 @@
   }
   .figur-wahl[aria-pressed="true"]{ border-color:var(--ink); }
 
-  /* ---------- Farbmodus (Runde 87) ----------
-     Rueckmeldung: Die helle Scheibe hinter der Figur war auf dem dunklen Grund der hoechste
-     Kontrast der ganzen Ansicht. Die Figur selbst behaelt ihre Farben — ein Fuchs, der im
-     Dunkelmodus grau wird, ist kein Fuchs mehr —, die Flaeche darunter folgt dem Modus.
-     figFeldDunkel() in 13-figuren.js rechnet sie aus derselben Farbe aus.
-
-     Dazu eine leichte Daempfung der Zeichnung selbst: Volle Sattheit auf dunklem Grund wirkt
-     wie ein Aufkleber. Sechs Prozent weniger Helligkeit reichen, damit die Figur auf der
-     Flaeche LIEGT, statt darauf zu leuchten — und sind wenig genug, dass keine Farbe kippt. */
+  /* ---------- Farbmodus ----------
+     Die Figur behaelt ihre Farben, die Flaeche darunter folgt dem Modus (figFeldDunkel() in
+     13-figuren.js). Im Dunkeln 6 % gedaempft, damit sie liegt statt zu leuchten. */
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]) .avatar.hat-figur,
     :root:not([data-theme="light"]) .drawer-profile-avatar.hat-figur,
@@ -410,10 +298,8 @@
     color:var(--muted); font-family:var(--mono); font-size:15px;
   }
 
-  /* ---------- Hintergrundvorlagen der Profilzeile (Runde 79) ----------
-     Jede Vorlage setzt Flaeche UND Schriftfarbe. Ein dunkler Nachthimmel mit der hellen
-     Textfarbe der App waere sonst im Hellmodus unlesbar — genau der Fehler, den eine reine
-     Hintergrundwahl macht. Deshalb tragen die Regeln ihre Textfarben selbst. */
+  /* ---------- Hintergrundvorlagen der Profilzeile ----------
+     Jede Vorlage setzt Flaeche UND Schriftfarbe. */
   .drawer-profile-row[data-hg]{ border-color:transparent; color:var(--hg-ink); }
   .drawer-profile-row[data-hg] .drawer-profile-text strong{ color:var(--hg-ink); }
   .drawer-profile-row[data-hg] .drawer-profile-text .l,
@@ -494,19 +380,15 @@
     color:var(--muted); font-family:var(--mono); font-size:13px;
   }
 
-  /* Fehlersuche Runde 80: Die Profilzeile der Schublade sagt jetzt, wenn Beispieldaten liegen.
-     Ein Rand, kein Band — die Zeile traegt bereits eine waehlbare Hintergrundvorlage, und ein
-     zweites farbiges Element daneben waere ein Wettstreit. Der Rand liegt in --danger, weil er
-     eine Warnung ist und keine Zierde. */
+  /* Beispieldaten: ein Rand in --danger an der Profilzeile. */
   .drawer-profile-row.ist-demo{
     outline:2px dashed var(--danger); outline-offset:2px;
   }
   .drawer-profile-row.ist-demo .drawer-profile-text .l{ color:var(--danger); }
 
-  /* ---------- Vergleich je Dimension (Runde 81) ----------
-     Die Karten sind dieselbe Bauform wie beim eigenen Ergebnis (.trait-card) — die Regeln dafuer
-     stehen in 08-formulare-und-dialoge.css und gelten hier unveraendert mit. Ergaenzt wird nur,
-     was es beim eigenen Ergebnis nicht gibt: zwei Werte statt einem und der Abstand dazwischen. */
+  /* ---------- Vergleich je Dimension ----------
+     Dieselbe Bauform wie beim eigenen Ergebnis (.trait-card, 08-formulare-und-dialoge.css); hier nur
+     zwei Werte und der Abstand. */
   .compat-paar{display:flex;align-items:baseline;gap:6px;font-size:13px;flex-shrink:0;}
   .compat-wert-me{color:var(--accent-strong);font-weight:500;}
   .compat-wert-other{color:var(--accent-2-text);font-weight:500;}
@@ -530,9 +412,7 @@
      davor — er bekommt eine eigene Zeile statt im selben Absatz weiterzulaufen. */
   .compat-gesamt-satz{margin-top:8px;color:var(--muted);}
 
-  /* Runde 82: Die zwei neuen Abschnitte der Verstehen-Ansicht.
-     Beide benutzen .understand-card weiter — sie sind derselbe Kartentyp, nur mit anderem
-     Inhalt. Eine eigene Bauform haette zwei Gestaltungen fuer eine Sache ergeben. */
+  /* Kombinationen und eigene Daten benutzen .understand-card weiter. */
   /* Welche zwei Dimensionen die Karte behandelt, ueber der Ueberschrift. Klein und in der
      Mono-Schrift wie alle Kennzeichnungen der App: Es ist eine Angabe, keine Aussage. */
   .kombi-dims{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
@@ -540,10 +420,10 @@
      eine Farbe: Sie sind kein Hinweis und keine Warnung, sondern ein anderer Ursprung. */
   .understand-daten{border-left:3px solid var(--accent);}
 
-  /* ---------- Verschlossene Stellen (Runde 84) ----------
-     Ein Kasten, kein Vorhang: Er steht ANSTELLE des Inhalts, nicht darueber. Ein verwaschener
-     Inhalt dahinter waere die uebliche Loesung und die schlechtere — er zeigt her, was man
-     nicht haben kann, und das ist naeher an Reklame als an einem Hinweis. */
+  /* ---------- Schloss ----------
+     Der Kasten fuer verschlossene Stellen ohne Vorschau (z. B. Archiv voll). Die meisten gesperrten
+     Stellen zeigen stattdessen die verschwommene Vorschau des echten Inhalts (vorschauHTML,
+     12-ios.css). */
   .schloss{
     margin-top:14px; display:flex; gap:12px; align-items:flex-start;
     background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-m);
@@ -553,12 +433,8 @@
   .schloss-text{ font-size:14px; color:var(--muted); line-height:1.55; }
   .schloss-btn{ margin-top:12px; }
 
-  /* Der Entwickler-Umschalter fuer die gekaufte Fassung (Runde 84). Er benutzt .settings-row
-     weiter — die Zeile mit Text links und Schalter rechts gibt es dort schon, und eine zweite
-     Bauform fuer dieselbe Sache waere eine Bauform zu viel. */
-  /* flex:1 statt der Vorgabe: .settings-row hat flex-wrap, und ohne diese Zeile beansprucht
-     der Textblock seine volle Wunschbreite — der Schalter rutschte dadurch in die naechste
-     Zeile und stand unter dem Text statt daneben. */
+  /* Der Entwickler-Umschalter benutzt .settings-row weiter. */
+  /* flex:1, sonst rutscht der Schalter unter den Text (.settings-row hat flex-wrap). */
   .settings-row-text{ display:flex; flex-direction:column; gap:3px; min-width:0; flex:1; }
   .settings-row-text strong{ font-family:var(--serif); font-weight:500; font-size:14.5px; }
   .settings-row-desc{ font-size:12.5px; color:var(--muted); line-height:1.5; }

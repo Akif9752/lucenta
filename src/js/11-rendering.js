@@ -1,7 +1,6 @@
-// ---------- rendering ----------
-  // Setzt bzw. entfernt die Fortschritts-Semantik des Fokus-Strichs. `null` heißt: keine Ansicht
-  // mit Fortschritt — dann verschwinden Rolle und Werte wieder vollständig, statt außerhalb des
-  // Quiz einen eingefrorenen Fortschritt von 0 % oder 100 % anzukündigen.
+// ---------- Darstellung ----------
+// Fortschritts-Semantik des Fokus-Strichs; null entfernt Rolle und Werte ganz (ausserhalb des
+// Fragebogens kein eingefrorener Fortschritt).
   function setFocuslineProgress(index){
     var el = $('focusline');
     if (!el) return;
@@ -27,10 +26,7 @@
     $('qNow').textContent = (qi+1);
     $('qText').textContent = it.text;
     $('focusline-fill').style.width = Math.round((qi/50)*100)+'%';
-    // Backlog Runde 27, Punkt 3: Der Fokus-Strich war bislang rein visuell. Wer mit Screenreader
-    // testet, bekam den Fortschritt nur über den Textzähler "Frage x von 50" mit — die Leiste selbst
-    // war semantisch nichts. Sie trägt die Rolle jetzt genau dann, wenn sie tatsächlich Fortschritt
-    // anzeigt (nur im Quiz); auf allen anderen Ansichten ist sie reine Zierde und bleibt es auch.
+    // Der Strich traegt role=progressbar nur im Fragebogen.
     setFocuslineProgress(qi);
     var row = $('scaleRow'); row.innerHTML='';
     for (var v=1; v<=5; v++){
@@ -52,11 +48,7 @@
 
 
 
-  // Runde 63. Zwei kleine Helfer für die fühlbare Seite des Fragebogens.
-  //
-  // Der Impuls im Fortschrittsbalken läuft nur an den Meilensteinen — also dort, wo ohnehin
-  // schon ein Hinweistext erscheint. Ein Balken, der bei jeder der fünfzig Antworten aufblitzt,
-  // wäre nach zehn Fragen nur noch Flimmern.
+  // Der Impuls im Fortschrittsbalken nur an den Meilensteinen, sonst waere es Flimmern.
   var focuslineBeatTimer = null;
   function pulseFocusline(){
     if (prefersReducedMotion()) return;
@@ -69,20 +61,11 @@
     focuslineBeatTimer = setTimeout(function(){ fl.classList.remove('beat'); focuslineBeatTimer = null; }, 620);
   }
 
-  // Haptik: Auf Android beantwortet das Gerät den Tipp sofort mit einem kurzen Impuls. iOS Safari
-  // kennt navigator.vibrate nicht — dort bleibt es wirkungslos. In der Capacitor-Hülle (iOS wie
-  // Android) läuft es deshalb über das native Haptics-Plugin (Taptic Engine); nur so kommt auf dem
-  // iPhone überhaupt eine Rückmeldung an. Der navigator.vibrate-Weg bleibt als Fallback für den
-  // Browser und Android-Web (README: "Der lohnendste native Zugewinn ist Haptik im Fragebogen").
-  //
-  // Ein Tick, kein Brummen: nativ der leichteste Impuls (LIGHT), im Web 8 ms. Bei reduzierter
-  // Bewegung bleibt es aus: Wer visuelle Reize zurückdreht, will in aller Regel auch keine
-  // körperlichen.
-  // Runde 126, Auftrag des Inhabers: "bei jedem touch mit dem man etwas auswaehlt immer ein haptic
-  // feedback". Bis hier riefen nur einzelne Stellen tapFeedback() auf. Jetzt gibt ein zentraler
-  // Zuhoerer (hapticsUeberall in 21-beta-rueckmeldung.js) bei JEDEM Bedienelement einen Impuls; die
-  // bestehenden Aufrufe bleiben, und die Entprellung hier sorgt dafuer, dass ein Tipp nie zweimal
-  // vibriert.
+  // Haptik: in der App ueber das native Haptics-Plugin (Taptic Engine; iOS Safari kennt
+  // navigator.vibrate nicht), im Browser navigator.vibrate als Rueckfall. Ein leichter Tick; aus bei
+  // reduzierter Bewegung.
+  // Jedes Bedienelement gibt einen Impuls (Entscheidung des Inhabers; zentraler Zuhoerer
+  // hapticsUeberall in 21-beta-rueckmeldung.js). Die Entprellung hier verhindert doppeltes Vibrieren.
   var letzteHaptik = 0;
   function tapFeedback(){
     if (haptikAbgeschaltet() || prefersReducedMotion()) return;
@@ -99,18 +82,16 @@
   }
 
   var quizAdvanceTimeout = null;
-  // Lässt die neue Frage hereinkommen. Das Entfernen und erneute Setzen der Klasse ist nötig,
-  // damit der Browser die Animation überhaupt als neu erkennt — sonst liefe sie nur beim
-  // allerersten Mal. Das erzwungene Auslesen von offsetWidth dazwischen ist genau dafür da.
+  // Klasse entfernen, offsetWidth lesen, neu setzen — sonst erkennt der Browser die Animation nicht
+  // als neu.
   function animateQuestionIn(){
     var c = $('qCard');
     if (!c || !c.classList) return;
     c.classList.remove('q-in');
     try{ void c.offsetWidth; }catch(e){}
     c.classList.add('q-in');
-    // Runde 78: Die fuenf Antwortkreise laufen der Frage hinterher, statt fertig unter ihr zu
-    // stehen. Dieselbe Klasse muss beim Antworten wieder weg (siehe selectAnswer) — sonst
-    // liefe der Einlauf bei jedem Tipp erneut, weil renderQuestion die Knoepfe neu baut.
+    // Die Antwortkreise laufen der Frage hinterher; die Klasse muss beim Antworten wieder weg
+    // (selectAnswer).
     var row = $('scaleRow');
     if (row && row.classList){
       row.classList.remove('row-in');
@@ -128,9 +109,7 @@
     var row = $('scaleRow');
     if (row && row.classList) row.classList.remove('row-in');
     renderQuestion();
-    // Vorherigen ausstehenden Übergang verwerfen, statt ihn zusätzlich laufen zu lassen —
-    // sonst würde ein schneller Doppel-Klick/Doppel-Tastendruck qi zweimal erhöhen und
-    // eine Frage überspringen.
+    // Ausstehenden Uebergang verwerfen, sonst ueberspringt ein Doppeltipp eine Frage.
     disarmQuizAdvance();
     quizAdvanceTimeout = setTimeout(function(){
       quizAdvanceTimeout = null;
@@ -148,10 +127,8 @@
     }, 220);
   }
 
-  // Runde 127, Entscheidung des Inhabers: Nach dem Test EINMAL das Kaufangebot — nicht sofort,
-  // sondern wenn das Ergebnis ein paar Sekunden zu sehen war (zuerst das Ergebnis, dann das
-  // Angebot), schliessbar, und nie wieder von selbst. Nur in der App: Im Browser laesst sich nichts
-  // kaufen, und die Pruefungen messen dort die Ergebnisseite ohne Fenster davor.
+  // Nach dem Test EINMAL das Kaufangebot, ein paar Sekunden nach dem Ergebnis, nie wieder von selbst,
+  // nur in der App (Entscheidung des Inhabers).
   var PLUS_ANGEBOT_SCHLUESSEL = 'lucenta_plus_angebot';
   function plusAngebotNachTest(){
     if (guestRun || istPlus() || !nativVorhanden()) return;
@@ -168,16 +145,10 @@
   function finishQuiz(){
     var previous = loadResult();
     scores = computeScores();
-    // Das Muster-Kennzeichen reist als eigene Eigenschaft am Ergebnis mit, statt aus `answers`
-    // neu berechnet zu werden: beim späteren Öffnen eines gespeicherten Ergebnisses ist `answers`
-    // längst zurückgesetzt, eine Neuberechnung würde dann fälschlich "gleichförmig" ergeben.
-    // Die Eigenschaft liegt außerhalb der fünf ORDER-Schlüssel und stört deshalb weder loadResult()
-    // noch toCode() oder den Vergleich — ein über Code wiederhergestelltes Ergebnis trägt sie
-    // schlicht nicht, was korrekt ist: dort ist das Antwortmuster tatsächlich nicht bekannt.
+    // Das Gleichfoermigkeits-Kennzeichen reist am Ergebnis mit (answers ist spaeter zurueckgesetzt).
+    // Ausserhalb der ORDER-Schluessel, stoert weder toCode() noch den Vergleich.
     scores.uniform = answerUniformity(answers) >= UNIFORM_THRESHOLD;
-    // Gastdurchlauf: nichts speichern, nichts in den Verlauf schreiben, und keine Delta-Karte —
-    // ein Vergleich zwischen zwei verschiedenen Personen wäre keine Veränderung über die Zeit,
-    // sondern schlicht ein anderer Mensch. Das Ergebnis lebt nur in dieser einen Ansicht.
+    // Gastdurchlauf: nichts speichern, kein Verlauf, keine Delta-Karte.
     if (guestRun){
       previous = null;
     } else {
@@ -198,14 +169,9 @@
         }, 350);
       }
     }
-    // Kurzer, bewusst knapper "Analysiere..."-Moment statt eines instantanen Sprungs zum
-    // Ergebnis — ein etablierter kleiner Baustein datengetriebener Premium-Apps beim ersten
-    // Reveal. Wird bei reduzierter Bewegungspräferenz komplett übersprungen.
+    // Kurzer "Analysiere..."-Moment, bei reduzierter Bewegung uebersprungen.
     if (prefersReducedMotion()){ reveal(); return; }
-    // Runde 64: Der Balken sprang bisher erst beim Wechsel zur Ergebnisansicht auf 100 % — also
-    // hinter der Überlagerung, wo ihn niemand sah. Die fünfzigste Antwort schließt ihn jetzt
-    // sichtbar ab, bevor die Überlagerung kommt. Das ist der eigentliche Abschluss: nicht das
-    // Ergebnis, sondern die letzte beantwortete Frage.
+    // Die fuenfzigste Antwort schliesst den Balken sichtbar ab, bevor die Ueberlagerung kommt.
     $('focusline-fill').style.width = '100%';
     pulseFocusline();
     var overlay = $('processingOverlay');
@@ -222,24 +188,12 @@
     }, 260);
   }
 
-  // Runde 62: Die fünf Dimensionskarten blendeten beim Rendern ein — alle fünf, gleichzeitig,
-  // obwohl die Ergebnisseite rund acht Bildschirme lang ist. Die Karten drei bis fünf hatten
-  // ihre Bewegung längst hinter sich, wenn man dort ankam; gesehen hat sie niemand. Jetzt
-  // blendet jede Karte ein, sobald sie in den Blick kommt.
-  //
-  // Erster Versuch maß beim Rendern, welche Karte unterhalb des Sichtbereichs liegt — das ging
-  // schief: renderResult() läuft, während die Ansicht noch display:none ist, alle Maße sind 0,
-  // und es wurde keine einzige Karte zurückgehalten. Der IntersectionObserver weiß das von
-  // selbst besser: Für Karten, die beim Einblenden der Ansicht schon sichtbar sind, meldet er
-  // sofort, der Rest folgt beim Scrollen. Kein eigenes Messen mehr.
-  //
-  // Die Sicherung ist Absicht: Inhalt, der wegen einer Animation dauerhaft unsichtbar bleibt,
-  // wäre ein deutlich schlechterer Fehler als eine Animation, die niemand sieht. Nach drei
-  // Sekunden wird alles gezeigt, was der Beobachter bis dahin nicht erfasst hat.
+  // Jede Ergebniskarte blendet ein, wenn sie in den Blick kommt (IntersectionObserver; beim Rendern
+  // ist die Ansicht noch display:none und misst 0). Nach drei Sekunden wird sicherheitshalber alles
+  // gezeigt.
   function revealOnScroll(elemente){
-    // Reihenfolge ist hier wichtig: Erst aussteigen, dann anfassen. Eine frühere Fassung wandelte
-    // `elemente` vor dieser Prüfung in ein Feld um und stürzte damit im Ersatz-DOM der Testreihen
-    // ab, wo es weder einen IntersectionObserver noch `children` gibt.
+    // Erst aussteigen, dann anfassen — das Ersatz-DOM der Testreihen kennt weder IntersectionObserver
+    // noch children.
     if (!elemente || prefersReducedMotion() || !('IntersectionObserver' in window)) return;
     var liste = Array.prototype.slice.call(elemente);
     if (!liste.length) return;
@@ -272,9 +226,7 @@
     // display:flex statt '' — .uniform-note ist eine Flex-Zeile (Icon + Text); ein leerer String
     // würde zwar auch auf den CSS-Wert zurückfallen, macht die Absicht hier aber weniger deutlich.
     $('uniformNote').style.display = scores.uniform ? 'flex' : 'none';
-    // Gastdurchlauf sichtbar machen: sonst liest sich die Seite exakt wie das eigene, gespeicherte
-    // Ergebnis — inklusive des Satzes unter dem Code, der auf die Wiederherstellung in den
-    // Einstellungen verweist. Genau die gibt es hier aber nicht.
+    // Gastdurchlauf sichtbar kennzeichnen.
     $('guestNote').style.display = guestRun ? 'flex' : 'none';
     $('resultEyebrow').textContent = guestRun ? tx('js_gastergebnis') : tx('js_dein_porträt');
     $('codeLead').textContent = guestRun
@@ -282,9 +234,8 @@
       : tx('js_dein_ergebnis_liegt_aussch');
     $('radarWrap').innerHTML = radarSVG(scores);
 
-    // Dimensionen nach erreichtem Score sortiert (höchster zuerst) für die lesbaren Listen
-    // unten auf der Ergebnisseite — das Radar-Chart selbst behält die feste O-C-E-A-N-Achsenreihenfolge,
-    // damit die Fünfeck-Form über mehrere Testdurchläufe hinweg vergleichbar bleibt.
+    // Listen nach Wert sortiert; das Radar behaelt die feste O-C-E-A-N-Reihenfolge (vergleichbar ueber
+    // Durchlaeufe).
     var sortedTraits = ORDER.slice().sort(function(a,b){ return scores[b]-scores[a]; });
 
 
@@ -292,9 +243,7 @@
     $('myCode').textContent = code;
     $('cmpMe').value = code;
 
-    // Kompakte "auf einen Blick"-Kennzahlenreihe direkt unter dem Kurzporträt — fünf knappe
-    // Ziffern mit Tick-Skala statt erst im ausführlichen Bericht weiter unten die erste Zahl zu
-    // zeigen. Die Zahlen zählen beim Erscheinen von 0 auf ihren Zielwert hoch.
+    // Kennzahlenreihe unter dem Kurzportraet; zaehlt beim Erscheinen hoch.
     var stripHTML = sortedTraits.map(function(f,i){
       return '<div class="stat-tile" style="animation-delay:'+(i*70)+'ms">'+
         '<div class="stat-label">'+RADAR_LABELS[f]+'</div>'+
@@ -307,15 +256,8 @@
       animateCountUp($('statNum-'+f), scores[f]);
     });
 
-    // Feedback-Runde 44: Die fünf Dimensions-Karten zeigten ihren vollständigen Bericht sofort —
-    // gemessen 2.407 der 2.927 Zeichen (82 %) des Dimensionstextes, wodurch die Ergebnisseite auf
-    // rund acht Bildschirmhöhen reinen Text kam, dreimal so viel wie jede andere Ansicht der App.
-    // Genau in dem Moment, in dem jemand sein Ergebnis zum ersten Mal sieht, ist das eher Last als
-    // Belohnung. Kopfzeile, Messbalken und der eine zusammenfassende Satz bleiben sichtbar — das
-    // ist der Teil, den man überfliegt; die drei ausführlichen Abschnitte liegen dahinter.
-    // Die erste (also am stärksten ausgeprägte) Dimension steht bewusst offen: sie zeigt, was in
-    // den Karten steckt, und macht ohne zusätzlichen Hinweistext klar, dass sich die übrigen
-    // genauso öffnen lassen.
+    // Die Dimensionskarten sind zugeklappt; die erste (staerkste) steht offen und zeigt, dass sich die
+    // anderen oeffnen lassen.
     var list = $('traitsList'); list.innerHTML='';
     sortedTraits.forEach(function(f,i){
       var pole = scores[f]>=50 ? 'high':'low';
@@ -347,12 +289,8 @@
     renderDelta(previous);
   }
 
-  // Runde 127, Entscheidung des Inhabers: Der ausfuehrliche Bericht gehoert zu Lucenta+. Frei
-  // bleiben Ergebnistyp, Motto, Kurzfassung, Radar, Teilen, Code und je Dimension Kopfzeile,
-  // Messbalken und der zusammenfassende Satz — dazu der erste Satz von "Im Alltag", damit sichtbar
-  // ist, in welcher Art der Bericht spricht. Der Rest steht verschwommen darunter.
-  // Damit faellt das Versprechen aus Runde 84 ("Niemand zahlt fuer den vollstaendigen Bericht");
-  // der Satz im Lucenta+-Fenster ist entsprechend geaendert.
+  // Der ausfuehrliche Bericht ist Lucenta+ (Entscheidung des Inhabers, Runde 127). Frei: Kopfzeile,
+  // Messbalken, Kernsatz und der erste Satz von "Im Alltag"; der Rest verschwommen.
   function ersterSatz(text){
     var t = String(text || '');
     var m = /^(.{40,}?[.!?。])(\s|$)/.exec(t);
@@ -374,14 +312,8 @@
       '</div>';
   }
 
-  // Runde 79: Der Satz, der aus einem einmaligen Test eine wiederkehrende Nutzung macht.
-  // Vorher stand an dieser Stelle der Vorbehalt "kein Vergleich mit einer Bevoelkerungsnorm" —
-  // richtig, aber folgenlos. Wer nicht weiss, dass sich das Ergebnis ueber Monate verschiebt,
-  // haelt einen Durchlauf fuer abschliessend und kommt nicht wieder.
-  //
-  // Der zweite Satz haengt am tatsaechlichen Bestand: Wer schon zwei Durchlaeufe hat, braucht
-  // keine Einladung mehr, sondern eine Bestaetigung. Ein Aufruf, den man beim zweiten Mal
-  // woertlich wieder liest, wirkt wie eine Schleife.
+  // Der Satz zum Wiederholen des Tests haengt am Bestand: Wer schon zwei Durchlaeufe hat, bekommt eine
+  // Bestaetigung statt einer Einladung.
   function renderRhythmus(){
     var el = $('rhythmusHinweis');
     if (!el) return;
@@ -429,22 +361,11 @@
       return;
     }
     var similar=0, diff=0;
-    // Runde 81: Der Vergleich zeigte je Dimension EINEN Satz und sonst nichts, waehrend das
-    // eigene Ergebnis daneben aufklappbare Karten mit drei Lebensbereichen hat. Derselbe
-    // Gegenstand, zwei Tiefen — und die flachere ausgerechnet dort, wo es um zwei Menschen
-    // geht. Die Karten hier sind bewusst DIESELBE Bauform (.trait-card): gleiche Geste,
-    // gleicher Aufbau, gleiche Erwartung. Nur die Kopfzeile traegt statt einer Punktzahl
-    // beide Werte, weil es hier zwei Messungen gibt.
-    // Runde 84: Die Grundform des Vergleichs bleibt frei — er ist die Stelle, an der eine
-    // zweite Person dazukommt, und ihn zu verschliessen kostet mehr, als er einbringt. Frei
-    // sind Prozentwert, Fuenfeck und der eine Satz je Dimension; die drei Lebensbereiche
-    // dahinter sind die gekaufte Tiefe.
+    // Vergleich in derselben Bauform wie die eigenen Karten (.trait-card). Frei: Prozent, Fuenfeck,
+    // ein Satz je Dimension; die drei Lebensbereiche sind Lucenta+.
     var cmpPlus = istPlus();
-    // Runde 127, Entscheidung des Inhabers: Ein Vergleich ist frei, jeder weitere ist Lucenta+.
-    // "Ein Vergleich" heisst: mit EINER anderen Person — dieselbe Person darf man so oft ansehen,
-    // wie man will. Gemerkt wird nur deren Code, auf dem Geraet, wie alles hier.
-    // Runde 136, gefragt und gewaehlt: ZWEI Personen frei, passend zu zwei freien Plaetzen im
-    // Archiv. Ab der dritten Person Lucenta+.
+    // Frei mit ZWEI anderen Personen (Entscheidung des Inhabers, Runde 136); dieselbe Person beliebig
+    // oft. Gemerkt werden nur deren Codes, auf dem Geraet.
     var vergleichGesperrt = false;
     if (!cmpPlus){
       try{
@@ -468,16 +389,7 @@
         return text ? '<div class="trait-section"><div class="trait-section-label">'+
                tx(schluessel)+'</div><p>'+text+'</p></div>' : '';
       };
-      // Runde 90: Die freie Fassung zeigte hier eine flache Karte ohne Aufklapp-Geste. Die
-      // Begruendung damals — "eine Karte, die aussieht, als ginge sie auf, und dann nicht
-      // aufgeht, ist schlechter als eine, die gar nicht so aussieht" — war auf die falsche
-      // Annahme gebaut, dass beim Aufklappen NICHTS passiert. Sie geht jetzt auf, und darin
-      // steht, was dahinter liegt. Das ist der Unterschied zwischen einer Tuer, die klemmt,
-      // und einer, hinter der jemand erklaert, wie man sie oeffnet.
-      //
-      // Der Vorteil gegenueber dem frueheren Hinweiskasten weiter unten: Er steht jetzt in dem
-      // Moment da, in dem die Frage tatsaechlich entsteht — beim Griff nach genau dieser
-      // Dimension —, statt als allgemeine Zeile unter allen fuenf.
+      // In der freien Fassung geht die Karte trotzdem auf und erklaert darin, was dahinter liegt.
       return '<details class="trait-card compat-card"'+((cmpPlus && i===0)?' open':'')+
         ' style="animation-delay:'+(i*60)+'ms">'+
         '<summary>'+
@@ -502,18 +414,12 @@
         '</div>'+
       '</details>';
     });
-    // Einzelne, sofort erfassbare Kennzahl obendrauf — eine einfache, vereinfachte Kennzahl aus
-    // der mittleren Abweichung aller fünf Dimensionen, kein wissenschaftlich gewichteter Score
-    // (siehe Disclaimer unten). Gut für einen Screenshot, ersetzt aber nicht die Detailansicht darunter.
+    // Vereinfachte Kennzahl aus der mittleren Abweichung, kein gewichteter Score.
     var avgDiff = ORDER.reduce(function(s,f){ return s+Math.abs(me[f]-other[f]); },0) / ORDER.length;
     var match = Math.round(100 - avgDiff);
     var matchLabel = match>=75 ? tx('js_hohe_übereinstimmung') : match>=45 ? tx('js_gemischtes_profil') : tx('js_deutlich_unterschiedliche_prof');
     var scoreBlock = '<div class="compat-score"><div id="compatRing"></div><div class="compat-score-label">'+matchLabel+'</div></div>';
-    // Runde 81: Der Schlusssatz war fuer JEDE Verteilung derselbe — "beides kann eine gute
-    // Basis sein, je nachdem, wie bewusst ihr damit umgeht". Der Satz ist nicht falsch, aber
-    // er gilt fuer alles und sagt damit nichts: Wer fuenf von fuenf teilt, liest denselben
-    // Satz wie jemand, der keine einzige teilt. Jetzt haengt er an der tatsaechlichen
-    // Verteilung, sechs Lagen von null bis fuenf, und jede sagt etwas anderes.
+    // Der Schlusssatz haengt an der Verteilung (null bis fuenf aehnliche Dimensionen).
     var gesamtSatz = (CMP_GESAMT && CMP_GESAMT[similar]) || '';
     var summary = '<div class="compat-line compat-line-total"><b>'+tx('js_insgesamt')+'</b> '+similar+
       tx('js_von__dimensionen_ähnlich')+diff+tx('js_unterschiedlich_punkt')+
@@ -521,9 +427,7 @@
     var radarBlock = '<div class="radar-wrap compat-radar">'+radarSVG(me, 300, {scores:other})+'</div>'+
       tx('js_duandere_person');
     var note = tx('js_die_prozentzahl_oben_ist_e');
-    // Mini-Formular zum Speichern dieses Vergleichs im Vergleichsarchiv — bewusst am Ende des
-    // Ergebnisblocks, nachdem der Vergleich bereits berechnet und sichtbar ist, statt vorab um
-    // einen Namen zu bitten, bevor überhaupt klar ist, ob der Vergleich einen Blick wert ist.
+    // Speichern erst am Ende, wenn der Vergleich schon sichtbar ist.
     var saveRow = '<div class="compat-save-row">'+
       '<div class="field"><label for="compatSaveLabel">'+tx('js_name_optional')+'</label><input type="text" id="compatSaveLabel" maxlength="30" placeholder="'+decodeEntities(tx('ph_z_b_1a2b3c4d5e_mia'))+'"></div>'+
       '<button type="button" class="btn btn-ghost btn-sm" id="btnSaveCompat">'+tx('js_vergleich_speichern')+'</button>'+
@@ -564,9 +468,8 @@
         }
       });
     }
-    // Ring zunächst bei 0% einfügen und den Ziel-Versatz erst einen Frame später auf demselben
-    // Kreis-Element setzen (nicht per innerHTML-Austausch) — nur so greift die CSS-Transition
-    // auf stroke-dashoffset tatsächlich, statt sofort im Endzustand zu erscheinen.
+    // Ring erst bei 0 % einfuegen und den Zielversatz ein Bild spaeter am selben Element setzen, sonst
+    // laeuft der Uebergang nicht.
     var ringHost = $('compatRing');
     ringHost.innerHTML = ringGaugeSVG(0, 132, tx('js_übereinstimmung'));
     var fillCircle = ringHost.querySelector('.ring-fill');

@@ -18,32 +18,24 @@
     buildScaleRow($('stateValenceRow'), statePickedValence, tx('js_stimmung'), function(v){ statePickedValence=v; renderStateRows(); });
   }
 
-  // Feedback: Tagesform sollte nicht in der Schublade, sondern kreativ direkt auf der Startseite
-  // ankommen. Eigene, kleine Kopie der Pick-/Auto-Speicher-Logik statt die state-Variablen der
-  // vollständigen Tagesform-Ansicht (statePickedEnergy/Valence) zu teilen — beide Stellen dürfen
-  // unabhängig voneinander offen sein bzw. rendern, ohne sich gegenseitig zu überschreiben.
+  // Eigene Auswahl-Variablen fuer die Startseiten-Karte, getrennt von der Tagesform-Ansicht — beide
+  // duerfen gleichzeitig offen sein.
   var landingStatePickedEnergy = null, landingStatePickedValence = null;
   function renderLandingStateRows(){
     buildScaleRow($('landingStateEnergyRow'), landingStatePickedEnergy, tx('js_energie_heute'), function(v){ landingStatePickedEnergy=v; renderLandingStateRows(); maybeSaveLandingState(); });
     buildScaleRow($('landingStateValenceRow'), landingStatePickedValence, tx('js_stimmung_heute'), function(v){ landingStatePickedValence=v; renderLandingStateRows(); maybeSaveLandingState(); });
   }
   function updateLandingStateCopy(){
-    // Auch nach der ERSTEN Antwort passierte bislang sichtbar nichts — die zweite Frage stand
-    // schon da, es gab keinen Hinweis, dass der erste Antippen angekommen war. Jetzt benennt die
-    // Zeile, was noch fehlt; das ist keine Aufforderung, sondern eine Quittung.
+    // Nach der ersten Antwort benennt die Zeile, was noch fehlt (Quittung, keine Aufforderung).
     var e = landingStatePickedEnergy, v = landingStatePickedValence;
     $('landingStateCopy').textContent =
       (e && !v) ? tx('js_energie_ist_notiert__fehlt') :
       (v && !e) ? tx('js_stimmung_ist_notiert__fehl') :
       tx('js_kurzer_check_von_energie');
   }
-  // Wechselt die Karte in den Erledigt-Zustand. `animate` nur direkt nach dem Speichern: beim
-  // Zurückkehren auf die Startseite ist es kein Ereignis mehr, und eine Bestätigung, die sich
-  // ohne Anlass wiederholt, verliert ihre Bedeutung.
-  // ---------- Runde 129: drei Tageszeiten ----------
-  //
-  // Uhrzeiten ueber Intl aus dem Gebietsschema, nicht ausgeschrieben: "11:00" hier, "11:00 AM" im
-  // Englischen. Die Grenzen selbst stehen einmal, in TF_ABSCHNITT_BEGINN (03-speicherung.js).
+  // `animate` nur direkt nach dem Speichern.
+  // Uhrzeiten ueber Intl aus dem Gebietsschema. Die Grenzen stehen einmal, in TF_ABSCHNITT_BEGINN
+  // (03-speicherung.js).
   function tfUhrzeit(stunde){
     var d = new Date(2000, 0, 1, stunde, 0, 0);
     try{ return new Intl.DateTimeFormat(tx('datum_gebietsschema'), {hour:'numeric', minute:'2-digit'}).format(d); }
@@ -78,10 +70,8 @@
     $('landingStateInputs').style.display = 'none';
     $('landingStateCopy').style.display = 'none';
     var done = $('landingStateDone');
-    // Runde 129: Die Karte bestaetigt den ABSCHNITT, nicht den Tag — "Mittags eingetragen" mit dem
-    // Wert genau dieses Eintrags, darunter, wann der naechste moeglich ist.
-    // Ohne „/5": Die Skala hat man gerade selbst angetippt, und die Kurzform bleibt neben der
-    // „Ändern"-Schaltfläche einzeilig, statt umzubrechen.
+    // Die Karte bestaetigt die Tageszeit mit dem Wert genau dieses Eintrags und nennt, wann der
+    // naechste moeglich ist. Ohne "/5", damit es neben "Aendern" einzeilig bleibt.
     $('landingStateDoneTitel').textContent = tfText('tf_abschnitt_eingetragen', {abschnitt: tx('tf_abschnitt_'+entry.slot)});
     $('landingStateDoneVals').textContent =
       tx('js_energie_praefix')+tagWert(entry.energy)+tx('js_trenner_stimmung')+tagWert(entry.valence);
@@ -108,13 +98,8 @@
       return;
     }
     var abschnitt = aktuellerAbschnitt();
-    // Kein Erfolgs-Toast mehr: Die Karte bestätigt jetzt selbst, an der Stelle, auf die
-    // tatsächlich geschaut wird. Zwei Bestätigungen für dasselbe wären Lärm.
-    //
-    // Runde 129: Gezeigt wird der Eintrag des Abschnitts (bis Runde 128: das Tagesmittel). Seit
-    // es je Abschnitt genau einen gibt, ist er die Zahl, die man gerade eingegeben hat.
-    // Runde 131: Erst klappen die Skalen zu, dann springt die Bestaetigung auf. Die Skalen werden
-    // erst danach geleert — sonst saehe man beim Zuklappen die eben getippten Kreise verschwinden.
+    // Die Karte bestaetigt selbst (kein Toast). Erst klappen die Skalen zu, dann springt die
+    // Bestaetigung auf; geleert werden die Skalen erst danach.
     var eintrag = heuteEingetragen()[abschnitt];
     $('landingStateCopy').style.display = 'none';
     zuklappen($('landingStateInputs'), function(){
@@ -139,19 +124,9 @@
     if (eintrag){ showLandingStateDone(eintrag, false); }
     else { showLandingStateInputs(); }
   }
-  // Runde 68: Die Brücke zwischen Tagesform und Profil.
-  //
-  // Die App behauptet an mehreren Stellen, die Tagesform sei "unabhängig von deinem stabilen
-  // Testergebnis" — eingelöst war dieser Zusammenhang aber nirgends. Hier steht er zum ersten
-  // Mal, und zwar mit ausdrücklich benannten Grenzen: Aus drei Wochen eigener Einträge folgt
-  // kein Zusammenhang, und das steht auch so da. Der Grundsatz "Was nicht geprüft ist, wird als
-  // ungeprüft benannt" gilt gerade dort, wo eine Zahl nach Beweis aussieht.
-  //
-  // Zwei Beobachtungen, beide nur bei genug Daten:
-  //   - Schwankungsbreite (Standardabweichung) neben dem eigenen Stabilitätswert. Ab 7 Tagen.
-  //   - Wochentagsmuster: der Tag mit der im Schnitt höchsten und niedrigsten Energie. Ab 14
-  //     Tagen UND mindestens zwei Messungen je verglichenem Wochentag — sonst vergliche man
-  //     einen einzelnen Dienstag mit einem einzelnen Freitag und nennte das ein Muster.
+  // Befunde aus der Tagesform — nur bei genug Daten und mit benannten Grenzen.
+  // Schwankungsbreite ab 7 Tagen; Wochentagsmuster ab 14 Tagen und mindestens zwei Messungen je
+  // Wochentag.
   function streuung(werte){
     var n = werte.length;
     if (n < 2) return 0;
@@ -162,9 +137,7 @@
 
   function tagesformBefunde(hist){
     var teile = [];
-    // Runde 82: Gerechnet wird auf TAGEN, nicht auf Eintraegen. Sonst haette jemand mit drei
-    // Eintraegen am Tag nach zweieinhalb Tagen einen "7-Tage-Befund" — und ein Tag mit drei
-    // Eintraegen zaehlte im Wochentagsmuster dreimal.
+    // Gerechnet auf TAGEN, nicht Eintraegen.
     var tage = stateTage(hist);
     if (tage.length < 7) return teile;
 
@@ -208,14 +181,8 @@
       }
     }
 
-    // 3) Tageszeit. Erst moeglich, seit ein Tag mehrere Eintraege tragen kann (Runde 82) — und
-    //    der Befund, der am unmittelbarsten etwas mit dem eigenen Tag zu tun hat: Wann jemand
-    //    hoch und wann niedrig liegt, laesst sich anders einteilen als welcher Wochentag es ist.
-    //
-    //    Die Huerden sind dieselben wie beim Wochentagsmuster und aus demselben Grund: mindestens
-    //    drei Messungen JE verglichenem Abschnitt (sonst vergleicht man zwei Einzelmessungen und
-    //    nennt es Muster) und mindestens ein halber Skalenpunkt Unterschied (darunter ist es bei
-    //    einer Fuenferskala Rauschen).
+    // 3) Tageszeit: mindestens drei Messungen je Abschnitt und mindestens ein halber Skalenpunkt
+    // Unterschied (darunter Rauschen).
     var proAbschnitt = {morgen:[], mittag:[], abend:[]};
     hist.forEach(function(e){
       if (proAbschnitt[e.slot]) proAbschnitt[e.slot].push(e.energy);
@@ -235,14 +202,8 @@
                 zahl1(aHoch.mittel - aTief.mittel) + tx('js_befund_tageszeit_d')});
       }
     }
-    // 4) Richtung ueber die Zeit (Runde 97). Der Befund, fuer den ein langer Verlauf ueberhaupt
-    //    da ist: Nicht wie es heute steht, sondern wohin es geht. Ueber die Steigung einer
-    //    Ausgleichsgeraden durch die Tage — nicht ueber "erste Haelfte gegen zweite Haelfte",
-    //    weil dabei ein einzelner Ausreisser an einem Rand die ganze Aussage kippt.
-    //
-    //    Ab 21 Tagen, und nur wenn die Gerade ueber den Zeitraum mindestens einen halben
-    //    Skalenpunkt zurueckliegt. Darunter ist die Steigung kleiner als das, was zwei
-    //    aufeinanderfolgende Tage ohnehin auseinanderliegen.
+    // 4) Richtung ueber die Zeit: Steigung einer Ausgleichsgeraden (robuster als Haelfte gegen
+    // Haelfte), ab 21 Tagen und nur ab einem halben Skalenpunkt ueber den Zeitraum.
     if (tage.length >= 21){
       var basis = tagAlsZahl(tage[0].day);
       var richtung = ['energy','valence'].map(function(feld){
@@ -264,12 +225,8 @@
       }
     }
 
-    // 5) Erholung (Runde 97). Wie es nach einem schwachen Tag weitergeht. Das ist die Frage,
-    //    die eine Kurve ueber Monate beantworten kann und ein einzelner Tag nie — und sie ist
-    //    naeher an dem, was jemand ueber sich wissen will, als jede Schwankungsbreite.
-    //
-    //    Ein schwacher Tag ist einer unter dem eigenen Median, nicht unter der Skalenmitte. Wer
-    //    nie unter 3 geht, haette sonst keinen einzigen.
+    // 5) Erholung nach einem schwachen Tag. Schwach heisst unter dem EIGENEN Median, nicht unter der
+    // Skalenmitte.
     if (tage.length >= 15){
       var med = tage.map(function(t){ return t.energy; }).sort(function(a,b){ return a-b; });
       var mitte = med.length % 2 ? med[(med.length-1)/2] : (med[med.length/2-1] + med[med.length/2]) / 2;
@@ -294,9 +251,7 @@
 
     return teile;
   }
-  // Steigung der Ausgleichsgeraden (kleinste Quadrate). Steht hier und nicht in einer der
-  // Befundstellen, weil zwei davon sie brauchen und eine zweite Fassung derselben Formel die
-  // Stelle waere, an der eine von beiden spaeter falsch wird.
+  // Steigung der Ausgleichsgeraden (kleinste Quadrate) — einmal, weil zwei Befunde sie brauchen.
   function steigungVon(punkte){
     var n = punkte.length;
     if (n < 2) return 0;
@@ -308,18 +263,12 @@
     return unten === 0 ? 0 : oben / unten;
   }
 
-  // Ein Tag mit einem Eintrag ist eine ganze Zahl und soll auch so dastehen: "4/5", nicht
-  // "4,0/5". Eine Nachkommastelle, die immer 0 ist, behauptet eine Genauigkeit, die die Angabe
-  // nicht hat — erst der Mittelwert aus mehreren Eintraegen hat sie wirklich.
+  // Ganze Zahlen ganz ("4/5"), Mittel mit einer Nachkommastelle.
   function tagWert(v){
     return Math.abs(v - Math.round(v)) < 0.001 ? String(Math.round(v)) : zahl1(v);
   }
 
-  // Runde 96: Diese Funktion fragte, ob die Sprache Deutsch ist, und setzte nur dann ein Komma.
-  // Spanisch, Franzoesisch, Italienisch und Portugiesisch schreiben das Dezimalkomma genauso —
-  // vier von sieben Sprachen sahen also "3.9", wo "3,9" richtig ist. Statt die Liste zu
-  // verlaengern (und beim naechsten Sprachpaket wieder zu vergessen) kommt die Antwort jetzt aus
-  // derselben Quelle wie das Datumsformat: dem Gebietsschema selbst.
+  // Dezimalzeichen aus dem Gebietsschema (Intl), nicht aus einer Sprachliste.
   var ZAHL1_FMT = null, ZAHL1_FMT_SPRACHE = null;
   function zahl1(v){
     var gs = tx('datum_gebietsschema');
@@ -339,9 +288,7 @@
 
   var WOCHENTAG_FMT = null;
   function wochentagName(index){
-    // Über Intl statt über eine eigene Liste: Die Namen kommen damit aus derselben Quelle wie
-    // das Datumsformat und stimmen in jeder Sprache, ohne dass sie im Sprachpaket doppelt
-    // gepflegt werden müssen.
+    // Wochentagsnamen ueber Intl, nicht im Sprachpaket.
     try{
       if (!WOCHENTAG_FMT) WOCHENTAG_FMT = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {weekday:'long'});
       // 2024-01-07 war ein Sonntag; +index trifft damit den gesuchten Wochentag.
@@ -369,9 +316,8 @@
     renderStateTrend();
     tfAuswertungenRendern();
   }
-  // Runde 131: In der Tagesform-Ansicht steht, wenn die laufende Tageszeit eingetragen ist, statt
-  // der Skalen die Bestaetigung mit "Aendern". `neu` = direkt nach dem Speichern: dann klappt die
-  // Erfassung sichtbar zu und die Bestaetigung springt auf; `danach` laeuft, wenn das vorbei ist.
+  // Ist die laufende Tageszeit eingetragen, steht statt der Skalen die Bestaetigung mit "Aendern".
+  // `neu` = direkt nach dem Speichern (sichtbar zuklappen).
   var tfAendernOffen = false;
   function tfErledigtAnwenden(neu, danach){
     var erf = $('tfErfassung'), erl = $('tfErledigt');
@@ -411,15 +357,10 @@
     else { erf.style.display = 'none'; zeigen(); }
   }
 
-  // ---------- Das Zeitfenster der Kurve (Runde 97) ----------
-  //
-  // Drei Laengen, als Segmentwaehler wie ueberall sonst in der App. Die Wahl steht im Speicher:
-  // Wer den langen Blick gewaehlt hat, will ihn beim naechsten Oeffnen wiederfinden und nicht
-  // jedes Mal neu einstellen.
+  // ---------- Das Zeitfenster der Kurve ----------
+  // Segmentwaehler; die Wahl bleibt gespeichert.
   var FENSTER_SCHLUESSEL = 'lucenta_tf_fenster';
-  // Runde 131 (Inhaber): nach 90 noch "Gesamt". Als 0 gespeichert, weil slice(-0) die ganze Liste
-  // liefert — die Stellen, die das Fenster anwenden (hier und tfSichtbareTage), brauchen damit
-  // keinen Sonderfall.
+  // 0 = Gesamt (Entscheidung des Inhabers): slice(-0) liefert die ganze Liste, also kein Sonderfall.
   var FENSTER = [14, 30, 90, 0];
   function fensterLesen(){
     var w = parseInt(schalterLesen(FENSTER_SCHLUESSEL, ''), 10);
@@ -429,10 +370,8 @@
     var wahl = fensterLesen();
     return '<div class="segment tf-fenster" role="radiogroup" aria-label="'+tx('aria_tf_fenster')+'">'+
       FENSTER.map(function(n){
-        // Eine Laenge, fuer die noch keine Daten da sind, waere ein Knopf, der nichts tut.
-        // Sie bleibt sichtbar, aber abgeschaltet — verschwinden wuerde sie beim naechsten
-        // Eintrag wieder auftauchen, und ein Waehler, dessen Faecher wandern, ist keiner.
-        // "Gesamt" erst, wenn es mehr zeigt als 90 Tage — sonst waere es dieselbe Kurve zweimal.
+        // Laengen ohne genug Daten bleiben sichtbar, aber abgeschaltet (wandernde Faecher waeren kein
+        // Waehler). "Gesamt" erst ab mehr als 90 Tagen.
         var moeglich = n === 0 ? vorhanden > 90 : (vorhanden > n * 0.5 || n === 14);
         return '<button type="button" class="segment-opt" role="radio" data-fenster="'+n+'" '+
                'aria-checked="'+(n===wahl?'true':'false')+'"'+(moeglich?'':' disabled')+'>'+
@@ -476,10 +415,7 @@
 
   function renderStateTrend(){
     var alleEintraege = loadStateHistory();
-    // Runde 84: Die freie Fassung zeigt die letzten vierzehn Tage und keine Befunde. Vierzehn
-    // ist nicht gegriffen — der erste Befund braucht sieben Tage, der zweite vierzehn. Wer die
-    // Grenze erreicht, hat also gerade gesehen, dass es hier etwas zu holen gibt. Eingetragen
-    // bleibt alles; die freie Fassung zeigt weniger, sie nimmt nichts weg.
+    // Die freie Fassung zeigt FREI_TAGE Tage und keine Befunde; eingetragen bleibt alles.
     var plus = istPlus();
     var alleTage = stateTage(alleEintraege);
     var verborgeneTage = plus ? 0 : Math.max(0, alleTage.length - FREI_TAGE);
@@ -511,14 +447,7 @@
       return;
     }
     var lastE = tagWert(hist[hist.length-1].energy), lastV = tagWert(hist[hist.length-1].valence);
-    // Runde 97: Das Fenster war fest auf 30 Tage begrenzt, mit einer richtigen Begruendung —
-    // darueber hinaus wird der Abstand zwischen zwei Tagen so klein, dass die Linie zur Textur
-    // wird. Falsch war die Schlussfolgerung: Der lange Verlauf ist genau das, wofuer bezahlt
-    // wird, und ihn dann abzuschneiden nimmt dem Abo seinen Gegenstand.
-    //
-    // Statt der Grenze steht jetzt eine Wahl, und ueber 35 Tagen fasst das Diagramm zu WOCHEN
-    // zusammen. Damit bleibt der Punktabstand lesbar, egal wie lang der Zeitraum ist — das
-    // Problem war nie die Zahl der Tage, sondern die Zahl der Punkte.
+    // Ueber 35 Tagen fasst das Diagramm zu WOCHEN zusammen — so bleibt der Punktabstand lesbar.
     var fensterTage = fensterLesen();
     var fenster = hist.slice(-fensterTage);
     var proWoche = fenster.length > 35;
@@ -536,11 +465,8 @@
     var trendRows =
       legende +
       (plus ? fensterWahlHTML(hist.length) : '') +
-      // Runde 107: Die Achse steht jetzt IN der Diagrammspalte, nicht als Geschwister darunter.
-      // Grund: Sie traegt Marken an gerechneten Stellen (Prozent der Diagrammbreite), und als
-      // Geschwister von .verlauf-flaeche haette sie auch die Spalte mit der 1-bis-5-Skala
-      // ueberspannt — jede Marke waere um die Breite dieser Spalte nach links verschoben
-      // gewesen. Bei den zwei alten links-/rechtsbuendigen Angaben fiel das nicht auf.
+      // Die Achse steht IN der Diagrammspalte, sonst waeren die Marken um die Breite der Skalenspalte
+      // verschoben.
       '<div class="verlauf-flaeche">'+
         '<div class="verlauf-skala"><span>5</span><span>1</span></div>'+
         '<div class="verlauf-spalte">'+
@@ -566,10 +492,8 @@
     }).join('');
     wrap.innerHTML = '<div class="trend-list">'+trendRows+'</div>'+
       tx('js_letzte_einträge')+hist.length+'</span></h2>'+
-      // Runde 126, Auftrag des Inhabers: Die Liste klappt erst auf Tipp auf — bei vielen
-      // Eintraegen zog sie die Ansicht sonst um Dutzende Zeilen in die Laenge. Dieselbe Form wie
-      // "Haeufige Fragen" in den Einstellungen. Die Liste selbst bleibt .history-list, damit die
-      // Einschuebe oben (Befunde, Schloss) ihren Platz finden wie bisher.
+      // Die Liste klappt erst auf Tipp auf (Entscheidung des Inhabers), in der Form der Haeufigen
+      // Fragen; sie bleibt .history-list fuer die Einschuebe.
       '<details class="hilfe-sammlung tf-liste-sammlung"><summary><span>'+tx('tf_liste_zeigen')+'</span>'+
         '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '+
         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></summary>'+
@@ -594,10 +518,7 @@
           return '<div class="befund"><div class="befund-titel">'+b.titel+'</div>'+
                  '<p class="befund-text">'+b.text+'</p></div>';
         }).join('')+'</div>';
-      // Zwischen Diagramm und Einzelliste: erst das Bild, dann was darin steht, dann die Belege.
-      // Der Einschub muss VOR die Ueberschrift "Letzte Eintraege", nicht vor deren Liste — sonst
-      // steht die Ueberschrift oberhalb der Befunde und ihre eigene Liste darunter, getrennt
-      // durch fremden Text. Genau das war im ersten Versuch zu sehen.
+      // Befunde VOR die Ueberschrift "Letzte Eintraege", nicht vor deren Liste.
       var ueberschrift = wrap.querySelector('.section-title-sub');
       var liste = wrap.querySelector('.history-list');
       var ziel = ueberschrift || liste;

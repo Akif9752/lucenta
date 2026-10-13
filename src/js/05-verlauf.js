@@ -1,9 +1,6 @@
 // ---------- history (trend sparklines + list of past completed runs) ----------
   var HISTORY_DATE_FMT = null;
-  // Landing-Teaser für die "Verstehen"-Bibliothek (Feedback-Runde 32): zieht eine zufällige Karte
-  // aus UNDERSTAND, unabhängig vom eigenen Ergebnis (auf der Landing-Seite liegt meist noch keins
-  // vor). Rein informativ und macht die Bibliothek vor dem ersten Testdurchlauf sichtbar, statt sie
-  // ausschließlich hinter der Schublade zu verstecken.
+  // Startseiten-Teaser: eine zufaellige Karte aus UNDERSTAND.
   function pickRandomUnderstandCard(){
     var dims = Object.keys(UNDERSTAND);
     var dim = dims[Math.floor(Math.random()*dims.length)];
@@ -11,14 +8,7 @@
     var pool = UNDERSTAND[dim][pole];
     return pool[Math.floor(Math.random()*pool.length)];
   }
-  // Feedback-Runde 38: für Erstbesucher:innen ohne Ergebnis stapelten sich auf der Startseite drei
-  // umrandete Karten hintereinander (Warum-kein-MBTI, Tagesform, Verstehen), bevor überhaupt die
-  // Beispiel-Vorschau kam — sichtbare Unordnung genau in dem Moment, der eigentlich zum Teststart
-  // einladen soll. Der Tagesform-Check bleibt sichtbar (funktioniert bewusst unabhängig vom
-  // Testergebnis), aber die "Verstehen"-Karte zeigt ohne eigenes Ergebnis ohnehin nur eine
-  // zufällige, nicht personalisierte Einordnung — für Erstbesucher:innen also reine Zusatzkarte ohne
-  // echten Mehrwert. Sie erscheint deshalb erst, sobald ein Ergebnis vorliegt (wie im Drawer und in
-  // der vollständigen Verstehen-Ansicht ohnehin schon der Fall).
+  // Die Verstehen-Karte erscheint auf der Startseite erst, wenn ein Ergebnis vorliegt.
   function renderLandingUnderstandTeaser(){
     var has = !!loadResult();
     $('landingUnderstandTeaser').style.display = has ? '' : 'none';
@@ -27,10 +17,7 @@
     $('landingTeaserTitle').textContent = card.title;
     $('landingTeaserBody').textContent = card.body;
   }
-  // Gemeinsamer Leerzustands-Baustein (Feedback-Runde 32): bündelt das bislang sechsfach
-  // duplizierte reine-Text-Muster hinter einem konsistenten Icon + Text (+ optionalem CTA-Button),
-  // angelehnt an das Empty-State-Muster gängiger Consumer-Apps. Icon ist ein neutrales,
-  // gestricheltes Uhr-/Zeit-Symbol (passt zu "noch nichts erfasst"), kein neuer Bedeutungsträger.
+  // Gemeinsamer Leerzustand: Symbol, Text, optional ein Knopf.
   function emptyStateHTML(message, opts){
     opts = opts || {};
     var extra = opts.extraClass ? (' '+opts.extraClass) : '';
@@ -41,11 +28,8 @@
       + '<svg class="empty-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke-dasharray="2.5 3.2"></circle><path d="M12 8v4l2.3 2.3"></path></svg>'
       + '<p>'+message+'</p>'+btn+'</div>';
   }
-  // Der Baustein, der an jeder verschlossenen Stelle steht. Bewusst EINER fuer alle: Fuenf
-  // verschieden formulierte Hinweise wuerden sich wie fuenf verschiedene Verkaeufe anfuehlen.
-  // Er nennt, was dahinter liegt, und nicht, was fehlt — und er drueckt nicht: kein Countdown,
-  // keine erfundene Dringlichkeit, kein zweiter Hinweis an derselben Stelle. Die Grenze aus
-  // Runde 46 gilt hier genauso wie beim Serien-Zaehler, der damals verworfen wurde.
+  // Ein Baustein fuer alle verschlossenen Stellen. Nennt, was dahinter liegt; kein Countdown, keine
+  // erfundene Dringlichkeit.
   function schlossHTML(text){
     return '<div class="schloss">'+
       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
@@ -56,12 +40,8 @@
       '<button type="button" class="btn btn-primary btn-sm schloss-btn" data-plus-info>'+
       tx('plus_knopf')+'</button></div></div>';
   }
-  // Runde 127, Auftrag des Inhabers: Die freie Fassung soll staerker zum Kauf fuehren — an
-  // gesperrten Stellen steht deshalb der ECHTE Inhalt verschwommen da, darueber ein kleiner Kasten
-  // mit dem Knopf. Wer sieht, was dahinter liegt, will es eher als wer ein Schloss sieht. Der Inhalt
-  // ist fuer Vorleseprogramme verborgen (aria-hidden), und er faengt keine Beruehrung — nur der
-  // Knopf ist bedienbar. Was hier verschwimmt, liegt ohnehin auf dem Geraet: verschleiert wird
-  // die Darstellung, nicht ein Geheimnis.
+  // Gesperrte Stellen zeigen den ECHTEN Inhalt verschwommen, darueber das Angebot (Entscheidung des
+  // Inhabers). Der Inhalt ist aria-hidden und inert; nur der Knopf ist bedienbar.
   function vorschauHTML(innenHTML, text){
     return '<div class="plus-vorschau">'+
       '<div class="plus-unscharf" aria-hidden="true" inert>'+innenHTML+'</div>'+
@@ -70,12 +50,7 @@
         '<button type="button" class="btn btn-primary btn-sm" data-plus-info>'+tx('plus_freischalten')+'</button>'+
       '</div></div>';
   }
-  // Ein Tipp auf einen dieser Knoepfe oeffnet das Lucenta+-Fenster. Mehr passiert hier nicht:
-  // Der Kauf selbst gehoert in die App-Store-Fassung, nicht in die Seite.
-  //
-  // Runde 89: Vorher stand hier ein Kurzhinweis (toast). Der verschwindet nach ein paar
-  // Sekunden — fuer die eine Frage, die an dieser Stelle wirklich gestellt wird, die
-  // schlechteste Form.
+  // Ein Tipp oeffnet das Lucenta+-Fenster (kein Toast — der verschwaende zu schnell).
   function schloesserVerdrahten(wurzel){
     if (!wurzel || !wurzel.querySelectorAll) return;
     wurzel.querySelectorAll('[data-plus-info]').forEach(function(b){
@@ -84,21 +59,14 @@
   }
   function historyDateFmt(){
     if (!HISTORY_DATE_FMT){
-      // Runde 59: Das Gebietsschema war fest auf 'de-DE' verdrahtet, also stand im englischen
-      // Verlauf "05. Sept. 2026". Es kommt jetzt aus dem Sprachpaket; resetDateFmt() leert den
-      // Zwischenspeicher beim Sprachwechsel, sonst bliebe das zuerst erzeugte Format bestehen.
+      // Gebietsschema aus dem Sprachpaket; resetDateFmt() leert den Zwischenspeicher beim
+      // Sprachwechsel.
       try{ HISTORY_DATE_FMT = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {day:'2-digit', month:'short', year:'numeric'}); }
       catch(e){ HISTORY_DATE_FMT = { format:function(d){ return d.toLocaleDateString(); } }; }
     }
     return HISTORY_DATE_FMT;
   }
-  // Runde 107: Ein zweites, kuerzeres Format — nur fuer die x-Achse des Verlaufsdiagramms.
-  // historyDateFmt() gibt "05. Sept. 2026" aus; das ist in einer Liste richtig und auf einer
-  // Achse unbrauchbar, wo vier Marken in rund 280px passen muessen. Tag und Monat als Zahl
-  // genuegen dort: Das Jahr steht in der Liste darunter, und eine Achse, die dreimal dasselbe
-  // Jahr wiederholt, sagt dreimal nichts.
-  // Ueber das Gebietsschema aus dem Sprachpaket, nicht fest verdrahtet — im Englischen gehoert
-  // der Monat vor den Tag, und genau dieser Fehler stand bis Runde 59 im Verlauf.
+  // Kurzes Achsenformat (Tag und Monat), Reihenfolge aus dem Gebietsschema.
   var ACHSE_DATE_FMT = null;
   function achsenDatumFmt(){
     if (!ACHSE_DATE_FMT){
@@ -107,10 +75,7 @@
     }
     return ACHSE_DATE_FMT;
   }
-  // Runde 129, gemeldet: Beim Ablesen am Graphen wurde die Zeile Energie/Stimmung/Datum zu lang,
-  // brach in eine zweite Zeile, und die Karte aenderte ihre Hoehe. Ursache war das Datum mit Jahr
-  // aus historyDateFmt ("10. Okt. 2026") — bei 320 pt passt das neben zwei Werten nicht. Beim
-  // Ablesen genuegen Tag und Monat, wie auf der Achse darunter; das Jahr steht in der Liste.
+  // Beim Ablesen nur Tag und Monat, sonst bricht die Zeile bei 320 pt um.
   var ABLESE_DATE_FMT = null;
   function ableseDatumFmt(){
     if (!ABLESE_DATE_FMT){
@@ -120,22 +85,8 @@
     return ABLESE_DATE_FMT;
   }
   function resetDateFmt(){ HISTORY_DATE_FMT = null; ACHSE_DATE_FMT = null; ABLESE_DATE_FMT = null; }
-  // Runde 108, gemeldet: „Den Verlauf im Profil bitte visuell ueberarbeiten."
-  //
-  // Eine Zeile war Datum links, Titel rechts — und bei mehreren Eintraegen zehnmal dieselbe graue
-  // Zeile. Was fehlte, war jede Form von Ordnung: Der Titel stand rechtsbuendig und lief bei zwei
-  // langen Woertern in eine zweite Zeile, die unter dem Datum begann; welcher Eintrag der
-  // jueungste ist, sagte nichts (die Liste laeuft absteigend, das stand nirgends); und der
-  // farbige Bezug zum Ergebnis fehlte ganz.
-  //
-  // Die Zeile traegt jetzt drei Dinge statt zwei: Datum und Titel untereinander und linksbuendig
-  // (eine Leserichtung statt zwei), die fuehrende Dimension als kurze Marke rechts, und ihren Pol
-  // als Kante links — dieselbe Unterscheidung wie .role-tag-high/-low in der Archetypen-Ansicht.
-  // Der jueungste Eintrag ist hervorgehoben.
-  //
-  // Bewusst KEINE neuen Texte: Datum, Marke (RADAR_LABELS) und Form sind alles, was hier steht.
-  // Ein Wort wie „zuletzt" haette acht Sprachpakete gebraucht, um zu sagen, was eine kraeftigere
-  // Kante auch sagt.
+  // Verlaufszeile: Datum und Titel untereinander, fuehrende Dimension als Marke rechts, ihr Pol als
+  // Kante links; der juengste Eintrag hervorgehoben. Bewusst ohne neue Texte.
   function verlaufZeileHTML(e, istNeuste){
     var a = archetypeOf(e.scores);
     var titel = NOUN[a.top1][e.scores[a.top1]>=50?'high':'low'] + ' · ' +
@@ -150,18 +101,12 @@
       '<div class="history-dim mono">'+RADAR_LABELS[a.top1]+'</div>'+
       '</div>';
   }
-  // Runde 121: die Kurve einer Dimension im Verlauf. Feste Zeichenflaeche 300x64, die Breite
-  // kommt aus dem Stilblatt (width:100%, Hoehe folgt dem Seitenverhaeltnis) — so bleiben die
-  // Punkte rund, was mit preserveAspectRatio="none" nicht der Fall waere. Die Flaeche unter der
-  // Linie blendet nach unten aus; ihre Verlaufs-ID traegt die Dimension, weil fuenf Kurven in
-  // einem Dokument stehen und eine doppelte ID die Flaeche der falschen Kurve faerben wuerde.
+  // Kurve einer Dimension: feste Flaeche 300x64, Breite aus dem Stilblatt (Punkte bleiben rund). Die
+  // Verlaufs-ID traegt die Dimension, weil fuenf Kurven in einem Dokument stehen.
   function trendKurveSVG(values, f){
     var w = 300, h = 64, px = 6, py = 7;
     var n = values.length;
-    // Die Hoehe zeigt den Bereich der Werte, nicht die ganze Skala 0-100 — so macht es auch Apple
-    // Health. Im ersten Wurf lief die Kurve ueber 0-100, und ein Anstieg um 19 Punkte sah aus wie
-    // eine gerade Linie: genau das "nichtssagend", das gemeldet war. Mindestens 24 Punkte Spanne,
-    // damit umgekehrt ein Unterschied von 1 nicht wie ein Absturz aussieht.
+    // Die Hoehe zeigt den Wertebereich, nicht 0–100 (wie Apple Health), mindestens 24 Punkte Spanne.
     var lo = Math.min.apply(null, values), hi = Math.max.apply(null, values);
     var fehlt = Math.max(0, 24 - (hi - lo));
     lo = Math.max(0, lo - 4 - fehlt/2); hi = Math.min(100, hi + 4 + fehlt/2);
@@ -194,9 +139,7 @@
   function renderHistory(){
     $('historyMaxCount').textContent = MAX_HISTORY;
     var alle = loadHistory();
-    // Runde 84: Die freie Fassung zeigt die letzten beiden Durchlaeufe — genug, um zu sehen DASS
-    // sich etwas bewegt, zu wenig, um zu sehen WIE. Geloescht wird nichts: Sobald jemand kauft,
-    // steht der ganze Verlauf wieder da.
+    // Die freie Fassung zeigt die letzten FREI_DURCHLAEUFE Durchlaeufe; geloescht wird nichts.
     var verborgen = istPlus() ? 0 : Math.max(0, alle.length - FREI_DURCHLAEUFE);
     var hist = verborgen ? alle.slice(-FREI_DURCHLAEUFE) : alle;
     var wrap = $('historyContent');
@@ -205,36 +148,15 @@
       return;
     }
     if (hist.length<2){
-      // Feedback-Runde 47: Bisher stand hier ein reiner Leerzustand — obwohl die Person einen
-      // vollständigen Durchlauf hinter sich hat, tauchte er nicht einmal auf. Das ist die
-      // Umkehrung dessen, was der Zielgradienten-Effekt nahelegt: Was jemand bereits geleistet
-      // hat, gehört gezeigt und mitgezählt, nicht verschwiegen. Kein erfundener Vorsprung —
-      // der Eintrag ist echt, er wurde nur bislang unterschlagen.
+      // Der erste Durchlauf wird gezeigt, nicht verschwiegen.
       wrap.innerHTML =
         '<div class="history-list">'+verlaufZeileHTML(hist[0], true)+'</div>'+
-        // Bewusst kurz: Der Abschnitts-Hinweis unterhalb erklärt bereits, dass ein echter Trend
-        // Monate braucht — das hier zweimal zu sagen, wäre genau die Textlast, die Runde 44
-        // reduziert hat.
         tx('js_dein_erster_durchlauf_ist');
       return;
     }
-    // Runde 108: Neben dem heutigen Wert steht jetzt die Veraenderung ueber die gezeigte Strecke.
-    // Der Grund: Die Kurve zeigt den VERLAUF, die Zahl den STAND — die Richtung musste man sich
-    // bisher aus einer 140x32 grossen Linie erschliessen, und bei zwei Punkten ist sie darin
-    // kaum ablesbar.
-    // Gerechnet wird ueber die angezeigte Strecke, nicht ueber alle Durchlaeufe: Die freie
-    // Fassung zeigt die letzten zwei, und eine Zahl, die sich auf verborgene Eintraege bezieht,
-    // waere nicht nachvollziehbar.
-    // Das Vorzeichen ist die ganze Aussage; die Farbe traegt KEINE. Ein gruenes „+" und ein
-    // rotes „−" hiessen, hoch sei besser als niedrig — das ist bei den fuenf Dimensionen falsch
-    // und widerspricht dem, was die App an jeder anderen Stelle sagt.
-    //
-    // Runde 121, vom Inhaber: "Die Verlaufskurve im Profil ist zu nichtssagend." Zutreffend — fuenf
-    // gleichfarbige Linien von 140x32 neben Kuerzeln wie "GEWISS.", ohne Punkte, ohne Achse, ohne
-    // Zeitangabe. Jetzt in der Form von Apple Health: voller Name mit der Farbe der Dimension
-    // (dieselbe wie im Radar), gross der heutige Stand, darunter eine breite Kurve mit Flaeche,
-    // einer Mittellinie bei 50, einem Punkt je Durchlauf und dem letzten hervorgehoben; unter der
-    // Liste die Zeitspanne. Die Farbe kennzeichnet die Dimension, nicht die Richtung (s. oben).
+    // Neben dem Stand die Veraenderung ueber die GEZEIGTE Strecke. Das Vorzeichen ist die Aussage, die
+    // Farbe traegt keine (hoch ist nicht besser). Form nach Apple Health; die Farbe kennzeichnet die
+    // Dimension.
     var trendRows = ORDER.map(function(f){
       var vals = hist.map(function(e){ return e.scores[f]; });
       var last = vals[vals.length-1];

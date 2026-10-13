@@ -1,8 +1,6 @@
-// ---------- persistence (per-viewer convenience only) ----------
-  // Alle Speicherfunktionen unten fangen Schreibfehler bereits ab und scheitern still —
-  // richtig für den Fall "Speicherkontingent voll" (Feedback-Runde 21). Ist localStorage aber
-  // grundsätzlich unerreichbar (z. B. manche privaten Browser-Modi), würde das sonst überall
-  // lautlos ins Leere laufen. Ein einmaliger Check beim Start macht das stattdessen sichtbar.
+// ---------- Speicherung (nur auf diesem Geraet) ----------
+// Alle Speicherfunktionen scheitern bei Schreibfehlern still (Kontingent voll). Ob localStorage
+// ueberhaupt erreichbar ist, prueft einmal storageAvailable() beim Start.
   function storageAvailable(){
     try{
       var k = '__lucenta_probe__';
@@ -42,9 +40,7 @@
   function clearProgress(){
     try{ localStorage.removeItem('lucenta_progress'); }catch(e){}
   }
-  // Rollierender Verlauf abgeschlossener Testdurchläufe (unabhängig vom einzelnen "letzten
-  // Ergebnis" oben) — Grundlage für die Trend-Sparklines in der Verlauf-Ansicht. Auf die letzten
-  // MAX_HISTORY Einträge begrenzt, damit der lokale Speicher nicht unbegrenzt wächst.
+  // Rollierender Verlauf abgeschlossener Durchlaeufe, auf MAX_HISTORY begrenzt.
   var MAX_HISTORY = 12;
   function loadHistory(){
     try{
@@ -74,42 +70,17 @@
   function clearHistory(){
     try{ localStorage.removeItem('lucenta_history'); }catch(e){}
   }
-  // Tagesform / State-Check: kurzfristiger Zustand (Energie, Stimmung), bewusst als eigenes
-  // Datenmodell getrennt vom stabilen Trait-Ergebnis oben (State vs. Trait) — höchstens ein
-  // Eintrag pro Kalendertag, ein erneutes Speichern am selben Tag aktualisiert den Eintrag.
-  // Runde 82: Die Tagesform zaehlt nicht mehr Tage, sondern Eintraege.
-  //
-  // Bis hierher galt EIN Eintrag je Tag, und upsertStateToday() setzte das durch, indem es den
-  // heutigen Tag herausfilterte und neu schrieb. Der zweite Check-in eines Tages hat den ersten
-  // damit stillschweigend geloescht: Wer morgens bei Energie 2 eintrug und abends bei 4, hatte
-  // den Morgen nicht mehr.
-  //
-  // Das war nicht nur Datenverlust, sondern eine Verzerrung. Der Tageswert hing davon ab, WANN
-  // jemand zufaellig tippte — und wer an schlechten Tagen abends eincheckt und an guten Tagen
-  // morgens, erzeugt eine Schwankung, die im Diagramm nach Befinden aussieht und Messfehler ist.
-  //
-  // Jetzt ergaenzt jeder Eintrag statt zu ueberschreiben, und jeder traegt seine Tageszeit. Der
-  // Tageswert ist das Mittel. Ausdruecklich NICHT eingefuehrt: eine Aufforderung, mehrmals am
-  // Tag einzutragen. Ein Tipp bleibt in sich fertig — die Grenze aus Runde 46 (kein Druck bei
-  // einer Anwendung rund um Befinden) gilt weiter.
-  // ---------- Freie und gekaufte Fassung (Runde 84) ----------
-  //
-  // Die Grenze verlaeuft an EINER Linie, und sie ist keine Verhandlungssache, sondern folgt der
-  // Aussage der App selbst: Frei ist das vollstaendige Bild von heute. Gekauft ist alles, was
-  // erst aus mehreren Messungen entsteht — Verlauf, Muster, Tiefe im Vergleich.
-  //
-  // Was daraus folgt, und was NICHT verhandelbar ist:
-  //   - Niemand zahlt fuer sein Ergebnis. Wer fuenfzig Aussagen beantwortet hat, sieht Ergebnistyp,
-  //     Motto, Kurzfassung, Radar und je Dimension Wert und Kernsatz, sofort und ohne Konto.
-  //     Runde 127, Entscheidung des Inhabers ("zu viel kostenlos"): Der AUSFUEHRLICHE Bericht je
-  //     Dimension (Alltag, Beziehungen, Wachstum) gehoert seither zu Lucenta+ und steht frei als
-  //     verschwommene Vorschau da. Dazu frei nur noch 7 Tage Tagesform, ein Vergleich, kein Archiv.
-  //     Das Versprechen im Lucenta+-Fenster (plus_modal_versprechen) ist entsprechend geaendert.
-  //   - Es wird nichts geloescht und nichts weggenommen. Die freie Fassung ZEIGT weniger; alles
-  //     Eingetragene bleibt liegen und ist wieder da, sobald jemand kauft. Daten, die jemand
-  //     selbst erzeugt hat, sind seine.
-  //   - Der Vergleich bleibt in seiner Grundform frei. Er ist die Stelle, an der eine zweite
-  //     Person dazukommt; ihn zu verschliessen kostet mehr, als er einbringt.
+  // Tagesform: kurzfristiger Zustand, getrennt vom Trait-Ergebnis. Jeder Eintrag traegt seine
+  // Tageszeit; je Tageszeit hoechstens einer (siehe TF_ABSCHNITTE). Der Tageswert ist das Mittel.
+  // Keine Aufforderung, oefter einzutragen.
+  // ---------- Freie und gekaufte Fassung ----------
+  // Frei ist das Bild von heute, Lucenta+ alles, was erst aus mehreren Messungen entsteht.
+  // Entscheidungen des Inhabers (Runde 127/128/136): frei sind Test, Ergebnistyp, Motto, Kurzfassung,
+  // Radar, je Dimension Wert und Kernsatz, 7 Tage Tagesform, Vergleiche mit zwei Personen und zwei
+  // Archivplaetze. Ausfuehrlicher Bericht, "Verstehen" und alles Weitere sind Lucenta+, gesperrt als
+  // verschwommene Vorschau des echten Inhalts.
+  // Nichts wird geloescht oder weggenommen: Die freie Fassung ZEIGT weniger, alles Eingetragene
+  // bleibt.
   var PLUS_SCHLUESSEL = 'lucenta_plus';
   function istPlus(){
     try{ return localStorage.getItem(PLUS_SCHLUESSEL) === '1'; }catch(e){ return false; }
@@ -118,18 +89,13 @@
     try{ an ? localStorage.setItem(PLUS_SCHLUESSEL, '1') : localStorage.removeItem(PLUS_SCHLUESSEL); }catch(e){}
     syncWortmarke();
   }
-  // Das "+" an der Wortmarke wird hier nachgezogen und nicht bei jedem Ansichtswechsel: Der
-  // Zustand aendert sich genau an einer Stelle — hier —, und beim Start. Es an showView() zu
-  // haengen hiesse, sechzig Mal am Tag etwas zu pruefen, das sich einmal im Leben aendert.
+  // Das "+" an der Wortmarke wird nur hier und beim Start nachgezogen — der Zustand aendert sich nur
+  // hier.
   function syncWortmarke(){
     var el = $('wortmarkePlus');
     if (el) el.hidden = !istPlus();
   }
-  // So viele Tage der Tagesform zeigt die freie Fassung. Vierzehn ist nicht gegriffen: Der erste
-  // Befund braucht sieben Tage, der zweite vierzehn — wer die Grenze erreicht, hat also gerade
-  // gesehen, dass es hier etwas zu holen gibt.
-  // Runde 127, Entscheidung des Inhabers ("zu viel kostenlos"): 14 -> 7. Eine Woche reicht, um zu
-  // sehen, dass die Tagesform etwas zeigt; alles, was ueber Wochen entsteht, ist Lucenta+.
+  // So viele Tage der Tagesform zeigt die freie Fassung (Entscheidung des Inhabers: 7).
   var FREI_TAGE = 7;
   // So viele Durchlaeufe zeigt die freie Fassung im Verlauf: der aktuelle und der davor. Genug,
   // um zu sehen DASS sich etwas bewegt, zu wenig, um zu sehen WIE.
@@ -139,9 +105,8 @@
   // Runde 136, Entscheidung des Inhabers: zwei Personen und zwei Plaetze im Vergleichsarchiv frei.
   var FREI_VERGLEICHE = 2;
   var FREI_ARCHIV = 2;
-  // Bis Runde 135 stand unter dem Schluessel EIN Code als Text, seitdem eine Liste. Ein alter
-  // Eintrag wird als Liste mit einem Code gelesen — sonst bekaeme, wer schon verglichen hat, beim
-  // Wechsel zwei neue Personen statt einer.
+  // Bis Runde 135 stand hier EIN Code als Text; ein alter Eintrag wird als Liste mit diesem Code
+  // gelesen.
   function freieVergleichePersonen(){
     var roh = null;
     try{ roh = localStorage.getItem(FREI_VERGLEICH_SCHLUESSEL); }catch(e){}
@@ -153,30 +118,16 @@
     return [roh];
   }
 
-  // ---------- Nutzungsmessung (Runde 96) ----------
-  //
-  // Der Abo-Plan steht und faellt an EINER Zahl: Wie viele Menschen sind nach dreissig Tagen noch
-  // da? Ein Abo, dessen Gegenwert Verlauf und Tagesform sind, verkauft sich nur, wenn Verlauf und
-  // Tagesform tatsaechlich benutzt werden — und das weiss heute niemand, auch nicht ungefaehr.
-  // Solange die Zahl fehlt, ist jede Umsatzplanung geraten.
-  //
-  // Gemessen wird deshalb das Minimum, aus dem sich die Frage beantworten laesst: an WELCHEN
-  // Kalendertagen die App offen war. Keine Uhrzeiten, keine Ansichten, keine Klickwege, keine
-  // Kennung. Alles Weitere ergibt sich aus dem, was ohnehin gespeichert ist — Durchlaeufe im
-  // Verlauf, Eintraege der Tagesform. Was darueber hinausginge, waere Neugier und nicht Messung.
-  //
-  // Es bleibt auf dem Geraet, wie alles hier. Von selbst geht nichts hinaus; nur wer es bei der
-  // Beta-Rueckmeldung ausdruecklich einschaltet, schickt es mit — und sieht vorher woertlich,
-  // was dann dasteht.
+  // ---------- Nutzungsmessung ----------
+  // Nur an WELCHEN Kalendertagen die App offen war — keine Uhrzeiten, Ansichten, Kennungen. Bleibt auf
+  // dem Geraet; geht nur mit, wer es bei der Beta-Rueckmeldung ausdruecklich einschaltet und vorher
+  // sieht, was mitginge.
   var NUTZUNG_SCHLUESSEL = 'lucenta_nutzung';
-  // Vier Monate Tage. Mehr braucht keine der Auswertungen unten, und der erste Tag steht separat
-  // in `start` — sonst haette das Kuerzen ausgerechnet den Bezugspunkt weggeworfen, an dem die
-  // ganze Rechnung haengt.
+  // Vier Monate; der erste Tag steht separat in `start`, damit das Kuerzen den Bezugspunkt nicht
+  // wegwirft.
   var NUTZUNG_MAX_TAGE = 120;
-  // Die Monats- und Tageszahlen werden mitgeprueft und nicht nur die Form. Der Grund steht in
-  // tagAlsZahl(): Date.UTC rechnet Ueberlaeufe stillschweigend um — aus '2026-13-99' wird ein
-  // gueltiger Tag im Maerz 2027. Eine kaputte Angabe wuerde damit nicht auffallen, sondern die
-  // Spanne verlaengern und jede Quote nach unten ziehen.
+  // Monat und Tag werden mitgeprueft: Date.UTC rechnet Ueberlaeufe still um ('2026-13-99' wird ein Tag
+  // im Maerz).
   function istTagesschluessel(t){
     return typeof t === 'string' && /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(t);
   }
@@ -194,9 +145,7 @@
   function nutzungTagVermerken(){
     var n = nutzungLesen(), heute = todayKey();
     if (!n.start) n.start = heute;
-    // Die Liste waechst nur hinten, also ist der heutige Tag entweder der letzte oder gar nicht
-    // da. Das indexOf dahinter ist trotzdem noch da: Wessen Geraeteuhr zurueckgestellt wird, soll
-    // keinen doppelten Eintrag erzeugen, der spaeter als zusaetzlicher Tag zaehlt.
+    // indexOf zusaetzlich, damit eine zurueckgestellte Geraeteuhr keinen doppelten Tag erzeugt.
     if (n.tage[n.tage.length-1] !== heute && n.tage.indexOf(heute) < 0) n.tage.push(heute);
     if (n.tage.length > NUTZUNG_MAX_TAGE) n.tage = n.tage.slice(n.tage.length - NUTZUNG_MAX_TAGE);
     try{ localStorage.setItem(NUTZUNG_SCHLUESSEL, JSON.stringify(n)); }catch(e){}
@@ -205,10 +154,8 @@
   function nutzungLoeschen(){
     try{ localStorage.removeItem(NUTZUNG_SCHLUESSEL); }catch(e){}
   }
-  // Ein Tagesschluessel als fortlaufende Zahl. Bewusst ueber Date.UTC aus den drei Zahlen im
-  // Schluessel und nicht ueber new Date('2026-09-08'): Der Schluessel entsteht in 03 aus den
-  // ORTSZEIT-Anteilen. Ihn als UTC-Zeitpunkt zu lesen und dann ortszeitlich auszuwerten waere
-  // ein Fehler von bis zu einem Tag — westlich von Greenwich taeglich einer.
+  // Ueber Date.UTC aus den drei Zahlen, nicht new Date('2026-09-08'): Der Schluessel ist ORTSZEIT; als
+  // UTC gelesen waere er westlich von Greenwich einen Tag daneben.
   function tagAlsZahl(key){
     if (!istTagesschluessel(key)) return NaN;
     var t = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key);
@@ -222,28 +169,21 @@
       var z = tagAlsZahl(t);
       return !isNaN(z) && heute - z < 30 && heute - z >= 0;
     }).length;
-    // Die eigentliche D30-Frage: War jemand NACH dem dreissigsten Tag noch einmal da? Sie ist
-    // erst beantwortbar, wenn es einen dreissigsten Tag gab. Vorher lautet die ehrliche Antwort
-    // "noch nicht messbar" — und ausdruecklich nicht "nein", was sie zu einer Zahl machen wuerde,
-    // die schlechter aussieht als die Wirklichkeit und die Entscheidung in die falsche Richtung
-    // zieht.
+    // D30: War jemand nach dem dreissigsten Tag noch da? Vorher "noch nicht messbar" (null),
+    // ausdruecklich nicht "nein".
     var d30 = seitStart < 31 ? null : n.tage.some(function(t){
       var z = tagAlsZahl(t);
       return !isNaN(z) && z - start >= 30;
     });
     var h = loadHistory();
-    // Abstand zwischen dem ersten und dem zweiten Durchlauf. Das ist die zweite Zahl, die zaehlt:
-    // Wer nie ein zweites Mal testet, hat vom Verlauf nichts — und der Verlauf ist die Haelfte
-    // dessen, wofuer das Abo bezahlt werden soll.
+    // Abstand zwischen erstem und zweitem Durchlauf.
     var tageBisZweiter = (h.length >= 2 && typeof h[0].date === 'number' && typeof h[1].date === 'number')
       ? Math.max(0, Math.round((h[1].date - h[0].date) / 86400000)) : null;
     var eintraege = loadStateHistory(), tage = stateTage(eintraege);
     var proWoche = 0;
     if (tage.length){
       var erste = tagAlsZahl(tage[0].day);
-      // Die Spanne laeuft bis HEUTE, nicht bis zum letzten Eintrag. Sonst zeigte ausgerechnet
-      // jemand, der vor zwei Monaten aufgehoert hat, eine tadellose Quote — der Abbruch faellt
-      // aus der Rechnung heraus, statt in ihr zu stehen.
+      // Die Spanne laeuft bis HEUTE, sonst haette, wer aufgehoert hat, eine tadellose Quote.
       var spanne = (isNaN(erste) || isNaN(heute)) ? tage.length : Math.max(1, heute - erste + 1);
       proWoche = tage.length / (spanne / 7);
     }
@@ -254,20 +194,13 @@
     };
   }
 
-  // Runde 124: 150 -> 800. Der Monatskalender blaettert zurueck, und 150 Eintraege sind bei
-  // zwei am Tag zweieinhalb Monate — der Kalender haette Monate gezeigt, deren Tage stillschweigend
-  // geloescht waren. 800 Eintraege mit Big-Five-Fragen und Stichworten sind rund 130 KB.
+  // 800 Eintraege (~130 KB): Der Monatskalender blaettert weit zurueck.
   var MAX_STATE_EINTRAEGE = 800;
 
-  // ---------- Runde 124: Die Tagesform kennt die fuenf Dimensionen ----------
-  //
-  // Jeder Eintrag kann neben Energie und Stimmung zwei optionale Teile tragen:
-  //   ocean: {O:1-5, E:..., C:..., A:..., S:...} — "Heute war ich eher ..." je Dimension. Einzelne
-  //          duerfen fehlen; wer nur drei beantwortet, hat drei beantwortet.
-  //   tags:  Stichworte aus der festen Liste STICHWORTE (keine freie Eingabe: Freitext liesse sich
-  //          nicht auswerten, und er ist das, was man am wenigsten auf einem Geraet liegen haben will).
-  // Beides wird beim Lesen geprueft und bereinigt, damit kein anderer Teil des Codes einen kaputten
-  // Wert sehen muss. Eintraege ohne beides (alle vor Runde 124) bleiben gueltig.
+  // ---------- Die fuenf Dimensionen in der Tagesform ----------
+  // Optional je Eintrag: ocean {O..S: 1–5, einzelne duerfen fehlen} und tags aus der festen Liste
+  // STICHWORTE (kein Freitext). Beides wird beim Lesen bereinigt; alte Eintraege ohne beides bleiben
+  // gueltig.
   var TF_DIMENSIONEN = ['O','E','C','A','S'];
   var STICHWORTE = ['arbeit','lernen','sport','draussen','freunde','familie','allein',
                     'kreativ','unterwegs','erholung','schlaf_gut','schlaf_wenig'];
@@ -288,9 +221,7 @@
       gesehen[x] = 1; return true;
     });
   }
-  // Drei Abschnitte statt Uhrzeiten: Eine Uhrzeit im Verlauf zu zeigen waere eine Genauigkeit,
-  // die die Angabe nicht hat. Die Grenzen sind bewusst grob und liegen dort, wo die meisten
-  // Menschen den Tag selbst teilen.
+  // Grobe Tageszeiten statt Uhrzeiten.
   function zeitabschnitt(ts){
     var h;
     try{ h = new Date(ts).getHours(); }catch(e){ return 'mittag'; }
@@ -300,12 +231,9 @@
     if (h < 18) return 'mittag';
     return 'abend';
   }
-  // Runde 129, Auftrag des Inhabers: "Tagesform soll fest drei Mal maximal pro Tag eintragbar sein,
-  // morgens, mittags, abends." Die Abschnitte gab es seit Runde 82 schon (zeitabschnitt oben) —
-  // neu ist die Grenze: je Abschnitt EIN Eintrag. Ein zweiter im selben Abschnitt ersetzt den ersten
-  // (Wahl des Inhabers: "Aendern" statt Sperre), damit ein Vertipper nicht stehen bleibt.
-  // TF_ABSCHNITT_BEGINN muss zu zeitabschnitt() passen; die Erinnerungen (19b-native.js) kommen zu
-  // festen Zeiten INNERHALB des jeweiligen Abschnitts.
+  // Je Tageszeit EIN Eintrag (Entscheidung des Inhabers); ein zweiter ersetzt den ersten.
+  // TF_ABSCHNITT_BEGINN muss zu zeitabschnitt() passen; die Erinnerungen (19b-native.js) liegen
+  // innerhalb der Abschnitte.
   var TF_ABSCHNITTE = ['morgen', 'mittag', 'abend'];
   var TF_ABSCHNITT_BEGINN = {morgen:0, mittag:12, abend:18};
   function aktuellerAbschnitt(){ return zeitabschnitt(Date.now()); }
@@ -333,9 +261,8 @@
           typeof e.energy==='number' && e.energy>=1 && e.energy<=5 &&
           typeof e.valence==='number' && e.valence>=1 && e.valence<=5;
       }).map(function(e){
-        // Eintraege von vor Runde 82 tragen keinen Abschnitt. Er wird beim Lesen aus dem
-        // Zeitstempel ergaenzt, damit der gesamte uebrige Code nur EINE Form kennt — sonst
-        // muesste jede Auswertung den Sonderfall selbst behandeln und eine davon vergaesse ihn.
+        // Alte Eintraege ohne Abschnitt bekommen ihn beim Lesen, damit der uebrige Code nur eine Form
+        // kennt.
         if (!e.slot) e.slot = zeitabschnitt(e.ts);
         var o = tfOceanBereinigen(e.ocean);
         if (o) e.ocean = o; else delete e.ocean;
@@ -364,12 +291,9 @@
     if (h.length>MAX_STATE_EINTRAEGE) h = h.slice(h.length-MAX_STATE_EINTRAEGE);
     return saveStateHistoryList(h);
   }
-  // Fasst die Eintraege zu Tagen zusammen. Diagramm, Liste und die Befunde ueber Tage rechnen
-  // damit weiter in Tagen — sonst haette ein Tag mit drei Eintraegen im Diagramm dreimal so viel
-  // Gewicht wie einer mit einem, und "7 Tage" bedeutete ploetzlich "7 Eintraege".
-  // Runde 124: Auch die Big-Five-Fragen werden je Tag gemittelt — aber jede Dimension nur ueber
-  // die Eintraege, die sie tragen. Ein Tag mit einem Eintrag MIT und einem OHNE Fragen hat fuer
-  // Extraversion einen Wert, nicht den halben. Stichworte eines Tages sind die Vereinigung.
+  // Fasst Eintraege zu Tagen zusammen (sonst haette ein Tag mit drei Eintraegen dreifaches Gewicht).
+  // Jede Dimension wird nur ueber die Eintraege gemittelt, die sie tragen; Stichworte eines Tages sind
+  // die Vereinigung.
   function stateTage(hist){
     var proTag = {}, reihenfolge = [];
     (hist||[]).forEach(function(e){
@@ -412,11 +336,8 @@
   function clearStateHistory(){
     try{ localStorage.removeItem('lucenta_state'); }catch(e){}
   }
-  // Vergleichsarchiv: mehrere gespeicherte Kompatibilitäts-Vergleiche mit unterschiedlichen
-  // Personen, unabhängig vom zuletzt berechneten Einzelvergleich im Kompatibilitäts-Tool.
-  // Jeder Eintrag ist ein Schnappschuss (eigener Code, Code der anderen Person, optionales Label,
-  // Zeitpunkt, Übereinstimmungs-Prozentzahl) — ändert sich das eigene Ergebnis später, bleibt der
-  // gespeicherte Vergleich unverändert nachvollziehbar, analog zum Verlauf-Datenmodell oben.
+  // Vergleichsarchiv: Schnappschuesse (eigener Code, anderer Code, Name, Zeit, Prozent) — bleiben
+  // nachvollziehbar, auch wenn sich das eigene Ergebnis aendert.
   var MAX_COMPAT_ARCHIVE = 20;
   function loadCompatArchive(){
     try{
@@ -461,11 +382,8 @@
       if (mode==='system') localStorage.removeItem('lucenta_theme');
       else localStorage.setItem('lucenta_theme', mode);
     }catch(e){}
-    // Runde 122: Die iOS-Huelle muss die Wahl kennen, BEVOR die Seite geladen ist — sonst zeigen
-    // Startbild und Ladeluecke die Systemfarbe, auch wenn hier "Dunkel" gewaehlt ist (am Simulator
-    // gesehen: hell, dann dunkel). localStorage kann sie vor dem Laden nicht lesen; deshalb meldet
-    // die Seite jede Wahl an MainViewController.swift, der sie in UserDefaults ablegt. Ausserhalb
-    // der App gibt es den Empfaenger nicht, und dann geschieht nichts.
+    // Die iOS-Huelle muss die Darstellung VOR dem Laden kennen (Startbild): Die Seite meldet jede Wahl
+    // an MainViewController.swift (UserDefaults). Ausserhalb der App geschieht nichts.
     try{
       var empf = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.lucentaThema;
       if (empf) empf.postMessage(mode);
@@ -477,14 +395,8 @@
       return (t==='dark' || t==='light') ? t : 'system';
     }catch(e){ return 'system'; }
   }
-  // Die beiden theme-color-Angaben im Kopf greifen nur nach Systemeinstellung. Wählt jemand
-  // ausdrücklich hell oder dunkel, würde die Systemleiste sonst weiter der Systemeinstellung
-  // folgen und farblich von der App abweichen. Ein zusätzlicher, nachgestellter Eintrag ohne
-  // Medienbedingung übersteuert das; bei „System" wird er wieder entfernt.
-  // Welcher Modus ist gerade tatsaechlich zu sehen? Nicht dasselbe wie die Einstellung: Steht
-  // dort "System", sagt data-theme nichts, und die Antwort liegt allein bei der Systemvorgabe.
-  // Beides zusammen ist die einzige verlaessliche Auskunft — und sie wird an mehr als einer
-  // Stelle gebraucht, deshalb steht sie hier und nicht dort, wo sie zuerst gefehlt hat.
+  // Welcher Modus ist wirklich zu sehen? Bei "System" sagt data-theme nichts — erst beides zusammen
+  // ist verlaesslich.
   function dunkelAktiv(){
     try{
       var m = document.documentElement.getAttribute('data-theme');
@@ -494,20 +406,9 @@
     }catch(e){ return false; }
   }
 
-  // Runde 100, im iOS-Simulator gefunden. Der alte Weg — einen zusätzlichen theme-color-Eintrag
-  // ohne Medienbedingung hinten an den Kopf hängen — kann nicht funktionieren, und zwar in
-  // keinem Browser. Die Regel lautet: Es gilt der ERSTE Eintrag in Dokumentreihenfolge, dessen
-  // media-Bedingung zutrifft. Von den beiden Einträgen im Kopf trifft immer genau einer zu, und
-  // beide stehen vor dem angehängten. Der Übersteuerungs-Eintrag kam also nie zum Zug.
-  //
-  // Sichtbar wird das nur, wenn App-Wahl und Systemvorgabe auseinanderlaufen: Wer die App auf
-  // Hell stellt, während das iPhone auf Dunkel steht, bekam eine schwarze Systemleiste über
-  // einer hellen App — und umgekehrt. Im Prüfbrowser gibt es keine Systemleiste, deshalb ist
-  // das 25 Runden lang niemandem aufgefallen, mir zuerst nicht.
-  //
-  // Jetzt werden die vorhandenen Einträge selbst umgeschrieben statt einen weiteren daneben zu
-  // stellen. Damit spielt die Reihenfolge keine Rolle mehr. Die Ausgangswerte werden beim ersten
-  // Aufruf gesichert, damit „System" sie unverfälscht zurückbekommt.
+  // Die vorhandenen theme-color-Eintraege werden umgeschrieben statt einen weiteren anzuhaengen: Es
+  // gilt der ERSTE passende Eintrag, ein angehaengter kam nie zum Zug. Ausgangswerte werden gesichert,
+  // damit "System" sie zurueckbekommt.
   var themeColorOriginal = null;
   function themeColorEintraege(){
     try{ return [].slice.call(document.querySelectorAll('meta[name="theme-color"]')); }
@@ -531,15 +432,11 @@
     }catch(e){}
   }
   var themeShiftTimer = null;
-  // Runde 75: Beide Schalter folgen demselben Muster wie die Darstellung — Wert merken,
-  // aria-pressed setzen. Die Wirkung liegt woanders: bei der Haptik in tapFeedback(), bei der
-  // Bewegung in prefersReducedMotion(), das jede Animation der App ohnehin abfragt.
+  // Schalter: Wert merken; die Wirkung liegt in tapFeedback() bzw. prefersReducedMotion().
   function schalterLesen(schluessel, standard){
     try{ return localStorage.getItem(schluessel) || standard; }catch(e){ return standard; }
   }
-  // Runde 79: Aus dem Knopfpaar wurde ein Schieber. Der Zustand steht damit im Element selbst
-  // (aria-checked) statt verteilt auf zwei aria-pressed — und das ist zugleich die Rolle, die
-  // Vorleseprogramme als Schalter ansagen.
+  // Der Zustand steht im Element (aria-checked, role=switch).
   function schalterSetzen(schluessel, wert, schalterId){
     try{ localStorage.setItem(schluessel, wert); }catch(e){}
     if (schluessel === 'lucenta_bewegung') bewegungKlasse(wert);
@@ -549,10 +446,7 @@
   function schalterUmlegen(schluessel, schalterId){
     schalterSetzen(schluessel, schalterLesen(schluessel, 'an') === 'an' ? 'aus' : 'an', schalterId);
   }
-  // Die Klasse ist noetig, weil CSS-Animationen nur auf die SYSTEM-Einstellung hoeren. Ohne sie
-  // wirkte der Schalter zwar auf alles, was ueber JavaScript laeuft (Haptik, Sternenhimmel,
-  // Richtung des Ansichtswechsels), aber die Ansicht stieg weiter auf — gemessen: animationName
-  // blieb "rise". Der Schalter muss beide Welten erreichen.
+  // Die Klasse ist noetig, weil CSS-Animationen nur auf die SYSTEM-Einstellung hoeren.
   function bewegungKlasse(wert){
     try{ document.documentElement.classList.toggle('bewegung-aus', wert === 'aus'); }catch(e){}
   }
@@ -564,11 +458,8 @@
   }
 
   function applyTheme(mode){
-    // Runde 61: Der Wechsel zwischen hell und dunkel sprang hart um — die Farbmarken wechseln,
-    // aber nichts blendet. Die Ueberblendung laeuft NUR waehrend des Wechsels: eine Klasse fuer
-    // 300 ms, danach wieder weg. Dauerhafte Farbuebergaenge auf allen Elementen wuerden sonst
-    // jede andere Rueckmeldung der App traege machen — besonders die Druckzustaende, die
-    // absichtlich mit transition-duration:0s sofort sitzen.
+    // Ueberblendung beim Farbwechsel nur waehrend des Wechsels (300 ms) — dauerhafte Uebergaenge
+    // machten die Druckzustaende traege.
     var el = document.documentElement;
     if (!prefersReducedMotion() && el.getAttribute('data-theme') !== mode){
       el.classList.add('theme-shift');

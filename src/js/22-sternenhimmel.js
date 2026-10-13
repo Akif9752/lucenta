@@ -1,21 +1,7 @@
-/* Bewegter Hintergrund der Startseite (Runde 71).
- *
- * Eigener Gültigkeitsbereich: 18-beta-rueckmeldung.js schließt den gemeinsamen Bereich der App,
- * und dieser Teil braucht nichts daraus. Er liest seinen Zustand aus dem DOM und seine Farben
- * aus den CSS-Marken — damit stimmt er im Hell- wie im Dunkelmodus, ohne dass hier Farbwerte
- * stehen.
- *
- * Drei Dinge, die den Unterschied zwischen "hübsch" und "Akkufresser" ausmachen:
- *   - Er läuft NUR, während die Startseite sichtbar ist, und pausiert, sobald der Tab in den
- *     Hintergrund geht. Ein Fragebogen mit fünfzig Fragen soll nicht nebenher ein Canvas
- *     zeichnen lassen.
- *   - Die Bildpunktdichte ist auf 1,5 gedeckelt (bis Runde 113: 2). Auf einem Telefon mit
- *     Faktor 3 wären es sonst viermal so viele Bildpunkte für einen Hintergrund, den man kaum
- *     bemerkt. Dazu wird nur jedes zweite Bild gemalt, und unter Schublade und Fenstern steht
- *     der Himmel still — beides seit Runde 113, Begründung bei schritt().
- *   - Bei prefers-reduced-motion wird das Feld EINMAL gezeichnet und steht dann still. Der
- *     Himmel bleibt, die Bewegung nicht.
- */
+/* Bewegter Hintergrund der Startseite. Eigene IIFE: liest Zustand aus dem DOM und Farben aus den
+   CSS-Marken (hell/dunkel ohne Farbwerte hier).
+   Sparsam: laeuft nur auf der Startseite, pausiert im Hintergrund, Pixeldichte max. 1,5, malt jedes
+   zweite Bild, steht unter Schublade/Fenstern und bei reduzierter Bewegung still. */
 (function(){
   var canvas = document.getElementById('sternenhimmel');
   if (!canvas || !canvas.getContext) return;
@@ -38,32 +24,17 @@
   var farbeHimmel = 'transparent', himmelVerlauf = null;
   var farbeWolke = 'transparent', farbeWolkeLicht = 'transparent', wolken = [];
 
-  // ---------- Warum hier nirgends 'transparent' in einem Verlauf steht ----------
-  //
-  // Rueckmeldung Runde 88: "die sonnenstrahlen sind zu schwarz". Gemessen am rechten Rand:
-  // Farbe (89,89,64) bei Deckkraft 20 — die Strahlen DUNKELTEN dort ab, statt aufzuhellen.
-  //
-  // Der Grund ist eine Eigenheit der Zeichenflaeche: Ein Verlauf von einer Farbe nach
-  // 'transparent' laeuft nicht nach "dieselbe Farbe, nur unsichtbar", sondern nach
-  // rgba(0,0,0,0) — nach SCHWARZ mit Deckkraft null. Und weil die Zeichenflaeche die vier
-  // Kanaele einzeln zwischenrechnet, wandert die Farbe auf dem Weg dorthin durch Grau nach
-  // Schwarz. Auf einem hellen Grund ist das ein schmutziger Schleier genau dort, wo ein
-  // Strahl am weichsten auslaufen soll. (Im Stilblatt passiert das NICHT — CSS rechnet
-  // Verlaeufe mit vorher multiplizierter Deckkraft; deshalb ist dieselbe Schreibweise dort
-  // richtig und hier falsch.)
-  //
-  // Die Loesung ist immer dieselbe: als Endpunkt DIESELBE Farbe nehmen, nur mit Deckkraft 0.
+  // Nie 'transparent' in einem Canvas-Verlauf: Er laeuft nach rgba(0,0,0,0) und damit durch Grau nach
+  // Schwarz (schmutziger Schleier). Endpunkt ist dieselbe Farbe mit Deckkraft 0. Im CSS ist
+  // 'transparent' dagegen richtig.
   function ohneDeckung(farbe){
     var m = /^rgba?\(([^)]+)\)/.exec(farbe || '');
     if (!m) return 'rgba(0,0,0,0)';
     var z = m[1].split(',');
     return 'rgba(' + z[0].trim() + ',' + (z[1]||'0').trim() + ',' + (z[2]||'0').trim() + ',0)';
   }
-  // Runde 83: Zwei Atmosphaeren statt einer. Welche gilt, sagt das Stilblatt ueber die Marke
-  // --atmosphaere — nicht dieses Skript. Der Grund ist derselbe wie bei den Farben: Der
-  // Hell-/Dunkelwechsel gehoert ins CSS, und ein Skript, das ihn selbst herleitet, geht beim
-  // naechsten Farbmodus daneben. Gelesen wird es im selben Takt wie die Farben, ein
-  // Themawechsel kommt also von allein an.
+  // Welche Atmosphaere gilt (Sterne/Staub), sagt das Stilblatt ueber --atmosphaere, nicht dieses
+  // Skript.
   var staub = false;
   function farbenLesen(){
     try{
@@ -73,15 +44,11 @@
       if (neuStaub !== staub){ staub = neuStaub; aufbauen(); }
       farbeStrahl = (s.getPropertyValue('--lichtstrahl') || '').trim() || 'transparent';
       var neuSonne = (s.getPropertyValue('--sonnenstrahl') || '').trim() || 'transparent';
-      // Die Verlaeufe haengen nur an Farbe und Flaeche, nicht am Winkel — sie werden deshalb
-      // einmal erzeugt und je Strahl nur gedreht. Ein Verlauf pro Strahl und Bild waere bei
-      // sieben Strahlen mal drei Lagen sechzig Zuteilungen in der Sekunde.
+      // Verlaeufe einmal erzeugen und je Strahl nur drehen — sonst sechzig Zuteilungen pro Sekunde.
       if (neuSonne !== farbeSonne){ farbeSonne = neuSonne; sonneGezeichnet = null; }
       farbeStern = (s.getPropertyValue('--stern') || '').trim() || 'rgba(21,32,25,.5)';
       farbeSchnuppe = (s.getPropertyValue('--stern-schnuppe') || '').trim() || farbeStern;
-      // Runde 72: Ein echter Himmel ist nicht einfarbig. Ein kleiner Teil der Sterne zieht ins
-      // Warme, ein kleiner ins Kalte — kaum als Farbe erkennbar, aber der Unterschied zwischen
-      // "Punkte" und "Sternen".
+      // Ein kleiner Teil der Sterne zieht ins Warme bzw. Kalte.
       farbeWarm = (s.getPropertyValue('--stern-warm') || '').trim() || farbeStern;
       farbeKalt = (s.getPropertyValue('--stern-kalt') || '').trim() || farbeStern;
       farbeStaubLicht = (s.getPropertyValue('--staub-licht') || '').trim() || 'transparent';
@@ -99,13 +66,8 @@
   function aufbauen(){
     var neuB = window.innerWidth, neuH = window.innerHeight;
     if (!neuB || !neuH) return;
-    // Runde 113: Obergrenze 1,5 statt 2. Im iOS-Simulator lief die Startseite mit dem Himmel
-    // bei rund 9 Bildern pro Sekunde (Median 110 ms) und ohne ihn bei 43 — und headless WebKit
-    // verlor bei Pixeldichte 3 selbst auf einem schnellen Mac 15 von 121 Bildern, bei Dichte 1
-    // keines. Die Kosten wachsen mit der Bildpunktzahl, und 2 hiess 780x1688, also 1,3
-    // Millionen Bildpunkte, 60-mal in der Sekunde neu gemalt. Bei 1,5 sind es 0,74 Millionen.
-    // Sichtbar ist das kaum: Staub, Strahlen und Wolken sind weich gezeichnet und verlieren
-    // nichts; nur die kleinsten Sterne im Dunkelmodus werden einen Hauch weicher.
+    // Pixeldichte max. 1,5: Bei 2 lief die Startseite im Simulator mit ~9 Bildern/s; sichtbar kostet
+    // es kaum etwas.
     dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     b = neuB; h = neuH;
     canvas.width = Math.round(b * dpr);
@@ -116,23 +78,10 @@
     var anzahl = Math.round(Math.min(420, Math.max(110, (b * h) / 3100)));
     sterne.length = 0;
     for (var i = 0; i < anzahl; i++){
-      // Runde 72: Die Größe war gleichverteilt — dadurch sahen alle Sterne gleich groß aus und
-      // das Feld wirkte wie ein Raster aus Punkten. Ein echter Himmel hat sehr viele schwache
-      // und sehr wenige helle. Die Potenz verschiebt die Verteilung genau dorthin.
-      // Der Exponent steuert, wie stark schwache Sterne ueberwiegen. Bei 2,8 lagen fast alle
-      // unter einem Bildpunkt und erschienen dadurch gar nicht — gemessen 0,08 % Deckung. 2,1
-      // laesst genug mittlere uebrig, ohne dass ein gleichfoermiges Raster entsteht. Der
-      // Mindestradius liegt jetzt ueber einem halben Bildpunkt, damit auch der schwaechste
-      // Stern tatsaechlich gezeichnet wird.
+      // Viele schwache, wenige helle Sterne (Potenz). Bei hoeherem Exponenten fielen fast alle unter
+      // einen Bildpunkt.
       var t = Math.pow(Math.random(), staub ? 1.7 : 2.1);
-      // Die grossen waren zu dominant; der obere Rand faellt von 2,27 auf 1,62.
-      // Staub ist groesser und gleichmaessiger verteilt als Sterne: Ein Korn im Licht hat eine
-      // Groesse, ein Stern eine Helligkeit.
-      // Runde 86: Der Staub sah nicht nach Staub aus, weil er wie ein Stern gebaut war — klein,
-      // hart umrissen, hell. Ein Korn im Lichtstrahl ist das Gegenteil: Es liegt fast immer
-      // ausserhalb der Schaerfe der Linse, ist deshalb GROSS und WEICH und dabei so blass, dass
-      // man es nur bemerkt, wenn Licht darauf faellt. Der Radius steigt von 0,7-2,2 auf 1,6-6,4,
-      // und gezeichnet wird nicht mehr ein Kreis mit Rand, sondern ein Verlauf ohne Kante.
+      // Staub ist gross, weich und blass (ausserhalb der Schaerfe), Sterne klein und hell.
       var r = staub ? (1.6 + t * 4.8) : (0.45 + t * 1.17);
       sterne.push({
         x: Math.random() * b,
@@ -143,16 +92,11 @@
         sx: Math.random() * Math.PI * 2,
         sv: 0.004 + Math.random() * 0.010,
         sw: 0.25 + Math.random() * 0.65,
-        // Helligkeit folgt der Größe: Ein großer, blasser Stern gibt es am Himmel nicht.
-        // Deutlich blasser als vorher (war bis 0,60): Die Helligkeit soll aus dem Strahl kommen,
-        // nicht aus dem Korn. Ausserhalb des Strahls ist Staub praktisch unsichtbar — genau das
-        // macht ihn im Strahl erst zu Staub.
+        // Helligkeit folgt der Groesse. Staub ist ausserhalb des Strahls praktisch unsichtbar — das
+        // macht ihn im Strahl zu Staub.
         a: staub ? (0.05 + t * 0.16 + Math.random() * 0.06)
                  : (0.20 + t * 0.62 + Math.random() * 0.14),
-        // Tempo folgt ebenfalls der Größe — größer heißt näher heißt schneller. Das ist echte
-        // Parallaxe statt zufälliger Geschwindigkeit und erzeugt Tiefe.
-        // Runde 73: Tempo weiter zurueckgenommen (vorher 0,035 + t*0,20). Die Schnuppen
-        // behalten ihres — sie sollen ein Ereignis bleiben, kein Teil der Grundbewegung.
+        // Tempo folgt der Groesse (Parallaxe). Schnuppen behalten ihr eigenes Tempo.
         v: staub ? (0.012 + t * 0.055) : (0.022 + t * 0.125),
         // Kleine Sterne flackern stärker, große stehen ruhiger.
         f: 0.34 - t * 0.26,
@@ -163,14 +107,9 @@
         // Die hellsten bekommen einen weichen Hof; darunter wäre er nur Unschärfe. Bei Staub
         // haben mehr Koerner einen: Ein Korn im Licht leuchtet diffus, ein Stern punktfoermig.
         hof: !staub && t > 0.86,
-        // Wie weich das Korn ist: Ein Teil liegt naeher an der Schaerfeebene und hat einen
-        // erkennbaren Kern, die meisten sind reine Unschaerfe. Ohne diesen Unterschied sieht
-        // ein Feld aus weichen Flecken wieder gleichfoermig aus.
+        // Wie weich das Korn ist: wenige mit Kern, die meisten reine Unschaerfe.
         kern: staub ? (0.10 + Math.random() * 0.30) : 1,
-        // Laenge der Spitzen als Vielfaches des Radius; 0 heisst keine. Nur die oberen rund
-        // 30 Prozent bekommen welche, und je heller, desto weiter reichen sie.
-        // Spitzen sind die Signatur eines Sterns. Auf einem Staubkorn waeren sie schlicht
-        // falsch — es leuchtet nicht selbst, es wird angeleuchtet.
+        // Spitzen (Vielfaches des Radius) nur fuer die hellsten ~30 % der Sterne, nie fuer Staub.
         zacken: (!staub && t > 0.68) ? (2.1 + t * 1.9) : 0
       });
     }
@@ -195,40 +134,12 @@
     });
   }
 
-  // ---------- Der Himmel des Hellmodus (Runde 93) ----------
-  //
-  // Rueckmeldung: "man erkennt im hellmodus nicht auf der startseite dass der hintergrund auch
-  // wirklich ein himmel sein soll."
-  //
-  // Das stimmte, und der Grund ist, dass bis hier nur LICHT gebaut war: ein Strahl, ein Faecher,
-  // Staub darin. Licht allein sagt aber nichts darueber, WO man steht — dasselbe Bild waere
-  // auch ein Zimmer mit einem Fenster. Was einen Himmel ausmacht, sind zwei Dinge, die beide
-  // gefehlt haben:
-  //
-  //   1. Oben ist er anders als unten. Ein Himmel wird zum Zenit hin tiefer und kuehler und
-  //      zum Horizont hin heller und waermer. Diese eine Achse ist der staerkste Hinweis, den
-  //      es gibt, und sie kostet einen Verlauf.
-  //   2. Es steht etwas darin. Ohne Wolken ist eine blaue Flaeche eine blaue Flaeche; erst ein
-  //      Gebilde mit Rand, das langsam zieht, macht daraus Entfernung.
-  //
-  // Die Wolken sind bewusst sehr blass und sehr breit. Eine erkennbare Schaefchenwolke waere
-  // eine Illustration — die Seite traegt einen Persoenlichkeitstest, keine Wetterkarte. Sie
-  // sollen im Vorbeisehen als Himmel gelesen werden und beim Hinsehen nicht ablenken.
-  //
-  // Gebaut als fertige Bilder statt als Verlaeufe je Bild: Eine Wolke besteht aus acht weichen
-  // Ballen, das waeren acht createRadialGradient pro Wolke und Bild, also ueber tausend
-  // Zuteilungen in der Sekunde fuer etwas, das sich in einer Minute um sechzig Bildpunkte
-  // bewegt. Einmal zeichnen und dann nur noch verschieben kostet nichts.
-  // Zwei Fallen stecken darin, und der erste Entwurf ist in beide gelaufen:
-  //
-  //   1. Halbdurchsichtige Ballen ADDIEREN ihre Deckung, wo sie sich ueberlappen. Aus acht
-  //      Ballen mit je 30 Prozent wurden Flaechen mit 30, 51 und 65 Prozent — und damit war
-  //      jeder einzelne Kreis als Kreis zu sehen. Im Bild sah das nach Seifenblasen aus, nicht
-  //      nach Wolke. Deshalb wird das Bild INNEN mit voller Deckung gemalt und erst beim
-  //      Aufsetzen als Ganzes durchsichtig gemacht: Ueberlappungen verschwinden dann.
-  //   2. Ballen auf einer Linie ergeben eine Raupe. Eine Haufenwolke hat einen flachen Boden
-  //      (dort endet die Feuchtigkeit) und eine unregelmaessige Kuppe. Die Ballen sitzen
-  //      deshalb mit ihrer UNTERKANTE auf einer gemeinsamen Linie, nicht mit ihrer Mitte.
+  // Himmel des Hellmodus: Verlauf von oben (tiefer, kuehler) nach unten und sehr blasse, breite Wolken
+  // — erst beides liest sich als Himmel.
+  // Wolken als fertige Bilder, einmal gezeichnet und nur verschoben. Zwei Fallen: Ballen innen mit
+  // voller Deckung malen und erst beim Aufsetzen durchsichtig machen (sonst addieren sich
+  // Ueberlappungen zu sichtbaren Kreisen); Ballen sitzen mit der Unterkante auf einer Linie (flacher
+  // Boden).
   function ohneAlpha(farbe){
     var m = /^rgba?\(([^)]+)\)/.exec(farbe || '');
     if (!m) return {farbe: farbe, a: 1};
@@ -240,14 +151,8 @@
   }
   function wolkeMalen(breite){
     var koerper = ohneAlpha(farbeWolke), kante = ohneAlpha(farbeWolkeLicht);
-    // Der dritte Fehler war, die Bildgroesse VORHER festzulegen und die Ballen dann
-    // hineinzumalen: Wer groesser war als das Bild, wurde am Rand abgeschnitten — und eine
-    // abgeschnittene Wolke ist ein Rechteck. Erst die Form, dann das Bild darum herum.
-    // Die Zahlen haengen zusammen und sind deshalb aneinander gerechnet, nicht einzeln gewaehlt:
-    // Sieben Ballen auf 86 Prozent der Breite stehen 14,3 Prozent auseinander; der kleinste
-    // Radius liegt mit 15 Prozent darueber, also beruehren sich alle sicher. Der groesste liegt
-    // bei 22 Prozent, womit die Wolke rund dreimal so breit wird wie hoch — das Verhaeltnis
-    // einer Haufenwolke.
+    // Erst die Form, dann das Bild darum (sonst Rechteckwolken). Die Zahlen haengen zusammen: 7 Ballen
+    // auf 86 % Breite, Radien 15–22 % — alle beruehren sich, Wolke etwa dreimal so breit wie hoch.
     var n = 7;
     var ballen = [], i;
     for (i = 0; i < n; i++){
@@ -256,10 +161,7 @@
       // der HOEHE, nicht auf der Lage: Eine Wolke mit Luecken darin ist keine.
       var hoch = Math.sin(Math.PI * (0.12 + 0.76 * t));
       var r = breite * (0.15 + hoch * (0.04 + Math.random() * 0.03));
-      // Alle Ballen sitzen mit ihrer UNTERKANTE auf derselben Linie. Das gibt der Wolke den
-      // flachen Boden, den eine Haufenwolke hat — weich, weil die Ballen weich sind, und nicht
-      // als Schnitt: Der erste Versuch hat das Bild unten abgeschnitten, und heraus kam ein
-      // Balken mit einer rasiermesserglatten Kante quer ueber den Bildschirm.
+      // Unterkante auf derselben Linie: flacher, weicher Boden — nicht abschneiden.
       ballen.push({ x: breite * (0.07 + 0.86 * t), y: -r * 0.92, r: r });
     }
     // Umriss ausmessen, Rand fuer den weichen Auslauf dazu.
@@ -321,10 +223,8 @@
         breite: gemalt.breite,
         hoehe: gemalt.hoehe,
         x: (i / anzahl) * (b + gemalt.breite) - gemalt.breite * 0.5 + Math.random() * b * 0.2,
-        // Nur im oberen Drittel: Weiter unten stuenden sie hinter den Karten, wo sie niemand
-        // sieht, und der Verlauf von oben nach unten waere dahin.
-        // Nur im oberen Viertel und nie zwei auf derselben Hoehe: Uebereinander gelegt
-        // verschmelzen sie zu einer Bank, und eine Bank hat keine Richtung.
+        // Nur im oberen Viertel und nie zwei auf derselben Hoehe (sonst verschmelzen sie zu einer
+        // Bank).
         y: h * (0.07 + (i / anzahl) * 0.22 + Math.random() * 0.05),
         // Sehr langsam, und die weiter oben stehende zieht langsamer: Entfernung.
         v: 0.055 + Math.random() * 0.075
@@ -336,14 +236,7 @@
     if (!staub) return;
     if (farbeHimmel !== 'transparent'){
       if (!himmelVerlauf){
-        // Nur der obere Teil traegt Farbe. Ein Verlauf ueber die ganze Hoehe wuerde die Karten
-        // unten mit einfaerben, und aus Himmel wuerde eine Tapete.
-        //
-        // Der Verlauf haelt seine volle Farbe bis 18 Prozent Hoehe, statt gleich abzufallen.
-        // Grund: Die Kopfleiste deckt die oberen rund acht Prozent ab — genau den Teil, in dem
-        // der Himmel am kraeftigsten ist. Im ersten Entwurf war deshalb auf der Seite selbst
-        // kaum Blau zu sehen, obwohl das Bild fuer sich betrachtet stimmte. Was verdeckt ist,
-        // zaehlt nicht.
+        // Farbe nur oben; volle Farbe bis 18 %, weil die Kopfleiste die oberen ~8 % verdeckt.
         var g = ctx.createLinearGradient(0, 0, 0, h * 0.70);
         g.addColorStop(0, farbeHimmel);
         g.addColorStop(0.18, farbeHimmel);
@@ -376,10 +269,7 @@
     }
   }
 
-  // Der Lichtstrahl des Hellmodus. Ein sehr weicher, schraeger Streifen, der ueber Minuten
-  // langsam wandert — kein Ereignis wie eine Sternschnuppe, sondern das, was Licht im Lauf
-  // eines Nachmittags tut. Die Koerner darin werden heller: Genau das macht Staub sichtbar,
-  // und ohne diesen Unterschied waere der Streifen nur eine helle Flaeche.
+  // Der Lichtstreifen des Hellmodus: wandert ueber Minuten; Staub darin wird heller.
   var strahlPhase = Math.random() * Math.PI * 2;
   function strahlMitte(){
     return b * (0.5 + 0.34 * Math.sin(strahlPhase));
@@ -392,43 +282,18 @@
     g.addColorStop(0, leer);
     g.addColorStop(0.5, farbeStrahl);
     g.addColorStop(1, leer);
-    // Gemessen am Bild zurueckgenommen (war 0,5): Darueber legt der Strahl einen sichtbaren
-    // warmen Stich ueber die ganze Seite, und aus Atmosphaere wird Farbe.
-    // Runde 93 auf 0,17: derselbe Grund wie beim Faecher — der Grund darunter ist dunkler.
     ctx.globalAlpha = 0.17;
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, b, h);
     ctx.globalAlpha = 1;
   }
-  // ---------- Der Sonnenfaecher (Runde 85) ----------
-  //
-  // Rueckmeldung: "beim hellmodus fehlen mir auf der startseite im hintergrund die
-  // sonnenstrahlen leicht noch, man soll schon den unterschied erkennen koennen zwischen
-  // nachts bei der dunkelversion und tagsueber bei der hellversion."
-  //
-  // Der weiche Streifen allein hat das nicht geleistet: Er ist so breit und so weich, dass er
-  // als heller Fleck gelesen wird und nicht als Licht. Was einen Tag von einer Nacht
-  // unterscheidet, sind nicht Helligkeit, sondern RICHTUNG und QUELLE — Strahlen, die
-  // erkennbar von EINEM Punkt ausserhalb des Bildes kommen. Genau das ist hier gebaut: eine
-  // Sonne oberhalb der rechten oberen Ecke und ein Faecher einzelner Strahlen daraus.
-  //
-  // Drei Entscheidungen, die es bei "Lichtstrahlen auf einer Seite" leicht kippen lassen:
-  //   - Die Strahlen sind UNGLEICH breit und ungleich hell. Sieben gleiche Keile ergeben einen
-  //     Sonnenschirm, kein Licht.
-  //   - Jeder besteht aus drei Lagen: schmal und kraeftig innen, breit und schwach aussen.
-  //     Ein einzelner Keil haette eine sichtbare Kante, und eine Kante macht aus Licht Grafik.
-  //   - Sie schwingen mit derselben Phase wie der Streifen, nur schwaecher. Zwei Lichtquellen,
-  //     die unabhaengig voneinander wandern, sind physikalisch Unsinn und man sieht es.
+  // Der Sonnenfaecher: Strahlen aus EINER Quelle ausserhalb der rechten oberen Ecke — Richtung und
+  // Quelle unterscheiden Tag von Nacht.
+  // Ungleich breit und hell (sonst Sonnenschirm), mehrere Lagen je Strahl (keine Kante), gleiche Phase
+  // wie der Streifen (eine Lichtquelle).
   var faecher = [];
-  // Grundrichtung: nach links unten. Nicht 45 Grad — flacher wirkt nach Nachmittag,
-  // steiler nach Mittag, und der Nachmittag passt zu einer Seite, die man abends oeffnet.
-  // Runde 86 weiter abgeflacht (war 2,16): Aus einer Ecke faellt Licht schraeg ueber die
-  // Flaeche, nicht senkrecht hinunter.
-  // Runde 90, gemessen statt geschaetzt: Bei 2,52 (144 Grad) zeigt die Richtung (-0,81 / +0,58),
-  // also ueberwiegend ZUR SEITE. Die Strahlen verliessen die Seite links, lange bevor sie unten
-  // ankamen — man sah fast waagerechte Baender ueber dem oberen Rand, keinen Faecher aus der
-  // Ecke. Bei 2,05 (117 Grad) zeigt sie (-0,46 / +0,89): ueberwiegend nach unten, leicht nach
-  // links. Erst dadurch faellt das Licht ueber die ganze Seite und kommt sichtbar aus der Ecke.
+  // Grundrichtung 2,05 rad (~117 Grad): ueberwiegend nach unten, leicht nach links. Flacher liefen die
+  // Strahlen seitlich aus der Seite.
   var FAECHER_MITTE = 2.05;
   function strahlenAufbauen(){
     faecher.length = 0;
@@ -442,54 +307,25 @@
         ab: mitte * 0.92 + (Math.random() - 0.5) * 0.07,
         // Halbe Breite als Steigung (Gegenkathete je Laenge). Die schmalen sind die klaren.
         br: 0.012 + Math.random() * 0.030,
-        // Die Strahlen in der Mitte des Faechers sind kraeftiger als die an den Raendern —
-        // so faellt das Buendel zu den Seiten hin aus, statt abgeschnitten zu wirken.
-        // Runde 86 zurueckgenommen (war 0,44 + 0,40): Mit sechs statt drei Lagen summiert sich
-        // dort, wo die Strahlen zusammenlaufen, deutlich mehr Licht als vorher. Ungeaendert waere
-        // aus der Ecke ein warmer Schleier ueber dem oberen Drittel geworden.
-        // Runde 88 halbiert (war 0,34 + 0,32). Der Fehler mit dem schwarzen Verlauf hatte die
-        // Strahlen die ganze Zeit gedaempft; ohne ihn traf dieselbe Zahl viel haerter, und die
-        // Seite badete in Gelb. Licht soll man bemerken, nicht ansehen.
-        // Runde 93 erneut zurueckgenommen (war 0,15 + 0,16). Nicht, weil die Strahlen sich
-        // geaendert haetten, sondern weil der Grund darunter es tat: Das Papier ist um ein
-        // Zehntel dunkler geworden, und derselbe Wert Licht darauf ist mehr Unterschied. Wer
-        // die Helligkeit einer Flaeche aendert, aendert damit alles, was darauf liegt.
+        // Mitte des Faechers kraeftiger als die Raender. Bewusst schwach: Mehr Deckkraft liess die
+        // Seite in Gelb baden; ein dunklerer Grund verstaerkt dieselben Werte.
         a: (0.11 + 0.12 * Math.random()) * (1 - Math.abs(mitte) * 0.80),
         ph: Math.random() * Math.PI * 2,
-        // Runde 97: doppelt so schnell wie zuvor (war 0,00035 + 0,00075). Der Wert stammte aus
-        // Runde 90 und war fuer sieben gleich lange Strahlen gedacht; seit jeder seine eigene
-        // Laenge hat, deckt eine langsamere Schwingung die Bewegung eher zu, als sie zu tragen.
         pv: 0.00070 + Math.random() * 0.00150,
-        // Runde 97: Jeder Strahl hat jetzt seine EIGENE Helligkeit, die langsam auf- und
-        // abschwillt. Das ist der Unterschied zwischen "hell" und "glaenzend": Glanz ist nicht
-        // mehr Licht, sondern Licht, das sich aendert. Sieben Strahlen mit fester Deckkraft
-        // sind eine Flaeche, sieben mit eigener Atmung sind eine Lichtquelle hinter etwas, das
-        // sich bewegt. Die Phasen liegen ausdruecklich zufaellig, nicht gekoppelt: Gemeinsames
-        // Pulsieren saehe nach Blinken aus.
+        // Jeder Strahl atmet mit eigener, zufaelliger Phase — das ergibt Glanz statt Flaeche;
+        // gekoppelt saehe es nach Blinken aus.
         gph: Math.random() * Math.PI * 2,
         gpv: 0.00090 + Math.random() * 0.00190,
-        // Runde 90: "zu wenig dynamik ... und zu lang". Beides hatte dieselbe Ursache — alle
-        // sieben Strahlen waren gleich lang und reichten weit ueber den Bildrand hinaus. Was
-        // dabei fehlt, ist das, was einen Lichtstrahl lebendig macht: dass er IRGENDWO endet.
-        // Jeder hat jetzt seine eigene Laenge, und sie schwankt zusaetzlich langsam.
+        // Jeder Strahl hat eine eigene, langsam schwankende Laenge — er endet irgendwo.
         laenge: 0.42 + Math.random() * 0.44,
         lph: Math.random() * Math.PI * 2,
         lpv: 0.00055 + Math.random() * 0.0011
       });
     }
   }
-  // Innen kraeftig, aussen weich: die drei Lagen je Strahl.
-  // Runde 86: Drei Lagen waren zu wenig — im vergroesserten Bild sah man die Kanten der
-  // einzelnen Keile als Baender. Sechs Lagen, deren Breite waechst waehrend die Deckkraft faellt,
-  // summieren sich zu einem glockenfoermigen Querschnitt: aussen laeuft der Strahl aus, statt
-  // aufzuhoeren. Mehr Lagen kosten hier nichts, weil die Verlaeufe zwischengespeichert sind.
-  //
-  // Runde 97, gemeldet: "die lichtstrahlen in der hellversion sind nicht dynamisch genug und
-  // koennten mehr shiny sein." Der Glanz kommt NICHT daher, die Deckkraft aller Lagen
-  // hochzudrehen — das hat Runde 88 versucht und die Seite badete in Gelb. Glanz ist ein
-  // KERN: eine schmale, deutlich hellere Mitte in einem weichen Umfeld. Genau das ist die
-  // erste Lage, halb so breit wie die bisher schmalste und ueber voller Deckkraft. Der breite
-  // Anteil des Strahls bleibt, wie er war.
+  // Lagen je Strahl: Breite waechst, Deckkraft faellt — glockenfoermiger Querschnitt ohne Kanten. Die
+  // erste, schmale Lage ueber voller Deckkraft ist der Glanzkern; mehr Deckkraft fuer alle Lagen waere
+  // falsch.
   var LAGEN = [{w:0.42, a:1.55}, {w:1.0, a:1.00}, {w:1.6, a:0.62}, {w:2.4, a:0.40},
                {w:3.4, a:0.22}, {w:4.6, a:0.11}, {w:6.0, a:0.05}];
   function sonneAufbauen(){
@@ -497,9 +333,8 @@
     var L = (b + h) * 1.25;
     for (var i = 0; i < LAGEN.length; i++){
       var g = ctx.createLinearGradient(0, 0, L, 0);
-      // Nicht bei 0 voll: Direkt an der Quelle wuerden sich alle sieben Strahlen zu einem
-      // Fleck ueberlagern. Das Maximum liegt im ersten Drittel, dort, wo ein Strahl auch in
-      // echt am deutlichsten ist.
+      // Maximum im ersten Drittel, nicht an der Quelle (dort wuerden sich alle Strahlen zu einem Fleck
+      // ueberlagern).
       var leer = ohneDeckung(farbeSonne);
       g.addColorStop(0, leer);
       g.addColorStop(0.26, farbeSonne);
@@ -510,16 +345,7 @@
     sonneGezeichnet = farbeSonne;
   }
   function sonneOrt(){
-    // Die Sonne selbst liegt ausserhalb des Bildes. Sichtbar ist nur, was von ihr kommt —
-    // eine Scheibe im Bild waere eine Illustration, kein Hintergrund.
-    // Runde 86: Die Sonne stand zu weit in der Flaeche, dadurch faechterte das Licht von der
-    // Mitte des oberen Randes her auf statt aus der Ecke. Jetzt liegt sie rechts NEBEN dem Bild
-    // und nur knapp darueber — der Faecher kommt sichtbar aus der rechten oberen Ecke, und die
-    // Strahlen laufen flacher ueber die Seite.
-    // Runde 88 weiter in die Ecke (war 1,06 der Breite und ein Achtel der Hoehe darueber):
-    // Bei der alten Lage lag der Punkt, aus dem die Strahlen kommen, oben am RAND und nicht in
-    // der Ecke — man sah einen Faecher von oben, nicht Licht aus der Ecke. Jetzt liegt sie
-    // knapp ausserhalb der rechten oberen Ecke; der Faecher zeigt sichtbar dorthin zurueck.
+    // Die Sonne liegt knapp ausserhalb der rechten oberen Ecke; sichtbar ist nur ihr Licht.
     return { x: b * (0.99 + 0.06 * Math.sin(strahlPhase)), y: -h * 0.05 };
   }
   function faecherZeichnen(){
@@ -532,13 +358,10 @@
     for (var i = 0; i < faecher.length; i++){
       var f = faecher[i];
       var winkel = basis + f.ab + (wenigerBewegung ? 0 : Math.sin(f.ph) * 0.030);
-      // Die Laenge atmet mit. Skaliert statt neu gerechnet, damit der zwischengespeicherte
-      // Verlauf mitwaechst — ein kuerzerer Strahl waere sonst nicht kuerzer, sondern
-      // abgeschnitten, und ein abgeschnittener Strahl ist eine Kante.
+      // Laenge skaliert statt neu gerechnet, damit der zwischengespeicherte Verlauf mitwaechst (sonst
+      // abgeschnitten = Kante).
       var lang = f.laenge * (wenigerBewegung ? 1 : (1 + Math.sin(f.lph) * 0.22));
-      // Die eigene Helligkeit des Strahls. Zwischen 0,74 und 1,26 des Grundwerts — genug, dass
-      // die Strahlen sichtbar ungleich hell stehen und einander abloesen, zu wenig, als dass
-      // einer je verschwaende oder aufblitzte.
+      // Eigene Helligkeit des Strahls: 0,74–1,26 des Grundwerts.
       var glanz = wenigerBewegung ? 1 : (1 + Math.sin(f.gph) * 0.26);
       ctx.save();
       ctx.rotate(winkel);
@@ -559,16 +382,8 @@
     ctx.restore();
     ctx.globalAlpha = 1;
   }
-  // Wie stark ein Korn beleuchtet wird — Runde 86 vom Streifen auf den FAECHER umgestellt.
-  //
-  // Vorher hing es allein an der waagerechten Entfernung zur Mitte des weichen Streifens. Der
-  // Streifen wandert aber unabhaengig vom Faecher, und im vergroesserten Bild stand das Ergebnis
-  // deutlich da: Die hellen Koerner lagen dort, wo gar kein Strahl war. Zwei Lichtquellen, die
-  // sich widersprechen — genau der Fehler, den die Strahlen selbst vermeiden sollten.
-  //
-  // Jetzt zaehlt, was tatsaechlich zaehlt: der WINKEL vom Sonnenort zum Korn. Liegt er in einem
-  // der Strahlen, ist das Korn hell, sonst nicht. Damit steht Staub genau dann im Licht, wenn
-  // dort Licht ist.
+  // Wie stark ein Korn beleuchtet ist, haengt am WINKEL von der Sonne zum Korn — Staub ist hell, wo
+  // tatsaechlich ein Strahl ist.
   function imStrahl(x, y){
     if (!staub || !faecher.length) return 0;
     var o = sonneOrt();
@@ -582,9 +397,7 @@
       // Die weichen Aussenlagen reichen weiter als die Kernbreite; der Faktor bildet das ab.
       var e = Math.abs(d - f.ab) / (f.br * 2.6 + 0.02);
       if (e >= 1) continue;
-      // Ein Korn hinter dem Ende des Strahls steht nicht mehr im Licht. Ohne diese Zeile
-      // leuchteten Koerner dort, wo gar kein Strahl mehr ist — derselbe Widerspruch zweier
-      // Lichtquellen wie in Runde 86, nur eine Ebene tiefer.
+      // Hinter dem Strahlende ist kein Licht mehr.
       var weg = Math.sqrt((x - o.x) * (x - o.x) + (y - o.y) * (y - o.y));
       if (weg > f.laenge * (b + h) * 1.25) continue;
       summe += (1 - e) * (1 - e) * (f.a / 0.8);
@@ -645,10 +458,8 @@
     for (i = 0; i < sterne.length; i++){
       s = sterne[i];
       var funkeln = wenigerBewegung ? 1 : (1 - s.f + s.f * (0.5 + 0.5 * Math.sin(s.p)));
-      // Im Strahl bis zu zweieinhalbmal so hell. Das ist der ganze Trick: Staub ist ueberall,
-      // sichtbar wird er nur dort, wo Licht auf ihn faellt.
-      // Das Flackern OHNE Strahlverstaerkung: Beim Staub tragen die zwei Lagen unten die
-      // Helligkeit, sonst zaehlte der Strahl doppelt.
+      // Im Strahl bis zu 2,5-mal so hell. funkelnRoh ist das Flackern ohne Strahlverstaerkung (sonst
+      // zaehlte der Strahl doppelt).
       var funkelnRoh = funkeln;
       var ton = s.ton === 1 ? farbeWarm : (s.ton === 2 ? farbeKalt : farbeStern);
       if (s.hof){
@@ -664,19 +475,9 @@
         ctx.fill();
       }
       if (staub){
-        // Ein Korn ausserhalb der Schaerfe: innen etwas dichter, nach aussen restlos verlaufend.
-        // Kein arc() mit voller Deckkraft mehr — der harte Rand war der Grund, warum es wie ein
-        // Punkt aussah und nicht wie Schwebeteilchen.
-        //
-        // Zwei Lagen, und darin steckt der Unterschied zwischen Staub und Schmutz: unten das
-        // Korn im Schatten, ein Hauch dunkler als der Grund, oben dasselbe Korn im Licht, heller
-        // als der Grund — und wie stark, entscheidet allein die Naehe zum Strahl. Ein Korn, das
-        // ueberall gleich aussieht, ist ein Fleck auf dem Bildschirm.
-        // EINE Lage, nicht zwei. Der erste Versuch legte ein helles Korn auf ein dunkles —
-        // und weil beide gleich gross waren, blieb vom dunklen ein Ring stehen: aus Staub
-        // wurden Seifenblasen. Es wandert deshalb die FARBE mit dem Licht, nicht die Deckung:
-        // im Schatten ein Hauch dunkler als der Grund, im Strahl heller. Dazwischen wird
-        // gemischt, in acht Stufen, damit die Farbtexte nicht je Korn und Bild neu entstehen.
+        // Ein Korn als weicher Verlauf ohne Kante, in EINER Lage: Die Farbe wandert mit dem Licht (im
+        // Schatten leicht dunkler, im Strahl heller), gemischt in acht Stufen. Zwei Lagen gleicher
+        // Groesse ergaben Ringe.
         var licht = imStrahl(s.x, s.y);
         staubKorn(s, staubFarbe(licht), s.a * (0.85 + 2.6 * licht) * funkelnRoh);
       } else {
@@ -686,10 +487,7 @@
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
-      // Runde 73: Vier feine Spitzen nach oben, unten, links und rechts — das, was ein Objektiv
-      // aus einem hellen Punkt macht und was ein Stern im Bild von einem Kreis unterscheidet.
-      // Nur fuer die helleren: An einem schwachen Punkt waere die Spitze laenger als der Stern
-      // selbst und sae wie ein Kreuz aus, nicht wie Licht.
+      // Vier feine Spitzen nur an hellen Sternen (an schwachen saehe es wie ein Kreuz aus).
       if (s.zacken){
         var l = s.r * s.zacken;
         ctx.globalAlpha = s.a * funkeln * 0.5;
@@ -723,12 +521,8 @@
     ctx.globalAlpha = 1;
   }
 
-  // Runde 113: Steht etwas ueber dem Himmel, steht er still. Schublade, Bild- und Plus-Fenster
-  // tragen alle ein backdrop-filter, und eine Unschaerfe ueber einem BEWEGTEN Grund muss WebKit
-  // in jedem Bild neu rechnen. Ueber einem stehenden kann es sie zwischenspeichern. Gemessen im
-  // Simulator: Die Schublade oeffnete mit Glas und laufendem Himmel bei Median 190 ms je Bild,
-  // ohne beides bei 94. Der Himmel ist dabei ohnehin zu zwei Dritteln verdeckt und durch die
-  // Unschaerfe nur als Farbe zu ahnen — angehalten sieht man ihn genauso.
+  // Unter Schublade und Fenstern steht der Himmel still: backdrop-filter ueber bewegtem Grund muss
+  // WebKit in jedem Bild neu rechnen (gemessen 190 statt 94 ms je Bild).
   var UEBERLAGERUNGEN = ['drawerPanel', 'imgModal', 'plusModal'].map(function(id){
     return document.getElementById(id);
   }).filter(Boolean);
@@ -738,17 +532,10 @@
     }
     return false;
   }
-  // Runde 113: gemalt wird jedes ZWEITE Bild, bewegt wird jedes. Die Bewegung ist so langsam
-  // (eine volle Wanderung des Lichts dauert rund vier Minuten, ein Staubkorn braucht Sekunden
-  // fuer eine Fingerbreite), dass 30 Bilder in der Sekunde nicht von 60 zu unterscheiden sind
-  // — die Kosten aber halbieren sich. Die Positionen laufen weiter in jedem Takt, damit sich
-  // die Geschwindigkeit nicht aendert, nur die Zahl der Aufnahmen davon.
+  // Gemalt wird jedes zweite Bild, bewegt jedes — bei dieser Langsamkeit unsichtbar, halbe Kosten.
   var bildTakt = 0;
-  // Runde 113: Waehrend gescrollt wird, steht der Himmel ebenfalls still — und 180 ms danach
-  // laeuft er weiter. Im Simulator kostete der laufende Himmel beim Bildlauf mehr als jede
-  // andere Stelle (90 Bilder mit ihm, 140 ohne, in derselben Zeit), und Bildlauf ist genau der
-  // Moment, in dem man ein Ruckeln bemerkt. Den Stillstand bemerkt man nicht: Was sich auf der
-  // Flaeche bewegt, bewegt sich langsamer, als ein Finger wischt.
+  // Waehrend des Bildlaufs (und 180 ms danach) steht der Himmel still — dort war er im Simulator am
+  // teuersten.
   var bildlaufBis = 0;
   window.addEventListener('scroll', function(){ bildlaufBis = performance.now() + 180; }, {passive:true});
   function schritt(){
@@ -758,9 +545,7 @@
     for (i = 0; i < sterne.length; i++){
       s = sterne[i];
       if (staub){
-        // Staub zieht nicht, er schwebt: langsam abwaerts, dabei seitlich pendelnd. Eine
-        // gerade Diagonale wie bei den Sternen sieht bei einem Korn nach Wind aus, nicht nach
-        // Schwerelosigkeit.
+        // Staub schwebt: langsam abwaerts, seitlich pendelnd.
         s.sx += s.sv;
         s.x += Math.sin(s.sx) * s.sw * 0.16;
         s.y += s.v * 0.85;
@@ -781,9 +566,7 @@
       f.leben++;
       if (f.leben > f.dauer || f.x < -200 || f.y > h + 200) schnuppen.splice(i, 1);
     }
-    // Im Mittel etwa alle zwölf Sekunden eine, und nie zwei gleichzeitig. Im Hellmodus gar
-    // keine: Eine Sternschnuppe am Tageshimmel gibt es nicht, und der Lichtstrahl uebernimmt
-    // dort die Rolle des langsam Wandernden.
+    // Im Mittel alle ~12 s eine Schnuppe, nie zwei, im Hellmodus keine.
     if (!staub && !schnuppen.length && Math.random() < 0.0014) schnuppeStarten();
 
     // Sehr langsam: eine volle Wanderung dauert rund vier Minuten. Schneller gelesen waere es
@@ -798,29 +581,9 @@
     rafId = window.requestAnimationFrame(schritt);
   }
 
-  // Runde 108, gemeldet: "Der Hintergrund im Fragebogen ist leer, bitte gestalten."
-  //
-  // Zutreffend, und es war nicht nur leer, sondern ein Bruch: Mit dem Antippen von "Test starten"
-  // verschwand die Atmosphaere fuer fuenfzig Fragen und kam auf der Ergebnisseite nicht wieder.
-  //
-  // Sie liegt dort jetzt mit — aber STILL: ein einziges gezeichnetes Bild, danach kein
-  // requestAnimationFrame mehr. Der Grund dafuer steht im Kopf dieser Datei und gilt unveraendert
-  // ("Ein Fragebogen mit fuenfzig Fragen soll nicht nebenher ein Canvas zeichnen lassen") — ein
-  // Standbild kostet nach dem Zeichnen nichts. Es ist genau der Weg, den die Flaeche bei
-  // prefers-reduced-motion ohnehin schon immer genommen hat; neu ist nur, WANN er gilt.
-  //
-  // Warum dasselbe Bild und nicht ein zweiter, eigener Hintergrund: Der Uebergang von der
-  // Startseite in den Fragebogen laesst die Flaeche damit stehen, statt eine Gestaltung gegen
-  // eine andere zu tauschen. Und es ist kein neuer Code, sondern ein anderer Takt fuer den
-  // vorhandenen — einschliesslich Hell/Dunkel, Staub/Sterne und aller gemessenen Farbwerte.
-  //
-  // Leiser als auf der Startseite ist es trotzdem (html.sternen-still, 00-grundlagen.css): Im
-  // Fragebogen wird gelesen, fuenfzig Mal eine Entscheidung, und der Text hat Vorrang.
-  // Der Takt haengt nicht an einem eigenen Namen, sondern an der Ansicht selbst: ANSICHTEN sagt,
-  // wo die Flaeche ueberhaupt liegt, BEWEGTE_ANSICHT sagt, welche davon sie laufen laesst. Ein
-  // zusaetzliches Wort dafuer waere ein Bezeichner, den man in beiden Richtungen pflegen muss —
-  // und es waere ein deutsches Zeichenketten-Literal in einer Datei voller uebersetzter Texte,
-  // was das i18n-Audit zu Recht nicht unterscheiden kann.
+  // Die Flaeche liegt auch unter dem Fragebogen — dort STILL (ein Bild, danach kein
+  // requestAnimationFrame) und leiser (html.sternen-still). ANSICHTEN: wo sie liegt; BEWEGTE_ANSICHT:
+  // wo sie laeuft.
   var ANSICHTEN = ['view-landing', 'view-quiz'];
   var BEWEGTE_ANSICHT = 'view-landing';
   function sichtbar(){
@@ -833,18 +596,14 @@
     return null;
   }
 
-  // Welche Ansicht die Flaeche gerade traegt und in welchem Takt. Getrennt von laeuft, weil ein
-  // Wechsel ZWISCHEN den Takten (Startseite -> Fragebogen) sonst unbemerkt bliebe: laeuft waere
-  // vorher und nachher true, und die Flaeche zeichnete im Fragebogen munter weiter.
+  // Ansicht und Takt getrennt von `laeuft` gemerkt, sonst bliebe ein Wechsel Startseite -> Fragebogen
+  // unbemerkt.
   var ansicht = null, stillerTakt = false;
   function pruefen(){
     var soll = sichtbar();
-    // Zwei verschiedene Fragen, die beim ersten Anlauf dieser Runde EINE waren — und das war
-    // falsch, in der Gegenprobe auf beiden Motoren gemessen:
-    //   gedaempft: Wird hier gelesen? Das haengt allein an der Ansicht.
-    //   still:     Darf sich etwas bewegen? Das haengt auch an der Bewegungsvorliebe.
-    // Zusammengelegt bekam die Startseite bei "weniger Bewegung" die gedaempfte Deckkraft mit —
-    // wer weniger Bewegung will, hat aber nichts gegen Helligkeit gesagt.
+    // Zwei Fragen: gedaempft (wird hier gelesen? haengt an der Ansicht) und still (darf sich etwas
+    // bewegen? haengt auch an der Bewegungsvorliebe). Reduzierte Bewegung heisst nicht weniger
+    // Helligkeit.
     var gedaempft = !!soll && soll !== BEWEGTE_ANSICHT;
     var still = !!soll && (wenigerBewegung || gedaempft);
     document.documentElement.classList.toggle('sternen-an', !!soll);
@@ -857,10 +616,7 @@
     // Vor dem ersten Bild die Farben lesen, nicht erst nach 60 Bildern: Sonst zeigt das erste
     // gezeichnete Bild nach der Rueckkehr die Atmosphaere des vorigen Farbmodus.
     farbenLesen();
-    // Runde 114: Auch im bewegten Takt wird SOFORT ein Bild gemalt. Seit Runde 113 steht der
-    // Himmel unter der Schublade still — oeffnete sie, bevor das erste Bild gemalt war, blieb die
-    // Flaeche leer, und hinter dem Glas lag nur einfarbiges Papier. Gefunden hat das pruef-app:
-    // Die Schublade sah mit und ohne Glas byte-gleich aus.
+    // Auch im bewegten Takt sofort ein Bild malen — sonst lag hinter der Schublade leeres Papier.
     zeichnen();
     if (!still){ rafId = window.requestAnimationFrame(schritt); }
   }
@@ -874,15 +630,8 @@
   });
   document.addEventListener('visibilitychange', pruefen);
 
-  // Runde 86, im Bild gefunden: Beim Wechsel von hell auf dunkel lagen bis zu zwei Sekunden
-  // lang grelle Sonnenstrahlen ueber dem Nachthimmel. Der Grund war die Taktung — die Farben
-  // wurden nur alle 60 Bilder gelesen, und solange die Startseite nicht sichtbar war, lief gar
-  // kein Bild. Die Flaeche behielt also den zuletzt gemalten Zustand und zeigte ihn beim
-  // Zurueckkommen weiter, in den Farben des anderen Modus.
-  //
-  // Die Taktung bleibt (sie kostet nichts), aber sie ist nicht mehr die einzige Quelle: Ein
-  // Wechsel des Farbmodus meldet sich jetzt selbst. Zwei Wege, weil es zwei Arten gibt, ihn
-  // auszuloesen — die Wahl in den Einstellungen setzt data-theme, die Systemeinstellung nicht.
+  // Ein Wechsel des Farbmodus meldet sich selbst (data-theme und Systemeinstellung), sonst blieben bis
+  // zu zwei Sekunden die Farben des alten Modus stehen.
   function modusGewechselt(){
     farbenLesen();
     if (laeuft) zeichnen();
@@ -898,24 +647,14 @@
     else if (mm.addListener) mm.addListener(modusGewechselt);
   }catch(e){}
 
-  // Runde 102: Der Sternenhimmel baut beim Start mehrere Offscreen-Canvases (Wolken, Strahlen) auf.
-  // Das lief bisher noch beim Parsen und konkurrierte mit dem ersten Zeichnen der Startseite. Der
-  // Aufbau wartet jetzt auf das erste Bild — die Oberflaeche erscheint dadurch frueher, der
-  // Hintergrund folgt ein, zwei Bilder spaeter (unmerklich). Zwei verschachtelte
-  // requestAnimationFrame stellen sicher, dass mindestens ein Bild gezeichnet wurde; der
-  // 1-Sekunden-Takt startet erst danach, damit pruefen() nicht vor dem Aufbau laeuft.
+  // Aufbau der Offscreen-Bilder erst nach dem ersten gemalten Bild (zwei requestAnimationFrame), damit
+  // die Oberflaeche frueher erscheint; der Sekundentakt startet danach.
   function starten(){
     farbenLesen();
     aufbauen();
     pruefen();
-    // Runde 108: Der Blick pro Sekunde bleibt als Netz, ist aber nicht mehr die einzige Quelle.
-    // Solange es nur "Startseite oder nicht" war, fiel eine Verzoegerung von bis zu einer Sekunde
-    // nicht auf — die Flaeche blendete ueber .8s aus, das eine verdeckte das andere. Mit dem
-    // stillen Takt im Fragebogen wurde daraus etwas Sichtbares: Nachgemessen bei 320x568 lief die
-    // Flaeche nach dem Antippen von "Test starten" noch weiter, weil der Takt erst beim naechsten
-    // Blick umgestellt wurde. Der Ansichtswechsel meldet sich jetzt selbst — dieselbe Loesung wie
-    // beim Farbmodus ein paar Zeilen darueber, und aus demselben Grund: Ein Zustand, den man
-    // beobachten kann, muss nicht abgefragt werden.
+    // Der Sekundentakt bleibt als Netz; der Ansichtswechsel meldet sich selbst, sonst lief die Flaeche
+    // nach "Test starten" noch bis zu einer Sekunde weiter.
     try{
       var wache = new MutationObserver(pruefen);
       for (var i = 0; i < ANSICHTEN.length; i++){

@@ -22,11 +22,8 @@
   var currentView = 'landing';
   var viewScroll = {};
 
-  // Die Zurück-Geste des Systems — auf dem iPhone das Wischen vom linken Rand — führte bisher aus
-  // der App heraus, weil jeder Ansichtswechsel im Verlauf unsichtbar blieb. Jetzt legt jeder
-  // Wechsel einen Eintrag an, sodass die Geste innerhalb der App zurückführt. Überlagerungen
-  // (Schublade, Bild-Dialog) bekommen ebenfalls einen Eintrag: die Geste schließt dann zuerst sie,
-  // bevor sie die Ansicht wechselt — genau das Verhalten, das man von einer nativen App kennt.
+  // Jeder Ansichtswechsel legt einen Verlaufseintrag an, damit die Zurueck-Geste des Systems in der
+  // App bleibt; Ueberlagerungen (Schublade, Dialoge) schliesst sie zuerst.
   var historyOK = true, overlayDepth = 0;
   function pushViewState(name){
     if (!historyOK) return;
@@ -56,9 +53,9 @@
         v.classList.remove('nav-weg','nav-weg-push','nav-weg-pop');
         v.style.top = ''; v.style.left = ''; v.style.width = '';
       });
-      // Auch die angekommene Seite verliert ihre Schiebe-Klasse. Nicht Zierde: Laeuft die Animation
-      // nicht weiter (App im Hintergrund, gedrosselte Seite — in der Fehlersuche auf WebKit so
-      // gemessen), stuende die Seite sonst an ihrem Startpunkt, eine volle Breite rechts daneben.
+      // Auch die angekommene Seite verliert ihre Schiebe-Klasse: Laeuft die Animation nicht weiter
+      // (Hintergrund, gedrosselt — in der Fehlersuche auf WebKit gemessen), stuende sie sonst eine
+      // Breite rechts daneben.
       document.querySelectorAll('.view.nav-push, .view.nav-pop').forEach(function(v){
         v.classList.remove('nav-push','nav-pop');
       });
@@ -66,25 +63,14 @@
   }
   function showView(name, opts){
     opts = opts || {};
-    // Scrollposition der verlassenen Ansicht merken, damit die Zurück-Geste an dieselbe Stelle
-    // zurückführt statt an den Seitenanfang — bei einer acht Bildschirme langen Ergebnisseite
-    // ist das der Unterschied zwischen „zurück" und „von vorn suchen".
+    // Scrollposition der verlassenen Ansicht merken, fuer die Rueckkehr.
     if (currentView && currentView !== name) viewScroll[currentView] = window.scrollY;
-    // Runde 62: Richtung im Ansichtswechsel. Bisher stieg jede Ansicht gleich auf — ob man
-    // tiefer ging oder zurückkam, sah identisch aus. Die Richtung ist eine Information, keine
-    // Zierde: Sie sagt, wo man sich in der App befindet.
-    //
-    // Die Zuordnung folgt der Wahrnehmung, nicht einer Tiefenzahl: Die Zurück-Geste des Systems
-    // ist immer zurück, die Startseite ist immer zurück, alles andere geht hinein. Eine
-    // Tiefentabelle hätte bei gleicher Ebene (Ergebnis -> Verstehen) keine Antwort gehabt.
+    // Richtung des Wechsels: Zurueck-Geste und Startseite sind zurueck, alles andere hinein.
     var richtung = (opts.fromHistory || name === 'landing') ? 'nav-zurueck' : 'nav-vor';
-    // Runde 136, Auftrag des Inhabers: Eine Zeile mit Pfeil nach rechts oeffnet eine Unterseite
-    // "wie bei iOS" — die neue Seite schiebt sich von rechts ueber die alte, die alte rueckt um ein
-    // Drittel nach links; zurueck genau umgekehrt. Dafuer muessen BEIDE Seiten gleichzeitig zu
-    // sehen sein: Die verlassene bleibt fuer die Dauer des Uebergangs an ihrem letzten Platz
-    // festgehalten (position:fixed), dann verschwindet sie wie sonst auch.
-    // Die Richtung haengt am Seitenpaar, nicht am Knopf — so stimmt sie auch bei der Zurueck-Geste.
-    // Zurueck auf die Einstellungen kehrt an die Stelle zurueck, von der man kam (wie iOS).
+    // Unterseiten (UNTERSEITE_VON) schieben sich wie ein iOS-Push von rechts herein, zurueck umgekehrt
+    // (Auftrag des Inhabers). Die verlassene Seite bleibt waehrend des Uebergangs mit position:fixed
+    // an ihrem Platz (.nav-weg). Die Richtung haengt am Seitenpaar, nicht am Knopf; zurueck kehrt an
+    // die verlassene Stelle zurueck.
     var art = null;
     if (currentView && UNTERSEITE_VON[name] === currentView) art = 'push';
     else if (currentView && UNTERSEITE_VON[currentView] === name) art = 'pop';
@@ -117,29 +103,15 @@
     document.title = VIEW_TITLES[name] ? ('Lucenta — '+VIEW_TITLES[name]) : 'Lucenta';
     window.scrollTo({top: opts.restoreScroll ? (viewScroll[name]||0) : 0, behavior:'instant' in window ? 'instant':'auto'});
     syncHeaderScrollState();
-    // Runde 75: Der Balken stand auf jeder Ansicht, obwohl er nur im Fragebogen etwas anzeigt —
-    // auf der Startseite war er eine leere Leiste ohne Bedeutung. Er erscheint jetzt nur dort,
-    // wo er einen Fortschritt hat. Die Marke --fokuslinie-hoehe geht dabei auf 0, damit die
-    // Kopfleiste automatisch nachrueckt: Beide haengen seit Runde 73 an derselben Marke, genau
-    // damit so etwas nicht wieder auseinanderlaeuft.
-    // Der Ersatz-DOM der Testreihen kennt classList.toggle nicht; der Zugriff wird deshalb
-    // abgesichert, wie an den anderen Stellen mit DOM-Zugriff auch.
+    // Der Fortschrittsbalken nur im Fragebogen; --fokuslinie-hoehe geht sonst auf 0, die Kopfleiste
+    // rueckt nach. Abgesichert, weil das Ersatz-DOM der Testreihen classList.toggle nicht kennt.
     try{ document.documentElement.classList.toggle('fortschritt-sichtbar', name === 'quiz'); }catch(e){}
     if (name!=='quiz'){ $('focusline-fill').style.width = name==='result' ? '100%':'0%'; disarmQuizAdvance(); setFocuslineProgress(null); }
     if (name!=='settings'){ disarmResetButton(); }
-    // Bugfix Feedback-Runde 39: renderLandingUnderstandTeaser() blendet die "Verstehen"-Karte
-    // seit Runde 38 abhängig vom Vorhandensein eines Ergebnisses ein/aus, wurde bisher aber nur
-    // einmal beim allerersten Laden der Seite aufgerufen (siehe init() weiter unten) — nicht bei
-    // jeder Rückkehr zur Startseite. Für Erstbesucher:innen blieb die Karte dadurch nach dem
-    // ersten abgeschlossenen Test dauerhaft versteckt, obwohl jetzt ein Ergebnis vorliegt (und
-    // umgekehrt nach "Eigene Daten zurücksetzen" fälschlich weiter sichtbar). Jetzt Teil derselben
-    // Landing-Aktualisierung wie syncHeroState()/renderLandingStateTeaser(), die aus genau diesem
-    // Grund schon bei jedem showView('landing') statt nur einmalig laufen.
+    // Die Startseite wird bei jedem Wechsel dorthin aktualisiert, nicht nur beim ersten Laden.
     if (name==='landing'){ syncHeroState(); renderLandingStateTeaser(); renderLandingUnderstandTeaser(); renderPreviewCard(); landingPlusKarteAnwenden(); ordneStartseite(); }
     if (!opts.fromHistory) pushViewState(name);
-    // Fokus an den Anfang der neuen Ansicht setzen, damit Vorleseprogramme den Wechsel überhaupt
-    // bemerken — ohne das bleibt der Fokus auf der angetippten Schaltfläche der alten Ansicht.
-    // preventScroll, weil die Scrollposition eine Zeile darüber bereits gesetzt wurde.
+    // Fokus auf die neue Ansicht, damit Vorleseprogramme den Wechsel bemerken.
     try{ section.focus({preventScroll:true}); }catch(e){}
   }
   window.addEventListener('popstate', function(e){
@@ -160,10 +132,7 @@
     if (name === currentView) return;
     showView(name, {fromHistory:true, restoreScroll:true});
   });
-  // Feedback: die obere Leiste ist jetzt sticky (siehe header.top-CSS) — die Trennlinie darunter
-  // soll aber erst auftauchen, sobald wirklich gescrollt wurde, nicht permanent stehen. Ein Listener
-  // genügt für alle Screens, weil die Leiste außerhalb von #mainContent liegt und beim Wechsel der
-  // .view nicht neu erzeugt wird.
+  // Die Trennlinie unter der Kopfleiste erst nach dem Scrollen.
   var headerTopEl = null;
   function syncHeaderScrollState(){
     if (!headerTopEl) headerTopEl = document.querySelector('header.top');
@@ -171,12 +140,7 @@
   }
   window.addEventListener('scroll', syncHeaderScrollState, {passive:true});
 
-  // Die Startseite hat bisher jeder Besucherin, egal ob neu oder wiederkehrend, exakt dieselbe
-  // Werbe-Ansicht mit "Test starten" gezeigt — selbst mit einem fertigen Ergebnis auf dem Gerät.
-  // Für wiederkehrende Nutzer:innen stellt der Haupt-Button jetzt das eigentlich Relevante voran.
-  // Einziger Einstiegspunkt in einen neuen Testdurchlauf — vorher lag dieselbe Zeile
-  // ("answers zurücksetzen, qi=0, clearProgress, renderQuestion, showView") an fünf Stellen
-  // kopiert vor, was das Setzen des Gast-Kennzeichens fünffach fehleranfällig gemacht hätte.
+  // Der einzige Einstieg in einen neuen Durchlauf.
   function beginRun(isGuest){
     guestRun = !!isGuest;
     hideRunChoice();
@@ -186,25 +150,16 @@
   function hideRunChoice(){
     var el = $('runChoice');
     if (el) el.style.display = 'none';
-    // Nur zuruecksetzen, wenn der Knopf gerade als Aufklapper dient: In den anderen Zustaenden
-    // ("Dein letztes Ergebnis ansehen", "Neu starten") klappt er nichts auf, und ein
-    // aria-expanded daran wuerde eine Flaeche ankuendigen, die es nicht gibt.
+    // aria-expanded nur, wenn der Knopf gerade als Aufklapper dient.
     var knopf = $('btnHeroSecondary');
     if (knopf && knopf.hasAttribute('aria-expanded')) knopf.setAttribute('aria-expanded', 'false');
   }
 
-  // Wird statt beginRun() aufgerufen, wenn bereits ein Ergebnis auf dem Gerät liegt: dann ist erst
-  // die Frage zu klären, wessen Durchlauf das wird. Liegt noch kein Ergebnis vor, gibt es nichts zu
-  // schützen und der Test startet ohne Zwischenfrage.
+  // Liegt schon ein Ergebnis vor, wird erst gefragt, wessen Durchlauf es wird.
   function requestRun(){
     if (!loadResult()){ beginRun(false); return; }
     var el = $('runChoice');
-    // Runde 92: Der Knopf klappte die Frage nur auf. Ein zweiter Druck auf denselben Knopf tat
-    // nichts — wer die Frage wieder loswerden wollte, musste den Abbrechen-Knopf darunter
-    // finden. Ein Knopf, der etwas aufklappt, klappt es auch wieder zu; das ist keine Funktion,
-    // die man lernt, sondern eine, die man erwartet. Der Abbrechen-Knopf bleibt trotzdem: er ist
-    // die Ausfahrt fuer alle, die den Blick unten in der Flaeche haben, und die einzige, die
-    // per Tastatur in Leserichtung erreichbar ist.
+    // Derselbe Knopf klappt die Frage auch wieder zu; Abbrechen bleibt fuer die Tastatur.
     if (el && el.style.display !== 'none'){
       hideRunChoice();
       // Der Fokus wandert zurueck auf den Knopf, der gerade zugeklappt hat. Ohne das faellt er

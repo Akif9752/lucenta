@@ -1,33 +1,15 @@
-// ---------- Feier und Fehlerantwort (Runde 78) ----------
-  //
-  // Zwei Momente hatten bisher keine koerperliche Antwort, obwohl beide die wichtigsten
-  // Rueckmeldungen der App sind:
-  //
-  //   Der Meilenstein im Fragebogen. Bei 10, 20, 30 und 40 beantworteten Fragen erschien ein
-  //   Hinweistext und der Balken wurde kurz heller. Beides ist leise. Wer fuenfzig Fragen
-  //   durchhaelt, hat an genau vier Stellen einen Grund, sich zu freuen — die Stelle traegt
-  //   einen kurzen Stoss. Bewusst NUR dort: ein Stoss bei jeder der fuenfzig Antworten waere
-  //   nach zehn Fragen kein Fest mehr, sondern Flimmern.
-  //
-  //   Der abgewiesene Code. Bislang kam nur ein Hinweis in Textform. Ein Feld, das den Kopf
-  //   schuettelt, sagt dasselbe schneller und zeigt zugleich, WO der Fehler steckt.
-  //
-  // Beides haengt an prefersReducedMotion() — der einen Stelle, an der die Bewegungsvorliebe
-  // der App zusammenlaeuft.
+// ---------- Feier und Fehlerantwort ----------
+// Ein Stoss nur an den Meilensteinen des Fragebogens (10/20/30/40), ein Schuetteln beim abgewiesenen
+// Code. Alles haengt an prefersReducedMotion().
 
   // Die Farben kommen aus den CSS-Marken, nicht aus Zahlen hier (FUNKEL_FARBEN). Damit stimmt der
   // Stoss im Hell- wie im Dunkelmodus und folgt jeder spaeteren Farbaenderung.
   var feierLaeuft = 0;
 
-  // Runde 132, Auftrag des Inhabers: "statt Konfetti wuerde es besser zum App-Konzept passen, wenn
-  // man es mit Sparkles ersetzt." Bis Runde 131 flogen hier Papierschnipsel mit Schwerkraft — ein
-  // Partybild. Lucenta hat einen Sternenhimmel und einen Strahlenkranz; dazu passt Licht, nicht
-  // Papier. Jetzt: vierzackige Sterne und kleine Lichtpunkte, die sanft auseinanderschweben, einmal
-  // aufblitzen und verglimmen. Kein Fall — Licht faellt nicht.
-  //
-  // Die Bahn steht wie bisher in eigenen CSS-Eigenschaften je Stern; die Bewegung macht die
-  // Stilvorlage (.funkeln in 11-feier.css). `opts`: {farben, voll, weite:[min,max]}. `voll` streut
-  // rundum statt nach unten (aus einem Haken mitten in der Karte).
+  // Funkeln statt Konfetti (Entscheidung des Inhabers): vierzackige Sterne und Lichtpunkte, die
+  // auseinanderschweben und verglimmen — kein Fall. Die Bahn steht je Stern in CSS-Eigenschaften, die
+  // Bewegung macht .funkeln (11-feier.css). opts: {farben, voll, weite:[min,max]}; `voll` streut
+  // rundum.
   var FUNKEL_FARBEN = ['--accent-2', '--accent', '--dim-o', '--dim-e', '--dim-a'];
   function funkelStoss(x, y, anzahl, opts){
     opts = opts || {};
@@ -78,9 +60,7 @@
     }, 1500);
   }
 
-  // Stoss am rechten Ende des Fortschrittsbalkens — also genau dort, wo der eben erreichte
-  // Meilenstein steht. Ohne Balken (Ersatz-DOM der Tests, oder ausserhalb des Fragebogens)
-  // passiert schlicht nichts.
+  // Stoss am rechten Ende des Fortschrittsbalkens; ohne Balken nichts.
   function funkelnAmFortschritt(){
     if (prefersReducedMotion()) return;
     try{
@@ -93,9 +73,8 @@
     }catch(e){}
   }
 
-  // Kurzes Schuetteln als Antwort auf eine Eingabe, die nicht angenommen wurde. Die Klasse wird
-  // vorher entfernt und der Wert dazwischen ausgelesen, damit der Browser die Animation beim
-  // zweiten Fehlversuch erneut startet statt sie als unveraendert zu ueberspringen.
+  // Klasse entfernen, Wert lesen, neu setzen — sonst startet die Animation beim zweiten Fehlversuch
+  // nicht.
   function schuetteln(el){
     if (!el || !el.classList) return;
     if (prefersReducedMotion()) return;
@@ -105,13 +84,9 @@
     setTimeout(function(){ if (el.classList) el.classList.remove('schuettel'); }, 500);
   }
 
-  // ---------- Runde 129: groessere, verspieltere Bewegung ----------
-  //
-  // Auftrag des Inhabers: "mehr verspielte Animationen, auch etwas groessere als nur kleine
-  // Mini-Bewegungen." Gewaehlt hat er vier Stellen — Ergebnis, Tagesform, Startseite, Fragebogen —
-  // und das Tier dort, wo es schon steht (Profilbild, Schublade). Die Regel aus Runde 78 bleibt:
-  // Jede Bewegung haengt an einer Handlung oder einem Ankommen, keine laeuft ohne Anlass.
-  // Alles haengt an prefersReducedMotion() bzw. html.bewegung-aus im Stilblatt.
+  // ---------- Groessere, verspieltere Bewegung ----------
+  // Ergebnis, Tagesform, Startseite, Fragebogen und das Tier (Entscheidung des Inhabers). Jede
+  // Bewegung haengt an einer Handlung oder einem Ankommen.
 
   // Klasse neu setzen, sodass die Animation auch beim zweiten Mal wieder laeuft.
   function bewegungNeu(el, klasse, dauer){
@@ -131,9 +106,7 @@
         {farben:['--daten-energie', '--daten-stimmung', '--accent-2'], voll:true, weite:[26, 74]});
     }catch(e){}
   }
-  // Nach dem Test, nicht beim spaeteren Oeffnen eines Ergebnisses: Titel federt herein, der Kranz
-  // blitzt auf, das Radar entfaltet sich, und aus dem Titel kommt ein Stoss. Die Klasse bleibt bis
-  // zum naechsten renderResult() stehen — sie vorher zu nehmen, startete die Grundbewegungen neu.
+  // Nur direkt nach dem Test. Die Klasse bleibt bis zum naechsten renderResult() stehen.
   function ergebnisEnthuellen(){
     var v = $('view-result');
     if (!v || !v.classList || prefersReducedMotion()) return;
@@ -145,10 +118,8 @@
       }catch(e){}
     }, 420);
   }
-  // Die Startseite beim Oeffnen der App: Kopf und Karten fliegen gestaffelt herein. Der Versatz
-  // steht je Element als --karte-i, die Bewegung im Stilblatt. Unter einem Prueflauf (webdriver)
-  // nicht — dort misst die Fehlersuche gleich nach dem Laden Lagen, und eine Karte im Flug waere
-  // ein falscher Fund.
+  // Kopf und Karten der Startseite fliegen gestaffelt herein (--karte-i). Nicht unter webdriver — die
+  // Fehlersuche misst gleich nach dem Laden.
   function startkartenEinfliegen(){
     try{ if (navigator.webdriver) return; }catch(e){}
     var v = $('view-landing');
@@ -166,11 +137,8 @@
     bewegungNeu(el, 'wippen', 900);
   }
 
-  // Runde 131, Auftrag des Inhabers: Nach einem Eintrag "muss dort nicht mehr die ganze Zeit die
-  // Ankreuzmoeglichkeit stehen — das kann in einer coolen Animation kleiner werden oder sich
-  // abschliessen". Die Hoehe wird gemessen und auf null gefahren (height ist nur mit Zahlen
-  // animierbar), danach liegt das Element auf display:none. Ohne Messwert (Ersatz-DOM der Tests)
-  // oder bei reduzierter Bewegung geschieht dasselbe sofort.
+  // Zuklappen nach einem Eintrag (Auftrag des Inhabers): Hoehe messen und auf null fahren, danach
+  // display:none. Ohne Messwert oder bei reduzierter Bewegung sofort.
   function zuklappen(el, fertig){
     var ende = function(){ if (fertig) fertig(); };
     if (!el || !el.style) return ende();

@@ -1,8 +1,5 @@
 // ---------- Ergebnisbild-Dialog ----------
   var imgModalLastFocus = null, currentShareCanvas = null;
-  // Runde 109: Hier stand zusaetzlich das Nachziehen der aria-checked-Zustaende des
-  // Formatwaehlers. Es gibt nur noch ein Format (Begruendung bei SHARE_FORMAT in
-  // 10-ergebnisbild.js), also keinen Waehler und nichts nachzuziehen.
   function renderShareImage(){
     currentShareCanvas = buildShareCanvas();
     $('shareImagePreview').src = currentShareCanvas.toDataURL('image/png');
@@ -40,20 +37,10 @@
     if (keepHistory !== true) popOverlayState();
   }
 
-// ---------- Das Lucenta+-Fenster (Runde 89) ----------
-//
-// An den fuenf verschlossenen Stellen stand bisher ein Knopf, der einen Kurzhinweis einblendete
-// — einen Toast, der nach ein paar Sekunden wieder verschwand. Fuer die eine Frage, die jemand
-// dort wirklich hat ("was bekomme ich dafuer?"), ist das die schlechteste Form: Man kann nicht
-// nachlesen, nicht scrollen, nicht in Ruhe entscheiden. Jetzt oeffnet sich ein Fenster.
-//
-// Die Liste steht im Skript und nicht im HTML, weil sie beim Sprachwechsel neu gebaut werden
-// muss: Vier Punkte mit je Ueberschrift und Erklaerung waeren im HTML acht Marken, die
-// einzeln nachgezogen werden muessten.
+// ---------- Das Lucenta+-Fenster ----------
+// Die Vorteilsliste wird im Skript gebaut, weil sie beim Sprachwechsel neu entstehen muss.
   var plusModalLetzterFokus = null;
-  // Die vollen Schluesselnamen, nicht aus Teilen zusammengesetzt: Ein tx('plus_v_'+k+'_titel')
-  // spart vier Zeilen und kostet dafuer die Auffindbarkeit — wer im Quelltext nach
-  // 'plus_v_verlauf_titel' sucht, faende die Stelle nicht mehr.
+  // Volle Schluesselnamen, damit sie im Quelltext auffindbar bleiben.
   var PLUS_VORTEILE = [
     {titel:'plus_v_bericht_titel',    text:'plus_v_bericht_text'},   // Runde 127: zuerst, das staerkste
     {titel:'plus_v_verlauf_titel',    text:'plus_v_verlauf_text'},
@@ -89,14 +76,9 @@
       else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
     }
   }
-  // Runde 97: Der Segmentwaehler und der Aktivierungsknopf. Die gewaehlte Laufzeit steht im
-  // Speicher, damit sie beim naechsten Oeffnen noch dort steht, wo sie stand — und damit die
-  // spaetere Kaufpruefung sie liest, statt sie erneut zu erfragen.
+  // Die gewaehlte Laufzeit bleibt gespeichert.
   var LAUFZEIT_SCHLUESSEL = 'lucenta_laufzeit';
-  // Die gueltigen Laufzeiten stehen im Markup und werden von dort gelesen, nicht hier noch
-  // einmal aufgezaehlt. Das ist nicht Sparsamkeit: Eine dritte Laufzeit im Markup und eine
-  // Liste hier, die davon nichts weiss, waere ein Auseinanderlaufen, das erst auffiele, wenn
-  // die neue Wahl sich nicht merken laesst. Die Vorgabe traegt dieselbe Quelle.
+  // Die gueltigen Laufzeiten werden aus dem Markup gelesen, nicht doppelt aufgezaehlt.
   function laufzeitFaecher(){
     var gruppe = $('plusPreisWahl');
     return gruppe ? Array.prototype.slice.call(gruppe.querySelectorAll('.segment-opt')) : [];
@@ -115,16 +97,8 @@
       b.setAttribute('aria-checked', b.getAttribute('data-laufzeit') === wahl ? 'true' : 'false');
     });
   }
-  // Der Knopf traegt zwei Zustaende. Ohne den zweiten fuehrte das Fenster in eine Sackgasse:
-  // Wer Lucenta+ hat, saehe eine Aufforderung zu etwas, das er bereits hat.
-  //
-  // Runde 103: Der zweite Zustand hiess "Zur freien Fassung zurueck" (`plus_beenden`). Das passte
-  // zum Entwickler-Umschalter, den es dort gab — nicht zu einem bezahlten Abo. Eine App darf ein
-  // Abo gar nicht selbst beenden, sie fuehrt zur Verwaltung bei Apple. Der Knopf traegt deshalb
-  // jetzt "Abo verwalten", einen Text, den es in allen acht Sprachen schon gibt (`plus_verwalten`,
-  // bisher nur in den Einstellungen benutzt). `plus_beenden` stand danach unbenutzt in allen acht
-  // Paketen und ist in Runde 105 aus allen acht entfernt — gleichzeitig, denn Pruefung 1 des
-  // i18n-Audits vergleicht die Schluesselmengen und schlaegt bei einer halben Loeschung an.
+  // Zwei Zustaende: kaufen, oder fuer Abonnenten "Abo verwalten" (eine App darf ein Abo nicht selbst
+  // beenden).
   function plusKnopfAnwenden(){
     var b = $('btnPlusAktivieren');
     if (!b) return;
@@ -134,9 +108,7 @@
     b.classList.toggle('btn-primary', !istPlus());
     b.classList.toggle('btn-ghost', istPlus());
   }
-  // Runde 126: eine Zeile, die sagt, was schon wartet — aus den eigenen Daten, also wahr. Nur wenn es
-  // etwas gibt: verborgene Tage der Tagesform (frei sind FREI_TAGE sichtbar) oder fruehere
-  // Durchlaeufe (frei FREI_DURCHLAEUFE). Kein Druck, keine Frist — eine Tatsache.
+  // Eine Zeile, die sagt, was schon wartet — aus den eigenen Daten, ohne Druck.
   function plusPersoenlichAnwenden(){
     var el = $('plusPersoenlich');
     if (!el) return;
@@ -153,10 +125,7 @@
   }
   function plusModalAnwenden(){ laufzeitAnwenden(); plusKnopfAnwenden(); plusPersoenlichAnwenden(); plusPreiseAnwenden(); }
 
-  // Runde 99: Der Knopf "In Fotos sichern" erscheint nur mit nativer Bruecke. Er wird bei
-  // jedem Oeffnen des Bildfensters neu gesetzt und nicht einmal beim Start: Ob eine Bruecke da
-  // ist, steht zwar fest — aber die Stelle, an der es geprueft wird, soll dieselbe sein, an der
-  // es gebraucht wird.
+  // "In Fotos sichern" nur mit nativer Bruecke, geprueft bei jedem Oeffnen.
   function bildSichernAnwenden(){
     var b = $('btnImgModalSichern');
     if (b) b.hidden = !bildSichernMoeglich();

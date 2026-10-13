@@ -6,16 +6,10 @@
     var chars = parts.slice(0,2).map(function(p){ return p.charAt(0).toUpperCase(); });
     return chars.join('') || '?';
   }
-  // Feedback: neben dem eigenen Foto jetzt drei ruhige, markenkonforme Farbtöne für den
-  // Initialen-Kreis zur Auswahl (siehe .avatar-color-*-CSS) statt bunter Avatar-Grafiken, die dem
-  // zurückhaltenden Erscheinungsbild widersprächen. renderAvatarInto() setzt die passende Klasse auf
-  // jedes übergebene Avatar-Element (Profil, Schublade, Einstellungen — alle drei nutzen dieselbe
-  // Funktion, bleiben also automatisch synchron).
+  // Drei ruhige Farbtoene fuer den Initialen-Kreis.
   var AVATAR_COLORS = ['accent','ink','quiet'];
-  // Runde 79: Drei Zustaende statt zwei — eigenes Foto, gewaehlte Figur, oder der Buchstabe.
-  // Die Reihenfolge ist eine Rangfolge: Ein eigenes Foto schlaegt alles, danach die Figur, und
-  // der Buchstabe ist der Rueckfall. Alle drei Kreise der App (Profil, Schublade, Einstellungen)
-  // laufen weiterhin durch DIESE eine Funktion und bleiben dadurch von selbst gleich.
+  // Rangfolge: eigenes Foto, dann Figur, dann Buchstabe. Alle drei Kreise (Profil, Schublade,
+  // Einstellungen) laufen durch diese eine Funktion.
   function renderAvatarInto(el, profile){
     if (!el || !el.classList) return;
     AVATAR_COLORS.forEach(function(c){ el.classList.remove('avatar-color-'+c); });
@@ -49,10 +43,7 @@
     var wrap = $('figurRaster');
     if (!wrap || !wrap.querySelectorAll) return;
     var aktiv = profile.figur || '';
-    // Fehlersuche Runde 80: Die Knoepfe enthielten nur eine Zeichnung. Fuer eine Sprachausgabe
-    // waren es vierzehn namenlose Schaltflaechen hintereinander — unbenutzbar. Jede traegt
-    // jetzt ihren Namen, und die Zeichnung selbst wird davor verborgen, damit nicht zweimal
-    // etwas vorgelesen wird.
+    // Jeder Knopf traegt seinen Namen; die Zeichnung ist vor Vorleseprogrammen verborgen.
     var teile = ['<button type="button" class="figur-wahl figur-keine" data-figur="" aria-pressed="'+
                  (aktiv ? 'false' : 'true')+'" aria-label="'+tx('figur_keine')+'">'+
                  avatarInitials(profile.name)+'</button>'];
@@ -125,9 +116,7 @@
       block.innerHTML = emptyStateHTML(tx('js_noch_kein_ergebnis_auf_die'), {btnId:'btnProfileStart', btnLabel:tx('js_test_starten_2')});
       $('btnProfileStart').addEventListener('click', function(){ beginRun(false); });
     }
-    // Feedback: Verlauf ist jetzt Teil des Profils statt einer eigenen Schubladen-Ansicht — renderProfile()
-    // aktualisiert deshalb den Verlauf direkt mit (renderHistory() befüllt #historyContent, das jetzt
-    // hier in view-profile statt in einer eigenen view-history liegt).
+    // Der Verlauf ist Teil des Profils.
     renderHistory();
     renderDemoBlock();
   }
@@ -160,28 +149,9 @@
       });
     }
 
-    // Runde 84: Umschalter zwischen freier und gekaufter Fassung. Gehoert in denselben
-    // Entwicklerbereich wie die Beispielnutzerin und aus demselben Grund: Beide Zustaende sind
-    // sonst nur zu sehen, indem man den Speicher von Hand aendert. Er sitzt hinter allem
-    // Echten, ganz unten im Profil — er gehoert nicht in den Weg von jemandem, der die App
-    // benutzt.
-    //
-    // Runde 103: Er erscheint jetzt NUR OHNE native Bruecke, also nur beim Entwickeln im
-    // Browser. Das war eine der zwei Stellen, die Lucenta+ ohne Zahlung freischalteten — in der
-    // App aus dem App Store ein Schalter, der das Abo verschenkt, und zwar dort, wo ohnehin jeder
-    // nachsieht. Die zweite Stelle war der Knopf im Kauffenster; die ist jetzt der echte Kauf.
-    //
-    // Bewusst an der Bruecke festgemacht und nicht an einer Debug-Marke: Ob es die App ist, weiss
-    // `nativVorhanden()` von sich aus — eine Marke, die man setzen muss, ist eine, die man
-    // vergisst, und dieses Vergessen kostet hier Geld. Beim Entwickeln bleibt der Umschalter
-    // vollstaendig erhalten; die Pruefungen setzen 'lucenta_plus' ohnehin direkt.
-    //
-    // Runde 113, auf Wunsch des Inhabers: Er erscheint jetzt AUCH in der App, aber nur im
-    // Entwicklungsbau (Start aus Xcode). Die Marke dafuer setzt nicht dieser Code und nicht
-    // jemand von Hand, sondern der Compiler — `#if DEBUG` in MainViewController.swift. Das
-    // Archiv fuer den Store ist ein Release-Bau und kennt sie nicht; dort bleibt der Schalter so
-    // unsichtbar wie bisher. Der Einwand oben gegen eine Debug-Marke gilt damit nicht: Diese
-    // kann man nicht vergessen zu entfernen, weil man sie nie setzt.
+    // Umschalter frei/Lucenta+ fuer die Entwicklung: nur ohne native Bruecke (Browser) oder im
+    // Entwicklungsbau (#if DEBUG in MainViewController.swift). Im Store-Bau gibt es ihn nicht — sonst
+    // verschenkte er das Abo.
     if (!nativVorhanden() || entwicklungsBau()){
       var plusEl = document.createElement('div');
       plusEl.className = 'plus-schalter-zeile';
@@ -203,14 +173,8 @@
       });
     }
   }
-  // Runde 97: Der Wechsel zwischen freier und bezahlter Fassung ist jetzt an zwei Stellen
-  // ausloesbar — im Profil und im Kauffenster. Vorher zeichnete jede Stelle das neu, was
-  // zufaellig unter ihr lag; das Ergebnis war, dass die Ergebnisseite hinter dem Fenster in
-  // der alten Fassung stehen blieb. Welche Ansicht neu zu zeichnen ist, weiss die Ansicht
-  // selbst am besten, also entscheidet das hier eine Stelle fuer alle.
-  // Die Zeile in den Einstellungen, die sagt, welche Fassung gerade laeuft. Sie steht dort und
-  // nicht nur im Profil, weil "Kaeufe wiederherstellen" daneben liegt: Wer den Knopf drueckt,
-  // will unmittelbar daneben sehen, was er bewirkt hat.
+  // Eine Stelle entscheidet, welche Ansicht nach einem Wechsel frei/Lucenta+ neu gezeichnet wird. Die
+  // Zeile in den Einstellungen nennt die laufende Fassung neben "Kaeufe wiederherstellen".
   function plusStandAnwenden(){
     var el = $('plusStand');
     if (el) el.innerHTML = tx(istPlus() ? 'plus_stand_plus' : 'plus_stand_frei');

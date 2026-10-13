@@ -1,39 +1,16 @@
-// ---------- Die native Bruecke (Runde 99) ----------
-//
-// Zwei Apple-Punkte haengen an dieser Datei, und beide waren bisher offen.
-//
-// Richtlinie 4.2 (Minimum Functionality) ist der wahrscheinlichste Ablehnungsgrund fuer
-// Lucenta: Apple weist Apps ab, die nichts weiter sind als eine in eine Huelle gepackte
-// Webseite. Dagegen hilft keine bessere Beschreibung, sondern nur Funktionen, die es im
-// Browser nicht gibt. Zwei davon passen zu dieser App, statt ihr aufgesetzt zu werden:
-// eine taegliche Erinnerung an die Tagesform (die App bittet einmal am Tag um zwei Angaben —
-// genau dafuer ist eine lokale Mitteilung da) und das Sichern des Ergebnisbildes in die
-// Foto-Mediathek.
-//
-// Richtlinie 3.1.2 verlangt bei einem Abo einen Weg, gekaufte Kaeufe wiederherzustellen. Der
-// steht ebenfalls hier.
-//
-// ---- Das Entwurfsprinzip: EINE Stelle, die weiss, ob es nativ laeuft ----
-//
-// Alles hier prueft ueber nativVorhanden(), ob eine Bruecke da ist, und tut sonst nichts
-// Falsches. Der Browser bekommt keine halb funktionierenden Knoepfe, sondern abgeschaltete mit
-// einer Begruendung. Der Grund fuer diese Strenge steht in 17-settings.js: Ein blockierter
-// Download wirft KEINEN Fehler, er tut schlicht nichts — und aus dem ausbleibenden Fehler auf
-// Erfolg zu schliessen hat dort schon einmal zu einer Erfolgsmeldung ohne Ergebnis gefuehrt.
-//
-// Was hier NICHT steht: der Kauf selbst. Der gehoert in die App-Store-Fassung ueber StoreKit,
-// und bis der echte Kaufweg da ist, waere jede Zeile hier eine Behauptung. Der Vermerk dazu
-// steht in docs/app-store-start.md, Punkt 6.
+// ---------- Die native Bruecke ----------
+// Funktionen, die es nur in der App gibt (Richtlinie 4.2): Erinnerungen an die Tagesform, Ergebnisbild
+// in die Foto-Mediathek, Kauf und Wiederherstellen (3.1.2).
+// Alles prueft ueber nativVorhanden(), ob eine Bruecke da ist; im Browser stehen die Knoepfe
+// abgeschaltet mit Begruendung, nie halb funktionierend.
   function nativVorhanden(){
     try{
       return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
     }catch(e){ return false; }
   }
-  // Runde 113: Laeuft hier ein Entwicklungsbau der App? Die Marke setzt MainViewController.swift
-  // nur hinter `#if DEBUG` — beim Start aus Xcode ja, im Archiv fuer den Store nie. Sie schaltet
-  // genau zwei Dinge frei: den Plus-Umschalter im Profil, und dass die Store-Abfrage beim Start
-  // einen von Hand eingeschalteten Plus-Stand nicht wieder wegnimmt (der Simulator antwortet
-  // ehrlich "kein Kauf", und der Umschalter stuende sonst nach jedem Start wieder auf aus).
+  // Entwicklungsbau? Die Marke setzt MainViewController.swift nur hinter #if DEBUG. Sie schaltet den
+  // Plus-Umschalter im Profil frei und verhindert, dass die Store-Abfrage beim Start einen von Hand
+  // gesetzten Plus-Stand wegnimmt.
   function entwicklungsBau(){
     try{ return window.__lucentaEntwicklungsbau === true; }catch(e){ return false; }
   }
@@ -44,28 +21,15 @@
     }catch(e){ return null; }
   }
 
-  // ---------- Erinnerung: drei Tageszeiten (Runde 129) ----------
-  //
-  // Bis Runde 128 stand hier EINE taegliche Mitteilung zur gewaehlten Uhrzeit, mit der Begruendung
-  // aus Runde 46: kein Druck bei einer Anwendung rund um Befinden. Seit Runde 129 hat die Tagesform
-  // drei feste Abschnitte (03-speicherung.js), und der Inhaber hat ausdruecklich drei Erinnerungen
-  // gewaehlt — ein Schalter, feste Zeiten, keine Uhrzeitwahl (Runde 131: 9, 14, 20 Uhr, plus
-  // Nacherinnerung zwei Stunden spaeter).
-  //
-  // Der Gedanke von Runde 46 bleibt in einer anderen Form erhalten: Eine Erinnerung fuer einen
-  // Abschnitt, der schon eingetragen ist, kommt NICHT (Wahl des Inhabers). Das geht mit einer
-  // taeglich wiederholten Mitteilung nicht — iOS kann eine Wiederholung nicht fuer einen Tag
-  // aussetzen. Deshalb werden die Mitteilungen der naechsten ERINNERUNG_TAGE Tage EINZELN geplant
-  // (seit Runde 131: 6 x 10 = 60, unter der Grenze von 64 ausstehenden Mitteilungen je App) und bei
-  // jedem Eintrag und jedem Oeffnen neu gesetzt. Folge: Wer die App zehn Tage nicht oeffnet, bekommt
-  // danach keine Erinnerung mehr. Das ist gewollt — eine App, die nach Tagen der Stille weiter
-  // ruft, draengt.
+  // ---------- Erinnerung: drei Tageszeiten ----------
+  // Ein Schalter, feste Zeiten (Entscheidung des Inhabers). Fuer eine schon eingetragene Tageszeit
+  // kommt keine Erinnerung — iOS kann eine Wiederholung nicht fuer einen Tag aussetzen, deshalb werden
+  // die Mitteilungen der naechsten ERINNERUNG_TAGE Tage EINZELN geplant und bei jedem Eintrag und
+  // Oeffnen neu gesetzt. Wer zehn Tage nicht oeffnet, bekommt keine mehr (gewollt).
   var ERINNERUNG_AN = 'lucenta_erinnerung';
   var ERINNERUNG_ID = 4711;            // die alte taegliche Mitteilung; wird beim Planen mit abgesagt
-  // Runde 131 (Inhaber): Zeiten 9, 14, 20 Uhr, und zwei Stunden spaeter eine Nacherinnerung, wenn
-  // die Tageszeit dann immer noch offen ist. Sechs am Tag — und iOS haelt hoechstens 64 ausstehende
-  // Mitteilungen je App. Deshalb 10 Tage statt 14 (60). Das Fenster wird ohnehin bei jedem Oeffnen
-  // und jedem Eintrag nachgezogen.
+  // 9, 14, 20 Uhr plus Nacherinnerung zwei Stunden spaeter: sechs am Tag. iOS haelt hoechstens 64
+  // ausstehende Mitteilungen je App, daher 10 Tage (60).
   var ERINNERUNG_ID_BASIS = 47100, ERINNERUNG_TAGE = 10, ERINNERUNG_JE_TAG = 6;
   var ERINNERUNG_ALT_ANZAHL = 42;      // Runde 130: 14 x 3 — beim Absagen mit erfasst
   // Innerhalb der Abschnitte aus TF_ABSCHNITT_BEGINN (bis 12, bis 18): 9 und 11, 14 und 16, 20 und 22.
@@ -80,9 +44,7 @@
     return tfText('erinnerung_hinweis', {morgen: tfUhrzeit(ERINNERUNG_STUNDE.morgen),
       mittag: tfUhrzeit(ERINNERUNG_STUNDE.mittag), abend: tfUhrzeit(ERINNERUNG_STUNDE.abend)});
   }
-  // Runde 124: Die Erinnerung steht an ZWEI Stellen — in den Einstellungen und direkt in der
-  // Tagesform, wo sie gebraucht wird. Beide zeigen denselben Stand; deshalb setzt diese eine
-  // Funktion beide, und wer an einer Stelle schaltet, sieht es an der anderen.
+  // Die Erinnerung steht an zwei Stellen (Einstellungen, Tagesform); diese Funktion setzt beide.
   var ERINNERUNG_STELLEN = [['erinnerungSchalter','erinnerungHinweis'],
                             ['tfErinnerungSchalter','tfErinnerungHinweis']];
   function erinnerungAnwenden(){
@@ -164,9 +126,7 @@
     var an = !erinnerungAn();
     if (an){
       var lm = nativModul('LocalNotifications');
-      // Die Erlaubnis wird erst hier erfragt und nicht beim Start. Eine App, die beim ersten
-      // Oeffnen nach Mitteilungen fragt, bekommt regelmaessig ein Nein — gefragt wird in dem
-      // Moment, in dem jemand sie ausdruecklich einschaltet.
+      // Die Erlaubnis wird erst beim Einschalten erfragt, nicht beim Start.
       var weiter = function(erlaubt){
         if (!erlaubt){ toast(tx('erinnerung_verweigert')); erinnerungAnwenden(); return; }
         schalterSetzen(ERINNERUNG_AN, 'an', null);
@@ -190,10 +150,6 @@
   }
 
   // ---------- Ergebnisbild in die Foto-Mediathek ----------
-  //
-  // Im Browser kann ein Bild nur heruntergeladen werden, und im eingebetteten Rahmen nicht
-  // einmal das. Nativ geht es in die Mediathek. Das ist die zweite Funktion, die es im Browser
-  // nicht gibt — und anders als ein Widget kostet sie kein eigenes Stueck Oberflaeche.
   function bildSichernMoeglich(){
     return nativVorhanden() && !!nativModul('Filesystem');
   }
@@ -209,27 +165,16 @@
     }catch(e){ toast(tx('js_bild_konnte_nicht_gespeich')); }
   }
 
-  // ---------- Der Kauf (Runde 103) ----------
-  //
-  // Bis hierher stand an dieser Stelle ein ehrlicher Vermerk: 'StoreKit' sei ein Platzhalter, es
-  // gebe kein solches Capacitor-Modul, und der Kauf fehle. Beides ist jetzt eingeloest — die
-  // Bruecke liegt in ios/App/App/LucentaKaeufePlugin.swift und meldet sich unter genau diesem
-  // Namen an. Die Aufrufe hier sind die Gegenseite davon.
-  //
-  // Die Produktkennungen stehen an ZWEI Stellen, hier und in der Swift-Datei. Das ist kein
-  // Versehen: Die Swift-Seite weist eine Kennung ab, die sie nicht kennt, statt sie an den Store
-  // weiterzureichen. Eine Tabelle, die nur eine Seite kennt, waere genau die Stelle, an der ein
-  // Tippfehler zu einem Kauf von irgendetwas fuehrt.
+  // ---------- Der Kauf ----------
+  // Gegenseite von ios/App/App/LucentaKaeufePlugin.swift (Modulname 'StoreKit'). Die Produktkennungen
+  // stehen absichtlich hier UND dort: Die Swift-Seite weist unbekannte Kennungen ab.
   var PLUS_PRODUKT = 'lucenta_plus_produkt';
   var PRODUKTE = { monat: 'lucenta.plus.monat', jahr: 'lucenta.plus.jahr' };
   function produktKennung(laufzeit){
     return PRODUKTE[laufzeit] || PRODUKTE.jahr;
   }
-  // Runde 103: Die gekaufte Produktkennung wird getrennt von der GEWAEHLTEN Laufzeit gemerkt.
-  // Zwei verschiedene Dinge: 'lucenta_laufzeit' ist, was im Segmentwaehler steht (und stehen
-  // bleiben soll, wenn jemand das Fenster wieder oeffnet), 'lucenta_plus_produkt' ist, was
-  // tatsaechlich bezahlt wurde. Beides in einen Schluessel zu legen hiesse, dass der Waehler nach
-  // einem Kauf seine Wahl vergisst — und dass man einer Notiz ansieht, sie sei ein Beleg.
+  // 'lucenta_laufzeit' ist die Wahl im Segmentwaehler, 'lucenta_plus_produkt' das tatsaechlich
+  // Gekaufte — getrennt gehalten.
   function plusKaufen(fertig){
     var sk = nativModul('StoreKit');
     if (!sk || !sk.kaufen){ toast(tx('plus_wieder_nur_app')); if (fertig) fertig(false); return; }
@@ -259,16 +204,10 @@
     }catch(e){ toast(tx('plus_kauf_fehler')); if (fertig) fertig(false); }
   }
 
-  // Beim Start nachsehen, was WIRKLICH gilt.
-  //
-  // Der Grund ist kein Feinschliff: Bis Runde 103 stand der bezahlte Zustand allein in
-  // localStorage. Ein gekuendigtes oder abgelaufenes Abo haette Lucenta+ dort fuer immer
-  // stehenlassen — sobald Geld im Spiel ist, ist das ein Fehler und keine Grosszuegigkeit. Und
-  // umgekehrt: Wer auf einem neuen Geraet schon zahlt, soll nicht erst einen Knopf suchen muessen.
-  //
-  // Die Vorsichtsregel dabei ist wichtiger als die Sache selbst: **Weggenommen wird nur bei einer
-  // klaren Antwort.** Keine Bruecke, ein Fehler, ein unerwartetes Ergebnis — dann bleibt alles,
-  // wie es war. Sonst nimmt eine Stoerung im Store jemandem weg, wofuer er bezahlt hat.
+  // Beim Start nachsehen, was wirklich gilt (ein abgelaufenes Abo darf nicht stehen bleiben, ein
+  // gekauftes soll auf einem neuen Geraet da sein).
+  // Weggenommen wird NUR bei einer klaren Antwort: Keine Bruecke, Fehler oder Unerwartetes aendern
+  // nichts.
   function plusStandPruefen(){
     var sk = nativModul('StoreKit');
     if (!sk || !sk.stand) return;
@@ -286,14 +225,10 @@
     }catch(e){}
   }
 
-  // ---------- Preise aus dem Store (Runde 137) ----------
-  //
-  // Die Kaufseite traegt feste Euro-Betraege in acht Sprachen. Gilt im Store ein anderer Preis —
-  // anderes Land, andere Waehrung, eine spaetere Preisaenderung —, zeigte sie einen Betrag, der
-  // nicht abgebucht wird. Mit Bruecke fragt die App deshalb den Store und setzt dessen Betraege
-  // ein; ohne Antwort (Browser, Produkte noch nicht angelegt, Stoerung) bleiben die festen Texte.
-  // In die Saetze ("nur 2,50 EUR im Monat") wird nur der BETRAG getauscht, der Satz bleibt der der
-  // Sprache — so braucht es keine neuen Schluessel und keine achtfache Satzvorlage.
+  // ---------- Preise aus dem Store ----------
+  // Mit Bruecke setzt die App die Betraege des Stores ein (Land, Waehrung, Preisaenderungen); ohne
+  // Antwort bleiben die festen Texte. In den Saetzen wird nur der Betrag getauscht — keine neuen
+  // Schluessel.
   var PLUS_PREISE = null;
   var BETRAG_MUSTER = /€\s?\d+(?:[.,]\d+)?|\d+(?:[.,]\d+)?\s?€/;
   function plusPreiseHolen(){
@@ -328,15 +263,7 @@
   }
 
   // ---------- Kaeufe wiederherstellen (Richtlinie 3.1.2) ----------
-  //
-  // Apple verlangt bei einem Abo einen Weg, bereits gekaufte Kaeufe auf einem neuen Geraet
-  // wiederherzustellen — ohne Konto und ohne Kaufbeleg.
-  //
-  // Runde 103: Hier stand der Vermerk, 'StoreKit' sei ein Platzhalter und es gebe kein solches
-  // Capacitor-Modul. Das gilt fuer Apple und Ionic weiterhin — es gibt jetzt aber unser eigenes:
-  // ios/App/App/LucentaKaeufePlugin.swift meldet sich unter diesem Namen an und beantwortet
-  // `stand`, `kaufen` und `restorePurchases`. Ohne Bruecke (im Browser) sagt der Knopf weiterhin,
-  // dass es das nur in der App gibt, statt Erfolg zu melden.
+  // Ohne Bruecke sagt der Knopf, dass es das nur in der App gibt.
   function kaeufeWiederherstellen(){
     var sk = nativModul('StoreKit');
     if (!sk || !sk.restorePurchases){ toast(tx('plus_wieder_nur_app')); return; }

@@ -1,6 +1,6 @@
 // ---------- Vergleichsarchiv ----------
-  // Mittlere absolute Abweichung je Dimension ueber alle gespeicherten Vergleiche. Eigene Werte
-  // kommen aus dem gespeicherten Ergebnis, die der anderen aus dem mitgespeicherten Code.
+// Mittlere Abweichung je Dimension ueber alle gespeicherten Vergleiche (die anderen Werte aus dem
+// mitgespeicherten Code).
   function archivUebersicht(list){
     if (!list || list.length < 3) return '';
     var eigen = loadResult();
@@ -41,23 +41,9 @@
       schloesserVerdrahten(wrap);
       return;
     }
-    // Runde 76: Das Archiv war eine reine Liste — es sammelte, wertete aber nichts aus. Aus den
-    // gespeicherten Codes laesst sich das Profil der anderen Person zurueckrechnen, und damit
-    // laesst sich sagen, WORIN du dich von anderen typischerweise unterscheidest. Das ist die
-    // eigentliche Aussage eines Archivs; die Liste allein ist nur ein Beleg.
-    //
-    // Erst ab drei Vergleichen: Bei zweien waere "typischerweise" eine Behauptung ueber einen
-    // einzelnen anderen Menschen, nicht ueber ein Muster.
-    //
-    // Runde 97, die fuenfte Grenze: Die LISTE bleibt frei — was jemand gespeichert hat, gehoert
-    // ihm, und ein Archiv, dessen Eintraege verschwinden, waere genau die Wegnahme, die die App
-    // ausschliesst. Verschlossen ist die AUSWERTUNG, also der Satz darueber, worin du dich
-    // typischerweise unterscheidest. Der entsteht erst aus mehreren Vergleichen und waechst mit
-    // jedem weiteren — damit ist er fortlaufender Wert im Sinne der Apple-Richtlinie 3.1.2 und
-    // nicht ein fester Inhalt, den ein Schalter freigibt.
-    // Runde 127: Gespeichertes bleibt frei LESBAR (Versprechen im Lucenta+-Fenster: "Was waehrend
-    // deiner Laufzeit entsteht, bleibt lesbar"; seit Runde 136 speichert die freie Fassung zwei). Die
-    // Auswertung steht frei als verschwommene Vorschau der echten Auswertung.
+    // Die Auswertung (worin du dich typischerweise unterscheidest) erst ab drei Vergleichen; sie ist
+    // Lucenta+ und steht frei als verschwommene Vorschau. Die LISTE bleibt immer lesbar —
+    // Gespeichertes gehoert der Person.
     var uebersicht = istPlus() ? archivUebersicht(list)
                    : (list.length >= 3 ? vorschauHTML(archivUebersicht(list), tx('plus_archiv')) : '');
     var fmt = historyDateFmt();

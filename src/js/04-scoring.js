@@ -12,15 +12,10 @@
     return out;
   }
 
-  // Feedback-Runde 41: Erkennung sehr gleichförmiger Antwortmuster ("Straight-Lining").
-  // Hintergrund: die Punkteberechnung selbst ist korrekt und folgt exakt der Item-Polung des
-  // wissenschaftlichen IPIP-50 — aber diese Polung ist je Dimension unterschiedlich verteilt (nur
-  // Extraversion ist mit 5 positiv / 5 negativ ausgeglichen, emotionale Stabilität dagegen 2/8).
-  // Dadurch ergibt 50x dieselbe Antwort kein neutrales 50/50/50/50/50-Profil, sondern ein deutlich
-  // ausgeprägtes, das wie ein echtes Ergebnis aussieht. An der Berechnung wird bewusst nichts
-  // geändert (das würde bestehende Ergebnisse verschieben und vom validierten Instrument abweichen);
-  // stattdessen wird das Muster erkannt und auf der Ergebnisseite offen benannt.
-  // Kennzahl: Anteil der häufigsten Antwort an allen abgegebenen Antworten.
+  // Erkennung gleichfoermiger Antwortmuster: Die IPIP-50-Polung ist je Dimension ungleich verteilt,
+  // 50-mal dieselbe Antwort ergibt deshalb ein ausgepraegtes Profil. Die Berechnung bleibt
+  // unveraendert (validiertes Instrument); das Muster wird erkannt und benannt. Kennzahl: Anteil der
+  // haeufigsten Antwort.
   var UNIFORM_THRESHOLD = 0.8;
   function answerUniformity(list){
     var counts = {}, n = 0, max = 0;
@@ -48,22 +43,8 @@
     // 10 Rollen (5 Dimensionen x 2 Pole), jede mit 4 anderen Dimensionen x 2 Polen kombinierbar.
     var totalCombos = (ORDER.length*2) * (ORDER.length-1) * 2;
     $('archTotalCount').textContent = totalCombos;
-    // Runde 108, gemeldet: „Den Archetypen-Bereich bitte ueberarbeiten."
-    //
-    // Der Bereich hiess .archetype-groups und hatte keine Gruppen: zehn gleich gebaute Karten in
-    // einer Reihe, deren einziger Unterschied eine kleine Marke „DIMENSION · Adjektiv" war. Dass
-    // die zehn Rollen genau fuenf Gegensatzpaare sind — und dass genau das der Unterschied zu den
-    // Schubladen des MBTI ist, den der Absatz darueber erklaert —, war aus der Anordnung nicht zu
-    // sehen. Jede zweite Karte war der Gegenpol der vorigen, und es sah aus wie eine Aufzaehlung.
-    //
-    // Jetzt fuenf Gruppen mit je zwei Karten und der Dimension als Ueberschrift. Damit
-    // verschwindet aus der Marke auf der Karte auch die Wiederholung: Die Dimension steht einmal
-    // ueber der Gruppe, auf der Karte bleibt der Pol. Die Kante links traegt ihn zusaetzlich als
-    // Form, nicht nur als Farbe eines Wortes.
-    //
-    // Die Verzoegerung der Einblendung zaehlt weiter durchgehend von 0 bis 9 und nicht je Gruppe
-    // von 0 bis 1: Sonst liefen fuenf Paare gleichzeitig ein und die Liste blitzte auf, statt
-    // sich aufzubauen.
+    // Fuenf Gruppen (je Dimension) mit je zwei Gegenpolen; die Kante links traegt den Pol als Form.
+    // Die Verzoegerung zaehlt durchgehend 0–9, sonst blitzte die Liste auf.
     $('archetypeGroups').innerHTML = ORDER.map(function(t, gi){
       var karten = ['high','low'].map(function(p, pi){
         return '<div class="role-card role-pol-'+p+'" style="animation-delay:'+((gi*2+pi)*40)+'ms">'+

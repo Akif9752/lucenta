@@ -1,10 +1,7 @@
 /* ---------- Trend / history ---------- */
   .trend-list{margin-top:22px;display:flex;flex-direction:column;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:20px 18px;}
-  /* Runde 121: Die Kurve steht nicht mehr NEBEN Kuerzel und Zahl, sondern UNTER einem Kopf mit
-     vollem Namen — damit bekommt sie die ganze Breite der Karte statt der 120px, die bei 320pt
-     uebrig blieben (das Problem, das Runde 108 mit der gestapelten Zahl nur gelindert hatte).
-     Die Farbe der Dimension kommt als --trend-farbe aus 05-verlauf.js; Schrift bleibt --ink und
-     --muted, die Farbe traegt nur Punkt, Linie und Flaeche — so haengt kein Kontrast an ihr. */
+  /* Die Kurve steht UNTER einem Kopf mit vollem Namen und bekommt die ganze Breite. Die Farbe
+     (--trend-farbe aus 05-verlauf.js) traegt nur Punkt, Linie und Flaeche, nie Schrift. */
   .trend-row{display:flex;flex-direction:column;gap:6px;}
   .trend-row + .trend-row{padding-top:14px;border-top:1px solid var(--line);}
   .trend-kopf{display:flex;align-items:baseline;gap:8px;min-width:0;}
@@ -14,9 +11,8 @@
   .trend-delta{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1;
     padding:4px 7px;border-radius:100px;background:var(--surface-2);align-self:center;min-width:40px;text-align:center;box-sizing:border-box;}
   .trend-kurve{display:block;width:100%;height:auto;overflow:visible;}
-  /* Die Linie zeichnet sich beim Oeffnen einmal von links nach rechts — pathLength="100" macht
-     die Strichlaenge unabhaengig vom Verlauf. Nur ueber den Strich, nie ueber die Deckkraft: Eine
-     Messung kurz nach dem Wechsel sieht die Kurve dann als Linie, nicht als ausgeblendet. */
+  /* Einzeichnen ueber pathLength="100", nur ueber den Strich, nie ueber Deckkraft (Messungen kurz nach
+     dem Wechsel). */
   .trend-linie{stroke-dasharray:100;stroke-dashoffset:0;animation:trend-zeichnen .9s cubic-bezier(.4,0,.2,1);}
   @keyframes trend-zeichnen{from{stroke-dashoffset:100;}}
   @media (prefers-reduced-motion: reduce){ .trend-linie{animation:none;} }
@@ -27,36 +23,20 @@
   .history-date{font-family:var(--mono);color:var(--muted);flex-shrink:0;font-size:12px;}
   .history-title{font-family:var(--serif);text-align:right;}
 
-  /* ---------- Die Verlaufsliste im Profil (Runde 108) ----------
-     Bewusst auf #historyContent eingegrenzt. .history-row traegt drei Listen der App — den
-     Verlauf hier, das Vergleichsarchiv und die Tagesform-Tage —, und nur diese eine war gemeldet.
-     Eine Aenderung an der gemeinsamen Regel haette zwei ungeprueft mitgenommen.
-     Die Zeile bleibt eine Karte: Die gemeinsamen Regeln fuer Rand, Druckzustand und
-     Farbmodus-Wechsel (10-druckzustaende.css) gelten damit unveraendert weiter. Was sich aendert,
-     ist die Anordnung darin. */
+  /* ---------- Die Verlaufsliste im Profil ----------
+     Auf #historyContent eingegrenzt (.history-row traegt drei Listen). Die Zeile bleibt eine Karte;
+     geaendert ist nur die Anordnung. */
   #historyContent .history-row{align-items:flex-start;padding:12px 14px;}
   #historyContent .history-body{display:flex;flex-direction:column;gap:3px;min-width:0;}
-  /* Datum und Titel untereinander und beide linksbuendig: Rechtsbuendig gesetzt begann die
-     zweite Zeile eines langen Titels unter dem Datum, und zwei Leserichtungen in einer Zeile
-     sind eine zu viel. */
+  /* Datum und Titel untereinander, beide linksbuendig. */
   #historyContent .history-title{text-align:left;line-height:1.35;}
-  /* Die kurze Marke der fuehrenden Dimension (RADAR_LABELS; die Kurve darueber traegt seit
-     Runde 121 die vollen Namen). Sie erklaert zugleich, wofuer die Kante links steht.
-     --muted und nicht --muted-soft, und das ist nachgemessen statt geschaetzt: Die Fehlersuche
-     hat die erste Fassung 30-mal gemeldet (beide Motoren, 390 und 320, vier Sprachen) —
-     **4,26:1, noetig sind 4,5:1**. Der Grund ist der Untergrund: --muted-soft ist die unterste
-     Textstufe und fuer --paper gerechnet (Runde 42), die Marke liegt aber auf einer Karte, und
-     auf der hervorgehobenen Zeile sogar auf --surface-2. Dieselbe Farbe, weniger Unterschied.
-     Die Marke ist damit etwas kraeftiger als beabsichtigt — das ist der richtige Tausch: Ihre
-     Zurueckhaltung traegt die Groesse (10px) und die Mono-Schrift, nicht die Farbe allein. */
+  /* Kurze Marke der fuehrenden Dimension in --muted, nicht --muted-soft: Sie liegt auf einer Karte,
+     --muted-soft erreicht dort nur 4,26:1. */
   #historyContent .history-dim{
     font-size:10px;letter-spacing:.05em;color:var(--muted);flex-shrink:0;
     margin-top:1px;white-space:nowrap;
   }
-  /* Die Kante traegt den Pol, nicht die Dimension: fuenf Farben waeren fuenf neue Marken mit je
-     drei Bloecken, und die Frage "hoch oder niedrig" ist die, die man an einer Liste stellt.
-     Nur die Farbe, nicht die Breite — .history-row bekommt von der Formensprache aus Runde 69
-     border-width:2px !important (10-druckzustaende.css), eine eigene Breite hier kaeme nie an. */
+  /* Die Kante traegt den Pol, nicht die Dimension; nur die Farbe (Breite setzt 10-druckzustaende.css). */
   #historyContent .history-pol-high{border-left-color:var(--accent);}
   #historyContent .history-pol-low{border-left-color:var(--accent-2);}
   /* Der jueungste Eintrag. Die Liste laeuft absteigend; ohne diese Hervorhebung musste man das
@@ -66,20 +46,11 @@
   #historyContent .history-neu .history-date{color:var(--ink);}
 
   
-  /* ---------- Verlaufsdiagramm (Runde 67) ----------
-     Vorher zwei Sparklines von 140x32 nebeneinander, ohne Achse und ohne Maßstab. Jetzt ein
-     Diagramm, beide Reihen auf einer Achse — sie teilen die Skala 1 bis 5, zwei y-Achsen wären
-     hier der naheliegende Fehler.
-
-     Die Farben kommen aus --daten-energie und --daten-stimmung, nicht aus den Akzenten der
-     Oberfläche; die Begründung steht bei den Marken. Text bleibt in den Textfarben: Das farbige
-     Plättchen NEBEN dem Wort trägt die Zuordnung, nicht das Wort selbst. */
-  /* Runde 129, gemeldet: Beim Ablesen am Graphen brach die Zeile Energie/Stimmung/Datum um, und
-     die Karte sprang um 31 px. Zwei Werte und ein Datum passen bei 320 pt nicht in eine Zeile
-     (gemessen: ~265 px Bedarf, 240 px Platz) — auch nicht mit kurzem Datum. Deshalb steht das
-     Datum wie in Apple Health als EIGENE kleine Zeile ueber den Werten, und zwar immer ("heute"
-     oder der abgelesene Tag). Damit ist die Hoehe in jedem Zustand dieselbe. Die Werte haben eine
-     Mindestbreite, damit aus "4" -> "3,7" nichts seitlich rutscht. */
+  /* ---------- Verlaufsdiagramm ----------
+     Beide Reihen auf einer Achse (gemeinsame Skala 1–5). Farben aus --daten-*; die Zuordnung traegt
+     das Plaettchen neben dem Wort, nicht das Wort. */
+  /* Das Datum steht immer als eigene Zeile ueber den Werten (wie Apple Health), damit die Hoehe beim
+     Ablesen gleich bleibt; die Werte haben eine Mindestbreite. */
   .verlauf-legende{
     display:flex; column-gap:18px; row-gap:2px; flex-wrap:wrap; align-items:center; min-width:0;
     font-size:13px; color:var(--muted); white-space:nowrap;
@@ -91,10 +62,7 @@
   .vl-stimmung{background:var(--daten-stimmung);}
   .vl-eintrag b{color:var(--ink); font-weight:600; font-size:14px; font-variant-numeric:tabular-nums;}
 
-  /* Runde 97: Der Zeitraumwaehler ueber der Kurve. Er benutzt .segment wie ueberall sonst,
-     nur schmaler — hier stehen Zahlen, keine Preise. Ein abgeschaltetes Fach bleibt sichtbar
-     und wird blass: Es verschwinden zu lassen hiesse, dass der Waehler beim naechsten Eintrag
-     seine Breite aendert, und ein Waehler, dessen Faecher wandern, ist keiner. */
+  /* Zeitraumwaehler: .segment, schmaler; abgeschaltete Faecher bleiben sichtbar. */
   .tf-fenster{ margin-top:12px; grid-template-columns:repeat(3, 1fr); }
   .tf-fenster .segment-opt{ min-height:46px; gap:0; }
   .tf-fenster .segment-preis{ font-size:15px; }
@@ -110,20 +78,15 @@
     font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);
     padding:6px 0 14px; flex-shrink:0; font-variant-numeric:tabular-nums;
   }
-  /* Runde 107: Diagramm und Achse teilen eine Spalte, damit die Achse GENAU so breit ist wie das
-     Diagramm. Vorher lag die Achse als Geschwister unter .verlauf-flaeche und war damit um die
-     Breite der 1-bis-5-Skala breiter — mit zwei links-/rechtsbuendigen Angaben unsichtbar, mit
-     Marken an gerechneten Stellen ein Versatz in jeder einzelnen. */
+  /* Diagramm und Achse teilen eine Spalte, damit die Achse genau so breit ist wie das Diagramm. */
   .verlauf-spalte{flex:1; min-width:0; display:flex; flex-direction:column;}
   .verlauf-achse{
     position:relative; height:16px; margin-top:2px;
     font-family:var(--mono); font-size:10.5px; color:var(--muted-soft);
     font-variant-numeric:tabular-nums;
   }
-  /* Die Marken liegen absolut auf ihrem Prozentwert — dieselbe Rechnung wie die Punkte im
-     Diagramm (verlaufAchseHTML in 08-code.js) — und stehen ALLE mittig ueber ihrem Tag. Seit
-     Runde 129 rueckt die Kurve dafuer um VERLAUF_RAND ein; vorher standen die aeusseren beiden
-     kantenbuendig, und die Luecken zwischen den Marken waren ungleich. */
+  /* Marken absolut auf ihrem Prozentwert, alle mittig (dieselbe Rechnung wie die Punkte,
+     verlaufAchseHTML in 08-code.js). */
   .vl-achse-marke{position:absolute; top:0; transform:translateX(-50%); white-space:nowrap;}
 
   /* Ablesehilfe: Die Trefferfläche ist die ganze Diagrammfläche, nicht die 2px-Linie. */
@@ -132,20 +95,11 @@
     min-width:0; overflow:hidden; text-overflow:ellipsis;}
   .verlauf-svg .vl-kreuz, .verlauf-svg .vl-lese{transition:opacity .12s ease;}
 
-  /* Runde 107: Die Kurve zeichnet sich von links nach rechts ein — beim Oeffnen der Tagesform
-     und bei jedem Wechsel des Zeitraums, weil renderStateTrend() das <svg> dabei jedes Mal neu
-     erzeugt und die Klasse mitbringt.
-     Wie es funktioniert: --vl-laenge ist die Laenge des laengeren der beiden Polygonzuege, in
-     Nutzereinheiten gerechnet (08-code.js). Ein Strichmuster, das genau so lang ist wie der
-     Strich selbst, zeigt bei Versatz 0 die ganze Linie und bei Versatz = Laenge keine. Der
-     Ruhezustand ist deshalb Versatz 0: Bleibt die Animation aus, steht die Linie vollstaendig da.
-     Die Endpunkte kommen NACH der Linie, sonst stuenden zwei Punkte im Nichts, bevor etwas sie
-     verbindet. Nur opacity, kein scale: Ein transform auf einem SVG-Kreis braucht
-     transform-box/transform-origin und ist auf WebKit die teurere Wette. */
-  /* Das Strichmuster steht bewusst NUR unter .vl-zeichnet und nicht als Grundzustand. Ohne
-     Animation traegt die Linie damit gar kein Muster — statt eines Musters in Linienlaenge, das
-     rechnerisch durchgezogen aussieht, aber bei jedem Rundungsfehler einen Haarstrich Luecke am
-     jüngsten Punkt riskiert. */
+  /* Einzeichnen bei jedem Oeffnen und Zeitraumwechsel. --vl-laenge ist die Laenge des laengeren
+     Polygonzugs (08-code.js); Ruhezustand Versatz 0 (die Linie steht ganz da, wenn die Animation
+     ausbleibt). Endpunkte nach der Linie, nur ueber opacity. */
+  /* Das Strichmuster NUR unter .vl-zeichnet — ohne Animation gar kein Muster (keine
+     Haarstrich-Luecke). */
   .verlauf-svg.vl-zeichnet .vl-linie{
     stroke-dasharray:var(--vl-laenge);
     animation:vl-einzeichnen .9s cubic-bezier(.25,.8,.3,1) both;
@@ -156,21 +110,14 @@
 
   @media (prefers-reduced-motion: reduce){
     .verlauf-svg .vl-kreuz, .verlauf-svg .vl-lese{transition:none;}
-    /* Die zweite Tuer. Die erste ist der JS-Gatter in verlaufDiagrammSVG: Bei reduzierter
-       Bewegung wird .vl-zeichnet gar nicht erst gesetzt — nur so wirkt auch der Schalter IN der
-       App, den das Medienmerkmal nicht kennt (dasselbe Muster wie .qcard.q-in). Diese Regel
-       greift also nur, falls die Klasse doch einmal ankommt; dann muss mit der Animation auch
-       das Strichmuster weg, sonst bliebe die Linie unvollstaendig stehen. */
+    /* Die zweite Tuer: Bei reduzierter Bewegung setzt das JS .vl-zeichnet gar nicht; kommt die Klasse
+       doch an, muss das Muster mit weg. */
     .verlauf-svg.vl-zeichnet .vl-linie{stroke-dasharray:none; animation:none;}
     .verlauf-svg.vl-zeichnet .vl-spitze{animation:none;}
   }
 
-  /* ---------- Befunde (Runde 68) ----------
-     Bewusst KEINE Karte. Rahmen, Fläche, Radius und Schatten sagen jeweils "eigenes Objekt";
-     wenn jeder Block sie trägt, sagt keiner mehr etwas und die Seite wird flach. Die Befunde
-     sind Lesetext, kein Bedienelement — sie bekommen eine Kante links und sonst nichts. Damit
-     unterscheiden sie sich auf den ersten Blick von den Zeilen der Einzelliste darunter, ohne
-     ein weiteres Kästchen zu sein. */
+  /* ---------- Befunde ----------
+     Bewusst keine Karte: Lesetext mit Kante links, damit er sich von den Listenzeilen unterscheidet. */
   .befund-liste{display:flex; flex-direction:column; gap:20px; margin-top:14px;}
   .befund{border-left:2px solid var(--accent); padding-left:14px;}
   .befund-titel{

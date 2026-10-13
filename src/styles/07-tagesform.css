@@ -11,15 +11,10 @@
   .klappt-auf{overflow:hidden;transition:height .48s cubic-bezier(.2,.8,.2,1);}
   .state-question{display:flex;flex-direction:column;gap:8px;}
   .state-q-label{font-family:var(--serif);font-size:16px;}
-  /* Bei 200 % Zoom liefen die beiden Skalenenden ineinander („Erschöpft" über „Voller Energie"),
-     weil space-between zwei Beschriftungen ohne Mindestabstand gegeneinanderdrückt. gap setzt
-     eine Untergrenze, und die rechte Beschriftung wird rechtsbündig umgebrochen statt überlappt. */
+  /* gap gegen ineinanderlaufende Skalenenden bei 200 %. */
   .state-q-sub{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);}
 
-  /* Erledigt-Zustand der Tagesform-Karte (Feedback-Runde 52). Der Haken zeichnet sich einmal
-     nach, statt fertig dazustehen — die Bewegung ist das Signal „gerade eben passiert", das der
-     statische Text vorher nicht geben konnte. Beim bloßen Zurückkehren auf die Startseite läuft
-     sie NICHT, dort ist es kein Ereignis mehr, sondern ein Zustand. */
+  /* Der Haken zeichnet sich nur direkt nach dem Speichern, nicht beim Zurueckkehren. */
   #landingStateInputs{display:flex;flex-direction:column;gap:22px;}
   /* flex-wrap als Absicherung fuer starke Textvergroesserung (vgl. Zoom-Pruefung Runde 48):
      bricht dort die Schaltflaeche in eine eigene Zeile, statt aus der Karte zu laufen. */
@@ -82,10 +77,9 @@
     border:1px solid var(--line); border-radius:100px; padding:1px 5px;
   }
 
-/* ---------- Runde 124: die neue Tagesform ----------
-     Alles hier benutzt vorhandene Marken (--surface, --line, --accent, --dim-*). Neue Farbmarken
-     braeuchten je drei Bloecke (pruefeDunkelbloecke); die Abstufungen werden deshalb mit
-     color-mix() aus den bestehenden gerechnet und gelten damit hell, dunkel und "wie das System". */
+/* ---------- Die Tagesform ----------
+   Nur vorhandene Marken; Abstufungen per color-mix(), damit hell, dunkel und System gelten (neue
+   Marken braeuchten je drei Bloecke). */
 
   /* Die freiwilligen Teile der Erfassung: Fragen und Stichworte. */
   .tf-teil{ display:flex; flex-direction:column; gap:10px; padding-top:18px; border-top:1px solid var(--line); }
@@ -98,9 +92,7 @@
   .tf-frage-name{ font-size:14px; font-weight:500; color:var(--ink); }
   /* Die gewaehlte Stufe traegt die Farbe der Dimension, wie im Radar — so sind fuenf gleich
      gebaute Reihen auf einen Blick auseinanderzuhalten. */
-  /* Am Simulator gesehen: fuenf Reihen mit Kreisen in Fragebogengroesse (rund 60 Punkt) machten
-     die Erfassung laenger als den ganzen Rest der Ansicht. 44 Punkt ist Apples Mindestmass fuer
-     ein Tippziel — kleiner nicht, groesser braucht es fuer eine Frage aus dem Bauch nicht. */
+  /* 44 pt je Kreis (Apples Mindestmass), sonst wird die Erfassung zu lang. */
   .tf-frage .scale-btn{ flex:0 0 44px; width:44px; height:44px; aspect-ratio:auto; }
   .tf-frage .scale-btn.picked{ border-color:var(--tf-farbe); }
   .tf-frage .scale-btn.picked .fill{ background:var(--tf-farbe); }

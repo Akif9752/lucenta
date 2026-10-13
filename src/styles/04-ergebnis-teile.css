@@ -6,10 +6,8 @@
   @media (prefers-reduced-motion: reduce){ .gauge-fill,.gauge-marker{transition:none;} }
 
   .stat-strip{margin-top:24px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;}
-  /* Runde 68: Unter 480px standen die fuenf Kennzahlen in drei Spalten und brachen damit 3+2 um
-     — eine verwaiste zweite Zeile, die eine Gruppierung nahelegt, die es nicht gibt. Die fuenf
-     Dimensionen sind EIN Satz und stehen jetzt in einer Reihe. Enger gesetzt, damit sie passen;
-     unter 340px wird die Beschriftung zusaetzlich kleiner. */
+  /* Unter 480px alle fuenf Kennzahlen in einer Reihe (3+2 legte eine falsche Gruppierung nahe); unter
+     340px kleinere Beschriftung. */
   @media (max-width:480px){
     .stat-strip{gap:5px;}
     .stat-tile{padding:11px 4px 10px;}

@@ -2,24 +2,14 @@
 (function(){
   "use strict";
 
-  // Globales Auffangnetz (Feedback-Runde 32): bislang liefen unerwartete Laufzeitfehler oder
-  // abgelehnte Promises komplett lautlos ins Leere — die Ansicht blieb einfach stehen, ohne dass
-  // die Person überhaupt merkte, dass etwas schiefging. toast() existiert bereits als bewährter
-  // Hinweis-Mechanismus (siehe u. a. Vergleichsarchiv); hier nur mit eigener Drossel, damit eine
-  // Fehlerkaskade nicht denselben Hinweis im Sekundentakt wiederholt. Ersetzt keine echte
-  // Fehlerbehandlung an der jeweiligen Stelle, sondern ist bewusst nur das letzte Sicherheitsnetz.
+  // Globales Auffangnetz: Unerwartete Fehler zeigen einen gedrosselten Hinweis — das letzte Netz, kein
+  // Ersatz fuer Fehlerbehandlung vor Ort.
   var lastGlobalErrorToast = 0;
   function notifyUnexpectedError(ereignis){
-    // Runde 102: Das Netz zeigte nur den Hinweis und verschwieg, WAS schiefging. In der
-    // Capacitor-Huelle ist das teuer — dort gibt es keine Entwicklerkonsole zum Nachsehen, und im
-    // Xcode-Log stand nur Capacitors nichtssagendes "JS Eval error A JavaScript exception
-    // occurred". console.error landet ueber Capacitors Console-Bruecke im Xcode-Log und macht den
-    // Fehler damit ueberhaupt erst auffindbar. Geht nicht nach aussen: console.error schreibt in
-    // die Konsole, nicht ins Netz.
+    // console.error landet ueber Capacitors Konsolenbruecke im Xcode-Log (sonst steht dort nur "JS
+    // Eval error"). Geht nicht nach aussen.
     try{
-      // Bewusst ohne deutschen Klartext: tools/audit_i18n.py verbietet deutsche Literale im
-      // JavaScript, damit kein sichtbarer Text an der Uebersetzung vorbeigeht. Die Marke und der
-      // Fehler selbst genuegen — mehr Worte braucht ein Protokolleintrag nicht.
+      // Ohne deutschen Klartext (audit_i18n.py verbietet deutsche Literale im JS).
       var grund = ereignis && (ereignis.reason || ereignis.error || ereignis.message);
       console.error('[Lucenta]',
                     (grund && (grund.stack || grund.message)) || grund || (ereignis && ereignis.type),

@@ -1,30 +1,11 @@
-/* ================= iOS-Formensprache (Runde 114) =================
-     Auftrag des Inhabers: "mache es mehr so wie das neue iOS ist — zum Beispiel in den
-     Einstellungen bei der Sprachauswahl, dass es so wie bei iOS sein soll, wenn man etwas aus
-     einer Art Liste aussucht. Insgesamt wie iOS von Apple."
-
-     Die Einstellungen sind die Vorlage, weil sie das genannte Beispiel sind und weil iOS fuer
-     genau diese Art Ansicht eine feste, allen bekannte Form hat: die eingerueckte, gruppierte
-     Liste ("inset grouped"). Ihre Regeln, und warum jede hier steht:
-
-       1. Der Abschnittstitel steht UEBER der Gruppe, klein, grau, in Grossbuchstaben — nicht in
-          ihr. Bis hierher trug jede Gruppe eine Ueberschrift in Fraunces innerhalb der Karte;
-          das ist die Form einer Zeitschrift, nicht die einer Einstellung.
-       2. Eine Gruppe ist EINE Flaeche. Bis hierher lag die Sprachliste als zweiter Kasten in
-          einer Karte — zwei Raender, zwei Radien, zwei Flaechen fuer eine Sache.
-       3. Zeilen sind mindestens 44 Punkt hoch, die Trennlinie beginnt an der Textkante.
-       4. Erklaerungen stehen als Fussnote UNTER der Gruppe, nicht zwischen den Zeilen.
-       5. Knoepfe in einer Liste sind Zeilen in der Akzentfarbe, keine Pillen. "Kaeufe
-          wiederherstellen" ist in iOS eine blaue Zeile, kein umrandeter Knopf.
-       6. Zuruecksetzen ist eine eigene Gruppe, in Warnfarbe, mittig — die iOS-Form fuer eine
-          Handlung, die nicht rueckgaengig zu machen ist.
-
-     Bewusst auf #view-settings beschraenkt. Die gleichen Klassen (.settings-zeile, .schalter,
-     .daten-knoepfe) kommen auch im Profil vor; dort ist die Form eine andere Frage, und eine
-     Aenderung an den gemeinsamen Regeln haette sie ungefragt mitentschieden.
-
-     Keine neuen Farbmarken: Gruppenflaeche ist --surface, Grund ist --paper, Akzent ist
-     --accent-strong. Damit gelten Hell, Dunkel und "wie das System" von selbst. */
+/* ================= iOS-Formensprache =================
+   Vorlage: die eingerueckte, gruppierte Liste von iOS (Entscheidung des Inhabers: "wie iOS von
+   Apple").
+   1. Abschnittstitel klein, grau, gross geschrieben UEBER der Gruppe. 2. Eine Gruppe ist EINE Flaeche.
+   3. Zeilen mindestens 44 pt, Trennlinie ab der Textkante. 4. Erklaerungen als Fussnote unter der
+   Gruppe. 5. Knoepfe in Listen sind Zeilen in Akzentfarbe. 6. Zuruecksetzen als eigene Gruppe in
+   Warnfarbe.
+   Auf #view-settings beschraenkt (dieselben Klassen stehen auch im Profil). Keine neuen Farbmarken. */
 
   #view-settings .settings-group{
     background:none; border:none; box-shadow:none; padding:0; margin-top:30px;
@@ -60,10 +41,8 @@
   /* Runde 136: die Sprachliste steht auf einer eigenen Seite und behaelt dort dieselbe Form. */
   #view-sprache .wahlliste{ margin-top:22px; }
 
-  /* Die Schieberzeilen. Sie stehen als Geschwister in der Gruppe, also traegt jede ihren Teil
-     der Flaeche: die erste die oberen Ecken, die letzte die unteren, jede ausser der ersten eine
-     eingerueckte Trennlinie. ":nth-child(n of S)" zaehlt dabei nur die Zeilen und nicht die
-     Ueberschrift davor — dieselbe Falle wie in der Schublade (10-druckzustaende.css). */
+  /* Schieberzeilen als Geschwister: erste traegt die oberen Ecken, letzte die unteren, alle ausser der
+     ersten eine Trennlinie. :nth-child(n of S) zaehlt nur die Zeilen. */
   #view-settings .settings-zeile{
     position:relative; margin:0; padding:11px 16px; gap:14px;
     background:var(--surface); align-items:center; flex-wrap:nowrap;
@@ -104,9 +83,7 @@
      Flaeche — mit etwas Luft nach unten, damit sie nicht an der Flaeche klebt. */
   #view-settings .settings-group > h2 + .settings-group-desc{ margin:0 0 8px; }
 
-  /* 5. Knoepfe in einer Liste sind Zeilen. Die Pillenform, die Unterkante und der Druck durch
-        Verkleinern kommen aus der allgemeinen Knopfregel; in einer Liste gehoert stattdessen
-        die Zeile beim Druecken dunkler hinterlegt — genau wie bei der Sprachwahl. */
+  /* 5. Knoepfe in Listen sind Zeilen; beim Druecken wird die Zeile hinterlegt. */
   #view-settings .daten-knoepfe{ display:flex; flex-direction:column; gap:0; }
   #view-settings .daten-knoepfe .btn{
     position:relative; width:100%; min-height:46px; margin:0; padding:12px 16px;
@@ -120,14 +97,8 @@
   #view-settings .daten-knoepfe .btn:active{ transform:none; background:var(--surface-2); }
   #view-settings .daten-knoepfe[hidden]{ display:none; }
 
-  /* Der Weg ins Profil: die ganze Zeile, wie der Apple-Account ganz oben in den
-     iPhone-Einstellungen — rechts nur ein Winkel.
-     Erster Entwurf: ein Textknopf "Profil bearbeiten >" am Zeilenende. Die Fehlersuche fand ihn
-     32-mal: 34 statt 44 Punkte hoch, und bei 320px Breite mit langem Namen ragte er seitlich
-     heraus. Beides loest dieselbe Aenderung, und es ist zugleich die iOS-Form: Der Knopf liegt
-     jetzt ueber der GANZEN Zeile (position:absolute; inset:0), ist damit so hoch und so breit
-     wie sie, und sichtbar bleibt nur der Winkel. Die Beschriftung bleibt im DOM — font-size:0
-     verbirgt sie fuers Auge, nicht fuer VoiceOver. */
+  /* Der Weg ins Profil: Der Knopf liegt ueber der GANZEN Zeile (44 pt, keine Ueberlaeufe bei 320 px),
+     sichtbar nur der Winkel; die Beschriftung bleibt fuer VoiceOver (font-size:0). */
   #view-settings .settings-account-row{ position:relative; padding-right:40px; }
   #view-settings #btnSettingsEditProfile{
     position:absolute; inset:0; width:100%; height:100%; margin:0; padding:0 16px;
@@ -167,17 +138,9 @@
   #view-settings #btnResetData:active{ transform:none; background:var(--surface-2); }
   #view-settings #btnResetData.armed{ font-weight:600; }
 
-/* ================= Die Schublade als iOS-Liste (Runde 115) =================
-     Bis hierher war jeder Eintrag ein kleiner Abschnitt: Titel in Mono-Grossbuchstaben, ein
-     erklaerender Satz und darunter ein umrandeter Pillenknopf ("Verstehen oeffnen"). Fuenf
-     Eintraege, fuenf Knoepfe, fuenf Trennlinien von Kante zu Kante — die Form einer Inhaltsseite,
-     nicht die einer Navigation. In iOS ist eine Navigation eine Liste: Jeder Eintrag eine Zeile mit
-     Titel und Winkel, die GANZE Zeile antippbar, die Eintraege einer Gruppe auf einer Flaeche.
-
-     Dasselbe Mittel wie bei der Profilzeile der Einstellungen: Der vorhandene Knopf wird ueber die
-     ganze Zeile gelegt und zeigt nur den Winkel; seine Beschriftung bleibt fuer VoiceOver. Damit
-     aendert sich am Markup und an der Verdrahtung nichts — jede Pruefung, die einen dieser Knoepfe
-     antippt, tippt weiterhin denselben. */
+/* ================= Die Schublade als iOS-Liste =================
+   Jeder Eintrag eine Zeile mit Titel und Winkel; der vorhandene Knopf liegt ueber der ganzen Zeile —
+   Markup und Verdrahtung bleiben unveraendert. */
 
   /* Gruppentitel wie in den Einstellungen: klein, grau, ueber der Flaeche. */
   #drawerPanel .drawer-group-title{
@@ -197,9 +160,7 @@
   #drawerPanel .drawer-section + .drawer-section::before{
     content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
   }
-  /* Die Ecken der Gruppe: Die erste Zeile nach einem Titel traegt die oberen, die letzte vor dem
-     naechsten Titel (oder am Ende) die unteren. :has() ab iOS 15.4 — davor bleiben die Ecken
-     eckig, sonst aendert sich nichts. */
+  /* Ecken der Gruppe per :has() (ab iOS 15.4, davor eckig). */
   #drawerPanel .drawer-group-title + .drawer-section{
     margin-top:0; border-top-left-radius:var(--radius-m); border-top-right-radius:var(--radius-m);
   }
@@ -225,26 +186,16 @@
     transform:none; background:color-mix(in srgb, var(--ink) 6%, transparent);
   }
 
-  /* Die Pfeilknoepfe (Profilzeile der Einstellungen, Zeilen der Schublade) tragen den Winkel im
-     ::after — und das ist bei .btn-sm bereits belegt: Runde 60 vergroessert damit die
-     Trefferflaeche jedes kleinen Knopfs auf 44x44, als absolut positionierte, MITTIGE Flaeche.
-     Der Winkel landete im ersten Entwurf genau dort, mitten in der Zeile statt am rechten Rand.
-     Ein Knopf, der ueber der ganzen Zeile liegt, braucht keine vergroesserte Trefferflaeche; das
-     ::after kehrt hier deshalb in den normalen Fluss zurueck. */
+  /* ::after ist bei .btn-sm schon die vergroesserte Trefferflaeche (mittig) — fuer zeilenbreite
+     Knoepfe kehrt es in den Fluss zurueck, sonst stuende der Winkel mitten in der Zeile. */
   #drawerPanel .drawer-section > .btn::after,
   #view-settings #btnSettingsEditProfile::after{
     position:static; transform:none; width:auto; height:auto; top:auto; left:auto;
   }
 
-/* ================= Das Profil als iOS-Kontaktkarte (Runde 116) =================
-     Vorbild ist die Kontaktkarte von iOS beim Bearbeiten: grosses Bild oben, darunter Gruppen.
-     Dieselben Regeln wie in den Einstellungen — Titel klein und grau ueber der Gruppe, eine
-     Flaeche je Gruppe, Trennlinien ab der Textkante —, auf #view-profile beschraenkt.
-
-     Zwei Stellen brauchen !important, und das ist keine Bequemlichkeit: Die Formensprache aus
-     Runde 69 setzt fuer .history-row und .trend-list `border-width:2px !important` und fuer
-     .history-row eine harte Unterkante (10-druckzustaende.css). Ohne Gegengewicht bliebe jede
-     Verlaufszeile eine eigene Karte mit Rand, wo iOS eine Liste zeigt. */
+/* ================= Das Profil als iOS-Kontaktkarte =================
+   Grosses Bild oben, darunter Gruppen; auf #view-profile beschraenkt. Zwei !important als Gegengewicht
+   zu border-width:2px !important aus 10-druckzustaende.css. */
 
   /* Abschnittstitel wie ueberall in iOS. */
   #view-profile .section-title{
@@ -299,9 +250,7 @@
   #view-profile #historyContent .history-row + .history-row::before{
     content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
   }
-  /* Die Kante links aus Runde 108 traegt den Pol der fuehrenden Dimension. In einer Liste ohne
-     Raender wird sie zum Punkt vor dem Titel — dieselbe Information, in der Form, in der iOS
-     Zustaende in Listen zeigt. */
+  /* Die Pol-Kante wird in der Liste zum Punkt vor dem Titel. */
   #view-profile #historyContent .history-pol-high .history-title::before,
   #view-profile #historyContent .history-pol-low .history-title::before{
     content:''; display:inline-block; width:8px; height:8px; border-radius:50%;
@@ -346,26 +295,17 @@
   #view-profile #btnProfileViewResult:active{ transform:none; background:color-mix(in srgb, var(--ink) 6%, transparent); }
   #view-profile .settings-row-text strong{ font-family:var(--sans); font-weight:400; font-size:16px; }
 
-  /* "Kein Bild" zeigt dasselbe Monogramm, das danach im Kreis steht. Die Regel stand in Runde 114
-     in 09-archetypen.css und kam dort nie an: Eine spaetere Regel derselben Datei setzt fuer
-     .figur-keine `background` als Kurzform und loescht damit jeden Verlauf davor. Hier, am Ende
-     der Kaskade und mit hoeherer Spezifitaet, greift sie. */
+  /* "Kein Bild" zeigt das Monogramm. Steht hier, weil eine spaetere background-Kurzform in
+     09-archetypen.css die Regel dort loescht. */
   .figur-raster .figur-wahl.figur-keine{
     font-family:var(--sans); font-weight:500; font-size:16px; color:var(--paper);
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));
   }
 
-/* ================= Das Auswahl-Haekchen (Runde 120) =================
-     Auftrag des Inhabers: "Bei dem gewaehlten Avatar und dem gewaehlten Hintergrund soll so ein
-     Haken, der umkreist ist, drauf sein, damit klar ist, dass das ausgesucht ist."
-     Bis hierher trug die Wahl nur einen dunkleren Rand von 2 Punkt — bei bunten Figuren und
-     Hintergruenden ein schwacher Unterschied. iOS zeigt eine Wahl in einem Raster (Fotos,
-     Hintergrundbilder, Memoji) mit einem gefuellten Kreis in der Akzentfarbe und weissem Haken,
-     der unten rechts ueber den Rand hinaussteht. Er erscheint mit einem kurzen Federschwung.
-
-     Die Figurfelder schnitten bisher mit overflow:hidden alles ab, was ueber den Kreis ragt —
-     das Abzeichen waere halbiert worden. Abgeschnitten wird deshalb jetzt die Zeichnung selbst
-     (clip-path), und das Feld darf ueberstehen lassen. */
+/* ================= Das Auswahl-Haekchen =================
+   Gewaehlte Figur und Hintergrund tragen einen gefuellten Kreis mit Haken unten rechts (Auftrag des
+   Inhabers). Weil er ueber den Rand ragt, schneidet clip-path die Zeichnung ab statt overflow:hidden
+   das Feld. */
   .figur-wahl{ position:relative; overflow:visible; }
   .figur-wahl > svg{ clip-path:circle(50% at 50% 50%); border-radius:50%; }
   /* Runde 133: Das Tierbild fuellt den Kreis randlos, der Rumpf reicht bis an die Bildkante —
@@ -389,27 +329,10 @@
     .figur-wahl[aria-pressed="true"]::after, .hg-wahl[aria-pressed="true"]::after{ animation:none; }
   }
 
-/* ================= Bewegung wie in iOS (Runde 120) =================
-     Auftrag des Inhabers: "mehr Animationen in der App, z. B. in den Uebergaengen und wenn man auf
-     etwas drueckt." Vier Elemente aus dem Bewegungsbild von iOS, je mit dem Grund:
-
-     1. Federndes Loslassen. Ein gedrueckter Knopf glitt bisher in 0,24 s zurueck. In iOS federt
-        er: Er schiesst beim Loslassen einen Hauch ueber seine Groesse hinaus und setzt sich dann.
-        Das Druecken selbst bleibt unmittelbar (transition-duration:0s in 10-druckzustaende.css) —
-        nur das Zurueck federt.
-     2. Zeilen in Listen werden beim Druecken sofort hinterlegt und blenden beim Loslassen LANGSAM
-        aus. Genau dieses verzoegerte Ausblenden ist das, woran man eine iOS-Liste erkennt.
-     3. Das Haekchen springt beim Waehlen auf, statt einfach da zu sein.
-     4. Ein neuer Bildschirm baut sich gestaffelt auf. BEWUSST NUR UEBER DIE LAGE, nie ueber die
-        Deckkraft: Runde 108 hat eine Staffelung verworfen, weil die Pruefungen kurz nach einem
-        Wechsel messen und ein Block auf Deckkraft 0 dort als "ausgeblendet" gezaehlt wuerde. Ein
-        Block, der nur 14 Punkt tiefer beginnt, ist jederzeit sichtbar — die Messung sieht ihn,
-        das Auge sieht die Bewegung.
-
-     Alles verschwindet bei "weniger Bewegung" — dem Medienmerkmal UND dem Schalter in der App
-     (html.bewegung-aus wird hier nicht gebraucht: der Schalter setzt prefersReducedMotion() und
-     die gestaffelte Klasse kommt dann gar nicht erst; die Feder ist eine reine transition und
-     faellt unter die Regel am Ende). */
+/* ================= Bewegung wie in iOS =================
+   Federndes Loslassen (Druecken bleibt unmittelbar), Listenzeilen blenden langsam aus, das Haekchen
+   springt auf, neue Bildschirme bauen sich gestaffelt auf — NUR ueber die Lage, nie ueber Deckkraft
+   (die Pruefungen messen kurz nach einem Wechsel). Alles aus bei weniger Bewegung. */
 
   /* 1. Federndes Loslassen. */
   .btn{
@@ -445,11 +368,6 @@
   }
 
   /* 4. Gestaffelter Aufbau beim Wechsel der Ansicht — nur Lage, keine Deckkraft. */
-  /* Nachgeprueft, dass diese Regel keine eigene Einblendung eines Blocks ersetzt: Im Browser
-     tragen die direkten Kinder der Ansichten keine wirksame eigene Animation. Die Abfrage nach
-     Selektoren meldete zuerst .understand-card auf der Startseite — dort setzt aber eine
-     spezifischere Regel animation:none, wie der berechnete Stil zeigte. Massgeblich ist, was am
-     Ende gilt, nicht welcher Selektor passt. */
   .view.active.nav-vor > *, .view.active.nav-zurueck > *{
     animation:glied-ein .55s cubic-bezier(.2,.8,.2,1) both;
   }
@@ -466,42 +384,19 @@
     .view.active.nav-vor > *, .view.active.nav-zurueck > *{ animation:none; }
   }
 
-  /* Runde 120, gefunden von der Fehlersuche nach dem Wechsel auf Apples Farbsystem: Segmentwaehler
-     und Kennzahl-Kacheln lagen auf --surface-3, der kraeftigsten Graustufe (#D1D1D6 / #3A3A3C). Mit
-     dem neuen Nebentext ergab das 3,94:1 statt der noetigen 4,5:1 — 110 Funde, alle diese drei
-     Bausteine. iOS legt den Segmentwaehler ohnehin auf eine HELLERE Fuellung als die Zeilen, nicht
-     auf die dunkelste. Auf --surface-2 sind es 4,77:1 hell und 4,86:1 dunkel, nachgerechnet. */
+  /* Segmentwaehler und Kacheln auf --surface-2 (nicht -3), damit der Nebentext 4,5:1 erreicht. */
   .segment{ background:var(--surface-2); }
   .stat-tile{ background:var(--surface-2); }
 
-/* ================= Liquid Glass (Runde 121) =================
-     Auftrag des Inhabers: "Die Sidebar muss noch mehr Liquid Glass sein — noch durchsichtiger und
-     richtig wie Glas. Generell muss die App mehr von Apples Liquid Glass enthalten."
+/* ================= Liquid Glass =================
+   Auf der Bedien- und Navigationsebene, nicht im Inhalt. Die Schublade in der klaren, sehr
+   durchsichtigen Variante (Wunsch des Inhabers); die Lesbarkeit tragen die Zeilen mit eigener
+   Glasflaeche.
+   Drei Lagen: Durchsicht (--glas/--glas-tief mit Unschaerfe und Saettigung), helle Kante
+   (--glas-rand), Glanz (--glas-licht). Die Tueren fuer "Transparenz reduzieren" und "Kontrast
+   erhoehen" am Ende des Blocks schlagen alles. */
 
-     Nach Apples eigener Beschreibung (Human Interface Guidelines, "Materials: Liquid Glass"):
-     Liquid Glass gehoert auf die BEDIEN- und NAVIGATIONSEBENE, die ueber dem Inhalt schwebt —
-     Seitenleisten, Leisten, Knoepfe —, nicht in den Inhalt selbst. Es ist mehr als Unschaerfe: Es
-     wirft Licht und Farbe der Umgebung zurueck, hat helle Kanten, und es gibt eine klare, sehr
-     durchsichtige Variante. Apple setzt Seitenleisten eher deckend; der Inhaber will sie
-     durchsichtiger — die klare Variante also, und die Lesbarkeit liegt auf den Zeilen, die eine
-     eigene, halbdeckende Glasflaeche tragen.
-
-     Was "richtig wie Glas" hier heisst, in drei Lagen:
-       1. Durchsicht: geringe Toenung (--glas oben, --glas-tief unten) mit starker Unschaerfe und
-          gehobener Saettigung — der Grund scheint farbig durch, nicht grau.
-       2. Kanten: eine helle Lichtkante innen (--glas-rand) — Glas hat Dicke, und seine Kante faengt
-          Licht.
-       3. Glanz: ein schraeger Lichtstreif von oben (--glas-licht), der zur Mitte hin ausblendet.
-
-     Die Tueren fuer "Transparenz reduzieren" und "Kontrast erhoehen" stehen am Ende dieses Blocks
-     und schlagen alles hier: Wer deckend gewaehlt hat, bekommt deckend. */
-
-  /* Nachgemessen im Simulator (erster Wurf dieser Runde): Die Schublade las sich "fast deckend
-     dunkelgrau". Die Toenung war nicht der Hauptgrund — hinter dem Glas lag der Abdunkler
-     #drawerScrim mit 45 % Fast-Schwarz. Das Glas weichzeichnete also einen bereits verdunkelten
-     Grund, und im Dunkelmodus bleibt davon nur Grau. iOS dunkelt hinter schwebenden Flaechen
-     kaum ab; hier jetzt 16 %. Die Unschaerfe ist von 26 auf 16 px zurueck, damit hinter dem Glas
-     noch FORMEN zu erkennen sind — bei starker Unschaerfe wird jedes Glas zur Milchscheibe. */
+  /* Abdunkler nur 16 % und Unschaerfe 16 px — sonst wird das Glas zur grauen Milchscheibe. */
   #drawerScrim{ background:rgba(0,0,0,.16); }
   #drawerPanel, .img-modal-panel-glas{
     background:linear-gradient(165deg, var(--glas) 0%, var(--glas-tief) 100%);
@@ -523,10 +418,7 @@
   /* Zeilen auf dem Glas: halbdeckend, damit die Schrift auf jedem Grund lesbar bleibt. */
   #drawerPanel .drawer-section{ background:var(--glas-zeile); }
   #drawerPanel .drawer-profile-row:not([data-hg]){ background:var(--glas-zeile); border-color:var(--glas-rand); }
-  /* Runde 122: Keine Silbentrennung in der Schublade. Die Untertitel sind kurze Saetze in einer
-     schmalen Spalte; hyphens:auto (00-grundlagen.css) trennte dort "Ergeb-nis" und
-     "Einordnun-gen", wo ein ganzes Wort in die naechste Zeile passt. iOS trennt in Listen nicht.
-     overflow-wrap:break-word bleibt, also laeuft bei 200 % Textgroesse trotzdem nichts heraus. */
+  /* Keine Silbentrennung in der Schublade (iOS trennt in Listen nicht). */
   #drawerPanel p, #drawerPanel li{
     -webkit-hyphens:manual; hyphens:manual;
   }
@@ -558,9 +450,8 @@
     border:1px solid var(--glas-rand);
     box-shadow:inset 0 1px 0 var(--glas-licht), 0 8px 26px -10px rgba(0,0,0,.35);
   }
-  /* Der Plus-Dialog: durchsichtiger als bisher (86 -> 70 %), dazu Lichtkante und Glanz. Das
-     Bild-Fenster bleibt bei 86 % — darin wird die Vorschau des Ergebnisbildes beurteilt, und ein
-     Bild hinter Glas zu beurteilen ginge nicht (Runde 103). Es bekommt nur die Kante. */
+  /* Der Plus-Dialog 70 % durchsichtig; das Bild-Fenster bleibt 86 %, weil darin das Ergebnisbild
+     beurteilt wird. */
   #plusModal{
     background:linear-gradient(165deg, var(--glas) 0%, transparent 60%), color-mix(in srgb, var(--surface) 70%, transparent);
     -webkit-backdrop-filter:blur(22px) saturate(200%); backdrop-filter:blur(22px) saturate(200%);
@@ -569,14 +460,11 @@
     border-color:var(--glas-rand);
     box-shadow:inset 0 1px 0 var(--glas-licht), 0 24px 60px -18px rgba(0,0,0,.45);
   }
-  /* Die Kopfleiste ist seit Runde 102 Glas, ihr fehlte aber die Kante: eine feine Lichtlinie
-     unten, wo das Glas aufhoert. Nur Schatten, kein Grund — die Tueren der Leiste in
-     00-grundlagen.css bleiben damit unberuehrt. */
+  /* Lichtkante unten an der Kopfleiste (nur Schatten — die Tueren in 00-grundlagen.css bleiben
+     unberuehrt). */
   header.top{ box-shadow:inset 0 -1px 0 var(--glas-rand); }
 
-  /* Der Hauptknopf als getoentes Glas: Apple faerbt bei hervorgehobenen Knoepfen den GRUND in der
-     Akzentfarbe ("prominent glass"). Die Farbe bleibt deckend — sie traegt die Lesbarkeit der
-     Schrift —, dazu kommen Lichtkante und Glanzstreif. */
+  /* Hauptknopf als getoentes Glas ("prominent glass"): Farbe deckend, dazu Kante und Glanz. */
   .btn-primary{
     background-image:linear-gradient(175deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,0) 52%);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.45), inset 0 -1px 0 rgba(0,0,0,.12),
@@ -603,12 +491,9 @@
     }
   }
 
-/* ================= Startbewegung (Runde 121) =================
-     Auf Wunsch des Inhabers: beim Start dieselbe Bewegung wie nach dem letzten Testschritt, mit
-     dem Namen. Benutzt die Keyframes der Auswertungs-Ueberlagerung (08-formulare-und-dialoge.css),
-     damit beide Momente wirklich DIESELBE Bewegung sind und nicht zwei, die sich aehneln.
-     Gezeigt wird sie nur in der App (startBewegung() in 21-beta-rueckmeldung.js); die Ueberlagerung
-     ist durchklickbar und nach 1,7 s wieder `hidden`. */
+/* ================= Startbewegung =================
+   Dieselben Keyframes wie die Auswertungs-Ueberlagerung (08-formulare-und-dialoge.css). Nur in der App
+   (startBewegung()), durchklickbar, nach 1,7 s hidden. */
   #startOverlay{
     position:fixed; inset:0; z-index:120; background:var(--paper);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
@@ -618,9 +503,7 @@
   #startOverlay.weg{ opacity:0; }
   #startOverlay.show .processing-mark polygon{ animation:mark-zeichnen .62s cubic-bezier(.4,0,.2,1) .1s forwards; }
   #startOverlay.show .processing-mark .processing-mark-fill{ animation:mark-fuellen .34s ease .62s forwards; }
-  /* Runde 131, Auftrag des Inhabers: Die Schrift der Wortmarke oben (--marke, Fraunces 600) ist DIE
-     Schrift des Namens "Lucenta" — auch im Startbild. Hier stand var(--serif), und das zeigt seit
-     Runde 126 auf die Systemschrift; der Name kam beim Oeffnen also in SF. pruef-app prueft beides. */
+  /* Der Name "Lucenta" steht auch im Startbild in --marke (Fraunces). pruef-app prueft das. */
   .start-name{
     font-family:var(--marke); font-size:34px; font-weight:600; letter-spacing:.01em; color:var(--ink);
     opacity:0; transform:translateY(6px);
@@ -629,11 +512,8 @@
   @keyframes start-name{ to{ opacity:1; transform:none; } }
 
 
-  /* Runde 126, gemeldet: "wenn man einige sachen drueckt (zb beim vergleichsfeld) zoomt die app rein
-     und man kann nicht wieder auszoomen." Ursache: iOS vergroessert die Seite selbsttaetig, sobald
-     ein Eingabefeld mit weniger als 16 Punkt Schrift den Fokus bekommt — die Codefelder hatten 14.
-     16 Punkt ist zugleich die Textgroesse von iOS-Eingabefeldern. Die Felder fuer Codes stehen in
-     der Monospace-Systemschrift, damit "l" und "1" beim Abtippen unterscheidbar bleiben. */
+  /* Eingabefelder mindestens 16 pt, sonst zoomt iOS beim Fokus hinein. Code-Felder in Monospace (l und
+     1 unterscheidbar). */
   input[type="text"], input[type="time"], input[type="search"], input:not([type]), textarea, select{
     font-size:16px !important;
   }
@@ -662,9 +542,7 @@
   .hilfe-sammlung[open] > .faq-item-list{ border-top-left-radius:0; border-top-right-radius:0; }
   @media (prefers-reduced-motion: reduce){ .hilfe-sammlung > summary .chev{ transition:none; } }
 
-  /* Runde 126: Impressum, Datenschutz und Lizenzen als leise Zeile am Ende von "Ueber Lucenta",
-     nicht mehr als eigener Abschnitt. Erreichbar bleiben sie in zwei Schritten (Impressumspflicht),
-     ueber die Fusszeile der Startseite und hier. */
+  /* Rechtliches als leise Zeile, in zwei Schritten erreichbar (Impressumspflicht). */
   .recht-leise{
     margin:10px 0 0; padding:6px 16px; min-height:44px; background:none; border:none; cursor:pointer;
     font:inherit; font-size:13px; color:var(--muted-soft); text-align:left; text-decoration:underline;
@@ -672,10 +550,8 @@
   }
   .recht-leise:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
 
-  /* ---------- Runde 126: Lucenta+ als Kaufseite ----------
-     Oben scrollt der Inhalt, unten steht der Kaufbereich fest (Preise, Knopf, Abo-Hinweis). Der
-     alte klebende Verlauf (.plus-modal-verlauf) ist entfallen: Er lag auch am Ende noch ueber der
-     letzten Zeile. */
+  /* ---------- Lucenta+ als Kaufseite ----------
+     Oben scrollt der Inhalt, unten steht der Kaufbereich fest. */
   #plusModal{ display:flex; flex-direction:column; padding:0; overflow:hidden; max-height:88vh; }
   #plusModal .plus-modal-inner{ overflow-y:auto; -webkit-overflow-scrolling:touch; padding:22px 22px 14px; min-height:0; }
   .plus-modal-kauf{
@@ -743,13 +619,8 @@
 
   /* ---------- Runde 127: verschwommene Vorschau an gesperrten Stellen ---------- */
   .plus-vorschau{ position:relative; }
-  /* Runde 129, gemeldet: "die verschwommenen Sachen haben zu scharfe Raender." Die Maske lief nur
-     nach unten aus; oben und an den Seiten schnitt der Kartenrand (overflow:hidden weiter unten)
-     die Unschaerfe hart ab — am Simulator als scharfe, gerundete Ecke oben links zu sehen. Jetzt
-     laufen alle vier Seiten aus: zwei Verlaeufe, deren Schnittmenge die Maske ist (intersect bzw.
-     source-in fuer WebKit). Die Maske wirkt NACH dem Filter (Reihenfolge filter, clip, mask), sie
-     blendet also das bereits verschwommene Bild aus, nicht die scharfe Vorlage. Etwas mehr
-     Unschaerfe (7 statt 6 px), damit auch die inneren Kanten der Karten weich werden. */
+  /* Die Maske laeuft an allen vier Seiten aus (Schnittmenge zweier Verlaeufe; source-in fuer WebKit).
+     Sie wirkt NACH dem Filter, blendet also das verschwommene Bild aus. */
   .plus-unscharf{
     filter:blur(7px); -webkit-user-select:none; user-select:none; pointer-events:none;
     -webkit-mask-image:linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%),
@@ -787,22 +658,15 @@
   .plus-start-karte[hidden]{ display:none; }
   .plus-start-karte .understand-group-label span span{ color:var(--accent-strong); }
   .plus-start-karte .btn{ margin-top:12px; }
-  /* Runde 128 stand hier overflow:hidden, weil die Unschaerfe ueber die Kartenkante ragte. Seit
-     Runde 129 haelt die Maske sie selbst im Rahmen (ausserhalb des Kastens ist die Maske leer),
-     und der Zuschnitt schnitt nur noch etwas Falsches ab: den Schatten der Hinweiskarte — gemessen
-     als Sprung der Helligkeit von 221 auf 255 an der Unterkante. */
+  /* Kein overflow:hidden: Die Maske haelt die Unschaerfe im Rahmen, und der Zuschnitt schnitt den
+     Schatten der Hinweiskarte ab. */
   .plus-vorschau{ border-radius:var(--radius-m); }
 
-  /* ---------- Runde 136: Unterseiten schieben sich herein wie in iOS ----------
-     Auftrag des Inhabers: Eine Zeile mit Pfeil nach rechts (Sprache, Haeufige Fragen) oeffnet ihre
-     Seite "von rechts nach links, und zurueck andersherum, so wie bei iOS". Das ist der Push eines
-     UINavigationController: Die neue Seite kommt ueber die ganze Breite von rechts und wirft einen
-     Schatten auf die alte; die alte rueckt um ein Drittel nach links und wird etwas dunkler. Beim
-     Zurueck laeuft die Unterseite nach rechts hinaus und gibt die alte frei. Beide Seiten sind
-     dabei gleichzeitig zu sehen — die verlassene haelt showView() kurz an ihrem Platz fest
-     (.nav-weg, position:fixed). Kurve und Dauer nach UIKit: rasch los, weich ankommen, ~0,45 s.
-     Nur Lage, keine Deckkraft; beide Seiten tragen die Papierflaeche bis an den Bildschirmrand,
-     sonst schiene die eine durch die andere. */
+  /* ---------- Unterseiten schieben sich herein wie in iOS ----------
+     Push/Pop eines UINavigationController (Auftrag des Inhabers): Die neue Seite kommt ueber die volle
+     Breite von rechts mit Schatten, die alte rueckt 30 % nach links und dunkelt; zurueck umgekehrt.
+     Die verlassene haelt showView() mit .nav-weg (position:fixed) an ihrem Platz. Nur Lage, keine
+     Deckkraft; beide tragen die Papierflaeche bis an den Rand. */
   .view.active.nav-push, .view.active.nav-pop, .view.nav-weg{
     min-height:100vh; isolation:isolate;
   }
@@ -826,9 +690,8 @@
     .view.active.nav-push, .view.active.nav-pop, .view.nav-weg-push, .view.nav-weg-pop{ animation:none; }
   }
 
-  /* Runde 137: die Zurueck-Geste vom linken Rand (20-wiring.js). Die Seite folgt dem Finger, die
-     Seite darunter steht an ihrem Platz und rueckt mit; beide tragen die Papierflaeche wie beim
-     Schieben oben. Beim Loslassen laufen beide mit derselben UIKit-Kurve ans Ziel. */
+  /* Die Zurueck-Geste vom linken Rand (20-wiring.js): Die Seite folgt dem Finger, die darunter rueckt
+     mit; beim Loslassen dieselbe Kurve. */
   /* animation:none, weil eine Einblendung mit fill:both (rise, seite-rein) jede Verschiebung von
      Hand ueberschreibt — am Bild gesehen: Die Seite blieb unter dem Finger stehen. */
   .view.nav-ziehen{ position:relative; z-index:2; isolation:isolate; min-height:100vh; animation:none; }

@@ -1,11 +1,8 @@
 /* ---------- Result ---------- */
   .result-head{padding:30px 0 4px;text-align:center;}
   .result-head .eyebrow{justify-content:center;}
-  /* Runde 68: Gemessen bei 390px ergibt 6.4vw nur 25px — die Untergrenze griff also immer, und
-     die 34px sah auf dem Telefon niemand. Titel 26px gegen Zusammenfassung 19px ist ein
-     Verhaeltnis von 1,37: Die Belohnung fuer fuenfzig beantwortete Fragen setzte sich gegen den
-     Absatz darunter nicht durch. Jetzt 8.6vw, also 33,5px bei 390px und 27,5px bei 320px.
-     text-wrap:balance, damit ein zweizeiliger Titel nicht mit einem einzelnen Wort endet. */
+  /* 8.6vw (33,5px bei 390px, 27,5px bei 320px), damit sich der Titel gegen den Absatz durchsetzt;
+     text-wrap:balance gegen ein einzelnes Wort in der zweiten Zeile. */
   .archetype{font-size:clamp(27px,8.6vw,42px);margin-top:8px;line-height:1.12;text-wrap:balance;}
   /* Runde 93: dieselbe Verwechslung wie auf der Startseite. Hier ist die Schrift 33 px gross,
      also gilt die Schwelle 3:1 statt 4,5 — gemessen waren es 2,88. Auch das reichte nicht. */
@@ -35,10 +32,7 @@
   @media (prefers-reduced-motion: reduce){ .radar-wrap svg polygon:last-of-type{animation:none;} }
   .radar-axis-label{font-family:var(--mono);font-size:9.5px;fill:var(--muted);}
   .radar-axis-value{font-family:var(--serif);font-size:13px;fill:var(--ink);font-weight:600;}
-  /* Beim Zwei-Personen-Vergleich müssen die beiden Zahlen pro Achse farblich unterscheidbar sein
-     (oben: eigener Wert, unten: Wert der anderen Person) — dieselben Farbfamilien wie Polygon und
-     Legende darunter (Teal = ich, Amber = andere Person). Compound-Selektor, damit die Regel die
-     .radar-axis-value-Basisregel oben zuverlässig schlägt, unabhängig von der Reihenfolge im Stylesheet. */
+  /* Im Vergleich: eigener Wert Teal, anderer Wert Amber, wie Polygon und Legende. */
   .radar-axis-value.radar-axis-value-me{fill:var(--accent-strong);}
   .radar-axis-value.radar-axis-value-other{fill:var(--accent-2-text);}
 
@@ -68,14 +62,11 @@
   .code-lead{margin-top:10px;font-size:13.5px;color:var(--muted);line-height:1.55;position:relative;}
 
   
-  /* ---------- Dimensionsfarbe (Runde 70) ----------
-     --dim-aktiv wird vom JavaScript auf die Ansicht gesetzt und traegt die Farbe der eigenen
-     staerksten Dimension. Der Rueckfall auf --accent greift ueberall dort, wo noch kein
-     Ergebnis vorliegt. Nur Akzente, nie Flaechen unter Text: Die geprueften Werte gelten fuer
-     Marken auf der Flaeche, nicht als Hintergrund fuer Fliesstext. */
-  /* Runde 93: Hier steht SCHRIFT in der Farbe der eigenen Dimension. Die Datenfarbe erreicht
-     auf --paper nur 4,23:1 (Blau und Orange 3,86), noetig sind 4,5. Der Schrift-Zwilling
-     traegt dieselbe Farbe, nur so weit heruntergenommen, dass sie als Text besteht. */
+  /* ---------- Dimensionsfarbe ----------
+     --dim-aktiv setzt das JS (staerkste eigene Dimension); Rueckfall --accent. Nur Akzente, nie
+     Flaechen unter Text. */
+  /* Schrift in der Dimensionsfarbe ueber den Schrift-Zwilling (die Datenfarbe erreicht als Text keine
+     4,5:1). */
   #view-result .result-head .eyebrow{ color:var(--dim-aktiv-text, var(--accent-strong)); }
   #view-result .result-head .eyebrow::before{ background:var(--dim-aktiv, var(--accent)); }
   #view-result .radar-wrap svg polygon:last-of-type{
@@ -89,15 +80,9 @@
   }
   #previewCard.preview-eigen{ border-color:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 45%, var(--line)); }
 
-  /* ---------- Rhythmus-Hinweis (Runde 79) ----------
-     An der Stelle, an der bis eben der Vorbehalt zur Bevoelkerungsnorm stand. Der Unterschied:
-     Jener Satz sagte, was das Ergebnis NICHT ist; dieser sagt, was man damit tut. Ohne ihn haelt
-     man einen einzigen Durchlauf fuer abschliessend — und genau das ist der Grund, warum die App
-     nach dem ersten Mal nicht wieder geoeffnet wird.
-
-     Bewusst kein Kasten: Er steht unter dem Radar, wo bisher eine leise Fussnote stand, und soll
-     dort nicht mit der Ergebnisgrafik um Aufmerksamkeit ringen. Die Kante links ist dieselbe
-     Auszeichnung wie bei den Befunden der Tagesform. */
+  /* ---------- Rhythmus-Hinweis ----------
+     Sagt, was man mit dem Ergebnis tut (wiederholen). Kein Kasten, Kante links wie bei den
+     Tagesform-Befunden. */
   .rhythmus{
     margin:18px auto 0; max-width:46ch;
     border-left:2px solid var(--accent); padding-left:14px; text-align:left;
@@ -109,46 +94,18 @@
   .rhythmus-text{ font-size:13.5px; line-height:1.6; color:var(--ink); margin:0; }
   .rhythmus-text b{ color:var(--ink); font-weight:600; }
 
-  /* ---------- Der Schein hinter der Überschrift (Runde 83) ----------
-     Ein weicher Lichthof hinter dem Namen des eigenen Porträts. Er trägt --dim-aktiv, also die
-     Farbe der eigenen stärksten Dimension — dadurch ist er nicht Zierde, sondern dieselbe
-     Information wie der Fokusring der Augenbraue und das Fünfeck darunter, nur als Licht.
-
-     Bewusst sehr zurückhaltend und ohne harte Kante: Ein sichtbarer Rand wäre ein Fleck, kein
-     Schein. Er liegt HINTER dem Text (eigener z-index), damit die Lesbarkeit unangetastet
-     bleibt — die geprüften Kontrastwerte gelten für Text auf --paper, und ein Farbverlauf
-     darunter würde sie verschieben. Bei 30 % der Dimensionsfarbe im Kern liegt der Untergrund
-     rechnerisch noch so nah an --paper, dass der Kontrast unter der Messgrenze bleibt. */
+  /* ---------- Der Schein hinter der Ueberschrift ----------
+     Weicher Lichthof in --dim-aktiv HINTER dem Text; so blass, dass der Kontrast unberuehrt bleibt. */
   #view-result .result-head{ position:relative; }
   #view-result .result-head > *{ position:relative; z-index:1; }
-  /* Runde 127, gemeldet: "der strahlenkranz ist je nachdem, ob das ergebnis eine oder zwei zeilen
-     braucht, nicht zentriert hinter dem ergebnistyp." Er hing am ganzen Kopfbereich (Aufmacher,
-     Titel, Motto, Kurzfassung) und stand bei 54 % von dessen Hoehe — bei zwei Titelzeilen
-     rutschte der Titel, der Kranz nicht. Jetzt haengt er am Titel selbst und steht in dessen
-     Mitte, gleich wie viele Zeilen er hat. z-index:-1 legt ihn hinter die Schrift: Der Titel ist
-     positioniert und hat einen z-index, bildet also einen eigenen Stapel, aus dem er nicht faellt. */
+  /* Der Strahlenkranz haengt am Titel selbst und steht in dessen Mitte, gleich wie viele Zeilen er
+     hat. z-index:-1 hinter die Schrift (der Titel bildet einen eigenen Stapel). */
   #view-result .archetype{ isolation:isolate; }
   #view-result .archetype::before{
     content:''; position:absolute; z-index:-1; pointer-events:none;
     left:50%; top:50%; transform:translate(-50%,-50%);
-    /* Nie breiter als der Kasten darum. Der erste Entwurf stand auf 118 %, und das waren bei
-       390 px Fensterbreite 413 px in einem 350 px breiten Kasten: Das Dokument wuchs dadurch
-       auf 402 px und lief seitlich ueber. Sichtbar war davon nichts (die Verdeckung fing es ab)
-       — gemerkt hat es die Bewegungspruefung, der die Schublade danach unter dem Finger
-       wegrutschte. Die weiche Kante des Verlaufs traegt den Schein ohnehin, nicht seine Breite. */
-    /* Runde 91: 100 Prozent Breite MAL 1,06 aus dem Atmen sind 106 Prozent — der Schein ragte
-       auf jeder Seite bis zu zehn Bildpunkte ueber seinen Kasten hinaus und pulsierte dabei.
-       Gemessen: 350 Bildpunkte Kasten, 371 Bildpunkte Schein am Hoehepunkt. Sichtbar wurde es
-       nur deshalb nicht, weil der Seitenrand von 20 Bildpunkten es auffing — eine Deckung, die
-       bei schmalerem Rand oder anderem Browser wegfaellt. Genau daher die Rueckmeldung, die
-       Seite lasse sich seitlich schieben.
-       94 Prozent sind mal 1,06 genau 99,6 Prozent: Der Schein bleibt im Kasten, auch beim
-       tiefsten Atemzug. Gerechnet, nicht geschaetzt.
-
-       Runde 93: Die Hoehe von 260 auf 184 (war zwischendurch 216). Der Kranz darueber liegt
-       jetzt bei 2,5 zu 1; ein Schein mit 1,3 zu 1 darunter haette wie ein Kreis unter einem
-       Oval gewirkt. Beide zusammen ergeben 1,8 beziehungsweise 2,5 — flach genug, dass sie
-       der Zeile folgen, hinter der sie liegen. */
+    /* Nie breiter als der Kasten darum, sonst laeuft die Seite seitlich ueber. */
+    /* 94 % mal 1,06 aus dem Atmen = 99,6 %: der Schein bleibt im Kasten. Hoehe flach genug zum Kranz. */
     width:min(420px, 94%); height:min(184px, 54vw);
     border-radius:50%;
     background:radial-gradient(ellipse at center,
@@ -159,74 +116,32 @@
        weil alles Schnellere im Blickfeld bleibt, statt hinter dem Text zu verschwinden. */
     animation:schein-atmen 7s ease-in-out infinite;
   }
-  /* Runde 84: Strahlen im Schein, die sich ganz langsam im Uhrzeigersinn drehen.
-     Ein eigenes ::after statt eines zweiten Verlaufs im ::before, weil beide sich verschieden
-     bewegen muessen: der Schein atmet, die Strahlen drehen.
-
-     ---- Runde 98: der Aufbau ist ausgetauscht, und das ist der Kern dieser Runde. ----
-
-     Gemeldet: "die strahlen vom strahlenkranz sind zu deutlich als einzelne strahlen
-     erkennbar." Ich habe zuerst am Verlauf gedreht — weichere Kanten, dichtere Strahlen, Farbe
-     zwischen den Strahlen statt Leere — und das Winkelprofil dazu gemessen. Die Zahlen wurden
-     besser und das Bild nicht. Erst der Blick auf die vergroesserte Aufnahme hat gezeigt,
-     warum: Es waren gar keine STRAHLEN, die man sah, sondern waagerechte STREIFEN, uebereinander
-     gestapelt wie eine Jalousie.
-
-     Die Ursache ist die Stauchung, mit der der Kranz seit Runde 86 oval gemacht wurde. Ein
-     Kegelverlauf teilt den Kreis in gleiche Winkel; wird er dann auf 30 Prozent Hoehe gedrueckt,
-     draengt sich ein weiter Winkelbereich in ein schmales Band nahe der Waagerechten. Genau
-     dort stapeln sich die Strahlen zu Streifen. Je ovaler, desto schlimmer — und um genau
-     "ovaler" ist in Runde 93 und 97 zweimal gebeten worden. Die Stauchung konnte nie beides.
-
-     Deshalb jetzt umgekehrt: Die Box ist selbst breit und flach, und es wird NICHT mehr
-     gestaucht. Damit behalten die Strahlen ihre echten Winkel und faechern wie ein Faecher,
-     statt sich zu stapeln. Oval wird der Kranz durch die MASKE, die in einer breiten Box von
-     allein eine Ellipse ist (closest-side misst je Achse) — sie schneidet oben und unten frueh
-     ab und laesst waagerecht viel stehen.
-
-     Und gedreht wird nicht mehr das Element, sondern der Verlauf IN ihm: ueber eine
-     registrierte Winkel-Eigenschaft. Das Element zu drehen wuerde die Maske mitdrehen, und ein
-     rotierendes Oval sieht man sofort — genau der Grund, aus dem Runde 86 die Stauchung in die
-     Drehung gelegt hatte. Diese Loesung braucht den Umweg nicht mehr.
-
-     Nebenbei faellt damit die Rechnung weg, die hier drei Runden lang stand: Eine nicht
-     gedrehte Box beansprucht keine Diagonale, also begrenzt auch nichts mehr die Breite ausser
-     der Seite selbst. */
+  /* Strahlen, die sich langsam drehen (eigenes ::after: der Schein atmet, die Strahlen drehen).
+     Die Box ist selbst breit und flach und wird NICHT gestaucht — Stauchen stapelte die Strahlen zu
+     waagerechten Streifen. Oval wird der Kranz durch die Maske (closest-side misst je Achse). Gedreht
+     wird der Verlauf ueber eine registrierte Winkel-Eigenschaft (@property), nicht das Element — sonst
+     drehte die Maske mit. */
   @property --kranz-winkel{ syntax:'<angle>'; inherits:false; initial-value:0deg; }
   #view-result .archetype::after{
     content:''; position:absolute; z-index:-1; pointer-events:none;
     left:50%; top:50%; transform:translate(-50%,-50%);
-    /* Breit und flach, ohne Stauchung. Das Verhaeltnis 3,8 zu 1 entspricht dem, was die
-       Stauchung zuletzt erzeugt hat — nur eben als Form der Maske statt als Verzerrung der
-       Strahlen. */
+    /* Breit und flach (3,8:1), ohne Stauchung. */
     width:min(340px, 94%); aspect-ratio:3.8;
-    /* Die Strahlen. Zwischen ihnen bleibt Farbe stehen (--kranz-grund) statt Leere: Der Verlauf
-       geht nicht auf Null, sondern auf einen Grundwert, und aus getrennten Strahlen wird ein
-       durchgehender Schein, durch den eine Welle laeuft. Die Periode ist 26 Grad, also
-       vierzehn Strahlen — in einer ungestauchten Box duerfen es wieder wenige und breite sein,
-       weil sie sich nirgends draengen. */
-    /* Der Rueckfallwert im var() ist nicht Zierde: OHNE @property ist die Eigenschaft
-       ungesetzt, var() liefert nichts, und dann faellt die GANZE Hintergrundangabe als
-       ungueltig aus — es gaebe gar keinen Kranz mehr. Mit dem Rueckfall steht er still, und
-       das ist der Ausfall, den diese Stelle haben darf. */
+    /* Zwischen den Strahlen bleibt Farbe (--kranz-grund): ein durchgehender Schein mit Welle. 26 Grad
+       Periode. */
+    /* Der Rueckfall im var() ist noetig: Ohne @property waere die ganze Hintergrundangabe ungueltig
+       (kein Kranz). So steht er still. */
     background:repeating-conic-gradient(from var(--kranz-winkel, 0deg),
       color-mix(in srgb, var(--dim-aktiv, var(--accent)) var(--kranz-grund), transparent) 0deg,
       color-mix(in srgb, var(--dim-aktiv, var(--accent)) var(--kranz-anteil), transparent) 13deg,
       color-mix(in srgb, var(--dim-aktiv, var(--accent)) var(--kranz-grund), transparent) 26deg);
-    /* In der breiten Box ist closest-side je Achse verschieden — die Maske ist damit von allein
-       eine flache Ellipse. Das Loch in der Mitte bleibt: Ohne es liefen alle Strahlen im
-       Mittelpunkt zusammen und bildeten einen hellen Fleck hinter der Ueberschrift, der beim
-       Drehen flackert (Runde 97, gemeldet). */
+    /* Das Loch in der Mitte verhindert einen flackernden hellen Fleck hinter der Ueberschrift. */
     -webkit-mask-image:radial-gradient(closest-side, transparent 34%, #000 62%, transparent 97%);
             mask-image:radial-gradient(closest-side, transparent 34%, #000 62%, transparent 97%);
     opacity:var(--kranz-deckung);
     animation:strahlen-drehen 150s linear infinite;
   }
-  /* Eine Umdrehung in zweieinhalb Minuten. Schnell genug, dass die Bewegung da ist, langsam
-     genug, dass man sie nicht ansieht, sondern nur bemerkt, dass etwas lebt.
-     Gedreht wird der Winkel des Verlaufs, nicht das Element. Ohne @property waere eine
-     Winkel-Eigenschaft nicht animierbar — dann stehen die Strahlen still und der Rest bleibt
-     wie er ist, was der schadloseste Ausfall ist, den diese Stelle haben kann. */
+  /* Eine Umdrehung in 2,5 Minuten. Ohne @property steht er still — der schadloseste Ausfall. */
   @keyframes strahlen-drehen{
     from{ --kranz-winkel:0deg; }
     to  { --kranz-winkel:360deg; }

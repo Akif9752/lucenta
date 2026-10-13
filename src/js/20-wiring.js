@@ -1,14 +1,12 @@
 // ---------- wiring ----------
-  // btnStart/btnHeroSecondary click handlers are assigned dynamically by syncHeroState() —
-  // what they do depends on whether a saved result or an interrupted test already exists.
+// Diese Zeile ist eine Marke: tests/run.js schneidet den Code hier ab — nicht umbenennen.
+// btnStart/btnHeroSecondary setzt syncHeroState() je nach Zustand (Ergebnis, unterbrochener Test).
   $('btnBackLanding').addEventListener('click', function(){ if (qi>0 && loadProgress()){ toast(tx('js_fortschritt_gespeichert')); } showView('landing'); });
   $('btnHome').addEventListener('click', function(){ showView('landing'); });
   $('btnBackFromResult').addEventListener('click', function(){ showView('landing'); });
   $('btnBackFromArchetypes').addEventListener('click', function(){ showView('landing'); });
   $('btnPrev').addEventListener('click', function(){ if (qi>0){ qi--; renderQuestion(); animateQuestionIn(); saveProgress(); } });
-  // "Test wiederholen" von der Ergebnisseite geht durch dieselbe Zwischenfrage wie der Hero-Button:
-  // genau hier sitzt jemand, der sein Ergebnis gerade jemand anderem zeigt — der wahrscheinlichste
-  // Moment, in dem die zweite Person den Test spontan auch machen will.
+  // "Test wiederholen" geht durch dieselbe Zwischenfrage (eigener Durchlauf oder Gast).
   $('btnRetake').addEventListener('click', requestRun);
   $('btnRetakeTop').addEventListener('click', requestRun);
     $('btnRecht').addEventListener('click', function(){ renderRecht(); showView('recht'); });
@@ -22,16 +20,10 @@
   $('btnBackFromSprache').addEventListener('click', function(){ showView('settings'); });
 
 
-  // ---------- Zurueck durch Wischen vom linken Rand (Runde 137) ----------
-  //
-  // Seit Runde 136 schieben sich Unterseiten wie in iOS herein. Zu dieser Form gehoert in iOS die
-  // Geste: vom linken Bildschirmrand nach rechts ziehen, und die Seite folgt dem Finger; loslassen
-  // nach gut einem Drittel (oder mit Schwung) geht zurueck, sonst rastet sie wieder ein. Ohne die
-  // Geste waere der Uebergang nur halb iOS — man saehe die Form und koennte sie nicht benutzen.
-  //
-  // Nur auf Unterseiten (UNTERSEITE_VON) und nur aus einem schmalen Randstreifen, damit ein
-  // waagerechtes Wischen mitten auf der Seite (Zeitraumwaehler, Diagramme) nichts ausloest. Erst
-  // wenn die Bewegung eindeutig waagerecht ist, gehoert sie der Geste; sonst bleibt es Bildlauf.
+  // ---------- Zurueck durch Wischen vom linken Rand ----------
+  // Auf Unterseiten (UNTERSEITE_VON) aus einem schmalen Randstreifen: Die Seite folgt dem Finger; nach
+  // gut einem Drittel oder mit Schwung zurueck, sonst rastet sie ein. Erst eine eindeutig waagerechte
+  // Bewegung gehoert der Geste.
   (function randGeste(){
     var RAND = 24, aktiv = null;
     function ende(zurueck){

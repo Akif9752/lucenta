@@ -1,22 +1,8 @@
-// ---------- Figuren und Hintergruende (Runde 79) ----------
-//
-// Zwei Waehlbare: eine Figur im Initialen-Kreis und ein Hintergrund hinter der Profilzeile der
-// Schublade.
-//
-// Runde 123, auf Entscheidung des Inhabers: Die Figuren sind BILDER, keine Vektorzeichnungen mehr.
-// Von Runde 79 bis 121 standen hier zwoelf Tiere als SVG-Bauplan, sieben Mal ueberarbeitet und jedes
-// Mal "zu gezeichnet". Runde 123 nahm Microsoft Fluent Emoji 3D; Runde 125 ("realistischer, im Stil
-// von Findet Nemo") ersetzt sie durch eigene 3D-Renderings: tools/figuren_rendern/ modelliert jedes
-// Tier als Volumen und rendert es mit SceneKit, tools/figuren_holen.py setzt die Bilder um.
-//
-// Woher die Bilder kommen, entscheidet der Bau, nicht dieser Code: `FIGUR_BILDER` ist hier leer
-// und wird von build.js gefuellt — in lucenta.html mit eingebetteten Daten (die Datei muss allein
-// funktionieren), in der App-Fassung mit Pfaden nach figuren/ im Bundle. Geladen wird beides
-// lokal; nach aussen geht nichts.
-//
-// Die Kennungen stehen in gespeicherten Profilen und aendern sich deshalb nie. In Runde 123 zeigten
-// 'dackel' und 'retriever' einen Pudel und einen Hund (Fluent hatte beide nicht); seit Runde 125
-// sind es wieder Dackel und Golden Retriever.
+// ---------- Figuren und Hintergruende ----------
+// Die Figuren sind Bilder aus eigenen 3D-Renderings (tools/figuren_rendern/, umgesetzt von
+// tools/figuren_holen.py). FIGUR_BILDER fuellt build.js: in lucenta.html eingebettet, in der
+// App-Fassung Pfade nach figuren/. Alles lokal.
+// Die Kennungen stehen in gespeicherten Profilen und aendern sich nie.
 
   var FIGUR_BILDER = {};
 
@@ -36,24 +22,14 @@
   ];
 
   // ---------- Die Feldfarbe im Dunkelmodus ----------
-  // Rueckmeldung: "passe die avatare mit ihren farben auch etwas der dunkel bzw hellversion der
-  // app an, sonst sticht das im kontrast so sehr ins auge." Der Grund war die Scheibe hinter der
-  // Figur: Sie trug eine feste helle Farbe, und eine cremefarbene Scheibe auf einem fast
-  // schwarzen Hintergrund ist der hoechste Kontrast, den die ganze Ansicht hat.
-  //
-  // Die FIGUR selbst behaelt ihre Farben — ein Fuchs, der im Dunkelmodus grau wird, ist kein
-  // Fuchs mehr. Was sich anpasst, ist die Flaeche darunter: Sie behaelt ihren Farbton, wird aber
-  // zur dunklen Flaeche hin verschoben, sodass die Figur auf dem Grund LIEGT statt darauf zu
-  // leuchten. Gerechnet statt ausgesucht — zweiundzwanzig von Hand gewaehlte Dunkelfarben waeren
-  // zweiundzwanzig Gelegenheiten, dass eine davon nicht passt.
+  // Die Figur behaelt ihre Farben; die Scheibe dahinter behaelt ihren Farbton, wird aber zur dunklen
+  // Flaeche hin verschoben — gerechnet, nicht ausgesucht.
   function figFeldDunkel(hex){
     var m = /^#([0-9a-f]{6})$/i.exec(hex || '');
     if (!m) return '#232B27';
     var n = parseInt(m[1], 16), grund = [0x1C, 0x24, 0x20];
     var teile = [(n>>16)&255, (n>>8)&255, n&255].map(function(v, i){
-      // Zwei Drittel Richtung Grundton, ein Drittel eigene Farbe. Bei einem Fuenftel Eigenfarbe
-      // waren im Bild alle zweiundzwanzig Felder dasselbe Grau — der Farbton war weg, und mit
-      // ihm der Grund, warum jede Figur ein eigenes Feld hat.
+      // Zwei Drittel Grundton, ein Drittel Eigenfarbe (weniger ergab ueberall dasselbe Grau).
       return Math.round(grund[i] * 0.66 + v * 0.34);
     });
     return '#' + teile.map(function(v){ return ('0'+v.toString(16)).slice(-2); }).join('');
@@ -63,9 +39,8 @@
     for (var i=0;i<FIGUREN.length;i++){ if (FIGUREN[i].id === id) return FIGUREN[i]; }
     return null;
   }
-  // Das Bild ist Schmuck — der Name steht am Knopf (aria-label), nicht am Bild. Fehlt eine Quelle
-  // (ein Bau ohne den Schritt in build.js), bleibt der Kreis in seiner Feldfarbe leer, statt ein
-  // zerbrochenes Bild zu zeigen.
+  // Das Bild ist Schmuck — der Name steht am Knopf (aria-label). Ohne Quelle bleibt der Kreis leer
+  // statt ein zerbrochenes Bild zu zeigen.
   function figurHTML(f){
     var quelle = FIGUR_BILDER[f.id];
     if (!quelle) return '';
@@ -73,11 +48,6 @@
   }
 
   // ---------- Hintergruende der Profilzeile ----------
-  // Zehn Vorlagen, alle als CSS-Verlauf statt als Bild: Sie kosten kein einziges Byte an
-  // Ladezeit, skalieren auf jede Groesse und lassen sich ueber eine Klasse setzen.
-  //
-  // Jede traegt eine eigene Textfarbe mit. Das ist der Punkt, an dem so etwas sonst schiefgeht:
-  // Ein dunkler Nachthimmel mit der normalen Textfarbe der App waere im Hellmodus unlesbar.
-  // Die Vorlage bestimmt deshalb BEIDES — Flaeche und Schrift.
+  // CSS-Verlaeufe statt Bilder; jede Vorlage bestimmt Flaeche UND Schriftfarbe.
   var HINTERGRUENDE = ['sternenbild','nordlicht','daemmerung','tiefsee','wueste',
                        'wald','nebel','papier','welle','kohle'];

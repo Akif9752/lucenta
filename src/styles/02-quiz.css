@@ -1,28 +1,13 @@
 /* ---------- Quiz ---------- */
-  /* Der Fragebogen läuft 50x durch dieselbe Komposition — statt oben anzuhängen und darunter
-     bei kurzem Inhalt ins Leere zu laufen, wird der Fragenblock im verbleibenden Platz
-     ausgerichtet (wie genau, steht bei .quiz-body). Bei sehr kurzen Viewports wächst die Box
-     einfach normal mit. */
+  /* Der Fragebogen fuellt die Hoehe; der Fragenblock wird im freien Platz ausgerichtet (siehe
+     .quiz-body). */
   #view-quiz.active{display:flex;flex-direction:column;min-height:calc(100vh - 150px);}
-  /* Runde 108, gemeldet: „Die Box mit den Aussagen sitzt zu tief, bitte weiter nach oben."
-     Zutreffend, und die Ursache ist die Zentrierung darueber — nicht ihre Existenz, sondern ihre
-     gleichmaessige Verteilung. Nachgerechnet bei 390x844: Unter der Kopfzeile bleiben rund 270px
-     frei, die `safe center` zu gleichen Teilen ueber und unter den Fragenblock legt. 135px Leere
-     ueber der Aussage sind mehr, als der Blick von oben nach unten verzeiht.
-     Zwei leere Flexglieder nehmen den freien Platz jetzt im Verhaeltnis 1:2,4 auf; der Block
-     sitzt damit bei knapp 30 % statt bei 50 % der freien Hoehe. Sie ERSETZEN justify-content
-     statt es zu ueberstimmen — zweimal dieselbe Entscheidung im Stilblatt ist eine zu viel, und
-     ohne freien Platz ergeben beide ohnehin dasselbe (Anfang der Achse).
-     Warum keine Polsterung nach unten: Die bleibt stehen, wenn kein freier Platz da ist. Bei
-     320x568 bleiben rechnerisch rund 10px uebrig — 120px Polsterung waeren dort 120px Leerlauf
-     mit Bildlauf. Ein Flexglied mit Basis 0 wird in dem Fall von selbst 0 hoch. */
+  /* Zwei leere Flexglieder nehmen den freien Platz im Verhaeltnis 1:2,4 auf — der Block sitzt bei ~30
+     % statt 50 %. Keine Polsterung, die bliebe auch ohne freien Platz stehen. */
   .quiz-body{flex:1;display:flex;flex-direction:column;}
   .quiz-body::before{content:'';flex:1 0 0;}
   .quiz-body::after{content:'';flex:2.4 0 0;}
-  /* flex-wrap ergaenzt nach dem 200-%-Zoom-Test (Backlog Runde 28, Punkt 2): die Kopfzeile aus
-     „← Start" und „Test wiederholen" ist bei halber Layoutbreite breiter als die Seite, die zweite
-     Schaltflaeche lief rechts aus dem Bild. Bei normaler Breite passt die Zeile weiterhin in eine
-     Reihe, der Umbruch greift also nur dort, wo er gebraucht wird. */
+  /* flex-wrap fuer 200 % Textgroesse. */
   .quiz-head{padding:28px 0 6px;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;}
   .qcount{font-family:var(--mono);font-size:13px;color:var(--muted);}
   .qcard{
@@ -30,15 +15,9 @@
     border-radius:var(--radius-l);padding:34px 26px;box-shadow:var(--shadow);
     min-height:180px;display:flex;align-items:center;
   }
-  /* Feedback-Runde 53: Der Fragewechsel war der am häufigsten erlebte Moment der App — fünfzig
-     Mal je Durchlauf — und der einzige völlig unbewegte: Nach 220 ms tauschte der Text schlicht
-     aus. Jetzt kommt die neue Frage herein. Bewusst nur EIN-, nicht ausblendend: Ein Ausblenden
-     würde die eben angetippte Antwort verschlucken, bevor man sie gefüllt gesehen hat. */
-  /* ACHTUNG, Runde 108: Diese Regel greift NICHT. 11-feier.css ersetzt sie durch "q-schwung" (seit Runde 129, vorher "q-schub" mit 26px
-     seitlich mit Ueberschwung) und sagt es dort auch — nur sagte es hier nichts, und genau darauf
-     bin ich in dieser Runde hereingefallen: Der Auftrag "groessere Uebergaenge" liess mich die
-     9px hier vergroessern, und gemessen aendert das gar nichts. Der Hinweis steht jetzt an der
-     Stelle, an der man zuerst sucht. */
+  /* Die neue Frage kommt herein; nur EIN-, nicht ausblendend (sonst verschwaende die eben getippte
+     Antwort). */
+  /* ACHTUNG: Diese Regel greift NICHT — 11-feier.css ersetzt sie durch q-schwung. */
   .qcard.q-in{ animation:q-enter .3s cubic-bezier(.2,.8,.2,1) both; }
   @keyframes q-enter{ from{opacity:0;transform:translateY(9px);} to{opacity:1;transform:none;} }
   @media (prefers-reduced-motion: reduce){ .qcard.q-in{animation:none;} }
@@ -49,9 +28,7 @@
   .scale{margin-top:22px;}
   .scale-row{display:flex;gap:8px;justify-content:space-between;}
   .scale-btn{
-    /* Runde 58: Der Rand lief ueber --line und kam auf 1,39:1 (hell) bzw. 1,31:1 (dunkel).
-       WCAG 1.4.11 verlangt fuer Bedienelemente 3:1 — die Antwortknoepfe des Fragebogens waren
-       damit am Rand der Sichtbarkeit. --line-strong ist genau dafuer da und bleibt zurueckhaltend. */
+    /* Rand in --line-strong (3:1 fuer Bedienelemente). */
     flex:1;aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line-strong);
     background:var(--surface);cursor:pointer;transition:all .15s ease;
     display:flex;align-items:center;justify-content:center;
@@ -61,24 +38,8 @@
   .scale-btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
   .scale-btn.picked{border-color:var(--accent);}
   .scale-btn.picked .fill{width:62%;height:62%;}
-  /* Runde 107, gemeldet: "Bei den 5 verschiedenen Antwortoptionen steht aktuell nur bei der
-     ersten und letzten Option, was sie bedeuten. Bei allen fuenf soll eine Beschriftung stehen."
-     Die drei mittleren <span> waren im HTML schon da — leer, und zusaetzlich per display:none
-     ausgeblendet. Wer eine Skala nur an den Enden beschriftet, laesst die Deutung der Mitte
-     offen: Ist die 3 "unentschieden" oder "trifft halb zu"? Das sind zwei verschiedene Antworten.
-
-     Zwei Dinge musste die Zeile dafuer aendern:
-     1. Aus space-between wird flex:1 mit denselben 8px Abstand wie .scale-row. Nur so steht jede
-        Beschriftung UNTER ihrem Knopf statt irgendwo dazwischen — bei zwei Beschriftungen war das
-        egal, bei fuenf ist die Zuordnung die ganze Information.
-     2. Die Texte sind kurz. Bei 320px Geraetebreite bleiben je Spalte rund 50px; "trifft gar
-        nicht zu" waere dort vierzeilig. Der vollstaendige Wortlaut steht weiter im aria-label
-        der Zeile ("Antwort von 1 (trifft gar nicht zu) bis 5 (trifft voll zu)") — fuer
-        Screenreader aendert sich dadurch nichts.
-     Die Obergrenze von 38% aus Runde 58 ist entfallen: Sie war fuer zwei Beschriftungen an den
-     Enden gerechnet und liesse bei fuenf Spalten jede einzelne auf knapp zwei Spaltenbreiten
-     wachsen. overflow-wrap steht hier, weil es global nur fuer h1-h3/p/li gilt und ein langes
-     Einzelwort ("totalmente") sonst aus seiner Spalte laufen wuerde. */
+  /* Alle fuenf Stufen beschriftet, jede unter ihrem Knopf (flex:1, gleicher Abstand wie .scale-row).
+     Kurze Texte; der volle Wortlaut steht im aria-label. overflow-wrap gegen lange Einzelwoerter. */
   .scale-labels{display:flex;gap:8px;margin-top:10px;font-size:clamp(9.5px,2.7vw,11.5px);color:var(--muted);}
   .scale-labels span{
     flex:1;min-width:0;text-align:center;line-height:1.25;overflow-wrap:break-word;

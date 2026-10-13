@@ -1,13 +1,5 @@
-// ---------- Nutzungszahlen (Runde 96, in Runde 97 in die Einstellungen umgezogen) ----------
-  //
-  // Bis Runde 97 stand hier die Beta-Rueckmeldung: eine Frage nach dem Portraet, drei Knoepfe,
-  // ein Freitextfeld. Sie ist weg, weil eine App, die sich als fertig praesentiert, ihre Nutzer
-  // nicht nach ihrem Eindruck vom eigenen Produkt fragt — das gehoert in eine Beta und nicht in
-  // ein Produkt, das man abonniert.
-  //
-  // Was bleibt, ist die Messung. Sie steht jetzt unter Einstellungen, Daten und Datenschutz:
-  // acht Zahlen, ausgeschaltet, und darunter woertlich der Text, der mitginge. Wer entscheidet,
-  // was sein Geraet verlaesst, sucht das dort und nicht unter dem Bericht.
+// ---------- Nutzungszahlen ----------
+// Unter Einstellungen > Daten und Datenschutz: ausgeschaltet, und darunter woertlich, was mitginge.
   var NUTZUNG_SCHALTER = 'lucenta_nutzung_teilen';
   function nutzungTeilenAn(){
     return schalterLesen(NUTZUNG_SCHALTER, 'aus') === 'an';
@@ -39,9 +31,7 @@
     if (an) kasten.textContent = nutzungZeilen().join('\n');
   }
   function nutzungWeitergeben(){
-    // Die Zahlen werden hier neu geholt und nicht aus dem Vorschaukasten gelesen. Der Kasten ist
-    // Anzeige; ihn als Datenquelle zu benutzen hiesse, dass ein Fehler in der Anzeige
-    // stillschweigend zu einem Fehler in den Daten wird.
+    // Die Zahlen neu holen, nicht aus der Anzeige lesen.
     var text = decodeEntities(tx('nutzung_titel')) + '\n' + nutzungZeilen().join('\n');
     var fertig = function(){ toast(tx('js_danke__das_hilft_wirklich')); };
     if (navigator.share){
@@ -70,19 +60,13 @@
   $('btnDrawerToggle').addEventListener('click', openDrawer);
   $('btnDrawerClose').addEventListener('click', closeDrawer);
   $('drawerScrim').addEventListener('click', closeDrawer);
-  // btnResume/btnResumeProgress (ehemals ganz unten in der Schublade) entfernt: beide Aktionen
-  // laufen jetzt bereits über den Haupt-Button im Hero (syncHeroState()) bzw. über "Dein Ergebnis"
-  // im Profil.
   $('btnDrawerCompare').addEventListener('click', function(){
     closeDrawer(true);
     var r = loadResult();
     if (r){ guestRun=false; scores=r; renderResult(); showView('result'); setTimeout(function(){ $('compareAnchor').scrollIntoView({behavior:'smooth'}); },300); }
     else {
-      // Bugfix beim Durchgehen dieser Stelle: Dieser Zweig setzte bislang hart qi=0 und sprang an
-      // den Anfang, ohne `answers` zurückzusetzen und ohne den gespeicherten Fortschritt zu
-      // beachten. Wer mitten im Test über die Schublade auf "Vergleichen" tippte, stand danach
-      // wieder bei Frage 1, während die bereits gegebenen Antworten unsichtbar im Speicher lagen.
-      // Jetzt wird ein unterbrochener Durchlauf wie überall sonst in der App fortgesetzt.
+      // Ein unterbrochener Durchlauf wird fortgesetzt (frueher sprang dieser Weg auf Frage 1, waehrend
+      // die Antworten im Speicher lagen).
       pendingCompareScroll = true; guestRun = false;
       var p = loadProgress();
       if (p){ answers = p.answers; qi = p.qi; } else { answers = new Array(50).fill(0); qi = 0; }
@@ -96,9 +80,6 @@
   $('btnLandingTeaserMore').addEventListener('click', function(){ renderUnderstand(); showView('understand'); });
   $('btnBackFromUnderstand').addEventListener('click', function(){ showView('landing'); });
   $('btnDrawerArchetypes').addEventListener('click', function(){ closeDrawer(true); showView('archetypes'); });
-  // btnDrawerHistory entfernt: Verlauf liegt jetzt in view-profile, keine eigene Route mehr nötig.
-  // btnDrawerState ersetzt durch btnLandingStateHistory — der Tagesform-Kurzcheck läuft jetzt direkt
-  // auf der Startseite; dieser Button öffnet nur noch die ausführlichere Verlaufsansicht mit Trend.
   $('btnLandingStateHistory').addEventListener('click', function(){ renderStateView(); showView('state'); });
   if ($('btnDrawerState')) $('btnDrawerState').addEventListener('click', function(){ closeDrawer(true); renderStateView(); showView('state'); });
   // „Ändern" klappt die Skalen wieder auf, mit den gespeicherten Werten bereits gesetzt — ohne
@@ -223,9 +204,7 @@
     clearHistory();
     clearStateHistory();
     clearCompatArchive();
-    // Die Nutzungstage gehoeren mit dazu. Sie sind die einzigen Daten hier, die nicht der Nutzer
-    // eingetragen hat, sondern die App selbst mitgeschrieben hat — umso weniger duerfen sie ein
-    // Zuruecksetzen ueberleben.
+    // Die Nutzungstage gehoeren zum Zuruecksetzen dazu.
     nutzungLoeschen();
     scores = null; answers = new Array(50).fill(0); qi = 0; guestRun = false;
     refreshDrawerState();
@@ -234,10 +213,7 @@
     showView('landing');
   });
   $('btnCompare').addEventListener('click', renderCompat);
-  // Feedback-Runde 38: dieselbe Normalisierung/Live-Validierung wie beim Vergleichs-Tool gilt jetzt
-  // auch für das Ergebnis-Wiederherstellen in den Einstellungen — beides sind Stellen, an denen ein
-  // 10-stelliger Ergebnis-Code eingetragen wird, verhielten sich bislang aber unterschiedlich (dort
-  // schon mit Auto-Kleinschreibung/Zeichen-Filter und farbigem Rahmen, hier komplett ohne).
+  // Dieselbe Normalisierung und Pruefung fuer alle Felder mit einem Ergebnis-Code.
   [$('cmpMe'), $('cmpOther'), $('restoreCodeInput')].forEach(function(inp){
     inp.addEventListener('input', function(){
       var clean = inp.value.replace(/[^a-z0-9]/gi,'').toLowerCase().slice(0,10);
@@ -250,41 +226,21 @@
     inp.addEventListener('keydown', function(e){ if (e.key==='Enter'){ renderCompat(); } });
   });
   $('restoreCodeInput').addEventListener('keydown', function(e){ if (e.key==='Enter'){ $('btnRestoreCode').click(); } });
-  // Runde 95: Hier lag die Bedienung des Fragebogens ueber die Zifferntasten 1 bis 5 und
-  // Rueckschritt/Pfeil-links. Auf einem iPhone gibt es diese Tasten nicht — die Bildschirm-
-  // tastatur erscheint im Fragebogen ueberhaupt nicht, weil dort kein Textfeld steht. Die
-  // Funktion war damit fuer alle unerreichbar, fuer die diese App gebaut ist.
-  //
-  // Der sichtbare Hinweis darauf war schon in Runde 54 entfernt worden, mit genau dieser
-  // Begruendung; die Bedienung selbst ist damals stehen geblieben. Das ist die haeufigere
-  // Haelfte des Fehlers: Ein Hinweis verschwindet, die Sache dahinter bleibt und wird zu
-  // totem Code, den beim naechsten Lesen niemand mehr einordnen kann.
-  //
-  // BEWUSST GEBLIEBEN sind die Tastenbehandlungen an anderer Stelle, und zwar aus zwei
-  // Gruenden, die nichts mit Schreibtischrechnern zu tun haben:
-  //   - Eingabetaste in den Textfeldern: Die Bildschirmtastatur des iPhones HAT eine
-  //     Eingabetaste, und dort ist sie der erwartete Weg zum Absenden.
-  //   - Escape und Tabulator in den Fenstern: Das ist Bedienbarkeit ohne Blick, nicht
-  //     Schreibtisch. iOS kennt vollstaendige Tastaturbedienung und Schaltersteuerung, und
-  //     die Fokusfalle in einem Dialogfenster ist dort ausdruecklich vorgesehen.
+  // Keine Zifferntasten-Bedienung im Fragebogen (auf dem iPhone unerreichbar). Bewusst geblieben:
+  // Eingabetaste in Textfeldern und Escape/Tab in Fenstern (Tastatur- und Schaltersteuerung).
   $('btnCopyCode').addEventListener('click', function(){
     var code = $('myCode').textContent;
     if (navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(code).then(function(){ toast(tx('js_code_kopiert')); }).catch(function(){ toast(tx('js_code_doppelpunkt')+code); });
     } else { toast(tx('js_code_doppelpunkt')+code); }
   });
-  // Runde 79: "Ergebnis teilen" legte nur Text in die Zwischenablage. Was Leute tatsaechlich
-  // weitergeben, ist das Bild — der Knopf oeffnet deshalb den Bild-Dialog, in dem geteilt wird.
-  // Der Text-Weg ist nicht verschwunden: Er ist der Rueckfall im Dialog, wenn das Geraet keine
-  // Dateien teilen kann (siehe btnImgModalShare).
+  // "Ergebnis teilen" oeffnet den Bild-Dialog; der Text-Weg ist dort der Rueckfall.
   $('btnShare').addEventListener('click', openImgModal);
   $('btnImgModalClose').addEventListener('click', closeImgModal);
   $('imgModalScrim').addEventListener('click', closeImgModal);
   $('plusModalScrim').addEventListener('click', closePlusModal);
   $('btnPlusModalClose').addEventListener('click', closePlusModal);
-  // Runde 97: Laufzeit waehlen und Lucenta+ aktivieren.
-  // Runde 103: Der Knopf legte bis hierher nur die lokale Marke um. Jetzt steht dahinter der
-  // echte Kauf ueber die StoreKit-Bruecke (ios/App/App/LucentaKaeufePlugin.swift).
+  // Laufzeit waehlen und kaufen (StoreKit-Bruecke).
   if ($('plusPreisWahl')) $('plusPreisWahl').addEventListener('click', function(e){
     var b = e.target.closest ? e.target.closest('.segment-opt') : null;
     if (!b) return;
@@ -294,34 +250,20 @@
     tapFeedback();
   });
   if ($('btnPlusAktivieren')) $('btnPlusAktivieren').addEventListener('click', function(){
-    // Runde 103: Hier stand `plusSetzen(!istPlus())` — die zweite der zwei Stellen, die Lucenta+
-    // ohne Zahlung freischalteten, und die schlimmere von beiden: der Knopf, auf dem
-    // "Lucenta+ aktivieren" steht. Dahinter liegt jetzt der echte Kauf.
-    //
-    // Und wer Lucenta+ schon hat, kommt zur Verwaltung bei Apple, statt es hier "beenden" zu
-    // koennen. Das ist keine Feinheit, sondern Vorschrift: Eine App darf keinen eigenen
-    // Kuendigungsweg anbieten — gekuendigt wird in den iPhone-Einstellungen, und genau dorthin
-    // fuehrt aboVerwalten().
+    // Hinter dem Knopf liegt der echte Kauf. Wer Lucenta+ hat, kommt zur Verwaltung bei Apple — eine
+    // App darf keinen eigenen Kuendigungsweg anbieten.
     if (istPlus()){ aboVerwalten(); return; }
     plusKaufen(function(erfolg){
-      // Nur bei Erfolg zu. Wer abbricht, will vielleicht die andere Laufzeit — ihm das Fenster
-      // zuzuwerfen hiesse, ihn den Weg neu suchen zu lassen. Das Neuzeichnen aller Ansichten mit
-      // Schloessern erledigt plusKaufen() selbst.
+      // Nur bei Erfolg schliessen; wer abbricht, will vielleicht die andere Laufzeit.
       if (erfolg){ plusModalAnwenden(); closePlusModal(); }
     });
   });
-  // Runde 103: Beim Start nachsehen, was wirklich gilt. Steht hier und nicht in der Verdrahtung
-  // oben, weil es die Bruecke braucht — und weil die Testreihen den Code nur bis zur Marke
-  // "wiring" ausfuehren und diesen Aufruf damit nicht anfassen.
+  // Steht hier und nicht oben in der Verdrahtung: Die Testreihen fuehren den Code nur bis zur Marke
+  // "wiring" aus.
   plusStandPruefen();
   plusPreiseHolen();
-  // Runde 121, auf Wunsch des Inhabers: Beim Start der App dieselbe kurze Bewegung wie nach dem
-  // letzten Testschritt — das Fuenfeck zeichnet sich und fuellt sich —, hier mit dem Namen
-  // darunter. Nur in der App: Im Browser laufen die Pruefungen gleich nach dem Laden los, und
-  // ein Vorhang ueber der ersten Messung waere ein falscher Fund. Durchklickbar ist er trotzdem
-  // (pointer-events:none), damit ein schneller Finger nicht 1,7 Sekunden ins Leere tippt.
-  // Wer weniger Bewegung eingestellt hat, sieht ihn gar nicht — ein stehendes Logo, das nur
-  // wartet, waere reine Verzoegerung.
+  // Startbewegung (Fuenfeck zeichnet und fuellt sich, darunter der Name). Nur in der App,
+  // durchklickbar, bei reduzierter Bewegung gar nicht.
   (function startBewegung(){
     var el = document.getElementById('startOverlay');
     if (!el || !nativVorhanden() || prefersReducedMotion()){ startkartenEinfliegen(); return; }
@@ -330,9 +272,7 @@
     setTimeout(function(){ el.classList.add('weg'); startkartenEinfliegen(); }, 1350);
     setTimeout(function(){ el.hidden = true; el.classList.remove('show', 'weg'); }, 1700);
   })();
-  // Runde 79: Der Text-Weg ist der Rueckfall, nicht mehr ein eigener Knopf. Wo das Geraet keine
-  // Datei teilen kann (Schreibtisch-Browser), war die alte Antwort ein Hinweis und sonst nichts —
-  // jetzt geht wenigstens Titel und Code hinaus, statt dass der Tipp ins Leere laeuft.
+  // Rueckfall: Wo keine Datei geteilt werden kann, gehen Titel und Code als Text hinaus.
   function teilenAlsText(){
     var arch = archetypeOf(scores);
     var url = (location.href.split('#')[0]).split('?')[0];
@@ -362,9 +302,6 @@
     currentShareCanvas.toBlob(function(blob){
       if (!blob){ teilenAlsText(); return; }
       var file;
-      // Runde 109: Hier stand die Formatkennung im Dateinamen ("lucenta-ergebnis-feed.png"). Mit
-      // nur einem Format waere das eine Angabe ohne Gegenstueck; es steht jetzt dasselbe Datum
-      // darin wie beim Sichern in die Foto-Mediathek ein paar Zeilen darueber.
       try{ file = new File([blob], decodeEntities(tx('js_dateiname_ergebnis')) +
         new Date().toISOString().slice(0,10) + '.png', {type:'image/png'}); }
       catch(e){ teilenAlsText(); return; }
@@ -404,23 +341,16 @@
       var el = $(z[0]);
       if (el) el.addEventListener('click', function(){ schalterUmlegen(z[1], z[0]); });
     });
-    // Der Nutzungsschalter laeuft ueber dasselbe Muster, steht aber auf 'aus' statt 'an'. Das ist
-    // der ganze Unterschied und er ist der wichtige: Haptik und Bewegung betreffen nur das
-    // Geraet, hier geht etwas hinaus.
+    // Der Nutzungsschalter steht standardmaessig auf 'aus' — hier geht etwas hinaus.
     schalterSetzen(NUTZUNG_SCHALTER, schalterLesen(NUTZUNG_SCHALTER, 'aus'), 'nutzungSchalter');
     if ($('btnNutzungTeilen')) $('btnNutzungTeilen').addEventListener('click', nutzungWeitergeben);
     nutzungVorschauZeigen();
     if ($('nutzungSchalter')) $('nutzungSchalter').addEventListener('click', function(){
-      // Nicht ueber schalterUmlegen: das nimmt 'an' als Vorgabe an, und dieser Schalter hat
-      // 'aus'. Solange localStorage schreibbar ist, faellt das nicht auf — ist es das nicht,
-      // startete der Schalter sichtbar auf "aus" und der erste Tipp haette ihn dorthin gestellt,
-      // wo er schon stand.
+      // Nicht ueber schalterUmlegen (das nimmt 'an' als Vorgabe).
       schalterSetzen(NUTZUNG_SCHALTER, nutzungTeilenAn() ? 'aus' : 'an', 'nutzungSchalter');
       nutzungVorschauZeigen();
     });
-    // Erst hier, nicht frueher: Vorher stand nicht fest, ob localStorage ueberhaupt erreichbar
-    // ist, und ein Schreibversuch in eine Ansicht hinein, die es nicht gibt, waere die falsche
-    // Reihenfolge.
+    // Erst hier, wenn feststeht, dass localStorage erreichbar ist.
     nutzungTagVermerken();
     // Runde 99: die native Bruecke verdrahten. Alles darin prueft selbst, ob es nativ laeuft.
     erinnerungAnwenden();
@@ -438,9 +368,8 @@
       if (!landingStatePickedEnergy && !landingStatePickedValence) renderLandingStateTeaser();
     });
     erinnerungTippVerdrahten(function(){ renderStateView(); showView('state'); });
-    // Runde 126: ein leichter Impuls bei jedem Bedienelement (siehe tapFeedback). Im Fang-Schritt
-    // (capture), damit er auch dort kommt, wo ein Knopf die Ausbreitung anhaelt. Deaktivierte
-    // Elemente schweigen — ein Impuls auf etwas, das nicht reagiert, waere eine falsche Rueckmeldung.
+    // Haptik bei jedem Bedienelement, im capture-Schritt (auch wo ein Knopf die Ausbreitung anhaelt).
+    // Deaktivierte Elemente schweigen.
     document.addEventListener('click', function(e){
       var z = e.target && e.target.closest ? e.target.closest(
         'button, a[href], summary, label, select, [role="button"], [role="switch"], [role="radio"], [role="tab"], ' +
@@ -459,11 +388,8 @@
     renderQuestion();
     syncHeroState();
     syncHeaderScrollState();
-    // Runde 102: Splashscreen ausblenden, sobald die Oberflaeche steht. launchAutoHide ist aus
-    // (capacitor.config), damit der Marken-Splash bis hierher bleibt, statt vorher wegzublitzen und
-    // die schwarze/leere Ladeluecke zu zeigen. Zwei requestAnimationFrame blenden erst nach dem
-    // ersten gezeichneten Bild aus; der setTimeout ist die Sicherung, falls beim Kaltstart Bilder
-    // ausbleiben (sonst bliebe der Splash bei launchAutoHide:false stehen). Nur nativ vorhanden.
+    // Splashscreen ausblenden, sobald das erste Bild gezeichnet ist (launchAutoHide ist aus);
+    // setTimeout als Sicherung.
     try{
       var sp = nativVorhanden() && nativModul('SplashScreen');
       if (sp && sp.hide){

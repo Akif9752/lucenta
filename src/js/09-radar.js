@@ -7,24 +7,14 @@
     });
   }
 
-  // Runde 58: Das Beispiel-Radar der Startseite wurde beim Start einmal gezeichnet und beim
-  // Sprachwechsel nie erneuert — Achsenbeschriftung und aria-label blieben deshalb in der
-  // Sprache, mit der die App geoeffnet wurde. Als benannte Funktion, damit setLang() sie
-  // genauso aufrufen kann wie der Startlauf.
+  // Als benannte Funktion, damit setLang() das Beispiel-Radar neu zeichnen kann.
   function renderPreviewRadar(){
     var el = $('previewRadar');
     if (el) el.innerHTML = radarSVG({O:78,E:65,C:45,A:58,S:50}, 160, null, true);
   }
 
-  // Runde 66: Die Startseite war für jemanden gebaut, der Lucenta zum ersten Mal sieht — und
-  // blieb das auch nach fünfzig beantworteten Fragen. Wer wiederkommt, las zuerst wieder die
-  // Verkaufsansprache ("Lern dich kennen — mit Wissenschaft, nicht mit Sternzeichen"), dann die
-  // Erklärung des Big-Five-Modells, dann "Warum kein MBTI" — und erreichte erst danach die
-  // Tagesform, also das Einzige, das sich seit gestern überhaupt geändert haben kann.
-  //
-  // Das ist keine Bindungsmechanik, sondern das Naheliegende: Die Seite zeigt zuerst, was dieser
-  // Person gehört, und die Einführung rutscht dorthin, wo sie hingehört, wenn man sie nicht mehr
-  // braucht. Ohne Ergebnis bleibt die Reihenfolge unverändert.
+  // Mit Ergebnis zeigt die Startseite zuerst, was der Person gehoert (Tagesform, eigenes Portraet);
+  // die Einfuehrung rutscht nach unten. Ohne Ergebnis bleibt die Reihenfolge.
   function ordneStartseite(){
     var view = $('view-landing');
     if (!view) return;
@@ -47,9 +37,8 @@
     // Runde 127: Die Lucenta+-Karte steht mit Ergebnis gleich nach der Tagesform — dort, wo jemand
     // gerade gesehen hat, was die App kann.
     if (plusKarte && hatErgebnis) soll.splice(2, 0, plusKarte);
-    // Nur umhängen, wenn die Reihenfolge tatsächlich abweicht — appendChild verschiebt den
-    // Knoten auch dann, wenn er schon richtig steht, und würde die Einblendungen der Karten
-    // bei jeder Rückkehr zur Startseite neu auslösen.
+    // Nur umhaengen, wenn die Reihenfolge abweicht — appendChild loeste sonst die Einblendungen neu
+    // aus.
     var ist = [];
     for (var i=0;i<view.children.length;i++){
       if (soll.indexOf(view.children[i]) >= 0) ist.push(view.children[i]);
@@ -68,31 +57,17 @@
     soll.forEach(function(el){ view.insertBefore(el, anker); });
   }
 
-  // Runde 66: Die Karte zeigte immer dasselbe erfundene Beispiel — auch jemandem, der seit
-  // Wochen sein eigenes Ergebnis hat. Das war die einzige Stelle auf der Startseite, an der ein
-  // Porträt stand, und es war das einer erfundenen Person.
-  //
-  // Wer ein Ergebnis hat, sieht hier jetzt sein eigenes: eigener Titel, eigenes Motto, eigenes
-  // Radar. Das ist kein Kunstgriff zur Bindung, sondern das Naheliegende — die Startseite zeigt
-  // das, was diese Person tatsächlich hat, statt einer Werbefläche für etwas, das sie längst
-  // besitzt. Ohne Ergebnis bleibt alles wie bisher.
-  // Runde 70: Die Farbe der eigenen stärksten Dimension. Sie wird als Eigenschaft auf den
-  // Behälter gesetzt, damit das Stilblatt sie über var(--dim-aktiv) aufgreifen kann, ohne dass
-  // JavaScript einzelne Farben zuweist.
-  //
-  // Bewusst immer nur EINE: Fünf gleichzeitig sichtbare Farbtöne sind nicht sicher
-  // unterscheidbar (gemessen, siehe README) — eine je Porträt dagegen ist gefahrlos und macht
-  // das Ergebnis persönlich.
+  // Mit Ergebnis zeigt die Karte das eigene Portraet. Die Farbe der staerksten Dimension geht als
+  // Eigenschaft an den Behaelter — immer nur EINE (fuenf gleichzeitig sind nicht sicher
+  // unterscheidbar).
   var DIM_MARKE = {O:'--dim-o', C:'--dim-c', E:'--dim-e', A:'--dim-a', S:'--dim-s'};
   function setzeDimensionsfarbe(el, sc){
     if (!el || !sc) return;
     try{
       var a = archetypeOf(sc);
       var marke = DIM_MARKE[a.top1];
-      // Zwei Marken statt einer: --dim-aktiv traegt die Linien und Flaechen, --dim-aktiv-text
-      // die Schrift. Sie sind im Hellmodus nicht dieselbe Farbe — die Datenfarbe erreicht als
-      // Text die 4,5:1 nicht (Runde 93, von der Kontrastpruefung gefunden). Beide werden hier
-      // gesetzt, damit das Stilblatt die Wahl hat, ohne dass JavaScript Farben kennt.
+      // --dim-aktiv fuer Linien/Flaechen, --dim-aktiv-text fuer Schrift (als Text reicht die
+      // Datenfarbe hell nicht fuer 4,5:1).
       if (marke){
         el.style.setProperty('--dim-aktiv', 'var(' + marke + ')');
         el.style.setProperty('--dim-aktiv-text', 'var(' + marke + '-text)');

@@ -1,33 +1,22 @@
 // ================= Sprachpakete =================
-  // Feedback-Runde 54: Saemtliche Inhalte lagen bislang als deutsche Literale ueber die ganze
-  // Datei verteilt. Sie stehen jetzt gesammelt in CONTENT, nach Sprache getrennt. Die bisherigen
-  // Variablennamen werden daraus abgeleitet, damit KEINE einzige Zeile der uebrigen Logik
-  // angefasst werden musste — der Umbau ist damit ein reines Verschieben, kein Umschreiben.
+// Alle Texte stehen in CONTENT, nach Sprache getrennt; die alten Variablennamen werden daraus
+// abgeleitet.
   var CONTENT = {};
-  // Runde 103: Sprachpakete, die NICHT in der Datei stehen, sondern daneben liegen.
-  //
-  // In der Ein-Datei-Fassung (dist/lucenta.html) bleibt diese Tabelle LEER — dort stehen alle acht
-  // Pakete weiterhin im Quelltext, und daran darf sich nichts aendern: Diese Datei wird einzeln
-  // verschickt und ohne Server geoeffnet, ein Nachladen von der Platte ginge dort ins Leere.
-  //
-  // Nur die App-Fassung (dist/index.html, die Capacitor aus dem Bundle laedt) traegt hier
-  // {en:'sprachen/en-<marke>.js', …} — sieben Eintraege, von build.js eingesetzt. Grund: Die acht
-  // Pakete sind ~620 KB von 932 KB, also zwei Drittel der Datei, die beim Start geparst werden
-  // muss. Gelesen wird davon immer genau EINES.
+  // Sprachpakete NEBEN der Datei. In der Ein-Datei-Fassung (dist/lucenta.html) bleibt die Tabelle leer
+  // — dort stehen alle acht Pakete im Quelltext. Nur die App-Fassung (dist/index.html) traegt hier die
+  // sieben Dateien (von build.js eingesetzt): zwei Drittel weniger zu parsen, gebraucht wird immer
+  // genau eines.
   var SPRACHQUELLEN = {};
   @@I18N@@
-  // Die nachgeladenen Dateien laufen im globalen Bereich; CONTENT liegt in der gemeinsamen IIFE
-  // und ist von dort aus unerreichbar. Diese Bruecke ist der einzige Weg hinein — sie nimmt
-  // entgegen, statt herauszugeben, damit von aussen nichts an den Paketen geaendert werden kann.
+  // Nachgeladene Dateien laufen global; diese Bruecke ist der einzige Weg in CONTENT (nimmt nur
+  // entgegen).
   try{
     if (typeof window !== 'undefined') window.__lucentaSprachpaket = function(code, paket){
       if (code && paket) CONTENT[code] = paket;
     };
   }catch(e){}
 
-  // Holt ein fehlendes Paket nach und ruft danach `danach(erfolg)`. Ist es schon da (oder gibt es
-  // keine Quelle dafuer), antwortet sie sofort — die Ein-Datei-Fassung laeuft damit unveraendert
-  // synchron durch, ohne je ein Skript anzufassen.
+  // Holt ein fehlendes Paket und ruft danach(erfolg); ist es da oder gibt es keine Quelle, sofort.
   var _imZulauf = {};
   function ladeSprachpaket(code, danach){
     if (CONTENT[code]) { danach(true); return; }
@@ -47,9 +36,7 @@
       var s = document.createElement('script');
       s.src = quelle;
       s.async = true;
-      // Nicht dem onload trauen, sondern nachsehen, ob das Paket wirklich angekommen ist: Eine
-      // Datei, die laedt und dabei wirkungslos bleibt, meldet sonst Erfolg und die App wechselt
-      // in eine Sprache ohne Texte.
+      // Nachsehen, ob das Paket wirklich angekommen ist, statt onload zu trauen.
       s.onload = function(){ fertig(!!CONTENT[code]); };
       s.onerror = function(){ fertig(false); };
       document.head.appendChild(s);
@@ -66,15 +53,8 @@
 
   var LABELS = L.LABELS, RADAR_LABELS = L.RADAR_LABELS, FACTORS = L.FACTORS, PROFILES = L.PROFILES, CORE = L.CORE, FLAVOR = L.FLAVOR, MOTTO = L.MOTTO, NOUN = L.NOUN, ADJ = L.ADJ, COMPAT = L.COMPAT, CMP_GESAMT = L.CMP_GESAMT, KOMBI = L.KOMBI, UNDERSTAND = L.UNDERSTAND, VIEW_LABELS = L.VIEW_LABELS, VIEW_TITLES = L.VIEW_TITLES, QUIZ_HINTS = L.QUIZ_HINTS, QUIZ_MILESTONES = L.QUIZ_MILESTONES;
 
-  // Setzt die Texte der aktiven Sprache in die Oberflaeche. Elemente mit data-i18n bekommen
-  // reinen Text, solche mit data-i18n-html duerfen Auszeichnung enthalten (Hervorhebungen,
-  // Verweise). Fehlt ein Schluessel in der gewaehlten Sprache, bleibt der vorhandene Text stehen
-  // — lieber eine deutsche Zeile in einer englischen Oberflaeche als eine leere.
-  // Liefert einen Text der aktiven Sprache. Fehlt der Schluessel dort, wird auf Deutsch
-  // zurueckgefallen, und erst dann auf den Schluessel selbst — eine fehlende Uebersetzung
-  // zeigt damit deutschen Text, niemals eine leere Stelle.
-  // Bewusst NICHT `t` genannt: `t` wird im uebrigen Code an mehreren Stellen als lokale
-  // Variable verwendet (Toast-Element, Schleifenparameter) und wuerde die Funktion verdecken.
+  // tx(): Text der aktiven Sprache, sonst Deutsch, sonst der Schluessel — nie eine leere Stelle.
+  // Bewusst nicht `t` (wird lokal oft benutzt).
   function tx(key){
     var a = CONTENT[LANG] && CONTENT[LANG].UI;
     if (a && typeof a[key] === 'string') return a[key];
@@ -83,15 +63,11 @@
     return key;
   }
 
-  // Wechselt die Sprache. Die Inhaltsbloecke werden neu gebunden — deshalb muessen die
-  // abgeleiteten Variablen mitgezogen und alle bereits gerenderten Ansichten neu aufgebaut
-  // werden. Ein Neuladen der Seite waere einfacher, wuerde aber den ungespeicherten Zustand
-  // (laufender Testdurchlauf, offene Ansicht) verwerfen.
+  // Sprachwechsel ohne Neuladen (ein laufender Durchlauf bliebe sonst nicht erhalten): Inhalte neu
+  // binden, abgeleitete Variablen mitziehen, Ansichten neu aufbauen.
   function setLang(code){
     if (code === LANG) return;
-    // Runde 103: Fehlt das Paket, liegt es in der App-Fassung als eigene Datei daneben. Dann erst
-    // holen und danach denselben Aufruf wiederholen — der zweite Durchlauf findet es vor und geht
-    // den gewohnten, synchronen Weg. Ein unbekanntes Kuerzel bleibt wie bisher wirkungslos.
+    // Fehlt das Paket (App-Fassung), erst holen und dann denselben Aufruf wiederholen.
     if (!CONTENT[code]){
       if (!SPRACHQUELLEN[code]) return;
       ladeSprachpaket(code, function(erfolg){ if (erfolg) setLang(code); });
@@ -110,9 +86,7 @@
     resetDateFmt();
     resetWochentagFmt();
     applyI18n();
-    // Runde 61: Der Sprachwechsel tauschte den Text ohne jede Antwort aus — auf einer langen
-    // Seite wie den Einstellungen war nicht sicher zu sehen, DASS etwas passiert ist. Ein kurzes
-    // Aufblenden der aktiven Ansicht beantwortet den Tipp, ohne den Inhalt zu bewegen.
+    // Kurzes Aufblenden der Ansicht als Rueckmeldung.
     markLangShift();
     syncLangButtons();
     $('viewLabel').textContent = VIEW_LABELS[currentView] || '';
@@ -156,9 +130,8 @@
       document.querySelectorAll('[data-lang]').forEach(function(b){
         b.setAttribute('aria-checked', b.getAttribute('data-lang')===LANG ? 'true':'false');
       });
-      // Runde 136: Die Zeile in den Einstellungen nennt die gewaehlte Sprache, in ihrer eigenen
-      // Schreibweise und mit ihrem eigenen lang-Attribut — genommen aus der Liste selbst, damit
-      // die acht Namen nicht ein zweites Mal irgendwo stehen.
+      // Die Einstellungszeile nennt die gewaehlte Sprache — aus der Liste selbst genommen, damit die
+      // Namen nicht doppelt stehen.
       var gewaehlt = document.querySelector('.wahl-zeile[data-lang="'+LANG+'"] span');
       var ziel = $('spracheAktuell');
       if (gewaehlt && ziel){ ziel.textContent = gewaehlt.textContent; ziel.setAttribute('lang', LANG); }
@@ -177,13 +150,8 @@
     }catch(e){ return str; }
   }
 
-  // Setzt die Texte der aktiven Sprache in die Oberflaeche.
-  //
-  // WICHTIG, und in Runde 54 falsch gemacht: Die Texte enthalten durchgehend HTML-Entitaeten
-  // (&mdash;, &shy;, &amp;, &bdquo;). Wird ein solcher Text ueber textContent gesetzt, zeigt der
-  // Browser ihn WOERTLICH — auf der Startseite stand dadurch "Of&shy;fen&shy;heit" statt
-  // "Offenheit". Deshalb wird hier durchgehend als HTML gesetzt; die Werte stammen ausschliesslich
-  // aus den eigenen Sprachpaketen, nie aus Nutzereingaben.
+  // Die Texte enthalten HTML-Entitaeten (&mdash;, &shy;) — deshalb als HTML setzen, nicht textContent.
+  // Die Werte stammen nur aus den eigenen Sprachpaketen.
   function applyI18n(){
     var t = (CONTENT[LANG] && CONTENT[LANG].UI) || {};
     try{
@@ -191,9 +159,8 @@
         var v = t[el.getAttribute('data-i18n')];
         if (typeof v === 'string') el.innerHTML = v;
       });
-      // Elemente, die neben dem Text ein Symbol tragen (Aufklapp-Pfeile): nur den Textknoten
-      // austauschen, damit das Symbol erhalten bleibt. Hier muessen die Entitaeten vorher
-      // aufgeloest werden, weil ein Textknoten kein HTML kennt.
+      // Elemente mit Symbol (Aufklapp-Pfeil): nur den Textknoten tauschen; Entitaeten vorher
+      // aufloesen.
       document.querySelectorAll('[data-i18n-text]').forEach(function(el){
         var v = t[el.getAttribute('data-i18n-text')];
         if (typeof v !== 'string') return;
@@ -209,10 +176,7 @@
         var v = t[el.getAttribute('data-i18n-html')];
         if (typeof v === 'string') el.innerHTML = v;
       });
-      // Attribute sind reiner Text, kein HTML — die Entitaeten muessen deshalb vorher aufgeloest
-      // werden, sonst stuende &mdash; woertlich in der Vorlesung des Screenreaders. Runde 58:
-      // placeholder und aria-label waren bis dahin ueberhaupt nicht uebersetzt und blieben in
-      // jeder Sprache deutsch — im Ersatz-DOM unsichtbar, weil dort nie ein Attribut gelesen wird.
+      // Attribute (placeholder, aria-label) sind reiner Text: Entitaeten vorher aufloesen.
       document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
         var v = t[el.getAttribute('data-i18n-placeholder')];
         if (typeof v === 'string') el.setAttribute('placeholder', decodeEntities(v));
@@ -230,9 +194,8 @@
 
 
 
-  // Die Fragen werden aus den Faktoren zusammengesetzt und ueber alle fuenf Dimensionen
-  // verschraenkt. Als Funktion, damit ein Sprachwechsel sie neu erzeugen kann, ohne dass die
-  // Reihenfolge sich aendert — die Zuordnung Position -> Dimension bleibt in jeder Sprache gleich.
+  // Fragen als Funktion erzeugt, damit ein Sprachwechsel sie neu bauen kann; die Zuordnung Position ->
+  // Dimension bleibt gleich.
   var ITEMS = [];
   function rebuildItems(){
     ITEMS.length = 0;
@@ -245,16 +208,8 @@
   }
   rebuildItems();
 
-  // Runde 103: Die gemerkte Sprache nachholen, wenn ihr Paket nicht in der Datei steht.
-  //
-  // Die App laeuft dann zuerst auf Deutsch an und stellt um, sobald die Datei da ist. Das ist die
-  // Gegenrechnung zur Aufteilung: Wer auf Japanisch gestellt hat, sieht unter Umstaenden einen
-  // Wimpernschlag Deutsch — dafuer startet die App fuer alle mit zwei Dritteln weniger Text im
-  // Parser. Die Datei liegt im Bundle daneben, nicht im Netz.
-  //
-  // Das Umstellen passiert erst, nachdem der ganze eingebettete Code durchgelaufen ist (ein
-  // nachgeladenes Skript kann nicht mitten hinein) — die Ansichten, die setLang() neu aufbaut,
-  // sind zu diesem Zeitpunkt also aufgebaut.
+  // Die gemerkte Sprache nachholen, wenn ihr Paket nicht eingebettet ist: Die App startet kurz auf
+  // Deutsch und stellt um, sobald die Datei (aus dem Bundle) da ist.
   var _stillerWechsel = false;
   try{
     var _gemerkt = localStorage.getItem('lucenta_lang');

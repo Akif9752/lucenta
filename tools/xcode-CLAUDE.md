@@ -118,6 +118,18 @@ teuersten Fehler (die Silbentrennung, die im Chromium unsichtbar blieb, und die 
 Scroll-/Safe-Area-Fehler) waren genau deshalb 99 Runden lang unentdeckt. Wo es um Aussehen
 geht, ist das Geraet hier der Schiedsrichter.
 
+## Kommentare: kurz, das Warum, keine Geschichte
+
+Seit Runde 138 (Auftrag des Inhabers, die Arbeit zu beschleunigen) sind die Kommentare in `src/`
+um rund ein Drittel gekuerzt. Regel fuer neue: Ein Kommentar sagt, was man dem Code NICHT ansieht —
+eine Falle, eine Abhaengigkeit, eine Entscheidung des Inhabers (kurz: "Entscheidung des Inhabers").
+Die Geschichte dahin (welche Runde, was gemeldet wurde, was vorher falsch war, wie gemessen wurde)
+gehoert ins Journal und in die Commit-Nachricht, nicht in den Code. Faustregel: hoechstens drei Zeilen.
+
+Eine Kommentarzeile ist eine MARKE und darf nicht umformuliert werden: `// ---------- wiring ----------`
+in `src/js/20-wiring.js` — `tests/run.js` schneidet den Code dort ab. `src/styles/00-schriften.css`
+ist erzeugt (`tools/schriften_holen.mjs`), nicht von Hand aendern.
+
 ## Fuehre ein Journal
 
 Jede Aenderung gehoert nach `docs/ios-huelle-journal.md` (zwei Ebenen ueber diesem Ordner):

@@ -17,18 +17,9 @@
     return out;
   }
 
-  // ---------- precision data visuals (gauge bar, ring gauge, sparkline, count-up) ----------
-  // Ersetzt den früheren simplen Fortschrittsbalken durch eine Skala mit Tick-Markierungen
-  // bei 25/50/75 und einem Marker-Punkt an der eigentlichen Position — liest sich eher wie eine
-  // gemessene Instrumentenanzeige (Apple Health/Whoop-Richtung) als wie ein reiner Ladebalken.
-  // Runde 65: .gauge-fill und .gauge-marker tragen seit jeher eine Übergangszeit von 0,9 s —
-  // die aber nie lief. Ein Übergang braucht eine Änderung; die Breite stand schon im erzeugten
-  // Markup und war damit ab dem ersten Bild endgültig. Gemessen: 171,594px im ersten Bild und
-  // unverändert danach. Sichtbar war das als Widerspruch — die Zahlen zählten hoch (dafür gibt
-  // es animateCountUp), während die Balken darunter längst voll waren.
-  //
-  // Jetzt beginnt der Balken bei 0 und trägt sein Ziel als Datenwert; startGauges() setzt es
-  // im nächsten Einzelbild, wodurch der Übergang tatsächlich anläuft.
+  // ---------- Messanzeigen (Skala, Ring, Kurve, Hochzaehlen) ----------
+  // Der Balken beginnt bei 0 und traegt sein Ziel als Datenwert; startGauges() setzt es im naechsten
+  // Bild — sonst liefe der Uebergang nie.
   function gaugeBarHTML(value){
     value = Math.max(0, Math.min(100, value));
     return '<div class="gauge-track" data-gauge="'+value+'">'+
@@ -62,11 +53,8 @@
     else setzen();
   }
 
-  // Runde 81: Der Messbalken des Vergleichs. Er zeigt bewusst NICHT zwei Balken untereinander,
-  // sondern eine Spur mit zwei Punkten und der Strecke dazwischen: Der Gegenstand des Vergleichs
-  // ist der Abstand, nicht die beiden Zahlen fuer sich. Zwei getrennte Balken haetten die
-  // Leserin die Differenz selbst schaetzen lassen — genau die Arbeit, die eine Darstellung
-  // abnehmen soll.
+  // Vergleichsbalken: eine Spur mit zwei Punkten und der Strecke dazwischen — der Gegenstand ist der
+  // Abstand.
   function compatBalkenHTML(me, other){
     me = Math.max(0, Math.min(100, me));
     other = Math.max(0, Math.min(100, other));
@@ -83,9 +71,8 @@
       '</div>';
   }
 
-  // Dieselbe Mechanik wie startGauges: erst im Endzustand setzen, wenn das Element im Baum
-  // steht, sonst laeuft kein Uebergang. Der Datenwert wird danach entfernt, damit ein zweiter
-  // Aufruf den Balken nicht noch einmal von vorn beginnen laesst.
+  // Wie startGauges: Endzustand erst setzen, wenn das Element im Baum steht; danach Datenwert
+  // entfernen.
   function startCompatBars(root){
     if (!root || !root.querySelectorAll) return;
     var spuren = root.querySelectorAll('.cmp-track[data-cmp-me]');
@@ -120,24 +107,10 @@
       '</svg>';
   }
 
-  // Kompakter Sparkline-Liniengraph für den Dimensionsverlauf über mehrere Testdurchläufe.
-  // Braucht mindestens zwei Datenpunkte, um eine Linie zu ergeben.
-  // Runde 67: Der Tagesform-Verlauf bestand aus zwei Sparklines von 140x32 — ohne Achse, ohne
-  // Maßstab, ohne Datum, mit aria-hidden. Man sah, DASS sich etwas bewegt, aber nicht wann,
-  // nicht wie weit und nicht im Verhältnis wozu. Genau das ist aber der einzige Teil der App,
-  // der sich ehrlich täglich ändert und damit das Einzige, was ein Wiederkommen trägt.
-  //
-  // Beide Reihen teilen die Skala 1 bis 5 und liegen deshalb in EINEM Diagramm auf EINER Achse.
-  // Zwei y-Achsen wären hier der naheliegende Fehler: Sie erzeugen Kreuzungen und Abstände, die
-  // in den Daten nicht existieren.
-  //
-  // Die beiden Farben stammen aus --daten-energie und --daten-stimmung, nicht aus den Akzenten
-  // der Oberfläche. Begründung steht bei den Marken in 00-grundlagen.css.
-  // Runde 129, auf Wahl des Inhabers: Die Kurve beginnt und endet VERLAUF_RAND Einheiten vor dem
-  // Rand, damit auch die aeusseren Datumsmarken mittig ueber ihrem Tag stehen koennen (vorher 4 —
-  // die Marken mussten aussen buendig stehen, und die mittlere Luecke war dadurch sichtbar breiter).
-  // 24 Einheiten sind bei der schmalsten Flaeche (320 pt Geraet, 225 px Diagramm) 17 px, also eine
-  // halbe Marke "07.10.". Gilt an allen drei Stellen, die x(i) rechnen: Diagramm, Achse, Ablesen.
+  // Verlaufsdiagramm. Energie und Stimmung teilen die Skala 1–5 und liegen auf EINER Achse (zwei
+  // y-Achsen erzeugten Scheinkreuzungen). Farben aus --daten-energie/--daten-stimmung.
+  // VERLAUF_RAND: Die Kurve rueckt ein, damit auch die aeusseren Datumsmarken mittig ueber ihrem Tag
+  // stehen. Gilt an allen drei Stellen, die x(i) rechnen: Diagramm, Achse, Ablesen.
   var VERLAUF_RAND = 24;
   function verlaufDiagrammSVG(eintraege, breite, hoehe){
     breite = breite || 320; hoehe = hoehe || 150;
@@ -155,26 +128,9 @@
       raster += '<line x1="0" y1="'+y(w2).toFixed(1)+'" x2="'+breite+'" y2="'+y(w2).toFixed(1)+
                 '" stroke="var(--line)" stroke-width="1" '+(w2===1||w2===5?'':'stroke-dasharray="2 4" ')+'opacity="'+(w2===1||w2===5?'0.9':'0.55')+'"/>';
     }
-    // Runde 107, gemeldet: "Die Tagesform-Graphen sollen sich beim Wechsel der verschiedenen
-    // Zeitraeume live von links nach rechts einzeichnen."
-    //
-    // Gemacht ueber stroke-dasharray/stroke-dashoffset: Ein Strich, dessen Strichmuster genau
-    // so lang ist wie er selbst, ist bei Versatz 0 durchgezogen und bei Versatz = Laenge
-    // unsichtbar. Der Uebergang dazwischen ist genau das Einzeichnen, und zwar in
-    // Zeichenrichtung — die Punkte stehen hier nach Datum aufsteigend, also von links.
-    //
-    // Die Laenge wird GERECHNET, nicht ueber getTotalLength() geholt. Zwei Gruende: Der Pfad
-    // ist ein Polygonzug, seine Laenge ist damit exakt die Summe der Strecken (keine Naeherung
-    // noetig), und getTotalLength() braeuchte das Element im Dokument — zu diesem Zeitpunkt
-    // ist es eine Zeichenkette. Sie geht als --vl-laenge an das <svg>, damit das Stilblatt sie
-    // sowohl fuer das Strichmuster als auch fuer den Anfangsversatz benutzen kann.
-    //
-    // Die 2 Prozent Zuschlag sind kein Ausgleich fuer preserveAspectRatio="none" — das waere
-    // falsch gedacht: Strichmuster werden im Nutzerkoordinatensystem berechnet, also VOR der
-    // Streckung, Laenge und Muster liegen damit ohnehin im selben Raum. Der Zuschlag deckt das
-    // ab, was die Summe der Strecken nicht kennt: die runden Ecken an den Knicken, die den
-    // sichtbaren Strich ein wenig kuerzer machen als den gerechneten Polygonzug. Zwei Prozent
-    // kosten nichts und nehmen das Risiko einer Haarstrich-Luecke am jüngsten Punkt.
+    // Live-Einzeichnen ueber stroke-dasharray/-dashoffset. Die Laenge wird GERECHNET (Summe der
+    // Strecken; das Element ist hier noch eine Zeichenkette) und geht als --vl-laenge ans <svg>. 2 %
+    // Zuschlag fuer die runden Ecken an den Knicken.
     var laengeMax = 0;
     var linie = function(feld, farbe){
       var d = eintraege.map(function(e,i){ return (i?'L':'M')+x(i).toFixed(1)+','+y(e[feld]).toFixed(1); }).join(' ');
@@ -190,23 +146,12 @@
              '<circle class="vl-spitze" cx="'+x(n-1).toFixed(1)+'" cy="'+y(letzter[feld]).toFixed(1)+
              '" r="4.5" fill="'+farbe+'" stroke="var(--surface)" stroke-width="2"/>';
     };
-    // Der jüngste Punkt trägt einen Ring in der Flächenfarbe: Wo sich zwei Marken überlagern,
-    // trennt der Ring sie, statt sie zu einem Fleck verschmelzen zu lassen.
-    // Beide Linien werden zuerst gebaut, damit --vl-laenge die laengere von beiden kennt: Bei
-    // zwei verschiedenen Laengen waere eine der beiden vor der anderen fertig, und zwei Linien,
-    // die nicht gleichzeitig ankommen, lesen sich als Wettrennen statt als ein Diagramm.
+    // Der juengste Punkt traegt einen Ring in Flaechenfarbe. Beide Linien zuerst bauen, damit
+    // --vl-laenge die laengere kennt und beide gleichzeitig ankommen.
     var linien = linie('energy','var(--daten-energie)') + linie('valence','var(--daten-stimmung)');
-    // Die Klasse entscheidet hier und nicht im Stilblatt. @media (prefers-reduced-motion) kennt
-    // nur die Systemeinstellung; der Schalter IN der App (Einstellungen -> Bewegung) steht in
-    // localStorage und ist fuer CSS unsichtbar. prefersReducedMotion() fragt beide. Dasselbe
-    // Muster tragen .qcard.q-in und pulseFocusline() — die Bewegung wird gar nicht erst
-    // angeordnet, statt sie nachtraeglich zu unterdruecken.
-    //
-    // Beide Zweige tragen das VOLLSTAENDIGE Klassenattribut, nicht nur den Zusatz. Das ist kein
-    // Schoenheitsschritt: audit_i18n.py erkennt Bezeichner am KONTEXT und nicht an der
-    // Schreibweise (Begruendung dort, Runde 75) — ein blosses ' vl-zeichnet' waere ein nackter
-    // Literal und wuerde als deutscher Oberflaechentext gemeldet, weil "zeichnet" im deutschen
-    // Sprachpaket vorkommt und im englischen nicht. Als class="..." ist es erkennbar ein Name.
+    // Die Klasse entscheidet hier, nicht das Stilblatt: CSS kennt nur die Systemeinstellung, nicht den
+    // Bewegungsschalter der App. Beide Zweige tragen das VOLLE class="...", sonst meldet audit_i18n.py
+    // ' vl-zeichnet' als deutschen Text.
     var zeichnet = prefersReducedMotion() ? 'class="verlauf-svg"' : 'class="verlauf-svg vl-zeichnet"';
     return '<svg '+zeichnet+' viewBox="0 0 '+breite+' '+hoehe+'" preserveAspectRatio="none" role="img" '+
              'style="--vl-laenge:'+(laengeMax * 1.02).toFixed(1)+'" '+
@@ -224,35 +169,10 @@
            '</svg>';
   }
 
-  // Runde 107, gemeldet: "Die X-Achse ist aktuell unbeschriftet und muss mit den entsprechenden
-  // Zeit-/Datumsangaben versehen werden."
-  //
-  // Sie war nicht ganz unbeschriftet, aber fast: Dort standen zwei RELATIVE Angaben, "vor 29
-  // Tagen" und "heute", und zwar links- und rechtsbuendig in einer eigenen Zeile. Relativ heisst,
-  // dass man rechnen muss, um einen Punkt in der Mitte einem Tag zuzuordnen — und in der Mitte
-  // stand gar nichts.
-  //
-  // Jetzt echte Daten an echten Stellen. Zwei Dinge daran sind der eigentliche Aufwand:
-  //
-  //   DIE STELLEN MUESSEN STIMMEN. Eine Marke, die nicht ueber ihrem Punkt steht, ist schlimmer
-  //   als keine: Sie behauptet etwas Falsches. Deshalb kommt die Position aus derselben Rechnung
-  //   wie die Punkte im Diagramm — x(i)/breite in Prozent, mit denselben Werten fuer links,
-  //   rechts und breite. Stehen die Konstanten irgendwann doppelt und driften auseinander,
-  //   verschiebt sich die Achse gegen die Kurve; deshalb liegt die Funktion hier, direkt neben
-  //   verlaufDiagrammSVG, und nicht bei der Tagesform.
-  //
-  //   DIE ZAHL DER MARKEN. Hoechstens vier, und nie dichter als ACHSE_ABSTAND Einheiten
-  //   (bei 320 pt Geraet 45 px fuer eine Marke von 33 px). Mehr waere eine Zahlenreihe. Bei
-  //   wenigen Punkten wird je Punkt eine Marke gesetzt: Zwei Punkte und vier Datumsangaben waeren
-  //   erfundene Zwischenwerte.
-  //
-  // Runde 129: DIE ABSTAENDE SIND GLEICH — in Tagen und auf dem Bildschirm. Vorher wurden vier
-  // Indizes ueber den Zeitraum gerundet (14 Tage: Punkt 0, 4, 9, 13 — also 4, 5, 4 Tage), und die
-  // aeusseren Marken standen kantenbuendig, die mittleren mittig; die Luecken waren dadurch z. B.
-  // 18, 51, 18 px. Jetzt geht ein fester Schritt von HEUTE rueckwaerts (14 Tage: 13, 9, 5, 1), und
-  // jede Marke steht mittig ueber ihrem Punkt. Dass dafuer der allererste Tag nicht immer eine
-  // Marke traegt, ist der Preis; der juengste Tag ist der, den man sucht. Mittig passt auch
-  // aussen, weil die Kurve um VERLAUF_RAND einrueckt.
+  // Datumsachse: Die Position kommt aus derselben Rechnung wie die Punkte (deshalb steht die Funktion
+  // hier). Hoechstens vier Marken, nie dichter als ACHSE_ABSTAND; bei wenigen Punkten je Punkt eine.
+  // Gleiche Abstaende: fester Schritt von HEUTE rueckwaerts, jede Marke mittig ueber ihrem Punkt (der
+  // erste Tag traegt dafuer nicht immer eine).
   var ACHSE_MARKEN = 4, ACHSE_ABSTAND = 64;
   function verlaufAchseHTML(eintraege, breite){
     breite = breite || 320;
@@ -274,13 +194,8 @@
     }).join('') + '</div>';
   }
 
-  // Ein Liniendiagramm im Browser ist bedienbar, kein Bild. Wer den Finger darüber zieht, liest
-  // den einzelnen Tag ab; die Legende zeigt währenddessen dessen Werte und das Datum statt der
-  // heutigen. Beim Loslassen kehrt sie zu heute zurück — der Ruhezustand bleibt "heute", damit
-  // die Angabe ohne jede Bedienung stimmt.
-  //
-  // Die Trefferfläche ist die ganze Diagrammfläche, nicht die 2px-Linie: Auf dem Telefon wäre
-  // eine Linie als Ziel unbenutzbar.
+  // Ablesen per Finger oder Maus ueber die ganze Diagrammflaeche; die Legende zeigt waehrenddessen den
+  // Tag, danach wieder heute.
   function verlaufAblesenAktivieren(flaeche, eintraege, fmt){
     if (!flaeche || !eintraege || eintraege.length < 2) return;
     var svg = flaeche.querySelector('.verlauf-svg');
@@ -292,10 +207,7 @@
     if (!svg || !kreuz || !pe || !ps) return;
     var n = eintraege.length, links = VERLAUF_RAND, rechts = VERLAUF_RAND, oben = 10, unten = 18;
     var breite = 320, hoehe = 150, iw = breite - links - rechts, ih = hoehe - oben - unten;
-    // Runde 84: Seit die Tagesform mehrere Eintraege je Tag kennt (Runde 82), sind diese Werte
-    // MITTELWERTE und damit Bruchzahlen. Hier standen sie roh — auf dem Bildschirm erschien
-    // dadurch "3.3333333333333335" statt "3,3". tagWert() gibt eine ganze Zahl als ganze Zahl
-    // aus und alles andere mit genau einer Nachkommastelle; mehr hat die Angabe nicht her.
+    // Tageswerte sind Mittel; tagWert() gibt ganze Zahlen ganz, sonst mit einer Nachkommastelle aus.
     var heuteE = tagWert(eintraege[n-1].energy), heuteS = tagWert(eintraege[n-1].valence);
 
     function zeigen(ev){
@@ -322,12 +234,8 @@
       if (wertS) wertS.textContent = heuteS;
       if (datum) datum.textContent = tx('js_heute');
     }
-    // Maus und Finger brauchen verschiedenes Verhalten, und das ist kein Feinschliff:
-    // Beim Zeigen mit der Maus liegt der Zeiger die ganze Zeit auf der Fläche, der Wert kann
-    // also beim Verlassen verschwinden. Ein Tipp dagegen ist ein Augenblick — verschwände der
-    // Wert beim Loslassen, sähe man auf dem Telefon nur ein Aufblitzen. Gemessen: genau das
-    // passierte. Nach einer Berührung bleibt die Ablesung deshalb stehen, bis anderswo
-    // getippt wird oder ein paar Sekunden vergangen sind.
+    // Nach einer Beruehrung bleibt die Ablesung stehen (bis anderswo getippt wird oder ein paar
+    // Sekunden vergehen) — sonst saehe man auf dem Telefon nur ein Aufblitzen.
     var haltenTimer = null;
     function haltenAbbrechen(){ if (haltenTimer){ clearTimeout(haltenTimer); haltenTimer = null; } }
     flaeche.addEventListener('pointerdown', function(ev){ haltenAbbrechen(); zeigen(ev); });
@@ -375,12 +283,8 @@
       '</svg>';
   }
 
-  // Runde 75: Die Bewegungsvorliebe war nur ueber die Systemeinstellung erreichbar. Wer sie nur
-  // FUER DIESE APP zurueckdrehen will, hatte keine Moeglichkeit. Der Schalter setzt hier an, an
-  // genau EINER Stelle — prefersReducedMotion() fragen alle Bewegungen der App ab, der Schalter
-  // wirkt damit ueberall, ohne dass eine einzelne Animation davon wissen muss.
-  //
-  // Das System kann nur strenger sein, nie lockerer: Steht es auf reduziert, hilft "An" nicht.
+  // Der Bewegungsschalter der App wirkt an EINER Stelle: prefersReducedMotion() fragen alle Bewegungen
+  // ab. Das System kann nur strenger sein — steht es auf reduziert, hilft "An" nicht.
   function bewegungAbgeschaltet(){
     try{ return localStorage.getItem('lucenta_bewegung') === 'aus'; }catch(e){ return false; }
   }

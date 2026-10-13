@@ -1,56 +1,20 @@
 
-  /* ================= Hell und Dunkel nach Apples Farbsystem (Runde 120) =================
-     Auftrag des Inhabers: "Hell- und Dunkelmodus mehr an Apple und iOS anpassen, so wie die es
-     gemacht haben." Bis hierher stand die App in beiden Modi auf einem salbeigruenen Papierton
-     (#E4E6DB hell, #0F1613 dunkel). iOS benutzt ein festes, neutrales System, und genau das ist
-     jetzt hier: hell der kuehle Grund #F2F2F7 mit reinweissen Flaechen, dunkel echtes Schwarz mit
-     den gestuften Grauflaechen #1C1C1E / #2C2C2E / #3A3A3C, Trennlinien #C6C6C8 bzw. #38383A.
-     Die Akzentfarbe bleibt Teal — iOS-Apps bringen ihre eigene Toenung mit.
-     EINE bewusste Abweichung: Apples Grau fuer Nebentext (#8A8A8E) erreicht auf Weiss nur 3,4:1;
-     die Fehlersuche verlangt 4,5:1. Hier steht deshalb die Fassung, die Apple selbst fuer
-     "Erhoehter Kontrast" vorsieht (#636366), und fuer Bedienelement-Raender ein etwas
-     dunkleres Grau, damit sie die 3:1 halten. Nachgerechnet, nicht geschaetzt. */
+  /* ==== Hell und Dunkel nach Apples Farbsystem ====
+     Hell: Grund #F2F2F7, Flaechen weiss; dunkel: Schwarz mit gestuften Grauflaechen. Akzent bleibt
+     Teal.
+     Abweichung von Apple: Nebentext #636366 (Apples "Erhoehter Kontrast"), weil #8A8A8E auf Weiss nur
+     3,4:1 erreicht (Fehlersuche verlangt 4,5:1). */
   :root{
-    /* Runde 90: "das weiss bei der hellversion ist zu grell." Stimmte, und die Ursache war
-       woertlich das: --surface war REINES Weiss, also der hellstmoegliche Wert, den ein
-       Bildschirm ausgeben kann. Auf einem Telefon ist das die Helligkeit einer Taschenlampe.
-       Gerechnet statt geschaetzt: Papier und Karte ruecken gemeinsam herunter, sodass die
-       TRENNUNG zwischen beiden exakt gleich bleibt (Verhaeltnis 1,087 wie vorher) und nur die
-       absolute Helligkeit faellt — die Karte von 100 auf 94 Prozent. Der Abstand zur zweiten
-       Flaeche wird dabei sogar etwas besser (1,151 auf 1,184). Alle Textstufen bleiben weit
-       ueber der Lesbarkeitsgrenze; die leiseste liegt bei 5,0 gegen geforderte 4,5.
-
-       Runde 93, dieselbe Rueckmeldung ein drittes Mal: "die hellversion ist immernoch zu grell
-       fuers auge." Der Schritt von Runde 90 war zu klein — 100 auf 94 Prozent ist keine halbe
-       Blendstufe. Jetzt 94 auf 85 Prozent, also ein anderthalbmal so grosser Schritt.
-
-       Und diesmal anders gerechnet. Runde 90 hat NUR die Flaechen verschoben und die Schrift
-       stehen lassen; damit faellt jeder Kontrast, weil Kontrast das Verhaeltnis von beiden ist.
-       Nachgemessen war die Folge, dass --muted-soft auf --surface-2 bei 4,24 lag, obwohl drei
-       Zeilen tiefer als Begruendung stand, sie liege ueber 4,6. Deshalb ruecken hier BEIDE
-       Seiten herunter, und zwar so, dass jede Schriftmarke ihren Kontrast auf --surface exakt
-       behaelt: Der Zielwert wird aus dem alten Verhaeltnis zurueckgerechnet, nicht geschaetzt.
-       Nachgerechnet ueber alle vier Flaechen: kein einziger Kontrast faellt, die meisten
-       steigen um ein Hundertstel (die Konstante 0,05 in der Formel wirkt auf dunklerem Grund
-       etwas guenstiger).
-
-       Die Datenfarben ziehen mit. Sie muessen: Bei gleichbleibendem Wert waeren --dim-a und
-       --daten-energie auf 2,90 gefallen, unter die Schwelle 3:1, die fuer Linien und Flaechen
-       gilt. Jetzt liegen sie bei 3,23 — genau wie vorher.
-
-       Ob das alles stimmt, entscheidet ab dieser Runde nicht mehr dieser Kommentar, sondern
-       eine Messung: tools/fehlersuche.mjs prueft im echten Browser jede Textstelle gegen den
-       Grund, auf dem sie tatsaechlich liegt. */
+    /* Flaechen und Schrift ruecken GEMEINSAM: Jede Schriftmarke behaelt ihren Kontrast auf --surface
+       (aus dem Verhaeltnis zurueckgerechnet). Die Datenfarben ziehen mit, damit sie 3:1 halten.
+       Massgeblich ist die Kontrastmessung in tools/fehlersuche.mjs, nicht dieser Kommentar. */
     --paper:#F2F2F7;
     --surface:#FFFFFF;
     --surface-2:#E5E5EA;
     --ink:#000000;
     --muted:#636366;
-    /* Feedback-Runde 42: dritte, bewusst leisere Textstufe für Fußnoten und rechtliche Hinweise.
-       Ersetzt die in Runde 34 eingeführte opacity:.7 — Transparenz nimmt nicht nur die Betonung
-       zurück, sondern auch den Kontrast, und zwar unter die Lesbarkeitsgrenze (gemessen 2,9–3,2:1
-       im Hellmodus, nötig sind 4,5:1). Dieser Ton ist rechnerisch so weit zurückgenommen wie
-       möglich, ohne auf irgendeinem der drei Untergründe unter 4,6:1 zu fallen. */
+    /* Dritte, leise Textstufe fuer Fussnoten — statt opacity (die den Kontrast unter 4,5:1 drueckte).
+       So weit zurueckgenommen, wie es auf allen drei Untergruenden 4,6:1 erlaubt. */
     --muted-soft:#67676C;
     --line:#C6C6C8;
     --line-strong:#7C7C80;
@@ -59,126 +23,45 @@
     /* Runde 63: Unterkante fuer die fuehlbaren Knoepfe — dunkler als --accent-strong, damit die
        Kante als Tiefe gelesen wird und nicht als zweite Farbe. */
     --accent-deep:#133935;
-    /* Runde 67: Eigene Marken fuer Datenlinien, getrennt von den Akzenten der Oberflaeche.
-       Grund: --accent (#2F6F6A) hat in OKLCH die Chroma 0,066 und liegt damit unter dem Boden
-       von 0,10, ab dem eine Flaeche als Farbe statt als Grau gelesen wird. In der Oberflaeche
-       ist diese Zurueckhaltung gewollt; eine Datenlinie muss dagegen Identitaet tragen. Selbst
-       ein voll gesaettigtes Teal derselben Helligkeit erreicht den Boden nicht — der Ton muss
-       heller werden. Gerechnet, nicht geschaetzt: beide Paare bestehen alle sechs Pruefungen
-       (Helligkeitsband, Chroma, Farbfehlsichtigkeit, Normalsicht, Kontrast zur Flaeche). */
+    /* Eigene Marken fuer Datenlinien: --accent ist fuer eine Linie zu grau (OKLCH-Chroma unter 0,10). */
     --daten-energie:#0D938A;
     --daten-stimmung:#BF7438;
-    /* Runde 70: Eine Farbe je Dimension. Gerechnet, nicht ausgesucht — und bewusst so
-       eingesetzt, dass NIE zwei davon gleichzeitig um Unterscheidbarkeit konkurrieren.
-       Der Grund steht im README: Fuenf gleichzeitig sichtbare Farbtoene sind nicht sicher
-       trennbar; selbst die geprueste Referenzpalette faellt dort durch. Jede Farbe ist einzeln
-       gegen Helligkeitsband, Chroma und Kontrast zur Flaeche geprueft, in beiden Modi. */
+    /* Eine Farbe je Dimension, so eingesetzt, dass nie zwei gleichzeitig um Unterscheidbarkeit
+       konkurrieren. */
     --dim-o:#7455CA;
     --dim-c:#2771CB;
     --dim-e:#BA512C;
     --dim-a:#0D938A;
     --dim-s:#AD4077;
-    /* Runde 93, von der neuen Kontrastpruefung gefunden: Die fuenf Farben oben sind als
-       DATENfarben gerechnet — fuer Linien und Flaechen gilt die Schwelle 3:1. Zwei Stellen
-       benutzen sie aber als SCHRIFT (die Zeile ueber dem Titel auf der Ergebnisseite und die
-       Bezeichnung auf der Vorschaukarte), und dort gilt 4,5:1. Gemessen lag die Zeile bei
-       4,23:1, Blau und Orange sogar bei 3,86. Statt die Datenfarben dunkler zu machen — dann
-       waeren die Linien im Diagramm dunkler geworden, ohne dass es dort einen Grund gab —
-       bekommt jede Dimension einen Schrift-Zwilling: dieselbe Farbe, nur so weit
-       heruntergenommen, dass sie auf --paper 4,5:1 erreicht. */
+    /* Schrift-Zwillinge der Dimensionsfarben: Als Schrift gilt 4,5:1, als Linie 3:1 — die Zwillinge
+       sind so weit abgedunkelt, dass sie auf --paper 4,5:1 erreichen. */
     --dim-o-text:#7052C4;
     --dim-c-text:#2366B9;
     --dim-e-text:#AA4927;
     --dim-a-text:#08736C;
     --dim-s-text:#AA3F75;
-    /* Runde 71: Farben des bewegten Hintergrunds. Im Hellmodus ist ein "Sternenhimmel" ein
-       Widerspruch in sich — auf hellem Papier gibt es keine leuchtenden Punkte. Deshalb dort
-       dunkle, sehr zurueckhaltende Punkte: eine Andeutung von Textur, kein Nachthimmel. Im
-       Dunkelmodus tut die Flaeche das, was der Name sagt. */
-    /* Runde 83: Der Hellmodus bekommt eine eigene Atmosphaere. Ein Sternenhimmel mit
-       Sternschnuppen auf hellem Papier war ein Widerspruch in sich — auf Papier gibt es keine
-       leuchtenden Punkte, und die Vorlage war entsprechend zu dunklen Punkten verbogen, die
-       eher nach Schmutz als nach Himmel aussahen.
-       Was hier stattdessen liegt, ist das TAGES-Gegenstueck derselben Erscheinung: Staub in
-       einem Lichtstrahl. Dieselbe Physik — kleine helle Dinge, die im Raum schweben —, nur
-       sichtbar gemacht durch Licht statt durch Dunkelheit. Das ist zugleich genau das Bild,
-       auf dem die Marke steht: Der Name heisst leuchtend, das Zeichen ist eine Oeffnung, und
-       Staub im Strahl ist das, was man durch eine Oeffnung sieht. */
+    /* Farben des bewegten Hintergrunds (Dunkelmodus: Sternenhimmel). */
+    /* Hellmodus: Staub in einem Lichtstrahl statt Sternenhimmel (22-sternenhimmel.js liest
+       --atmosphaere). */
     --atmosphaere:'staub';
     --stern:rgba(150,132,104,.30);
     --stern-schnuppe:rgba(214,180,120,.5);
     --stern-warm:rgba(176,134,78,.44);
     --stern-kalt:rgba(150,142,118,.36);
     --lichtstrahl:rgba(255,236,198,.46);
-    /* Runde 85: Der diffuse Streifen allein war zu leise — er las sich als heller Fleck, nicht
-       als Tageslicht. Dazu kommt jetzt ein Faecher einzelner Strahlen aus einer Sonne oben
-       rechts. Eigene Marke, weil er kraeftiger sein muss als der Streifen: Der Streifen ist die
-       Luft, die Strahlen sind das Licht. */
+    /* Der Faecher aus der Sonne oben rechts — eigene, kraeftigere Marke als der Streifen. */
     --sonnenstrahl:rgba(255,238,196,.92);
-    /* Runde 86: Beim Nachmessen im 4-fach vergroesserten Bild aufgefallen — die Koerner waren
-       DUNKLER als der Grund und lasen sich dadurch als Schmutzflecken. Ein Korn im Lichtstrahl
-       ist heller als seine Umgebung; das ist der ganze Grund, warum man es sieht. Deshalb zwei
-       Farben: --stern traegt das Korn im Schatten (ganz leise), --staub-licht das Korn im
-       Strahl. Gemischt wird nicht im Stilblatt, sondern beim Zeichnen, entlang der Naehe zum
-       Strahl. */
+    /* Zwei Staubfarben: --stern fuer das Korn im Schatten, --staub-licht im Strahl. Gemischt wird beim
+       Zeichnen. */
     --staub-licht:rgba(255,252,242,.95);
-    /* Runde 93, gemeldet: "man erkennt im hellmodus nicht auf der startseite dass der
-       hintergrund auch wirklich ein himmel sein soll." Bis hier war nur LICHT gebaut — ein
-       Strahl, ein Faecher, Staub darin. Dasselbe Bild waere auch ein Zimmer mit einem Fenster.
-       Was fehlte, war die Achse oben/unten und etwas, das darin steht.
-       --himmel-hoch faerbt nur die obere Haelfte und ist bewusst kuehl: Der Rest der Palette
-       ist warmes Salbeigruen, und genau der Unterschied macht oben zu Himmel. Die Deckung ist
-       so gewaehlt, dass die Farbe am oberen Rand erkennbar ist und auf halber Hoehe restlos
-       verschwunden — die Karten darunter stehen auf --paper, nicht auf Blau. */
-    /* Runde 94: Wie kraeftig der Strahlenkranz auf der Ergebnisseite steht. Zwei Marken statt
-       fester Zahlen, weil der Kranz im Hell- und im Dunkelmodus auf verschieden hellem Grund
-       liegt: Dieselbe Farbe mit derselben Deckung ist auf hellem Papier ein kleinerer
-       Unterschied als auf dunklem. Gemessen im Bildvergleich (dasselbe Bild mit und ohne
-       Kranz, Bildpunkt fuer Bildpunkt): Bei gleichen Werten kam der Hellmodus auf 29 von 255
-       Stufen, der Dunkelmodus auf 41. Der Hellmodus bekommt deshalb mehr. */
-    /* Runde 98: Der Kranz hat jetzt zwei Farbwerte statt einem. --kranz-anteil ist die
-       Spitze eines Strahls, --kranz-grund das, was ZWISCHEN zwei Strahlen stehen bleibt.
-       Warum, steht bei der Hintergrundangabe in 03-result.css.
-
-       Die Werte sind gemessen und nicht gegriffen. Beim ersten Anlauf dieser Runde hatte ich
-       die Deckkraft von .82 auf .38 gesenkt, weil zwischen den Strahlen jetzt Farbe steht und
-       die Flaeche damit mehr Farbe traegt. Das Ergebnis war unsichtbar — gemeldet als "jetzt
-       kann man den strahlenkranz gar nicht mehr sehen". Der Denkfehler: Das Auge sieht nicht
-       die MENGE Farbe, sondern den KONTRAST. Ein gleichmaessiger Hauch ueber ein Viertel der
-       Flaeche verschwindet, wo eine kleinere Flaeche mit hoher Spitze auffaellt.
-       Deshalb sind danach sechs Einstellungen im Browser durchgemessen worden statt eine
-       geraten (groesster Unterschied zum Bild ohne Kranz, hier fuer den Hellmodus):
-           Deckung .38, 44/29 →  25 Stufen auf 27 % der Flaeche   (unsichtbar)
-           Deckung .60, 46/28 →  39 Stufen auf 37 %
-           Deckung .75, 48/26 →  51 Stufen auf 49 %   ← genommen
-           Deckung .90, 50/24 →  63 Stufen auf 49 %   (zu praesent)
-       Zum Vergleich: Runde 97, die als "zu deutlich als einzelne Strahlen" gemeldet wurde,
-       lag bei 46 Stufen auf 7 % — aehnliche Spitze, aber auf einem Siebtel der Flaeche, und
-       genau das machte sie zu Speichen statt zu einem Schein.
-
-       Runde 100, nach dem ersten Blick auf ein echtes Geraet: "strahlenkranz kannst du machen"
-       — im DUNKELmodus zu leise. Der Messlauf ist diesmal ein Werkzeug (tools/mess_kranz.mjs)
-       statt eines Wegwerfskripts, weil die Zahl sonst beim naechsten Mal wieder Behauptung
-       waere. Sein Bildausschnitt ist ein anderer als der von Runde 98, deshalb sind seine
-       Flaechenzahlen mit der Tabelle darueber NICHT vergleichbar — nur hell gegen dunkel im
-       selben Lauf:
-           hell, wie oben eingestellt          47 Stufen auf 10 %
-           dunkel .65, 37/20 (bisher)          45 Stufen auf  9 %
-           dunkel .75, 42/23                   59 Stufen auf  9 %
-           dunkel .80, 44/24                   66 Stufen auf 10 %
-           dunkel .82, 45/24                   69 Stufen auf 10 %   <- genommen
-           dunkel .85, 46/25                   73 Stufen auf 10 %
-           dunkel .95, 50/27                   90 Stufen auf 10 %
-
-       Der Befund dabei ist unbequem: Die bisherige Dunkeleinstellung lag mit 45 Stufen
-       praktisch gleichauf mit dem Hellmodus (47). Nach der Zahl war nichts zu beanstanden,
-       gesehen wurde trotzdem zu wenig. Der Bildpunktunterschied ist also auch hier nicht die
-       Groesse, die das Auge liest: Auf hellem Grund VERDUNKELT der Kranz, auf dunklem Grund
-       hellt er auf, und ein Aufhellen von Fast-Schwarz traegt bei gleicher Stufenzahl weniger.
-       Die Messung sagt deshalb nicht, OB etwas zu leise ist — das sagt das Auge —, sondern nur,
-       WIE WEIT ein Schritt geht. Genommen ist das rund Anderthalbfache des Hellmodus bei
-       unveraenderter Flaeche: kraeftigere Spitze, gleiche Ausdehnung, also weiter ein Schein
-       und keine Speichen. Das Verhaeltnis Grund/Anteil bleibt bei 0,53 wie im Hellmodus. */
+    /* --himmel-hoch: kuehle Farbe nur in der oberen Haelfte, auf halber Hoehe verschwunden. */
+    /* Strahlenkranz je Modus eigene Werte: Derselbe Wert ist auf hellem Grund ein kleinerer
+       Unterschied als auf dunklem. */
+    /* --kranz-anteil ist die Spitze eines Strahls, --kranz-grund das, was zwischen zwei Strahlen
+       bleibt (Begruendung in 03-result.css).
+       Die Werte sind gemessen (tools/mess_kranz.mjs) — das Auge liest Kontrast, nicht Farbmenge; die
+       Messung sagt, wie weit ein Schritt geht, nicht ob er reicht. Dunkel braucht rund das
+       Anderthalbfache von hell. */
     --kranz-anteil:48%;
     --kranz-grund:26%;
     --kranz-deckung:.75;
@@ -192,63 +75,34 @@
     --kopf-rechts:#E6E8E0;
     --accent-ink:#F5FBFA;
     --accent-2:#BF7438;
-    /* minimal nachgedunkelt (war #9D5F2F): als Fettschrift auf der Amber-Fläche der Hinweisbänder
-       lag der alte Wert bei 4,41:1 und damit knapp unter AA; jetzt 4,60:1, auf allen übrigen
-       Untergründen ebenfalls leicht besser. */
+    /* Leicht nachgedunkelt, damit Fettschrift auf den Amber-Baendern 4,5:1 erreicht. */
     --accent-2-text:#8D552A;
-    /* Fehlerfarbe als Token statt hartkodiert — im Dunkelmodus braucht sie einen eigenen Wert.
-       Runde 93, von der Kontrastpruefung gefunden: Beide Werte waren fuer die Flaeche gerechnet,
-       auf der sie NICHT stehen. Als Fettschrift stehen sie auf dem Warnband, und das ist die
-       Fehlerfarbe zu 12 Prozent auf der Flaeche — also naeher an ihnen selbst. Gemessen 4,31
-       im Hellmodus und 3,35 im Dunkelmodus.
-
-       Der erste Versuch, das zu reparieren, ist in dieselbe Falle gelaufen: Das Band wird AUS
-       der Fehlerfarbe gemischt. Wer die Farbe heller macht, macht das Band mit heller, und der
-       Abstand waechst langsamer als gerechnet — gerechnet 4,52, gemessen 4,35. Erst der
-       Festpunkt beider Groessen stimmt. Im Browser nachgemessen, nicht nur gerechnet: hell
-       4,80:1, dunkel 4,82:1. Beide mit Abstand zur Grenze, damit die naechste Verschiebung der
-       Palette sie nicht sofort wieder darunter drueckt. */
+    /* Fehlerfarbe: steht als Fettschrift auf dem Warnband, das AUS ihr gemischt wird — beide Werte so
+       gewaehlt, dass sie dort ~4,8:1 erreichen (im Browser gemessen). */
     --danger:#A83025;
     --surface-3:#D1D1D6;
     --shadow:0 1px 2px rgba(0,0,0,.05), 0 12px 32px -12px rgba(0,0,0,.16);
     --shadow-sm:0 1px 2px rgba(0,0,0,.06);
-    /* Runde 69: Groessere Radien als Teil der Umstellung des Erscheinungsbilds. Die Marken
-       waren konsequent verwendet (radius-m 21x, radius-s 12x), der Wechsel laeuft deshalb ueber
-       sie statt ueber verstreute Einzeleingriffe. */
     --radius-l: 26px;
     --radius-m: 18px;
     --radius-s: 12px;
     /* Die Unterkante, die in dieser Formensprache den weichen Schatten ersetzt. */
     --kante:#D1D1D6;
     /* Runde 121: Liquid Glass. Tönung oben/unten, Lichtkante, Glanz, Zeilenfläche auf Glas. */
-    /* Runde 122: Hell wirkte das Glas fast weiss — weisse Toenung ueber einem ohnehin hellen
-       Grund, dazu halbweisse Zeilen. Toenung und Zeilen sind gesenkt, damit der abgedunkelte
-       Grund durchscheint; Kante und Glanz bleiben, sie machen das Glas als Glas lesbar. */
+    /* Hell: Glas wenig getoent, damit der abgedunkelte Grund durchscheint; Kante und Glanz machen es
+       als Glas lesbar. */
     --glas:rgba(255,255,255,.12); --glas-tief:rgba(255,255,255,.02);
     --glas-rand:rgba(255,255,255,.78); --glas-licht:rgba(255,255,255,.9);
     --glas-zeile:rgba(255,255,255,.34);
-    /* Runde 78, mit Japanisch dazugekommen: Fraunces, Work Sans und IBM Plex Mono bringen keine
-       CJK-Zeichen mit. Ohne ausdruecklichen Rueckfall waehlt der Browser dafuer irgendeine
-       Schrift — auf Windows haeufig eine, die neben der lateinischen Schrift sichtbar fremd
-       wirkt. Die genannten Familien sind die Systemschriften von iOS/macOS (Hiragino), Windows
-       (Yu Gothic, Meiryo) und Android/Linux (Noto). Fuer die uebrigen sechs Sprachen aendert
-       sich nichts: Sie finden ihre Zeichen in der ersten Familie und kommen nie so weit. */
+    /* Rueckfall fuer Japanisch (die eingebetteten Schriften haben keine CJK-Zeichen). */
     --cjk: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
     --cjk-sans: 'Hiragino Sans', 'Yu Gothic', Meiryo, 'Noto Sans JP', sans-serif;
-    /* Runde 126, Auftrag des Inhabers: "die schrift ist nicht einheitlich in der app." Bis hier
-       standen drei Familien nebeneinander — Fraunces in Titeln, SF im Text, IBM Plex Mono in Zahlen,
-       Daten und kleinen Ueberschriften. Jetzt steht ueberall die Systemschrift, wie in iOS selbst.
-       --serif und --mono bleiben als Namen (77 Stellen benutzen sie) und zeigen auf --sans.
-       Fraunces traegt nur noch die Wortmarke (--marke); fuer die persoenlichen Codes steht SF Mono
-       (--code), weil dort "l" und "1" beim Abtippen unterscheidbar bleiben muessen. */
+    /* Schrift: SF ueberall (Entscheidung des Inhabers). --serif und --mono zeigen auf --sans. Fraunces
+       nur fuer den Namen (--marke) und den Startseiten-Titel; SF Mono (--code) fuer Codes, damit l und
+       1 unterscheidbar sind. */
     --marke: 'Fraunces', ui-serif, Georgia, var(--cjk);
     /* Runde 131: --marke ist verbindlich die Schrift des NAMENS "Lucenta" — Kopfzeile, Startbild,
        Teilbild (SHARE_SERIF in 10-ergebnisbild.js). Wo der Name als Marke steht, steht er so. */
-    /* Runde 114, Auftrag des Inhabers "insgesamt wie iOS": Text und Bedienung stehen in der
-       Systemschrift — auf dem iPhone SF Pro. Das ist der einzelne groesste Schritt in Richtung
-       iOS, weil jede Beschriftung, jede Zeile und jeder Knopf ihn mitmacht. Fraunces bleibt die
-       Schrift der grossen Titel (--serif) und damit die Marke; IBM Plex Mono bleibt fuer Codes
-       und Zahlen. Work Sans ist damit nirgends mehr gesetzt. */
     --sans: -apple-system, system-ui, 'SF Pro Text', ui-sans-serif, var(--cjk-sans);
     --serif: var(--sans);
     --mono: var(--sans);
@@ -275,19 +129,14 @@
       --dim-e:#CE7539;
       --dim-a:#25A89D;
       --dim-s:#D06694;
-      /* Im Dunkelmodus tragen die Datenfarben als Schrift schon 5,2 bis 6,3:1 auf --paper — der
-         Zwilling ist dort dieselbe Farbe. Er steht trotzdem hier: Eine Marke, die nur in einem
-         der beiden Modi erklaert ist, faellt im anderen auf ihren Rueckfall zurueck, und der
-         waere hier die Akzentfarbe statt der Farbe der eigenen Dimension. */
+      /* Im Dunkelmodus ist der Schrift-Zwilling dieselbe Farbe; er steht trotzdem hier, sonst fiele er
+         auf den Rueckfall (Akzent) zurueck. */
       --dim-o-text:#8E78E0;
       --dim-c-text:#4E93E8;
       --dim-e-text:#CE7539;
       --dim-a-text:#25A89D;
       --dim-s-text:#D06694;
-      /* Der Tageshimmel gehoert nicht in die Nacht. Er steht trotzdem hier, mit Deckung 0: Marken,
-         die nur im Hellmodus erklaert sind, gelten im Dunkelmodus WEITER — der Dunkelblock
-         ueberschreibt nur, was er nennt. Dass die Wolken dort trotzdem nicht erscheinen, haengt
-         sonst allein an einer Abfrage im Skript, und ein einzelnes Schloss ist keines. */
+      /* Tageshimmel mit Deckung 0: Marken, die nur hell erklaert sind, gelten sonst dunkel weiter. */
       --kranz-anteil:45%;
       --kranz-grund:24%;
       --kranz-deckung:.82;
@@ -317,13 +166,8 @@
     }
   }
   :root[data-theme="dark"]{
-    /* Runde 94: Diese sechs Marken haben in diesem Block gefehlt. Sie SOLLTEN seit Runde 93
-       hier stehen — die Einfuegung ist damals zweimal in den Block darueber gelaufen, weil
-       ein Suchmuster mit vier Leerzeichen Einrueckung auch in einer Zeile mit sechs
-       Leerzeichen passt. Folge: Wer ausdruecklich "dunkel" gewaehlt hatte, bekam die
-       Himmelsfarben des HELLMODUS vererbt, und dass trotzdem keine Wolken erschienen, hing
-       allein an einer Abfrage im Skript. Genau davor warnt der Kommentar, den dieselbe
-       Einfuegung mitgebracht hat. */
+    /* Muss in diesem Block stehen (nicht nur im Media-Block), sonst erbt "dunkel gewaehlt" die
+       Himmelsfarben des Hellmodus. */
     --kranz-anteil:45%;
     --kranz-grund:24%;
     --kranz-deckung:.82;
@@ -349,10 +193,8 @@
     --dim-e:#CE7539;
     --dim-a:#25A89D;
     --dim-s:#D06694;
-    /* Im Dunkelmodus tragen die Datenfarben als Schrift schon 5,2 bis 6,3:1 auf --paper — der
-       Zwilling ist dort dieselbe Farbe. Er steht trotzdem hier: Eine Marke, die nur in einem
-       der beiden Modi erklaert ist, faellt im anderen auf ihren Rueckfall zurueck, und der
-       waere hier die Akzentfarbe statt der Farbe der eigenen Dimension. */
+    /* Im Dunkelmodus ist der Schrift-Zwilling dieselbe Farbe; er steht trotzdem hier, sonst fiele er
+       auf den Rueckfall (Akzent) zurueck. */
     --dim-o-text:#8E78E0;
     --dim-c-text:#4E93E8;
     --dim-e-text:#CE7539;
@@ -382,51 +224,15 @@
 
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
-  /* ---------- Die Seite laesst sich nicht seitlich schieben (Runde 91) ----------
-     Rueckmeldung: "es gibt einen bug in der vergleichsergebnis seite wo sich die gesamte
-     web-app seite von links nach rechts und rechts nach links ueber die seitengrenzen hinaus
-     verschieben laesst und auch der schein hinter dem portraet ... verschiebt sich dann."
-
-     Zwei Dinge waren daran falsch, und nur eines davon war die eigentliche Ursache.
-
-     ERSTENS die Absicherung selbst: overflow-x:hidden macht ein Element zum Bildlaufbehaelter.
-     Der Inhalt ist dann unsichtbar, aber die Flaeche IST scrollbar — nur eben ohne Balken. Auf
-     dem Telefon heisst das: Man kann sie schieben. Genau das beschreibt die Rueckmeldung, und
-     genau deshalb war in Chromium nichts zu messen (dort faengt es der Seitenrand ab) und auf
-     dem Geraet trotzdem etwas zu spueren. overflow-x:clip schneidet ab, OHNE einen
-     Bildlaufbehaelter zu erzeugen — es gibt dann nichts mehr zu schieben. Die y-Achse bleibt
-     dabei sichtbar: Bei clip auf einer Achse bleibt visible auf der anderen erhalten (anders
-     als bei hidden, wo visible zu auto wird und die klebende Kopfleiste braeche).
-     overscroll-behavior-x:none nimmt zusaetzlich das Gummiband am Rand.
-
-     ZWEITENS, und wichtiger: Drei Stellen im Quelltext beriefen sich auf diese Absicherung als
-     FREIBRIEF zum Ueberlaufen ("sichtbar war davon nichts, body hat overflow-x:hidden"). Eine
-     Absicherung, hinter der man Fehler ablegt, ist keine mehr. Die Fehlersuche misst deshalb
-     seit Runde 91 mit ABGENOMMENER Verdeckung — sie sieht jetzt, was diese Zeile verbirgt. */
-  /* overscroll-behavior-y:none nimmt zusaetzlich das vertikale Gummiband (Runde 101): In der
-     iOS-Huelle liess sich sonst ueber den oberen Rand hinausziehen, und in dem Streifen — auch
-     neben der Dynamic Island — blitzte die WKWebView-Grundflaeche durch, weil der Body-Inhalt
-     beim Ueberdehnen wegwandert. Im Browser faellt das nicht auf, auf dem Geraet schon. */
-  /* background gehoert auf die Wurzel, nicht nur auf den body (Runde 101): In der iOS-Huelle
-     malt der body beim Scrollen den obersten Safe-Area-Streifen nicht, und darunter blitzte die
-     native WKWebView-Grundfarbe durch (capacitor.config ios.backgroundColor #F5F6EF, hell). In
-     Hell faellt das nicht auf, im Dunkelmodus erschien ein weisser Balken oben. Die Wurzel fuellt
-     den ganzen Viewport inkl. Safe Area und scrollt nicht weg; --paper loest pro Thema auf. */
-  /* Runde 109, auf ausdrueckliche Ansage des Inhabers: "Doppeltipp-Zoom abschalten."
-     Der Punkt lag seit Runde 107 bei ihm, weil die naheliegende Umsetzung —
-     `user-scalable=no`/`maximum-scale=1` im Viewport — eine der haeufigsten
-     Barrierefreiheits-Verfehlungen mobiler Oberflaechen ist. Die steht deshalb NICHT hier: Der
-     Viewport in `index.head.html` ist unveraendert, Aufziehen mit zwei Fingern funktioniert
-     weiter.
-     `touch-action:manipulation` schaltet genau die eine Geste ab, die gemeint war. Der Wert ist
-     als "Schieben und Aufziehen erlaubt, zusaetzliche Gesten wie Doppeltipp-Zoom nicht"
-     definiert — er trifft also die Bitte woertlich und nichts darueber hinaus.
-     An der Wurzel, weil die wirksame Geste der Durchschnitt der Werte von der beruehrten
-     Stelle bis zur Wurzel ist: Ein Wert hier gilt fuer das ganze Dokument. Auf den
-     Bedienelementen stand er seit Runde 60 schon (siehe weiter unten) — nur auf Fliesstext und
-     Karten nicht, und genau dort wurde der Doppeltipp ausgeloest.
-     Nebeneffekt, der hier willkommen ist: Die Wartezeit, mit der WebKit auf einen moeglichen
-     zweiten Tipp wartet, faellt damit ueberall weg statt nur auf Knoepfen. */
+  /* Die Seite laesst sich nicht seitlich schieben: overflow-x:clip statt hidden — hidden macht einen
+     Bildlaufbehaelter, der sich auf dem Telefon schieben laesst und die klebende Kopfleiste bricht.
+     Kein Freibrief zum Ueberlaufen: Die Fehlersuche misst mit abgenommener Verdeckung. */
+  /* overscroll-behavior-y:none: sonst liess sich in der iOS-Huelle ueber den oberen Rand ziehen, und
+     die WKWebView-Flaeche blitzte durch. */
+  /* Hintergrund auf der Wurzel, nicht nur auf body: sonst erschien in der Huelle im Dunkelmodus oben
+     ein heller Balken. */
+  /* Kein Doppeltipp-Zoom (Entscheidung des Inhabers): touch-action:manipulation an der Wurzel. Bewusst
+     NICHT user-scalable=no — Aufziehen mit zwei Fingern bleibt (Barrierefreiheit). */
   html{
     overflow-x:clip; overscroll-behavior-x:none; overscroll-behavior-y:none;
     background:var(--paper);
@@ -441,104 +247,45 @@
     overscroll-behavior-x:none;
     overscroll-behavior-y:none;
   }
-  /* Runde 109, auf ausdrueckliche Ansage des Inhabers: "Textmarkierung unterbinden."
-     Auch dieser Punkt lag bei ihm, weil bis hierher bewusst das Gegenteil galt: markierbar war
-     alles ausser den Bedienelementen, mit der Begruendung "Fliesstext bleibt bewusst
-     markierbar". Der Inhaber hat entschieden, und das Argument dafuer ist ein gutes: Lucenta ist
-     eine App, keine Webseite, und in einer iOS-App laesst sich Beschriftungstext nicht durch
-     langes Druecken markieren. Die Lupe, die beim Wischen ueber einer Aussage aufging, war das
-     deutlichste verbliebene Zeichen "das hier ist eine Webseite".
-     EINE Ausnahme steht hier, und sie ist keine Unschaerfe: der eigene Code. Er ist die einzige
-     Angabe der App, deren Verlust endgueltig ist (die Begruendung steht bei .code-box in
-     index.body.html). Es gibt einen Kopierknopf daneben, aber wenn der einmal nicht greift, muss
-     der Code mit der Hand herauszuholen sein. Eine Sackgasse an dieser Stelle waere teurer als
-     die gewonnene Anmutung.
-     EINGABEFELDER brauchen KEINE Ausnahme, und das ist gemessen statt angenommen: Hier stand
-     zuerst `input, textarea, #myCode`. In der Gegenprobe — Ausnahme heraus, Wurzelregel behalten —
-     blieb das Namensfeld auf WebKit UND Chromium markierbar, waehrend der Code sofort auf `none`
-     fiel. Der Grund steht in CSS-UI: Auf editierbaren Elementen ist der benutzte Wert von
-     user-select immer `text`, unabhaengig von der Vererbung. Die Angabe war damit wirkungslos und
-     ist heraus — dass das Feld tatsaechlich markierbar bleibt, prueft `pruef-app` weiter, dort
-     als ERGEBNIS und nicht als Regel. */
+  /* Keine Textmarkierung (Entscheidung des Inhabers: App, keine Webseite). Einzige Ausnahme: der
+     eigene Code (#myCode), dessen Verlust endgueltig waere. Eingabefelder brauchen keine Ausnahme —
+     auf editierbaren Elementen gilt user-select immer text (pruef-app prueft das). */
   html{ -webkit-user-select:none; user-select:none; }
   #myCode{ -webkit-user-select:text; user-select:text; }
   ::selection{background:var(--accent);color:var(--accent-ink);}
   a{color:var(--accent-strong);}
   button{font-family:inherit;}
 
-  /* Backlog Runde 26, Punkt 4 — Fokusring-Audit, ausgezählt statt geschätzt: 18 Klassen brachten
-     einen eigenen Ring mit, ein gutes Dutzend weiterer Bedienelemente fiel auf den Standardring
-     des Systems zurück (andere Farbe, anderer Abstand, im Dunkelmodus teils kaum sichtbar), und
-     genau eine Stelle entfernte ihn ersatzlos (.name-input, siehe dort). Statt zwölf Einzelregeln
-     nachzutragen steht der Ring jetzt einmal als Grundregel für alle echten Bedienelemente — die
-     bestehenden Sonderregeln überschreiben nur noch den Abstand, wo eine Komponente ihn braucht.
-     Bewusst NICHT als *:focus-visible: die neun Ansichten sind seit Runde 45 mit tabindex="-1"
-     programmatisch fokussierbar, damit Vorleseprogramme den Wechsel bemerken — ein Ring um die
-     ganze Ansicht bei jeder Navigation wäre das Gegenteil einer Verbesserung. */
+  /* Ein Fokusring fuer alle echten Bedienelemente. Bewusst nicht *:focus-visible: Die Ansichten sind
+     mit tabindex=-1 fokussierbar (fuer Vorleseprogramme) und bekaemen sonst bei jedem Wechsel einen
+     Ring. */
   button:focus-visible, a:focus-visible, input:focus-visible,
   textarea:focus-visible, select:focus-visible, summary:focus-visible{
     outline:2px solid var(--accent-strong); outline-offset:2px;
   }
-  /* Runde 83, im gerenderten Bild gefunden: Die Ansichten bekommen beim Wechsel programmatisch
-     den Fokus, damit Vorleseprogramme ihn bemerken (tabindex="-1", seit Runde 45). Chromium
-     zeichnet daraufhin seinen eigenen Fokusring — einen orangen Rahmen (#E59700) um die GANZE
-     Ansicht, bei jedem Wechsel, in der Markenfarbe von niemandem.
-     Er hilft dabei keinem: Mit der Tabulatortaste ist ein tabindex="-1" gar nicht erreichbar,
-     es gibt also niemanden, der auf diesem Weg dort landet und den Ring braeuchte. Die
-     Fokusringe, die etwas sagen, stehen eine Regel darueber und bleiben unangetastet. */
+  /* Kein Fokusring um ganze Ansichten (tabindex=-1, per Tab ohnehin nicht erreichbar). */
   .view:focus{ outline:none; }
 
-  /* Feedback-Runde 45: Wie sich das Antippen anfühlt. Der graue Aufblitz, den mobile Browser über
-     jede Schaltfläche legen, gehört zu den deutlichsten Merkmalen, an denen man eine Webseite von
-     einer App unterscheidet. Er ist hier abgeschaltet — aber nur, weil unmittelbar darunter ein
-     eigener Druckzustand definiert wird. Ohne Ersatz wegzunehmen wäre eine Verschlechterung,
-     keine Politur.
-     Runde 109: Hier standen zusaetzlich `touch-action:manipulation` und `user-select:none`. Beide
-     gelten seit dieser Runde an der Wurzel fuer das ganze Dokument (Begruendung dort) und sind
-     hier nur noch Wiederholung. Sie sind entfernt und nicht stehen gelassen: Zwei Stellen, die
-     dasselbe sagen, driften auseinander, sobald jemand eine davon aendert. */
+  /* Kein grauer Tipp-Aufblitz — ersetzt durch eigene Druckzustaende (Abschnitt am Ende dieses
+     Stilblatts). */
   button, summary, .scale-btn, .avatar-color-swatch, .drawer-tab{
     -webkit-tap-highlight-color:transparent;
   }
-  /* Die Druckzustände selbst stehen gesammelt am Ende dieses Stylesheets (Abschnitt
-     „Druckzustände"), damit sie nicht von später notierten :hover-Regeln einzelner Komponenten
-     überschrieben werden — genau das war bei .btn-hero der Fall. */
+  /* Die Druckzustaende stehen gesammelt am Ende dieses Stilblatts, damit spaetere :hover-Regeln sie
+     nicht ueberschreiben. */
   h1,h2,h3{font-family:var(--serif);font-weight:600;text-wrap:balance;margin:0;}
   /* Runde 126: Titel in SF tragen das Gewicht von iOS (grosse Titel fett). Fraunces war mit 500
      kraeftig genug; SF wirkt bei 500 duenn. */
   h1{font-weight:700;letter-spacing:-.01em;}
 
-  /* Backlog Runde 28, Punkt 2 — Textvergrößerung/Reflow nach WCAG 1.4.4, erstmals tatsächlich
-     bei 200 % nachgestellt (390px Gerätebreite entspricht dann rund 195px Layoutbreite). Befund:
-     Deutsche Komposita sind bei halber Breite länger als die Zeile — „Wissenschaft",
-     „Sternzeichen", „Persönlichkeitsporträt" und „Vier-Buchstaben-Typ" liefen im Hero rechts aus
-     dem Bild, der Text war dort schlicht nicht mehr lesbar. Bei normaler Breite passen dieselben
-     Wörter, weshalb das in keiner der bisherigen Mobil-Prüfungen (375/390/360px) auffallen konnte.
-     overflow-wrap:break-word greift ausschließlich dann, wenn ein Wort sonst überliefe — bei
-     390px ändert sich dadurch kein einziger Umbruch, bei 195px bleibt der Text vollständig
-     lesbar. hyphens:auto kommt dazu, damit die erzwungenen Brüche im deutschen Fließtext an
-     Silbengrenzen liegen (das lang-Attribut wird vom Anti-Flacker-Skript gesetzt) statt mitten
-     im Wort. */
+  /* Reflow bei 200 % Textgroesse (WCAG 1.4.4): overflow-wrap:break-word greift nur, wenn ein Wort
+     sonst ueberliefe; hyphens:auto legt solche Brueche an Silbengrenzen. */
   h1, h2, h3, p, li, summary, label, .btn, td, th{
     overflow-wrap:break-word;
   }
-  /* Runde 100, im iOS-Simulator aufgefallen — und zwar nur dort. hyphens:auto war oben
-     ausdrücklich als Notnagel für den 200-%-Fall gedacht: bei 195px Layoutbreite sollen die
-     dann unvermeidlichen Brüche an Silbengrenzen liegen. Bei normaler Breite sollte die Regel
-     gar nicht zum Zug kommen.
-
-     Auf WebKit kommt sie sehr wohl zum Zug. In einer einzigen Berichtskarte standen „The-men",
-     „Ge-spräch", „dei-ne" und „tat-sächlich", in „Verstehen" fünf Trennungen in einem Absatz.
-     Gesehen habe ich das nie, weil das Chromium in meiner Prüfumgebung keine deutschen
-     Trennmuster mitbringt und hyphens:auto dort stillschweigend nichts tut. Nicht WebKit war
-     der Ausreißer, sondern meine Messumgebung — jede Beurteilung von Zeilenumbrüchen aus 99
-     Runden erging über eine Einstellung, die im Bild gar nicht wirkte.
-
-     Die Grenzen holen die ursprüngliche Absicht zurück: erst ab acht Zeichen trennen, und nie
-     mit weniger als vier Zeichen davor. Das entfernt „The-men" (zu kurz), „Ge-spräch" und
-     „au-ßerhalb" (zu wenig davor) und behält „Offen-heit" und „außer-halb", also genau die
-     Brüche, für die die Regel gedacht war. Die -webkit-Eigenschaften stehen daneben, weil
-     hyphenate-limit-chars erst ab Safari 17 gilt; limit-lines verhindert Trennleitern. */
+  /* WebKit trennt mit hyphens:auto auch bei normaler Breite ("The-men", "Ge-spraech"); Chromium hat
+     keine deutschen Muster und zeigt das nicht. Deshalb: erst ab acht Zeichen, mindestens vier davor;
+     -webkit-Eigenschaften, weil hyphenate-limit-chars erst ab Safari 17 gilt. */
   h1, h2, h3, p, li{
     hyphens:auto;
     hyphenate-limit-chars:8 4 3;
@@ -549,12 +296,7 @@
   p{margin:0;line-height:1.6;}
   .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
 
-  /* Feedback-Runde 45: Auf Geräten mit Aussparung und Home-Leiste lief der Inhalt bisher bis an
-     den physischen Bildschirmrand — im Vollbild (zum Home-Bildschirm hinzugefügt, ohne
-     Browserleisten) rutscht der Fußbereich damit unter die Home-Leiste und die seitlichen Ränder
-     im Querformat unter die abgerundeten Ecken. Die sicheren Ränder kommen zu den bestehenden
-     Abständen hinzu, statt sie zu ersetzen: auf Geräten ohne Aussparung liefert env() den
-     Ersatzwert 0px, dort ändert sich also nichts. */
+  /* Sichere Raender kommen zu den Abstaenden dazu; ohne Aussparung liefert env() 0. */
   #shell{
     max-width:640px;
     margin:0 auto;
@@ -571,22 +313,15 @@
   }
 
   /* top focus-line: the "clarity" motif — sharpens as you progress */
-  /* Runde 74, gemeldet vom iPhone: Fortschrittsbalken und Kopfleiste hoerten 20px vor dem
-     Bildschirmrand auf, weil sie INNERHALB der Polsterung von #shell liegen. Gemessen bei 390px
-     Fensterbreite: beide 350px breit, links wie rechts 20px Luft. Sie ziehen die Polsterung
-     jetzt ueber negative Aussenabstaende zurueck und gehen damit bis an die Kante.
-     Bewusst ueber die Marken von #shell und nicht ueber 100vw: vw zaehlt auf dem Schreibtisch
-     die Bildlaufleiste mit und erzeugt dort einen Ueberhang. */
+  /* Fortschrittsbalken und Kopfleiste gehen bis an die Kante: Sie ziehen die Polsterung von #shell
+     ueber negative Aussenabstaende zurueck (nicht 100vw — das zaehlt die Bildlaufleiste mit). */
   #focusline{
     margin-left:calc(-1 * var(--rand-links));
     margin-right:calc(-1 * var(--rand-rechts));
-    /* z-index 31: eine Stufe ueber der Kopfleiste (30). Seit Runde 102 fuellt die Kopfleiste den
-       Safe-Area-Streifen bis unter die Dynamic Island (top:0 + padding-top), liegt also unter der
-       Fortschrittslinie — diese muss darueber liegen, sonst verschwaende sie hinter der Leiste. */
+    /* z-index 31: ueber der Kopfleiste (30), die bis unter die Dynamic Island reicht. */
     position:sticky; top:env(safe-area-inset-top, 0px); z-index:31;
-    /* Kein width:100% — das bezieht sich auf die INHALTSBREITE des Elternelements und haette
-       den Balken trotz der negativen Aussenabstaende bei 350px festgehalten (gemessen: links 0,
-       rechts 40). Ein Block fuellt die verfuegbare Breite von selbst. */
+    /* Kein width:100% — das bezoege sich auf die Inhaltsbreite und hielte den Balken trotz negativer
+       Raender fest. */
     height:3px;
     background:var(--line);
     margin-bottom:0;
@@ -603,26 +338,14 @@
     transition:width .4s ease;
   }
 
-  /* Feedback: die obere Leiste (Wortmarke links, Schubladen-Symbol rechts) sollte beim Scrollen auf
-     jedem Screen sichtbar bleiben statt wegzuscrollen — sticky statt statisch, direkt unterhalb der
-     bereits vorhandenen 3px-Fokuslinie (die ist schon sticky, siehe #focusline), damit beide bündig
-     als eine durchgehende, fixierte Einheit wirken. Der Hintergrund entspricht bewusst genau
-     var(--paper) — das ist zugleich die Seitenhintergrundfarbe, wodurch die Leiste optisch nahtlos
-     über die volle Breite wirkt, obwohl #shell selbst schmaler ist. Die Trennlinie erscheint erst,
-     sobald tatsächlich gescrollt wurde (.scrolled, per JS gesetzt) — im Ruhezustand ganz oben bleibt
-     die Leiste randlos, ähnlich wie native iOS-Navigationsleisten. */
+  /* Die Kopfleiste klebt beim Scrollen, direkt unter der Fokuslinie. Die Trennlinie erscheint erst
+     nach dem Scrollen (.scrolled), wie in iOS. */
   header.top{
     display:flex; align-items:center; justify-content:space-between;
-    /* Runde 102, vom Geraet gemeldet: Ueber der Leiste war ein Streifen frei, in dem der
-       Seitenhintergrund (im Dunkelmodus der Sternenhimmel) durchschien — die Leiste hing nicht an
-       der Dynamic Island. Sie beginnt jetzt am oberen Rand (top:0) und schiebt ihren Inhalt ueber
-       padding-top unter die Island; die Balkenflaeche reicht damit nahtlos bis an die Island. Der
-       fruehere top-Versatz (--fokuslinie-hoehe fuer den Fortschrittsbalken) steckt jetzt in der
-       oberen Polsterung. */
+    /* Die Leiste beginnt bei top:0 und schiebt ihren Inhalt per padding-top unter die Dynamic Island —
+       sonst schien oben ein Streifen Hintergrund durch. */
     padding:calc(16px + var(--fokuslinie-hoehe) + env(safe-area-inset-top, 0px)) 0 14px;
-    /* Runde 73: Der Versatz stand auf 3px — der Hoehe des Fortschrittsbalkens, BEVOR er in
-       Runde 69 auf 10px wuchs. Die Leiste ueberlappte ihn beim Scrollen seither um 7px. Die
-       Marke haelt beide jetzt zusammen, damit sich das nicht wiederholt. */
+    /* Der Versatz haengt an --fokuslinie-hoehe, damit Leiste und Balken sich nicht ueberlappen. */
     /* Die Flaeche geht bis an die Kante, der Inhalt bleibt buendig mit dem Text darunter:
        negativer Aussenabstand nach aussen, gleich grosse Polsterung nach innen. */
     margin-left:calc(-1 * var(--rand-links));
@@ -630,16 +353,9 @@
     padding-left:var(--rand-links);
     padding-right:var(--rand-rechts);
     position:sticky; top:0; z-index:30;
-    /* Der Hintergrund war exakt --paper und damit nicht von der Seite zu unterscheiden — vor
-       einem bewegten Sternenhimmel sah die Leiste aus wie ein Stueck Himmel, in dem zufaellig
-       keine Sterne fliegen. Ein flacher Verlauf von links nach rechts gibt ihr eine eigene
-       Flaeche, ohne sie als Kasten abzusetzen. */
-    /* Runde 102: Liquid Glass (iOS 26). Die Kopfleiste ist die funktionale Navigations-Schicht und
-       schwebt ueber dem Inhalt — durchscheinend mit Unschaerfe, sodass Inhalt (und der Sternenhimmel)
-       darunter durchscheint, waehrend die Leiste lesbar bleibt (regular-Variante: blur + saturate
-       heben die Helligkeit an). Der Tint bleibt bewusst recht deckend (74 %), damit die Wortmarke den
-       Kontrast haelt. Der fruehere volldeckende Verlauf bleibt als Fallback, wenn die WebView kein
-       backdrop-filter kann oder die Person "Transparenz reduzieren" gewaehlt hat. */
+    /* Ein flacher Verlauf gibt der Leiste eine eigene Flaeche, ohne Kasten. */
+    /* Liquid Glass: Die Kopfleiste schwebt als Navigationsschicht ueber dem Inhalt (blur + saturate,
+       Tint 74 % fuer den Kontrast der Wortmarke). Der deckende Verlauf bleibt als Rueckfall. */
     background:linear-gradient(96deg, color-mix(in srgb, var(--kopf-links) 74%, transparent) 0%, color-mix(in srgb, var(--kopf-rechts) 74%, transparent) 68%, color-mix(in srgb, var(--kopf-rechts) 74%, transparent) 100%);
     -webkit-backdrop-filter:blur(20px) saturate(160%);
     backdrop-filter:blur(20px) saturate(160%);
@@ -657,23 +373,13 @@
       -webkit-backdrop-filter:none; backdrop-filter:none;
     }
   }
-  /* ---------- Runde 106: die zweite Tuer zu derselben Regel ----------
-     Das Medienmerkmal darueber ist auf dem iPhone toter Code. In Runde 105 am Geraet gemessen,
-     nicht geraten: WebKit auf iOS 27 bejaht WEDER `reduce` NOCH `no-preference` — ein
-     unterstuetztes Merkmal muesste genau eines bejahen. Wer "Transparenz reduzieren" einschaltet
-     und "Kontrast erhoehen" nicht, behielt damit genau das Glas, das er abbestellt hat.
-
-     Die iOS-Huelle liest die Einstellung nativ (`UIAccessibility.isReduceTransparencyEnabled`,
-     `MainViewController.swift`) und haengt `data-transparenz="reduziert"` an `:root` — vor dem
-     ersten Zeichnen ueber ein UserScript, danach bei jeder Aenderung. Das Merkmal bleibt
-     trotzdem stehen: Es ist im Chromium der Pruefungen der gemessene Weg, und eine kuenftige
-     WebKit-Fassung, die es lernt, braucht dann keine Huelle.
-
-     Diese Begruendung steht EINMAL, hier. Die drei weiteren Tueren (Schublade/Fenster und der
-     Segmentwaehler in dieser Datei, der Schieber in 08-formulare-und-dialoge.css) verweisen
-     hierher. Beide Fassungen jeder Regel muessen dieselben Erklaerungen tragen, sonst faellt
-     eine Aenderung nur auf einer Seite an — `pruefeTransparenzTueren` in build.js vergleicht
-     sie deshalb Deklaration fuer Deklaration und bricht den Bau ab, wenn sie auseinanderlaufen. */
+  /* ---------- Die zweite Tuer zu derselben Regel ----------
+     WebKit auf dem iPhone kennt prefers-reduced-transparency nicht (am Geraet gemessen). Die
+     iOS-Huelle liest die Einstellung nativ (MainViewController.swift) und setzt
+     data-transparenz="reduziert" an :root. Das Medienmerkmal bleibt fuer Chromium und kuenftige
+     WebKit-Fassungen.
+     Diese Begruendung steht EINMAL, hier; die anderen Tueren verweisen hierher. Beide Fassungen jeder
+     Regel muessen gleich sein — pruefeTransparenzTueren in build.js bricht sonst ab. */
   :root[data-transparenz="reduziert"] header.top{
     background:linear-gradient(96deg, var(--kopf-links) 0%, var(--kopf-rechts) 68%, var(--kopf-rechts) 100%);
     -webkit-backdrop-filter:none; backdrop-filter:none;
@@ -684,46 +390,20 @@
     display:flex; align-items:center; gap:8px;
     background:none; border:none; padding:0; margin:0; color:inherit; cursor:pointer;
   }
-  /* Feedback-Runde 42: Fokusring-Abstände waren über die App verteilt 1/2/3/4px. Runde Flächen
-     (Buttons mit Pillen- oder Kreisform) behalten bewusst 3px, weil der Ring dort sonst optisch
-     an der Rundung klebt; alle rechteckigen Elemente liegen jetzt einheitlich auf 2px. Die
-     Wortmarke sitzt direkt neben dem Schubladen-Symbol und übernimmt dessen 3px. */
+  /* Fokusring-Abstand: runde Flaechen 3px, rechteckige 2px. */
   .wordmark:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
-  /* Das Marken-Zeichen in der Kopfzeile (Feedback-Runde 50): dieselbe Konstruktion wie das
-     App-Symbol — Teal-Feld, ausgespartes regelmäßiges Fünfeck —, nur ohne Verlauf, weil ein Verlauf auf 21px
-     nicht als Tiefe, sondern als Unsauberkeit gelesen würde. flex-shrink:0, damit das Zeichen bei
-     starker Textvergrößerung nicht als Erstes nachgibt (siehe Zoom-Prüfung Runde 48). */
+  /* Marken-Zeichen wie das App-Symbol, ohne Verlauf (auf 21px unsauber). flex-shrink:0 fuer grosse
+     Textgroessen. */
   .wordmark .brandmark{display:inline-flex;flex-shrink:0;line-height:0;}
-  /* Runde 92: Wer Lucenta+ hat, sieht das jetzt oben in der Leiste. Das ist keine Zierde, es ist
-     die Antwort auf eine Frage, die sich sonst nur ueber Umwege beantworten laesst — "habe ich
-     das eigentlich noch?". Das Zeichen sitzt direkt an der Wortmarke statt daneben: Der bezahlte
-     Name ist "Lucenta+", nicht "Lucenta" mit einem Abzeichen. Das negative Aussenmass hebt die
-     8px Luecke der Flexbox genau auf, sodass beide Zeichen zusammenstossen. */
+  /* Lucenta+ sitzt direkt an der Wortmarke (der Name ist "Lucenta+"); der negative Abstand hebt die
+     Flex-Luecke auf. */
   .wordmark-plus{
     font-family:var(--serif); font-size:19px; font-weight:600; line-height:1;
     color:var(--accent); margin-left:-8px; flex-shrink:0;
   }
-  /* Runde 104: Hier standen vier Deklarationen OHNE Selektor. In Runde 99 wurde das
-     Beta-Abzeichen entfernt und dabei nur die Zeile `.wordmark-beta{` geloescht, nicht ihr
-     Rumpf. Das ist kein Schoenheitsfehler: Ein CSS-Parser sammelt beim Aufraeumen so lange
-     Zeichen fuer einen Selektor, bis die naechste `{` kommt — und das war die von `.tagline`.
-     Die verwaisten Zeilen samt `.tagline`-Selektor wurden dadurch EINE ungueltige Regel, und
-     die ganze Regel fiel weg. Gemessen auf WebKit und Chromium: `.tagline` existierte im
-     geparsten Stilblatt nicht, die Bezeichnung im Kopf und der Hinweis im Fragebogen standen
-     seit fuenf Runden auf 16px Grotesk statt 12px Monospace. `pruefeWaisen` in `build.js`
-     bricht jetzt ab, bevor das ein zweites Mal ungesehen durchgeht. */
   .tagline{font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:.02em;}
-  /* Runde 91, von der neuen Ueberlauf-Pruefung gefunden: Bei 320 Bildpunkten Breite standen im
-     Kopf 161 (Wortmarke) plus 142 (Bezeichnung und Knopf) = 303 Bildpunkte in 280 verfuegbaren.
-     Beide Kinder tragen zwar flex-shrink:1, aber min-width:auto — und die kleinstmoegliche
-     Breite eines Flex-Elements ist die seines laengsten Wortes. "EINSTELLUNGEN" ist ein Wort,
-     also schrumpfte nichts, und die rechte Gruppe wurde um 23 Bildpunkte nach draussen
-     geschoben. Sichtbar war davon nichts, weil die Verdeckung es abfing — genau die
-     Gewohnheit, die diese Runde abstellt.
-
-     min-width:0 hebt die Sperre auf, die drei Zeilen darunter kuerzen sauber mit Auslassung
-     statt hart abzuschneiden. Die Wortmarke behaelt Vorrang: Sie ist der Name, die Bezeichnung
-     daneben nur Kontext. */
+  /* min-width:0, damit die rechte Gruppe bei 320px kuerzt statt aus dem Bild zu ragen (ein
+     Flex-Element ist sonst mindestens so breit wie sein laengstes Wort). Die Wortmarke hat Vorrang. */
   .header-right{display:flex;align-items:center;gap:12px;min-width:0;}
   .header-right #viewLabel{
     min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
@@ -734,11 +414,8 @@
     display:flex;align-items:center;justify-content:center;cursor:pointer;
     transition:border-color .15s ease,color .15s ease;
   }
-  /* Feedback: als iPhone-App gedacht, kein Browser mehr — :hover-Regeln bleiben auf echte
-     Zeigegeräte beschränkt (@media (hover:hover)), sonst bleibt ein Button nach dem Antippen auf
-     iOS oft optisch im "Hover"-Zustand hängen, bis irgendwo anders hingetippt wird. Betrifft alle
-     :hover-Regeln in dieser Datei, jeweils einzeln an ihrer bisherigen Stelle eingefasst, statt sie
-     an einer Stelle zu sammeln und den Kontext zu ihren jeweiligen Komponenten zu verlieren. */
+  /* :hover nur bei echten Zeigegeraeten (@media (hover:hover)) — sonst bleibt der Zustand auf iOS nach
+     dem Antippen haengen. Jede Regel an ihrer Stelle eingefasst. */
   @media (hover:hover){ .drawer-tab:hover{border-color:var(--accent-strong);color:var(--accent-strong);} }
   .drawer-tab:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
 
@@ -747,19 +424,8 @@
     opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:90;
   }
   #drawerScrim.show{opacity:1;pointer-events:auto;}
-  /* ---------- Runde 103: Liquid Glass Schritt 2 — die Schublade ----------
-     Schritt 1 (Runde 102) war die Kopfleiste. Die Schublade ist der zweite Teil derselben
-     Schicht: Sie schwebt UEBER dem Inhalt und ist Navigation, nicht Inhalt. Genau dafuer ist das
-     Material gedacht ("Liquid Glass forms a distinct functional layer for controls and navigation
-     elements ... that floats above the content layer"); im Inhalt selbst hat es ausdruecklich
-     nichts zu suchen, deshalb bleiben Karten, Ansichten und Formulare unberuehrt.
-
-     Deckender als die Kopfleiste (82 % gegen 74 %), und das ist keine Willkuer: Apples Leitlinie
-     sagt fuer grosse Flaechen genau das — "Liquid Glass appears more opaque in larger elements
-     like sidebars to preserve legibility over complex backgrounds and accommodate richer content
-     on the material's surface". Die Schublade traegt viel Text auf 340px Breite und volle Hoehe;
-     dahinter laeuft der Sternenhimmel. Die regular-Variante (blur + saturate heben die
-     Helligkeit an) ist hier die richtige, die clear-Variante ist fuer Fotos und Videos. */
+  /* Liquid Glass: Die Schublade ist Navigation ueber dem Inhalt; deckender als die Kopfleiste (82 %),
+     wie Apple es fuer grosse Flaechen mit viel Text vorsieht. Im Inhalt selbst kein Glas. */
   #drawerPanel{
     position:fixed;top:0;right:0;height:100%;width:min(340px,86vw);
     background:color-mix(in srgb, var(--surface) 82%, transparent);
@@ -780,13 +446,8 @@
     transform:translateX(0); visibility:visible;
     transition:transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear 0s;
   }
-  /* Bugfix Feedback-Runde 32: #drawerPanel.open hat (Id + Klasse) höhere Spezifität als die
-     einfache Id-Regel #drawerPanel oben und überschrieb deshalb die reduced-motion-Regel wieder mit
-     ihrer eigenen .32s-Transform-Transition, sobald die Schublade geöffnet wurde — derselbe
-     Spezifitäts-Mechanismus, der in Feedback-Runde 16 (Punkt 2) schon einmal zu einem Fehltreffer
-     führte, hier aber umgekehrt: nicht der Tag- vs. Klassen-Selektor, sondern zwei Regeln
-     unterschiedlicher Spezifität für denselben Zustand. Fix: den offenen Zustand explizit mit
-     aufnehmen. */
+  /* Den offenen Zustand ausdruecklich mit aufnehmen: #drawerPanel.open hat hoehere Spezifitaet und
+     ueberschrieb sonst die reduced-motion-Regel. */
   @media (prefers-reduced-motion: reduce){ #drawerPanel, #drawerPanel.open{transition:visibility 0s;} #drawerScrim{transition:none;} }
 
   #imgModalScrim{
@@ -794,12 +455,8 @@
     opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:95;
   }
   #imgModalScrim.show{opacity:1;pointer-events:auto;}
-  /* Runde 103, Liquid Glass Schritt 2: dieselbe Ueberlegung wie bei der Schublade daneben.
-     Ein Dialog ist die oberste funktionale Schicht und traegt viel Text — also die
-     regular-Variante, und noch etwas deckender als die Schublade (86 %): Hier steht die Vorschau
-     des Ergebnisbildes drin, und ein Bild hinter Glas zu beurteilen ginge nicht.
-     Der Verdunkler darunter (#imgModalScrim, 55 %) bleibt unveraendert — Apple nennt genau das
-     als die richtige Unterlage fuer durchscheinende Flaechen. */
+  /* Liquid Glass auch fuer den Bild-Dialog, noch deckender (86 %), weil darin das Ergebnisbild
+     beurteilt wird. */
   #imgModal{
     position:fixed;top:50%;left:50%;transform:translate(-50%,-46%);width:min(380px,88vw);
     background:color-mix(in srgb, var(--surface) 86%, transparent);
@@ -819,14 +476,8 @@
   @media (prefers-reduced-motion: reduce){ #imgModal, #imgModal.open{transition:visibility 0s;} #imgModalScrim{transition:none;} }
   .img-modal-inner{display:flex;flex-direction:column;gap:12px;position:relative;}
   #shareImagePreview{width:100%;border-radius:var(--radius-m);border:1px solid var(--line);display:block;background:var(--surface-2);}
-  /* Runde 109: Hier stand die Formatwahl ueber der Vorschau (.img-format-row,
-     .img-format-btn span). Es gibt nur noch ein Format — warum 4:5, steht bei SHARE_FORMAT in
-     src/js/10-ergebnisbild.js. Die Regeln sind entfernt und nicht stehen gelassen: Der Bau
-     bricht bei verwaisten Klassen ab (pruefeWaisen), und genau dafuer ist diese Pruefung da. */
-  /* ---------- Das Lucenta+-Fenster (Runde 89) ----------
-     Teilt Aufbau und Bewegung mit dem Bild-Dialog darueber; nur der Inhalt ist ein anderer.
-     Deshalb steht es hier daneben und nicht in einem eigenen Stilblatt: Wer das eine aendert,
-     soll das andere sehen. */
+  /* ---------- Das Lucenta+-Fenster ----------
+     Teilt Aufbau und Bewegung mit dem Bild-Dialog darueber und steht deshalb daneben. */
   #plusModalScrim{
     position:fixed;inset:0;background:rgba(8,12,10,.55);
     opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:95;
@@ -849,20 +500,9 @@
   }
   @media (prefers-reduced-motion: reduce){ #plusModal, #plusModal.open{transition:visibility 0s;} #plusModalScrim{transition:none;} }
 
-  /* ---------- Die Rueckfaelle fuer Schritt 2, gesammelt ----------
-     Dieselben drei Faelle wie bei der Kopfleiste in Runde 102, plus einer, der dort fehlte.
-     Alle drei Flaechen stehen zusammen: Wer eine aendert, sieht die anderen.
-
-     1. Kein backdrop-filter (aeltere WebView): Eine durchscheinende Flaeche OHNE Unschaerfe ist
-        nicht "etwas weniger schoen", sondern unlesbar — der Sternenhimmel laeuft dann roh hinter
-        dem Text. Also volldeckend.
-     2. "Transparenz reduzieren" (prefers-reduced-transparency): Die Person hat genau das
-        abbestellt. Volldeckend, und die Unschaerfe ausdruecklich aus.
-     3. NEU gegenueber Runde 102: "Kontrast erhoehen" (prefers-contrast: more). Apple nennt beide
-        Einstellungen in einem Atemzug ("accessibility settings that reduce transparency or
-        increase contrast"), und eine durchscheinende Flaeche senkt den Kontrast des Textes
-        darauf zwangslaeufig. Wer mehr Kontrast bestellt, bekommt die deckende Flaeche.
-        Die Kopfleiste ist hier mitgenommen — dort fehlte der Fall bisher. */
+  /* ---------- Rueckfaelle fuer Glasflaechen, gesammelt ----------
+     Volldeckend bei: kein backdrop-filter (sonst unlesbar), "Transparenz reduzieren", "Kontrast
+     erhoehen" (prefers-contrast: more). */
   @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
     #drawerPanel, #imgModal, #plusModal{ background:var(--surface); }
   }
@@ -916,21 +556,9 @@
   }
   .plus-modal-fuss p{margin:0;font-size:12.5px;line-height:1.55;color:var(--muted);}
   .plus-modal-fuss b{color:var(--ink);font-weight:600;}
-  /* Runde 97: Der Segmentwaehler — die Form, in der iOS eine Wahl zwischen zwei gleichrangigen
-     Moeglichkeiten zeigt. Ein Zug, zwei Faecher, der gewaehlte gefuellt. Bewusst NICHT zwei
-     Knoepfe nebeneinander: Die sagen nicht, dass sie einander ausschliessen, und lassen den
-     Zustand "beide aus" zu, den es hier nicht gibt. */
-  /* Runde 104: Hier stand `grid-template-columns:1fr 1fr` — zwei Spalten, fest. Zwei der
-     Waehler haben aber DREI Faecher (Darstellung: System/Hell/Dunkel; Zeitraum der Tagesform:
-     14/30/90), und das dritte rutschte jeweils in eine zweite Zeile, mit einem leeren Fach
-     daneben. Nachgemessen auf 390 Punkten: "Dunkel" stand allein auf y=1400, rechts davon 150
-     Punkte Loch, der Waehler 113 statt 58 Punkte hoch. Unentdeckt seit Runde 97, weil keine
-     Pruefung ein Raster auf Luecken ansieht — die Ueberlaufpruefung sucht Elemente, die
-     HERAUSstehen, nicht Loecher darin.
-
-     `grid-auto-flow:column` mit `grid-auto-columns:1fr` leitet die Spaltenzahl aus der Zahl der
-     Faecher ab. Damit ist ein Waehler mit vier Faechern richtig, bevor ihn jemand baut; die
-     drei mit zwei Faechern sehen aus wie vorher. */
+  /* Segmentwaehler: die iOS-Form fuer eine Wahl zwischen gleichrangigen Moeglichkeiten. */
+  /* grid-auto-flow:column + grid-auto-columns:1fr: die Spaltenzahl folgt der Zahl der Faecher (zwei
+     oder drei). */
   .segment{
     margin:16px 0 0;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:3px;
     background:var(--surface-3);border-radius:11px;padding:3px;
@@ -947,31 +575,10 @@
     box-shadow:0 1px 3px rgba(0,0,0,.10), 0 0 0 .5px var(--line);
   }
   .segment-opt:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
-  /* ---------- Runde 104: Liquid Glass Schritt 3 — nur beim Druecken ----------
-     Schritt 1 war die Kopfleiste, Schritt 2 Schublade und Fenster. Alle drei liegen in der
-     funktionalen Schicht, fuer die das Material gedacht ist. Ein Segmentwaehler in den
-     Einstellungen liegt dagegen IM INHALT, und dort hat Glas laut Leitlinie nichts zu suchen
-     ("Don't use Liquid Glass in the content layer").
-
-     Die Ausnahme, die es hier erlaubt, ist woertlich eng gefasst: "controls in the content layer
-     with a transient interactive element like sliders and toggles; in these cases, the element
-     takes on a Liquid Glass appearance to emphasize its interactivity WHEN A PERSON ACTIVATES
-     IT." Also beim Druecken — und nur dann.
-
-     Daraus folgt, was hier bewusst NICHT steht: Das gewaehlte Fach bekommt im Ruhezustand kein
-     Glas. Die Uebergabe hatte "allenfalls der Segmentwaehler" notiert; gemeint sein kann damit
-     nur der fluechtige Zustand, denn ein dauerhaft glaesernes Fach ist kein fluechtiger, sondern
-     ein stehender. Es bleibt deckend wie bisher.
-
-     Die regular-Variante, nicht clear: Das Fach traegt Text, und clear ist fuer Flaechen ueber
-     Fotos und Videos. Der Waehler liegt auf einer deckenden Karte — die Unschaerfe hat dort
-     wenig zu verwischen, und der sichtbare Anteil kommt aus saturate und brightness. Das ist
-     ein Aufleuchten unter dem Finger, kein Durchblick, und genau so ist es gemeint.
-
-     Beide Zustaende stehen ausdruecklich da (gewaehlt und nicht gewaehlt), weil
-     `.segment-opt[aria-checked="true"]` und `.segment-opt:active` dieselbe Spezifitaet haben und
-     sonst die Reihenfolge entscheidet — derselbe Mechanismus, der in Feedback-Runde 32 schon
-     zweimal einen Zustand still ueberschrieben hat. */
+  /* Glas im Inhalt nur beim Druecken (Apples Ausnahme fuer "transient interactive elements") — im
+     Ruhezustand bleibt das gewaehlte Fach deckend.
+     Beide Zustaende stehen ausdruecklich da: [aria-checked=true] und :active haben dieselbe
+     Spezifitaet, sonst entschiede die Reihenfolge. */
   .segment-opt:active,
   .segment-opt[aria-checked="true"]:active{
     background:color-mix(in srgb, var(--surface) 58%, transparent);
@@ -980,13 +587,8 @@
     box-shadow:0 1px 3px rgba(0,0,0,.10), 0 0 0 .5px var(--line);
     transition-duration:0s;
   }
-  /* Der Rueckfall steht hier am Bedienelement und nicht im gesammelten Block weiter oben —
-     dieselbe Entscheidung wie bei den :hover-Regeln in dieser Datei: Wer die Regel aendert,
-     soll ihren Rueckfall sehen, ohne ihn zu suchen.
-
-     Ohne backdrop-filter waere ein zu 58 % durchscheinendes Fach ohne Unschaerfe einfach ein
-     blasses Fach; "Transparenz reduzieren" und "Kontrast erhoehen" haben beide ausdruecklich
-     abbestellt, was diese Regel tut. In allen drei Faellen dasselbe: deckend druecken. */
+  /* Der Rueckfall steht am Bedienelement: ohne backdrop-filter, bei reduzierter Transparenz und bei
+     mehr Kontrast deckend druecken. */
   @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
     .segment-opt:active, .segment-opt[aria-checked="true"]:active{ background:var(--surface); }
   }
@@ -996,9 +598,8 @@
       -webkit-backdrop-filter:none; backdrop-filter:none;
     }
   }
-  /* Die zweite Tuer, Begruendung bei der Kopfleiste weiter oben in dieser Datei. Nur fuer
-     "Transparenz reduzieren" — `prefers-contrast: more` kommt auf dem iPhone an (Runde 105
-     nachgemessen) und braucht keine. */
+  /* Die zweite Tuer (Begruendung bei der Kopfleiste). prefers-contrast: more kommt auf dem iPhone an
+     und braucht keine. */
   :root[data-transparenz="reduziert"] .segment-opt:active,
   :root[data-transparenz="reduziert"] .segment-opt[aria-checked="true"]:active{
     background:var(--surface);
@@ -1014,10 +615,6 @@
 
   .img-modal-hint{font-size:12.5px;color:var(--muted);line-height:1.5;}
   .img-modal-actions{display:flex;justify-content:flex-end;}
-  /* Feedback: "Mehr" über dem Profil war überflüssig — das Profil selbst ist bereits der erste,
-     selbsterklärende Eintrag der Schublade. Der Titel ist raus, der Schließen-Button rutscht dafür
-     an den rechten Rand (justify-content:flex-end statt space-between, da jetzt nur noch ein
-     Kind-Element im Head steht). */
   .drawer-head{display:flex;justify-content:flex-end;align-items:center;margin-bottom:14px;}
   .drawer-close{
     background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;
@@ -1028,11 +625,8 @@
   .drawer-close:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
   .drawer-section{display:flex;flex-direction:column;gap:10px;}
   .drawer-section + .drawer-section{margin-top:24px;padding-top:24px;border-top:1px solid var(--line);}
-  /* Gruppen-Überschriften bündeln die Schubladen-Einträge (ursprünglich acht, Feedback-Runde 32; nach
-     dem Auszug von Tagesform/Verlauf in Feedback-Runde 35 noch fünf) zu benannten Clustern, statt sie
-     als eine lange, gleichrangige Liste zu zeigen. Bewusst per Nachbar-Selektor statt :first-of-type
-     für den ersten Titel adressiert — :first-of-type bezieht sich auf den Tag-Namen, nicht die
-     Klasse, und hätte hier denselben Fehltreffer wie in Feedback-Runde 16 (Punkt 2) verursacht. */
+  /* Gruppentitel der Schublade. Der erste per Nachbar-Selektor, nicht :first-of-type (das bezieht sich
+     auf den Tag). */
   .drawer-group-title{
     margin-top:24px;padding-top:24px;border-top:1px solid var(--line);
     font-family:var(--serif);font-size:13.5px;font-weight:500;color:var(--ink);
@@ -1060,25 +654,16 @@
   .drawer-profile-row .chev{color:var(--muted);flex-shrink:0;}
 
   .view{display:none;}
-  /* Runde 108, gemeldet: „Groessere, auffaelligere Uebergaenge." Der Weg dorthin ist NICHT mehr
-     Strecke — 16px seitlich sind bereits so viel, wie die 20px Polsterung von #shell hergeben,
-     und der Rest waere ein Ueberhang, den die Fehlersuche seit Runde 91 misst. Es ist ein
-     zweiter Freiheitsgrad: Die Ansicht kommt jetzt auch aus der Tiefe. 4 % Groessenunterschied
-     sind auf einer ganzen Ansicht deutlich zu sehen und laufen nach INNEN — die Flaeche wird
-     am Anfang kleiner, nicht groesser, und kann deshalb nirgends ueber den Rand.
-     Dauer und Kurve bleiben: Bei .45s messen die Pruefungen ihre Wartezeiten, und drei
-     Uebergaenge, die sich wie einer anfuehlen sollen, muessen dieselbe Zeit haben. */
+  /* Uebergang zwischen Ansichten: 16px seitlich plus 4 % aus der Tiefe nach innen (kann nicht ueber
+     den Rand). Dauer .45s — darauf sind die Wartezeiten der Pruefungen abgestimmt. */
   .view.active{display:block; animation:rise .45s cubic-bezier(.2,.8,.2,1) both;}
   @keyframes rise{from{opacity:0;transform:translateY(13px) scale(.96);}to{opacity:1;transform:none;}}
   @media (prefers-reduced-motion: reduce){ .view.active{animation:none;} }
 
   
-  /* ---------- Bewegter Hintergrund (Runde 71) ----------
-     Die Flaeche liegt zwischen Seitenhintergrund und Inhalt. #shell bekommt dafuer einen eigenen
-     Stapelkontext; ohne den wuerde die Flaeche ueber dem Text liegen, weil positionierte
-     Elemente mit z-index:0 nach dem Inline-Inhalt nicht positionierter Elemente gezeichnet
-     werden. Ein negativer z-index waere die naheliegende Alternative, verschwaende aber hinter
-     dem undurchsichtigen Hintergrund von body. */
+  /* ---------- Bewegter Hintergrund ----------
+     #shell bekommt einen eigenen Stapelkontext, damit die Flaeche zwischen Seitengrund und Inhalt
+     liegt (ein negativer z-index verschwaende hinter body). */
   #shell{position:relative; z-index:1;}
   #sternenhimmel{
     position:fixed; inset:0; width:100%; height:100%;
@@ -1087,11 +672,8 @@
   }
   /* Startseite und Fragebogen. Die Klasse setzt das Skript, wenn eine der beiden sichtbar ist. */
   html.sternen-an #sternenhimmel{opacity:1;}
-  /* Runde 108: Im Fragebogen steht dieselbe Flaeche still (22-sternenhimmel.js) und tritt
-     zurueck. Nicht aus Sparsamkeit — ein Standbild kostet nichts —, sondern weil dort gelesen
-     wird: fuenfzig Aussagen, je eine Entscheidung. Die Flaeche soll den Raum fuellen, an dem
-     vorher nichts war, und sich nicht neben den Text stellen. Die Regel steht NACH der
-     Startseiten-Regel, weil beide dieselbe Spezifitaet haben. */
+  /* Im Fragebogen steht die Flaeche still und tritt zurueck, weil dort gelesen wird. Steht nach der
+     Startseiten-Regel (gleiche Spezifitaet). */
   html.sternen-still #sternenhimmel{opacity:.6;}
   @media (prefers-reduced-motion: reduce){
     #sternenhimmel{transition:none;}

@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 137)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-14, nach Runde 138)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 137 | — | Preise aus StoreKit (`preise()`), Zurueck-Wischgeste vom linken Rand, Eulen-Zwinkern lesbar, Panda weicher, keine Trennung in der Angebotskarte |
+| 138 | — | Schneller arbeiten: audit-i18n 4 Min. -> 1 s; Kommentare in src/ um ~30 % gekuerzt (gebaute App unveraendert) |
+| 137 | `ae62acb` | Preise aus StoreKit (`preise()`), Zurueck-Wischgeste vom linken Rand, Eulen-Zwinkern lesbar, Panda weicher, keine Trennung in der Angebotskarte |
 | 136 | `4d8552f` | Verstehen ganz Lucenta+; Vergleiche frei mit 2 Personen, Archiv frei bis 2; Sprache als Unterseite (`view-sprache`); Unterseiten schieben sich wie iOS (Push/Pop) |
 | 135 | `e755c72` | Suesser Blick: Lider, Blick zum Betrachter, groessere Augen und Lichtpunkte, Wangenroete; je Tier ein eigener `Ausdruck` |
 | 134 | `ef36e7a` | Tierkoerper statt Menschenoberkoerper: `vierbeiner(Bau(...))` — schmale tiefe Brust, Vorderbeine, Ruecken nach hinten; je Art eigene Masse und Zeichnung |
@@ -201,6 +202,44 @@ SceneKit und CoreGraphics ja (`swiftc`).
 
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull Request ohne Bitte.
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 138 — Schneller arbeiten: Pruefzeit und Kommentare
+
+**Frage des Inhabers:** Laesst sich die Architektur verbessern und kuerzen, damit jede Aufgabe weniger
+lange braucht — oder gibt es eine andere Loesung?
+
+**Antwort, gemessen:** Die Zeit ging nicht in die Architektur, sondern in (1) die Pruefrunde (~12 Min. je
+Commit), (2) das Lesen sehr langer Kommentare (JS 30 %, CSS 35 % Kommentar, meist Rundengeschichte),
+(3) das 270-KB-Journal und (4) acht Sprachen je Text. Ein Umbau (Framework, Module) haette daran wenig
+geaendert und viel riskiert. Vorgeschlagen und gefragt; gewaehlt: Kommentare entschlacken. Dazu vorab:
+
+1. **`audit-i18n` von rund 4 Minuten auf 0,7 Sekunden.** Ursache eine einzige Stelle in
+   `tools/audit_i18n.py`: Fuer jedes Literal wurde der ganze Quelltext zerteilt und in jedem Stueck ein
+   am Ende verankertes Muster von vorn gesucht. Es zaehlt nur das Ende jedes Stuecks (200 Zeichen).
+   Ausgabe vorher/nachher Zeichen fuer Zeichen gleich. `pruef-schnell` damit ~20 s, `pruef-alles` ~9 Min.
+2. **Kommentare in `src/` gekuerzt:** Rundengeschichte, Messanekdoten und Selbstverstaendliches raus;
+   geblieben sind Fallen, Abhaengigkeiten und Entscheidungen des Inhabers (kurz). Gegangen ist das Block
+   fuer Block (nur Bloecke ab drei Zeilen), nicht als Neuschreiben ganzer Dateien.
+   JS 401 -> 287 KB, CSS (ohne die erzeugte Schriftdatei) 289 -> 188 KB, HTML 85 -> 72 KB.
+   **Nachweis:** `dist/index.html` (ohne HTML-Kommentare und Leerraum) nach jeder Datei byte-gleich mit
+   vorher, `dist/sprachen/` unveraendert — der Code selbst ist also nicht beruehrt.
+   Mitgezogen: veraltete Kommentare (z. B. "frei EIN Vergleich, kein Archiv", "sechs Menschen, sechs
+   Tiere", "Schloss statt verwaschener Vorschau") stehen jetzt auf dem heutigen Stand.
+3. **Regel festgehalten** in `CLAUDE.md` und `tools/xcode-CLAUDE.md`: kurz, das Warum, keine Geschichte
+   (die gehoert hierher und in die Commit-Nachricht).
+
+**Fund dabei:** Der Fingerabdruck allein reichte nicht. Ich hatte die Kommentarzeile
+`// ---------- wiring ----------` uebersetzt — `tests/run.js` schneidet den Code genau dort ab, alle elf
+Testreihen brachen. Zurueckgesetzt und als Marke gekennzeichnet; in der Regel oben vermerkt.
+`src/styles/00-schriften.css` ist erzeugt und blieb unberuehrt. `src/i18n/` (Inhalte) und `tools/` sind
+nicht gekuerzt.
+
+**Nicht gewaehlt (bleibt moeglich):** Pruefrunde gezielter (volle Runde nur am Ende eines Auftrags),
+Journal kuerzen und Altes archivieren.
+
+**Pruefungen:** `npm run pruef-alles` **ALLE 9 BESTANDEN** in **9,2 Minuten** (vorher 11,5–12,3), `fehlersuche` KEINE FUNDE.
 
 ---
 

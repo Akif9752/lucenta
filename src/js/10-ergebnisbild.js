@@ -1,42 +1,16 @@
-// ---------- Ergebnisbild (Canvas-Karte zum Teilen/Speichern) ----------
-  // Runde 92, gemeldet: Das Bild kam immer in der Hellfassung heraus, auch mitten in der Nacht
-  // aus einer durchgehend dunklen App. Bis Runde 91 stand hier als Begruendung, eine geteilte
-  // Karte solle ueberall gleich aussehen. Das ist ein Argument fuer den Empfaenger und gegen die
-  // Person, die teilt: Sie sieht in dem Moment ihre eigene App und bekommt ein Bild, das nicht
-  // dazu gehoert. Der Empfaenger vergleicht ohnehin nicht zwei Karten nebeneinander.
-  //
-  // Beide Fassungen sind fest verdrahtet und nicht aus den CSS-Marken gelesen: Auf einer
-  // Leinwand gibt es keine Transparenz gegen einen Hintergrund, den es dort nicht gibt, und die
-  // Marken der App tragen an mehreren Stellen Deckungswerte. Die Werte hier sind dieselben wie
-  // in 00-grundlagen.css — --paper, --ink, --muted, --line, --accent, --accent-2 — je Modus.
-  // Runde 93 mitgezogen: Die Hellfassung der App ist um ein Zehntel dunkler geworden. Die
-  // Werte hier stehen fest verdrahtet — genau deshalb muessen sie bei jeder Aenderung der
-  // Palette von Hand nachgefuehrt werden, und genau das ist in Runde 90 einmal vergessen
-  // worden. Die Reihe "Das Bild folgt dem Farbmodus" haelt beide Seiten jetzt zusammen.
+// ---------- Ergebnisbild (Canvas-Karte zum Teilen) ----------
+// Das Bild folgt dem Farbmodus der App. Die Farben stehen fest verdrahtet (auf einer Leinwand gibt es
+// keine Deckungswerte gegen einen Hintergrund) und muessen bei jeder Aenderung der Palette in
+// 00-grundlagen.css nachgefuehrt werden — die Testreihe "Das Bild folgt dem Farbmodus" haelt beide
+// zusammen.
   var SHARE_COLORS = { paper:'#F2F2F7', ink:'#000000', muted:'#636366', line:'#C6C6C8', accent:'#2C6863', accentFill:'rgba(44,104,99,.26)', accent2:'#BF7438' };
   var SHARE_COLORS_DARK = { paper:'#000000', ink:'#FFFFFF', muted:'#98989F', line:'#38383A', accent:'#5CB4AD', accentFill:'rgba(92,180,173,.26)', accent2:'#E39A5C' };
   function shareColors(){ return dunkelAktiv() ? SHARE_COLORS_DARK : SHARE_COLORS; }
 
-  // Runde 107. Hier stand an vier Stellen 'Georgia, serif' — auf einem Bild, das weitergegeben
-  // wird und damit das einzige ist, was Fremde von Lucenta sehen. Die Zahlen und die Fusszeile
-  // liefen dabei richtig in "IBM Plex Mono" und "Work Sans"; nur die Ueberschriften, also
-  // Wortmarke, Titel und Motto, kamen in einer Systemschrift heraus, die in der App nirgends
-  // vorkommt. Eine geteilte Karte mit fremder Ueberschrift ist kein Geschmacksfehler, sondern
-  // eine falsche Marke.
-  //
-  // Zwei Dinge daran, die man sonst neu lernt:
-  //   1. Fraunces liegt als VARIABLE Schrift mit dem Band 400-600 in der Datei (00-schriften.css).
-  //      Eine 700 anzufordern liefert keine fettere Schrift, sondern eine vom Browser
-  //      nachgerechnete — deshalb steht hier 600, wo vorher 700 stand. Die Kursive gibt es nur
-  //      in 500; das Motto hatte diesen Wert schon.
-  //   2. Der Rueckfall endet nicht bei serif. Fraunces traegt nur Latin (unicode-range in
-  //      00-schriften.css) — auf Japanisch greift sonst irgendeine Systemschrift statt der
-  //      Mincho, die die App dort im Fliesstext benutzt. Die Kette ist dieselbe wie in --serif.
+  // Fraunces ist variabel (400–600): 600 statt 700, sonst rechnet der Browser eine falsche Fette nach.
+  // Fraunces traegt nur Latin, daher dieselbe Rueckfallkette wie --serif (Japanisch).
   var SHARE_SERIF = "Fraunces, ui-serif, Georgia, 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif";
-  // Runde 129: Achsen, Zahlen und Fusszeile standen hier in IBM Plex Mono — die letzte Stelle, die
-  // die Schrift noch brauchte, seit die App in Runde 126 ueberall SF setzt. Jetzt steht auch das
-  // Bild in der Systemschrift, die Schriftdatei ist aus dem Bau entfallen. Die Kette ist dieselbe
-  // wie --sans, damit Japanisch in Hiragino Sans landet statt in irgendeinem Rueckfall.
+  // Systemschrift wie --sans, damit Japanisch in Hiragino Sans landet.
   var SHARE_SANS = "-apple-system, system-ui, 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif";
 
   function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
@@ -95,27 +69,9 @@
     ctx.textAlign = 'left';
   }
 
-  // Runde 109, auf ausdrueckliche Ansage des Inhabers: "auf EIN Teilformat einigen."
-  //
-  // Bis hierher gab es zwei, mit Umschalter: Beitrag 1080x1350 (4:5) und Story 1080x1920 (9:16).
-  // Beides war dieselbe Komposition — Runde 27 hat bewusst KEIN zweites Layout gebaut, sondern
-  // die austarierte 1350er Komposition im 1920er Bild vertikal zentriert. Die Wahl war damit
-  // eine Wahl zwischen "ohne Leerraum" und "mit 285px Leerraum oben und unten".
-  //
-  // **Geblieben ist 4:5**, und der Grund ist nicht Geschmack, sondern wie die beiden Formate
-  // ausserhalb ihres Zielorts aussehen:
-  //   - 4:5 in einer Story: Die Plattform stellt es mittig auf einen eigenen Grund. Sieht
-  //     absichtsvoll aus.
-  //   - 9:16 in Nachrichten, WhatsApp oder der Foto-Mediathek: ein hohes Bild mit zwei leeren
-  //     Baendern. Sieht nach Fehler aus.
-  // Die Ziele der zweiten Art sind die haeufigeren — die Teilen-Leiste von iOS fuehrt zuerst
-  // dorthin. Ein Format, das ueberall ordentlich aussieht, ist mehr wert als eines, das an einer
-  // Stelle exakt passt und an den uebrigen auffaellt.
-  //
-  // SHARE_LAYOUT_H ist damit dieselbe Zahl wie die Bildhoehe. Es bleibt eine eigene Marke, weil
-  // die Komposition unten mit ihr rechnet; sie zu ersetzen hiesse, 1350 an ein Dutzend Stellen
-  // zu verteilen. Die vertikale Zentrierung ist entfallen — sie waere jetzt immer 0 und damit
-  // eine Rechnung, die aussieht, als taete sie etwas.
+  // EIN Teilformat, 4:5 (1080x1350; Entscheidung des Inhabers): sieht auch in Stories absichtsvoll
+  // aus, 9:16 in Nachrichten dagegen nach Fehler. SHARE_LAYOUT_H bleibt eine eigene Marke, weil die
+  // Komposition damit rechnet.
   var SHARE_LAYOUT_H = 1350;
   var SHARE_FORMAT = { w:1080, h:1350 };
   function buildShareCanvas(){
@@ -131,9 +87,7 @@
     ctx.fillStyle = C.ink; ctx.font = '600 46px '+SHARE_SERIF;
     ctx.fillText('Lucenta', M+30, M+8);
     ctx.fillStyle = C.muted; ctx.font = '600 21px '+SHARE_SANS;
-    // Canvas-Text steht in keinem DOM: weder die zehn Reihen noch ein Vergleich der
-    // gerenderten Ansichten koennen ihn sehen. Runde 59 hat ihn deshalb nur beim Lesen des
-    // Codes gefunden — das Ergebnisbild ist ausgerechnet das, was Leute weitergeben.
+    // Canvas-Text steht in keinem DOM — keine Pruefung sieht ihn.
     ctx.fillText(decodeEntities(tx('js_ergebniskarte')), M+2, M+50);
 
     var arch = archetypeOf(scores);

@@ -1,20 +1,7 @@
-// ---------- Beispielnutzerin (Runde 79) ----------
-//
-// Angefragt als Entwicklerwerkzeug: "gib mir einen Benutzer, der die App schon seit fuenf
-// Wochen benutzt, damit ich sehe, wie die App bei so jemandem aussieht."
-//
-// Der Punkt daran ist nicht die Bequemlichkeit. Fast jede Ansicht der App verhaelt sich mit
-// Bestand anders als ohne: Die Startseite ordnet sich um, der Verlauf zeigt statt eines
-// Leerzustands eine Kurve, die Tagesform rechnet Befunde aus (die es erst ab 7 bzw. 14 Tagen
-// gibt), das Vergleichsarchiv wertet erst ab drei Eintraegen aus. Diese Zustaende waren bisher
-// nur zu sehen, indem man fuenf Wochen wartete oder von Hand in den Speicher schrieb.
-//
-// ZWEI Dinge daran sind nicht verhandelbar:
-//   1. Der vorhandene Bestand wird gesichert, bevor irgendetwas ueberschrieben wird, und beim
-//      Verlassen vollstaendig zurueckgeschrieben. Ein Werkzeug, das echte Daten frisst, ist
-//      kein Werkzeug.
-//   2. Der Zustand ist sichtbar. Solange die Beispieldaten aktiv sind, sagt die Ansicht das —
-//      sonst haelt man beim naechsten Oeffnen fremde Werte fuer die eigenen.
+// ---------- Beispielnutzerin (Entwicklerwerkzeug) ----------
+// Zeigt die Ansichten mit Bestand (Kurven, Befunde, Archiv-Auswertung). Zwei Regeln: Der echte Bestand
+// wird vorher gesichert und beim Verlassen vollstaendig zurueckgeschrieben; solange Beispieldaten
+// liegen, sagt die Ansicht das.
 
   var DEMO_MARKE = 'lucenta_demo_aktiv';
   var DEMO_SICHERUNG = 'lucenta_demo_sicherung';
@@ -23,17 +10,8 @@
     try{ return localStorage.getItem(DEMO_MARKE) === '1'; }catch(e){ return false; }
   }
 
-  // Fehlersuche Runde 80: Solange die Beispieldaten liegen, sind Sichern, Einspielen und
-  // Zuruecksetzen keine harmlosen Handlungen mehr, sondern drei Wege, echte Daten zu verlieren:
-  //
-  //   - Sichern haette die erfundenen Werte als eigene Sicherung ausgegeben.
-  //   - Einspielen haette in die Beispielschicht geschrieben; das Beenden des Beispiels haette
-  //     die eingespielten Daten anschliessend wieder mit der Sicherung ueberschrieben.
-  //   - Zuruecksetzen haette die Beispielschicht geloescht, die Sicherung mit den echten Daten
-  //     aber liegen gelassen — "alles geloescht" waere schlicht nicht wahr gewesen.
-  //
-  // Deshalb halten die drei hier an, statt sich einen Sonderweg zu bauen: Ein Beispielzustand
-  // ist ein Blick, kein Bestand, und man verlaesst ihn, bevor man am Bestand arbeitet.
+  // Solange Beispieldaten liegen, halten Sichern, Einspielen und Zuruecksetzen an — jeder dieser Wege
+  // koennte sonst echte Daten verlieren oder Beispiel als echt ausgeben.
   function demoSperrt(){
     if (!demoAktiv()) return false;
     toast(tx('demo_erst_beenden'));
@@ -43,44 +21,21 @@
   // Ein Tag in Millisekunden, damit die Zeitrechnung unten lesbar bleibt.
   var TAG_MS = 86400000;
 
-  // Erzeugt eine Zahl zwischen 0 und 1 aus einem Startwert. Bewusst KEIN Math.random(): Die
-  // Beispieldaten sollen bei jedem Laden gleich aussehen, sonst vergleicht man beim Pruefen zwei
-  // verschiedene Zustaende miteinander und haelt den Unterschied fuer eine Aenderung der App.
+  // Fester Startwert statt Math.random(): Die Beispieldaten sehen bei jedem Laden gleich aus.
   function demoZufall(n){
     var x = Math.sin(n * 12.9898) * 43758.5453;
     return x - Math.floor(x);
   }
 
-  // Runde 131 (Inhaber): Die Laenge ist waehlbar — 14, 30, 90 oder 120 Tage. Testdurchlaeufe und
-  // Tagesform reichen genau so weit zurueck; das Vergleichsarchiv bleibt, es ist keine Zeitreihe.
-  // Ohne Angabe wie bis Runde 130 ein halbes Jahr (183 Tage).
+  // Laenge waehlbar (14/30/90/120 Tage); ohne Angabe 183 Tage. Das Archiv ist keine Zeitreihe und
+  // bleibt.
   var DEMO_LAENGEN = [14, 30, 90, 120], DEMO_TAGE = 'lucenta_demo_tage';
   function demoDaten(tage){
     tage = tage || 183;
     var jetzt = Date.now();
     var ergebnis = {O:74, C:56, E:63, A:70, S:48};
-    // Runde 83: sechs Monate statt fuenf Wochen. Der Unterschied ist nicht nur die Zahl —
-    // erst ueber ein halbes Jahr zeigt der Bestand die Dinge, fuer die die App gebaut ist:
-    // eine Verschiebung, die groesser ist als die normale Messschwankung, Luecken von Wochen
-    // statt von Tagen, und ein Verlauf, in dem man tatsaechlich eine Richtung sieht.
-    //
-    // Sieben Durchlaeufe ueber 183 Tage. Die Bewegung ist bewusst nur in ZWEI Dimensionen
-    // deutlich (O von 61 auf 74, S von 36 auf 48) und in den uebrigen klein: Ein Beispiel, in
-    // dem sich alles bewegt, waere ein unehrliches Beispiel — so etwas sieht man in echten
-    // Daten nicht.
-    //
-    // Runde 87, aus der Rueckmeldung: Im Verlauf stand siebenmal dieselbe Zeile
-    // ("Visionaer:in · warmherzig"). Das lag nicht an der Anzeige, sondern an den Zahlen — in
-    // allen sieben Durchlaeufen war O am weitesten von der Mitte entfernt und A am
-    // zweitweitesten, und genau aus diesen beiden entsteht der Titel. Eine Liste aus sieben
-    // identischen Zeilen sieht aus wie ein Fehler und macht das Beispiel wertlos: Ein Verlauf
-    // soll ja zeigen, dass sich etwas bewegt.
-    //
-    // Die Werte tragen jetzt eine Entwicklung, die die FUEHRUNG wechselt: Am Anfang ist die
-    // Vertraeglichkeit das Bestimmende und die niedrige Gelassenheit das Zweite; dann waechst
-    // die Offenheit und wird zum Zweiten; zuletzt uebernimmt sie. Drei verschiedene Titel ueber
-    // ein halbes Jahr — nicht sieben, denn ein Titel, der bei jedem Durchlauf ein anderer ist,
-    // waere die genauso unehrliche Gegenrichtung.
+    // Sieben Durchlaeufe; deutliche Bewegung nur in O und S. Die Fuehrung wechselt zweimal, damit der
+    // Verlauf drei verschiedene Titel zeigt.
     var verlauf = [
       {date: jetzt - 176*TAG_MS, scores:{O:61, C:48, E:58, A:72, S:36}},  // Brueckenbauer:in · feinfuehlig
       {date: jetzt - 147*TAG_MS, scores:{O:63, C:49, E:59, A:71, S:38}},  // Brueckenbauer:in · neugierig
@@ -90,36 +45,22 @@
       {date: jetzt -  27*TAG_MS, scores:{O:73, C:55, E:62, A:71, S:47}},
       {date: jetzt -   3*TAG_MS, scores:ergebnis}
     ].filter(function(v){ return v.date >= jetzt - tage * TAG_MS; });
-    // Tagesform ueber dasselbe halbe Jahr, aber nicht gleichmaessig: dicht in den letzten
-    // Wochen, duenner je weiter zurueck, mit zwei laengeren Luecken. Wer sechs Monate lang
-    // jeden Tag eintraegt, ist die Ausnahme — und eine Ansicht, die nur mit luckenlosem
-    // Bestand stimmt, stimmt fuer fast niemanden.
-    //
-    // An manchen Tagen stehen drei Eintraege zu verschiedenen Tageszeiten statt einem. Ohne
-    // mehrere Abschnitte je Tag gaebe es den Tageszeit-Befund nie zu sehen, und die
-    // Beispielnutzerin ist genau dafuer da: die Zustaende zu zeigen, die sonst ein halbes Jahr
-    // Warten brauchen. Das Muster ist bewusst deutlich (morgens niedriger).
+    // Tagesform: zuletzt dicht, frueher duenner, mit Luecken; an manchen Tagen drei Tageszeiten
+    // (morgens niedriger), damit der Tageszeit-Befund zu sehen ist.
     var zustand = [];
     var ABSCHNITTE = [{h:8, ab:-0.7}, {h:13, ab:0.1}, {h:20, ab:0.6}];
     for (var i = Math.min(182, tage - 1); i >= 0; i--){
       // Zwei Luecken: eine Woche im Urlaub, und ein paar Tage, an denen es untergegangen ist.
       if (i >= 96 && i <= 103) continue;
       if (i >= 40 && i <= 42) continue;
-      // Wie oft eingetragen wurde, haengt davon ab, wie lange es her ist: zuletzt fast taeglich,
-      // im ersten Monat nur noch alle vier Tage. So faengt jemand an und bleibt dabei.
-      // Bewusst mit Luft zum Deckel (150 Eintraege): Bei 146 haette schon eine kleine Aenderung
-      // am Muster dazu gefuehrt, dass die aeltesten Tage stillschweigend abgeschnitten werden
-      // und die Spanne kuerzer aussieht, als sie gedacht war.
-      // Runde 131: Bei den waehlbaren Laengen (bis 120) taeglich — die Zeitfenster zaehlen Tage MIT
-      // Eintrag, und mit dem duennen Muster ergaben 120 Tage nur 72 Eintragstage: "Gesamt" waere
-      // dann dasselbe wie "90" gewesen und deshalb gesperrt (gemessen in WebKit).
+      // Abstand nach Alter des Tages. Bei den waehlbaren Laengen taeglich — die Zeitfenster zaehlen
+      // Tage MIT Eintrag, sonst waere "Gesamt" gesperrt.
       var abstand = tage <= 120 ? 1 : (i < 45 ? 1 : (i < 110 ? 2 : 5));
       if (i % abstand !== 0) continue;
       var d = new Date(jetzt - i*TAG_MS);
       var wt = d.getDay();
-      // Wochentagsmuster: montags gedrueckt, freitags und samstags hoeher. Genau das Muster,
-      // das tagesformBefunde() ab 14 Tagen erkennen soll — sonst prueft man die Ansicht,
-      // ohne je den Befund zu sehen.
+      // Wochentagsmuster (montags tiefer, freitags/samstags hoeher), damit tagesformBefunde() es
+      // findet.
       var wochen = (wt === 1 ? -0.8 : (wt === 5 ? 0.7 : (wt === 6 ? 0.6 : 0)));
       // Ueber das halbe Jahr steigt die Grundlinie leicht an — passend zur Bewegung in S.
       var trend = (182 - i) / 182 * 0.5;
@@ -136,10 +77,8 @@
         var s = Math.round(Math.max(1, Math.min(5, 3.3 + trend + wochen*0.6 + ab.ab*0.5 + (demoZufall(i*3+k+50) - 0.5) * 1.3)));
         var eintrag = {day: tagKey, ts: zeit.getTime(), energy: e, valence: s,
                        slot: ab.h < 12 ? 'morgen' : (ab.h < 18 ? 'mittag' : 'abend')};
-        // Runde 124: Die letzten acht Wochen tragen am Abend die fuenf Fragen und Stichworte —
-        // die Funktion ist neu, aeltere Tage haetten sie nicht. Die Antworten streuen um das
-        // Ergebnis oben (Stufe 1-5 um ergebnis/25+1), Extraversion an Freundes-Tagen hoeher, damit
-        // Bandbreite und Stichwort-Befund etwas zu zeigen haben, das man nachpruefen kann.
+        // Die letzten acht Wochen tragen abends die fuenf Fragen und Stichworte, um das Ergebnis
+        // gestreut.
         if (i < 56 && k === abschnitte.length - 1){
           var tags = [];
           if (wt >= 1 && wt <= 5) tags.push('arbeit');

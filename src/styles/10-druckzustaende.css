@@ -1,26 +1,8 @@
-/* ================= Druckzustände =================
-     Zweite externe Rückmeldung: „mehr Animationen beim Antippen". Beim Nachmessen zeigte sich,
-     dass es die Druckzustände längst gab — sie lagen nur unter der Wahrnehmungsschwelle.
-     `scale(.985)` ist eine Verkleinerung um 1,5 %; das sieht niemand. Und weil `.scale-btn` ein
-     `transition: all .15s` trägt, blendete sich der Druckzustand über 150 ms ein — bei einem
-     kurzen Tipp war er vorbei, bevor er sichtbar wurde. Das Gefühl „die App reagiert nicht"
-     entstand also nicht durch fehlende Bewegung, sondern durch zu zaghafte und zu träge.
-
-     Zwei Regeln liegen dem hier zugrunde:
-     1. SOFORT an, weich zurück. `transition-duration:0s` im :active-Zustand heißt: Der Druck
-        folgt dem Finger ohne Verzögerung, das Loslassen federt zurück. Genau umgekehrt fühlt es
-        sich träge an.
-     2. Große Flächen brauchen weniger Weg als kleine — ein Prozentwert wirkt auf einer breiten
-        Schaltfläche stärker als auf einem kleinen Kreis. Deshalb gestaffelte Werte statt eines
-        einzigen für alles.
-
-     Der Block steht bewusst am Ende: Vorher standen die Druckzustände weit oben und wurden von
-     später notierten :hover-Regeln einzelner Komponenten überschrieben (.btn-hero verschob sich
-     beim Zeigen um -1px und gewann damit gegen den Druckzustand). */
-  /* Runde 97: .theme-btn, .feedback-opt und .img-format-btn sind hier heraus. Die ersten
-     beiden gibt es nicht mehr; der dritte ist jetzt ein Fach im Segmentwaehler, und ein
-     schrumpfendes Fach saehe aus, als loeste sich der Waehler auf. Ein Segmentwaehler
-     quittiert einen Tipp dadurch, dass die Fuellung wandert — das steht bei .segment-opt. */
+/* ================= Druckzustaende =================
+   1. SOFORT an, weich zurueck: transition-duration:0s im :active-Zustand, das Loslassen federt.
+   2. Grosse Flaechen brauchen weniger Weg als kleine — gestaffelte Werte.
+   Der Block steht am Ende, damit spaetere :hover-Regeln ihn nicht ueberschreiben. */
+  /* Faecher im Segmentwaehler schrumpfen nicht — dort wandert die Fuellung. */
   .btn, .drawer-tab, .avatar-edit,
   .run-choice-opt, .history-row, .role-card, .drawer-profile-row, .archive-del,
   .avatar-color-swatch, .profile-remove-photo, .drawer-close{
@@ -37,9 +19,7 @@
     transform:scale(.985); border-color:var(--accent-strong); transition-duration:0s;
   }
   .avatar-color-swatch:active{ transform:scale(.9); transition-duration:0s; }
-  /* Die Antwortkreise sind das mit Abstand meistgetippte Element der App — fünfzig Mal je
-     Durchlauf. Der Druck darf hier nicht erst einblenden, sondern muss unmittelbar sitzen; die
-     Füllung selbst behält ihre weiche Bewegung. */
+  /* Die Antwortkreise (fuenfzigmal je Durchlauf): Druck sofort, Fuellung weich. */
   .scale-btn{ transition:transform .24s cubic-bezier(.2,.8,.2,1), border-color .15s ease, background .15s ease; }
   .scale-btn:active{
     transform:scale(.9); border-color:var(--accent-strong); background:var(--surface-2);
@@ -58,20 +38,9 @@
     .trait-card > summary:active{ transform:none; }
   }
 
-/* ================= Antippflächen =================
-     Runde 60, gemessen bei 390x844 (iPhone) und 320x568: Drei Bedienelemente der Kopfzeile und
-     der Startseite lagen unter 44px, dem Maß, das Apple seit jeher nennt und das WCAG 2.5.5 als
-     AAA führt — der Schubladen-Knopf mit 36x36 ausgerechnet als Haupteinstieg in die Navigation,
-     das Wortzeichen mit 25px Höhe, die kleinen Pillen-Schaltflächen mit 37px.
-
-     Der Eingriff vergrößert NUR die Trefferfläche, nicht die Darstellung: ein ::after ohne
-     eigene Erscheinung, mittig über dem Element, mindestens 44x44. Das Aussehen bleibt exakt so,
-     wie es in 57 Runden festgelegt wurde; nur der Finger bekommt mehr Platz.
-
-     Bewusst nicht angefasst: die Antwortkreise (.scale-btn). Sie messen bei 320px 42x42 und
-     wären damit knapp unter dem Ziel — aber sie stehen zu fünft in einer Reihe, und eine
-     vergrößerte Trefferfläche würde dort die Nachbarn überlappen und Fehlgriffe erzeugen.
-     42px bei fünf gleich großen, direkt benachbarten Zielen ist die bessere Abwägung. */
+/* ================= Antippflaechen =================
+   Mindestens 44x44 pt: ein ::after ohne Erscheinung vergroessert NUR die Trefferflaeche. Ausgenommen
+   die Antwortkreise (42 pt bei 320 px) — eine groessere Zone ueberlappte dort die Nachbarn. */
   .drawer-tab, .wordmark, .btn-sm, .drawer-close{ position:relative; }
   .drawer-tab::after, .wordmark::after, .btn-sm::after, .drawer-close::after{
     content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
@@ -83,29 +52,14 @@
      hinaus verbreiterte Fläche würde in den Bereich des Schubladen-Knopfs reichen. */
   .wordmark::after{ width:100%; }
 
-  /* Runde 80. Die Regel oben stammt aus Runde 60 und deckte ab, was damals gemessen wurde.
-     Seither sind Bedienelemente dazugekommen, und die neue Fehlersuche (tools/fehlersuche.mjs)
-     misst nicht mehr den Kasten, sondern tastet: Trifft ein Tipp 21 Punkte über und unter der
-     Mitte noch dasselbe Element? Damit fielen sechs Stellen auf, die vorher niemand sah —
-     darunter zwei aus der Runde davor, die ich selbst gebaut hatte.
+  /* Die Fehlersuche tastet (trifft ein Tipp 21 pt ueber/unter der Mitte noch dasselbe Element?). Je
+     Stelle die Abwaegung: Flaeche wachsen lassen oder nur die Trefferzone — ohne die Nachbarn zu
+     ueberlappen. */
 
-     Für jede Stelle steht dabei die Frage, ob die Fläche wachsen darf oder nur die
-     Trefferzone, weil eine Trefferzone, die den Nachbarn überlappt, Fehlgriffe erzeugt statt
-     sie zu verhindern (genau die Abwägung, an der die Antwortkreise oben ausgenommen sind). */
-
-  /* Die Schalter für Haptik und Bewegung. Ihr Kommentar behauptete, 52x32 sei „groß genug für
-     den Daumen, ohne dass daneben noch eine unsichtbare Fläche nötig wäre" — gemessen sind es
-     32 Punkte Höhe und damit zwölf zu wenig. Die Behauptung war eine Schätzung; das hier ist
-     eine Messung. Nur die Höhe fehlt, links und rechts steht nichts daneben. */
-  /* .avatar-edit steht bewusst NICHT in dieser Zeile: Es ist bereits position:absolute (es
-     sitzt in der Ecke des Profilbilds), und das ist ebenso ein Bezugsrahmen fuer ein ::after.
-     Ein position:relative haette es aus der Ecke in den Textfluss geholt — beim ersten Versuch
-     genau so passiert. */
-  /* Runde 97: .theme-btn ist hier weggefallen. Nicht aus Aufraeumlust — die Knoepfe, die so
-     hiessen, gibt es nicht mehr: Aus der Darstellungswahl wurde ein Segmentwaehler (Faecher
-     52 Punkte hoch), aus der Sprachwahl eine Auswahlliste (Zeilen 46 Punkte hoch). Beide
-     erreichen die 44 aus eigener Hoehe und brauchen keine unsichtbare Flaeche mehr. Der
-     Schieber braucht sie weiter: Er ist 31 Punkte hoch, also dreizehn zu wenig. */
+  /* Die Schieber (32 pt hoch) brauchen eine hoehere Trefferzone. */
+  /* .avatar-edit fehlt hier absichtlich: Es ist schon position:absolute (Ecke des Profilbilds);
+     relative holte es in den Textfluss. */
+  /* Segmentwaehler und Auswahlliste sind von sich aus hoch genug; der Schieber (31 pt) nicht. */
   .schalter, .avatar-color-swatch{ position:relative; }
   .schalter::after{
     content:''; position:absolute; top:50%; left:0; transform:translateY(-50%);
@@ -117,35 +71,19 @@
     content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     width:44px; height:44px;
   }
-  /* Die drei Farbtupfer standen mit 10 Punkten Abstand nebeneinander. Eine Trefferfläche von
-     44 hätte sich mit der des Nachbarn um 6 Punkte überschnitten — ein Tipp rechts neben dem
-     ersten Tupfer hätte den zweiten ausgelöst. Deshalb WÄCHST hier zuerst der Abstand auf 16,
-     womit die Flächen exakt aneinanderstoßen statt sich zu überlagern. */
-  /* Der Abstand nach oben waechst mit: Der Stift am Profilbild sitzt direkt darueber, und
-     seine 44er-Flaeche und die des ersten Farbtupfers stiessen auf den Punkt genau aneinander.
-     Gemessen landete ein Tipp 21 Punkte unter der Mitte des Stifts auf dem Farbtupfer — die
-     Ueberlappung, vor der die Regel oben warnt, diesmal zwischen zwei verschiedenen
-     Bedienelementen statt zwischen Nachbarn derselben Reihe. */
+  /* Farbtupfer: erst den Abstand auf 16 pt, damit die 44er-Flaechen aneinanderstossen statt sich zu
+     ueberlagern. */
+  /* Mehr Abstand nach oben, sonst ueberlappt die Zone des Stifts am Profilbild den ersten Tupfer. */
   .avatar-color-row{ gap:16px; margin-top:24px; }
   .avatar-color-swatch::after{
     content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     width:44px; height:44px;
   }
 
-  /* Zwei Stellen, an denen die Fläche selbst wachsen darf, weil sie nichts verdeckt: Die
-     Hintergrund-Vorlagen sind Farbflächen, denen sechs Punkte mehr Höhe nichts nehmen — und
-     bei einem Eingabefeld wirkt ein ::after ohnehin nicht, dort muss die Höhe echt sein. */
+  /* Hier darf die Flaeche selbst wachsen (Farbflaechen; an Eingabefeldern wirkt ::after nicht). */
   .hg-wahl{ height:44px; }
 
-  /* Nachtrag im selben Lauf: Sobald die Fehlersuche Elemente vor dem Tasten in die Mitte
-     rollt, kamen drei Stellen tief auf der Ergebnisseite dazu, die vorher gar nicht messbar
-     waren — die Antwortmoeglichkeiten der Rueckmeldung und die zwei Verweise in der Fusszeile.
-
-     Bei den Antwortmoeglichkeiten stehen mehrere Reihen untereinander: Erst waechst der
-     Abstand von 8 auf 10, dann stossen die 44er-Flaechen genau aneinander statt sich zu
-     ueberlagern. In der Fusszeile ueberdeckt eine groessere Flaeche nur Text, der nichts tut —
-     dort ist die Ueberlappung ohne Folge, der Abstand waechst trotzdem mit, damit die zwei
-     Verweise sich nicht gegenseitig verdecken. */
+  /* Mehrere Reihen untereinander: Abstand so, dass die 44er-Flaechen aneinanderstossen. */
   footer.appfoot{ gap:16px; }
   .fuss-link, footer.appfoot a{ position:relative; display:inline-block; }
   .fuss-link::after, footer.appfoot a::after{
@@ -155,16 +93,9 @@
   input[type="text"], input:not([type]), textarea{ min-height:44px; }
 
 /* ================= Bewegung, die einen Wechsel beantwortet =================
-     Runde 61. Drei Handlungen bekamen bisher keine Antwort. Alles andere, was hier naheliegend
-     schien, gab es beim Nachmessen schon: Druckzustände, das Einlaufen der Frage, das Hochzählen
-     der Ergebniszahlen (animateCountUp), das Einblenden der Karten, das Gleiten der Schublade.
+   Nur Bewegung, die an einem Tipp haengt. */
 
-     Der Grundsatz aus dem README bleibt der Maßstab: Bewegung, die eine Handlung beantwortet,
-     ist Funktion. Alle drei hier hängen an genau einem Tipp. */
-
-  /* 1. Theme-Wechsel. Die Farbmarken wechselten hart. Die Überblendung liegt bewusst NUR auf der
-        Klasse, die applyTheme() für 300 ms setzt — dauerhafte Farbübergänge auf allen Elementen
-        würden die Druckzustände träge machen, die absichtlich sofort sitzen. */
+  /* 1. Farbwechsel: Ueberblendung nur waehrend der 300-ms-Klasse von applyTheme(). */
   html.theme-shift, html.theme-shift body,
   html.theme-shift .card, html.theme-shift .btn, html.theme-shift .stat-tile,
   html.theme-shift .trait-card, html.theme-shift .scale-btn, html.theme-shift .segment-opt,
@@ -173,19 +104,13 @@
     transition:background-color .28s ease, color .28s ease, border-color .28s ease !important;
   }
 
-  /* 2. Sprachwechsel. Der Text wurde ohne jede Antwort getauscht; auf einer langen Seite war
-        nicht sicher zu sehen, dass etwas passiert ist. Nur Deckkraft, keine Bewegung — der
-        Inhalt soll nicht springen, während man liest. */
+  /* 2. Sprachwechsel: kurzes Aufblenden, nur Deckkraft (der Text soll nicht springen). */
   .view.lang-shift{ animation:lang-fade .26s ease both; }
   @keyframes lang-fade{ from{opacity:.55;} to{opacity:1;} }
 
-  /* 3. Schublade. Das Feld glitt herein, sein Inhalt erschien fertig. Ein knapper Versatz je
-        Abschnitt lässt die Liste dem Feld folgen, statt vor ihm da zu sein. 34 ms sind knapp
-        genug, dass die fünf Abschnitte als eine Bewegung gelesen werden. */
+  /* 3. Schublade: Abschnitte folgen dem Feld mit 34 ms Versatz. */
   #drawerPanel.open .drawer-section{ animation:drawer-item .26s cubic-bezier(.2,.8,.2,1) both; }
-  /* nth-child zaehlt ALLE Geschwister, nicht nur die Abschnitte — gemessen kamen dabei
-     0.162s, 0.196s, 0s, 0s, 0s heraus, also genau die falsche Reihenfolge. ":nth-child(n of S)"
-     zaehlt innerhalb der Auswahl und trifft die Abschnitte selbst. */
+  /* :nth-child(n of S) zaehlt nur die Abschnitte, nicht alle Geschwister. */
   #drawerPanel.open .drawer-section:nth-child(1 of .drawer-section){ animation-delay:.06s; }
   #drawerPanel.open .drawer-section:nth-child(2 of .drawer-section){ animation-delay:.094s; }
   #drawerPanel.open .drawer-section:nth-child(3 of .drawer-section){ animation-delay:.128s; }
@@ -205,42 +130,23 @@
     #drawerPanel.open .drawer-section{ animation:none; }
   }
 
-/* ================= Richtung, Sichtbarkeit, Atmosphäre =================
-     Runde 62. Zwei davon tragen Information, eine ist ausdrücklich gewünschte Zierde und als
-     solche benannt. */
+/* ================= Richtung, Sichtbarkeit, Atmosphaere ================= */
 
-  /* 1. Richtung im Ansichtswechsel. Bisher stieg jede Ansicht gleich auf; ob man tiefer ging
-        oder zurückkam, sah identisch aus. 16px sind genug, um die Richtung zu lesen, und wenig
-        genug, dass nichts wandert. Der Versatz läuft in den Rand hinein und nicht darüber
-        hinaus; seit Runde 91 wird das nicht mehr nur angenommen, sondern gemessen (die
-        Fehlersuche nimmt die Verdeckung dafür kurz ab). Dieselbe Kurve und Dauer wie "rise", damit sich die drei Varianten
-        wie ein Übergang anfühlen und nicht wie drei. */
-  /* Runde 108, gemeldet: „Groessere, auffaelligere Uebergaenge." Die Strecke bleibt bei 16px —
-     mehr gibt die 20px Polsterung von #shell nicht her, und der Ueberhang waere genau der, den
-     die Fehlersuche seit Runde 91 misst. Dazu kommt die Tiefe (dieselben 4 % wie bei "rise",
-     Begruendung dort): Die Ansicht schiebt sich nicht nur zur Seite, sie kommt nach vorn.
-     Nachgerechnet bei 390px Fensterbreite, damit es nicht wieder eine Annahme ist: Die Ansicht
-     ist 350px breit, 4 % davon sind 7,9px je Seite. Beim Vorwaerts-Uebergang steht die rechte
-     Kante zu Beginn bei 370 − 7,9 + 16 = 378 von 390 — zwoelf Punkte Luft, also MEHR als die
-     vier Punkte, die 16px allein uebrig liessen. Nach innen skalieren macht den Uebergang
-     groesser und den Ueberhang kleiner. */
+  /* 1. Richtung im Ansichtswechsel: 16px, in den Rand hinein, nicht darueber. Dieselbe Kurve und Dauer
+     wie rise. */
+  /* Dazu 4 % Tiefe nach innen: macht den Uebergang groesser und den Ueberhang kleiner (die Fehlersuche
+     misst ihn). */
   .view.active.nav-vor{ animation:view-vor .45s cubic-bezier(.2,.8,.2,1) both; }
   .view.active.nav-zurueck{ animation:view-zurueck .45s cubic-bezier(.2,.8,.2,1) both; }
   @keyframes view-vor{ from{opacity:0;transform:translateX(16px) scale(.96);} to{opacity:1;transform:none;} }
   @keyframes view-zurueck{ from{opacity:0;transform:translateX(-16px) scale(.96);} to{opacity:1;transform:none;} }
 
-  /* 2. Ergebniskarten blenden ein, wenn sie in den Blick kommen. Die Klasse "defer" setzt nur
-        das JavaScript, und nur auf Karten unterhalb des Sichtbereichs — ohne sie bleibt alles
-        beim bisherigen Verhalten. */
+  /* 2. Ergebniskarten blenden ein, wenn sie in den Blick kommen (Klasse defer setzt nur das JS). */
   .trait-card.defer{ animation:none; opacity:0; }
   .trait-card.defer.reveal-in{ animation:card-in .5s cubic-bezier(.2,.8,.2,1) both; }
 
-  /* 3. Atmosphäre auf der Startseite. Das ist Zierde, kein Funktionsträger — ausdrücklich
-        gewünscht und hier als das benannt, was es ist. Ein sehr schwacher Schein in der
-        Akzentfarbe hinter der Überschrift, der langsam atmet. Kein Text bewegt sich, nichts
-        verschiebt sich im Fluss: Der Schein liegt in einem eigenen, nicht anklickbaren Element
-        hinter dem Inhalt. 18 Sekunden sind langsam genug, dass die Bewegung nicht auffällt,
-        solange man hinsieht — sie wirkt nur, wenn man wegschaut und zurückkommt. */
+  /* 3. Ein sehr schwacher, langsam atmender Schein hinter der Startseiten-Ueberschrift (18 s) —
+     Zierde, in eigenem Element hinter dem Inhalt. */
   #view-landing .hero{ position:relative; }
   #view-landing .hero::before{
     content:''; position:absolute; z-index:0; pointer-events:none;
@@ -264,21 +170,11 @@
     #view-landing .hero::before{ animation:none; }
   }
 
-/* ================= Fühlbare Bedienung =================
-     Runde 63, angefragt mit Verweis auf Duolingo. Übernommen wird das Handwerk, nicht die
-     Bindungsmechanik: kein Serien-Zähler, kein XP, keine Herzen, keine Bestenliste — das lehnt
-     der Grundsatz im README ausdrücklich ab, und auf einem Persönlichkeitstest wäre eine
-     "Serie" auch inhaltlich sinnlos, weil sich Persönlichkeit nicht täglich ändert.
+/* ================= Fuehlbare Bedienung =================
+   Das Handwerk, nicht die Bindungsmechanik: kein Serien-Zaehler, kein XP, keine Bestenliste. */
 
-     Was solche Apps tatsächlich gut machen und was hier ankommt: Bedienelemente, die sich
-     körperlich anfühlen, Bewegung mit einer Feder statt mit einer Bremse, und großzügige
-     Rückmeldung auf die eine Handlung, um die es gerade geht. */
-
-  /* 1. Die Signatur: eine sichtbare Unterkante, die beim Drücken zusammengeht. Der Knopf bekommt
-        dadurch eine Höhe, die man mit dem Auge sieht und beim Tippen verliert — deutlich
-        greifbarer als eine reine Verkleinerung. Nur für die primäre Handlung; Geister- und
-        kleine Knöpfe behalten ihre zurückhaltende Verkleinerung, sonst trüge jede Fläche
-        dieselbe Betonung und keine hätte mehr Gewicht. */
+  /* 1. Primaere Knoepfe: eine sichtbare Unterkante, die beim Druecken zusammengeht. Nur fuer die
+     Haupthandlung. */
   .btn-primary{
     box-shadow:0 4px 0 var(--accent-deep);
     transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s cubic-bezier(.2,.8,.2,1),
@@ -296,10 +192,7 @@
     .btn-hero.btn-primary:hover{ transform:translateY(-1px); box-shadow:0 6px 0 var(--accent-deep); }
   }
 
-  /* 2. Die Antwort im Fragebogen ist die meistwiederholte Handlung der App — fünfzig Mal je
-        Durchlauf. Die Füllung wuchs bisher linear ein; jetzt federt sie mit leichtem Überschwung
-        auf, und der Ring gibt einen kurzen Impuls nach außen. Das ist dieselbe Handlung wie
-        vorher, nur beantwortet statt bloß registriert. */
+  /* 2. Die Fuellung der Antwort federt auf, der Ring gibt einen kurzen Impuls. */
   .scale-btn .fill{ transition:width .26s cubic-bezier(.34,1.56,.64,1), height .26s cubic-bezier(.34,1.56,.64,1), background .15s ease; }
   .scale-btn.picked{ animation:antwort-puls .34s cubic-bezier(.34,1.56,.64,1); }
   @keyframes antwort-puls{
@@ -307,10 +200,7 @@
     100%{ box-shadow:0 0 0 11px color-mix(in srgb, var(--accent) 0%, transparent); }
   }
 
-  /* 3. Der Fortschrittsbalken schob sich bisher gleichmäßig weiter. Mit derselben Feder wie die
-        Antwort wirkt er als Folge des Tippens, nicht als nebenherlaufende Anzeige. Der Impuls
-        bei den Meilensteinen ist die einzige Stelle, an der der Balken selbst auf sich
-        aufmerksam macht — dort gibt es auch schon den Hinweistext. */
+  /* 3. Der Fortschrittsbalken mit derselben Feder. */
   #focusline-fill{ transition:width .5s cubic-bezier(.34,1.4,.64,1); }
   #focusline.beat #focusline-fill{ animation:balken-impuls .6s ease; }
   @keyframes balken-impuls{
@@ -328,20 +218,8 @@
   }
 
 /* ================= Erscheinungsbild: Kante statt Schatten =================
-     Runde 69, auf Wunsch am optischen Vorbild Duolingo ausgerichtet. Der Unterschied zur
-     bisherigen Anmutung ist benennbar und laesst sich deshalb systematisch umsetzen:
-
-       bisher: Haarlinie (1px), weicher Schatten, kleine Radien  -> Papier, Redaktion
-       jetzt:  krsftiger Rand (2px), harte Unterkante, grosse Radien -> Objekt, greifbar
-
-     Der weiche Schatten verschwindet dort, wo eine Flaeche ein Objekt ist, und wird durch eine
-     Unterkante ersetzt. Ueber Ueberlagerungen (Schublade, Bild-Dialog) bleibt er: Dort trennt er
-     zwei Ebenen, und dafuer ist er das richtige Mittel.
-
-     Zugleich loest das die Kartenflut der Ergebnisseite (46 gerahmte Elemente): Bedienbare
-     Flaechen tragen jetzt Kante und kraeftigen Rand, Lesetext gar keinen Rahmen mehr. Der
-     Unterschied zwischen "das kann ich antippen" und "das lese ich" ist damit sichtbar, statt
-     dass beides dasselbe Kaestchen ist. */
+   Bedienbare Flaechen: kraeftiger Rand (2px), harte Unterkante, grosse Radien. Lesetext ohne Rahmen.
+   Schatten nur noch zwischen Ebenen (Schublade, Dialoge). */
 
   /* 1. Flaechen, die man ansieht: kraeftiger Rand, grosser Radius, kein Schatten. */
   .trend-list, .state-check-card, .understand-card, .preview-card, .delta-card, .compat-line-total{
@@ -349,9 +227,7 @@
     box-shadow:none !important;
   }
 
-  /* 2. Flaechen, die man antippt: zusaetzlich eine Unterkante, die beim Druecken zusammengeht.
-        Dasselbe Prinzip wie bei den Knoepfen, nur zurueckhaltender — eine Karte soll sich heben
-        lassen, aber nicht wie eine Schaltflaeche schreien. */
+  /* 2. Antippbare Flaechen: zurueckhaltende Unterkante, die beim Druecken zusammengeht. */
   .trait-card, .history-row, .role-card, .run-choice-opt, .drawer-profile-row{
     border-width:2px !important;
     box-shadow:0 3px 0 var(--kante);
@@ -363,9 +239,7 @@
     transform:translateY(2px); box-shadow:0 1px 0 var(--kante); transition-duration:0s;
   }
 
-  /* 3. Die Antwortkreise sind das Kernstueck. Kraeftiger Rand, und die Auswahl fuellt die
-        Flaeche statt nur den Rand einzufaerben — flaechige Farbe ist der Kern dieser
-        Formensprache. */
+  /* 3. Antwortkreise: kraeftiger Rand, die Auswahl fuellt die Flaeche. */
   .scale-btn{ border-width:2.5px; }
   .scale-btn.picked{ background:var(--accent); border-color:var(--accent); }
   .scale-btn.picked .fill{ background:var(--accent-ink); }
@@ -388,14 +262,8 @@
     .run-choice-opt:active, .drawer-profile-row:active{ transform:none; }
   }
 
-  /* 6. Runde 79, gemeldet: Der zweite Knopf auf der Startseite ("Test wiederholen" bzw.
-        "Dein Ergebnis ansehen") ist durchsichtig. Er traegt .btn-ghost, und Geisterknoepfe haben
-        seit jeher keinen Hintergrund — auf einer Karte faellt das nicht auf, vor dem bewegten
-        Sternenhimmel schon: Man sieht die Sterne durch den Knopf hindurchziehen.
-
-        Nur die grosse Ausfuehrung bekommt deshalb eine eigene Flaeche. Die kleinen Geisterknoepfe
-        bleiben, wie sie sind: Sie stehen ausnahmslos auf Karten, wo eine zweite Flaeche nur ein
-        weiteres Kaestchen waere. */
+  /* 6. Der grosse Geisterknopf der Startseite bekommt eine eigene Flaeche (sonst zogen die Sterne
+     hindurch); die kleinen stehen auf Karten und bleiben. */
   .btn-hero.btn-ghost{
     background:var(--surface);
     border:2px solid var(--line-strong);
@@ -414,11 +282,9 @@
     .btn-hero.btn-ghost:active{ transform:none; }
   }
 
-  /* ---------- Bewegung aus (Runde 75) ----------
-     Ein einziger Block statt einer Kopie jeder einzelnen reduced-motion-Regel. Das erfasst auch
-     jede Animation, die spaeter dazukommt, ohne dass jemand daran denken muss. Die Dauer geht
-     auf nahezu null statt auf "none", damit Ereignisse wie animationend weiterhin ausgeloest
-     werden und nichts haengen bleibt, das darauf wartet. */
+  /* ---------- Bewegung aus ----------
+     Ein Block fuer alles (auch kuenftige Animationen). Dauer nahezu null statt none, damit
+     animationend weiter ausgeloest wird. */
   html.bewegung-aus *,
   html.bewegung-aus *::before,
   html.bewegung-aus *::after{

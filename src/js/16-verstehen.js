@@ -20,12 +20,9 @@
           return '<div class="understand-card" style="animation-delay:'+(i*60)+'ms"><h3>'+c.title+'</h3><p>'+c.body+'</p></div>';
         }).join('');
     }).join('');
-    // Runde 84 machte die zwei Dimensionskarten frei, nur Zusammenspiel und eigene Daten waren
-    // Lucenta+. Runde 136, Entscheidung des Inhabers: "das komplette Verstehen-Feature sollte
-    // Lucenta+ sein." Frei steht deshalb nur noch die verschwommene Vorschau der ECHTEN ersten
-    // Gruppe (Runde 128: gesperrt wird als Vorschau des wirklichen Inhalts, nie als Attrappe).
-    // Nur die erste Gruppe, weil die Angebotskarte mittig auf der Vorschau sitzt — auf der
-    // ganzen, langen Seite laege sie unterhalb des Bildschirms.
+    // "Verstehen" ist ganz Lucenta+ (Entscheidung des Inhabers, Runde 136). Frei nur die verschwommene
+    // Vorschau der echten ersten Gruppe — nur die erste, weil die Angebotskarte mittig sitzt und sonst
+    // unter dem Bildschirm laege.
     if (!istPlus()){
       var ersteGruppe = html.split('<div class="understand-group-label">').slice(0, 2).join('<div class="understand-group-label">');
       wrap.innerHTML = vorschauHTML(ersteGruppe, tx('plus_verstehen'));
@@ -36,17 +33,9 @@
     schloesserVerdrahten(wrap);
   }
 
-  // ---------- Kombinationen (Runde 82) ----------
-  //
-  // Bis hierher zeigte die Ansicht vier Karten zu den zwei staerksten Dimensionen, jede fuer
-  // sich. Eine Dimension fuer sich ist aber nicht das, was jemand ueber sich erfahren will —
-  // hohe Gewissenhaftigkeit liest sich mit hoher Offenheit voellig anders als mit niedriger.
-  // Das Zusammenspiel ist die Stelle, an der aus fuenf Zahlen ein Bild wird.
-  //
-  // Die Tabelle deckt alle zehn Paare in allen vier Pol-Lagen ab, also vierzig Faelle. Bewusst
-  // vollstaendig und nicht als Auswahl "besonders interessanter" Kombinationen: Sonst haetten
-  // manche Menschen hier zwei Karten und andere keine — und die ohne waeren genau die, deren
-  // Ergebnis seltener ist.
+  // ---------- Kombinationen ----------
+  // Alle zehn Paare in allen vier Pol-Lagen (vierzig Faelle), damit jedes Ergebnis seine Karten
+  // bekommt.
   var KOMBI_REIHE = ['O','E','C','A','S'];
   function kombiSchluessel(sc, a, b){
     // Kanonische Reihenfolge, damit jedes Paar genau EINEN Schluessel hat.
@@ -77,22 +66,10 @@
     return '<div class="understand-group-label">'+tx('js_verstehen_kombi_titel')+'</div>'+karten;
   }
 
-  // ---------- Was in den eigenen Daten steht (Runde 82, neu gefasst in Runde 97) ----------
-  //
-  // Rueckmeldung Runde 97: "zu generisch und nichtsaussagend". Sie war berechtigt, und der
-  // Grund liess sich benennen: Von fuenf Befunden lasen DREI dieselben fuenf Zahlen noch
-  // einmal vor — der deutlichste Wert, die Werte nahe der Mitte, der Abstand zwischen
-  // hoechstem und niedrigstem. Alles drei steht bereits auf der Ergebnisseite, nur in anderen
-  // Worten. Wer sie liest, erfaehrt nichts, was er nicht schon wusste, und "was in deinen
-  // eigenen Daten steht" verspricht genau das Gegenteil.
-  //
-  // Was diese Ansicht tatsaechlich kann und keine andere Persoenlichkeits-App: Sie hat vier
-  // verschiedene Quellen auf dem Geraet liegen — das Ergebnis, den Verlauf ueber Monate, die
-  // Tagesform mit Uhrzeit und die gespeicherten Vergleiche. Ein Befund ist genau dann etwas
-  // wert, wenn er ZWEI davon zusammenbringt. Danach sind die Karten jetzt gebaut.
-  //
-  // Ausdruecklich NICHT hierher gehoeren Wochentags- und Tageszeitmuster: Die stehen bereits
-  // in der Tagesform-Ansicht, und derselbe Satz an zwei Stellen ist keine zweite Erkenntnis.
+  // ---------- Was in den eigenen Daten steht ----------
+  // Ein Befund zaehlt nur, wenn er ZWEI Quellen zusammenbringt (Ergebnis, Verlauf, Tagesform,
+  // Vergleiche) — nichts, was schon auf der Ergebnisseite steht. Wochentags- und Tageszeitmuster
+  // stehen in der Tagesform, nicht hier.
   function mittel(w){ return w.reduce(function(a,b){ return a+b; }, 0) / w.length; }
   function medianVon(w){
     var s = w.slice().sort(function(a,b){ return a-b; });
@@ -110,9 +87,7 @@
     var tage = eintraege.length ? stateTage(eintraege) : [];
     var archiv = []; try{ archiv = loadCompatArchive(); }catch(e){}
 
-    // 1) Die Form des Profils. Eine Karte statt der bisherigen drei, und sie sagt nicht, WAS
-    //    dasteht, sondern was daraus fuer das Lesen des Restes folgt. Das ist der Unterschied
-    //    zwischen einer Wiederholung und einer Einordnung.
+    // 1) Die Form des Profils: was daraus fuer das Lesen des Restes folgt.
     var hoch = ORDER.reduce(function(a,f){ return sc[f] > sc[a] ? f : a; }, ORDER[0]);
     var tief = ORDER.reduce(function(a,f){ return sc[f] < sc[a] ? f : a; }, ORDER[0]);
     var spanne = sc[hoch] - sc[tief];
@@ -122,13 +97,7 @@
             LABELS[tief] + tx('js_ed_form_d') + deutlich + tx('js_ed_form_e') +
             (spanne >= 40 ? tx('js_ed_form_weit') : (spanne <= 20 ? tx('js_ed_form_eng') : tx('js_ed_form_mittel')))});
 
-    // 2) Haengen Energie und Stimmung bei dir zusammen? Zwei Angaben, die dieselbe Person an
-    //    denselben Tagen gemacht hat — daraus laesst sich etwas sagen, was in keiner der
-    //    beiden allein steht. Verglichen wird an der eigenen Mitte und nicht an der
-    //    Skalenmitte: Wer nie unter 3 geht, haette sonst nur "hohe" Tage.
-    //
-    //    Zehn Tage sind die Untergrenze. Darunter entscheidet ein einzelner Tag ueber mehr als
-    //    zehn Prozentpunkte, und eine Zahl, die so wackelt, ist keine Aussage.
+    // 2) Haengen Energie und Stimmung zusammen? Verglichen an der eigenen Mitte; ab zehn Tagen.
     if (tage.length >= 10){
       var me = medianVon(tage.map(function(t){ return t.energy; }));
       var mv = medianVon(tage.map(function(t){ return t.valence; }));
@@ -148,14 +117,7 @@
       teile.push({titel: tx('js_ed_titel_kopplung'), text: satz});
     }
 
-    // 3) An was fuer Tagen hast du eigentlich getestet? Der Befund, den ich in keiner anderen
-    //    App gesehen habe, und der einzige hier, der das Ergebnis selbst in Frage stellt: Wer
-    //    seine Durchlaeufe regelmaessig an guten Tagen macht, misst nicht sich, sondern seine
-    //    guten Tage.
-    //
-    //    Zugeordnet wird mit einem Tag Spielraum in beide Richtungen. Genau am Testtag einen
-    //    Eintrag zu haben ist zu selten, als dass daraus je etwas wuerde; zwei Tage waeren zu
-    //    weit, weil dazwischen ein Wochenende liegen kann.
+    // 3) An was fuer Tagen wurde getestet? Zuordnung mit einem Tag Spielraum.
     if (hist.length >= 2 && tage.length >= 8){
       var proTag = {};
       tage.forEach(function(t){ proTag[t.day] = t; });
@@ -179,9 +141,7 @@
       }
     }
 
-    // 4) Was steht fest, was wandert. Erst ab DREI Durchlaeufen: Bei zweien ist jede Differenz
-    //    ein einzelner Vergleich, und "am stabilsten" waere ein Superlativ ueber eine einzige
-    //    Zahl. Genannt werden beide Enden, weil das eine ohne das andere nichts wiegt.
+    // 4) Was steht fest, was wandert — ab drei Durchlaeufen, beide Enden genannt.
     if (hist.length >= 3){
       var weite = ORDER.map(function(f){
         var w = hist.map(function(h){ return h.scores[f]; });
@@ -196,9 +156,7 @@
               (beweglich.d <= 8 ? tx('js_ed_fest_ruhig') : tx('js_ed_fest_bewegt'))});
     }
 
-    // 5) Wo du anderen am NAECHSTEN bist. Die Archiv-Ansicht nennt die Dimension, in der du am
-    //    weitesten entfernt liegst; hier steht das andere Ende. Zwei Ansichten, die dieselbe
-    //    Zahl aus derselben Richtung vorlesen, waeren eine zu viel.
+    // 5) Wo du anderen am naechsten bist (das Archiv nennt das andere Ende).
     if (archiv.length >= 3){
       var summe = {}, n = 0;
       ORDER.forEach(function(f){ summe[f] = 0; });
@@ -223,10 +181,7 @@
                '<h3>'+t.titel+'</h3><p>'+t.text+'</p></div>';
       }).join('');
   }
-  // Der Tagesschluessel zu einem Zeitpunkt, um d Tage versetzt. Ueber setDate() und nicht ueber
-  // Millisekunden: An einer Zeitumstellung hat ein Tag nicht 24 Stunden, und ein Aufschlag von
-  // d*86400000 landet dann auf dem falschen Datum — genau an den zwei Tagen im Jahr, an denen
-  // niemand nachsieht.
+  // Ueber setDate(), nicht Millisekunden: An der Zeitumstellung hat ein Tag nicht 24 Stunden.
   function tagSchluesselVersetzt(ts, d){
     try{
       var x = new Date(ts);

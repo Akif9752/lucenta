@@ -59,9 +59,8 @@
     pushOverlayState('drawer');
     setTimeout(function(){ $('btnDrawerClose').focus(); }, 50);
   }
-  // keepHistory=true bedeutet: der Verlauf wurde bereits an anderer Stelle behandelt — entweder
-  // weil die Zurück-Geste selbst das Schließen ausgelöst hat, oder weil unmittelbar danach eine
-  // Ansicht geöffnet wird, die den Überlagerungs-Eintrag ohnehin ersetzt.
+  // keepHistory=true: Der Verlauf ist schon anders behandelt (Zurueck-Geste oder sofort folgende
+  // Ansicht).
   function closeDrawer(keepHistory){
     $('drawerPanel').classList.remove('open');
     $('drawerPanel').setAttribute('aria-hidden','true');
@@ -75,14 +74,9 @@
   }
 
   
-  // ---------- Sichern und Einspielen (Runde 76) ----------
-  // Der 10-Zeichen-Code traegt nur das Ergebnis. Verlauf, Tagesform, Profil und Vergleichsarchiv
-  // gingen beim Geraetewechsel verloren — die App sagt zu, dass alles im Geraet bleibt, sagte
-  // aber nicht, wie man es mitnimmt.
-  //
-  // Zwei Wege beim Sichern, weil der eine nicht ueberall geht: Erst der Versuch, eine Datei zu
-  // speichern; wo das unterbunden ist (eingebettete Ansichten unterbinden Downloads), landet
-  // alles in der Zwischenablage. Ein Weg allein waere in der Haelfte der Faelle eine Sackgasse.
+  // ---------- Sichern und Einspielen ----------
+  // Der Code traegt nur das Ergebnis; das hier nimmt alles mit. Erst als Datei, sonst (eingebettet,
+  // Downloads unterbunden) in die Zwischenablage.
   var DATEN_SCHLUESSEL = ['lucenta_result','lucenta_history','lucenta_state','lucenta_profile',
                           'lucenta_compat_archive','lucenta_progress','lucenta_nutzung'];
 
@@ -94,11 +88,8 @@
     return JSON.stringify(d);
   }
 
-  // Ein blockierter Download wirft KEINEN Fehler — a.click() tut in dem Fall schlicht nichts.
-  // Der erste Entwurf schloss aus dem ausbleibenden Fehler auf Erfolg und haette in einem
-  // eingebetteten Rahmen "Datei gespeichert" gemeldet und nichts geliefert. Da sich das nicht
-  // abfragen laesst, entscheidet die Lage: In einem Rahmen sind Downloads regelmaessig
-  // unterbunden, dort geht es direkt in die Zwischenablage.
+  // Ein blockierter Download wirft keinen Fehler; deshalb entscheidet die Lage (Rahmen), nicht ein
+  // Fehler.
   function imRahmen(){
     try{ return window.self !== window.top; }catch(e){ return true; }
   }
@@ -149,15 +140,9 @@
     setTimeout(function(){ try{ location.reload(); }catch(e){} }, 700);
   }
 
-  // ---------- Rechtliches (Runde 79) ----------
-  //
-  // Impressum und Datenschutzerklaerung sind fuer eine Veroeffentlichung nicht optional: ohne
-  // sie gibt es weder einen App-Store-Eintrag noch einen rechtssicheren Betrieb in Deutschland.
-  // Was daran ohne Angaben der betreibenden Person moeglich ist, steht hier fertig; die sechs
-  // Angaben, die nur sie liefern kann, stehen an EINER Stelle.
-  //
-  // Solange eine davon fehlt, sagt die Ansicht das in aller Deutlichkeit — ein Impressum mit
-  // Platzhaltern ist schlimmer als keines, weil es Vollstaendigkeit vortaeuscht.
+  // ---------- Rechtliches ----------
+  // Impressum und Datenschutz sind Pflicht. Die sechs Angaben der betreibenden Person stehen an EINER
+  // Stelle; fehlt eine, sagt die Ansicht das deutlich (kein Impressum mit Platzhaltern).
   var IMPRESSUM = {
     name:    '',   // Vor- und Nachname bzw. Firma mit Rechtsform
     strasse: '',   // Strasse und Hausnummer (kein Postfach)
@@ -181,9 +166,7 @@
   function rechtFuellen(text){
     return String(text).replace(/\{\{([a-z]+)\}\}/g, function(_, k){
       if (IMPRESSUM[k]) return IMPRESSUM[k];
-      // Die Umsatzsteuer-Nummer hat nicht jede betreibende Person. Ein Platzhalter waere hier
-      // also kein Hinweis auf eine Luecke, sondern eine falsche Behauptung — deshalb ein
-      // uebersetzter Satz statt einer eckigen Klammer.
+      // Keine Umsatzsteuer-Nummer ist kein Platzhalter, sondern ein uebersetzter Satz.
       if (k === 'ust') return tx('js_recht_keine_ust');
       return '[' + k + ']';
     });

@@ -1,33 +1,14 @@
-// ---------- Tagesform, Runde 124: Brücke zu den fünf Dimensionen ----------
-//
-// Auftrag des Inhabers: Die Tagesform "soll umfänglich reformiert werden, da sie ein essentieller
-// Bestandteil und eine wichtige Säule der ganzen App ist". Gewählt hat er drei Richtungen:
-//   1. eine Brücke zu den Big Five — fünf kurze Fragen am Tag, je Dimension eine;
-//   2. Muster und Einsichten — Wochentage, Stichworte, Monatskalender;
-//   3. Alltag — Erinnerung, schneller Eintrag, mehr Platz auf der Startseite.
-//
-// Der fachliche Kern ist (1), und er dreht eine Aussage um, die die App bisher gemacht hat: "Deine
-// fünf Dimensionen ändern sich nicht von Tag zu Tag." Für das MITTEL stimmt das. Für den einzelnen
-// Tag nicht — die Forschung zu Persönlichkeitszuständen (Fleeson 2001, "density distributions")
-// zeigt, dass Menschen innerhalb einer Woche fast die ganze Breite einer Dimension durchlaufen, und
-// dass das Mittel dieser Tage stabil ist und mit dem Fragebogen zusammenhängt. Beides zusammen ist
-// das Bild, das hier entsteht: das Testergebnis als Mitte, der Alltag als Band darum.
-//
-// Was das NICHT ist: ein zweiter Test. Fünf Fragen mit je fünf Stufen messen nicht dasselbe wie
-// fünfzig Aussagen, und ihre Zahl ist nicht mit dem Testwert verrechenbar. Die Darstellung zeigt
-// deshalb LAGE (wo liegt das Band, wo das Ergebnis), keine Differenz und kein "du bist heute 12
-// Punkte extravertierter". Und keine Diagnosesprache (Richtlinie 1.4.1): beschrieben wird, was
-// jemand eingetragen hat, nicht was es bedeutet.
-//
-// Die freie Fassung (Entscheidung des Inhabers, Runde 124): Eintragen, Erinnerung, die letzten
-// FREI_TAGE Tage, der Kalender des laufenden Monats und die Bandbreite über diese Tage. Lucenta+:
-// der ganze Verlauf, alle Monate, Stichwort-Zusammenhänge, Wochentagsmuster.
+// ---------- Tagesform: Bruecke zu den fuenf Dimensionen ----------
+// Fuenf kurze Fragen am Tag, je Dimension eine (Auftrag des Inhabers). Fachlich: Das Mittel einer
+// Dimension ist stabil, der einzelne Tag nicht (Fleeson 2001) — das Testergebnis als Mitte, der Alltag
+// als Band darum.
+// Kein zweiter Test: Die Darstellung zeigt LAGE, keine Differenz zum Testwert, und keine
+// Diagnosesprache (Richtlinie 1.4.1).
+// Frei: Eintragen, Erinnerung, die letzten FREI_TAGE Tage, laufender Monat, Bandbreite ueber diese
+// Tage. Lucenta+: ganzer Verlauf, alle Monate, Stichwort-Zusammenhaenge, Wochentagsmuster.
 
-  // Die Reihenfolge der Fragen ist die der App (ORDER), damit die Farben dieselben Plätze haben
-  // wie im Radar. Jede Frage hat zwei Pole; der linke ist Stufe 1, der rechte Stufe 5.
-  // Saetze mit Platzhaltern ({tag}, {n} ...) statt aneinandergehaengter Bruchstuecke: Japanisch und
-  // Tuerkisch stellen das Verb ans Ende, und ein Satz aus vier Teilen liesse sich dort nur falsch
-  // uebersetzen.
+  // Fragen in der Reihenfolge ORDER (Farben wie im Radar); linker Pol = Stufe 1. Saetze mit
+  // Platzhaltern statt Bruchstuecken (Japanisch und Tuerkisch stellen das Verb ans Ende).
   function tfText(schluessel, werte){
     var t = tx(schluessel);
     Object.keys(werte || {}).forEach(function(k){ t = t.split('{'+k+'}').join(String(werte[k])); });
@@ -100,19 +81,16 @@
     return {ocean:o, tags:tfTagsGewaehlt.slice()};
   }
 
-  // ---------- Die Tage, die gezeigt werden ----------
-  // Dieselbe Grenze wie im Verlauf (renderStateTrend): frei die letzten FREI_TAGE Tage, mit
-  // Lucenta+ das gewählte Fenster. Steht hier einmal, damit Bandbreite und Verlauf nie über
-  // verschiedene Tage sprechen.
+  // ---------- Die gezeigten Tage ----------
+  // Eine Stelle fuer die Grenze, damit Bandbreite und Verlauf ueber dieselben Tage sprechen.
   function tfSichtbareTage(){
     var tage = stateTage(loadStateHistory());
     return istPlus() ? tage.slice(-fensterLesen()) : tage.slice(-FREI_TAGE);
   }
 
   // ---------- Bandbreite ----------
-  // Je Dimension: wo die Tage lagen (ganzes Band und mittlere Hälfte), ihr Mittel, und — falls
-  // es ein Ergebnis gibt — wo der Test liegt. Die Tageswerte 1–5 werden auf 0–100 gelegt, nur
-  // damit sie auf DERSELBEN Linie stehen wie das Ergebnis; Lage, nicht Rechnung.
+  // Je Dimension Band, mittlere Haelfte, Mittel und — falls vorhanden — das Testergebnis. 1–5 wird auf
+  // 0–100 gelegt, nur fuer dieselbe Linie (Lage, nicht Rechnung).
   var TF_MIN_TAGE = 3;
   function tfQuantil(sortiert, q){
     if (!sortiert.length) return 0;
@@ -191,9 +169,8 @@
   }
 
   // ---------- Monatskalender ----------
-  // Ein Feld je Tag, gefärbt nach Stimmung oder Energie. Frei: der laufende Monat; mit Lucenta+
-  // jeder Monat mit Einträgen. Die Farbe allein ist keine Angabe (und für wen Farben schwer zu
-  // unterscheiden sind, gar keine) — deshalb trägt jedes Feld seine Werte als Namen.
+  // Ein Feld je Tag, gefaerbt nach Stimmung oder Energie; jedes Feld traegt seine Werte als Namen.
+  // Frei der laufende Monat.
   var tfKalenderVersatz = 0;    // 0 = laufender Monat, -1 = Vormonat, ...
   var tfKalenderGroesse = 'valence';
   function tfMonatsAnfang(versatz){
@@ -205,9 +182,7 @@
   }
   function tfKalenderZellen(versatz, tageNachSchluessel){
     var anfang = tfMonatsAnfang(versatz);
-    // Montag als erster Wochentag (ISO) — so steht es in jedem der acht Gebietsschemata ausser
-    // Englisch (US) und Japanisch, und dort ist ein Montag vorn verständlich, ein Sonntag in
-    // Europa irritierend.
+    // Montag als erster Wochentag (ISO).
     var leer = (anfang.getDay() + 6) % 7;
     var tageImMonat = new Date(anfang.getFullYear(), anfang.getMonth() + 1, 0).getDate();
     var zellen = [];
@@ -246,10 +221,8 @@
       var name = z.nr + '';
       var label = z.tag ? (tx('js_energie')+' '+tagWert(z.tag.energy)+'/5, '+tx('js_stimmung')+' '+tagWert(z.tag.valence)+'/5')
                         : tx('tf_kal_kein_eintrag');
-      // Runde 124, Fehlersuche: Als Knoepfe waren die Felder 42 Punkt (390 px) bzw. 32 Punkt
-      // (320 px) gross — sieben Spalten zu je 44 Punkt passen auf 320 Punkt Breite nicht. Die
-      // Felder sind deshalb Anzeige, kein Bedienelement; jedes nennt sich selbst, und die Liste
-      // "Letzte Eintraege" darunter fuehrt dieselben Tage in Worten.
+      // Die Felder sind Anzeige, kein Bedienelement (sieben Spalten zu 44 pt passen auf 320 pt nicht);
+      // die Liste darunter nennt dieselben Tage in Worten.
       return '<span class="tf-kal-zelle'+(z.tag ? ' tf-kal-st'+stufe : '')+
         (z.day === heute ? ' tf-kal-tag0' : '')+'" role="img" '+
         'aria-label="'+z.nr+'. '+monatName+': '+label+'"><span aria-hidden="true">'+name+'</span></span>';
@@ -295,12 +268,8 @@
   }
 
   // ---------- Muster (Lucenta+) ----------
-  // Zwei Auswertungen, beide über ALLE Tage (Lucenta+ sieht den ganzen Verlauf):
-  //   - Wochentage: Mittel von Energie und Stimmung je Wochentag als kleines Säulenbild.
-  //   - Stichworte: An Tagen mit einem Stichwort lag X im Mittel höher/tiefer als an Tagen ohne.
-  // Die Hürden folgen denen der übrigen Befunde (tagesformBefunde): genug Tage auf BEIDEN Seiten,
-  // und mindestens ein halber Skalenpunkt Unterschied — darunter ist es bei einer Fünferskala
-  // Rauschen. Und ausdrücklich ein Zusammenhang, keine Ursache: "an Tagen mit", nie "wegen".
+  // Wochentage und Stichworte ueber alle Tage. Genug Tage auf BEIDEN Seiten und mindestens ein halber
+  // Skalenpunkt Unterschied. Ein Zusammenhang, keine Ursache: "an Tagen mit", nie "wegen".
   var TF_STICHWORT_MIN = 3;
   function tfStichwortBefunde(tage){
     var aus = [];
