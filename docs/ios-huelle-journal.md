@@ -11,9 +11,8 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
-und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Dieser Block ist nach Runde
-132 vollstaendig neu geschrieben; aeltere Fassungen widersprachen sich an drei Stellen (Schrift,
-Pruefzahlen, Bauweg) — es gilt dieser.
+und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
+durchgesehen nach Runde 138 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -24,7 +23,8 @@ lassen. Die Richtungen:
 - **Die Tagesform ist eine Saeule der App** und waechst weiter (Runde 124, 130, 131).
 - **Lucenta+ soll sich verkaufen** — ehrlich (keine Countdowns, keine erfundenen Zahlen), aber deutlich.
 - **Verspielter, mehr Bewegung** (Runde 130–132) — grosse Gesten an Ereignissen, Licht statt Papier.
-- **Avatare** plastisch (eigene 3D-Renderings seit Runde 125).
+- **Avatare** plastisch und suess (eigene 3D-Renderings seit Runde 125, Koerper und Blick seit 133–135).
+- **Schneller arbeiten** (Runde 138): Kommentare kurz halten, Pruefungen buendeln.
 
 Regeln, die er gesetzt hat:
 - **Bei Gestaltungs-, Abo- oder Rechtsfragen mit Optionen fragen** (AskUserQuestion, Empfehlung
@@ -85,8 +85,19 @@ Regeln, die er gesetzt hat:
   `python3 tools/figuren_holen.py <tier>`. Seit Runde 133/134 mit Koerper (`vierbeiner(Bau(...))`/`brustbild()`) und
   **festem** Rahmen (`figuren_rendern/rahmen.json` — nie neu messen, sonst wandert der Kopf);
   Vergleich alt/neu im Kreis: `python3 tools/figuren_rendern/vorschau.py <alter-ordner> <tier>`.
+- **Navigation:** `showView()` in `02-state.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings}` steuert den
+  iOS-Push/Pop (`.nav-push`/`.nav-pop`, die verlassene Seite als `.nav-weg` fixiert; CSS am Ende von
+  `12-ios.css`). Die Zurueck-Wischgeste vom linken Rand steht am Ende von `20-wiring.js` (`randGeste`).
+  Eine neue Unterseite = Eintrag in `UNTERSEITE_VON` + `view-…` + Knopf mit `.hilfe-knopf` (Pfeil).
+- **Sprache:** eigene Seite `view-sprache` (Liste `.wahl-zeile[data-lang]`), in den Einstellungen nur die
+  Zeile `#btnSpracheOeffnen` mit `#spracheAktuell` (gesetzt in `syncLangButtons`, `01-sprachpakete.js`).
+- **Vergleiche:** `FREI_VERGLEICHE`/`FREI_ARCHIV` und `freieVergleichePersonen()` (`03-speicherung.js`,
+  Liste unter `lucenta_vergleich_frei`, alter Einzel-Code wird uebernommen); Grenze in `renderCompat`
+  (`11-rendering.js`), Archiv in `06-vergleichsarchiv.js`. Verstehen gesperrt in `16-verstehen.js`.
 - **Huelle:** `MainViewController.swift` (Bildlauf, Zoomsperre, Farbschema, Transparenz,
-  Kauf-Bruecke), `LucentaKaeufePlugin.swift` (StoreKit 2).
+  Kauf-Bruecke), `LucentaKaeufePlugin.swift` (StoreKit 2: `stand`, `kaufen`, `restorePurchases`,
+  seit Runde 137 `preise` — `displayPrice`, in `19b-native.js` per `plusPreiseHolen/-Anwenden` in die
+  Kaufseite gesetzt; ohne Antwort bleiben die festen Texte).
 
 ### Was offen ist
 
@@ -94,15 +105,19 @@ Regeln, die er gesetzt hat:
    Erinnerung und Nacherinnerung, bleiben sie nach einem Eintrag aus; Tipp auf die Mitteilung;
    Haptik; alle neuen Bewegungen in Bewegung (Funkeln, Enthuellung, Zuklappen, Startkarten);
    das neue Symbol auf dem Homescreen (Creme auf #5CB4AD hat nur rund 2:1 Kontrast).
-2. **Preise:** erledigt in Runde 137 — `preise()` holt `displayPrice` aus StoreKit, feste Texte bleiben als
-   Rueckfall. Zu sehen erst mit echten Produkten in App Store Connect (die Testkonfiguration liefert
-   dieselben Euro-Betraege wie die festen Texte).
+   Neu dazu: Push/Pop und die Wischgeste vom linken Rand MIT DEM FINGER (geprueft nur mit
+   nachgestellten Beruehrungen in Chromium und Standbildern in WebKit).
+2. **Store-Preise** sind gebaut (Runde 137), aber erst mit echten Produkten in App Store Connect zu sehen
+   (die Testkonfiguration liefert dieselben Euro-Betraege wie die festen Texte).
 3. **Urteil des Inhabers ausstehend:** Polwoerter der fuenf Tagesform-Fragen, die 3D-Tiere mit Koerper und Blick
-   (Runde 133–135), die zarten Strahlen des Kranzes.
-4. Moeglich, nicht beauftragt: Die Startkarten blenden beim Hereinfliegen auch ein (Deckkraft) —
+   (Runde 133–135), die zarten Strahlen des Kranzes, der Uebergang Push/Pop.
+   Bekannt unsicher: Panda-Schulter durch die Drehung teils weiss; das Eulen-Zwinkern auf 42 pt.
+4. Angeboten, nicht gewaehlt (Runde 138): volle Pruefrunde nur am Ende eines Auftrags; Journal kuerzen
+   und Altes archivieren. Nicht ungefragt umsetzen.
+5. Moeglich, nicht beauftragt: Die Startkarten blenden beim Hereinfliegen auch ein (Deckkraft) —
    die Regel „nie ueber Deckkraft" gilt fuer Ansichtswechsel; falls er das anders sieht, eine Zeile
    in `karte-flug`.
-5. Das allererste Startbild zeigt die Systemfarbe, wenn die App anders eingestellt ist — iOS
+6. Das allererste Startbild zeigt die Systemfarbe, wenn die App anders eingestellt ist — iOS
    zeichnet es vor dem App-Start. **Nicht noch einmal suchen.**
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
@@ -134,10 +149,10 @@ Regeln, die er gesetzt hat:
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 132: **ALLE 9 BESTANDEN** (11,1 Minuten). `tests` 11 Reihen
-(Kernlogik 6856, Tagesform 44), `audit-i18n` bestanden, `pruef-store` 32, `pruef-app` **31**,
-`pruef-nativ` **61**, `pruef-bewegung` bestanden (zaehlt `.funkeln i`), `diff-sprachen` 141 (nur
-Bericht), `fehlersuche` 26 Durchlaeufe WebKit + Chromium KEINE FUNDE.
+`npm run pruef-alles` nach Runde 138: **ALLE 9 BESTANDEN** (**9,2 Minuten**; `audit-i18n` seit Runde 138
+0,7 s statt 4 Min.). `tests` 11 Reihen, `pruef-store` 32, `pruef-app` **31**, `pruef-nativ` **65** (mit
+Store-Preisen), `pruef-bewegung` bestanden, `diff-sprachen` **92** (nur Bericht), `fehlersuche` 26
+Durchlaeufe (Wege inkl. `sprache`), WebKit + Chromium KEINE FUNDE. `pruef-schnell` ~20 s.
 
 Was immer wieder durchfaellt, und warum:
 - **i18n-Audit:** Klassennamen, die wie deutsche Woerter aussehen (`' voll'`, `'funkel-punkt'`), als
@@ -145,6 +160,11 @@ Was immer wieder durchfaellt, und warum:
 - **Pruefungen, die eine alte Entscheidung festhalten** (eine Schrift, „zweiter Eintrag ergaenzt",
   20:00 Uhr, `q-schub`): mit der Entscheidung umschreiben, nicht lockern — die neue Zusage pruefen.
 - **Neue Bedienelemente** fallen in der Fehlersuche an Tippzielen (44 pt) und Kontrast auf.
+- **Animationen, die nicht zu Ende laufen:** In der Fehlersuche (4 parallele WebKit-Seiten) bleiben
+  CSS-Animationen am Start stehen. Was mit `transform` weit verschiebt, muss per Zeitgeber auf den
+  Endzustand gesetzt werden (so `navWegAufraeumen` fuer Push/Pop).
+- **Werkzeuge, die Bedienelemente anklicken** (`diff_sprachen.mjs` u. a.): Wer ein Element auf eine
+  andere Seite verlegt, muss deren Weg nachziehen (Runde 136: die Sprachknoepfe).
 
 ### Was nur der Inhaber kann
 
@@ -189,14 +209,17 @@ Was immer wieder durchfaellt, und warum:
   acht entfernen. Keine ASCII-Apostrophe in Werten (Franzoesisch/Italienisch: ’).
 - Der PreToolUse-Hook antwortet gelegentlich nicht („did not respond before its timeout") — dann
   wurde der Befehl NICHT ausgefuehrt; einfach erneut absetzen, vorher pruefen, ob etwas halb lief.
+- **Kommentare** (Regel seit Runde 138, steht auch in beiden CLAUDE.md): kurz, das Warum, keine
+  Rundengeschichte. Marke `// ---------- wiring ----------` in `20-wiring.js` nie aendern (`tests/run.js`
+  schneidet dort). `tests/run.js` liest `dist/lucenta.html` — nach Aenderungen in `src/` erst `node build.js`.
+  `src/styles/00-schriften.css` ist erzeugt.
 - **Journal:** Eintrag vor `## Runde <vorige>` einsetzen, Tabelle und diesen Block nachziehen;
   Commit-Nachrichten deutsch, mit der Co-Authored-By-Zeile.
 
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), Bundle-ID
-`app.lucenta.ios`; dort laeuft der Stand von Runde 131 (Runde 132 synchronisiert, aber nicht neu
-installiert). Lucenta+ an, Dunkel, Deutsch, Beispieldaten geladen. Deployment Target 15.0 — in
+`app.lucenta.ios`; installiert ist der Stand von Runde 137 (Runde 138 aendert nur Kommentare). Lucenta+ an, Dunkel, Deutsch, Beispieldaten geladen. Deployment Target 15.0 — in
 Xcode **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator;
 SceneKit und CoreGraphics ja (`swiftc`).
 
