@@ -12,6 +12,6 @@ for t in TIERE where gewuenscht.isEmpty || gewuenscht.contains(t.name) {
     studio(szene)
     let (knoten, abstand, blick) = t.bauen()
     szene.rootNode.addChildNode(knoten)
-    rendern(szene, groesse: 512, kameraAbstand: abstand, ziel: blick, nach: "\(ziel)/\(t.name).png")
+    rendern(szene, groesse: 512, leinwand: 2, kameraAbstand: abstand, ziel: blick, nach: "\(ziel)/\(t.name).png")
     print(String(format: "%-13@ %.1f s", t.name as NSString, Date().timeIntervalSince(start)))
 }

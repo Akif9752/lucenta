@@ -186,10 +186,14 @@ func studio(_ szene: SCNScene) {
     licht(.directional, NSColor(calibratedRed: 1, green: 0.98, blue: 0.95, alpha: 1), 2200, V(4, 4, -6))                  // Kante
 }
 
-func rendern(_ szene: SCNScene, groesse: Int, kameraAbstand: Float, ziel: V, nach pfad: String) {
+// Runde 133: `leinwand` vergroessert das Bild um diesen Faktor, ohne den Massstab zu aendern — der
+// Bildwinkel waechst mit. Die mittleren 512 Punkte einer Leinwand von 2 sind also genau das Bild
+// von vorher. Noetig, seit die Tiere einen Oberkoerper haben: Der reicht ueber den alten Rand
+// hinaus und wird erst im Kreis abgeschnitten, nicht schon an der Bildkante.
+func rendern(_ szene: SCNScene, groesse: Int, leinwand: Float = 1, kameraAbstand: Float, ziel: V, nach pfad: String) {
     szene.background.contents = NSColor.clear
     let kam = SCNCamera()
-    kam.fieldOfView = 24; kam.zNear = 0.1; kam.zFar = 100
+    kam.fieldOfView = CGFloat(2 * atanf(tanf(12 * .pi / 180) * leinwand) * 180 / .pi); kam.zNear = 0.1; kam.zFar = 100
     kam.wantsHDR = true; kam.wantsExposureAdaptation = false; kam.exposureOffset = -0.35
     kam.screenSpaceAmbientOcclusionIntensity = 1.1
     kam.screenSpaceAmbientOcclusionRadius = 0.25
@@ -199,7 +203,8 @@ func rendern(_ szene: SCNScene, groesse: Int, kameraAbstand: Float, ziel: V, nac
     szene.rootNode.addChildNode(kk)
     let r = SCNRenderer(device: MTLCreateSystemDefaultDevice()!, options: nil)
     r.scene = szene; r.pointOfView = kk
-    let bild = r.snapshot(atTime: 0, with: CGSize(width: groesse, height: groesse), antialiasingMode: .multisampling4X)
+    let seite = Int(Float(groesse) * leinwand)
+    let bild = r.snapshot(atTime: 0, with: CGSize(width: seite, height: seite), antialiasingMode: .multisampling4X)
     let rep = NSBitmapImageRep(data: bild.tiffRepresentation!)!
     try! rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: pfad))
 }

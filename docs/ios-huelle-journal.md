@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 132)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 133)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -40,6 +40,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 133 | — | Tiere mit Oberkoerper: fester Zuschnittrahmen (`rahmen.json`), Bild randlos im Kreis, Kopf deckungsgleich mit Runde 132 |
 | 132 | `7457d8f` | Funkeln statt Konfetti: vierzackige Sterne + Lichtpunkte, schweben statt zu fallen (`funkelStoss`, `.funkeln`) |
 | 131 | `f2938a4` | Startseiten-Titel wieder Fraunces; Name im Startbild in `--marke`; Symbol #5CB4AD; Hilfe als eigene Seite (`view-hilfe`); Beispieldaten 14/30/90/120; Verlauf „Gesamt"; Erinnerungen 9/14/20 + Nacherinnerung 11/16/22, Tageszeiten bis 12/18; Erfassung klappt nach dem Eintrag zu |
 | 130 | `370d20c` | Tagesform: drei Tageszeiten, je ein Eintrag (ersetzen); Erinnerungen einzeln geplant; groessere Animationen (Ergebnis-Enthuellung, Haken, Startkarten, Fragebogen, Tier wippt); weiche Vorschau-Raender; Legende des Graphen mit fester Hoehe |
@@ -76,7 +77,9 @@ Regeln, die er gesetzt hat:
 - **Symbol:** `tools/symbol_rendern.swift` (Anleitung im Kopf der Datei) → `assets/icon/`, Asset-
   Katalog, apple-touch-icon in `src/index.head.html`.
 - **Tiere:** `tools/figuren_rendern/Tiere.swift` → `bauen.sh <tier>` → ansehen →
-  `python3 tools/figuren_holen.py <tier>`.
+  `python3 tools/figuren_holen.py <tier>`. Seit Runde 133 mit Oberkoerper (`rumpf()`/`brustbild()`) und
+  **festem** Rahmen (`figuren_rendern/rahmen.json` — nie neu messen, sonst wandert der Kopf);
+  Vergleich alt/neu im Kreis: `python3 tools/figuren_rendern/vorschau.py <alter-ordner> <tier>`.
 - **Huelle:** `MainViewController.swift` (Bildlauf, Zoomsperre, Farbschema, Transparenz,
   Kauf-Bruecke), `LucentaKaeufePlugin.swift` (StoreKit 2).
 
@@ -88,8 +91,8 @@ Regeln, die er gesetzt hat:
    das neue Symbol auf dem Homescreen (Creme auf #5CB4AD hat nur rund 2:1 Kontrast).
 2. **Preise** kommen als fester Euro-Text. Sobald die Produkte in App Store Connect stehen,
    `displayPrice` aus StoreKit holen.
-3. **Urteil des Inhabers ausstehend:** Polwoerter der fuenf Tagesform-Fragen, die 3D-Tiere (Dackel
-   und Retriever die schwaechsten), die zarten Strahlen des Kranzes.
+3. **Urteil des Inhabers ausstehend:** Polwoerter der fuenf Tagesform-Fragen, die 3D-Tiere mit Oberkoerper
+   (Runde 133; Dackel und Retriever die schwaechsten), die zarten Strahlen des Kranzes.
 4. Moeglich, nicht beauftragt: Die Startkarten blenden beim Hereinfliegen auch ein (Deckkraft) —
    die Regel „nie ueber Deckkraft" gilt fuer Ansichtswechsel; falls er das anders sieht, eine Zeile
    in `karte-flug`.
@@ -192,6 +195,53 @@ SceneKit und CoreGraphics ja (`swiftc`).
 
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull Request ohne Bitte.
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 133 — Die Tiere bekommen einen Oberkoerper
+
+**Auftrag:** "bisher schwebende koepfe … ein stueck koerper fehlt noch, sodass das portraet
+ausgefuellt ist. man muss nicht den gesamten koerper sehen. die kopfposition soll genau gleich
+bleiben."
+
+**Was ich vorfand:** Zwei Dinge hielten den Kopf an seinem Platz, und beide waeren mit einem Koerper
+gekippt. (a) `figuren_holen.py` schnitt auf die **sichtbaren** Punkte zu — mit Rumpf waere der
+Rahmen hoeher geworden, der Kopf also kleiner und weiter oben. (b) `.figur-bild` lag mit 14 % Rand
+im Kreis; ein Rumpf haette an der Bildkante geendet, als gerade Linie mitten im Kreis.
+
+**Was geaendert ist:**
+1. **Fester Rahmen.** `tools/figuren_rendern/rahmen.json` haelt fuer jedes Tier den Rahmen des
+   Kopfes **ohne** Koerper fest, gemessen am Stand von Runde 132 (`figuren_holen.py --rahmen-messen`).
+   Alle zwoelf Koepfe lagen vollstaendig im alten Bild — die Masse sind also genau die alten.
+   Zugeschnitten wird seitdem dieser Rahmen, um 1/0,72 vergroessert.
+2. **Grosse Leinwand.** Der Renderer zeichnet auf 1024 statt 512 Punkte bei unveraendertem
+   Massstab (`leinwand: 2`, der Bildwinkel waechst mit), damit der Rumpf ueber den alten Rand
+   hinausreicht und erst vom Kreis abgeschnitten wird.
+3. **Randlos im Kreis.** `.figur-bild` 100 % statt 72 % mit 14 % Rand — der Rand steckt jetzt im
+   Bild. Bilder 288 statt 256 Punkte (96 pt × 3), die Dichte am Kopf bleibt damit gleich;
+   zusammen 220 statt 230 KB.
+4. **Der Koerper** (`rumpf()`, `latz()`, `brustbild()` in `Tiere.swift`): Hals, Rumpf, Brust und
+   zwei Schultern, im **selben** Abstandsfeld wie der Kopf — keine Naht am Hals. Je Tier Breite und
+   Fellfarbe: Fuchs, Katze, Hase, Reh mit hellem Latz, Retriever mit hellerer Brust, Baer und Dackel
+   einfarbig, Panda mit schwarzen Schultern und weisser Mitte. Eule, Wal, Goldfisch und Schildkroete
+   hatten schon einen Koerper und sind unveraendert (nur neu zugeschnitten, gleiche Lage).
+5. **Fund beim Ansehen:** In `12-ios.css` steht `.figur-wahl{ overflow:visible }` (fuer das
+   Haekchen-Abzeichen). Der Rumpf ragte im Raster deshalb unten gerade aus dem Kreis — jetzt
+   `clip-path:circle()` am Bild, wie es die SVG dort schon hatten.
+6. **Fund beim Fuchs:** Die Kopffarbe richtete sich nach der Hoehe ("weiss unter der Wangenlinie");
+   die Schultern liegen auf derselben Hoehe und bekamen weisse Flecken. Der Uebergang Kopf/Rumpf
+   richtet sich jetzt nach dem Abstand zum Kopf.
+
+**Geprueft am Bild:** `tools/figuren_rendern/vorschau.py` legt alt (72 %) und neu (100 %) im Kreis
+auf der Feldfarbe nebeneinander — der Kopf liegt in allen zwoelf deckungsgleich. In WebKit
+(Playwright) Raster und grosses Profilbild hell und dunkel angesehen.
+
+**Unsicher:** Der Rumpf dreht sich mit dem Kopf (ein Knoten, eine Drehung) — beim Panda liegt die
+rechte Schulter dadurch hinter dem Kopf, weiss statt schwarz. Auf 42–48 pt (Kopfzeile, Einstellungen)
+nicht einzeln angesehen, nur 52 pt im Raster und 96 pt im Profil. Am iPhone nicht gesehen.
+
+**Pruefungen:** `npm run pruef-alles` **ALLE 9 BESTANDEN** (11,7 Minuten), `fehlersuche` 26 Durchlaeufe
+WebKit + Chromium KEINE FUNDE, `pruef-app` 31, `pruef-nativ` 61, `diff-sprachen` 141 (Bericht, unveraendert).
 
 ---
 

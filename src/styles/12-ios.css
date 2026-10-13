@@ -366,6 +366,9 @@
      (clip-path), und das Feld darf ueberstehen lassen. */
   .figur-wahl{ position:relative; overflow:visible; }
   .figur-wahl > svg{ clip-path:circle(50% at 50% 50%); border-radius:50%; }
+  /* Runde 133: Das Tierbild fuellt den Kreis randlos, der Rumpf reicht bis an die Bildkante —
+     ohne diesen Schnitt stand er unten als gerade Kante aus dem Kreis heraus (am Bild gesehen). */
+  .figur-wahl > .figur-bild{ clip-path:circle(50% at 50% 50%); }
   .hg-wahl{ position:relative; }
 
   .figur-wahl[aria-pressed="true"]::after,

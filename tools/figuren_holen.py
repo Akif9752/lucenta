@@ -3,8 +3,8 @@
 
 Runde 125: Die Bilder kommen nicht mehr von Fluent Emoji (Runde 123), sondern aus dem eigenen
 Renderer tools/figuren_rendern/ (SceneKit, selbst modelliert, Stil auf Wunsch des Inhabers "wie aus
-einem Pixar-Film"). Dieses Werkzeug liest dessen Ausgabe aus ROH, verkleinert auf 256 px und legt
-das Ergebnis nach src/figuren/. Eingecheckt wird nur das Ergebnis. Es laedt nichts aus dem Netz.
+einem Pixar-Film"). Dieses Werkzeug liest dessen Ausgabe aus ROH, schneidet sie im festen Rahmen
+aus rahmen.json zu (Runde 133), verkleinert auf GROESSE und legt das Ergebnis nach src/figuren/. Eingecheckt wird nur das Ergebnis. Es laedt nichts aus dem Netz.
 
 Palette statt Echtfarben (256 Eintraege mit eigener Deckkraft, Fehlerstreuung): die Bilder sind dann
 etwa halb so gross. WebP kann ImageIO auf dem Mac nicht schreiben, AVIF zeigt WebKit erst ab iOS 16
@@ -12,11 +12,11 @@ etwa halb so gross. WebP kann ImageIO auf dem Mac nicht schreiben, AVIF zeigt We
 
 Aufruf:  tools/figuren_rendern/bauen.sh && python3 tools/figuren_holen.py [tier ...]
 """
-import colorsys, os, struct, subprocess, sys, tempfile, zlib
+import colorsys, json, os, struct, subprocess, sys, tempfile, zlib
 
 ROH = '/tmp/lucenta-figuren-roh'
 ZIEL = os.path.join(os.path.dirname(__file__), '..', 'src', 'figuren')
-GROESSE = 256
+GROESSE = 288     # Runde 133: fuellt jetzt den ganzen Kreis; 96 pt bei 3x = 288 Punkte
 
 # Die Kennungen in FIGUREN (13-figuren.js). Sie stehen in gespeicherten Profilen und bleiben, auch
 # wo das Tier zwischenzeitlich gewechselt hat (Runde 123: Pudel/Hund statt Dackel/Retriever).
@@ -79,16 +79,32 @@ def png_palette_schreiben(breite, hoehe, palette, indizes):
 # unten in einem flachen Streifen). Zugeschnitten wird auf die sichtbaren Punkte, dann mittig in ein
 # Quadrat gesetzt — damit hat jedes Tier im Kreis dieselbe Groesse, gemessen an seiner laengeren Seite.
 
-def zuschneiden(b, h, pixel):
+#
+# Runde 133: Die Saeugetiere haben einen Oberkoerper bekommen, und der reicht bis an den Bildrand.
+# Nach den sichtbaren Punkten zugeschnitten, waere der Kopf damit kleiner und hoeher in den Kreis
+# gerutscht — der Inhaber wollte die Kopfposition aber "genau gleich". Deshalb ist der Rahmen jetzt
+# FEST: einmal an den Koepfen ohne Koerper gemessen (--rahmen-messen) und in RAHMEN gespeichert.
+# Das Bild fuellt den Kreis seitdem ganz (vorher 72 % mit Rand); der Ausschnitt ist darum um 1/0,72
+# groesser als der alte, damit der Kopf auf denselben Punkt im Kreis faellt wie vorher.
+
+RAHMEN = os.path.join(os.path.dirname(__file__), 'figuren_rendern', 'rahmen.json')
+ALTER_ANTEIL = 0.72     # so viel vom Kreis nahm das Bild bis Runde 132 ein (.figur-bild in 09-archetypen.css)
+
+
+def sichtbar(b, pixel):
     xs = [i % b for i, p in enumerate(pixel) if p[3] > 8]
     ys = [i // b for i, p in enumerate(pixel) if p[3] > 8]
-    x0, x1, y0, y1 = min(xs), max(xs) + 1, min(ys), max(ys) + 1
-    seite = max(x1 - x0, y1 - y0)
-    ox, oy = (seite - (x1 - x0)) // 2, (seite - (y1 - y0)) // 2
-    aus = [(0, 0, 0, 0)] * (seite * seite)
-    for y in range(y0, y1):
-        for x in range(x0, x1):
-            aus[(y - y0 + oy) * seite + (x - x0 + ox)] = pixel[y * b + x]
+    return min(xs), max(xs) + 1, min(ys), max(ys) + 1
+
+
+def zuschneiden(b, h, pixel, rahmen):
+    x0, x1, y0, y1 = rahmen
+    seite = round(max(x1 - x0, y1 - y0) / ALTER_ANTEIL)
+    mx, my = (x0 + x1) // 2, (y0 + y1) // 2
+    ax, ay = mx - seite // 2, my - seite // 2
+    if ax < 0 or ay < 0 or ax + seite > b or ay + seite > h:
+        sys.exit('Ausschnitt %r ragt ueber die Leinwand %dx%d — Leinwand in main.swift vergroessern.' % ((ax, ay, seite), b, h))
+    aus = [pixel[(ay + y) * b + ax + x] for y in range(seite) for x in range(seite)]
     return seite, seite, aus
 
 
@@ -151,14 +167,25 @@ def abbilden(breite, hoehe, pixel, palette):
 def main():
     os.makedirs(ZIEL, exist_ok=True)
     summe = 0
-    nur = sys.argv[1:]
+    nur = [a for a in sys.argv[1:] if not a.startswith('--')]
+    if '--rahmen-messen' in sys.argv:
+        # Nur auf Koepfen OHNE Koerper aufrufen (Stand Runde 132) — sonst misst es den Koerper mit.
+        rahmen = {}
+        for kennung in TIERE:
+            with open(os.path.join(ROH, kennung + '.png'), 'rb') as f: b, h, pixel = png_lesen(f.read())
+            rahmen[kennung] = sichtbar(b, pixel)
+        with open(RAHMEN, 'w') as f:
+            f.write('{\n' + ',\n'.join('  "%s": %s' % (k, list(v)) for k, v in rahmen.items()) + '\n}\n')
+        print('Rahmen gemessen:', RAHMEN)
+        return
+    with open(RAHMEN) as f: rahmen = json.load(f)
     for kennung in TIERE:
         if nur and kennung not in nur: continue
         quelle = os.path.join(ROH, kennung + '.png')
         if not os.path.exists(quelle):
             sys.exit('Fehlt: %s — erst tools/figuren_rendern/bauen.sh laufen lassen.' % quelle)
         with open(quelle, 'rb') as f: b, h, pixel = png_lesen(f.read())
-        b, h, pixel = zuschneiden(b, h, pixel)
+        b, h, pixel = zuschneiden(b, h, pixel, rahmen[kennung])
         # Verkleinern ueber sips (Apples Bildwerkzeug, gute Filterung) — auf dem zugeschnittenen Bild,
         # damit jedes Tier dieselbe Groesse im Kreis bekommt.
         with tempfile.TemporaryDirectory() as tmp:

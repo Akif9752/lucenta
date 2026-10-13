@@ -352,9 +352,12 @@
   .settings-account-avatar.hat-figur{ background:var(--figur-feld, var(--surface-2)); padding:0; }
   /* Runde 123: Die Figur ist ein Bild (Fluent Emoji 3D). Es liegt mit Rand im Kreis, weil die
      Gesichter das Quadrat bis in die Ecken fuellen — randlos schnitte der Kreis Ohren ab. Der
-     weiche Schatten setzt das Modell auf die Flaeche, statt es aufzukleben. */
+     weiche Schatten setzt das Modell auf die Flaeche, statt es aufzukleben.
+     Runde 133: Die Tiere haben einen Oberkoerper, und der soll das Portraet unten ausfuellen —
+     das Bild liegt deshalb randlos im Kreis, der den Rumpf abschneidet. Der Rand von 14 % steckt
+     jetzt im Bild selbst (tools/figuren_holen.py, fester Rahmen), der Kopf sitzt wo vorher. */
   .figur-bild{
-    display:block; width:72%; height:72%; margin:14%; object-fit:contain;
+    display:block; width:100%; height:100%; margin:0; object-fit:contain;
     filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.16));
     -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; pointer-events:none;
   }
