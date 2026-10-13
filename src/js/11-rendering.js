@@ -142,7 +142,7 @@
         qi++; renderQuestion();
         animateQuestionIn();
         saveProgress();
-        if (QUIZ_MILESTONES[qi]){ toast(QUIZ_MILESTONES[qi]); pulseFocusline(); konfettiAmFortschritt(); }
+        if (QUIZ_MILESTONES[qi]){ toast(QUIZ_MILESTONES[qi]); pulseFocusline(); funkelnAmFortschritt(); }
       }
       else { finishQuiz(); }
     }, 220);

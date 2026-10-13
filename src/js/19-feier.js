@@ -15,18 +15,21 @@
   // Beides haengt an prefersReducedMotion() — der einen Stelle, an der die Bewegungsvorliebe
   // der App zusammenlaeuft.
 
-  // Die Farben kommen aus den CSS-Marken, nicht aus Zahlen hier. Damit stimmt der Stoss im
-  // Hell- wie im Dunkelmodus und folgt jeder spaeteren Farbaenderung, ohne dass jemand daran
-  // denken muss.
-  var FEIER_FARBEN = ['--accent', '--accent-2', '--dim-o', '--dim-e', '--dim-c', '--dim-a'];
+  // Die Farben kommen aus den CSS-Marken, nicht aus Zahlen hier (FUNKEL_FARBEN). Damit stimmt der
+  // Stoss im Hell- wie im Dunkelmodus und folgt jeder spaeteren Farbaenderung.
   var feierLaeuft = 0;
 
-  // Ein Stoss aus Schnipseln an einem Punkt des Fensters. Die Bahn steht in eigenen
-  // CSS-Eigenschaften je Schnipsel; die Bewegung selbst macht die Stilvorlage. Das haelt die
-  // Rechnung hier bei reiner Arithmetik und ueberlaesst dem Browser die Bilder.
-  // Runde 129: `opts` fuer die groesseren Feiern — {farben, rund, voll, weite:[min,max], fall:[min,max]}.
-  // `voll` wirft rundum statt nach unten (Funken aus einem Haken mitten in der Karte).
-  function konfettiStoss(x, y, anzahl, opts){
+  // Runde 132, Auftrag des Inhabers: "statt Konfetti wuerde es besser zum App-Konzept passen, wenn
+  // man es mit Sparkles ersetzt." Bis Runde 131 flogen hier Papierschnipsel mit Schwerkraft — ein
+  // Partybild. Lucenta hat einen Sternenhimmel und einen Strahlenkranz; dazu passt Licht, nicht
+  // Papier. Jetzt: vierzackige Sterne und kleine Lichtpunkte, die sanft auseinanderschweben, einmal
+  // aufblitzen und verglimmen. Kein Fall — Licht faellt nicht.
+  //
+  // Die Bahn steht wie bisher in eigenen CSS-Eigenschaften je Stern; die Bewegung macht die
+  // Stilvorlage (.funkeln in 11-feier.css). `opts`: {farben, voll, weite:[min,max]}. `voll` streut
+  // rundum statt nach unten (aus einem Haken mitten in der Karte).
+  var FUNKEL_FARBEN = ['--accent-2', '--accent', '--dim-o', '--dim-e', '--dim-a'];
+  function funkelStoss(x, y, anzahl, opts){
     opts = opts || {};
     if (prefersReducedMotion()) return;
     // Mehrere Stoesse gleichzeitig ergaeben ein Gewitter statt einer Antwort.
@@ -37,34 +40,34 @@
       box = document.createElement('div');
     }catch(e){ return; }
     if (!box || !box.style || !box.style.setProperty) return;
-    box.className = 'konfetti';
+    box.className = 'funkeln';
     box.setAttribute('aria-hidden', 'true');
     box.style.left = Math.round(x) + 'px';
     box.style.top  = Math.round(y) + 'px';
     var n = anzahl || 18;
     for (var i = 0; i < n; i++){
       var p = document.createElement('i');
-      // Faecher nach UNTEN. Der erste Entwurf warf nach oben — das ist die uebliche Richtung
-      // fuer einen Stoss, hier aber falsch: Der Fortschrittsbalken liegt an der obersten Kante
-      // des Fensters, die Schnipsel flogen also sofort aus dem Bild. Im Standbild war vom
-      // ganzen Stoss nichts zu sehen. Ein paar Grad ueber die Waagerechte hinaus bleiben, damit
-      // der Stoss nicht wie ein Tropfen wirkt.
-      var winkel = (opts.voll ? (i / n) * 360 + Math.random() * 20 : (-20 + Math.random() * 220)) * Math.PI / 180;
-      var w = opts.weite || [30, 96], f = opts.fall || [26, 66];
-      var weite  = w[0] + Math.random() * (w[1] - w[0]);
+      // Nach UNTEN gefaechert, wenn der Ursprung am oberen Rand liegt (Fortschrittsbalken) —
+      // sonst flogen die Sterne sofort aus dem Bild (Runde 78, damals mit Schnipseln gemessen).
+      var winkel = (opts.voll ? (i / n) * 360 + Math.random() * 24 : (-20 + Math.random() * 220)) * Math.PI / 180;
+      var w = opts.weite || [30, 96];
+      var weite = w[0] + Math.random() * (w[1] - w[0]);
       p.style.setProperty('--dx', Math.round(Math.cos(winkel) * weite) + 'px');
       p.style.setProperty('--dy', Math.round(Math.sin(winkel) * weite) + 'px');
-      // Der Fall danach ist das, was den Stoss als Schwerkraft lesbar macht.
-      p.style.setProperty('--fall', Math.round(f[0] + Math.random() * (f[1] - f[0])) + 'px');
-      p.style.setProperty('--dreh', Math.round(-220 + Math.random() * 440) + 'deg');
-      p.style.setProperty('--verzug', Math.round(Math.random() * 90) + 'ms');
-      var farben = opts.farben || FEIER_FARBEN;
+      // Statt zu fallen steigt Licht ein wenig nach — die Bahn klingt nach oben aus.
+      p.style.setProperty('--auf', Math.round(6 + Math.random() * 16) + 'px');
+      p.style.setProperty('--dreh', Math.round(-50 + Math.random() * 100) + 'deg');
+      p.style.setProperty('--verzug', Math.round(Math.random() * 140) + 'ms');
+      p.style.setProperty('--dauer', Math.round(1000 + Math.random() * 300) + 'ms');
+      var farben = opts.farben || FUNKEL_FARBEN;
       p.style.background = 'var(' + farben[i % farben.length] + ')';
-      // Zwei Formen statt einer: gleich grosse Quadrate wirken wie ein Raster, nicht wie Papier.
-      if (i % 3 === 0 || opts.rund) p.style.borderRadius = '50%';
-      var kante = 5 + Math.round(Math.random() * 4);
+      // Zwei Formen: grosse vierzackige Sterne und dazwischen kleine runde Lichtpunkte. Nur Sterne
+      // gleicher Groesse wirken wie ein Muster, nicht wie Funkeln.
+      var punkt = i % 4 === 0;
+      var kante = punkt ? 3 + Math.round(Math.random() * 2) : 9 + Math.round(Math.random() * 9);
+      if (punkt) p.classList.add('funkel-punkt');   // classList: audit_i18n erkennt so den Bezeichner
       p.style.width = kante + 'px';
-      p.style.height = (i % 3 === 0 || opts.rund ? kante : Math.round(kante * 1.6)) + 'px';
+      p.style.height = kante + 'px';
       box.appendChild(p);
     }
     document.body.appendChild(box);
@@ -72,21 +75,21 @@
     setTimeout(function(){
       feierLaeuft--;
       if (box.parentNode) box.parentNode.removeChild(box);
-    }, 1150);
+    }, 1500);
   }
 
   // Stoss am rechten Ende des Fortschrittsbalkens — also genau dort, wo der eben erreichte
   // Meilenstein steht. Ohne Balken (Ersatz-DOM der Tests, oder ausserhalb des Fragebogens)
   // passiert schlicht nichts.
-  function konfettiAmFortschritt(){
+  function funkelnAmFortschritt(){
     if (prefersReducedMotion()) return;
     try{
       var fill = $('focusline-fill');
       if (!fill || !fill.getBoundingClientRect) return;
       var r = fill.getBoundingClientRect();
       if (!r || !r.width) return;
-      // Runde 129 ("groessere Animationen"): doppelt so viele Schnipsel, weiter geworfen.
-      konfettiStoss(r.right, r.bottom + 2, 40, {weite:[50, 150], fall:[40, 100]});
+      // Runde 129 ("groessere Animationen"): doppelt so viele, weiter gestreut.
+      funkelStoss(r.right, r.bottom + 2, 32, {weite:[50, 150]});
     }catch(e){}
   }
 
@@ -124,8 +127,8 @@
     try{
       var r = el.getBoundingClientRect();
       if (!r || !r.width) return;
-      konfettiStoss(r.left + r.width / 2, r.top + r.height / 2, 18,
-        {farben:['--daten-energie', '--daten-stimmung', '--accent'], rund:true, voll:true, weite:[26, 70], fall:[6, 22]});
+      funkelStoss(r.left + r.width / 2, r.top + r.height / 2, 16,
+        {farben:['--daten-energie', '--daten-stimmung', '--accent-2'], voll:true, weite:[26, 74]});
     }catch(e){}
   }
   // Nach dem Test, nicht beim spaeteren Oeffnen eines Ergebnisses: Titel federt herein, der Kranz
@@ -138,7 +141,7 @@
     setTimeout(function(){
       try{
         var t = $('archTitle'), r = t && t.getBoundingClientRect ? t.getBoundingClientRect() : null;
-        if (r && r.width) konfettiStoss(r.left + r.width / 2, r.top + r.height * 0.6, 36, {voll:true, weite:[70, 160], fall:[40, 90]});
+        if (r && r.width) funkelStoss(r.left + r.width / 2, r.top + r.height * 0.6, 30, {voll:true, weite:[70, 165]});
       }catch(e){}
     }, 420);
   }

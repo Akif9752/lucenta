@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 131)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 132)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -35,7 +35,8 @@ Regeln, die er gesetzt hat und die weiter gelten:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 131 | (dieser) | Startseiten-Titel wieder Fraunces, Name im Startbild in --marke, Symbol #5CB4AD, Hilfe als eigene Seite, Beispieldaten 14/30/90/120, Verlauf "Gesamt", Erinnerungen 9/14/20 + Nacherinnerung 11/16/22 (Grenzen 12/18), Erfassung klappt nach dem Eintrag zu |
+| 132 | (dieser) | Funkeln statt Konfetti: vierzackige Sterne und Lichtpunkte, schweben statt zu fallen (`funkelStoss`) |
+| 131 | `f2938a4` | Startseiten-Titel wieder Fraunces, Name im Startbild in --marke, Symbol #5CB4AD, Hilfe als eigene Seite, Beispieldaten 14/30/90/120, Verlauf "Gesamt", Erinnerungen 9/14/20 + Nacherinnerung 11/16/22 (Grenzen 12/18), Erfassung klappt nach dem Eintrag zu |
 | 130 | `370d20c` | Tagesform: drei feste Tageszeiten (je ein Eintrag, ersetzen), drei Erinnerungen 8/13/19 Uhr fuer 14 Tage einzeln geplant; groessere Animationen (Ergebnis, Tagesform, Startseite, Fragebogen, Tier); weiche Vorschau-Raender; Legende des Graphen mit fester Hoehe |
 | 129 | `9af69cb` | Plex Mono aus dem Bau (Teilbild in SF), Fusszeilen-Link = Einstellungszeile, „12‑mal“ bricht nicht mehr, Datumsachse gleichmaessig (Kurve eingerueckt, `VERLAUF_RAND`) |
 | 128 | `8363244` | Strengere Bezahlgrenze (Bericht, Tagesform 7 Tage, ein Vergleich, verschwommene Vorschauen `vorschauHTML()`, Angebot nach dem Test, Startseiten-Karte), Strahlenkranz am Ergebnistyp |
@@ -107,7 +108,7 @@ Regeln, die er gesetzt hat und die weiter gelten:
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 131: **ALLE 9 BESTANDEN** (11,6 Minuten), `pruef-app` 31, `pruef-nativ` 61, `fehlersuche` KEINE
+`npm run pruef-alles` nach Runde 132: **ALLE 9 BESTANDEN** (11,1 Minuten), `pruef-app` 31, `pruef-nativ` 61, `fehlersuche` KEINE
 FUNDE auf WebKit und Chromium, `pruef-app` 29/29, `pruef-nativ` 51/51, `tests` 11 Reihen
 (Tagesform 40), `diff-sprachen` 141 (nur Bericht). Erfahrung: Neue Bedienelemente fallen in der
 `fehlersuche` an Tippzielen (44 pt) und Kontrast auf — gleich so bauen; Pruefungen, die alte
@@ -158,6 +159,32 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 132 — Funkeln statt Konfetti
+
+Auftrag des Inhabers: „statt Konfetti … Sparkles oder Aehnliches", passend zum App-Konzept.
+
+- **Vorher:** Papierschnipsel (Rechtecke und Kreise), die nach aussen geworfen wurden und mit
+  Schwerkraft fielen — ein Partybild in einer App mit Sternenhimmel und Strahlenkranz.
+- **Jetzt** (`funkelStoss` in `19-feier.js`, `.funkeln` in `11-feier.css`): vierzackige, nach innen
+  gewoelbte Sterne (clip-path) in 9 bis 18 px, dazwischen jeder vierte ein kleiner runder Lichtpunkt.
+  Sie schweben auseinander, blitzen einmal auf (Massstab 1,25 → 0,7 → 1,1), steigen leicht nach und
+  verloeschen; kein Fall. Leuchten per `drop-shadow` am Behaelter — an den Sternen selbst schnitte
+  der clip-path es mit ab. Farben aus den Marken (`--accent-2`, `--accent`, Dimensionsfarben), in
+  der Tagesform weiter Energie/Stimmung.
+- Gilt an allen drei Stellen: Meilensteine im Fragebogen, Ergebnis-Enthuellung, Tagesform
+  gespeichert. Namen: `konfettiStoss` → `funkelStoss`, `konfettiAmFortschritt` →
+  `funkelnAmFortschritt`; `pruef-bewegung` zaehlt jetzt `.funkeln i`.
+- Angesehen in WebKit bei 820 ms der Enthuellung, dunkel und hell. Die Sterne liegen kurz ueber
+  dem Titel, wie vorher die Schnipsel — nach 1,5 s sind sie weg.
+
+### Pruefungen
+
+`npm run pruef-alles`: **ALLE 9 BESTANDEN** (11,1 Minuten), `fehlersuche` KEINE FUNDE auf WebKit und
+Chromium, `pruef-bewegung` zaehlt die Sterne (3 von 3 Meilensteinen, 32 Sterne). Der erste Lauf
+fiel zweimal durch, beides meine Fehler: ein Kommentar mitten in einer Zeile von
+`pruef_bewegung.mjs` (Syntaxfehler) und das Klassenliteral `'funkel-punkt'`, das der i18n-Audit als
+deutsches Wort las (jetzt `classList.add`). Danach die ganze Runde noch einmal.
 
 ## Runde 131 — Schrift, Symbol, Hilfe-Seite, Beispieldaten, Gesamt, Erinnerungszeiten, Zuklappen
 

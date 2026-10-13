@@ -42,29 +42,37 @@
      laufen zusammen als eine Antwort. */
   /* Seit Runde 129 deutlicher: antwort-feder in Abschnitt 8. */
 
-  /* ---------- 4. Der Meilenstein-Stoss ----------
-     Vier Mal je Durchlauf, an genau den Stellen, an denen ohnehin ein Hinweistext erscheint.
-     Der Behaelter liegt punktgenau am rechten Ende des Fortschrittsbalkens und ist fuer Zeiger
-     wie fuer Hilfstechnik unsichtbar; die Schnipsel tragen ihre Bahn in eigenen Eigenschaften,
-     die das JavaScript je Stueck setzt. */
-  .konfetti{
+  /* ---------- 4. Funkeln statt Konfetti (Runde 132) ----------
+     Auftrag des Inhabers: Sparkles statt Konfetti, passend zum Konzept — Sternenhimmel, Kranz,
+     Licht. Gezeigt an den Meilensteinen im Fragebogen, bei der Ergebnis-Enthuellung und beim
+     Speichern der Tagesform (funkelStoss in 19-feier.js). Der Behaelter liegt punktgenau am
+     Ursprung und ist fuer Zeiger wie fuer Hilfstechnik unsichtbar.
+
+     Die Sternform ist ein vierzackiger, nach innen gewoelbter Stern als clip-path. Das Leuchten
+     sitzt am BEHAELTER (drop-shadow wirkt auf das fertig zugeschnittene Bild der Kinder); an den
+     Sternen selbst wuerde der Zuschnitt es mit abschneiden. */
+  .funkeln{
     position:fixed; z-index:60; width:0; height:0; pointer-events:none;
+    filter:drop-shadow(0 0 3px color-mix(in srgb, var(--accent-2) 75%, transparent))
+           drop-shadow(0 0 7px color-mix(in srgb, var(--accent) 45%, transparent));
   }
-  .konfetti i{
-    position:absolute; left:0; top:0; display:block; border-radius:1.5px;
+  .funkeln i{
+    position:absolute; left:0; top:0; display:block;
+    clip-path:polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
     opacity:0; will-change:transform, opacity;
-    animation:konfetti-flug .95s cubic-bezier(.16,.78,.36,1) both;
+    animation:funkel-flug var(--dauer, 1.1s) cubic-bezier(.2,.75,.3,1) both;
     animation-delay:var(--verzug, 0ms);
   }
-  /* Zwei Abschnitte in einer Bewegung: erst der Stoss nach aussen, dann der Fall. Ein reines
-     Auseinanderfliegen ohne Schwerkraft sieht nach Bildschirmschoner aus, nicht nach Papier. */
-  @keyframes konfetti-flug{
-    0%  { opacity:0; transform:translate(0,0) rotate(0deg) scale(.4); }
-    12% { opacity:1; }
-    55% { transform:translate(var(--dx), var(--dy)) rotate(calc(var(--dreh) * .6)) scale(1); }
-    100%{ opacity:0;
-          transform:translate(calc(var(--dx) * 1.18), calc(var(--dy) + var(--fall)))
-                    rotate(var(--dreh)) scale(.9); }
+  .funkeln i.funkel-punkt{ clip-path:none; border-radius:50%; }
+  /* Herausschweben, einmal aufblitzen, nachglimmen, verloeschen. Der Blitz (40 %) ist das, was
+     einen Stern von einem fliegenden Punkt unterscheidet; das leichte Steigen am Ende ersetzt den
+     Fall der Schnipsel. */
+  @keyframes funkel-flug{
+    0%  { opacity:0; transform:translate(-50%,-50%) scale(0) rotate(0deg); }
+    18% { opacity:1; transform:translate(calc(-50% + var(--dx) * .45), calc(-50% + var(--dy) * .45)) scale(1.25) rotate(calc(var(--dreh) * .3)); }
+    40% { opacity:1; transform:translate(calc(-50% + var(--dx) * .75), calc(-50% + var(--dy) * .75)) scale(.7) rotate(calc(var(--dreh) * .55)); }
+    58% { opacity:1; transform:translate(calc(-50% + var(--dx) * .9), calc(-50% + var(--dy) * .9)) scale(1.1) rotate(calc(var(--dreh) * .75)); }
+    100%{ opacity:0; transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy) - var(--auf))) scale(.2) rotate(var(--dreh)); }
   }
 
   /* ---------- 5. Der Fortschrittsbalken bekommt Koerper ----------
@@ -202,7 +210,7 @@
     .qcard.q-in{ animation:none; }
     #scaleRow.row-in .scale-btn{ animation:none; }
     .scale-btn.picked{ animation:none; }
-    .konfetti{ display:none; }
+    .funkeln{ display:none; }
     .stat-tile{ animation:none; opacity:1; }
     .schuettel{ animation:none; }
   }

@@ -213,7 +213,8 @@ async function durchlauf(reduziert){
     // Meilensteine — und keinen einzigen daneben.
     // Ein Stoss lebt 1150 ms, ein Schritt dauert 330 ms — er wird also mehrfach gesehen.
     // Gezaehlt wird deshalb der UEBERGANG von "nichts da" zu "Schnipsel da", nicht jede Sichtung.
-    const n = await p.evaluate(() => document.querySelectorAll('.konfetti i').length);
+    // Runde 132: Sterne (.funkeln) statt Schnipsel (.konfetti).
+    const n = await p.evaluate(() => document.querySelectorAll('.funkeln i').length);
     if (n > 0 && zuvor === 0){ stoesse++; }
     schnipsel = Math.max(schnipsel, n);
     zuvor = n;
