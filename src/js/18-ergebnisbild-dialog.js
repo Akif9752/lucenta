@@ -151,7 +151,7 @@
     el.textContent = text;
     el.hidden = !text;
   }
-  function plusModalAnwenden(){ laufzeitAnwenden(); plusKnopfAnwenden(); plusPersoenlichAnwenden(); }
+  function plusModalAnwenden(){ laufzeitAnwenden(); plusKnopfAnwenden(); plusPersoenlichAnwenden(); plusPreiseAnwenden(); }
 
   // Runde 99: Der Knopf "In Fotos sichern" erscheint nur mit nativer Bruecke. Er wird bei
   // jedem Oeffnen des Bildfensters neu gesetzt und nicht einmal beim Start: Ob eine Bruecke da

@@ -110,11 +110,14 @@ func lider(an wurzel: SCNNode, mitte: V, r: Float, vorn: V, s: Float, farbe: V, 
     let X = simd_cross(U, F)                       // zeigt zur Seite
     let kipp: Float = 0.30                         // wie stark sich die Lidkante woelbt
     let schraeg = a.schraeg * s * (simd_dot(X, V(1, 0, 0)) >= 0 ? 1 : -1)
-    let oben = geschlossen ? 0.62 : a.oben, unten = geschlossen ? 0.46 : a.unten
+    // Geschlossen: Die Lider treffen sich knapp unter der Mitte, die Kante des unteren woelbt sich
+    // kraeftig nach oben — das "^" eines laechelnden, zugekniffenen Auges.
+    let oben = geschlossen ? 0.58 : a.oben, unten = geschlossen ? 0.48 : a.unten
     // Oberlid: Achse nach oben, nach hinten gekippt -> Kante als Bogen nach oben; schraeg zur Seite.
     let dO = simd_normalize(U * cosf(kipp) - F * sinf(kipp) + X * sinf(schraeg))
     // Unterlid: Achse nach unten, nach VORN gekippt -> Kante woelbt sich nach oben (laechelndes Auge).
-    let dU = simd_normalize(-U * cosf(kipp) + F * sinf(kipp) * 0.8 - X * sinf(schraeg) * 0.5)
+    let kippU: Float = geschlossen ? 0.75 : kipp
+    let dU = simd_normalize(-U * cosf(kippU) + F * sinf(kippU) * 0.8 - X * sinf(schraeg) * 0.5)
     // Die Kante in der Augenmitte: so weit von oben (bzw. unten), wie `oben` (`unten`) sagt.
     func kante(_ anteil: Float, _ seite: Float) -> V {
         let h = (1 - 2 * anteil) * seite
@@ -165,12 +168,15 @@ func augenEinsetzen(_ wurzel: SCNNode, _ kopf: Koerper, x: Float, y: Float, r: C
         let au = auge(radius: r, iris: iris, pupille: pupille, schlitz: schlitz, quer: quer, funke: a.funke)
         au.position = scnVektor(mitte); au.name = "auge"
         au.look(at: scnVektor(V(blick.x + x * s * aussen * 4, blick.y, blick.z)), up: SCNVector3(0, 1, 0), localFront: SCNVector3(0, 0, 1))
-        wurzel.addChildNode(au)
+        // Runde 137, am Bild gesehen: Unter dem geschlossenen Lid schimmerten Hornhaut und Lichtpunkte
+        // durch — das zwinkernde Auge las sich als glaenzende Kugel. Geschlossen gibt es keinen Augapfel.
+        let zu = a.zwinkern && s < 0
+        if !zu { wurzel.addChildNode(au) }
         // Lidfarbe: das Fell knapp ueber dem Auge.
         let ueber = V(x * s, y + Float(r) * 1.25, vorderflaeche(kopf, x * s, y + Float(r) * 1.25))
         let farbe = kopf.farbe(ueber, gradient(kopf, ueber)) * 0.92
         lider(an: wurzel, mitte: mitte, r: Float(r), vorn: gradient(kopf, V(x * s, y, zf)), s: s, farbe: farbe, a,
-              geschlossen: a.zwinkern && s < 0)
+              geschlossen: zu)
     }
 }
 // Ein Lidwulst ueber jedem Auge: verschmilzt mit dem Kopf und wirft den weichen Schatten aufs Auge.
@@ -404,8 +410,8 @@ func panda() -> (SCNNode, Float, V) {
     let koerper = brustbild(mitWangen(kopf, x: 0.48, y: -0.14, staerke: 0.40), vierbeiner(bau), farbe: { p, _ in
         // Das Pandamuster: weisser Koerper, schwarze Vorderbeine, und ein schwarzer Guertel ueber die
         // Schultern, der beide Beine ueber den Ruecken verbindet.
-        let guertel = glatt(0.42, 0.30, abs(p.z + 0.40)) * glatt(-0.50, -0.72, p.y)
-        let beine = max(glatt(-0.80, -0.95, p.y) * glatt(0.10, 0.26, abs(p.x)), glatt(-1.25, -1.40, p.y))
+        let guertel = glatt(0.50, 0.24, abs(p.z + 0.40)) * glatt(-0.46, -0.80, p.y)   // Runde 137: weicher auslaufend
+        let beine = max(glatt(-0.74, -1.02, p.y) * glatt(0.04, 0.32, abs(p.x)), glatt(-1.20, -1.45, p.y))
         return mische(farbeMitRauschen(weiss, p, 0.04), farbeMitRauschen(schwarz, p, 0.05), max(guertel, beine))
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))

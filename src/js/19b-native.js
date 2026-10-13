@@ -286,6 +286,47 @@
     }catch(e){}
   }
 
+  // ---------- Preise aus dem Store (Runde 137) ----------
+  //
+  // Die Kaufseite traegt feste Euro-Betraege in acht Sprachen. Gilt im Store ein anderer Preis —
+  // anderes Land, andere Waehrung, eine spaetere Preisaenderung —, zeigte sie einen Betrag, der
+  // nicht abgebucht wird. Mit Bruecke fragt die App deshalb den Store und setzt dessen Betraege
+  // ein; ohne Antwort (Browser, Produkte noch nicht angelegt, Stoerung) bleiben die festen Texte.
+  // In die Saetze ("nur 2,50 EUR im Monat") wird nur der BETRAG getauscht, der Satz bleibt der der
+  // Sprache — so braucht es keine neuen Schluessel und keine achtfache Satzvorlage.
+  var PLUS_PREISE = null;
+  var BETRAG_MUSTER = /€\s?\d+(?:[.,]\d+)?|\d+(?:[.,]\d+)?\s?€/;
+  function plusPreiseHolen(){
+    var sk = nativModul('StoreKit');
+    if (!sk || !sk.preise) return;
+    try{
+      sk.preise().then(function(r){
+        if (!r || typeof r.jahr !== 'string' || typeof r.monat !== 'string' || !r.jahr || !r.monat) return;
+        PLUS_PREISE = r;
+        plusPreiseAnwenden();
+      }).catch(function(){});
+    }catch(e){}
+  }
+  function plusPreiseAnwenden(){
+    var wahl = $('plusPreisWahl');
+    if (!PLUS_PREISE || !wahl) return;
+    var setze = function(schluessel, text){
+      var el = wahl.querySelector('[data-i18n="'+schluessel+'"]');
+      if (el && text) el.textContent = text;
+      return el;
+    };
+    setze('plus_betrag_jahr', PLUS_PREISE.jahr);
+    setze('plus_betrag_monat', PLUS_PREISE.monat);
+    setze('plus_jahr_statt', PLUS_PREISE.jahrStatt);
+    if (PLUS_PREISE.jahrProMonat) setze('plus_jahr_pro_monat', tx('plus_jahr_pro_monat').replace(BETRAG_MUSTER, PLUS_PREISE.jahrProMonat));
+    // Keine Ersparnis (oder keine berechenbare): dann steht dort auch keine.
+    var spar = wahl.querySelector('[data-i18n="plus_jahr_spar"]');
+    if (spar){
+      if (PLUS_PREISE.jahrSpar) spar.textContent = tx('plus_jahr_spar').replace(BETRAG_MUSTER, PLUS_PREISE.jahrSpar);
+      spar.hidden = !PLUS_PREISE.jahrSpar;
+    }
+  }
+
   // ---------- Kaeufe wiederherstellen (Richtlinie 3.1.2) ----------
   //
   // Apple verlangt bei einem Abo einen Weg, bereits gekaufte Kaeufe auf einem neuen Geraet

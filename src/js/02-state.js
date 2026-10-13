@@ -89,6 +89,8 @@
     if (currentView && UNTERSEITE_VON[name] === currentView) art = 'push';
     else if (currentView && UNTERSEITE_VON[currentView] === name) art = 'pop';
     if (art){ richtung = art === 'push' ? 'nav-push' : 'nav-pop'; if (art === 'pop') opts.restoreScroll = true; }
+    // Die Wischgeste (20-wiring.js) hat den Uebergang schon selbst gezeigt — hier nur noch umschalten.
+    if (opts.geste){ art = null; opts.restoreScroll = true; }
     navWegAufraeumen();
     var alt = currentView ? $('view-'+currentView) : null;
     if (art && alt && !prefersReducedMotion()){
@@ -102,7 +104,7 @@
       v.classList.remove('active','nav-vor','nav-zurueck','nav-push','nav-pop');
     });
     var section = $('view-'+name);
-    if (!prefersReducedMotion() && currentView && currentView !== name){
+    if (!prefersReducedMotion() && currentView && currentView !== name && !opts.geste){
       // Erzwungenes Auslesen, damit der Browser die Animation als neu erkennt — dasselbe
       // Muster wie bei animateQuestionIn() und markLangShift().
       void section.offsetWidth;

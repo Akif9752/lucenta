@@ -76,6 +76,12 @@ await seite.addInitScript(() => {
           return window.__standFehler
             ? Promise.reject(new Error('Store nicht erreichbar'))
             : Promise.resolve({aktiv: !!window.__aboAktiv, produkt: window.__aboAktiv ? 'lucenta.plus.jahr' : ''}); },
+        // Runde 137: die Preise des Stores. Ohne Schalter antwortet er leer — wie ein Store, in dem
+        // die Produkte noch nicht angelegt sind; mit Schalter wie ein Schweizer Konto.
+        preise: () => { merke('preise');
+          return Promise.resolve(localStorage.getItem('__pruef_preise') === '1'
+            ? {monat:'CHF 5.00', jahr:'CHF 30.00', jahrProMonat:'CHF 2.50', jahrStatt:'CHF 60.00', jahrSpar:'CHF 30'}
+            : {}); },
         kaufen: (o) => { merke('kaufen', o);
           return window.__kaufFehler
             ? Promise.reject(new Error('Kauf fehlgeschlagen'))
@@ -415,6 +421,26 @@ await seite.waitForTimeout(300);
 ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'),
    'und ein zweiter wieder auf Lucenta+');
 await seite.evaluate(() => localStorage.removeItem('__pruef_entwicklung'));
+
+console.log('\n=== Preise kommen aus dem Store, sonst bleiben die festen ===');
+const preisTexte = () => seite.evaluate(() => {
+  const w = document.getElementById('plusPreisWahl');
+  const t = k => (w.querySelector('[data-i18n="'+k+'"]')?.textContent || '').trim();
+  const spar = w.querySelector('[data-i18n="plus_jahr_spar"]');
+  return {jahr:t('plus_betrag_jahr'), monat:t('plus_betrag_monat'), proMonat:t('plus_jahr_pro_monat'),
+          statt:t('plus_jahr_statt'), spar:t('plus_jahr_spar'), sparDa: !spar.hidden};
+});
+await seite.evaluate(() => localStorage.removeItem('__pruef_preise'));
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+let pt = await preisTexte();
+ok(pt.jahr === '29,99 €' && pt.monat === '4,99 €', 'antwortet der Store leer, bleiben die festen Betraege: ' + pt.jahr + ' / ' + pt.monat);
+await seite.evaluate(() => localStorage.setItem('__pruef_preise', '1'));
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+pt = await preisTexte();
+ok(pt.jahr === 'CHF 30.00' && pt.monat === 'CHF 5.00', 'mit Antwort stehen die Store-Betraege da: ' + pt.jahr + ' / ' + pt.monat);
+ok(pt.proMonat === 'nur CHF 2.50 im Monat', 'im Satz wird nur der Betrag getauscht: ' + pt.proMonat);
+ok(pt.statt === 'CHF 60.00' && pt.spar === 'Spare CHF 30' && pt.sparDa, 'Vergleichspreis und Ersparnis aus dem Store: ' + pt.statt + ' / ' + pt.spar);
+await seite.evaluate(() => localStorage.removeItem('__pruef_preise'));
 
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 

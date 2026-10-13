@@ -38,7 +38,8 @@ public class LucentaKaeufePlugin: CAPInstancePlugin, CAPBridgedPlugin {
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "stand", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "kaufen", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "restorePurchases", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "restorePurchases", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "preise", returnType: CAPPluginReturnPromise)
     ]
 
     /// Die beiden Abo-Produkte, in derselben Abo-Gruppe. Die Liste steht hier UND in
@@ -138,6 +139,40 @@ public class LucentaKaeufePlugin: CAPInstancePlugin, CAPBridgedPlugin {
             } catch {
                 call.reject(error.localizedDescription)
             }
+        }
+    }
+
+    /// Die Preise, wie der Store sie fuer dieses Konto zeigt (Runde 137).
+    ///
+    /// Bis hierher stand der Preis als fester Euro-Text in den Sprachpaketen. Im Store gilt er aber
+    /// je Land und Waehrung — wer in der Schweiz, in Japan oder in der Tuerkei kauft, haette einen
+    /// anderen Betrag gesehen als den, der dann abgebucht wird. `displayPrice` ist Apples fertig
+    /// formatierter Preis in der Waehrung des Kontos; die drei abgeleiteten Betraege (Jahr je Monat,
+    /// Monat mal zwoelf, Ersparnis) werden mit derselben Formatierung gerechnet, damit Waehrung und
+    /// Schreibweise ueberall dieselben sind. Die Ersparnis ist ABGERUNDET auf ganze Einheiten — sie
+    /// soll nie mehr versprechen, als es wirklich ist.
+    ///
+    /// Fehlt ein Produkt (noch nicht in App Store Connect angelegt), kommt eine leere Antwort, und
+    /// die Seite behaelt ihre festen Texte. Ein Fehler hier darf die Kaufseite nie leeren.
+    @objc func preise(_ call: CAPPluginCall) {
+        Task {
+            guard let liste = try? await Product.products(for: Array(Self.produkte)),
+                  let monat = liste.first(where: { $0.id == "lucenta.plus.monat" }),
+                  let jahr = liste.first(where: { $0.id == "lucenta.plus.jahr" }) else {
+                call.resolve([:])
+                return
+            }
+            let format = jahr.priceFormatStyle
+            var spar = monat.price * 12 - jahr.price
+            var abgerundet = Decimal()
+            NSDecimalRound(&abgerundet, &spar, 0, .down)
+            call.resolve([
+                "monat": monat.displayPrice,
+                "jahr": jahr.displayPrice,
+                "jahrProMonat": (jahr.price / 12).formatted(format),
+                "jahrStatt": (monat.price * 12).formatted(format),
+                "jahrSpar": abgerundet > 0 ? abgerundet.formatted(format.precision(.fractionLength(0))) : ""
+            ])
         }
     }
 

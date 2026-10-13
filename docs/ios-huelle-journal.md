@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 136)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 137)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 136 | — | Verstehen ganz Lucenta+; Vergleiche frei mit 2 Personen, Archiv frei bis 2; Sprache als Unterseite (`view-sprache`); Unterseiten schieben sich wie iOS (Push/Pop) |
+| 137 | — | Preise aus StoreKit (`preise()`), Zurueck-Wischgeste vom linken Rand, Eulen-Zwinkern lesbar, Panda weicher, keine Trennung in der Angebotskarte |
+| 136 | `4d8552f` | Verstehen ganz Lucenta+; Vergleiche frei mit 2 Personen, Archiv frei bis 2; Sprache als Unterseite (`view-sprache`); Unterseiten schieben sich wie iOS (Push/Pop) |
 | 135 | `e755c72` | Suesser Blick: Lider, Blick zum Betrachter, groessere Augen und Lichtpunkte, Wangenroete; je Tier ein eigener `Ausdruck` |
 | 134 | `ef36e7a` | Tierkoerper statt Menschenoberkoerper: `vierbeiner(Bau(...))` — schmale tiefe Brust, Vorderbeine, Ruecken nach hinten; je Art eigene Masse und Zeichnung |
 | 133 | `9bad4bd` | Tiere mit Oberkoerper: fester Zuschnittrahmen (`rahmen.json`), Bild randlos im Kreis, Kopf deckungsgleich mit Runde 132 |
@@ -92,10 +93,11 @@ Regeln, die er gesetzt hat:
    Erinnerung und Nacherinnerung, bleiben sie nach einem Eintrag aus; Tipp auf die Mitteilung;
    Haptik; alle neuen Bewegungen in Bewegung (Funkeln, Enthuellung, Zuklappen, Startkarten);
    das neue Symbol auf dem Homescreen (Creme auf #5CB4AD hat nur rund 2:1 Kontrast).
-2. **Preise** kommen als fester Euro-Text. Sobald die Produkte in App Store Connect stehen,
-   `displayPrice` aus StoreKit holen.
-3. **Urteil des Inhabers ausstehend:** Polwoerter der fuenf Tagesform-Fragen, die 3D-Tiere mit Oberkoerper
-   (Runde 133; Dackel und Retriever die schwaechsten), die zarten Strahlen des Kranzes.
+2. **Preise:** erledigt in Runde 137 — `preise()` holt `displayPrice` aus StoreKit, feste Texte bleiben als
+   Rueckfall. Zu sehen erst mit echten Produkten in App Store Connect (die Testkonfiguration liefert
+   dieselben Euro-Betraege wie die festen Texte).
+3. **Urteil des Inhabers ausstehend:** Polwoerter der fuenf Tagesform-Fragen, die 3D-Tiere mit Koerper und Blick
+   (Runde 133–135), die zarten Strahlen des Kranzes.
 4. Moeglich, nicht beauftragt: Die Startkarten blenden beim Hereinfliegen auch ein (Deckkraft) —
    die Regel „nie ueber Deckkraft" gilt fuer Ansichtswechsel; falls er das anders sieht, eine Zeile
    in `karte-flug`.
@@ -199,6 +201,44 @@ SceneKit und CoreGraphics ja (`swiftc`).
 
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull Request ohne Bitte.
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 137 — Was offen war: Store-Preise, Wischgeste, Eule, Panda, Trennung
+
+**Auftrag:** "erledige alles was offen ist." Erledigt ist, was ohne iPhone und ohne den Inhaber geht.
+Offen bleibt, was nur er kann (echtes Geraet, App Store Connect, sein Urteil) — siehe unten.
+
+1. **Preise aus StoreKit.** `LucentaKaeufePlugin.preise()` liefert `displayPrice` beider Produkte und drei
+   daraus gerechnete Betraege in derselben Formatierung (Jahr je Monat, Monat × 12, Ersparnis — diese
+   ABGERUNDET, sie soll nie mehr versprechen, als es ist). `19b-native.js` holt sie beim Start und setzt
+   sie in die Kaufseite; in die Saetze ("nur 2,50 € im Monat") wird nur der Betrag getauscht, also keine
+   neuen Schluessel. Ohne Antwort (Browser, Produkte noch nicht angelegt, Stoerung) bleiben die festen
+   Texte. `pruef-nativ` **65** (vier neu: leere Antwort laesst die festen Betraege stehen, eine
+   Schweizer Antwort ersetzt alle fuenf Stellen). Gebaut mit xcodebuild, im Simulator gestartet, laeuft.
+   **Nicht gesehen:** die echten Store-Preise — die Testkonfiguration (`Lucenta.storekit`, Storefront
+   DEU) liefert genau 4,99/29,99 €, ein Bild davon haette nichts belegt.
+2. **Zurueck-Wischgeste** (`20-wiring.js`, Ende von `12-ios.css`): auf Unterseiten aus einem 24-pt-Streifen
+   am linken Rand nach rechts ziehen; die Seite folgt dem Finger, die Einstellungen liegen darunter und
+   ruecken mit. Loslassen nach 35 % der Breite oder mit Schwung (> 0,6 pt/ms) geht zurueck, sonst rastet
+   sie wieder ein. Erst eine eindeutig waagerechte Bewegung gehoert der Geste, sonst bleibt es Bildlauf.
+   **Fund beim Ansehen:** Die Seite blieb zuerst unter dem Finger stehen — die Einblendung `rise` mit
+   `fill:both` ueberschrieb jede Verschiebung von Hand; waehrend des Ziehens jetzt `animation:none`.
+   Mit nachgestellten Beruehrungen in Chromium geprueft (halber Zug -> zurueck, kurzer langsamer Zug ->
+   bleibt, keine Reste). **Nicht** am Geraet mit dem Finger.
+3. **Eule:** Das Zwinkern las sich auf 48 pt als dunkler Fleck. Ursache: Unter dem geschlossenen Lid
+   schimmerten Hornhaut und Lichtpunkte durch, das Auge sah aus wie eine glaenzende Kugel. Geschlossen gibt
+   es jetzt keinen Augapfel, und die Unterkante woelbt sich staerker nach oben — ein "^".
+4. **Panda:** Grenze zwischen Schwarz und Weiss weicher auslaufend.
+5. **Angebotskarte:** keine Silbentrennung mehr ("Ver-stehen"), wie in der Schublade.
+6. **Kleine Avatare** auf 48 pt (×2) alle zwoelf angesehen: lesbar, keine weitere Aenderung noetig.
+
+**Pruefungen:** `npm run pruef-alles` **ALLE 9 BESTANDEN** (12,3 Minuten), `pruef-nativ` 65, `fehlersuche`
+KEINE FUNDE. App gebaut (xcodebuild) und im Simulator gestartet.
+
+**Bleibt offen, nur fuer den Inhaber:** echtes iPhone (Erinnerungen, Haptik, Bewegung, Wischgeste mit dem
+Finger, Symbol auf dem Homescreen), die zwei Produkte in App Store Connect, sein Urteil zu Polwoertern,
+Tieren und Strahlenkranz.
 
 ---
 

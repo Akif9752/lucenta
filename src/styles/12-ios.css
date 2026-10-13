@@ -769,6 +769,9 @@
     border:1px solid var(--glas-rand); box-shadow:0 10px 30px -12px rgba(0,0,0,.35);
   }
   .plus-vorschau-text{ margin:0; font-size:14px; line-height:1.45; color:var(--ink); font-weight:500; }
+  /* Runde 137: keine Trennung in der Angebotskarte — sie trennte "Ver-stehen", den Namen einer
+     Ansicht, wo das ganze Wort in die naechste Zeile passt. Gleiche Regel wie in der Schublade. */
+  .plus-vorschau-text{ -webkit-hyphens:manual; hyphens:manual; }
   /* Die Tueren fuer die Vorschaukarte (pruefeTransparenzTueren haelt beide zusammen). */
   @media (prefers-reduced-transparency: reduce){
     .plus-vorschau-karte{ background:var(--surface); -webkit-backdrop-filter:none; backdrop-filter:none; }
@@ -822,3 +825,19 @@
   @media (prefers-reduced-motion: reduce){
     .view.active.nav-push, .view.active.nav-pop, .view.nav-weg-push, .view.nav-weg-pop{ animation:none; }
   }
+
+  /* Runde 137: die Zurueck-Geste vom linken Rand (20-wiring.js). Die Seite folgt dem Finger, die
+     Seite darunter steht an ihrem Platz und rueckt mit; beide tragen die Papierflaeche wie beim
+     Schieben oben. Beim Loslassen laufen beide mit derselben UIKit-Kurve ans Ziel. */
+  /* animation:none, weil eine Einblendung mit fill:both (rise, seite-rein) jede Verschiebung von
+     Hand ueberschreibt — am Bild gesehen: Die Seite blieb unter dem Finger stehen. */
+  .view.nav-ziehen{ position:relative; z-index:2; isolation:isolate; min-height:100vh; animation:none; }
+  .view.nav-unter{ animation:none; display:block; position:fixed; margin:0; pointer-events:none; z-index:1; isolation:isolate; min-height:100vh; }
+  .view.nav-ziehen::before, .view.nav-unter::before{
+    content:''; position:absolute; z-index:-1; pointer-events:none;
+    top:-200px; bottom:0; left:calc(-1 * var(--rand-links)); right:calc(-1 * var(--rand-rechts));
+    background:var(--paper);
+  }
+  .view.nav-ziehen::before{ box-shadow:-10px 0 28px rgba(0,0,0,.14); }
+  .view.nav-loslassen{ transition:transform .28s cubic-bezier(.32,.72,0,1), filter .28s cubic-bezier(.32,.72,0,1); }
+  @media (prefers-reduced-motion: reduce){ .view.nav-loslassen{ transition:none; } }

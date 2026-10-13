@@ -314,6 +314,7 @@
   // oben, weil es die Bruecke braucht — und weil die Testreihen den Code nur bis zur Marke
   // "wiring" ausfuehren und diesen Aufruf damit nicht anfassen.
   plusStandPruefen();
+  plusPreiseHolen();
   // Runde 121, auf Wunsch des Inhabers: Beim Start der App dieselbe kurze Bewegung wie nach dem
   // letzten Testschritt — das Fuenfeck zeichnet sich und fuellt sich —, hier mit dem Namen
   // darunter. Nur in der App: Im Browser laufen die Pruefungen gleich nach dem Laden los, und
