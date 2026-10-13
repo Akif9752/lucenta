@@ -35,11 +35,9 @@
     var list = loadCompatArchive();
     var wrap = $('compatArchiveContent');
     if (list.length===0){
-      // Runde 127, Entscheidung des Inhabers: Das Archiv gehoert zu Lucenta+. Leer und frei steht
-      // deshalb nicht "noch nichts gespeichert" da, sondern was es mit Lucenta+ gaebe.
-      wrap.innerHTML = istPlus()
-        ? emptyStateHTML(tx('js_noch_kein_vergleich_gespei'), {extraClass:'archive-empty-note'})
-        : schlossHTML(tx('plus_archiv_leer'));
+      // Runde 127 legte das ganze Archiv in Lucenta+; Runde 136 (Entscheidung des Inhabers): zwei
+      // Plaetze sind frei. Leer heisst deshalb wieder fuer alle "noch nichts gespeichert".
+      wrap.innerHTML = emptyStateHTML(tx('js_noch_kein_vergleich_gespei'), {extraClass:'archive-empty-note'});
       schloesserVerdrahten(wrap);
       return;
     }
@@ -58,7 +56,7 @@
     // jedem weiteren — damit ist er fortlaufender Wert im Sinne der Apple-Richtlinie 3.1.2 und
     // nicht ein fester Inhalt, den ein Schalter freigibt.
     // Runde 127: Gespeichertes bleibt frei LESBAR (Versprechen im Lucenta+-Fenster: "Was waehrend
-    // deiner Laufzeit entsteht, bleibt lesbar" — und speichern kann man nur mit Lucenta+). Die
+    // deiner Laufzeit entsteht, bleibt lesbar"; seit Runde 136 speichert die freie Fassung zwei). Die
     // Auswertung steht frei als verschwommene Vorschau der echten Auswertung.
     var uebersicht = istPlus() ? archivUebersicht(list)
                    : (list.length >= 3 ? vorschauHTML(archivUebersicht(list), tx('plus_archiv')) : '');

@@ -46,6 +46,24 @@
     try{ history.back(); }catch(e){}
   }
 
+  // Unterseiten und die Seite, aus der sie kommen (Runde 136).
+  var UNTERSEITE_VON = {hilfe:'settings', sprache:'settings'};
+  var navWegTimer = null;
+  function navWegAufraeumen(){
+    if (navWegTimer){ clearTimeout(navWegTimer); navWegTimer = null; }
+    try{
+      document.querySelectorAll('.view.nav-weg').forEach(function(v){
+        v.classList.remove('nav-weg','nav-weg-push','nav-weg-pop');
+        v.style.top = ''; v.style.left = ''; v.style.width = '';
+      });
+      // Auch die angekommene Seite verliert ihre Schiebe-Klasse. Nicht Zierde: Laeuft die Animation
+      // nicht weiter (App im Hintergrund, gedrosselte Seite — in der Fehlersuche auf WebKit so
+      // gemessen), stuende die Seite sonst an ihrem Startpunkt, eine volle Breite rechts daneben.
+      document.querySelectorAll('.view.nav-push, .view.nav-pop').forEach(function(v){
+        v.classList.remove('nav-push','nav-pop');
+      });
+    }catch(e){}
+  }
   function showView(name, opts){
     opts = opts || {};
     // Scrollposition der verlassenen Ansicht merken, damit die Zurück-Geste an dieselbe Stelle
@@ -60,8 +78,28 @@
     // ist immer zurück, die Startseite ist immer zurück, alles andere geht hinein. Eine
     // Tiefentabelle hätte bei gleicher Ebene (Ergebnis -> Verstehen) keine Antwort gehabt.
     var richtung = (opts.fromHistory || name === 'landing') ? 'nav-zurueck' : 'nav-vor';
+    // Runde 136, Auftrag des Inhabers: Eine Zeile mit Pfeil nach rechts oeffnet eine Unterseite
+    // "wie bei iOS" — die neue Seite schiebt sich von rechts ueber die alte, die alte rueckt um ein
+    // Drittel nach links; zurueck genau umgekehrt. Dafuer muessen BEIDE Seiten gleichzeitig zu
+    // sehen sein: Die verlassene bleibt fuer die Dauer des Uebergangs an ihrem letzten Platz
+    // festgehalten (position:fixed), dann verschwindet sie wie sonst auch.
+    // Die Richtung haengt am Seitenpaar, nicht am Knopf — so stimmt sie auch bei der Zurueck-Geste.
+    // Zurueck auf die Einstellungen kehrt an die Stelle zurueck, von der man kam (wie iOS).
+    var art = null;
+    if (currentView && UNTERSEITE_VON[name] === currentView) art = 'push';
+    else if (currentView && UNTERSEITE_VON[currentView] === name) art = 'pop';
+    if (art){ richtung = art === 'push' ? 'nav-push' : 'nav-pop'; if (art === 'pop') opts.restoreScroll = true; }
+    navWegAufraeumen();
+    var alt = currentView ? $('view-'+currentView) : null;
+    if (art && alt && !prefersReducedMotion()){
+      try{
+        var r = alt.getBoundingClientRect();
+        alt.style.top = r.top+'px'; alt.style.left = r.left+'px'; alt.style.width = r.width+'px';
+        alt.classList.add('nav-weg', art === 'push' ? 'nav-weg-push' : 'nav-weg-pop');
+      }catch(e){}
+    }
     document.querySelectorAll('.view').forEach(function(v){
-      v.classList.remove('active','nav-vor','nav-zurueck');
+      v.classList.remove('active','nav-vor','nav-zurueck','nav-push','nav-pop');
     });
     var section = $('view-'+name);
     if (!prefersReducedMotion() && currentView && currentView !== name){
@@ -69,6 +107,7 @@
       // Muster wie bei animateQuestionIn() und markLangShift().
       void section.offsetWidth;
       section.classList.add(richtung);
+      if (art) navWegTimer = setTimeout(navWegAufraeumen, 520);
     }
     section.classList.add('active');
     currentView = name;

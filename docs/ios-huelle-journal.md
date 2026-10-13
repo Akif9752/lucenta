@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 135)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-13, nach Runde 136)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 135 | — | Suesser Blick: Lider, Blick zum Betrachter, groessere Augen und Lichtpunkte, Wangenroete; je Tier ein eigener `Ausdruck` |
+| 136 | — | Verstehen ganz Lucenta+; Vergleiche frei mit 2 Personen, Archiv frei bis 2; Sprache als Unterseite (`view-sprache`); Unterseiten schieben sich wie iOS (Push/Pop) |
+| 135 | `e755c72` | Suesser Blick: Lider, Blick zum Betrachter, groessere Augen und Lichtpunkte, Wangenroete; je Tier ein eigener `Ausdruck` |
 | 134 | `ef36e7a` | Tierkoerper statt Menschenoberkoerper: `vierbeiner(Bau(...))` — schmale tiefe Brust, Vorderbeine, Ruecken nach hinten; je Art eigene Masse und Zeichnung |
 | 133 | `9bad4bd` | Tiere mit Oberkoerper: fester Zuschnittrahmen (`rahmen.json`), Bild randlos im Kreis, Kopf deckungsgleich mit Runde 132 |
 | 132 | `7457d8f` | Funkeln statt Konfetti: vierzackige Sterne + Lichtpunkte, schweben statt zu fallen (`funkelStoss`, `.funkeln`) |
@@ -103,9 +104,10 @@ Regeln, die er gesetzt hat:
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
-- **Bezahlgrenze (Runde 128):** frei sind Test, Ergebnistyp, Motto, Kurzfassung, Radar, Teilen,
-  Code, je Dimension Wert + Kernsatz + erster Satz, Tagesform-Eintragen + 7 Tage, Erinnerung, EIN
-  Vergleich. Alles andere Lucenta+, gesperrt als verschwommene Vorschau des echten Inhalts.
+- **Bezahlgrenze (Runde 128, geaendert Runde 136):** frei sind Test, Ergebnistyp, Motto, Kurzfassung, Radar, Teilen,
+  Code, je Dimension Wert + Kernsatz + erster Satz, Tagesform-Eintragen + 7 Tage, Erinnerung, Vergleiche
+  mit ZWEI Personen und ZWEI Plaetze im Archiv (`FREI_VERGLEICHE`, `FREI_ARCHIV`). "Verstehen" ist seit
+  Runde 136 GANZ Lucenta+. Alles andere Lucenta+, gesperrt als verschwommene Vorschau des echten Inhalts.
   Gespeichertes bleibt lesbar.
 - **Ehrliche Verkaufsmittel:** keine Countdowns, keine erfundene Beliebtheit, kein Probezeitraum.
   Preis, Laufzeit und „verlaengert sich automatisch" am Knopf (Richtlinie 3.1.2).
@@ -197,6 +199,60 @@ SceneKit und CoreGraphics ja (`swiftc`).
 
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull Request ohne Bitte.
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 136 — Verstehen ganz Lucenta+, zwei freie Vergleiche, Sprache als Unterseite, iOS-Uebergang
+
+**Auftrag:** (1) "das komplette Verstehen-Feature sollte Lucenta+ sein"; (2) Vergleichsarchiv frei
+hoechstens 2, mehr Lucenta+; (3) Sprache als anklickbare Einstellung, die ein neues Fenster mit den
+Sprachen oeffnet; (4) Zeilen mit Pfeil nach rechts oeffnen ihr Fenster "von rechts nach links, und
+zurueck andersherum, so wie bei iOS".
+
+**Gefragt, gewaehlt:** Bisher durfte die freie Fassung nur mit EINER Person vergleichen (Runde 127) —
+zwei Archivplaetze waeren damit nur fuer dieselbe Person nutzbar gewesen. Gewaehlt: **zwei Personen
+frei, zwei Plaetze frei**, ab der dritten Person bzw. dem dritten Speichern Lucenta+.
+
+**Was geaendert ist:**
+1. **Verstehen** (`16-verstehen.js`): frei nur noch die verschwommene Vorschau der echten ersten Gruppe
+   mit dem Angebot (Regel aus Runde 128: Vorschau des wirklichen Inhalts). Nur die erste Gruppe, weil
+   die Angebotskarte mittig sitzt — auf der ganzen Seite laege sie unter dem Bildschirm. Texte
+   `plus_verstehen` und `plus_v_verstehen_text` in acht Sprachen angepasst.
+2. **Vergleiche** (`11-rendering.js`, `03-speicherung.js`): `lucenta_vergleich_frei` ist jetzt eine Liste
+   (`freieVergleichePersonen()`); ein alter Eintrag mit EINEM Code wird als Liste mit diesem Code
+   gelesen — sonst bekaeme, wer schon verglichen hat, zwei neue Personen statt einer. Speichern frei bis
+   2; ist das Archiv voll, steht an Stelle des Formulars ein Lucenta+-Schloss (auch sofort nach dem
+   zweiten Speichern). Das leere Archiv zeigt wieder "noch nichts gespeichert" statt Schloss. Texte
+   `plus_vergleich_weitere`, `plus_archiv_leer`, `plus_v_vergleich_text`, FAQ-Antwort zum Archiv in
+   acht Sprachen. In WebKit nachgefahren: Person 1 (alter Eintrag) und 2 frei und speicherbar, nach
+   zwei Speicherungen Schloss, Person 3 als Vorschau.
+3. **Sprache** (`view-sprache`): In den Einstellungen eine Zeile mit der gewaehlten Sprache in ihrer
+   eigenen Schreibweise und einem Pfeil; die Liste mit Haken steht auf der eigenen Seite. Die
+   iOS-Listenform galt nur unter `#view-settings` — fuer `#view-sprache` mitgezogen (sonst haette die
+   Liste dort ihre Flaeche verloren). Ansichtsname in acht Sprachen. Neuer Weg in der Fehlersuche.
+4. **Push/Pop** (`showView()` in `02-state.js`, Ende von `12-ios.css`): `UNTERSEITE_VON` haelt fest,
+   welche Seite Unterseite welcher ist (Hilfe, Sprache -> Einstellungen). Hinein: die neue Seite kommt
+   ueber die volle Breite von rechts mit Schatten, die alte rueckt um 30 % nach links und dunkelt
+   leicht ab; zurueck umgekehrt, und die Einstellungen kehren an die verlassene Stelle zurueck. Beide
+   Seiten gleichzeitig sichtbar: Die verlassene wird fuer 0,52 s mit `position:fixed` an ihrem letzten
+   Platz festgehalten (`.nav-weg`). Die Richtung haengt am Seitenpaar, nicht am Knopf — sie stimmt
+   deshalb auch bei der Zurueck-Geste. Bei reduzierter Bewegung (System oder App-Schalter) keine
+   Bewegung. In WebKit mitten im Uebergang angesehen (150 ms), hinein und zurueck.
+
+**Unsicher:** "Ver-stehen" wird in der deutschen Angebotskarte bei 390 pt getrennt. Die Wischgeste vom
+linken Rand (iOS-Zurueck) gibt es in der App nicht — zurueck geht ueber den Knopf. Am iPhone nicht
+gesehen.
+
+**Zwei Funde der Pruefungen, behoben:** (a) Die Fehlersuche meldete die Sprachseite 13-mal als seitlich
+schiebbar (780 statt 390 pt), nur auf WebKit. Ursache: Bei vier gleichzeitigen Durchlaeufen laeuft die
+Animation dort nicht weiter, und die Seite stand an ihrem Startpunkt eine volle Breite rechts daneben —
+dasselbe koennte auf dem Geraet nach einer Unterbrechung passieren. Jetzt setzt der Abschluss nach 0,52 s
+die Seite in jedem Fall auf ihr Ziel. (b) `diff-sprachen` klickte die Sprachknoepfe in den Einstellungen,
+wo sie nicht mehr stehen — der Weg fuehrt jetzt ueber `#btnSpracheOeffnen`. Dazu zwei Anfuehrungszeichen
+im Audit (pt, tr) an die Sprache angepasst.
+
+**Pruefungen:** `npm run pruef-alles` **ALLE 9 BESTANDEN** (12,0 Minuten), `fehlersuche` KEINE FUNDE
+(jetzt mit dem Weg `sprache`), `diff-sprachen` 92 statt 141 verdaechtige Zeilen (nur Bericht).
 
 ---
 

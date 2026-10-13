@@ -483,16 +483,10 @@
            mit einem Haken an der gewaehlten. Ein Raster gleich aussehender Knoepfe laesst
            offen, ob man einen oder mehrere waehlen kann; eine Liste mit genau einem Haken
            nicht. role="radio" sagt Vorleseprogrammen dasselbe. -->
-      <div class="wahlliste" role="radiogroup" aria-label="Sprache wählen" data-i18n-aria="aria_sprache_wählen">
-        <button type="button" class="wahl-zeile" role="radio" data-lang="de" aria-checked="false" lang="de"><span>Deutsch</span></button>
-        <button type="button" class="wahl-zeile" role="radio" data-lang="en" aria-checked="false" lang="en"><span>English</span></button>
-        <button type="button" class="wahl-zeile" role="radio" data-lang="es" aria-checked="false" lang="es"><span>Espa&ntilde;ol</span></button>
-        <button type="button" class="wahl-zeile" role="radio" data-lang="fr" aria-checked="false" lang="fr"><span>Fran&ccedil;ais</span></button>
-        <button type="button" class="wahl-zeile" role="radio" data-lang="it" aria-checked="false" lang="it"><span>Italiano</span></button>
-        <button type="button" class="wahl-zeile" role="radio" data-lang="pt" aria-checked="false" lang="pt"><span>Portugu&ecirc;s</span></button>
-        <button type="button" class="wahl-zeile" role="radio" data-lang="tr" aria-checked="false" lang="tr"><span>T&uuml;rk&ccedil;e</span></button>
-        <button type="button" class="wahl-zeile" role="radio" data-lang="ja" aria-checked="false" lang="ja"><span>&#26085;&#26412;&#35486;</span></button>
-      </div>
+      <!-- Runde 136, Auftrag des Inhabers: Die Sprache ist eine Zeile mit Pfeil, die eine eigene Seite
+           oeffnet (view-sprache) — wie "Sprache & Region" in Apples Einstellungen. Rechts steht die
+           gewaehlte Sprache in ihrer eigenen Schreibweise. -->
+      <button type="button" class="hilfe-knopf" id="btnSpracheOeffnen"><span id="spracheAktuell" lang="de">Deutsch</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
     </div>
 
     <!-- Runde 75: Bedienung. Beide Schalter schliessen Luecken, die durch fruehere Runden
@@ -621,6 +615,27 @@
       <h2 data-i18n="über_lucenta">Über Lucenta</h2>
       <p class="settings-group-desc" data-i18n="version__middot_basiert_auf">Version 1.0 &middot; basiert auf dem wissenschaftlichen Big-Five-Modell (OCEAN) &middot; keine Werbung, kein Tracking, keine Weitergabe an Dritte.</p>
       <button type="button" class="recht-leise" id="btnRecht" data-i18n="recht_leise">Impressum, Datenschutz &amp; Lizenzen</button>
+    </div>
+  </section>
+
+  <!-- Runde 136: die Sprachwahl als eigene Seite, geoeffnet aus den Einstellungen. -->
+  <section class="view" id="view-sprache" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromSprache" data-i18n="hilfe_zurueck">← Einstellungen</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="einstellungen">Einstellungen</div>
+      <h1 data-i18n="sprache">Sprache</h1>
+    </div>
+    <div class="wahlliste" role="radiogroup" aria-label="Sprache wählen" data-i18n-aria="aria_sprache_wählen">
+      <button type="button" class="wahl-zeile" role="radio" data-lang="de" aria-checked="false" lang="de"><span>Deutsch</span></button>
+      <button type="button" class="wahl-zeile" role="radio" data-lang="en" aria-checked="false" lang="en"><span>English</span></button>
+      <button type="button" class="wahl-zeile" role="radio" data-lang="es" aria-checked="false" lang="es"><span>Espa&ntilde;ol</span></button>
+      <button type="button" class="wahl-zeile" role="radio" data-lang="fr" aria-checked="false" lang="fr"><span>Fran&ccedil;ais</span></button>
+      <button type="button" class="wahl-zeile" role="radio" data-lang="it" aria-checked="false" lang="it"><span>Italiano</span></button>
+      <button type="button" class="wahl-zeile" role="radio" data-lang="pt" aria-checked="false" lang="pt"><span>Portugu&ecirc;s</span></button>
+      <button type="button" class="wahl-zeile" role="radio" data-lang="tr" aria-checked="false" lang="tr"><span>T&uuml;rk&ccedil;e</span></button>
+      <button type="button" class="wahl-zeile" role="radio" data-lang="ja" aria-checked="false" lang="ja"><span>&#26085;&#26412;&#35486;</span></button>
     </div>
   </section>
 

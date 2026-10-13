@@ -507,6 +507,9 @@ const WEGE = {
   archetypes: ['#btnDrawerToggle', '#btnDrawerArchetypes'],
   settings:   ['#btnDrawerToggle', '#btnDrawerSettings'],
   recht:      ['#btnDrawerToggle', '#btnDrawerSettings', '#btnRecht'],
+  // Runde 136: die Sprachwahl als eigene Seite. 650 ms nach dem letzten Klick sind mehr als die
+  // 0,46 s des Schiebeuebergangs — gemessen wird also die angekommene Seite, nicht der Weg dorthin.
+  sprache:    ['#btnDrawerToggle', '#btnDrawerSettings', '#btnSpracheOeffnen'],
   state:      ['#btnHome', '#btnLandingStateHistory'],
   result:     ['#btnDrawerToggle', '#btnDrawerProfileRow', '#btnProfileViewResult'],
   quiz:       ['#btnHome', '#btnStart', '#btnRunSelf'],

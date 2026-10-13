@@ -174,7 +174,7 @@ async function rundgang(code){
   await p.goto(URL,{waitUntil:'networkidle'});
   await p.waitForTimeout(900);
   if(code!=='de'){
-    await drawer(p,'btnDrawerSettings'); await p.click('[data-lang="'+code+'"]');
+    await drawer(p,'btnDrawerSettings'); await p.click('#btnSpracheOeffnen'); await p.waitForTimeout(600); await p.click('[data-lang="'+code+'"]');
     await p.waitForTimeout(900); await home(p);
   }
   const t=await tour(p);

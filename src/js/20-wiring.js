@@ -17,3 +17,6 @@
   // Runde 131: die haeufigen Fragen als eigene Seite; zurueck geht es dorthin, woher man kam.
   $('btnHilfeOeffnen').addEventListener('click', function(){ showView('hilfe'); });
   $('btnBackFromHilfe').addEventListener('click', function(){ showView('settings'); });
+  // Runde 136: die Sprachwahl als eigene Seite.
+  $('btnSpracheOeffnen').addEventListener('click', function(){ showView('sprache'); });
+  $('btnBackFromSprache').addEventListener('click', function(){ showView('settings'); });

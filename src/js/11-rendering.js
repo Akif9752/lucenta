@@ -443,13 +443,19 @@
     // Runde 127, Entscheidung des Inhabers: Ein Vergleich ist frei, jeder weitere ist Lucenta+.
     // "Ein Vergleich" heisst: mit EINER anderen Person — dieselbe Person darf man so oft ansehen,
     // wie man will. Gemerkt wird nur deren Code, auf dem Geraet, wie alles hier.
+    // Runde 136, gefragt und gewaehlt: ZWEI Personen frei, passend zu zwei freien Plaetzen im
+    // Archiv. Ab der dritten Person Lucenta+.
     var vergleichGesperrt = false;
     if (!cmpPlus){
       try{
-        var ersterAnderer = localStorage.getItem(FREI_VERGLEICH_SCHLUESSEL);
+        var freie = freieVergleichePersonen();
         var dieserAndere = $('cmpOther').value.trim();
-        if (!ersterAnderer) localStorage.setItem(FREI_VERGLEICH_SCHLUESSEL, dieserAndere);
-        else if (ersterAnderer !== dieserAndere) vergleichGesperrt = true;
+        if (freie.indexOf(dieserAndere) < 0){
+          if (freie.length < FREI_VERGLEICHE){
+            freie.push(dieserAndere);
+            localStorage.setItem(FREI_VERGLEICH_SCHLUESSEL, JSON.stringify(freie));
+          } else vergleichGesperrt = true;
+        }
       }catch(e){}
     }
     var lines = ORDER.map(function(f, i){
@@ -529,12 +535,16 @@
       schloesserVerdrahten(box);
       return;
     }
+    // Runde 136: Speichern ist frei bis FREI_ARCHIV Eintraege (vorher nur mit Lucenta+). Ist das
+    // Archiv voll, steht an der Stelle des Formulars, was Lucenta+ hier oeffnet.
+    var archivVoll = function(){ return !cmpPlus && loadCompatArchive().length >= FREI_ARCHIV; };
+    var archivSchloss = '<div class="compat-save-row compat-save-schloss">'+schlossHTML(tx('plus_archiv_leer'))+'</div>';
     box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note +
-      (cmpPlus ? saveRow : '');
+      (archivVoll() ? archivSchloss : saveRow);
     startCompatBars(box);
     schloesserVerdrahten(box);
     lastCompatSnapshot = { myCode: $('cmpMe').value.trim(), otherCode: $('cmpOther').value.trim(), match: match };
-    var saveBtn = cmpPlus ? $('btnSaveCompat') : null;
+    var saveBtn = $('btnSaveCompat');
     if (saveBtn){
       saveBtn.addEventListener('click', function(){
         if (!lastCompatSnapshot) return;
@@ -543,9 +553,12 @@
         var entry = { id: 'c'+Date.now()+Math.random().toString(36).slice(2,7), ts: Date.now(),
           myCode: lastCompatSnapshot.myCode, otherCode: lastCompatSnapshot.otherCode,
           match: lastCompatSnapshot.match, label: label };
+        if (archivVoll()) return;
         if (appendCompatArchiveEntry(entry)){
           toast(tx('js_vergleich_gespeichert'));
           refreshDrawerState();
+          var reihe = box.querySelector('.compat-save-row');
+          if (archivVoll() && reihe){ reihe.outerHTML = archivSchloss; schloesserVerdrahten(box); }
         } else {
           toast(tx('js_konnte_nicht_gespeichert_w'));
         }

@@ -42,7 +42,7 @@
   #view-settings .settings-sub{ margin-top:30px; padding-top:0; border-top:none; }
 
   /* 2. Die Flaechen. Was in einer Gruppe bedient wird, liegt auf genau einer Flaeche. */
-  #view-settings .wahlliste,
+  #view-settings .wahlliste, #view-sprache .wahlliste,
   #view-settings .settings-account-row,
   #view-settings .settings-row,
   #view-settings .faq-item-list,
@@ -55,8 +55,10 @@
 
   /* 3. Zeilen. Die Sprachliste hatte die Form schon (Runde 97/104) — sie verliert hier nur
         ihren eigenen Rahmen, weil die Gruppe jetzt selbst die Flaeche ist. */
-  #view-settings .wahl-zeile{ font-size:16px; min-height:46px; padding:12px 16px; }
-  #view-settings .wahl-zeile::before{ left:16px; }
+  #view-settings .wahl-zeile, #view-sprache .wahl-zeile{ font-size:16px; min-height:46px; padding:12px 16px; }
+  #view-settings .wahl-zeile::before, #view-sprache .wahl-zeile::before{ left:16px; }
+  /* Runde 136: die Sprachliste steht auf einer eigenen Seite und behaelt dort dieselbe Form. */
+  #view-sprache .wahlliste{ margin-top:22px; }
 
   /* Die Schieberzeilen. Sie stehen als Geschwister in der Gruppe, also traegt jede ihren Teil
      der Flaeche: die erste die oberen Ecken, die letzte die unteren, jede ausser der ersten eine
@@ -787,3 +789,36 @@
      und der Zuschnitt schnitt nur noch etwas Falsches ab: den Schatten der Hinweiskarte — gemessen
      als Sprung der Helligkeit von 221 auf 255 an der Unterkante. */
   .plus-vorschau{ border-radius:var(--radius-m); }
+
+  /* ---------- Runde 136: Unterseiten schieben sich herein wie in iOS ----------
+     Auftrag des Inhabers: Eine Zeile mit Pfeil nach rechts (Sprache, Haeufige Fragen) oeffnet ihre
+     Seite "von rechts nach links, und zurueck andersherum, so wie bei iOS". Das ist der Push eines
+     UINavigationController: Die neue Seite kommt ueber die ganze Breite von rechts und wirft einen
+     Schatten auf die alte; die alte rueckt um ein Drittel nach links und wird etwas dunkler. Beim
+     Zurueck laeuft die Unterseite nach rechts hinaus und gibt die alte frei. Beide Seiten sind
+     dabei gleichzeitig zu sehen — die verlassene haelt showView() kurz an ihrem Platz fest
+     (.nav-weg, position:fixed). Kurve und Dauer nach UIKit: rasch los, weich ankommen, ~0,45 s.
+     Nur Lage, keine Deckkraft; beide Seiten tragen die Papierflaeche bis an den Bildschirmrand,
+     sonst schiene die eine durch die andere. */
+  .view.active.nav-push, .view.active.nav-pop, .view.nav-weg{
+    min-height:100vh; isolation:isolate;
+  }
+  .view.active.nav-push::before, .view.active.nav-pop::before, .view.nav-weg::before{
+    content:''; position:absolute; z-index:-1; pointer-events:none;
+    top:-200px; bottom:0; left:calc(-1 * var(--rand-links)); right:calc(-1 * var(--rand-rechts));
+    background:var(--paper);
+  }
+  .view.active.nav-push{ position:relative; z-index:2; animation:seite-rein .46s cubic-bezier(.32,.72,0,1) both; }
+  .view.active.nav-push::before{ box-shadow:-10px 0 28px rgba(0,0,0,.14); }
+  .view.active.nav-pop{ position:relative; z-index:1; animation:seite-zurueck-rein .46s cubic-bezier(.32,.72,0,1) both; }
+  .view.nav-weg{ display:block; position:fixed; margin:0; pointer-events:none; }
+  .view.nav-weg-push{ z-index:1; animation:seite-weg-links .46s cubic-bezier(.32,.72,0,1) both; }
+  .view.nav-weg-pop{ z-index:3; animation:seite-weg-rechts .46s cubic-bezier(.32,.72,0,1) both; }
+  .view.nav-weg-pop::before{ box-shadow:-10px 0 28px rgba(0,0,0,.14); }
+  @keyframes seite-rein{ from{ transform:translateX(100vw); } to{ transform:none; } }
+  @keyframes seite-weg-links{ from{ transform:none; filter:none; } to{ transform:translateX(-30%); filter:brightness(.92); } }
+  @keyframes seite-zurueck-rein{ from{ transform:translateX(-30%); filter:brightness(.92); } to{ transform:none; filter:none; } }
+  @keyframes seite-weg-rechts{ from{ transform:none; } to{ transform:translateX(100vw); } }
+  @media (prefers-reduced-motion: reduce){
+    .view.active.nav-push, .view.active.nav-pop, .view.nav-weg-push, .view.nav-weg-pop{ animation:none; }
+  }

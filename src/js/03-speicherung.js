@@ -136,6 +136,22 @@
   var FREI_DURCHLAEUFE = 2;
   // Runde 127: Der Code der einen Person, mit der die freie Fassung vergleichen darf.
   var FREI_VERGLEICH_SCHLUESSEL = 'lucenta_vergleich_frei';
+  // Runde 136, Entscheidung des Inhabers: zwei Personen und zwei Plaetze im Vergleichsarchiv frei.
+  var FREI_VERGLEICHE = 2;
+  var FREI_ARCHIV = 2;
+  // Bis Runde 135 stand unter dem Schluessel EIN Code als Text, seitdem eine Liste. Ein alter
+  // Eintrag wird als Liste mit einem Code gelesen — sonst bekaeme, wer schon verglichen hat, beim
+  // Wechsel zwei neue Personen statt einer.
+  function freieVergleichePersonen(){
+    var roh = null;
+    try{ roh = localStorage.getItem(FREI_VERGLEICH_SCHLUESSEL); }catch(e){}
+    if (!roh) return [];
+    try{
+      var l = JSON.parse(roh);
+      if (Array.isArray(l)) return l.filter(function(c){ return typeof c === 'string'; });
+    }catch(e){}
+    return [roh];
+  }
 
   // ---------- Nutzungsmessung (Runde 96) ----------
   //

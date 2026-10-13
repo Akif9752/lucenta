@@ -156,6 +156,12 @@
       document.querySelectorAll('[data-lang]').forEach(function(b){
         b.setAttribute('aria-checked', b.getAttribute('data-lang')===LANG ? 'true':'false');
       });
+      // Runde 136: Die Zeile in den Einstellungen nennt die gewaehlte Sprache, in ihrer eigenen
+      // Schreibweise und mit ihrem eigenen lang-Attribut — genommen aus der Liste selbst, damit
+      // die acht Namen nicht ein zweites Mal irgendwo stehen.
+      var gewaehlt = document.querySelector('.wahl-zeile[data-lang="'+LANG+'"] span');
+      var ziel = $('spracheAktuell');
+      if (gewaehlt && ziel){ ziel.textContent = gewaehlt.textContent; ziel.setAttribute('lang', LANG); }
     }catch(e){}
   }
 

@@ -431,7 +431,7 @@ CONTENT.de = {
       'ausschließlich_auf_diesem_ge': 'Ausschließlich auf diesem Gerät &mdash; Details dazu stehen weiter oben unter &bdquo;Daten &amp; Datenschutz&ldquo;.',
       'für_erwachsene_die_sich_selb': 'Für Erwachsene, die sich selbst besser verstehen wollen &mdash; als Anstoß zum Nachdenken, nicht als Urteil. Lucenta ist kein klinisches oder diagnostisches Instrument und ersetzt keine therapeutische oder medizinische Unterstützung. Falls es dir gerade nicht gut geht, wende dich bitte an eine Beratungsstelle oder eine Person deines Vertrauens.',
       'dein_testergebnis_misst_stab': 'Dein Testergebnis misst stabile Eigenschaften (Traits) &mdash; die ändern sich laut Forschung nicht von Tag zu Tag. Die Tagesform misst dagegen deinen aktuellen Zustand (State): Energie und Stimmung schwanken ganz normal von Tag zu Tag, unabhängig von deinem Profil. Beide Konzepte sind in der Psychologie klar getrennt, deshalb behandelt Lucenta sie auch getrennt &mdash; ein schlechter Tag ändert nichts an deinem Testergebnis.',
-      'ja_nach_jedem_berechneten_ve': 'Ja. Nach jedem berechneten Vergleich kannst du ihn unter &bdquo;Vergleichen&ldquo; mit einem optionalen Namen speichern. Die letzten 20 gespeicherten Vergleiche findest du jederzeit im Vergleichsarchiv wieder, erreichbar über die Schublade.',
+      'ja_nach_jedem_berechneten_ve': 'Ja. Nach jedem berechneten Vergleich kannst du ihn unter &bdquo;Vergleichen&ldquo; mit einem optionalen Namen speichern. In der freien Fassung passen zwei Vergleiche ins Archiv, mit Lucenta+ die letzten 20 &mdash; erreichbar über die Schublade.',
       'eine_kurze_auswahl_an_wissen': 'Eine kurze Auswahl an wissenschaftlichen Einordnungen, passend zu deinen zwei stärksten Dimensionen aus deinem eigenen Ergebnis. Keine neuen Unterkategorien, sondern breit replizierte Zusammenhänge auf Dimensionsebene, verständlich zusammengefasst.',
       'über_lucenta': 'Über Lucenta',
       'version__middot_basiert_auf': 'Version 1.0 &middot; basiert auf dem wissenschaftlichen Big-Five-Modell (OCEAN) &middot; keine Werbung, kein Tracking, keine Weitergabe an Dritte.',
@@ -564,9 +564,9 @@ CONTENT.de = {
       'plus_v_tagesform_titel': 'Was deine Tagesform verrät',
       'plus_v_tagesform_text': 'Wohin es über Wochen geht, wie du nach einem schwachen Tag weitermachst, an welchen Wochentagen und zu welcher Tageszeit. Dazu der Verlauf über 14, 30 oder 90 Tage.',
       'plus_v_vergleich_titel': 'Der Vergleich in der Tiefe',
-      'plus_v_vergleich_text': 'Hinter jeder Dimension liegen Alltag, Gespräch und gemeinsam unternehmen. Dazu ein Archiv für alle gespeicherten Vergleiche.',
+      'plus_v_vergleich_text': 'Hinter jeder Dimension liegen Alltag, Gespräch und gemeinsam unternehmen. Dazu Vergleiche mit beliebig vielen Menschen und ein Archiv ohne Grenze.',
       'plus_v_verstehen_titel': 'Wie deine Werte zusammenwirken',
-      'plus_v_verstehen_text': 'Einordnungen zu deiner Kombination &mdash; und Beobachtungen, die allein aus deinen eigenen Daten stammen.',
+      'plus_v_verstehen_text': 'Einordnungen zu deinen stärksten Eigenschaften und zu deiner Kombination &mdash; und Beobachtungen, die allein aus deinen eigenen Daten stammen.',
       'plus_modal_versprechen': '<b>Dein Ergebnis bleibt frei.</b> Test, Ergebnistyp, Radar und Teilen kosten nichts &mdash; Lucenta+ öffnet den ausführlichen Bericht und alles, was über die Zeit entsteht.',
       'plus_modal_nichts_weg': '<b>Es wird nichts gelöscht.</b> Was du erfasst hast, liegt gespeichert &mdash; auch das, was gerade verschlossen ist.',
       'plus_modal_preis': '<b>Was während deiner Laufzeit entsteht, bleibt lesbar.</b> Das Abo öffnet, was fortlaufend dazukommt. Es nimmt dir nie wieder weg, was du bereits gesehen hast.',
@@ -591,8 +591,8 @@ CONTENT.de = {
       'plus_bericht_weiter': 'Lies deinen vollständigen Bericht: wie sich diese Dimension im Alltag, in Beziehungen und beim Wachsen zeigt.',
       'tf_bandbreite_plus': 'Sieh, wie weit dein Alltag um dein Ergebnis schwankt – Tag für Tag, Dimension für Dimension.',
       'tf_kal_plus': 'Dein Monat auf einen Blick – und jeder frühere Monat dazu.',
-      'plus_vergleich_weitere': 'Dein freier Vergleich ist vergeben. Mit Lucenta+ vergleichst du dich mit so vielen Menschen, wie du willst – mit allen Details.',
-      'plus_archiv_leer': 'Mit Lucenta+ speicherst du jeden Vergleich und siehst, worin du dich mit anderen typischerweise unterscheidest.',
+      'plus_vergleich_weitere': 'Deine zwei freien Vergleiche sind vergeben. Mit Lucenta+ vergleichst du dich mit so vielen Menschen, wie du willst – mit allen Details.',
+      'plus_archiv_leer': 'In der freien Fassung passen zwei Vergleiche ins Archiv. Mit Lucenta+ speicherst du jeden weiteren und siehst, worin du dich mit anderen typischerweise unterscheidest.',
       'plus_start_titel': 'Dein ganzes Bild, nicht nur eine Momentaufnahme',
       'plus_start_text': 'Der vollständige Bericht zu allen fünf Dimensionen, deine Tagesform über Wochen mit Kalender und Mustern, unbegrenzt vergleichen.',
       'plus_start_knopf': 'Lucenta+ entdecken',
@@ -608,7 +608,7 @@ CONTENT.de = {
       'plus_tagesform_b': ' weitere Tage erfasst. Sie liegen gespeichert. Was daraus folgt — Richtung, Erholung, Wochentage, Tageszeit — zeigt Lucenta+.',
       'plus_tagesform_kurz': 'Aus mehreren Wochen Tagesform liest Lucenta+ Muster heraus: wie stark es schwankt, wohin es über die Zeit geht, wie du nach einem schwachen Tag weitermachst — und an welchen Wochentagen und zu welcher Tageszeit du oben und unten liegst.',
       'plus_vergleich': 'Hinter jeder Dimension liegen drei Bereiche — Alltag, Gespräch, Gemeinsam unternehmen. Lucenta+ klappt sie auf und speichert Vergleiche.',
-      'plus_verstehen': 'Wie deine Werte zusammenwirken, und was in deinem Verlauf, deiner Tagesform und deinen Vergleichen steht: Das zeigt Lucenta+.',
+      'plus_verstehen': 'Was deine stärksten Eigenschaften im Alltag bedeuten, wie deine Werte zusammenwirken und was in deinen eigenen Daten steht: Das ganze &bdquo;Verstehen&ldquo; gehört zu Lucenta+.',
       'plus_dev_titel': 'Fassung wechseln',
       'erinnerung_titel': 'Tägliche Erinnerung',
       'erinnerung_hinweis': 'Um {morgen}, {mittag} und {abend} – und zwei Stunden später noch einmal, falls die Tageszeit dann noch offen ist.',
@@ -913,10 +913,10 @@ CONTENT.de = {
       // jetzt bewusst ohne Label, die Überschrift im Hero übernimmt diese Rolle bereits.
       // 'history' entfernt: view-history existiert nicht mehr, der Verlauf lebt jetzt innerhalb von
       // view-profile (siehe VIEW_LABELS.profile).
-    VIEW_LABELS: {landing:'', hilfe:'HILFE', recht:'RECHTLICHES', quiz:'AUFNAHME', result:'ERGEBNIS', archetypes:'ARCHETYPEN', state:'TAGESFORM', profile:'PROFIL', settings:'EINSTELLUNGEN', 'compat-archive':'ARCHIV', understand:'VERSTEHEN'},
+    VIEW_LABELS: {landing:'', sprache:'SPRACHE', hilfe:'HILFE', recht:'RECHTLICHES', quiz:'AUFNAHME', result:'ERGEBNIS', archetypes:'ARCHETYPEN', state:'TAGESFORM', profile:'PROFIL', settings:'EINSTELLUNGEN', 'compat-archive':'ARCHIV', understand:'VERSTEHEN'},
       // Feedback-Runde 45: Klartext-Titel für die Fensterbeschriftung. VIEW_LABELS sind kurze
       // Versalien für die Kopfzeile und eignen sich dafür nicht.
-    VIEW_TITLES: {landing:'', hilfe:'Häufige Fragen', recht:'Impressum und Datenschutz', quiz:'Fragebogen', result:'Dein Ergebnis', archetypes:'Archetypen',
+    VIEW_TITLES: {landing:'', sprache:'Sprache', hilfe:'Häufige Fragen', recht:'Impressum und Datenschutz', quiz:'Fragebogen', result:'Dein Ergebnis', archetypes:'Archetypen',
         state:'Tagesform', profile:'Profil', settings:'Einstellungen', 'compat-archive':'Vergleichsarchiv',
         understand:'Verstehen'},
     QUIZ_HINTS: ['Tippe eine Antwort an', 'Was passt am ehesten zu dir?', 'Der erste Impuls reicht meist', 'Weiter im Flow', 'Fast geschafft'],

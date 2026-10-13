@@ -20,14 +20,19 @@
           return '<div class="understand-card" style="animation-delay:'+(i*60)+'ms"><h3>'+c.title+'</h3><p>'+c.body+'</p></div>';
         }).join('');
     }).join('');
-    // Runde 84: Die zwei Dimensionskarten sind frei. Das Zusammenspiel und der Teil aus den
-    // eigenen Daten sind die gekaufte Fassung — beides entsteht erst aus mehr als einer
-    // Messung bzw. aus dem Zusammenlesen mehrerer Werte.
-    wrap.innerHTML = html +
-      (istPlus() ? (kombiBlock(last) + eigeneDatenBlock(last))
-                 // Runde 127: frei als verschwommene Vorschau des ECHTEN Zusammenspiels.
-                 : vorschauHTML(kombiBlock(last) + eigeneDatenBlock(last), tx('plus_verstehen'))) +
-      tx('js_diese_einordnungen_fassen');
+    // Runde 84 machte die zwei Dimensionskarten frei, nur Zusammenspiel und eigene Daten waren
+    // Lucenta+. Runde 136, Entscheidung des Inhabers: "das komplette Verstehen-Feature sollte
+    // Lucenta+ sein." Frei steht deshalb nur noch die verschwommene Vorschau der ECHTEN ersten
+    // Gruppe (Runde 128: gesperrt wird als Vorschau des wirklichen Inhalts, nie als Attrappe).
+    // Nur die erste Gruppe, weil die Angebotskarte mittig auf der Vorschau sitzt — auf der
+    // ganzen, langen Seite laege sie unterhalb des Bildschirms.
+    if (!istPlus()){
+      var ersteGruppe = html.split('<div class="understand-group-label">').slice(0, 2).join('<div class="understand-group-label">');
+      wrap.innerHTML = vorschauHTML(ersteGruppe, tx('plus_verstehen'));
+      schloesserVerdrahten(wrap);
+      return;
+    }
+    wrap.innerHTML = html + kombiBlock(last) + eigeneDatenBlock(last) + tx('js_diese_einordnungen_fassen');
     schloesserVerdrahten(wrap);
   }
 
