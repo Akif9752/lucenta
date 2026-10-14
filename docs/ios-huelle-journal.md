@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-14, nach Runde 138)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-14, nach Runde 139)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 138 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 139 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 138 | — | Schneller arbeiten: audit-i18n 4 Min. -> 1 s; Kommentare in src/ um ~30 % gekuerzt (gebaute App unveraendert) |
+| 139 | — | Tiere: je eigene Kopfhaltung (7 links, 5 rechts, teils geneigt), artgerechte Muender als Hautfalten (`mitMaul`), Zaehne/Zungen als `perle` |
+| 138 | `a07e240` | Schneller arbeiten: audit-i18n 4 Min. -> 1 s; Kommentare in src/ um ~30 % gekuerzt (gebaute App unveraendert) |
 | 137 | `ae62acb` | Preise aus StoreKit (`preise()`), Zurueck-Wischgeste vom linken Rand, Eulen-Zwinkern lesbar, Panda weicher, keine Trennung in der Angebotskarte |
 | 136 | `4d8552f` | Verstehen ganz Lucenta+; Vergleiche frei mit 2 Personen, Archiv frei bis 2; Sprache als Unterseite (`view-sprache`); Unterseiten schieben sich wie iOS (Push/Pop) |
 | 135 | `e755c72` | Suesser Blick: Lider, Blick zum Betrachter, groessere Augen und Lichtpunkte, Wangenroete; je Tier ein eigener `Ausdruck` |
@@ -83,8 +84,11 @@ Regeln, die er gesetzt hat:
   Katalog, apple-touch-icon in `src/index.head.html`.
 - **Tiere:** `tools/figuren_rendern/Tiere.swift` → `bauen.sh <tier>` → ansehen →
   `python3 tools/figuren_holen.py <tier>`. Seit Runde 133/134 mit Koerper (`vierbeiner(Bau(...))`/`brustbild()`) und
-  **festem** Rahmen (`figuren_rendern/rahmen.json` — nie neu messen, sonst wandert der Kopf);
-  Vergleich alt/neu im Kreis: `python3 tools/figuren_rendern/vorschau.py <alter-ordner> <tier>`.
+  **festem** Rahmen (`figuren_rendern/rahmen.json`). Neu messen NUR am Kopf allein und nur fuer das
+  geaenderte Tier: `NUR_KOPF=1 bauen.sh <tier>` → `figuren_holen.py --rahmen-messen <tier>` → `bauen.sh <tier>`
+  (ohne Tiernamen misst es alle, an Bildern MIT Koerper waere das falsch). Muender: `Maul(kurven:…)`.
+  Alle zwoelf im Kreis: `python3 tools/figuren_rendern/uebersicht.py` (`KREIS=230` fuer gross);
+  Vergleich alt/neu: `python3 tools/figuren_rendern/vorschau.py <alter-ordner> <tier>`.
 - **Navigation:** `showView()` in `02-state.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings}` steuert den
   iOS-Push/Pop (`.nav-push`/`.nav-pop`, die verlassene Seite als `.nav-weg` fixiert; CSS am Ende von
   `12-ios.css`). Die Zurueck-Wischgeste vom linken Rand steht am Ende von `20-wiring.js` (`randGeste`).
@@ -110,8 +114,10 @@ Regeln, die er gesetzt hat:
 2. **Store-Preise** sind gebaut (Runde 137), aber erst mit echten Produkten in App Store Connect zu sehen
    (die Testkonfiguration liefert dieselben Euro-Betraege wie die festen Texte).
 3. **Urteil des Inhabers ausstehend:** Polwoerter der fuenf Tagesform-Fragen, die 3D-Tiere mit Koerper und Blick
-   (Runde 133–135), die zarten Strahlen des Kranzes, der Uebergang Push/Pop.
-   Bekannt unsicher: Panda-Schulter durch die Drehung teils weiss; das Eulen-Zwinkern auf 42 pt.
+   (Runde 133–135), die zarten Strahlen des Kranzes, der Uebergang Push/Pop; seit Runde 139 die neuen
+   Kopfhaltungen und Muender. Bekannt unsicher: Panda-Schulter teils weiss; Eulen-Zwinkern auf 42 pt;
+   Dackel-Zunge als kleine Kugel (liest sich als „Blep", koennte auch als Fleck gelesen werden);
+   Fuchs- und Rehmaul sind zart — auf 42 pt kaum mehr als ein Schatten.
 4. Angeboten, nicht gewaehlt (Runde 138): volle Pruefrunde nur am Ende eines Auftrags; Journal kuerzen
    und Altes archivieren. Nicht ungefragt umsetzen.
 5. Moeglich, nicht beauftragt: Die Startkarten blenden beim Hereinfliegen auch ein (Deckkraft) —
@@ -227,6 +233,41 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 139 — Tiere: verschiedene Blickrichtungen, artgerechte Muender
+
+**Auftrag des Inhabers:** „Die Avatare gucken alle in dieselbe Richtung, da muss mehr Variabilitaet
+rein. Und die tierspezifischen Muender muessen besser ueberarbeitet werden."
+
+**Befund am Bild (`uebersicht.py`, neu):** Alle acht Saeugetiere waren um +0,30 … +0,52 gedreht, Wal,
+Fisch und Schildkroete um −0,5 … −0,65 — im Kreis schauten alle zwoelf nach rechts. Einen Mund hatte
+keins; unter der Nase war Fell (nur der Goldfisch hatte einen orangen Knubbel).
+
+**Geaendert (nur `tools/figuren_rendern/` und `src/figuren/`, kein App-Code):**
+- **Kopfhaltung je Tier:** links Fuchs, Baer (fast frontal), Hase, Dackel, Eule (leicht), Wal,
+  Schildkroete; rechts Katze, Panda, Reh, Retriever, Goldfisch. Katze, Retriever und Eule neigen den
+  Kopf deutlich (0,12–0,16), andere leicht. Im Raster wechseln sich die Richtungen ab. Wal und
+  Schildkroete sind um 180° gedreht; dafuer bekam der Wal die zweite Brustflosse, und die Neigung
+  (`eulerAngles.x`) musste das Vorzeichen wechseln — mit dem alten Wert lag die Schildkroete flach
+  auf der Kante (am Bild gesehen und verworfen).
+- **Muender** (`mitMaul`, `Maul`, `Kurve` in `Tiere.swift`): eine Mulde in der Haut entlang einer von
+  Hand gesetzten, auf die Flaeche gezogenen Kurve, zu freien Enden duenn auslaufend, dunkel
+  eingefaerbt — eine Falte, kein aufgesetzter Strich (die Lehre zu runden Strichenden). Je Art:
+  Fuchs schwarze Lefzen bis zum Mundwinkel; Katze das „ω"; Baer und Panda Rinne + Laecheln; Hase
+  gespaltene Lippe und zwei Schneidezaehne; Reh schmal an der Schnauzenspitze; Dackel lange Lefzen und
+  Zungenspitze; Retriever offenes Lachen mit Unterkiefer und Zunge; Wal das lange Grinsen; Goldfisch
+  ein offenes „o" aus Lippen; Schildkroete die Schnabelkante als Laecheln. Eule: Schnabel wie bisher.
+- Zaehne und Zungen sind `perle` (SCNSphere): Fuer `nase()` ist das Raster (Zellweite 0,026) zu grob.
+- **Rahmen neu gemessen**, auf dem Weg von Runde 132: `NUR_KOPF=1` rendert ohne Rumpf, dann
+  `--rahmen-messen`. Vorher geeicht: Mit den alten Haltungen gab die Neumessung den alten Rahmen auf
+  1 px wieder. `--rahmen-messen` nimmt jetzt Tiernamen und laesst die uebrigen Rahmen stehen.
+
+**Ein Fehler unterwegs:** Ein Aufruf von `--rahmen-messen goldfisch` lief, bevor die Aenderung an
+`figuren_holen.py` gespeichert war, und mass alle zwoelf an Bildern mit Koerper. Sofort bemerkt (der
+Zuschnitt ragte ueber die Leinwand) und aus den zuvor ausgegebenen Werten wiederhergestellt.
+
+**Unsicher:** siehe Uebergabe, Punkt 3 (Dackel-Zunge, zarte Muender bei Fuchs und Reh auf 42 pt).
+Am Geraet nicht angesehen — es sind dieselben Bilddateien, nur neu gerechnet.
 
 ## Runde 138 — Schneller arbeiten: Pruefzeit und Kommentare
 

@@ -169,9 +169,11 @@ def main():
     summe = 0
     nur = [a for a in sys.argv[1:] if not a.startswith('--')]
     if '--rahmen-messen' in sys.argv:
-        # Nur auf Koepfen OHNE Koerper aufrufen (Stand Runde 132) — sonst misst es den Koerper mit.
-        rahmen = {}
+        # Nur auf Koepfen OHNE Koerper aufrufen (NUR_KOPF=1 bauen.sh) — sonst misst es den Koerper mit.
+        # Mit Tiernamen: nur diese neu messen, die uebrigen Rahmen bleiben.
+        with open(RAHMEN) as f: rahmen = json.load(f)
         for kennung in TIERE:
+            if nur and kennung not in nur: continue
             with open(os.path.join(ROH, kennung + '.png'), 'rb') as f: b, h, pixel = png_lesen(f.read())
             rahmen[kennung] = sichtbar(b, pixel)
         with open(RAHMEN, 'w') as f:
