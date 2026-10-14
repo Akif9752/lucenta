@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 140)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 141)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 140 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 141 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 140 | — | Schalenfell je Tier (`Fell`, `FellKarte`, Shader in `Szene.swift`) und Brauen als Wulst + Fellzeichnung (`mitBrauen`) |
+| 141 | — | Alle Tiere sehen in die Kamera (kein Blickversatz mehr); Wal als Buckelwal, Schildkroete als Suppenschildkroete, Dackel glattes Kurzhaar ohne Zunge |
+| 140 | `d24b541` | Schalenfell je Tier (`Fell`, `FellKarte`, Shader in `Szene.swift`) und Brauen als Wulst + Fellzeichnung (`mitBrauen`) |
 | 139 | `09693fa` | Tiere: je eigene Kopfhaltung (7 links, 5 rechts, teils geneigt), artgerechte Muender als Hautfalten (`mitMaul`), Zaehne/Zungen als `perle` |
 | 138 | `a07e240` | Schneller arbeiten: audit-i18n 4 Min. -> 1 s; Kommentare in src/ um ~30 % gekuerzt (gebaute App unveraendert) |
 | 137 | `ae62acb` | Preise aus StoreKit (`preise()`), Zurueck-Wischgeste vom linken Rand, Eulen-Zwinkern lesbar, Panda weicher, keine Trennung in der Angebotskarte |
@@ -119,7 +120,6 @@ Regeln, die er gesetzt hat:
 3. **Urteil des Inhabers ausstehend:** Polwoerter der fuenf Tagesform-Fragen, die 3D-Tiere mit Koerper und Blick
    (Runde 133–135), die zarten Strahlen des Kranzes, der Uebergang Push/Pop; seit Runde 139 die neuen
    Kopfhaltungen und Muender. Bekannt unsicher: Panda-Schulter teils weiss; Eulen-Zwinkern auf 42 pt;
-   Dackel-Zunge als kleine Kugel (liest sich als „Blep", koennte auch als Fleck gelesen werden);
    Fuchs- und Rehmaul sind zart — auf 42 pt kaum mehr als ein Schatten. Seit Runde 140 Fell und Brauen:
    Brauen sind bewusst dezent (Fellzeichnung, kein Strich); Eule und Retriever wirken flauschiger als
    das echte Tier; um die Augen bleibt ein schmaler kahler Ring (sonst laege Fell ueber dem Auge).
@@ -238,6 +238,39 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 141 — Blick in die Kamera; Wal, Schildkroete, Dackel realistischer
+
+**Auftrag des Inhabers:** „Die Schildkroete, der Wal und der Dackel muessen noch etwas realistischer
+werden. Alle Tiere muessen unabhaengig von der Kopfrichtung den Blick in die Kamera haben, sodass sie
+einen angucken."
+
+**Blick — der Fehler war Absicht von Runde 135:** Elf der zwoelf hatten einen `blick`-Versatz im
+`Ausdruck` (Baer 1,8 nach oben, Reh 2,2 zur Seite, Dackel 2,2 nach oben …), damit „nicht alle
+starren". Der Versatz ist samt `blickVersatz` entfernt; `main.swift` richtet beide Augen jedes Tieres
+genau auf die Kamera, nachdem der Kopf gedreht ist. In der Nahaufnahme nachgesehen: Die Pupille sitzt
+bei allen mittig zum Betrachter, auch bei den Seitenaugen von Wal, Fisch und Schildkroete.
+Entscheidung des Inhabers, im Code vermerkt — nicht wieder einfuehren.
+
+**Wal (nach dem Buckelwal):** Vorher glattes Plastik mit Farbklecksen, Fluke senkrecht wie beim
+Fisch, Brustflossen winzig. Jetzt waagerechte, gepfeilte Fluke, kleine Rueckenfinne, lange helle
+Brustflossen an der Flanke, Hoeckerchen auf dem Kopf, Kehlfurchen vom Kinn nach hinten, feine
+Marmorierung, matte Haut (Rauheit 0,72). Erste Fassung der Brustflosse lag ausserhalb des Rumpfes und
+schwebte als „Surfbrett" darunter — am Bild verworfen, jetzt als Kegel an der Flanke angesetzt.
+
+**Schildkroete (nach der Suppenschildkroete):** Vorher Kugelkopf, einfarbiger Panzer, blasse
+Ellipsen als Flossen. Jetzt: Kopf laenglich mit Schnabel und grossen, hell umrandeten Platten; Panzer
+nach hinten spitzer mit Kiel, die Platten an ihren echten Stellen (5 Wirbel-, je 4 Rippen-, 24
+Randplatten, als Voronoi aus festen Keimen), strahlig gemasert mit dunklem Kern und duennen hellen
+Fugen; Vorderflossen lang, geknickt, oben geschuppt, unten hell. Erste Fassung hatte breite helle
+Fugen und sah aus wie ein Giraffenmuster.
+
+**Dackel:** Das Kurzhaar las sich als Schmirgelpapier, der Ruecken als Rohr. Jetzt dichtes, kaum
+abstehendes Fell mit wenig Helligkeitsunterschied auf glatter, glaenzender Haut; Ruecken 1,25 statt
+2,0 lang. Die Zungenkugel ist entfallen (unrealistisch) — das Maul ist geschlossen.
+
+Rahmen von Wal und Schildkroete neu gemessen (beide ohne Rumpf, also direkt). Die uebrigen zehn
+unveraendert.
 
 ## Runde 140 — Tierspezifisches Fell und Brauen
 
