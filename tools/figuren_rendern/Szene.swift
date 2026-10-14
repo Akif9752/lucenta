@@ -18,7 +18,10 @@ func geometrie(_ netz: Netz, _ k: Koerper) -> SCNGeometry {
                                    usesFloatComponents: true, componentsPerVector: 4, bytesPerComponent: 4,
                                    dataOffset: 0, dataStride: 16)
     let element = SCNGeometryElement(indices: netz.dreiecke, primitiveType: .triangles)
-    let g = SCNGeometry(sources: [SCNGeometrySource(vertices: p), SCNGeometrySource(normals: n), farben], elements: [element])
+    var quellen = [SCNGeometrySource(vertices: p), SCNGeometrySource(normals: n), farben]
+    // Die Haarlaenge reist als Texturkoordinate mit — die einzige freie Spur je Eckpunkt fuer den Shader.
+    if k.haar != nil { quellen.append(SCNGeometrySource(textureCoordinates: netz.haare.map { CGPoint(x: CGFloat($0), y: 0) })) }
+    let g = SCNGeometry(sources: quellen, elements: [element])
     let m = SCNMaterial()
     m.lightingModel = .physicallyBased
     m.diffuse.contents = NSColor.white          // die Farbe kommt aus den Eckpunkten
@@ -26,6 +29,118 @@ func geometrie(_ netz: Netz, _ k: Koerper) -> SCNGeometry {
     m.metalness.contents = 0.0
     g.materials = [m]
     return g
+}
+
+// ---------- Fell ----------
+//
+// Schalenfell: dieselbe Haut in `schalen` Schichten bis zur Haarlaenge nach aussen versetzt; in jeder
+// Schicht laesst der Shader nur die Querschnitte einzelner Haare stehen (Zellen um die Haarwurzel, zur
+// Spitze duenner). Die Haare liegen in Wuchsrichtung: von `ursprung` (der Nase) weg und nach unten.
+struct Fell {
+    var dichte: Float = 70          // Haare je Laengeneinheit
+    var dicke: Float = 0.42         // Querschnitt an der Wurzel, Anteil der Zelle
+    var aufrecht: Float = 0.45      // wie weit die Haare von der Haut abstehen (1 = senkrecht)
+    var neigung: Float = 1.3        // wie weit sie in Wuchsrichtung liegen
+    var schwere: Float = 0.5        // zieht die Wuchsrichtung nach unten
+    var ursprung = V(0, 0, 1.2)
+    var wurzel: Float = 0.62        // Helligkeit zwischen den Haaren
+    var spitze: Float = 1.18        // Helligkeit der Spitzen
+    var straehnen: Float = 0.4      // wie stark die Spitzen zu Buescheln zusammenlaufen (0 … 0,8)
+    var streuung: Float = 0.12      // Helligkeitsunterschied von Haar zu Haar
+    var schalen = 20
+}
+
+let fellGeometrie = """
+#pragma arguments
+float schale;
+float aufrecht;
+float neigung;
+float schwere;
+float3 ursprung;
+#pragma varyings
+float3 wurzel;
+float haar;
+#pragma body
+float L = _geometry.texcoords[0].x;
+float3 p = _geometry.position.xyz;
+float3 n = normalize(_geometry.normal);
+out.wurzel = p;
+out.haar = L;
+float3 t = (p - ursprung) + float3(0.0, -schwere, 0.0);
+t = t - n * dot(t, n);
+float tl = length(t);
+t = tl > 1e-4 ? t / tl : float3(0.0);
+float h = schale * L;
+_geometry.position.xyz = p + n * (h * aufrecht) + t * (h * neigung * schale);
+"""
+
+let fellOberflaeche = """
+#pragma arguments
+float schale;
+float dichte;
+float dicke;
+float wurzelHell;
+float spitzeHell;
+float straehnen;
+float streuung;
+#pragma varyings
+float3 wurzel;
+float haar;
+#pragma body
+if (in.haar < 0.003) { discard_fragment(); }
+float3 q = in.wurzel * dichte;
+// Straehnen: Zur Spitze hin ruecken die Haare zur Mitte ihres Bueschels (grobe Zellen, 4 Haare weit).
+// Gesucht wird darum am Ort, von dem aus ein Haar hier ankommt.
+float3 qb = q / 4.0, fb = floor(qb), mb = fb;
+float db = 9.0;
+for (int a = -1; a <= 1; a++) { for (int b = -1; b <= 1; b++) { for (int c = -1; c <= 1; c++) {
+    float3 z = fb + float3(a, b, c);
+    float3 m = z + fract(sin(float3(dot(z, float3(91.7, 37.3, 211.1)), dot(z, float3(17.9, 233.3, 61.7)),
+                                    dot(z, float3(157.3, 19.1, 97.9)))) * 24634.63);
+    float d = length(qb - m);
+    if (d < db) { db = d; mb = m; }
+}}}
+float k = straehnen * schale;
+q = (q - k * mb * 4.0) / (1.0 - k);
+float3 f = floor(q);
+float bester = 9.0;
+float laenge = 1.0;
+for (int a = -1; a <= 1; a++) { for (int b = -1; b <= 1; b++) { for (int c = -1; c <= 1; c++) {
+    float3 z = f + float3(a, b, c);
+    float3 m = z + fract(sin(float3(dot(z, float3(127.1, 311.7, 74.7)), dot(z, float3(269.5, 183.3, 246.1)),
+                                    dot(z, float3(113.5, 271.9, 124.6)))) * 43758.5453);
+    float d = length(q - m);
+    if (d < bester) { bester = d; laenge = 0.55 + 0.45 * fract(sin(dot(z, float3(41.3, 289.1, 17.7))) * 9137.31); }
+}}}
+float ton = 1.0 + streuung * (2.0 * fract(laenge * 731.7) - 1.0);
+if (schale > laenge || bester * (1.0 - k) > dicke * (1.0 - schale / laenge)) { discard_fragment(); }
+_surface.diffuse.rgb *= mix(wurzelHell, spitzeHell, schale / laenge) * ton;
+"""
+
+func fellSchalen(_ g: SCNGeometry, _ k: Koerper) -> [SCNNode] {
+    guard k.haar != nil else { return [] }
+    let f = k.fellArt
+    return (1...f.schalen).map { i in
+        let s = g.copy() as! SCNGeometry
+        let m = g.materials[0].copy() as! SCNMaterial
+        m.shaderModifiers = [.geometry: fellGeometrie, .surface: fellOberflaeche]
+        m.setValue(NSNumber(value: Float(i) / Float(f.schalen)), forKey: "schale")
+        m.setValue(NSNumber(value: f.aufrecht), forKey: "aufrecht")
+        m.setValue(NSNumber(value: f.neigung), forKey: "neigung")
+        m.setValue(NSNumber(value: f.schwere), forKey: "schwere")
+        m.setValue(NSValue(scnVector3: scnVektor(f.ursprung)), forKey: "ursprung")
+        m.setValue(NSNumber(value: f.dichte), forKey: "dichte")
+        m.setValue(NSNumber(value: f.dicke), forKey: "dicke")
+        // Die Wurzelhelligkeit steckt schon in der Hautfarbe (netzBauen); die Schalen heben sie zur Spitze an.
+        m.setValue(NSNumber(value: 1.0), forKey: "wurzelHell")
+        m.setValue(NSNumber(value: f.spitze / f.wurzel), forKey: "spitzeHell")
+        m.setValue(NSNumber(value: f.straehnen), forKey: "straehnen")
+        m.setValue(NSNumber(value: f.streuung), forKey: "streuung")
+        m.isDoubleSided = true
+        s.materials = [m]
+        let n = SCNNode(geometry: s); n.castsShadow = false
+        return n
+    }
 }
 
 // ---------- Augen ----------

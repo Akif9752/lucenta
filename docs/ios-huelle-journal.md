@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-14, nach Runde 139)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 140)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 139 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 140 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 139 | — | Tiere: je eigene Kopfhaltung (7 links, 5 rechts, teils geneigt), artgerechte Muender als Hautfalten (`mitMaul`), Zaehne/Zungen als `perle` |
+| 140 | — | Schalenfell je Tier (`Fell`, `FellKarte`, Shader in `Szene.swift`) und Brauen als Wulst + Fellzeichnung (`mitBrauen`) |
+| 139 | `09693fa` | Tiere: je eigene Kopfhaltung (7 links, 5 rechts, teils geneigt), artgerechte Muender als Hautfalten (`mitMaul`), Zaehne/Zungen als `perle` |
 | 138 | `a07e240` | Schneller arbeiten: audit-i18n 4 Min. -> 1 s; Kommentare in src/ um ~30 % gekuerzt (gebaute App unveraendert) |
 | 137 | `ae62acb` | Preise aus StoreKit (`preise()`), Zurueck-Wischgeste vom linken Rand, Eulen-Zwinkern lesbar, Panda weicher, keine Trennung in der Angebotskarte |
 | 136 | `4d8552f` | Verstehen ganz Lucenta+; Vergleiche frei mit 2 Personen, Archiv frei bis 2; Sprache als Unterseite (`view-sprache`); Unterseiten schieben sich wie iOS (Push/Pop) |
@@ -87,6 +88,8 @@ Regeln, die er gesetzt hat:
   **festem** Rahmen (`figuren_rendern/rahmen.json`). Neu messen NUR am Kopf allein und nur fuer das
   geaenderte Tier: `NUR_KOPF=1 bauen.sh <tier>` → `figuren_holen.py --rahmen-messen <tier>` → `bauen.sh <tier>`
   (ohne Tiernamen misst es alle, an Bildern MIT Koerper waere das falsch). Muender: `Maul(kurven:…)`.
+  Fell: `braue.haar = haarKarte(kopf, FellKarte(...))` + `braue.fellArt = Fell(...)` je Tier; ohne `haar`
+  kein Fell (Wal, Fisch, Schildkroete). Brauen: `mitBrauen(kopf, …)` vor `mitMaul`.
   Alle zwoelf im Kreis: `python3 tools/figuren_rendern/uebersicht.py` (`KREIS=230` fuer gross);
   Vergleich alt/neu: `python3 tools/figuren_rendern/vorschau.py <alter-ordner> <tier>`.
 - **Navigation:** `showView()` in `02-state.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings}` steuert den
@@ -117,7 +120,9 @@ Regeln, die er gesetzt hat:
    (Runde 133–135), die zarten Strahlen des Kranzes, der Uebergang Push/Pop; seit Runde 139 die neuen
    Kopfhaltungen und Muender. Bekannt unsicher: Panda-Schulter teils weiss; Eulen-Zwinkern auf 42 pt;
    Dackel-Zunge als kleine Kugel (liest sich als „Blep", koennte auch als Fleck gelesen werden);
-   Fuchs- und Rehmaul sind zart — auf 42 pt kaum mehr als ein Schatten.
+   Fuchs- und Rehmaul sind zart — auf 42 pt kaum mehr als ein Schatten. Seit Runde 140 Fell und Brauen:
+   Brauen sind bewusst dezent (Fellzeichnung, kein Strich); Eule und Retriever wirken flauschiger als
+   das echte Tier; um die Augen bleibt ein schmaler kahler Ring (sonst laege Fell ueber dem Auge).
 4. Angeboten, nicht gewaehlt (Runde 138): volle Pruefrunde nur am Ende eines Auftrags; Journal kuerzen
    und Altes archivieren. Nicht ungefragt umsetzen.
 5. Moeglich, nicht beauftragt: Die Startkarten blenden beim Hereinfliegen auch ein (Deckkraft) —
@@ -233,6 +238,41 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 140 — Tierspezifisches Fell und Brauen
+
+**Auftrag des Inhabers:** „An realistischen tierspezifischen Augenbrauen arbeiten und tierspezifischem
+realistischerem Fell."
+
+**Eine alte Entscheidung faellt dafuer:** Brauen bei Tieren wurden schon zweimal entfernt — in der
+gezeichneten Fassung als „menschlich" und dreimal als Strich verworfen (Lehre in `CLAUDE.md`). Der
+ausdrueckliche neue Auftrag schlaegt das. Gebaut sind sie darum so, wie Tiere sie haben: als **Wulst**
+ueber dem Auge mit **eigener Fellfarbe und laengeren Haaren**, nicht als Linie.
+
+**Befund am Bild:** Das Fell war eine glatte Knetoberflaeche mit Koernung in der Normalen, der Umriss
+messerscharf. Das laesst sich mit Normalen allein nicht realistisch machen.
+
+**Geaendert (nur `tools/figuren_rendern/`, `src/figuren/`):**
+- **Schalenfell** (`Szene.swift`): 20 Schichten derselben Haut bis zur Haarlaenge; ein SceneKit-
+  Shader (`fellGeometrie`/`fellOberflaeche`) laesst je Schicht nur Haarquerschnitte stehen (Zellen um
+  die Wurzel, zur Spitze duenner, jedes Haar eigene Laenge und Helligkeit), legt sie in Wuchsrichtung
+  (von der Nase weg, nach unten) und laesst die Spitzen zu Straehnen zusammenlaufen. Wurzeln dunkler,
+  Spitzen heller. Die Haarlaenge je Eckpunkt reist als Texturkoordinate. Ergebnis: echter Fellsaum am
+  Umriss, das wichtigste Merkmal von „Fell statt Plastik".
+- **Je Tier** (`FellKarte` = Laenge an Kopf und Rumpf, Zonen; `Fell` = Dichte, Abstehen, Straehnen):
+  Fuchs dicht mit langer weisser Wangenkrause und Brust; Katze mittellang mit Wangenbuescheln; Baer
+  zottelig in Buescheln; Panda wollig; Hase sehr fein und dicht, Ohren fast kahl; Reh kurz und
+  anliegend; Dackel Kurzhaar; Retriever kurz am Kopf, lange Fahnen an Ohren und Brust; Eule kurze
+  Federbuschel. Wal, Fisch, Schildkroete ohne Fell.
+- **Brauen je Tier** (`mitBrauen`): Fuchs dunkler rostrot, Katze hell (Katzen haben hellen Augenring),
+  Baer hellere Bueschel auf kraeftigem Wulst, Panda nur Wulst, Hase heller Saum, Reh die weissen
+  Flecken (ersetzen die alten), Dackel dunkler, schraeger Wulst (treuherzig), Retriever helle, innen
+  angehobene Bueschel, Eule (Waldkauz) das helle „V" zum Schnabel.
+- Erste Fassung der Brauen sass zu hoch und war zu blass — in der Vergroesserung kaum zu finden.
+  Naeher ans Auge, kraeftigere Farbe, doppelt lange Haare darauf.
+
+**Rahmen nicht neu gemessen:** Das Fell macht den Umriss etwas groesser; der Kopf soll aber an
+seiner Stelle bleiben. Bilder zusammen 279 statt 201 KB (Fell ist Rauschen fuer die PNG-Palette).
 
 ## Runde 139 — Tiere: verschiedene Blickrichtungen, artgerechte Muender
 

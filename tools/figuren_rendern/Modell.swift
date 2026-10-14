@@ -62,6 +62,8 @@ struct Koerper {
     var farbe: (V, V) -> V            // (Punkt, Normale) -> Farbe in linearem RGB
     var rauheit: Float = 0.62
     var fell: Float = 0.0             // Staerke der feinen Fellstruktur in der Normalen
+    var haar: ((V) -> Float)? = nil   // Haarlaenge je Ort (0 = kahl); nil = kein Schalenfell
+    var fellArt = Fell()
 
     func abstand(_ p: V) -> Float {
         var d: Float = 1e9
@@ -73,7 +75,7 @@ struct Koerper {
 
 // ---------- Oberflaeche aus dem Abstandsfeld ("naive surface nets") ----------
 
-struct Netz { var punkte: [V] = []; var normalen: [V] = []; var farben: [V] = []; var dreiecke: [Int32] = [] }
+struct Netz { var punkte: [V] = []; var normalen: [V] = []; var farben: [V] = []; var haare: [Float] = []; var dreiecke: [Int32] = [] }
 
 func netzBauen(_ k: Koerper, grenze: Float, n: Int) -> Netz {
     let schritt = 2 * grenze / Float(n)
@@ -128,7 +130,11 @@ func netzBauen(_ k: Koerper, grenze: Float, n: Int) -> Netz {
         var nrm = gradient(k, p)
         if k.fell > 0 { nrm = simd_normalize(nrm + fellRauschen(p) * k.fell) }
         netz.normalen.append(nrm)
-        netz.farben.append(k.farbe(p, nrm) * verdeckung(k, p, gradient(k, p)))
+        let h = k.haar?(p) ?? 0
+        netz.haare.append(h)
+        // Zwischen den Haaren sieht man auf die Wurzeln: dort ist es dunkler.
+        let wurzel = 1 - (1 - k.fellArt.wurzel) * glatt(0, 0.04, h)
+        netz.farben.append(k.farbe(p, nrm) * verdeckung(k, p, gradient(k, p)) * wurzel)
     }
     return netz
 }
