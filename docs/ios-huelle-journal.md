@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 143)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 144)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 143 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 144 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 143 | — | Fotorealistisch, aber liebenswert: keine Wangenroete, kleinere Augen mit dunklem Lidrand, echte Pupillenformen, Nasen mit Nasenloechern, weicheres Licht, Rendern in 2048 px; Retriever mit Schlappohren, Katze fein getigert. Kaltstart gemessen (siehe Eintrag) |
+| 144 | — | Echte Kopfproportionen bei Fuchs, Reh, Baer (lange Schnauzen, kleinere Hirnschale); weisses Fell bleibt weiss |
+| 143 | `153affe` | Fotorealistisch, aber liebenswert: keine Wangenroete, kleinere Augen mit dunklem Lidrand, echte Pupillenformen, Nasen mit Nasenloechern, weicheres Licht, Rendern in 2048 px; Retriever mit Schlappohren, Katze fein getigert. Kaltstart gemessen (siehe Eintrag) |
 | 142 | `9b90074` | Wal und Schildkroete: zum Betrachter gedreht, Augen weiter vorn, naeher zugeschnitten (`NAEHER` in `figuren_holen.py`) |
 | 141 | `f73cced` | Alle Tiere sehen in die Kamera (kein Blickversatz mehr); Wal als Buckelwal, Schildkroete als Suppenschildkroete, Dackel glattes Kurzhaar ohne Zunge |
 | 140 | `d24b541` | Schalenfell je Tier (`Fell`, `FellKarte`, Shader in `Szene.swift`) und Brauen als Wulst + Fellzeichnung (`mitBrauen`) |
@@ -241,6 +242,23 @@ Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich 
 
 ---
 
+## Runde 144 — Kopfproportionen und weisses Fell
+
+**Auftrag des Inhabers:** „Die Tiere duerfen gerne noch realistischer sein."
+
+**Befund am Bild:** Fuchs, Reh und Baer hatten Kindchenkoepfe — grosse runde Hirnschale, kurze
+Schnauze. Weisses Fell (Fuchsbrust, Panda, Katzenkinn) war grau.
+
+**Geaendert:**
+- **Fuchs** keilfoermig: Hirnschale kleiner und flacher, Schnauze 1,34 statt 1,22 lang und schmaler.
+  **Reh** schmale Hirnschale, langer, sich verjuengender Nasenruecken. **Baer** flachere Stirn,
+  laengere Schnauze, kleinere Ohren. Nase, Maul, Fellwuchs und Farbflecken der Schnauze sind mit
+  verschoben (alle Punkte vor der Augenebene), Rahmen der drei am Kopf allein neu gemessen.
+- **Weisses Fell:** Die Abdunklung zwischen den Haaren (`Fell.wurzel`) haengt jetzt von der
+  Helligkeit ab — bei hellem Fell scheint zwischen den Haaren Hell durch, nicht Schatten.
+- **Schaerfentiefe versucht und verworfen:** `wantsDepthOfField` am `SCNRenderer`-Schnappschuss
+  veraendert das Bild sichtbar nicht (zwei Blenden nebeneinander verglichen). Nicht eingebaut.
+
 ## Runde 143 — Kaltstart gemessen; Tiere fotorealistisch, aber liebenswert
 
 **Auftrag des Inhabers:** „Die App braucht zu lange beim Kaltstart, und mache alle Tiere vom Modell
@@ -283,7 +301,7 @@ Messwerkzeuge lagen nur in /tmp (Zeitgeber in der GEBAUTEN Seite, nie in `src/`)
   ein Teddy. Katze: feine Tigerlinien statt breiter Flecken. Fuchs: Ohrcreme lief auf die Stirn.
 
 **Unsicher:** Anatomie im Grossen (Kopfformen) ist nur bei Retriever und Katze angefasst; Fuchs und
-Reh haben noch Kindchenkoepfe. Schnurrhaare bewusst nicht — die Lehre zu Strichen auf Avatargroesse.
+Reh haben noch Kindchenkoepfe (seit Runde 144 umgebaut). Schnurrhaare bewusst nicht — die Lehre zu Strichen auf Avatargroesse.
 
 ## Runde 142 — Wal und Schildkroete sehen einen an und wirken nicht mehr weit weg
 

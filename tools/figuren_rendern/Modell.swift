@@ -133,8 +133,11 @@ func netzBauen(_ k: Koerper, grenze: Float, n: Int) -> Netz {
         let h = k.haar?(p) ?? 0
         netz.haare.append(h)
         // Zwischen den Haaren sieht man auf die Wurzeln: dort ist es dunkler.
-        let wurzel = 1 - (1 - k.fellArt.wurzel) * glatt(0, 0.04, h)
-        netz.farben.append(k.farbe(p, nrm) * verdeckung(k, p, gradient(k, p)) * wurzel)
+        // Helles Fell ist auch zwischen den Haaren hell — sonst wird Weiss zu Grau.
+        let c = k.farbe(p, nrm)
+        let hell = min(1, simd_dot(c, V(0.2126, 0.7152, 0.0722)) * 1.3)
+        let wurzel = 1 - (1 - k.fellArt.wurzel) * glatt(0, 0.04, h) * (1 - 0.65 * hell)
+        netz.farben.append(c * verdeckung(k, p, gradient(k, p)) * wurzel)
     }
     return netz
 }
