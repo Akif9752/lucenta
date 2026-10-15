@@ -100,11 +100,12 @@ def sichtbar(b, pixel):
 # Lange Tiere (Wal, Schildkroete) wirkten nach der laengeren Seite zugeschnitten "zu weit weg" (Inhaber):
 # naeher heran und zum Kopf hin verschoben; Schwanz und Hinterflossen schneidet der Kreis an.
 # (Faktor, Verschiebung x, y als Anteil des Ausschnitts; negativ = nach links/oben)
-NAEHER = {'wal': (1.55, -0.13, 0.02), 'schildkroete': (1.45, -0.25, -0.13)}
+NAEHER = {'wal': (1.55, -0.13, 0.02), 'schildkroete': (1.45, -0.19, -0.13)}
 
 
 def zuschneiden(b, h, pixel, rahmen, kennung=''):
-    x0, x1, y0, y1 = rahmen
+    # Der Rahmen ist an der 1024er-Leinwand gemessen; seit Runde 143 wird doppelt so fein gerendert.
+    x0, x1, y0, y1 = [round(v * b / 1024) for v in rahmen]
     faktor, vx, vy = NAEHER.get(kennung, (1, 0, 0))
     seite = round(max(x1 - x0, y1 - y0) / ALTER_ANTEIL / faktor)
     mx, my = (x0 + x1) // 2 + round(vx * seite), (y0 + y1) // 2 + round(vy * seite)
@@ -182,7 +183,7 @@ def main():
         for kennung in TIERE:
             if nur and kennung not in nur: continue
             with open(os.path.join(ROH, kennung + '.png'), 'rb') as f: b, h, pixel = png_lesen(f.read())
-            rahmen[kennung] = sichtbar(b, pixel)
+            rahmen[kennung] = [round(v * 1024 / b) for v in sichtbar(b, pixel)]
         with open(RAHMEN, 'w') as f:
             f.write('{\n' + ',\n'.join('  "%s": %s' % (k, list(v)) for k, v in rahmen.items()) + '\n}\n')
         print('Rahmen gemessen:', RAHMEN)

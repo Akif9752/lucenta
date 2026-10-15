@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 142)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 143)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 142 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 143 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 142 | — | Wal und Schildkroete: zum Betrachter gedreht, Augen weiter vorn, naeher zugeschnitten (`NAEHER` in `figuren_holen.py`) |
+| 143 | — | Fotorealistisch, aber liebenswert: keine Wangenroete, kleinere Augen mit dunklem Lidrand, echte Pupillenformen, Nasen mit Nasenloechern, weicheres Licht, Rendern in 2048 px; Retriever mit Schlappohren, Katze fein getigert. Kaltstart gemessen (siehe Eintrag) |
+| 142 | `9b90074` | Wal und Schildkroete: zum Betrachter gedreht, Augen weiter vorn, naeher zugeschnitten (`NAEHER` in `figuren_holen.py`) |
 | 141 | `f73cced` | Alle Tiere sehen in die Kamera (kein Blickversatz mehr); Wal als Buckelwal, Schildkroete als Suppenschildkroete, Dackel glattes Kurzhaar ohne Zunge |
 | 140 | `d24b541` | Schalenfell je Tier (`Fell`, `FellKarte`, Shader in `Szene.swift`) und Brauen als Wulst + Fellzeichnung (`mitBrauen`) |
 | 139 | `09693fa` | Tiere: je eigene Kopfhaltung (7 links, 5 rechts, teils geneigt), artgerechte Muender als Hautfalten (`mitMaul`), Zaehne/Zungen als `perle` |
@@ -239,6 +240,50 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 143 — Kaltstart gemessen; Tiere fotorealistisch, aber liebenswert
+
+**Auftrag des Inhabers:** „Die App braucht zu lange beim Kaltstart, und mache alle Tiere vom Modell
+her so fotorealistisch wie nur moeglich." Gefragt, wie weit: **„Echt, aber liebenswert"** —
+Anatomie, Fell, Licht, Material fotorealistisch, Wangenroete weg, Augen etwas groesser als echt.
+Messen nur im Simulator (Wunsch des Inhabers), danach: „mach nur noch die Avatare".
+
+**Kaltstart — gemessen, nichts geaendert.** Im Simulator (iPhone 18 Pro, iOS 27), ab dem Antippen:
+| Abschnitt | Zeit |
+| --- | --- |
+| iOS bis zur ersten Zeile App-Code (mit Oeffnungsanimation) | ~1,6 s |
+| App-Code bis Capacitor laedt | ~0,2 s |
+| WebKit-Anlauf bis die Navigation beginnt | **~0,5 s** |
+| Seite einlesen, JavaScript, erstes Bild | ~0,13 s |
+| Startbild ausblenden | 0,25 s |
+Summe ~2,4 s bis die Startseite steht. Der Webteil ist nicht das Problem (WebKit auf dem Mac: ~50 ms).
+Versucht und verworfen, weil nicht messbar: **statisches Linken** der Pods (eine statt neun
+Programmdateien) — 0,03–0,05 s beim Kaltstart, 0,15–0,3 s beim ersten Start nach Installation, im
+Rauschen und mit dem Risiko still fehlender Plugin-Klassen; **`limitsNavigationsToAppBoundDomains`
+aus** — kein Unterschied. Die 9,3 s, die einmal beim ersten Start nach der Installation gemessen
+wurden, wiederholten sich nicht. Ein kuerzeres Ausblenden (120 ms) war vorbereitet, auf Wunsch des
+Inhabers nicht umgesetzt. Ein echtes iPhone war verbunden, aber gesperrt; nicht dort gemessen.
+Messwerkzeuge lagen nur in /tmp (Zeitgeber in der GEBAUTEN Seite, nie in `src/`).
+
+**Tiere (nur `tools/figuren_rendern/`, `tools/figuren_holen.py`, `src/figuren/`):**
+- Wangenroete bei allen weg (`mitWangen` nicht mehr aufgerufen).
+- Augen 0,9 statt 1,15 der Grundgroesse; Lichtpunkt so klein wie die Spiegelung einer Softbox;
+  das Laecheln im Unterlid halbiert; **dunkler Lidrand** (fast jedes Tierauge hat ihn — vorher lasen
+  sich die Lider als glatte Plastikringe). Brauen und Lidwuelste im selben Mass ans Auge geruckt.
+- Pupillen: Fuchs senkrechter Schlitz, Katze senkrechtes Oval. Das Reh bekam erst die echte
+  Querpupille — in der fast schwarzen Iris las sie sich als heller Strich und wurde zurueckgenommen.
+- **Nasen** (`tierNase`): eigenes feines Raster, zwei geschwungene Nasenloecher, Mittelrinne,
+  koernig-mattes Leder statt Lack; Katze dreieckig und rosa.
+- Licht weicher (Schatten 18 statt 10, Kantenlicht halbiert); 28 statt 20 Fellschalen.
+- **Gerendert in 2048 px** (feinere Haare); `figuren_holen.py` rechnet Rahmen und Messung auf die
+  1024er-Leinwand um, damit `rahmen.json` gueltig bleibt.
+- Kahler Ring ums Auge verkleinert (war fuer die grossen Augen bemessen) und das Fell waechst dort
+  schneller an.
+- Retriever: Schlappohren flach an der Wange statt seitlich abstehend, laengere Schnauze — vorher
+  ein Teddy. Katze: feine Tigerlinien statt breiter Flecken. Fuchs: Ohrcreme lief auf die Stirn.
+
+**Unsicher:** Anatomie im Grossen (Kopfformen) ist nur bei Retriever und Katze angefasst; Fuchs und
+Reh haben noch Kindchenkoepfe. Schnurrhaare bewusst nicht — die Lehre zu Strichen auf Avatargroesse.
 
 ## Runde 142 — Wal und Schildkroete sehen einen an und wirken nicht mehr weit weg
 

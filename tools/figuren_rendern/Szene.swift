@@ -47,7 +47,7 @@ struct Fell {
     var spitze: Float = 1.18        // Helligkeit der Spitzen
     var straehnen: Float = 0.4      // wie stark die Spitzen zu Buescheln zusammenlaufen (0 … 0,8)
     var streuung: Float = 0.12      // Helligkeitsunterschied von Haar zu Haar
-    var schalen = 20
+    var schalen = 28
 }
 
 let fellGeometrie = """
@@ -150,7 +150,7 @@ func fellSchalen(_ g: SCNGeometry, _ k: Koerper) -> [SCNNode] {
 // Scheibe hinter der Hornhaut; der Lichtpunkt entsteht vom Licht selbst auf der Hornhaut und wird von
 // einem kleinen leuchtenden Punkt verstaerkt — der "Funke", der eine Figur lebendig macht.
 
-func irisBild(_ farbe: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, quer: Bool = false) -> NSImage {
+func irisBild(_ farbe: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, quer: Bool = false, schlitzBreite: CGFloat = 0.32) -> NSImage {
     let g: CGFloat = 512
     let bild = NSImage(size: NSSize(width: g, height: g))
     bild.lockFocus()
@@ -179,7 +179,7 @@ func irisBild(_ farbe: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, 
     ctx.setFillColor(NSColor(white: 0.02, alpha: 1).cgColor)
     let pr = g * pupille / 2
     if schlitz {
-        ctx.fillEllipse(in: CGRect(x: mitte.x - pr * 0.32, y: mitte.y - pr * 1.6, width: pr * 0.64, height: pr * 3.2))
+        ctx.fillEllipse(in: CGRect(x: mitte.x - pr * schlitzBreite, y: mitte.y - pr * 1.6, width: pr * 2 * schlitzBreite, height: pr * 3.2))
     } else if quer {
         ctx.fillEllipse(in: CGRect(x: mitte.x - pr * 1.5, y: mitte.y - pr * 0.6, width: pr * 3.0, height: pr * 1.2))
     } else {
@@ -219,7 +219,7 @@ func augapfel(_ r: CGFloat, _ bild: NSImage) -> SCNGeometry {
 }
 
 func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, quer: Bool = false,
-          irisAnteil: CGFloat = 0.86, funke f: CGFloat = 1) -> SCNNode {
+          schlitzBreite: CGFloat = 0.32, irisAnteil: CGFloat = 0.86, funke f: CGFloat = 1) -> SCNNode {
     let knoten = SCNNode()
     // Das Bild traegt aussen die dunkle Randfarbe, innen die Iris (Anteil irisAnteil).
     let g: CGFloat = 512
@@ -227,7 +227,7 @@ func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bo
     voll.lockFocus()
     iris.blended(withFraction: 0.82, of: .black)!.setFill(); NSRect(x: 0, y: 0, width: g, height: g).fill()
     let ir = g * irisAnteil
-    irisBild(iris, pupille: pupille, schlitz: schlitz, quer: quer)
+    irisBild(iris, pupille: pupille, schlitz: schlitz, quer: quer, schlitzBreite: schlitzBreite)
         .draw(in: NSRect(x: (g - ir) / 2, y: (g - ir) / 2, width: ir, height: ir))
     voll.unlockFocus()
     knoten.addChildNode(SCNNode(geometry: augapfel(r, voll)))
@@ -245,10 +245,10 @@ func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bo
     // Blick weich, ein kleiner laesst ihn starren; und unter einem halb gesenkten Oberlid waere der
     // alte, hoch sitzende Punkt verschwunden.
     let mf = SCNMaterial(); mf.lightingModel = .constant; mf.diffuse.contents = NSColor(white: 1, alpha: 0.95)
-    let funke = SCNSphere(radius: r * 0.13 * f); funke.materials = [mf]
+    let funke = SCNSphere(radius: r * 0.075 * f); funke.materials = [mf]
     let fk = SCNNode(geometry: funke); fk.position = SCNVector3(-r * 0.30, r * 0.18, r * 0.94)
     knoten.addChildNode(fk)
-    let funke2 = SCNSphere(radius: r * 0.06 * f); funke2.materials = [mf]
+    let funke2 = SCNSphere(radius: r * 0.03 * f); funke2.materials = [mf]
     let fk2 = SCNNode(geometry: funke2); fk2.position = SCNVector3(r * 0.26, -r * 0.30, r * 0.92)
     knoten.addChildNode(fk2)
     return knoten
@@ -291,7 +291,7 @@ func studio(_ szene: SCNScene) {
     func licht(_ art: SCNLight.LightType, _ farbe: NSColor, _ staerke: CGFloat, _ von: V, schatten: Bool = false) {
         let l = SCNLight(); l.type = art; l.color = farbe; l.intensity = staerke
         if schatten {
-            l.castsShadow = true; l.shadowSampleCount = 32; l.shadowRadius = 10
+            l.castsShadow = true; l.shadowSampleCount = 48; l.shadowRadius = 18
             l.shadowMapSize = CGSize(width: 2048, height: 2048); l.shadowColor = NSColor(white: 0, alpha: 0.45)
             l.orthographicScale = 3; l.zNear = 1; l.zFar = 30
         }
@@ -300,7 +300,7 @@ func studio(_ szene: SCNScene) {
     }
     licht(.directional, NSColor(calibratedRed: 1, green: 0.95, blue: 0.86, alpha: 1), 1500, V(-5, 6, 6), schatten: true)  // Hauptlicht
     licht(.directional, NSColor(calibratedRed: 0.78, green: 0.86, blue: 1, alpha: 1), 220, V(6, 0, 4))                   // Fuelllicht
-    licht(.directional, NSColor(calibratedRed: 1, green: 0.98, blue: 0.95, alpha: 1), 2200, V(4, 4, -6))                  // Kante
+    licht(.directional, NSColor(calibratedRed: 1, green: 0.98, blue: 0.95, alpha: 1), 1100, V(4, 4, -6))                  // Kante
 }
 
 // Runde 133: `leinwand` vergroessert das Bild um diesen Faktor, ohne den Massstab zu aendern — der
