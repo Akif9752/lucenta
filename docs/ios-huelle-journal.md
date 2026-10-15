@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 141)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 142)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 141 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 142 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 141 | — | Alle Tiere sehen in die Kamera (kein Blickversatz mehr); Wal als Buckelwal, Schildkroete als Suppenschildkroete, Dackel glattes Kurzhaar ohne Zunge |
+| 142 | — | Wal und Schildkroete: zum Betrachter gedreht, Augen weiter vorn, naeher zugeschnitten (`NAEHER` in `figuren_holen.py`) |
+| 141 | `f73cced` | Alle Tiere sehen in die Kamera (kein Blickversatz mehr); Wal als Buckelwal, Schildkroete als Suppenschildkroete, Dackel glattes Kurzhaar ohne Zunge |
 | 140 | `d24b541` | Schalenfell je Tier (`Fell`, `FellKarte`, Shader in `Szene.swift`) und Brauen als Wulst + Fellzeichnung (`mitBrauen`) |
 | 139 | `09693fa` | Tiere: je eigene Kopfhaltung (7 links, 5 rechts, teils geneigt), artgerechte Muender als Hautfalten (`mitMaul`), Zaehne/Zungen als `perle` |
 | 138 | `a07e240` | Schneller arbeiten: audit-i18n 4 Min. -> 1 s; Kommentare in src/ um ~30 % gekuerzt (gebaute App unveraendert) |
@@ -238,6 +239,27 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 142 — Wal und Schildkroete sehen einen an und wirken nicht mehr weit weg
+
+**Rueckmeldung des Inhabers:** „Wal und Schildkroete gucken einen nicht an, und die sehen zu weit weg
+aus im Gegensatz zu den anderen Tieren."
+
+**Blick:** Seit Runde 141 zielen ihre Augen zwar auf die Kamera — aber sie sitzen seitlich am Kopf,
+und der Kopf war nur ~30° zum Betrachter gedreht. Die Lidoeffnung zeigte zur Seite, die Pupille
+lag an ihrem Rand: Das liest sich als Seitenblick, egal wohin der Augapfel zeigt. Jetzt: beide um
+~57–60° zum Betrachter gedreht (Dreiviertelansicht), Augen weiter vorn am Kopf; der Wal hat
+groessere Augen (0,115 statt 0,085), damit man den Blick ueberhaupt liest.
+
+**Abstand:** Der Zuschnitt richtet sich nach der laengeren Seite — bei langen Tieren die Breite,
+der Kopf wurde winzig. `NAEHER` in `figuren_holen.py`: Faktor und Verschiebung zum Kopf hin;
+Schwanz und Hinterflossen schneidet der Kreis an wie bei den Saeugetieren den Rumpf.
+Bei der Schildkroete dreimal nachgestellt (Kopf angeschnitten, dann zu hoch) — Schiedsrichter war
+die Vorschau im Kreis, nicht die Zahl.
+
+**Ein Absturz unterwegs:** `vorderflaeche` lief ins Unendliche, wenn der Strahl keine Haut traf
+(ueber dem weiter vorn sitzenden Auge der Schildkroete) → „Float value cannot be converted to
+Int32". Der Strahl ist jetzt begrenzt.
 
 ## Runde 141 — Blick in die Kamera; Wal, Schildkroete, Dackel realistischer
 

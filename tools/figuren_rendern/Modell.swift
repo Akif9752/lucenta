@@ -220,6 +220,7 @@ func zellen(_ p: V, _ skala: Float) -> (rand: Float, wert: Float) {
 // Die Vorderflaeche eines Koerpers bei (x, y): von vorn bis zur Oberflaeche gehen.
 func vorderflaeche(_ k: Koerper, _ x: Float, _ y: Float, von: Float = 3) -> Float {
     var z = von
-    for _ in 0..<200 { let d = k.abstand(V(x, y, z)); if d < 0.001 { break }; z -= max(d, 0.002) }
-    return z
+    // Trifft der Strahl nichts, laeuft z sonst ins Unendliche (Absturz beim Umrechnen in Ganzzahlen).
+    for _ in 0..<200 { let d = k.abstand(V(x, y, z)); if d < 0.001 || z < -von { break }; z -= max(d, 0.002) }
+    return max(z, -von)
 }

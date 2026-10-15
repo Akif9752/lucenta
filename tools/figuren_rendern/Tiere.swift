@@ -869,11 +869,13 @@ func wal() -> (SCNNode, Float, V) {
         r: 0.030, farbe: hex("#1A2C40"), staerke: 0.8))
     let w = SCNNode(); w.addChildNode(kopfKnoten(koerper, grenze: 2.2, n: 200))
     for sz: Float in [-1, 1] {
-        seitenAuge(w, koerper, x: 0.88, y: -0.02, tiefe: 0.035, sz: sz, r: 0.085,
+        // Weiter vorn und groesser als beim echten Wal: Nur ein Auge, dessen Oeffnung zum Betrachter zeigt,
+        // liest sich als Blick zu ihm (Auftrag des Inhabers: alle sehen einen an).
+        seitenAuge(w, koerper, x: 1.04, y: 0.0, tiefe: 0.04, sz: sz, r: 0.115,
                    iris: NSColor(calibratedRed: 0.14, green: 0.11, blue: 0.10, alpha: 1), pupille: 0.7,
                    Ausdruck(oben: 0.22, unten: 0.30, funke: 1.5))
     }
-    w.eulerAngles = SCNVector3(-0.15, .pi + 0.55, 0)
+    w.eulerAngles = SCNVector3(-0.15, .pi + 1.0, 0)
     return (w, 9.0, V(-0.25, 0.0, 0))
 }
 
@@ -980,11 +982,11 @@ func schildkroete() -> (SCNNode, Float, V) {
     w.addChildNode(kopfKnoten(panzerK, grenze: 2.0, n: 200))
     w.addChildNode(kopfKnoten(hautK, grenze: 2.0, n: 200))
     for sz: Float in [-1, 1] {
-        seitenAuge(w, hautK, x: 1.42, y: 0.24, tiefe: 0.05, sz: sz, r: 0.13,
+        seitenAuge(w, hautK, x: 1.52, y: 0.21, tiefe: 0.05, sz: sz, r: 0.14,
                    iris: NSColor(calibratedRed: 0.36, green: 0.26, blue: 0.10, alpha: 1), pupille: 0.6,
                    Ausdruck(oben: 0.24, unten: 0.26, schraeg: 0.14, funke: 1.5))
     }
-    w.eulerAngles = SCNVector3(-0.35, .pi + 0.65, 0)
+    w.eulerAngles = SCNVector3(-0.35, .pi + 1.05, 0)
     return (w, 9.2, V(0.05, 0.0, 0))
 }
 

@@ -97,10 +97,17 @@ def sichtbar(b, pixel):
     return min(xs), max(xs) + 1, min(ys), max(ys) + 1
 
 
-def zuschneiden(b, h, pixel, rahmen):
+# Lange Tiere (Wal, Schildkroete) wirkten nach der laengeren Seite zugeschnitten "zu weit weg" (Inhaber):
+# naeher heran und zum Kopf hin verschoben; Schwanz und Hinterflossen schneidet der Kreis an.
+# (Faktor, Verschiebung x, y als Anteil des Ausschnitts; negativ = nach links/oben)
+NAEHER = {'wal': (1.55, -0.13, 0.02), 'schildkroete': (1.45, -0.25, -0.13)}
+
+
+def zuschneiden(b, h, pixel, rahmen, kennung=''):
     x0, x1, y0, y1 = rahmen
-    seite = round(max(x1 - x0, y1 - y0) / ALTER_ANTEIL)
-    mx, my = (x0 + x1) // 2, (y0 + y1) // 2
+    faktor, vx, vy = NAEHER.get(kennung, (1, 0, 0))
+    seite = round(max(x1 - x0, y1 - y0) / ALTER_ANTEIL / faktor)
+    mx, my = (x0 + x1) // 2 + round(vx * seite), (y0 + y1) // 2 + round(vy * seite)
     ax, ay = mx - seite // 2, my - seite // 2
     if ax < 0 or ay < 0 or ax + seite > b or ay + seite > h:
         sys.exit('Ausschnitt %r ragt ueber die Leinwand %dx%d — Leinwand in main.swift vergroessern.' % ((ax, ay, seite), b, h))
@@ -187,7 +194,7 @@ def main():
         if not os.path.exists(quelle):
             sys.exit('Fehlt: %s — erst tools/figuren_rendern/bauen.sh laufen lassen.' % quelle)
         with open(quelle, 'rb') as f: b, h, pixel = png_lesen(f.read())
-        b, h, pixel = zuschneiden(b, h, pixel, rahmen[kennung])
+        b, h, pixel = zuschneiden(b, h, pixel, rahmen[kennung], kennung)
         # Verkleinern ueber sips (Apples Bildwerkzeug, gute Filterung) — auf dem zugeschnittenen Bild,
         # damit jedes Tier dieselbe Groesse im Kreis bekommt.
         with tempfile.TemporaryDirectory() as tmp:
