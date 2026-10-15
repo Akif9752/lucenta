@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 145)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 146)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 145 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 146 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 145 | — | Panda und Hase echt proportioniert; Ohren und Flossen durchscheinend (`duenne`, Shader `durchschein…`); feinere Iris; nasse Haut (`Koerper.lack`); Goldfisch mit Dachziegel-Schuppen |
+| 146 | — | Nach dem echten Tier: Waldkauz dunkle Augen, Reh ohne weisse Brauen, gewoehnlicher (laenglicher) Goldfisch, Buckelwal schiefergrau, Retriever erwachsen, Fuchs schmaler, Dackel seidig, Katze flacheres Unterlid |
+| 145 | `b92ea2b` | Panda und Hase echt proportioniert; Ohren und Flossen durchscheinend (`duenne`, Shader `durchschein…`); feinere Iris; nasse Haut (`Koerper.lack`); Goldfisch mit Dachziegel-Schuppen |
 | 144 | `571179b` | Echte Kopfproportionen bei Fuchs, Reh, Baer (lange Schnauzen, kleinere Hirnschale); weisses Fell bleibt weiss |
 | 143 | `153affe` | Fotorealistisch, aber liebenswert: keine Wangenroete, kleinere Augen mit dunklem Lidrand, echte Pupillenformen, Nasen mit Nasenloechern, weicheres Licht, Rendern in 2048 px; Retriever mit Schlappohren, Katze fein getigert. Kaltstart gemessen (siehe Eintrag) |
 | 142 | `9b90074` | Wal und Schildkroete: zum Betrachter gedreht, Augen weiter vorn, naeher zugeschnitten (`NAEHER` in `figuren_holen.py`) |
@@ -242,6 +243,27 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 146 — Nach dem echten Tier, das sie darstellen
+
+**Auftrag des Inhabers:** „Die Modelle muessen noch realistischer nach den echten Tieren sein, die sie
+repraesentieren."
+
+**Vorgehen:** Je Tier die Kennzeichen der echten Art gegen das Modell gehalten — nicht „mehr Detail",
+sondern: Was stimmt an diesem Tier nicht?
+- **Eule = Waldkauz:** hat dunkelbraune, fast schwarze Augen. Unsere orangen waren die des Uhus bzw.
+  Steinkauzes. Jetzt dunkel. (Das Zwinkern bleibt — Entscheidung aus Runde 137.)
+- **Reh:** weisse Brauen gibt es nicht; nur ein Hauch heller ueber dem Auge. Kinn und Kehlfleck bleiben.
+- **Goldfisch:** war eine Zuchtkugel (Ranchu-artig). Jetzt der gewoehnliche Goldfisch: laenglich,
+  seitlich flach, hohe Rueckenflosse, laengere gegabelte Schwanzflosse, kleinere Augen.
+- **Wal = Buckelwal:** Ruecken schiefergrau bis fast schwarz statt hellblau, Bauch und Brustflossen hell.
+- **Retriever:** erwachsener Kopf — breiter, flacherer Schaedel, Schnauze fast so lang wie der Schaedel.
+- **Fuchs:** schmalere Schnauze, kleinere Wangenkrause (wirkte pausbaeckig).
+- **Dackel:** Kurzhaar seidig-matt statt lackiert. **Katze:** Unterlid flacher (lag als dunkler Balken
+  unter dem Auge).
+Rahmen von Retriever und Goldfisch am Kopf allein neu gemessen.
+
+**Grenze bleibt:** sehr gute 3D-Figuren, keine Fotos (siehe Runde 145).
 
 ## Runde 145 — Panda, Hase, durchscheinende Ohren, Iris, nasse Haut
 
