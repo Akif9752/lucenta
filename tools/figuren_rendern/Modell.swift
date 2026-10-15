@@ -64,6 +64,7 @@ struct Koerper {
     var fell: Float = 0.0             // Staerke der feinen Fellstruktur in der Normalen
     var haar: ((V) -> Float)? = nil   // Haarlaenge je Ort (0 = kahl); nil = kein Schalenfell
     var fellArt = Fell()
+    var lack: Float = 0               // nasse Haut: glatte Schicht ueber der rauen (Wal, Fisch, Schildkroete)
 
     func abstand(_ p: V) -> Float {
         var d: Float = 1e9
@@ -75,7 +76,7 @@ struct Koerper {
 
 // ---------- Oberflaeche aus dem Abstandsfeld ("naive surface nets") ----------
 
-struct Netz { var punkte: [V] = []; var normalen: [V] = []; var farben: [V] = []; var haare: [Float] = []; var dreiecke: [Int32] = [] }
+struct Netz { var punkte: [V] = []; var normalen: [V] = []; var farben: [V] = []; var haare: [Float] = []; var duenne: [Float] = []; var dreiecke: [Int32] = [] }
 
 func netzBauen(_ k: Koerper, grenze: Float, n: Int) -> Netz {
     let schritt = 2 * grenze / Float(n)
@@ -132,6 +133,13 @@ func netzBauen(_ k: Koerper, grenze: Float, n: Int) -> Netz {
         netz.normalen.append(nrm)
         let h = k.haar?(p) ?? 0
         netz.haare.append(h)
+        // Wie dick der Koerper hier ist: entlang der Normalen nach innen, bis man wieder draussen ist.
+        // Duenne Stellen (Ohren, Flossen) lassen Licht durch.
+        let g = gradient(k, p)
+        var dicke: Float = 0.4
+        var t: Float = 0.02
+        while t < 0.4 { if k.abstand(p - g * t) > 0 { dicke = t; break }; t += 0.02 }
+        netz.duenne.append(glatt(0.26, 0.06, dicke))
         // Zwischen den Haaren sieht man auf die Wurzeln: dort ist es dunkler.
         // Helles Fell ist auch zwischen den Haaren hell — sonst wird Weiss zu Grau.
         let c = k.farbe(p, nrm)

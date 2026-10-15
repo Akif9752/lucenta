@@ -19,17 +19,37 @@ func geometrie(_ netz: Netz, _ k: Koerper) -> SCNGeometry {
                                    dataOffset: 0, dataStride: 16)
     let element = SCNGeometryElement(indices: netz.dreiecke, primitiveType: .triangles)
     var quellen = [SCNGeometrySource(vertices: p), SCNGeometrySource(normals: n), farben]
-    // Die Haarlaenge reist als Texturkoordinate mit — die einzige freie Spur je Eckpunkt fuer den Shader.
-    if k.haar != nil { quellen.append(SCNGeometrySource(textureCoordinates: netz.haare.map { CGPoint(x: CGFloat($0), y: 0) })) }
+    // Haarlaenge und Duenne reisen als Texturkoordinate mit — die einzige freie Spur je Eckpunkt fuer den Shader.
+    quellen.append(SCNGeometrySource(textureCoordinates: zip(netz.haare, netz.duenne).map { CGPoint(x: CGFloat($0), y: CGFloat($1)) }))
     let g = SCNGeometry(sources: quellen, elements: [element])
     let m = SCNMaterial()
     m.lightingModel = .physicallyBased
     m.diffuse.contents = NSColor.white          // die Farbe kommt aus den Eckpunkten
     m.roughness.contents = NSNumber(value: k.rauheit)
     m.metalness.contents = 0.0
+    if k.lack > 0 {
+        m.clearCoat.contents = NSNumber(value: k.lack); m.clearCoatRoughness.contents = 0.22
+    }
+    m.shaderModifiers = [.geometry: durchscheinGeometrie, .surface: durchscheinOberflaeche]
     g.materials = [m]
     return g
 }
+
+// Durchscheinen: Wo der Koerper duenn ist, leuchtet er warm, als fiele Licht hindurch — beim echten
+// Tier die Ohren im Gegenlicht und die Flossen eines Fisches. (SceneKit kennt keine Lichtstreuung unter
+// der Haut; das ist ihre Naeherung.)
+let durchscheinGeometrie = """
+#pragma varyings
+float duenn;
+#pragma body
+out.duenn = _geometry.texcoords[0].y;
+"""
+let durchscheinOberflaeche = """
+#pragma varyings
+float duenn;
+#pragma body
+_surface.emission.rgb += _surface.diffuse.rgb * float3(1.0, 0.50, 0.34) * (in.duenn * 0.45);
+"""
 
 // ---------- Fell ----------
 //
@@ -151,30 +171,48 @@ func fellSchalen(_ g: SCNGeometry, _ k: Koerper) -> [SCNNode] {
 // einem kleinen leuchtenden Punkt verstaerkt — der "Funke", der eine Figur lebendig macht.
 
 func irisBild(_ farbe: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, quer: Bool = false, schlitzBreite: CGFloat = 0.32) -> NSImage {
-    let g: CGFloat = 512
+    let g: CGFloat = 1024
     let bild = NSImage(size: NSSize(width: g, height: g))
     bild.lockFocus()
     let ctx = NSGraphicsContext.current!.cgContext
     let mitte = CGPoint(x: g / 2, y: g / 2)
+    var zufall: UInt64 = 0x9E3779B97F4A7C15
+    func z() -> CGFloat { zufall = zufall &* 6364136223846793005 &+ 1442695040888963407; return CGFloat(zufall >> 33) / CGFloat(1 << 31) }
     let raum = CGColorSpace(name: CGColorSpace.sRGB)!
     let hell = farbe.blended(withFraction: 0.35, of: .white)!.cgColor
     let dunkel = farbe.blended(withFraction: 0.55, of: .black)!.cgColor
     let verlauf = CGGradient(colorsSpace: raum, colors: [hell, farbe.cgColor, dunkel] as CFArray, locations: [0, 0.55, 1])!
     ctx.addEllipse(in: CGRect(x: 0, y: 0, width: g, height: g)); ctx.clip()
     ctx.drawRadialGradient(verlauf, startCenter: mitte, startRadius: 0, endCenter: mitte, endRadius: g / 2, options: [])
-    // Fasern
-    ctx.setLineWidth(2)
-    for i in 0..<160 {
-        let w = CGFloat(i) / 160 * .pi * 2 + CGFloat((i * 37) % 11) * 0.01
-        let r1 = g * 0.18, r2 = g * (0.40 + CGFloat((i * 53) % 9) * 0.01)
-        ctx.setStrokeColor((i % 2 == 0 ? hell : dunkel).copy(alpha: 0.35)!)
+    // Fasern: viele feine, unterschiedlich lange Strahlen, leicht geschwungen — wie im Foto einer Iris.
+    for _ in 0..<900 {
+        let w = z() * .pi * 2, r1 = g * (0.14 + 0.10 * z()), r2 = g * (0.30 + 0.17 * z())
+        ctx.setLineWidth(0.8 + 1.6 * z())
+        ctx.setStrokeColor((z() < 0.5 ? hell : dunkel).copy(alpha: 0.18 + 0.25 * z())!)
+        let biege = (z() - 0.5) * 0.25
         ctx.move(to: CGPoint(x: mitte.x + cos(w) * r1, y: mitte.y + sin(w) * r1))
-        ctx.addLine(to: CGPoint(x: mitte.x + cos(w) * r2, y: mitte.y + sin(w) * r2))
+        ctx.addQuadCurve(to: CGPoint(x: mitte.x + cos(w + biege) * r2, y: mitte.y + sin(w + biege) * r2),
+                         control: CGPoint(x: mitte.x + cos(w + biege * 0.3) * (r1 + r2) / 2, y: mitte.y + sin(w + biege * 0.3) * (r1 + r2) / 2))
         ctx.strokePath()
     }
-    // dunkler Limbusring
-    ctx.setStrokeColor(NSColor(white: 0, alpha: 0.75).cgColor); ctx.setLineWidth(g * 0.06)
-    ctx.strokeEllipse(in: CGRect(x: g * 0.03, y: g * 0.03, width: g * 0.94, height: g * 0.94))
+    // Krypten: kleine dunkle Vertiefungen zwischen den Fasern.
+    for _ in 0..<70 {
+        let w = z() * .pi * 2, r = g * (0.2 + 0.22 * z()), s = g * (0.008 + 0.018 * z())
+        ctx.setFillColor(dunkel.copy(alpha: 0.35 + 0.3 * z())!)
+        ctx.fillEllipse(in: CGRect(x: mitte.x + cos(w) * r - s, y: mitte.y + sin(w) * r - s * 0.6, width: 2 * s, height: 1.2 * s))
+    }
+    // Krause: der hellere, gezackte Ring um die Pupille.
+    let krause = CGMutablePath()
+    for i in 0...120 {
+        let w = CGFloat(i) / 120 * .pi * 2, r = g * (pupille * 0.5 + 0.06 + 0.018 * sin(w * 17) + 0.012 * z())
+        let pk = CGPoint(x: mitte.x + cos(w) * r, y: mitte.y + sin(w) * r)
+        if i == 0 { krause.move(to: pk) } else { krause.addLine(to: pk) }
+    }
+    ctx.setStrokeColor(hell.copy(alpha: 0.45)!); ctx.setLineWidth(g * 0.012)
+    ctx.addPath(krause); ctx.strokePath()
+    // dunkler Limbusring, nach innen weich auslaufend
+    let limbus = CGGradient(colorsSpace: raum, colors: [NSColor(white: 0, alpha: 0).cgColor, NSColor(white: 0, alpha: 0.8).cgColor] as CFArray, locations: [0.82, 1])!
+    ctx.drawRadialGradient(limbus, startCenter: mitte, startRadius: 0, endCenter: mitte, endRadius: g / 2, options: [])
     // Pupille
     ctx.setFillColor(NSColor(white: 0.02, alpha: 1).cgColor)
     let pr = g * pupille / 2
@@ -222,7 +260,7 @@ func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bo
           schlitzBreite: CGFloat = 0.32, irisAnteil: CGFloat = 0.86, funke f: CGFloat = 1) -> SCNNode {
     let knoten = SCNNode()
     // Das Bild traegt aussen die dunkle Randfarbe, innen die Iris (Anteil irisAnteil).
-    let g: CGFloat = 512
+    let g: CGFloat = 1024
     let voll = NSImage(size: NSSize(width: g, height: g))
     voll.lockFocus()
     iris.blended(withFraction: 0.82, of: .black)!.setFill(); NSRect(x: 0, y: 0, width: g, height: g).fill()
@@ -257,6 +295,7 @@ func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bo
 func glanzKoerper(_ k: Koerper, grenze: Float, n: Int, rauheit: Float, lack: Float) -> SCNNode {
     let netz = netzBauen(k, grenze: grenze, n: n)
     let g = geometrie(netz, k)
+    g.materials[0].shaderModifiers = nil
     g.materials[0].roughness.contents = NSNumber(value: rauheit)
     g.materials[0].clearCoat.contents = NSNumber(value: lack)
     g.materials[0].clearCoatRoughness.contents = 0.15

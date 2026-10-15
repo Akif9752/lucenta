@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 144)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 145)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 144 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 145 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 144 | — | Echte Kopfproportionen bei Fuchs, Reh, Baer (lange Schnauzen, kleinere Hirnschale); weisses Fell bleibt weiss |
+| 145 | — | Panda und Hase echt proportioniert; Ohren und Flossen durchscheinend (`duenne`, Shader `durchschein…`); feinere Iris; nasse Haut (`Koerper.lack`); Goldfisch mit Dachziegel-Schuppen |
+| 144 | `571179b` | Echte Kopfproportionen bei Fuchs, Reh, Baer (lange Schnauzen, kleinere Hirnschale); weisses Fell bleibt weiss |
 | 143 | `153affe` | Fotorealistisch, aber liebenswert: keine Wangenroete, kleinere Augen mit dunklem Lidrand, echte Pupillenformen, Nasen mit Nasenloechern, weicheres Licht, Rendern in 2048 px; Retriever mit Schlappohren, Katze fein getigert. Kaltstart gemessen (siehe Eintrag) |
 | 142 | `9b90074` | Wal und Schildkroete: zum Betrachter gedreht, Augen weiter vorn, naeher zugeschnitten (`NAEHER` in `figuren_holen.py`) |
 | 141 | `f73cced` | Alle Tiere sehen in die Kamera (kein Blickversatz mehr); Wal als Buckelwal, Schildkroete als Suppenschildkroete, Dackel glattes Kurzhaar ohne Zunge |
@@ -241,6 +242,27 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 145 — Panda, Hase, durchscheinende Ohren, Iris, nasse Haut
+
+**Auftrag des Inhabers:** „Die Tiere muessen noch realistischer werden." Gefragt, welcher Weg (eigenes
+Werkzeug / Blender mit Pfadverfolgung / echte Fotos); gewaehlt: **eigenes Werkzeug weiter** — Panda
+und Hase auf echte Proportionen, Ohren im Gegenlicht durchscheinend, feinere Iris, nasse Haut bei
+Fisch, Wal, Schildkroete. Ausdruecklich: „eine sehr gute 3D-Figur, kein Foto". Das ist die Grenze
+dieses Werkzeugs (SceneKit: kein echtes Haar, keine Lichtstreuung unter der Haut, kein Pfadverfolger).
+
+**Geaendert:**
+- **Panda:** Schnauze steht vor (0,44 statt 0,34 tief), Nase und Maul mitverschoben. **Hase:**
+  laenglicher Kopf, schmale spitze Schnauze, kleinere Backen. Rahmen beider am Kopf neu gemessen.
+- **Durchscheinen:** `netzBauen` misst je Eckpunkt die Dicke des Koerpers entlang der Normalen
+  (`Netz.duenne`, als Texturkoordinate y). Ein Shader (`durchscheinGeometrie/-Oberflaeche`) laesst
+  duenne Stellen warm leuchten — Ohren, Fischflossen. Nasen ausgenommen (klein ist nicht duenn).
+- **Iris** in 1024 statt 512 px: 900 feine geschwungene Fasern, dunkle Krypten, gezackte helle
+  Krause um die Pupille, weicher Limbus statt hartem Ring.
+- **Nasse Haut:** `Koerper.lack` = glatte Lackschicht ueber rauer Haut, mit feiner Unebenheit.
+  Der Wal brauchte drei Anlaeufe (0,7 → 0,45 → 0,14) — mit viel Lack sah er sofort wieder nach Plastik aus.
+- **Goldfisch-Schuppen:** dachziegelartig in versetzten Reihen, Mitte dunkler, Hinterrand hell. Die
+  erste, kleinere Fassung las sich als senkrechte Wellenlinien.
 
 ## Runde 144 — Kopfproportionen und weisses Fell
 
