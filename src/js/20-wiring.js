@@ -18,6 +18,11 @@
   // Runde 136: die Sprachwahl als eigene Seite.
   $('btnSpracheOeffnen').addEventListener('click', function(){ showView('sprache'); });
   $('btnBackFromSprache').addEventListener('click', function(){ showView('settings'); });
+  $('btnBackFromVerlauf').addEventListener('click', function(){ showView('profile'); });
+  // Der Knopf wird mit dem Verlauf neu gezeichnet, deshalb am Behaelter.
+  $('historyContent').addEventListener('click', function(e){
+    if (e.target.closest && e.target.closest('#btnVerlaufAlle')) showView('verlauf');
+  });
 
 
   // ---------- Zurueck durch Wischen vom linken Rand ----------

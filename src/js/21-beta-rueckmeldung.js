@@ -76,6 +76,10 @@
   });
   $('btnDrawerCompatArchive').addEventListener('click', function(){ closeDrawer(true); renderCompatArchive(); showView('compat-archive'); });
   $('btnBackFromCompatArchive').addEventListener('click', function(){ showView('landing'); });
+  $('btnDrawerFreunde').addEventListener('click', function(){ closeDrawer(true); renderFreunde(); showView('freunde'); });
+  $('btnBackFromFreunde').addEventListener('click', function(){ showView('landing'); });
+  $('btnFreundeEinladen').addEventListener('click', freundeEinladen);
+  $('btnFreundSpeichern').addEventListener('click', freundSpeichern);
   $('btnDrawerUnderstand').addEventListener('click', function(){ closeDrawer(true); renderUnderstand(); showView('understand'); });
   $('btnLandingTeaserMore').addEventListener('click', function(){ renderUnderstand(); showView('understand'); });
   $('btnBackFromUnderstand').addEventListener('click', function(){ showView('landing'); });
@@ -160,6 +164,11 @@
     if (saveProfile(profile) && !profile.avatarImg) renderAvatar(profile);
   });
   $('btnDrawerSettings').addEventListener('click', function(){ closeDrawer(true); applyTheme(loadThemeMode()); renderSettings(); showView('settings'); });
+  $('btnDrawerPlus').addEventListener('click', function(){
+    closeDrawer(true);
+    if (istPlus()) aboVerwalten(); else openPlusModal();
+  });
+  $('btnPlusModalWiederherstellen').addEventListener('click', kaeufeWiederherstellen);
   $('btnBackFromSettings').addEventListener('click', function(){ showView('landing'); });
   ['themeSystem','themeLight','themeDark'].forEach(function(id){
     $(id).addEventListener('click', function(){ applyTheme($(id).dataset.mode); });
@@ -204,6 +213,7 @@
     clearHistory();
     clearStateHistory();
     clearCompatArchive();
+    clearFreunde();
     // Die Nutzungstage gehoeren zum Zuruecksetzen dazu.
     nutzungLoeschen();
     scores = null; answers = new Array(50).fill(0); qi = 0; guestRun = false;
@@ -214,7 +224,7 @@
   });
   $('btnCompare').addEventListener('click', renderCompat);
   // Dieselbe Normalisierung und Pruefung fuer alle Felder mit einem Ergebnis-Code.
-  [$('cmpMe'), $('cmpOther'), $('restoreCodeInput')].forEach(function(inp){
+  [$('cmpMe'), $('cmpOther'), $('restoreCodeInput'), $('freundCode')].forEach(function(inp){
     inp.addEventListener('input', function(){
       var clean = inp.value.replace(/[^a-z0-9]/gi,'').toLowerCase().slice(0,10);
       if (clean !== inp.value) inp.value = clean;
@@ -388,6 +398,8 @@
     renderQuestion();
     syncHeroState();
     syncHeaderScrollState();
+    onboardingVerdrahten();
+    onboardingZeigenWennErster();
     // Splashscreen ausblenden, sobald das erste Bild gezeichnet ist (launchAutoHide ist aus);
     // setTimeout als Sicherung.
     try{

@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-15, nach Runde 146)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-19, nach Runde 147)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 146 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 147 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 146 | — | Nach dem echten Tier: Waldkauz dunkle Augen, Reh ohne weisse Brauen, gewoehnlicher (laenglicher) Goldfisch, Buckelwal schiefergrau, Retriever erwachsen, Fuchs schmaler, Dackel seidig, Katze flacheres Unterlid |
+| 147 | — | Freunde (`06b-freunde.js`, `view-freunde`), Lucenta+ in der Seitenleiste, Verlauf im Profil kurz + Unterseite `view-verlauf`, Onboarding beim ersten Oeffnen (`19c-onboarding.js`) |
+| 146 | `fbba58a` | Nach dem echten Tier: Waldkauz dunkle Augen, Reh ohne weisse Brauen, gewoehnlicher (laenglicher) Goldfisch, Buckelwal schiefergrau, Retriever erwachsen, Fuchs schmaler, Dackel seidig, Katze flacheres Unterlid |
 | 145 | `b92ea2b` | Panda und Hase echt proportioniert; Ohren und Flossen durchscheinend (`duenne`, Shader `durchschein…`); feinere Iris; nasse Haut (`Koerper.lack`); Goldfisch mit Dachziegel-Schuppen |
 | 144 | `571179b` | Echte Kopfproportionen bei Fuchs, Reh, Baer (lange Schnauzen, kleinere Hirnschale); weisses Fell bleibt weiss |
 | 143 | `153affe` | Fotorealistisch, aber liebenswert: keine Wangenroete, kleinere Augen mit dunklem Lidrand, echte Pupillenformen, Nasen mit Nasenloechern, weicheres Licht, Rendern in 2048 px; Retriever mit Schlappohren, Katze fein getigert. Kaltstart gemessen (siehe Eintrag) |
@@ -98,7 +99,11 @@ Regeln, die er gesetzt hat:
   kein Fell (Wal, Fisch, Schildkroete). Brauen: `mitBrauen(kopf, …)` vor `mitMaul`.
   Alle zwoelf im Kreis: `python3 tools/figuren_rendern/uebersicht.py` (`KREIS=230` fuer gross);
   Vergleich alt/neu: `python3 tools/figuren_rendern/vorschau.py <alter-ordner> <tier>`.
-- **Navigation:** `showView()` in `02-state.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings}` steuert den
+- **Onboarding:** `19c-onboarding.js`, Markup `#onboarding` vor `#drawerScrim`. Merker `lucenta_onboarding`.
+  Unter Automatisierung (`navigator.webdriver`) AUS — sonst blockierte es alle Pruefungen; gezielt mit
+  `index.html?onboarding=1`. Bestandsnutzer mit Daten bekommen es nie.
+- **Freunde:** `06b-freunde.js` (`lucenta_freunde`, max. 30), verbunden mit dem Archiv ueber den Code.
+- **Navigation:** `showView()` in `02-state.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings; verlauf -> profile}` steuert den
   iOS-Push/Pop (`.nav-push`/`.nav-pop`, die verlassene Seite als `.nav-weg` fixiert; CSS am Ende von
   `12-ios.css`). Die Zurueck-Wischgeste vom linken Rand steht am Ende von `20-wiring.js` (`randGeste`).
   Eine neue Unterseite = Eintrag in `UNTERSEITE_VON` + `view-…` + Knopf mit `.hilfe-knopf` (Pfeil).
@@ -243,6 +248,49 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 147 — Freunde, Lucenta+ in der Seitenleiste, kurzer Verlauf, Onboarding
+
+**Auftrag des Inhabers:** (1) unter „Mit anderen" Freunde als Drittes, (2) unter „Verwalten" etwas
+Zweites neben Einstellungen, (3) frueherer Ergebnisse im Profil werden eine zu lange Liste, (4) ein
+marktpsychologisch wirksames Onboarding beim ersten Oeffnen. Je gefragt (Optionen, Empfehlung zuerst),
+gewaehlt jeweils die Empfehlung.
+
+**Geaendert:**
+- **Freunde** (`06b-freunde.js`, Seite `view-freunde`): Personen mit Name, Figur und Code, lokal
+  (`lucenta_freunde`, hoechstens 30). Je Person: Zahl und letzter Wert der Vergleiche (aus dem Archiv,
+  ueber den Code — nichts doppelt gespeichert), „Vergleichen" rechnet direkt, mehrere Vergleiche
+  aufklappbar. Gleicher Code = dieselbe Person (aktualisiert, nicht verdoppelt); eigener Code wird
+  abgewiesen. **Einladen** ueber das Teilen-Blatt mit dem eigenen Code — die Person verschickt selbst,
+  Lucenta sendet nichts („Data Not Collected" bleibt wahr). Datenschutzerklaerung (8 Sprachen),
+  Datenliste, Sichern/Einspielen und Zuruecksetzen kennen den neuen Schluessel. Namen werden
+  maskiert (`escapeHTML`), weil sie Eingaben sind. Die Bezahlgrenze bleibt unberuehrt: Vergleiche
+  mit mehr als zwei Personen sperrt weiterhin `renderCompat`.
+- **Lucenta+ unter „Verwalten"**: Zeile im Muster der Seitenleiste; zeigt den Stand, fuehrt frei
+  zur Kaufseite, mit Abo zu „Abo verwalten". Erste Fassung hatte zwei sichtbare Knoepfe und brach das
+  Zeilenmuster — verworfen. Dafuer hat die Kaufseite jetzt „Kaeufe wiederherstellen" als leise Zeile
+  unter dem Kaufknopf (fehlte dort; Richtlinie 3.1.2).
+- **Verlauf im Profil**: die letzten drei, darunter „Alle ansehen (n)" -> Unterseite `view-verlauf`
+  (Push/Pop, Wischen zurueck). Die Sperre der freien Fassung (nur zwei Durchlaeufe) bleibt; „Alle
+  ansehen" erscheint daher nur mit mehr als drei sichtbaren Eintraegen.
+- **Onboarding** (`19c-onboarding.js`): 1) was man erfaehrt, mit der echten Beispielkarte der
+  Startseite, 2) eigenes Ziel waehlen (mehrfach; Weiter erst nach einer Wahl — Bindung durch eigene
+  Entscheidung), 3) Vertrauen mit nachpruefbaren Fakten (Big Five, 50 IPIP-Aussagen, 5–10 Minuten,
+  Daten bleiben auf dem Geraet) und „Fuer dich dabei" passend zur Wahl aus Schritt 2, 4) Name und Figur
+  -> direkt in den Test. Fortschrittspunkte, Zurueck, „Ueberspringen" immer sichtbar. Keine erfundenen
+  Zahlen, kein Countdown, Lucenta+ erst nach dem Ergebnis (wie gewaehlt). „~8 Minuten" aus der Frage
+  wurde zu „5 bis 10 Minuten" — so steht es nirgends, und es ist die ehrliche Spanne.
+  Das Ziel aus Schritt 2 wird nicht gespeichert (keine neuen Daten); gespeichert werden nur der Merker
+  und — wie im Profil — Name und Figur.
+
+**Geprueft:** alles auf WebKit durchgeklickt (Playwright): Unterseite Verlauf mit Lucenta+ (3 im
+Profil, 5 auf der Unterseite, zurueck ins Profil), Freund gespeichert mit Figur und Vergleichszeile,
+Seitenleiste, Onboarding in allen vier Schritten bis in den Test; keine JS-Fehler.
+**Nicht geprueft:** am Geraet; das Teilen-Blatt beim Einladen (im Browser ohne `navigator.share`
+faellt es auf die Zwischenablage zurueck).
+
+**Werkzeug-Falle:** Pythons in Xcode (3.9) liest lange UTF-8-Zeilen aus einer Skriptdatei als „Non-UTF-8".
+Abhilfe: `python3 -c "exec(compile(open(p, encoding='utf-8').read(), p, 'exec'))"`.
 
 ## Runde 146 — Nach dem echten Tier, das sie darstellen
 

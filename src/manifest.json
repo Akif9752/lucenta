@@ -23,6 +23,7 @@
   "04-scoring.js",
   "05-verlauf.js",
   "06-vergleichsarchiv.js",
+  "06b-freunde.js",
   "07-tagesform.js",
   "07b-tagesform-alltag.js",
   "08-code.js",
@@ -38,6 +39,7 @@
   "18-ergebnisbild-dialog.js",
   "19-feier.js",
   "19b-native.js",
+  "19c-onboarding.js",
   "20-wiring.js",
   "21-beta-rueckmeldung.js",
   "22-sternenhimmel.js"

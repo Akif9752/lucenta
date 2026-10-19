@@ -136,6 +136,8 @@
       '<circle cx="'+z[0].toFixed(1)+'" cy="'+z[1].toFixed(1)+'" r="4.2" fill="var(--trend-farbe)" stroke="var(--surface)" stroke-width="1.8"/>'+
       '</svg>';
   }
+  var VERLAUF_KURZ = 3;
+  var CHEVRON_RECHTS = '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>';
   function renderHistory(){
     $('historyMaxCount').textContent = MAX_HISTORY;
     var alle = loadHistory();
@@ -174,14 +176,18 @@
       spanne = '<div class="trend-spanne"><span>'+fmt.format(new Date(hist[0].date))+'</span>'+
         '<span>'+fmt.format(new Date(hist[hist.length-1].date))+'</span></div>';
     }catch(ex){}
-    var listRows = hist.slice().reverse().map(function(e,i){
-      return verlaufZeileHTML(e, i===0);
-    }).join('');
+    var zeilen = hist.slice().reverse().map(function(e,i){ return verlaufZeileHTML(e, i===0); });
+    var schloss = verborgen ? schlossHTML(tx('plus_verlauf_a') + verborgen + tx('plus_verlauf_b')) : '';
+    // Im Profil nur die letzten VERLAUF_KURZ; die ganze Liste auf der Unterseite (Auftrag des Inhabers).
+    var mehr = zeilen.length > VERLAUF_KURZ;
     wrap.innerHTML = '<div class="trend-list">'+trendRows+spanne+'</div>'+
       tx('js_frühere_ergebnisse')+hist.length+'</span></h2>'+
-      '<div class="history-list">'+listRows+'</div>'+
-      (verborgen ? schlossHTML(tx('plus_verlauf_a') + verborgen + tx('plus_verlauf_b')) : '');
+      '<div class="history-list">'+zeilen.slice(0, VERLAUF_KURZ).join('')+'</div>'+
+      (mehr ? '<button type="button" class="hilfe-knopf verlauf-alle" id="btnVerlaufAlle"><span>'+
+        tx('verlauf_alle_ansehen')+' ('+zeilen.length+')</span>'+CHEVRON_RECHTS+'</button>' : schloss);
     schloesserVerdrahten(wrap);
+    var alle = $('verlaufAlleListe');
+    if (alle){ alle.innerHTML = '<div class="history-list">'+zeilen.join('')+'</div>'+schloss; schloesserVerdrahten(alle); }
   }
 
   

@@ -704,3 +704,56 @@
   .view.nav-ziehen::before{ box-shadow:-10px 0 28px rgba(0,0,0,.14); }
   .view.nav-loslassen{ transition:transform .28s cubic-bezier(.32,.72,0,1), filter .28s cubic-bezier(.32,.72,0,1); }
   @media (prefers-reduced-motion: reduce){ .view.nav-loslassen{ transition:none; } }
+
+  .verlauf-alle{ margin-top:10px; }
+  /* Wiederherstellen im Kauffenster: leise, wie in iOS-Apps ueblich (Richtlinie 3.1.2). */
+  .plus-modal-leise{ display:block; min-height:44px; margin:6px auto 0; padding:10px 16px; background:none; border:none; font:inherit; font-size:14px; color:var(--muted); cursor:pointer; }
+
+  /* Freunde: Zeilen wie im Archiv, mit Figur vorn; das Raster der Figuren kleiner als im Profil. */
+  #view-freunde .settings-group{ margin-bottom:18px; }
+  #view-freunde .name-input{ margin-bottom:12px; }
+  #view-freunde .freund-figuren{ margin:6px 0 14px; }
+  #view-freunde .freund-zeile{ display:flex; align-items:center; gap:12px; padding:12px 14px;
+    background:var(--surface); border-radius:var(--radius-m); }
+  #view-freunde .freund-avatar{ width:44px; height:44px; flex-shrink:0; font-size:15px; }
+  #view-freunde .freund-text{ flex:1; min-width:0; text-align:left; }
+  #view-freunde .freund-vergleiche summary{ font-size:13px; color:var(--accent); cursor:pointer; margin-top:4px; }
+  #view-freunde .freund-vergleiche ul{ list-style:none; padding:0; margin:6px 0 0; font-size:13px; }
+  #view-freunde .freund-vergleiche li{ display:flex; justify-content:space-between; gap:12px; color:var(--muted); }
+
+  /* Onboarding beim ersten Oeffnen: eine ganze Seite ueber allem, Inhalt oben, Weiter unten. */
+  #onboarding{ position:fixed; inset:0; z-index:9000; background:var(--paper); color:var(--ink);
+    display:flex; flex-direction:column; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding:calc(env(safe-area-inset-top) + 10px) 22px calc(env(safe-area-inset-bottom) + 18px);
+    opacity:0; transition:opacity .26s ease; }
+  #onboarding.offen{ opacity:1; }
+  #onboarding[hidden]{ display:none; }
+  #onboarding .ob-kopf{ display:flex; align-items:center; justify-content:space-between; min-height:44px; margin-bottom:18px; }
+  #onboarding .ob-leise{ background:none; border:none; font:inherit; font-size:16px; color:var(--muted); padding:10px 4px; cursor:pointer; min-width:84px; text-align:left; }
+  #onboarding #btnObUeberspringen{ text-align:right; }
+  #onboarding .ob-leise[hidden]{ display:block; visibility:hidden; }
+  #onboarding .ob-dots{ display:flex; gap:7px; }
+  #onboarding .ob-dots span{ width:7px; height:7px; border-radius:50%; background:var(--line); transition:background .2s ease, width .2s ease; }
+  #onboarding .ob-dots span.an{ background:var(--accent); }
+  #onboarding .ob-step{ display:flex; flex-direction:column; flex:1; }
+  #onboarding .ob-step[hidden]{ display:none; }
+  #onboarding .ob-step h1{ font-size:30px; line-height:1.12; letter-spacing:-.02em; margin:6px 0 12px; outline:none; }
+  #onboarding .ob-text{ font-size:17px; line-height:1.45; color:var(--muted); margin:0 0 22px; }
+  #onboarding .ob-vorschau{ margin:0 0 20px; }
+  #onboarding .ob-cta{ width:100%; margin-top:auto; min-height:52px; font-size:17px; }
+  #onboarding .ob-ziele{ margin-bottom:22px; }
+  #onboarding .ob-fakten{ list-style:none; padding:0; margin:0 0 18px; display:flex; flex-direction:column; gap:16px; }
+  #onboarding .ob-fakten li{ display:flex; gap:14px; align-items:flex-start; }
+  #onboarding .ob-fakten svg{ color:var(--accent); flex-shrink:0; margin-top:2px; }
+  #onboarding .ob-fakten strong{ display:block; font-size:17px; margin-bottom:2px; }
+  #onboarding .ob-fakten span{ font-size:15px; line-height:1.4; color:var(--muted); }
+  #onboarding .ob-fuer-dich{ background:var(--surface); border-radius:var(--radius-m); padding:14px 16px; margin-bottom:22px; }
+  #onboarding .ob-fuer-dich-titel{ font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--accent); margin-bottom:8px; }
+  #onboarding .ob-fuer-dich ul{ margin:0; padding-left:18px; font-size:15px; line-height:1.45; }
+  #onboarding .ob-fuer-dich li + li{ margin-top:6px; }
+  #onboarding .name-input{ margin-bottom:20px; }
+  #onboarding .ob-figuren{ margin:8px 0 22px; }
+  #onboarding .ob-hinweis{ font-size:13px; color:var(--muted); text-align:center; margin:12px 0 0; }
+  #onboarding .ob-rein{ animation:ob-rein .38s cubic-bezier(.32,.72,0,1) both; }
+  @keyframes ob-rein{ from{ transform:translateX(28px); } to{ transform:none; } }
+  @media (prefers-reduced-motion: reduce){ #onboarding, #onboarding .ob-dots span{ transition:none; } #onboarding .ob-rein{ animation:none; } }

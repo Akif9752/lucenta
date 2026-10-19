@@ -13,6 +13,9 @@
   }
   // Pflegt nur Profil-Kopf und Vergleichsarchiv der Schublade.
   function refreshDrawerState(){
+    var plusText = $('drawerPlusStand'), plusKnopf = $('btnDrawerPlus');
+    if (plusText) plusText.textContent = tx(istPlus() ? 'plus_schublade_aktiv' : 'plus_schublade_frei');
+    if (plusKnopf) plusKnopf.textContent = tx(istPlus() ? 'plus_verwalten' : 'plus_schublade_ansehen');
     var profile = loadProfile();
     renderAvatarInto($('drawerAvatar'), profile);
     $('drawerProfileName').textContent = profile.name ? profile.name : tx('js_profil');

@@ -321,6 +321,34 @@
     <div id="compatArchiveContent"></div>
   </section>
 
+  <!-- FREUNDE: nur auf diesem Geraet; verbunden mit dem Archiv ueber den Code. -->
+  <section class="view" id="view-freunde" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromFreunde" data-i18n="start_4">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="mit_anderen">Mit anderen</div>
+      <h1 data-i18n="freunde_titel">Deine Freunde</h1>
+      <p data-i18n="freunde_lead">Speichere die Menschen, mit denen du dich vergleichst – mit Name, Figur und ihrem Code. Alles bleibt auf diesem Gerät.</p>
+    </div>
+    <div class="settings-group freunde-einladen">
+      <h2 data-i18n="freunde_einladen">Freunde einladen</h2>
+      <p class="settings-group-desc" data-i18n="freunde_einladen_desc">Schick deinen Code: Wer Lucenta öffnet und ihn eingibt, sieht, wie ihr zueinander passt. Du verschickst selbst – Lucenta sendet nichts.</p>
+      <button type="button" class="btn btn-primary btn-sm" id="btnFreundeEinladen" data-i18n="freunde_einladen_knopf">Einladen</button>
+    </div>
+    <div class="settings-group">
+      <h2 data-i18n="freunde_hinzufuegen">Freund hinzufügen</h2>
+      <label class="profile-name-label" for="freundName" data-i18n="name">Name</label>
+      <input type="text" id="freundName" class="name-input" maxlength="30" autocomplete="off">
+      <label class="profile-name-label" for="freundCode" data-i18n="freunde_code">Code</label>
+      <input type="text" id="freundCode" class="name-input mono" placeholder="Code deines Freundes" data-i18n-placeholder="freunde_code_ph" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <div class="profile-name-label" data-i18n="freunde_figur">Figur</div>
+      <div class="figur-raster freund-figuren" id="freundFigurRaster" role="group" aria-label="Figur wählen" data-i18n-aria="aria_figur_waehlen"></div>
+      <button type="button" class="btn btn-ghost btn-sm" id="btnFreundSpeichern" data-i18n="freunde_speichern">Speichern</button>
+    </div>
+    <div id="freundeListe"></div>
+  </section>
+
   <!-- VERSTEHEN -->
   <section class="view" id="view-understand" tabindex="-1">
     <div class="quiz-head">
@@ -375,6 +403,18 @@
     <div class="settings-group" id="demoBlock"></div>
 
     <p class="profile-note" style="margin-top:12px;" data-i18n-html="bigfivedimensionen_gelten_au">Big-Five-Dimensionen gelten auf Wochensicht als stabil — ein echter Trend zeigt sich erst über mehrere Monate, nicht von einem Durchlauf zum nächsten. Die letzten <b id="historyMaxCount">&mdash;</b> Testdurchläufe auf diesem Gerät fließen hier ein.</p>
+  </section>
+
+  <!-- Alle frueheren Ergebnisse: Unterseite des Profils, damit das Profil kurz bleibt. -->
+  <section class="view" id="view-verlauf" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromVerlauf" data-i18n="zurueck_profil">← Profil</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="profil_eyebrow">Profil</div>
+      <h1 data-i18n="fruehere_ergebnisse_titel">Frühere Ergebnisse</h1>
+    </div>
+    <div id="verlaufAlleListe"></div>
   </section>
 
   <!-- SETTINGS -->
@@ -618,6 +658,67 @@
   </main>
 </div>
 
+<!-- ONBOARDING beim ersten Oeffnen (19c-onboarding.js). Ausserhalb von #shell, das waehrenddessen inert ist. -->
+<div id="onboarding" role="dialog" aria-modal="true" aria-label="Willkommen bei Lucenta" data-i18n-aria="ob_aria" aria-hidden="true" hidden>
+  <div class="ob-kopf">
+    <button type="button" class="ob-leise" id="btnObZurueck" hidden data-i18n="ob_zurueck">Zurück</button>
+    <div class="ob-dots" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <button type="button" class="ob-leise" id="btnObUeberspringen" data-i18n="ob_ueberspringen">Überspringen</button>
+  </div>
+
+  <section class="ob-step" data-step="1">
+    <div class="eyebrow" data-i18n="big_five">Big Five</div>
+    <h1 tabindex="-1" data-i18n="ob_1_titel">Lerne dich kennen – mit Wissenschaft.</h1>
+    <p class="ob-text" data-i18n="ob_1_text">Am Ende hältst du ein Porträt in der Hand, das wirklich zu dir passt: deinen Ergebnistyp, ein Radar über fünf Dimensionen und einen Bericht in Worten statt eines Etiketts.</p>
+    <div class="preview-card ob-vorschau">
+      <div class="preview-label" data-i18n-html="so_sieht_dein_ergebnis_aus_b">So sieht dein Ergebnis aus <span class="preview-tag">Beispiel</span></div>
+      <div class="preview-body">
+        <div class="radar-wrap preview-radar" id="obVorschauRadar"></div>
+        <div class="preview-text">
+          <div class="preview-title" data-i18n-html="visionärin__gesellig">Visionär:in <span class="sep">·</span> gesellig</div>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary ob-cta" data-ob-weiter data-i18n="ob_weiter">Weiter</button>
+  </section>
+
+  <section class="ob-step" data-step="2" hidden>
+    <h1 tabindex="-1" data-i18n="ob_2_titel">Was möchtest du über dich erfahren?</h1>
+    <p class="ob-text" data-i18n="ob_2_text">Wähle, was dich interessiert – auch mehreres.</p>
+    <div class="wahlliste ob-ziele" role="group" aria-label="Was möchtest du über dich erfahren?" data-i18n-aria="ob_2_titel">
+      <button type="button" class="wahl-zeile" role="checkbox" aria-checked="false" data-ob-ziel="verstehen"><span data-i18n="ob_ziel_verstehen">Mich selbst besser verstehen</span></button>
+      <button type="button" class="wahl-zeile" role="checkbox" aria-checked="false" data-ob-ziel="staerken"><span data-i18n="ob_ziel_staerken">Meine Stärken erkennen</span></button>
+      <button type="button" class="wahl-zeile" role="checkbox" aria-checked="false" data-ob-ziel="beziehungen"><span data-i18n="ob_ziel_beziehungen">Wie ich mit anderen zusammenpasse</span></button>
+      <button type="button" class="wahl-zeile" role="checkbox" aria-checked="false" data-ob-ziel="arbeit"><span data-i18n="ob_ziel_arbeit">Wie ich arbeite und entscheide</span></button>
+      <button type="button" class="wahl-zeile" role="checkbox" aria-checked="false" data-ob-ziel="tagesform"><span data-i18n="ob_ziel_tagesform">Wie es mir von Tag zu Tag geht</span></button>
+    </div>
+    <button type="button" class="btn btn-primary ob-cta" id="btnObZielWeiter" data-ob-weiter disabled data-i18n="ob_weiter">Weiter</button>
+  </section>
+
+  <section class="ob-step" data-step="3" hidden>
+    <h1 tabindex="-1" data-i18n="ob_3_titel">Darauf kannst du dich verlassen</h1>
+    <ul class="ob-fakten">
+      <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"></path><path d="M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"></path></svg>
+        <div><strong data-i18n="ob_fakt_wissen">Wissenschaftlich fundiert</strong><span data-i18n="ob_fakt_wissen_text">Das Big-Five-Modell ist das am besten erforschte Modell der Persönlichkeitspsychologie. Die 50 Aussagen stammen aus dem frei zugänglichen IPIP.</span></div></li>
+      <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path><path d="M9 2h6"></path></svg>
+        <div><strong data-i18n="ob_fakt_zeit">5 bis 10 Minuten</strong><span data-i18n="ob_fakt_zeit_text">Du kannst jederzeit unterbrechen und später genau dort weitermachen.</span></div></li>
+      <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+        <div><strong data-i18n="ob_fakt_privat">Bleibt bei dir</strong><span data-i18n="ob_fakt_privat_text">Deine Antworten verlassen dein Gerät nicht. Kein Konto, keine Werbung, kein Tracking.</span></div></li>
+    </ul>
+    <div class="ob-fuer-dich" id="obFuerDich"></div>
+    <button type="button" class="btn btn-primary ob-cta" data-ob-weiter data-i18n="ob_weiter">Weiter</button>
+  </section>
+
+  <section class="ob-step" data-step="4" hidden>
+    <h1 tabindex="-1" data-i18n="ob_4_titel">Wie dürfen wir dich nennen?</h1>
+    <input type="text" id="obName" class="name-input" placeholder="Dein Name" data-i18n-placeholder="ph_dein_name" maxlength="30" autocomplete="given-name">
+    <div class="profile-name-label" data-i18n="ob_figur_waehlen">Wähle deine Figur</div>
+    <div class="figur-raster ob-figuren" id="obFigurRaster" role="group" aria-label="Figur wählen" data-i18n-aria="aria_figur_waehlen"></div>
+    <button type="button" class="btn btn-primary ob-cta" id="btnObStarten" data-i18n="test_starten">Test starten →</button>
+    <p class="ob-hinweis" data-i18n="ob_4_hinweis">Name und Figur kannst du jederzeit im Profil ändern.</p>
+  </section>
+</div>
+
 <div id="drawerScrim"></div>
 <aside id="drawerPanel" role="dialog" aria-modal="true" aria-label="Weitere Funktionen" data-i18n-aria="aria_weitere_funktionen" aria-hidden="true">
   <div class="drawer-head">
@@ -669,12 +770,24 @@
     <button class="btn btn-ghost btn-sm" id="btnDrawerCompatArchive" style="align-self:flex-start;" data-i18n="archiv_ansehen">Archiv ansehen</button>
   </div>
 
+  <div class="drawer-section">
+    <div class="drawer-label" data-i18n="freunde">Freunde</div>
+    <p class="drawer-copy" data-i18n="freunde_schublade_text">Die Menschen, mit denen du dich vergleichst – und andere einladen.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerFreunde" style="align-self:flex-start;" data-i18n="freunde_oeffnen">Freunde öffnen</button>
+  </div>
+
   <!-- Einstellungen als eigene, letzte Gruppe der Schublade. -->
   <div class="drawer-group-title" data-i18n="verwalten">Verwalten</div>
   <div class="drawer-section">
     <div class="drawer-label" data-i18n="einstellungen_2">Einstellungen</div>
     <p class="drawer-copy" data-i18n="konto_darstellung_daten_und">Konto, Darstellung, Daten und Hilfe an einem Ort.</p>
     <button class="btn btn-ghost btn-sm" id="btnDrawerSettings" style="align-self:flex-start;" data-i18n="einstellungen_öffnen">Einstellungen öffnen</button>
+  </div>
+  <!-- Lucenta+: Stand, Kauf, Wiederherstellen und Verwalten an einem Ort (Entscheidung des Inhabers). -->
+  <div class="drawer-section">
+    <div class="drawer-label" data-i18n="plus_marke_klar">Lucenta+</div>
+    <p class="drawer-copy" id="drawerPlusStand" data-i18n="plus_schublade_frei">Jede Auswertung, dein ganzer Verlauf, Verstehen und jeder Vergleich – Laufzeiten und Preise ansehen.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerPlus" style="align-self:flex-start;" data-i18n="plus_schublade_ansehen">Lucenta+ ansehen</button>
   </div>
 </aside>
 
@@ -744,6 +857,7 @@
       </button>
     </div>
     <button type="button" class="btn btn-primary plus-modal-cta" id="btnPlusAktivieren" data-i18n="plus_aktivieren">Lucenta+ aktivieren</button>
+    <button type="button" class="plus-modal-leise" id="btnPlusModalWiederherstellen" data-i18n="plus_wiederherstellen">Käufe wiederherstellen</button>
     <p class="plus-modal-kuendigen" data-i18n-html="plus_kuendigen">Verlängert sich automatisch. Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
     <p class="plus-vertrauen" data-i18n="plus_vertrauen">Kein Konto · Keine Werbung · Deine Daten bleiben auf dem Gerät</p>
   </div>
