@@ -289,6 +289,8 @@ Seitenleiste, Onboarding in allen vier Schritten bis in den Test; keine JS-Fehle
 **Nicht geprueft:** am Geraet; das Teilen-Blatt beim Einladen (im Browser ohne `navigator.share`
 faellt es auf die Zwischenablage zurueck).
 
+**Fund der Fehlersuche, behoben:** „Kaeufe wiederherstellen“ im Kauffenster war 22 statt 44 Punkte hoch (Tippflaeche).
+
 **Werkzeug-Falle:** Pythons in Xcode (3.9) liest lange UTF-8-Zeilen aus einer Skriptdatei als „Non-UTF-8".
 Abhilfe: `python3 -c "exec(compile(open(p, encoding='utf-8').read(), p, 'exec'))"`.
 
