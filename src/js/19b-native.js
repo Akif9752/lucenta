@@ -289,6 +289,15 @@
   // Kuendigungsweg anbieten. Der Knopf oeffnet deshalb die Systemeinstellungen.
   function aboVerwalten(){
     var ap = nativModul('App');
-    if (!ap || !ap.openUrl){ toast(tx('plus_verwalten_nur_app')); return; }
-    try{ ap.openUrl({url:'itms-apps://apps.apple.com/account/subscriptions'}); }catch(e){}
+    var perLink = function(){
+      if (!ap || !ap.openUrl){ toast(tx('plus_verwalten_nur_app')); return; }
+      try{ ap.openUrl({url:'itms-apps://apps.apple.com/account/subscriptions'}); }catch(e){}
+    };
+    // Zuerst Apples Blatt in der App; nur wenn es nicht aufgeht, der Link.
+    var sk = nativModul('StoreKit');
+    if (sk && sk.verwalten){
+      sk.verwalten().then(function(r){ if (!r || !r.geoeffnet) perLink(); }).catch(perLink);
+      return;
+    }
+    perLink();
   }

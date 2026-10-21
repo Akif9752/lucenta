@@ -4,7 +4,30 @@
   // ueber das Teilen-Blatt: Die Person verschickt selbst, Lucenta sendet nichts.
   var FREUNDE_SCHLUESSEL = 'lucenta_freunde';
   var MAX_FREUNDE = 30;
-  var freundNeuFigur = '';
+  // Freundescode: Ergebnis-Code plus Name und Figur, die sich die Person SELBST gegeben hat — ohne
+  // Server reisen sie nur so mit (Entscheidung des Inhabers). Ein eigenes Foto passt nicht hinein; dann
+  // zeigt die Liste die Initialen. Gesucht wird im ganzen eingefuegten Text (die Einladung als Ganzes).
+  var FREUNDESCODE_MUSTER = /L1\.([0-9a-z]{10})\.([a-z]*)\.([A-Za-z0-9_-]*)/;
+  function b64url(text){
+    return btoa(unescape(encodeURIComponent(text))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function vonB64url(t){
+    try{ t = t.replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; return decodeURIComponent(escape(atob(t))); }
+    catch(e){ return ''; }
+  }
+  function eigenerFreundescode(){
+    var r = loadResult();
+    if (!r) return '';
+    var p = loadProfile();
+    var fig = (p.figur && figurFinden(p.figur)) ? p.figur : '';
+    return 'L1.' + toCode(r) + '.' + fig + '.' + b64url((p.name || '').trim().slice(0, 30));
+  }
+  function freundescodeLesen(text){
+    var m = FREUNDESCODE_MUSTER.exec(text || '');
+    if (!m || !fromCode(m[1])) return null;
+    return {code: m[1], figur: figurFinden(m[2]) ? m[2] : '', name: vonB64url(m[3]).trim().slice(0, 30)};
+  }
+  function freundName(f){ return f.name || tx('freunde_ohne_namen'); }
   // Namen sind Eingaben: nie ungeprueft als HTML einsetzen.
   function escapeHTML(t){
     return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -28,18 +51,6 @@
   function uebereinstimmung(me, other){
     var d = ORDER.reduce(function(s, f){ return s + Math.abs(me[f] - other[f]); }, 0) / ORDER.length;
     return Math.round(100 - d);
-  }
-  // Aus dem Vergleich heraus: Freunde-Seite mit vorausgefuelltem Code (und Namen, falls getippt).
-  function freundVorbereiten(code, name){
-    renderFreunde();
-    showView('freunde');
-    $('freundCode').value = code;
-    $('freundName').value = name || '';
-    setTimeout(function(){
-      var f = $('freundName');
-      f.scrollIntoView({behavior:'smooth', block:'center'});
-      try{ f.focus({preventScroll:true}); }catch(e){}
-    }, 350);
   }
   // Freunde mit gueltigem Code und ihre Uebereinstimmung mit dem eigenen Ergebnis, aehnlichste zuerst.
   function freundeNachNaehe(eigen){
@@ -67,7 +78,7 @@
       return '<polygon points="'+pts(e.sc)+'" fill="none" stroke="var('+GRUPPE_FARBEN[i]+')" stroke-width="2" stroke-linejoin="round"/>';
     }).join('');
     var eigenes = '<polygon points="'+pts(eigen)+'" fill="color-mix(in srgb, var(--accent) 22%, transparent)" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>';
-    var aria = tx('freunde_gruppe_aria') + ' ' + liste.map(function(e){ return e.f.name; }).join(', ');
+    var aria = tx('freunde_gruppe_aria') + ' ' + liste.map(function(e){ return freundName(e.f); }).join(', ');
     return '<svg viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+escapeHTML(aria)+'">'+
       ringe+achsen+eigenes+linien+'</svg>';
   }
@@ -79,7 +90,7 @@
       liste.map(function(e, i){
         return '<div class="freund-naehe-zeile"><span class="freund-naehe-rang mono">'+(i+1)+'</span>'+
           '<span class="avatar freund-avatar-klein" data-naehe-avatar="'+i+'" aria-hidden="true"></span>'+
-          '<span class="freund-naehe-name">'+escapeHTML(e.f.name)+'</span>'+
+          '<span class="freund-naehe-name">'+escapeHTML(freundName(e.f))+'</span>'+
           '<span class="freund-naehe-balken" aria-hidden="true"><span style="width:'+Math.max(4, e.match)+'%"></span></span>'+
           '<span class="freund-naehe-wert mono">'+e.match+' %</span></div>';
       }).join('')+'</div>';
@@ -122,7 +133,7 @@
 
   function freundeEinladen(){
     var eigen = loadResult();
-    var text = eigen ? tx('freunde_einladen_text').split('{code}').join(toCode(eigen)) : tx('freunde_einladen_ohne');
+    var text = eigen ? tx('freunde_einladen_text').split('{code}').join(eigenerFreundescode()) : tx('freunde_einladen_ohne');
     function inAblage(){
       if (navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(text).then(function(){ toast(tx('js_zum_teilen_kopiert')); })
@@ -137,40 +148,27 @@
     } else { inAblage(); }
   }
 
-  function freundFigurRaster(){
-    var wrap = $('freundFigurRaster');
-    if (!wrap) return;
-    var teile = ['<button type="button" class="figur-wahl figur-keine" data-freund-figur="" aria-pressed="'+
-                 (freundNeuFigur ? 'false' : 'true')+'" aria-label="'+tx('figur_keine')+'">Aa</button>'];
-    FIGUREN.forEach(function(f){
-      teile.push('<button type="button" class="figur-wahl" data-freund-figur="'+f.id+'" '+
-        'style="--figur-feld:'+f.feld+';--figur-feld-dunkel:'+figFeldDunkel(f.feld)+'" '+
-        'aria-pressed="'+(freundNeuFigur===f.id?'true':'false')+'" aria-label="'+tx('figur_'+f.id)+'">'+figurHTML(f)+'</button>');
-    });
-    wrap.innerHTML = teile.join('');
-    wrap.querySelectorAll('[data-freund-figur]').forEach(function(b){
-      b.addEventListener('click', function(){
-        freundNeuFigur = b.getAttribute('data-freund-figur') || '';
-        wrap.querySelectorAll('[data-freund-figur]').forEach(function(x){
-          x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
-        });
-      });
-    });
-  }
-
-  function freundSpeichern(){
-    var name = ($('freundName').value || '').trim();
-    var code = ($('freundCode').value || '').trim();
-    if (!name){ schuetteln($('freundName')); toast(tx('freunde_name_fehlt')); return; }
-    if (!fromCode(code)){ schuetteln($('freundCode')); toast(tx('freunde_code_ungueltig')); return; }
+  function freundAnlegen(info){
     var eigen = loadResult();
-    if (eigen && toCode(eigen) === code){ schuetteln($('freundCode')); toast(tx('freunde_eigener_code')); return; }
-    // Derselbe Code ist dieselbe Person: Name und Figur werden aktualisiert, nicht verdoppelt.
-    var l = loadFreunde().filter(function(f){ return f.code !== code; });
-    l.push({id: 'f' + Date.now().toString(36), name: name, figur: freundNeuFigur, code: code, ts: Date.now()});
-    if (!saveFreunde(l)){ toast(tx('js_konnte_nicht_gespeichert_w')); return; }
-    $('freundName').value = ''; $('freundCode').value = ''; freundNeuFigur = '';
+    if (eigen && toCode(eigen) === info.code){ toast(tx('freunde_eigener_code')); return false; }
+    // Derselbe Code ist dieselbe Person: aktualisiert, nicht verdoppelt.
+    var l = loadFreunde().filter(function(f){ return f.code !== info.code; });
+    l.push({id: 'f' + Date.now().toString(36), name: info.name, figur: info.figur, code: info.code, ts: Date.now()});
+    if (!saveFreunde(l)){ toast(tx('js_konnte_nicht_gespeichert_w')); return false; }
     toast(tx('freunde_gespeichert'));
+    return true;
+  }
+  function freundSpeichern(){
+    var feld = $('freundCode');
+    var info = freundescodeLesen(feld.value);
+    if (!info){
+      var nur = (feld.value || '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+      schuetteln(feld);
+      toast(tx(fromCode(nur) ? 'freunde_nur_freundescode' : 'freunde_code_ungueltig'));
+      return;
+    }
+    if (!freundAnlegen(info)){ schuetteln(feld); return; }
+    feld.value = '';
     renderFreunde();
     renderSettings();
   }
@@ -191,11 +189,11 @@
     }
     return '<div class="freund-zeile">'+
       '<span class="avatar freund-avatar" data-freund-avatar="'+i+'" aria-hidden="true"></span>'+
-      '<div class="freund-text"><div class="history-title">'+escapeHTML(f.name)+'</div>'+
+      '<div class="freund-text"><div class="history-title">'+escapeHTML(freundName(f))+'</div>'+
         '<div class="history-date">'+unter+'</div>'+liste+'</div>'+
       '<div class="archive-row-actions">'+
         '<button type="button" class="btn btn-ghost btn-sm" data-freund-vergleichen="'+i+'">'+tx('freunde_vergleichen')+'</button>'+
-        '<button type="button" class="archive-del" data-freund-entfernen="'+i+'" aria-label="'+tx('freunde_entfernen_aria')+' '+escapeHTML(f.name)+'">'+
+        '<button type="button" class="archive-del" data-freund-entfernen="'+i+'" aria-label="'+tx('freunde_entfernen_aria')+' '+escapeHTML(freundName(f))+'">'+
           '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>'+
         '</button>'+
       '</div></div>';
@@ -225,5 +223,7 @@
         renderSettings();
       });
     });
-    freundFigurRaster();
+    var eigen = $('freundEigenerCode'), code = eigenerFreundescode();
+    if (eigen) eigen.textContent = code || tx('freunde_erst_test');
+    if ($('btnFreundCodeKopieren')) $('btnFreundCodeKopieren').hidden = !code;
   }

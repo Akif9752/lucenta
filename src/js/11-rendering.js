@@ -431,10 +431,15 @@
       '<div class="field"><label for="compatSaveLabel">'+tx('js_name_optional')+'</label><input type="text" id="compatSaveLabel" maxlength="30" placeholder="'+decodeEntities(tx('ph_z_b_1a2b3c4d5e_mia'))+'"></div>'+
       '<button type="button" class="btn btn-ghost btn-sm" id="btnSaveCompat">'+tx('js_vergleich_speichern')+'</button>'+
       '</div>';
-    // Aus dem Vergleich die Person als Freund speichern (Entscheidung des Inhabers) — ausser sie ist es schon.
+    // Aus dem Vergleich die Person als Freund speichern — nur mit ihrem Freundescode, denn Name und Figur
+    // gibt sich jede Person selbst (Entscheidung des Inhabers). Nicht, wenn sie es schon ist.
     var andererCode = $('cmpOther').value.trim();
+    var freundInfo = null;
+    try{ freundInfo = JSON.parse($('cmpOther').getAttribute('data-freund') || 'null'); }catch(e){}
+    if (freundInfo && freundInfo.code !== andererCode) freundInfo = null;
     var schonFreund = loadFreunde().some(function(f){ return f.code === andererCode; });
-    var freundRow = schonFreund ? '' : '<button type="button" class="btn btn-ghost btn-sm compat-als-freund" id="btnAlsFreund">'+tx('freunde_als_freund')+'</button>';
+    var freundRow = (schonFreund || !freundInfo) ? '' : '<button type="button" class="btn btn-ghost btn-sm compat-als-freund" id="btnAlsFreund">'+
+      tx('freunde_als_freund_name').split('{name}').join(escapeHTML(freundName(freundInfo)))+'</button>';
     // Der frueher hier stehende Hinweiskasten ist raus: Er saesse unter fuenf Karten, die den
     // gleichen Hinweis schon in sich tragen, und wuerde denselben Satz sechsmal sagen.
     if (vergleichGesperrt){
@@ -449,8 +454,7 @@
     box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note +
       (archivVoll() ? archivSchloss : saveRow) + freundRow;
     if ($('btnAlsFreund')) $('btnAlsFreund').addEventListener('click', function(){
-      var l = $('compatSaveLabel');
-      freundVorbereiten(andererCode, l ? l.value.trim().slice(0, 30) : '');
+      if (freundAnlegen(freundInfo)){ var b = $('btnAlsFreund'); if (b) b.remove(); refreshDrawerState(); }
     });
     startCompatBars(box);
     schloesserVerdrahten(box);

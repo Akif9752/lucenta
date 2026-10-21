@@ -39,7 +39,8 @@ public class LucentaKaeufePlugin: CAPInstancePlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "stand", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "kaufen", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "restorePurchases", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "preise", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "preise", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "verwalten", returnType: CAPPluginReturnPromise)
     ]
 
     /// Die beiden Abo-Produkte, in derselben Abo-Gruppe. Die Liste steht hier UND in
@@ -195,6 +196,22 @@ public class LucentaKaeufePlugin: CAPInstancePlugin, CAPBridgedPlugin {
             var antwort: [String: Any] = ["aktiv": abo.aktiv, "produkt": abo.produkt ?? ""]
             if abgebrochen && !abo.aktiv { antwort["abgebrochen"] = true }
             call.resolve(antwort)
+        }
+    }
+
+    /// Apples eigenes Blatt "Abos verwalten" in der App (iOS 15+). Der Link nach itms-apps oeffnete im
+    /// Simulator nichts und fuehrte am Geraet aus der App heraus.
+    @objc func verwalten(_ call: CAPPluginCall) {
+        Task { @MainActor in
+            guard let szene = self.bridge?.viewController?.view.window?.windowScene else {
+                call.resolve(["geoeffnet": false]); return
+            }
+            do {
+                try await AppStore.showManageSubscriptions(in: szene)
+                call.resolve(["geoeffnet": true])
+            } catch {
+                call.resolve(["geoeffnet": false])
+            }
         }
     }
 }

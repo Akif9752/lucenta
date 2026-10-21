@@ -80,6 +80,14 @@
   $('btnBackFromFreunde').addEventListener('click', function(){ showView('landing'); });
   $('btnFreundeEinladen').addEventListener('click', freundeEinladen);
   $('btnFreundSpeichern').addEventListener('click', freundSpeichern);
+  $('freundCode').addEventListener('keydown', function(e){ if (e.key === 'Enter') freundSpeichern(); });
+  $('btnFreundCodeKopieren').addEventListener('click', function(){
+    var code = eigenerFreundescode();
+    if (!code) return;
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(code).then(function(){ toast(tx('freunde_code_kopiert')); }).catch(function(){ toast(code); });
+    } else toast(code);
+  });
   $('btnDrawerUnderstand').addEventListener('click', function(){ closeDrawer(true); renderUnderstand(); showView('understand'); });
   $('btnLandingTeaserMore').addEventListener('click', function(){ renderUnderstand(); showView('understand'); });
   $('btnBackFromUnderstand').addEventListener('click', function(){ showView('landing'); });
@@ -164,10 +172,8 @@
     if (saveProfile(profile) && !profile.avatarImg) renderAvatar(profile);
   });
   $('btnDrawerSettings').addEventListener('click', function(){ closeDrawer(true); applyTheme(loadThemeMode()); renderSettings(); showView('settings'); });
-  $('btnDrawerPlus').addEventListener('click', function(){
-    closeDrawer(true);
-    if (istPlus()) aboVerwalten(); else openPlusModal();
-  });
+  $('btnDrawerPlus').addEventListener('click', function(){ closeDrawer(true); renderPlusSeite(); showView('plus'); });
+  plusSeiteVerdrahten();
   $('btnPlusModalWiederherstellen').addEventListener('click', kaeufeWiederherstellen);
   $('btnBackFromSettings').addEventListener('click', function(){ showView('landing'); });
   ['themeSystem','themeLight','themeDark'].forEach(function(id){
@@ -224,7 +230,14 @@
   });
   $('btnCompare').addEventListener('click', renderCompat);
   // Dieselbe Normalisierung und Pruefung fuer alle Felder mit einem Ergebnis-Code.
-  [$('cmpMe'), $('cmpOther'), $('restoreCodeInput'), $('freundCode')].forEach(function(inp){
+  // Ein eingefuegter Freundescode (oder die ganze Einladung) im Vergleichsfeld: Name und Figur der
+  // Person werden gemerkt, im Feld bleibt der Ergebnis-Code.
+  $('cmpOther').addEventListener('input', function(){
+    var info = freundescodeLesen($('cmpOther').value);
+    if (info){ $('cmpOther').setAttribute('data-freund', JSON.stringify(info)); $('cmpOther').value = info.code; }
+    else if ($('cmpOther').value.length < 10) $('cmpOther').removeAttribute('data-freund');
+  }, true);
+  [$('cmpMe'), $('cmpOther'), $('restoreCodeInput')].forEach(function(inp){
     inp.addEventListener('input', function(){
       var clean = inp.value.replace(/[^a-z0-9]/gi,'').toLowerCase().slice(0,10);
       if (clean !== inp.value) inp.value = clean;

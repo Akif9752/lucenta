@@ -116,7 +116,17 @@
         match: Math.round(100 - abw), label: a.label
       };
     });
+    // Freunde, wie sie per Freundescode ankaemen: Name und Figur hat sich jede Person selbst gegeben.
+    // Die vier aus dem Archiv, dazu zwei ohne Vergleich; Noah ohne Figur (Initialen).
+    var freundeFiguren = {Mia:'katze', Jonas:'baer', Elif:'eule', Ben:'dackel'};
+    var freunde = andere.map(function(a, k){
+      return {id:'demof'+k, name:a.label, figur:freundeFiguren[a.label], code:toCode(a.sc), ts: jetzt - (140 - k*30)*TAG_MS};
+    }).concat([
+      {id:'demof4', name:'Sara', figur:'hase', code:toCode({O:62, C:70, E:35, A:81, S:47}), ts: jetzt - 12*TAG_MS},
+      {id:'demof5', name:'Noah', figur:'',     code:toCode({O:39, C:58, E:77, A:46, S:61}), ts: jetzt - 3*TAG_MS}
+    ]);
     return {
+      lucenta_freunde: JSON.stringify(freunde),
       lucenta_result: JSON.stringify(ergebnis),
       lucenta_history: JSON.stringify(verlauf),
       lucenta_state: JSON.stringify(zustand),

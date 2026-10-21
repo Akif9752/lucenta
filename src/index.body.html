@@ -208,7 +208,7 @@
     <p class="section-lead" data-i18n="vergleiche_dein_profil_mit_d">Vergleiche dein Profil mit dem einer anderen Person &mdash; z. B. Partner:in, beste:r Freund:in oder Familie. Beide Codes eintragen, fertig.</p>
     <div class="compare-box">
       <div class="field"><label for="cmpMe" data-i18n="dein_code">Dein Code</label><input type="text" id="cmpMe" maxlength="12" placeholder="z. B. 1a2b3c4d5e" data-i18n-placeholder="ph_z_b_1a2b3c4d5e"></div>
-      <div class="field"><label for="cmpOther" data-i18n="code_der_anderen_person">Code der anderen Person</label><input type="text" id="cmpOther" maxlength="12" placeholder="Code einfügen" data-i18n-placeholder="ph_code_einfügen"></div>
+      <div class="field"><label for="cmpOther" data-i18n="code_der_anderen_person">Code der anderen Person</label><input type="text" id="cmpOther" placeholder="Code einfügen" data-i18n-placeholder="ph_code_einfügen"></div>
       <button class="btn btn-primary btn-sm" id="btnCompare" style="align-self:flex-start;" data-i18n="vergleichen">Vergleichen</button>
       <div class="compat-result" id="compatResult" aria-live="polite"></div>
     </div>
@@ -321,6 +321,19 @@
     <div id="compatArchiveContent"></div>
   </section>
 
+  <!-- LUCENTA+ als Seite (18b-plus-seite.js) -->
+  <section class="view" id="view-plus" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromPlus" data-i18n="start_4">← Start</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="plus_marke_klar">Lucenta+</div>
+      <h1 id="plusSeiteTitel"></h1>
+      <p id="plusSeiteStand"></p>
+    </div>
+    <div id="plusSeiteInhalt"></div>
+  </section>
+
   <!-- FREUNDE: nur auf diesem Geraet; verbunden mit dem Archiv ueber den Code. -->
   <section class="view" id="view-freunde" tabindex="-1">
     <div class="quiz-head">
@@ -329,22 +342,22 @@
     <div class="archetypes-head">
       <div class="eyebrow" data-i18n="mit_anderen">Mit anderen</div>
       <h1 data-i18n="freunde_titel">Deine Freunde</h1>
-      <p data-i18n="freunde_lead">Speichere die Menschen, mit denen du dich vergleichst – mit Name, Figur und ihrem Code. Alles bleibt auf diesem Gerät.</p>
+      <p data-i18n="freunde_lead">Deine Freunde – mit dem Namen und der Figur, die sie sich selbst gegeben haben. Alles bleibt auf diesem Gerät.</p>
     </div>
     <div id="freundeUebersicht"></div>
     <div class="settings-group freunde-einladen">
       <h2 data-i18n="freunde_einladen">Freunde einladen</h2>
-      <p class="settings-group-desc" data-i18n="freunde_einladen_desc">Schick deinen Code: Wer Lucenta öffnet und ihn eingibt, sieht, wie ihr zueinander passt. Du verschickst selbst – Lucenta sendet nichts.</p>
-      <button type="button" class="btn btn-primary btn-sm" id="btnFreundeEinladen" data-i18n="freunde_einladen_knopf">Einladen</button>
+      <p class="settings-group-desc" data-i18n="freunde_einladen_desc2">Dein Freundescode trägt dein Ergebnis, deinen Namen und deine Figur – so sehen deine Freunde dich, wie du dich selbst eingestellt hast. Du verschickst ihn selbst, Lucenta sendet nichts.</p>
+      <div class="freund-eigener-code mono" id="freundEigenerCode"></div>
+      <div class="daten-knoepfe">
+        <button type="button" class="btn btn-primary btn-sm" id="btnFreundeEinladen" data-i18n="freunde_einladen_knopf">Einladen</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnFreundCodeKopieren" data-i18n="freunde_code_kopieren">Kopieren</button>
+      </div>
     </div>
     <div class="settings-group">
       <h2 data-i18n="freunde_hinzufuegen">Freund hinzufügen</h2>
-      <label class="profile-name-label" for="freundName" data-i18n="name">Name</label>
-      <input type="text" id="freundName" class="name-input" maxlength="30" autocomplete="off">
-      <label class="profile-name-label" for="freundCode" data-i18n="freunde_code">Code</label>
-      <input type="text" id="freundCode" class="name-input mono" placeholder="Code deines Freundes" data-i18n-placeholder="freunde_code_ph" autocomplete="off" autocapitalize="characters" spellcheck="false">
-      <div class="profile-name-label" data-i18n="freunde_figur">Figur</div>
-      <div class="figur-raster freund-figuren" id="freundFigurRaster" role="group" aria-label="Figur wählen" data-i18n-aria="aria_figur_waehlen"></div>
+      <p class="settings-group-desc" data-i18n="freunde_hinzufuegen_desc">Füge den Freundescode ein, den du bekommen hast – oder gleich die ganze Einladung. Name und Figur kommen von der Person selbst.</p>
+      <input type="text" id="freundCode" class="name-input mono" placeholder="Freundescode einfügen" data-i18n-placeholder="freunde_code_ph2" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Freundescode" data-i18n-aria="freunde_code_ph2">
       <button type="button" class="btn btn-ghost btn-sm" id="btnFreundSpeichern" data-i18n="freunde_speichern">Speichern</button>
     </div>
     <div id="freundeListe"></div>

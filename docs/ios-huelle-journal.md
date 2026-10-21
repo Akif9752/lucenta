@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-21, nach Runde 149)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-22, nach Runde 150)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 149 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 150 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 149 | — | Dunkel als Vorgabe; Hellmodus gedaempft (#E6E5E0/#F3F2EE, Schrift nachgedunkelt); Mit Apple anmelden + private iCloud (`LucentaKontoPlugin.swift`, `19d-konto.js`) |
+| 150 | — | Freundescode (`L1.<code>.<figur>.<name>`): Name und Figur kommen von der Person selbst; Beispiel-Freunde; Lucenta+ als eigene Seite (`view-plus`); „Abo verwalten“ als StoreKit-Blatt |
+| 149 | `1728f4c` | Dunkel als Vorgabe; Hellmodus gedaempft (#E6E5E0/#F3F2EE, Schrift nachgedunkelt); Mit Apple anmelden + private iCloud (`LucentaKontoPlugin.swift`, `19d-konto.js`) |
 | 148 | `a09baf0` | Freunde: „Als Freund speichern“ im Vergleich, Rangliste nach Naehe, Gruppen-Radar (Lucenta+); Onboarding im Simulator geprueft; Start ueberlebt Fehler im Onboarding |
 | 147 | `de12cb7` | Freunde (`06b-freunde.js`, `view-freunde`), Lucenta+ in der Seitenleiste, Verlauf im Profil kurz + Unterseite `view-verlauf`, Onboarding beim ersten Oeffnen (`19c-onboarding.js`) |
 | 146 | `fbba58a` | Nach dem echten Tier: Waldkauz dunkle Augen, Reh ohne weisse Brauen, gewoehnlicher (laenglicher) Goldfisch, Buckelwal schiefergrau, Retriever erwachsen, Fuchs schmaler, Dackel seidig, Katze flacheres Unterlid |
@@ -250,6 +251,39 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 150 — Freundescode, Beispiel-Freunde, Lucenta+ als Seite
+
+**Auftrag des Inhabers:** (1) Freunde nicht selbst mit Name und Avatar speichern — sichtbar soll sein,
+was die Person fuer sich selbst angegeben hat. (2) Dem Beispielprofil ein paar Freunde geben. (3) Lucenta+
+in der Seitenleiste: mit Abo passiert nichts; ohne Abo kommt nur das alte Fenster statt einer Seite.
+
+**Freundescode (`06b-freunde.js`):** Ohne Server kann der selbst gewaehlte Name nur mit dem Code
+mitreisen. Format `L1.<Ergebnis-Code>.<Figur>.<Name als base64url>` (UTF-8 — „Zoë" und „健二" geprueft).
+Gesucht wird im ganzen eingefuegten Text, man kann die Einladung als Ganzes einfuegen. Das Formular hat
+nur noch dieses eine Feld; Name und Figur sind nicht mehr waehlbar. Ein reiner Ergebnis-Code wird mit
+Erklaerung abgewiesen. „Dein Freundescode" steht auf der Seite (Kopieren, Einladen); die Einladung traegt
+ihn. Im Vergleichsfeld eingefuegt merkt er sich Name und Figur, „{Name} als Freund speichern" legt
+direkt an (ohne Formular). **Grenze:** Ein eigenes Foto passt nicht in einen Text-Code — dann Initialen.
+Aendert jemand spaeter Name oder Figur, sieht man das erst mit einem neuen Code (kein Server).
+Das Vergleichsfeld hatte `maxlength="12"` und haette den Code abgeschnitten — entfernt.
+
+**Beispiel-Freunde (`14-demo.js`):** die vier aus dem Archiv (Mia/Katze, Jonas/Baer, Elif/Eule,
+Ben/Dackel, mit Vergleichen), dazu Sara/Hase und Noah ohne Figur (Initialen) ohne Vergleich. Sie laufen
+ueber `DATEN_SCHLUESSEL` mit — „Beispieldaten entfernen" stellt die eigenen Freunde wieder her.
+
+**Lucenta+ als Seite (`18b-plus-seite.js`, `view-plus`):** Die Seitenleiste oeffnet jetzt eine Seite.
+Mit Abo: „Lucenta+ ist aktiv", Laufzeit (Jahr/Monat aus `lucenta_plus_produkt`), was freigeschaltet ist,
+„Abo verwalten", „Kaeufe wiederherstellen". Ohne Abo: Stand, was enthalten ist, Preise, „Lucenta+
+aktivieren" oeffnet das Kauffenster (eine Stelle fuer Laufzeitwahl und Kauf). „Mit Abo passiert nichts"
+war ein zweiter Fehler: `aboVerwalten` oeffnete einen itms-apps-Link, den es im Simulator nicht gibt und der
+am Geraet aus der App fuehrte. Jetzt zuerst Apples Blatt in der App (`StoreKit.verwalten` ->
+`AppStore.showManageSubscriptions`, neu in `LucentaKaeufePlugin.swift`), der Link nur als Rueckfall.
+
+**Geprueft (WebKit):** Beispiel -> sechs Freunde mit Figuren/Initialen; eigener Code; Einladung mit
+„Zoë" eingefuegt -> Zoë/Panda; reiner Code -> Erklaerung; Vergleich mit Code „健二" -> Knopf
+„健二 als Freund speichern" -> gespeichert/Wal; Lucenta+-Seite frei (Kauffenster oeffnet) und aktiv
+(„Jaehrliches Abo"); keine JS-Fehler. **Nicht geprueft:** das StoreKit-Verwalten-Blatt am Geraet.
 
 ## Runde 149 — Dunkel als Vorgabe, Hell gedaempft, Mit Apple anmelden + iCloud
 
