@@ -1,5 +1,6 @@
 // ---------- settings ----------
   function renderSettings(){
+    kontoAnwenden();
     var progress = loadProgress();
     var result = loadResult();
     var profile = loadProfile();

@@ -38,7 +38,7 @@ class MainViewController: CAPBridgeViewController {
     private let papierfarbe = UIColor { tc in
         tc.userInterfaceStyle == .dark
             ? UIColor(red: 0, green: 0, blue: 0, alpha: 1) // #000000
-            : UIColor(red: 0xF2/255.0, green: 0xF2/255.0, blue: 0xF7/255.0, alpha: 1) // #F2F2F7
+            : UIColor(red: 0xE6/255.0, green: 0xE5/255.0, blue: 0xE0/255.0, alpha: 1) // #E6E5E0
     }
 
     override func viewDidLoad() {
@@ -58,6 +58,7 @@ class MainViewController: CAPBridgeViewController {
     override func capacitorDidLoad() {
         super.capacitorDidLoad()
         bridge?.registerPluginInstance(LucentaKaeufePlugin())
+        bridge?.registerPluginInstance(LucentaKontoPlugin())
         transparenzVorzeichnen()
         transparenzBeobachten()
         themaEmpfangen()
@@ -149,12 +150,13 @@ class MainViewController: CAPBridgeViewController {
     /// Schluessel in UserDefaults; Werte wie in der Seite: "dark", "light", "system".
     static let themaSchluessel = "lucenta_thema"
 
-    /// Der gespeicherte Stil fuer das Fenster. Ohne Eintrag (erster Start) folgt es dem System.
+    /// Der gespeicherte Stil fuer das Fenster. Ohne Eintrag (erster Start) dunkel — Entscheidung des
+    /// Inhabers; "System" muss ausdruecklich gewaehlt sein.
     static func gespeicherterStil() -> UIUserInterfaceStyle {
         switch UserDefaults.standard.string(forKey: themaSchluessel) {
-        case "dark": return .dark
         case "light": return .light
-        default: return .unspecified
+        case "system": return .unspecified
+        default: return .dark
         }
     }
 

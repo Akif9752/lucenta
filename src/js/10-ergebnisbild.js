@@ -3,7 +3,7 @@
 // keine Deckungswerte gegen einen Hintergrund) und muessen bei jeder Aenderung der Palette in
 // 00-grundlagen.css nachgefuehrt werden — die Testreihe "Das Bild folgt dem Farbmodus" haelt beide
 // zusammen.
-  var SHARE_COLORS = { paper:'#F2F2F7', ink:'#000000', muted:'#636366', line:'#C6C6C8', accent:'#2C6863', accentFill:'rgba(44,104,99,.26)', accent2:'#BF7438' };
+  var SHARE_COLORS = { paper:'#E6E5E0', ink:'#000000', muted:'#5A5A5D', line:'#BFBEB8', accent:'#285F5B', accentFill:'rgba(40,95,91,.26)', accent2:'#BF7438' };
   var SHARE_COLORS_DARK = { paper:'#000000', ink:'#FFFFFF', muted:'#98989F', line:'#38383A', accent:'#5CB4AD', accentFill:'rgba(92,180,173,.26)', accent2:'#E39A5C' };
   function shareColors(){ return dunkelAktiv() ? SHARE_COLORS_DARK : SHARE_COLORS; }
 

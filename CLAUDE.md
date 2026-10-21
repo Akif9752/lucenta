@@ -1,9 +1,13 @@
 # Lucenta
 
 Ein Persönlichkeitsporträt nach dem Big-Five-Modell (50 IPIP-Aussagen), als **eine einzige
-HTML-Datei**, ausschließlich fürs iPhone. Kein Server, kein Konto, keine Werbung, kein
-Tracking, kein Fremdabruf. Die Antworten verlassen das Gerät nicht — das ist keine
-Marketingaussage, sondern eine Eigenschaft, die im Code durchgehalten werden muss.
+HTML-Datei**, ausschließlich fürs iPhone. Kein eigener Server, kein Konto bei uns, keine Werbung,
+kein Tracking, kein Fremdabruf. Die Antworten verlassen das Gerät nicht — das ist keine
+Marketingaussage, sondern eine Eigenschaft, die im Code durchgehalten werden muss. Einzige
+Ausnahme seit Runde 149 (Entscheidung des Inhabers): freiwillig „Mit Apple anmelden“, dann liegt der
+Bestand Ende-zu-Ende verschlüsselt in der **privaten iCloud der Person** (CloudKit,
+`LucentaKontoPlugin.swift`) — wir können ihn nicht lesen, „Data Not Collected“ bleibt wahr. E-Mail-
+oder Google-Konten bräuchten einen eigenen Server und sind deshalb bewusst nicht gebaut.
 
 Die Oberfläche ist deutsch, ebenso Bezeichner, Kommentare und Commit-Nachrichten. Bitte
 beibehalten; ein englischer Bezeichner mitten in `figSchnurrhaare` liest sich falsch.

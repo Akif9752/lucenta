@@ -2,7 +2,7 @@
   CONTENT.en = {
     RECHT: {
       impressum: '<h3>Provider</h3><p>{{name}}<br>{{strasse}}<br>{{ort}}<br>{{land}}</p><h3>Contact</h3><p>Email: {{email}}</p><h3>Responsible for content</h3><p>{{name}}, address as above.</p><h3>VAT</h3><p>{{ust}}</p><h3>Dispute resolution</h3><p>The European Commission provides a platform for online dispute resolution: <code>ec.europa.eu/consumers/odr</code>. We are neither willing nor obliged to take part in dispute resolution proceedings before a consumer arbitration board.</p><h3>Liability</h3><p>Lucenta is a tool for self-reflection and not a clinical or diagnostic instrument. Its results do not replace therapeutic, psychological or medical advice and are not intended for decisions about hiring, selection or assessment of people.</p><p>The operators of linked external pages are solely responsible for their content. No legal violations were apparent at the time of linking.</p>',
-      datenschutz: '<h3>In short</h3><p>Lucenta has no server. Your answers, your result, your history, your check-ins and your profile never leave your device. There is no account, no advertising, no tracking and nothing passed to third parties.</p><h3>Controller</h3><p>{{name}}, {{strasse}}, {{ort}} &mdash; email: {{email}}</p><h3>What is stored on your device</h3><ul><li><code>lucenta_result</code> &mdash; your last result (five numbers)</li><li><code>lucenta_history</code> &mdash; up to twelve earlier results with dates</li><li><code>lucenta_state</code> &mdash; up to 150 entries on energy and mood, each with date and time of day</li><li><code>lucenta_profile</code> &mdash; name, chosen figure, colour and a picture you chose</li><li><code>lucenta_compat_archive</code> &mdash; up to 20 saved comparisons</li><li><code>lucenta_freunde</code> &mdash; up to 30 saved friends with name, figure and code</li><li><code>lucenta_progress</code> &mdash; one interrupted test run</li><li>settings for appearance, language, haptics and motion</li></ul><p>All of this lives in your device&rsquo;s local storage only. None of it is transmitted to us or to anyone else at any point. You can delete it yourself at any time under Settings &rarr; Data &amp; privacy &rarr; &ldquo;Reset my data&rdquo;, or by deleting Lucenta from your device.</p><h3>Fonts</h3><p>The fonts are part of the file itself. Nothing is fetched when you open the app, and there is no connection to Google Fonts or any other third party. Fraunces, Work Sans and IBM Plex Mono are used under the SIL Open Font License 1.1.</p><h3>Your rights</h3><p>You have the rights to access, rectification, erasure, restriction of processing, data portability and objection (Art. 15 to 21 GDPR), as well as the right to lodge a complaint with a supervisory authority. Because we store no personal data about you, we can neither provide information about your content nor delete it &mdash; it exists only on your device.</p><h3>Changes</h3><p>Version of this statement: {{stand}}.</p>'
+      datenschutz: '<h3>In short</h3><p>Lucenta has no server. Your answers, your result, your history, your check-ins and your profile never leave your device &ndash; except to your own iCloud if you choose to sign in with Apple (see below). There is no account, no advertising, no tracking and nothing passed to third parties.</p><h3>Sign in with Apple (optional)</h3><p>If you sign in with Apple, Lucenta also backs up your data in your own private iCloud (Apple CloudKit), end-to-end encrypted. We receive neither your name nor your email address, only a random identifier that stays on your device. Only you and your Apple Account can access this data, not us. You can sign out any time in Settings; the iCloud data is deleted in your iPhone’s iCloud settings.</p><h3>Controller</h3><p>{{name}}, {{strasse}}, {{ort}} &mdash; email: {{email}}</p><h3>What is stored on your device</h3><ul><li><code>lucenta_result</code> &mdash; your last result (five numbers)</li><li><code>lucenta_history</code> &mdash; up to twelve earlier results with dates</li><li><code>lucenta_state</code> &mdash; up to 150 entries on energy and mood, each with date and time of day</li><li><code>lucenta_profile</code> &mdash; name, chosen figure, colour and a picture you chose</li><li><code>lucenta_compat_archive</code> &mdash; up to 20 saved comparisons</li><li><code>lucenta_freunde</code> &mdash; up to 30 saved friends with name, figure and code</li><li><code>lucenta_progress</code> &mdash; one interrupted test run</li><li>settings for appearance, language, haptics and motion</li></ul><p>All of this lives in your device&rsquo;s local storage only. None of it is transmitted to us or to anyone else at any point. You can delete it yourself at any time under Settings &rarr; Data &amp; privacy &rarr; &ldquo;Reset my data&rdquo;, or by deleting Lucenta from your device.</p><h3>Fonts</h3><p>The fonts are part of the file itself. Nothing is fetched when you open the app, and there is no connection to Google Fonts or any other third party. Fraunces, Work Sans and IBM Plex Mono are used under the SIL Open Font License 1.1.</p><h3>Your rights</h3><p>You have the rights to access, rectification, erasure, restriction of processing, data portability and objection (Art. 15 to 21 GDPR), as well as the right to lodge a complaint with a supervisory authority. Because we store no personal data about you, we can neither provide information about your content nor delete it &mdash; it exists only on your device.</p><h3>Changes</h3><p>Version of this statement: {{stand}}.</p>'
     },
     LABELS: {E:'Extraversion', A:'Agreeableness', C:'Conscientiousness', S:'Emotional stability', O:'Openness'},
     RADAR_LABELS: {E:'EXTRA.', A:'AGREE.', C:'CONSC.', S:'STABIL.', O:'OPEN.'},
@@ -991,7 +991,7 @@
       'ob_fakt_zeit': '5 to 10 minutes',
       'ob_fakt_zeit_text': 'You can pause any time and pick up exactly where you left off.',
       'ob_fakt_privat': 'Stays with you',
-      'ob_fakt_privat_text': 'Your answers never leave your device. No account, no ads, no tracking.',
+      'ob_fakt_privat_text': 'Without signing in, your answers never leave your device; with Sign in with Apple they’re stored encrypted in your own iCloud. No ads, no tracking.',
       'ob_4_titel': 'What should we call you?',
       'ob_figur_waehlen': 'Choose your figure',
       'ob_4_hinweis': 'You can change your name and figure in your profile any time.',
@@ -1001,6 +1001,22 @@
       'freunde_gruppe_aria': 'Group picture: your profile and',
       'freunde_du': 'You',
       'plus_freunde_gruppe': 'With Lucenta+ you see your friends together in your radar – who resembles you where, at a glance.',
+      'konto_apple': 'Sign in with Apple',
+      'ob_schon_dabei': 'Already using Lucenta? Sign in with Apple',
+      'konto_text_aus': 'Sign in with Apple: your data is then also stored encrypted in your own iCloud and comes along to a new iPhone. We never see it.',
+      'konto_text_an': 'Signed in with Apple. Your data is backed up encrypted in your iCloud.',
+      'konto_zuletzt': 'Last backed up:',
+      'konto_kein_icloud': 'No iCloud account is active on this iPhone. The backup waits until you’re signed in to iCloud in Settings.',
+      'konto_sichern': 'Back up now',
+      'konto_laden': 'Load from iCloud',
+      'konto_abmelden': 'Sign out',
+      'konto_gesichert': 'Backed up to iCloud.',
+      'konto_offline': 'No connection right now – Lucenta will back up next time.',
+      'konto_zu_gross': 'Too large for iCloud – remove the profile photo and try again.',
+      'konto_leer': 'There’s nothing from Lucenta in your iCloud yet.',
+      'konto_frage_laden': 'Your iCloud holds a backup from {datum}. Load it? The data on this iPhone will be replaced.',
+      'konto_abgemeldet': 'Signed out. Your iCloud data is kept.',
+      'konto_fehler': 'That didn’t work. Please try again.',
       'analysiere_deine_antworten_h': 'Analysing your answers &hellip;'
     }
   };

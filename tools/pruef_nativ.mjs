@@ -374,7 +374,7 @@ ok(farbenVorher.length >= 2, 'es gibt mehrere theme-color-Eintraege ('+farbenVor
 await seite.evaluate(() => document.getElementById('themeLight')?.click());
 await seite.waitForTimeout(200);
 const hell = await themeFarben();
-ok(hell.every(f => f === '#F2F2F7'),
+ok(hell.every(f => f === '#E6E5E0'),
    'bei Wahl "hell" tragen alle Eintraege die helle Farbe: ' + hell.join(' '));
 
 await seite.evaluate(() => document.getElementById('themeDark')?.click());
@@ -386,8 +386,10 @@ ok(dunkel.every(f => f === '#000000'),
 await seite.evaluate(() => document.getElementById('themeSystem')?.click());
 await seite.waitForTimeout(200);
 const zurueck = await themeFarben();
-ok(zurueck.join(' ') === farbenVorher.join(' '),
-   'bei "System" stehen die Ausgangswerte wieder da: ' + zurueck.join(' '));
+// Seit Runde 149 startet die App dunkel (Vorgabe des Inhabers), nicht in "System" — "System" stellt
+// deshalb die Werte aus dem Kopf der Seite wieder her (hell / dunkel je nach Geraet).
+ok(zurueck.join(' ') === '#E6E5E0 #000000',
+   'bei "System" stehen die Werte aus dem Kopf der Seite wieder da: ' + zurueck.join(' '));
 
 // --- Runde 113: der Entwicklungsbau
 //

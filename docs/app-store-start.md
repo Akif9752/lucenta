@@ -59,8 +59,13 @@ die Store-Beschreibung muss es genauso halten.
 - **Die App läuft ohne Netz vollständig.** Seit Runde 80 stehen auch die Schriften in der
   Datei. Vorher hätte die App in der U-Bahn in Systemschrift geöffnet — für eine Webseite
   ein Schönheitsfehler, für eine App aus dem Store ein Fehler.
-- **Keine Verbindung nach außen.** Kein Server, kein Konto, keine Werbung, kein Tracking,
-  kein Fremdabruf. Das vereinfacht die Datenschutzangaben im Store auf den kleinstmöglichen
+- **Keine Verbindung nach außen.** Kein eigener Server, kein Konto bei uns, keine Werbung, kein
+  Tracking, kein Fremdabruf. Ausnahme seit Runde 149: freiwillig „Mit Apple anmelden“ mit Sicherung in
+  der privaten iCloud der Person (Ende-zu-Ende verschlüsselt, ohne Name und E-Mail) — nach Apples
+  Definition kein „Collected“. **Nur vom Inhaber zu erledigen:** im bezahlten Developer-Account die
+  Fähigkeiten „Sign in with Apple“ und „iCloud → CloudKit“ für `app.lucenta.ios` aktivieren und den
+  Container `iCloud.app.lucenta.ios` anlegen; im CloudKit-Dashboard das Schema (Datensatztyp
+  `LucentaDaten`) in die Produktion übernehmen, bevor die App in den Store geht. Das vereinfacht die Datenschutzangaben im Store auf den kleinstmöglichen
   Fall (siehe Abschnitt 4).
 - **Acht Sprachen** (de, en, es, fr, it, pt, tr, ja), item-für-item durch die Testreihe
   abgesichert.

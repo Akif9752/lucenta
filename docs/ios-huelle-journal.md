@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-21, nach Runde 148)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-21, nach Runde 149)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 148 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 149 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 148 | — | Freunde: „Als Freund speichern“ im Vergleich, Rangliste nach Naehe, Gruppen-Radar (Lucenta+); Onboarding im Simulator geprueft; Start ueberlebt Fehler im Onboarding |
+| 149 | — | Dunkel als Vorgabe; Hellmodus gedaempft (#E6E5E0/#F3F2EE, Schrift nachgedunkelt); Mit Apple anmelden + private iCloud (`LucentaKontoPlugin.swift`, `19d-konto.js`) |
+| 148 | `a09baf0` | Freunde: „Als Freund speichern“ im Vergleich, Rangliste nach Naehe, Gruppen-Radar (Lucenta+); Onboarding im Simulator geprueft; Start ueberlebt Fehler im Onboarding |
 | 147 | `de12cb7` | Freunde (`06b-freunde.js`, `view-freunde`), Lucenta+ in der Seitenleiste, Verlauf im Profil kurz + Unterseite `view-verlauf`, Onboarding beim ersten Oeffnen (`19c-onboarding.js`) |
 | 146 | `fbba58a` | Nach dem echten Tier: Waldkauz dunkle Augen, Reh ohne weisse Brauen, gewoehnlicher (laenglicher) Goldfisch, Buckelwal schiefergrau, Retriever erwachsen, Fuchs schmaler, Dackel seidig, Katze flacheres Unterlid |
 | 145 | `b92ea2b` | Panda und Hase echt proportioniert; Ohren und Flossen durchscheinend (`duenne`, Shader `durchschein…`); feinere Iris; nasse Haut (`Koerper.lack`); Goldfisch mit Dachziegel-Schuppen |
@@ -249,6 +250,62 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 149 — Dunkel als Vorgabe, Hell gedaempft, Mit Apple anmelden + iCloud
+
+**Auftrag des Inhabers:** Dunkelmodus als Standard; das Weiss im Hellmodus ist zu grell; Lucenta soll
+mit Anmeldung sein (E-Mail, Apple, Google …). Zur Anmeldung gefragt, weil sie die Grundzusage („kein
+Server, kein Konto, verlaesst das Geraet nicht") beruehrt; gewaehlt: **Mit Apple anmelden + private
+iCloud**. E-Mail und Google brauchten einen eigenen Server und sind bewusst nicht gebaut.
+
+**Dunkel als Vorgabe:** Ohne gespeicherte Wahl gilt `dark` (`loadThemeMode`); „System" wird jetzt
+ausdruecklich gespeichert (vorher bedeutete „kein Eintrag" System — sonst waere es nicht mehr waehlbar).
+Die Huelle startet dunkel (`gespeicherterStil`: Vorgabe `.dark`, `system` -> `.unspecified`). Das
+Startbild (`Papier`) ist in beiden Modi schwarz: iOS zeichnet es nach der Systemfarbe, bevor die App
+laeuft — bei dunkler Vorgabe gaebe es sonst auf einem hellen iPhone einen weissen Blitz. Folge: Wer
+Hell waehlt, sieht beim Start kurz Schwarz.
+
+**Hell gedaempft:** Grund #F2F2F7 -> #E6E5E0, Flaechen #FFFFFF -> #F3F2EE (warmes Off-White),
+Flaeche 2 und Linien mitgezogen. Jede Schriftmarke (Nebentext, Akzent, Dimensions-Schriftfarben,
+starke Linie) so weit nachgedunkelt, dass ihr Kontrast auf dem neuen Grund mindestens dem alten
+entspricht — gerechnet, nicht geschaetzt (z. B. Fussnoten 5,11:1 statt 5,04:1). Mit nachgezogen: das
+Teilbild (`SHARE_COLORS`, der Bau erzwingt die Gleichheit), `theme-color`, die native Ladeflaeche und
+die Teilbild-Testreihe (erwartete #F2F2F7).
+
+**Mit Apple anmelden + iCloud:**
+- `ios/App/App/LucentaKontoPlugin.swift` (jsName `Account` — „Konto" hielt die Sprachpruefung fuer ein
+  unuebersetztes Wort): `anmelden` mit `requestedScopes = []` (kein Name, keine E-Mail), `stand`
+  (meldet nur bei klarem „widerrufen" ab), `abmelden` (vergisst die Kennung; Apple kennt kein Abmelden),
+  `sichern`/`laden` in die **private** CloudKit-Datenbank, ein Datensatz `LucentaDaten`, Feld in
+  `encryptedValues` (Ende-zu-Ende), hoechstens 900 KB. Kein iCloud-Konto / offline / zu gross sind
+  Antworten, keine Fehler. Angemeldet wie die Kauf-Bruecke (`registerPluginInstance`).
+- Berechtigungen ueber Xcode: `com.apple.developer.applesignin`, iCloud-Dienst CloudKit, Container
+  `iCloud.app.lucenta.ios` (`App.entitlements`).
+- `src/js/19d-konto.js`: Bereich in Einstellungen -> Konto (nur in der App), Apple-Knopf nach Apples
+  Vorgaben (schwarz auf Hell, weiss auf Dunkel). Gesichert wird dasselbe Format wie „Daten sichern"
+  (`datenSammeln`), still beim Verlassen der App, nur wenn sich etwas geaendert hat. Nach der Anmeldung:
+  leere iCloud -> sichern; iCloud-Stand und leeres Geraet -> uebernehmen (`datenEinspielen`, laedt neu);
+  beides -> die Person entscheidet (Rueckfrage). Im Onboarding „Schon dabei? Mit Apple anmelden" fuer
+  ein neues iPhone. **Freiwillig** — ohne Anmeldung alles wie bisher (Richtlinie 5.1.1).
+- Texte in acht Sprachen; Datenschutzerklaerung um den Abschnitt „Mit Apple anmelden (freiwillig)"
+  ergaenzt (es/fr/it/pt/ja auf Englisch, wie der Rest ihrer Erklaerung); „verlassen dein Geraet nicht"
+  in Erklaerung und Onboarding genau gefasst („… ausser in deine eigene iCloud, wenn du dich anmeldest").
+  `CLAUDE.md`, `tools/xcode-CLAUDE.md` und `docs/app-store-start.md` nachgezogen.
+
+**Geprueft:** Bau in Xcode mit den Berechtigungen; die Seite mit nachgestellter Bruecke (leere iCloud ->
+sichern; voller Stand -> uebernommen und neu geladen; kein iCloud -> Hinweis), keine JS-Fehler; in der
+App im Simulator: dunkler Start auf hellem System, „Schon dabei? Mit Apple anmelden" im Onboarding.
+**Funde der Pruefrunde, behoben:** Die Statusleistenfarbe (`syncThemeColor`) trug fuer Hell noch
+#F2F2F7 als feste Konstante — die Statusleiste waere grell geblieben. `pruef-nativ` nahm an, die App
+starte in „System"; `pruef-bewegung` misst die Flaeche des stehenden Hintergrunds, die nur im Hellmodus
+(Lichtstrahl) mehr als die Haelfte fuellt — beide auf die neue Vorgabe nachgezogen (Bewegung jetzt
+ausdruecklich hell). **Offen:** Im Dunkelmodus zeichnete der stehende Fragebogen-Hintergrund in einem
+Durchlauf 0 % (Sterne erwartet) — dunkel wurde nie gemessen; moeglicherweise ein leerer Hintergrund.
+Nicht angefasst, gehoert in eine eigene Runde.
+
+**Nicht geprueft — geht erst mit dem bezahlten Developer-Account:** echte Anmeldung und echte
+CloudKit-Speicherung. **Nur vom Inhaber:** Faehigkeiten Sign in with Apple und iCloud/CloudKit im
+Developer-Portal, Container anlegen, Schema vor dem Store-Start in die Produktion (`docs/app-store-start.md`).
 
 ## Runde 148 — Freunde ausgebaut, Onboarding in der App, gepusht
 

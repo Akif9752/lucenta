@@ -16,7 +16,7 @@
          halbe Sekunde spaeter in der Startbewegung (startBewegung() in 21-beta-rueckmeldung.js)
          noch einmal erscheint und sich dort erst ZEICHNET — ein fertiges Logo, das verschwindet und
          sich dann neu aufbaut. Apple sieht fuer das Startbild ohnehin keine Marke vor, sondern die
-         leere erste Ansicht. Also: nur "Papier", hell #F2F2F7, dunkel #000000.
+         leere erste Ansicht. Also: nur "Papier", seit Runde 149 in beiden Modi #000000 (Vorgabe dunkel).
 
          Weiterhin gilt aus Runde 107: @capacitor/splash-screen instanziert DIESE Datei als eigenen
          Splash. plugins.SplashScreen.backgroundColor darf deshalb nicht gesetzt werden, sonst

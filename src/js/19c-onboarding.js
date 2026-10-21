@@ -99,6 +99,8 @@
     $('btnObZurueck').addEventListener('click', function(){ obSchrittZeigen(Math.max(1, obSchritt - 1)); });
     $('btnObUeberspringen').addEventListener('click', function(){ onboardingBeenden(false); });
     $('btnObStarten').addEventListener('click', function(){ onboardingBeenden(true); });
+    // Neues iPhone: anmelden, und liegt in der iCloud ein Stand, ersetzt er das Onboarding.
+    $('btnObAnmelden').addEventListener('click', function(){ kontoAnmelden(); });
     ob.querySelectorAll('[data-ob-ziel]').forEach(function(b){
       b.addEventListener('click', function(){
         var z = b.getAttribute('data-ob-ziel');

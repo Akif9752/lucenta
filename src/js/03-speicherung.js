@@ -379,8 +379,8 @@
   }
   function saveThemeMode(mode){
     try{
-      if (mode==='system') localStorage.removeItem('lucenta_theme');
-      else localStorage.setItem('lucenta_theme', mode);
+      // Auch "System" wird gespeichert: Ohne Eintrag gilt dunkel (Entscheidung des Inhabers).
+      localStorage.setItem('lucenta_theme', mode);
     }catch(e){}
     // Die iOS-Huelle muss die Darstellung VOR dem Laden kennen (Startbild): Die Seite meldet jede Wahl
     // an MainViewController.swift (UserDefaults). Ausserhalb der App geschieht nichts.
@@ -392,8 +392,8 @@
   function loadThemeMode(){
     try{
       var t = localStorage.getItem('lucenta_theme');
-      return (t==='dark' || t==='light') ? t : 'system';
-    }catch(e){ return 'system'; }
+      return (t==='dark' || t==='light' || t==='system') ? t : 'dark';
+    }catch(e){ return 'dark'; }
   }
   // Welcher Modus ist wirklich zu sehen? Bei "System" sagt data-theme nichts — erst beides zusammen
   // ist verlaesslich.
@@ -427,7 +427,7 @@
         });
         return;
       }
-      var farbe = mode==='dark' ? '#000000' : '#F2F2F7';
+      var farbe = mode==='dark' ? '#000000' : '#E6E5E0';
       metas.forEach(function(m){ m.setAttribute('content', farbe); });
     }catch(e){}
   }

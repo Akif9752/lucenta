@@ -770,3 +770,13 @@
   #view-freunde .freunde-legende{ display:flex; flex-wrap:wrap; gap:6px 14px; justify-content:center; font-size:13px; color:var(--muted); margin-top:6px; }
   #view-freunde .freunde-legende i{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:-1px; }
   .compat-als-freund{ margin-top:10px; }
+
+  /* "Mit Apple anmelden" nach Apples Vorgaben: schwarz auf Hell, weiss auf Dunkel, volle Breite, 44+ pt. */
+  .apple-knopf{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:48px;
+    border:none; border-radius:12px; background:#000; color:#fff; font:inherit; font-size:17px; font-weight:600; cursor:pointer; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .apple-knopf{ background:#fff; color:#000; } }
+  :root[data-theme="dark"] .apple-knopf{ background:#fff; color:#000; }
+  .konto-icloud{ margin-top:14px; display:flex; flex-direction:column; gap:10px; }
+  .konto-icloud .settings-hint{ margin:0; }
+  .konto-icloud .konto-warnung{ color:var(--dim-e-text); }
+  #onboarding .ob-anmelden{ margin:12px auto 0; text-align:center; min-height:44px; }

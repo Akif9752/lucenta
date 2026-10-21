@@ -2,7 +2,7 @@
   CONTENT.tr = {
     RECHT: {
       impressum: '<h3>Sağlayıcı</h3><p>{{name}}<br>{{strasse}}<br>{{ort}}<br>{{land}}</p><h3>İletişim</h3><p>E-posta: {{email}}</p><h3>İçerikten sorumlu</h3><p>{{name}}, adres yukarıdaki gibi.</p><h3>KDV numarası</h3><p>{{ust}}</p><h3>Uyuşmazlık çözümü</h3><p>Avrupa Komisyonu çevrimiçi uyuşmazlık çözümü için bir platform sunar: <code>ec.europa.eu/consumers/odr</code>. Bir tüketici hakem heyeti önünde uyuşmazlık çözüm sürecine katılmaya ne istekliyiz ne de yükümlüyüz.</p><h3>Sorumluluk</h3><p>Lucenta bir öz-düşünüm aracıdır; klinik ya da tanısal bir ölçüm aracı değildir. Sonuçları terapötik, psikolojik veya tıbbi danışmanlığın yerini tutmaz ve insanların işe alınması, seçilmesi ya da değerlendirilmesine ilişkin kararlar için tasarlanmamıştır.</p><p>Bağlantı verilen dış sayfaların içeriğinden yalnızca onları işletenler sorumludur. Bağlantı verildiği anda hiçbir hukuka aykırılık görünür değildi.</p>',
-      datenschutz: '<h3>Kısaca</h3><p>Lucenta&rsquo;nın sunucusu yoktur. Yanıtların, sonucun, geçmişin, günlük kayıtların ve profilin cihazından hiç çıkmaz. Hesap yok, reklam yok, izleme yok, üçüncü taraflara aktarılan hiçbir şey yok.</p><h3>Veri sorumlusu</h3><p>{{name}}, {{strasse}}, {{ort}} &mdash; e-posta: {{email}}</p><h3>Cihazında neler saklanıyor</h3><ul><li><code>lucenta_result</code> &mdash; son sonucun (beş sayı)</li><li><code>lucenta_history</code> &mdash; tarihleriyle birlikte en fazla on iki önceki sonuç</li><li><code>lucenta_state</code> &mdash; enerji ve ruh haline dair, her biri tarih ve günün saatiyle en fazla 150 kayıt</li><li><code>lucenta_profile</code> &mdash; ad, seçtiğin figür, renk ve seçtiğin bir görsel</li><li><code>lucenta_compat_archive</code> &mdash; kaydedilmiş en fazla 20 karşılaştırma</li><li><code>lucenta_freunde</code> &mdash; ad, figür ve kodla en fazla 30 kayıtlı arkadaş</li><li><code>lucenta_progress</code> &mdash; yarım kalmış bir test denemesi</li><li>görünüm, dil, dokunsal geri bildirim ve hareket ayarları</li></ul><p>Bunların tamamı yalnızca cihazının yerel belleğinde durur. Hiçbiri hiçbir aşamada bize ya da başka birine iletilmez. İstediğin an kendin silebilirsin: Ayarlar &rarr; Veriler ve gizlilik &rarr; &ldquo;Verilerimi sıfırla&rdquo;, ya da Lucenta&rsquo;yı cihazından silerek.</p><h3>Yazı tipleri</h3><p>Yazı tipleri dosyanın kendi içindedir. Uygulamayı açtığında hiçbir şey dışarıdan çekilmez; Google Fonts&rsquo;a ya da başka bir üçüncü tarafa bağlantı kurulmaz. Fraunces, Work Sans ve IBM Plex Mono, SIL Open Font License 1.1 kapsamında kullanılmaktadır.</p><h3>Haklarını</h3><p>Erişim, düzeltme, silme, işlemenin kısıtlanması, veri taşınabilirliği ve itiraz haklarına (GDPR m. 15&ndash;21) ve bir denetim makamına şikâyette bulunma hakkına sahipsin. Sana ilişkin hiçbir kişisel veri saklamadığımız için içeriğin hakkında ne bilgi verebiliriz ne de onu silebiliriz &mdash; o yalnızca senin cihazında bulunur.</p><h3>Değişiklikler</h3><p>Bu metnin sürümü: {{stand}}.</p>'
+      datenschutz: '<h3>Kısaca</h3><p>Lucenta&rsquo;nın sunucusu yoktur. Yanıtların, sonucun, geçmişin, günlük kayıtların ve profilin cihazından hiç çıkmaz &ndash; isteğe bağlı olarak Apple ile giriş yaparsan yalnızca kendi iCloud’una gider (aşağıya bak). Hesap yok, reklam yok, izleme yok, üçüncü taraflara aktarılan hiçbir şey yok.</p><h3>Apple ile giriş (isteğe bağlı)</h3><p>Apple ile giriş yaparsan Lucenta verilerini ayrıca kendi özel iCloud’unda (Apple CloudKit) uçtan uca şifreli olarak yedekler. Adını veya e-posta adresini almayız; yalnızca cihazında kalan rastgele bir kimlik. Bu verilere yalnızca sen ve Apple hesabın erişebilir, biz erişemeyiz. Ayarlar’dan istediğin zaman çıkış yapabilirsin; iCloud verileri iPhone’unun iCloud ayarlarından silinir.</p><h3>Veri sorumlusu</h3><p>{{name}}, {{strasse}}, {{ort}} &mdash; e-posta: {{email}}</p><h3>Cihazında neler saklanıyor</h3><ul><li><code>lucenta_result</code> &mdash; son sonucun (beş sayı)</li><li><code>lucenta_history</code> &mdash; tarihleriyle birlikte en fazla on iki önceki sonuç</li><li><code>lucenta_state</code> &mdash; enerji ve ruh haline dair, her biri tarih ve günün saatiyle en fazla 150 kayıt</li><li><code>lucenta_profile</code> &mdash; ad, seçtiğin figür, renk ve seçtiğin bir görsel</li><li><code>lucenta_compat_archive</code> &mdash; kaydedilmiş en fazla 20 karşılaştırma</li><li><code>lucenta_freunde</code> &mdash; ad, figür ve kodla en fazla 30 kayıtlı arkadaş</li><li><code>lucenta_progress</code> &mdash; yarım kalmış bir test denemesi</li><li>görünüm, dil, dokunsal geri bildirim ve hareket ayarları</li></ul><p>Bunların tamamı yalnızca cihazının yerel belleğinde durur. Hiçbiri hiçbir aşamada bize ya da başka birine iletilmez. İstediğin an kendin silebilirsin: Ayarlar &rarr; Veriler ve gizlilik &rarr; &ldquo;Verilerimi sıfırla&rdquo;, ya da Lucenta&rsquo;yı cihazından silerek.</p><h3>Yazı tipleri</h3><p>Yazı tipleri dosyanın kendi içindedir. Uygulamayı açtığında hiçbir şey dışarıdan çekilmez; Google Fonts&rsquo;a ya da başka bir üçüncü tarafa bağlantı kurulmaz. Fraunces, Work Sans ve IBM Plex Mono, SIL Open Font License 1.1 kapsamında kullanılmaktadır.</p><h3>Haklarını</h3><p>Erişim, düzeltme, silme, işlemenin kısıtlanması, veri taşınabilirliği ve itiraz haklarına (GDPR m. 15&ndash;21) ve bir denetim makamına şikâyette bulunma hakkına sahipsin. Sana ilişkin hiçbir kişisel veri saklamadığımız için içeriğin hakkında ne bilgi verebiliriz ne de onu silebiliriz &mdash; o yalnızca senin cihazında bulunur.</p><h3>Değişiklikler</h3><p>Bu metnin sürümü: {{stand}}.</p>'
     },
     LABELS: {E:'Dışadönüklük', A:'Uyumluluk', C:'Sorumluluk', S:'Duygusal denge', O:'Açıklık'},
     RADAR_LABELS: {E:'DIŞA.', A:'UYUM.', C:'SORUM.', S:'DENGE', O:'AÇIK.'},
@@ -994,7 +994,7 @@
       'ob_fakt_zeit': '5 ila 10 dakika',
       'ob_fakt_zeit_text': 'İstediğin zaman ara verip tam kaldığın yerden devam edebilirsin.',
       'ob_fakt_privat': 'Sende kalır',
-      'ob_fakt_privat_text': 'Yanıtların cihazından çıkmaz. Hesap yok, reklam yok, takip yok.',
+      'ob_fakt_privat_text': 'Giriş yapmadan yanıtların cihazından çıkmaz; Apple ile girişte kendi iCloud’unda şifreli saklanır. Reklam yok, takip yok.',
       'ob_4_titel': 'Sana nasıl hitap edelim?',
       'ob_figur_waehlen': 'Figürünü seç',
       'ob_4_hinweis': 'Adını ve figürünü istediğin zaman profilde değiştirebilirsin.',
@@ -1004,6 +1004,22 @@
       'freunde_gruppe_aria': 'Grup resmi: profilin ve',
       'freunde_du': 'Sen',
       'plus_freunde_gruppe': 'Lucenta+ ile arkadaşlarını radarında birlikte görürsün – kim sana nerede benziyor, tek bakışta.',
+      'konto_apple': 'Apple ile Giriş Yap',
+      'ob_schon_dabei': 'Zaten kullanıyor musun? Apple ile giriş yap',
+      'konto_text_aus': 'Apple ile giriş yap: Verilerin ayrıca şifreli olarak kendi iCloud’unda saklanır ve yeni bir iPhone’a seninle gelir. Biz onları asla görmeyiz.',
+      'konto_text_an': 'Apple ile giriş yapıldı. Verilerin iCloud’unda şifreli olarak yedeklenir.',
+      'konto_zuletzt': 'Son yedekleme:',
+      'konto_kein_icloud': 'Bu iPhone’da etkin bir iCloud hesabı yok. Yedekleme, Ayarlar’da iCloud’a giriş yapana kadar bekler.',
+      'konto_sichern': 'Şimdi yedekle',
+      'konto_laden': 'iCloud’dan yükle',
+      'konto_abmelden': 'Çıkış yap',
+      'konto_gesichert': 'iCloud’a yedeklendi.',
+      'konto_offline': 'Şu an bağlantı yok – Lucenta bir dahaki sefere yedekler.',
+      'konto_zu_gross': 'iCloud için fazla büyük – profil fotoğrafını kaldırıp tekrar dene.',
+      'konto_leer': 'iCloud’unda henüz Lucenta’dan bir şey yok.',
+      'konto_frage_laden': 'iCloud’unda {datum} tarihli bir yedek var. Yüklensin mi? Bu iPhone’daki veriler değiştirilecek.',
+      'konto_abgemeldet': 'Çıkış yapıldı. iCloud verilerin korunur.',
+      'konto_fehler': 'Olmadı. Lütfen tekrar dene.',
       'analysiere_deine_antworten_h': 'Yanıtların inceleniyor &hellip;'
     }
   };

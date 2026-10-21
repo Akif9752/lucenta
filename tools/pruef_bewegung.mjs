@@ -62,6 +62,9 @@ async function durchlauf(reduziert){
   const b = await chromium.launch(START);
   const ctx = await b.newContext({viewport:{width:390,height:844}, isMobile:true, hasTouch:true,
     reducedMotion: reduziert ? 'reduce' : 'no-preference'});
+  // Gemessen wird der Hellmodus (Lichtstrahl, die Flaechenpruefung unten setzt ihn voraus). Seit
+  // Runde 149 startet die App dunkel; vorher lief diese Pruefung in "System" = hell.
+  await ctx.addInitScript(() => { try{ if (!localStorage.getItem('lucenta_theme')) localStorage.setItem('lucenta_theme', 'light'); }catch(e){} });
   const p = await ctx.newPage();
   const abstuerze = [];
   p.on('pageerror', e => abstuerze.push(e.message));

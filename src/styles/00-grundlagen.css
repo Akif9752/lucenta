@@ -1,25 +1,27 @@
 
   /* ==== Hell und Dunkel nach Apples Farbsystem ====
-     Hell: Grund #F2F2F7, Flaechen weiss; dunkel: Schwarz mit gestuften Grauflaechen. Akzent bleibt
+     Hell: Grund #E6E5E0, Flaechen #F3F2EE (gedaempft statt Weiss); dunkel: Schwarz mit gestuften Grauflaechen. Akzent bleibt
      Teal.
      Abweichung von Apple: Nebentext #636366 (Apples "Erhoehter Kontrast"), weil #8A8A8E auf Weiss nur
      3,4:1 erreicht (Fehlersuche verlangt 4,5:1). */
   :root{
-    /* Flaechen und Schrift ruecken GEMEINSAM: Jede Schriftmarke behaelt ihren Kontrast auf --surface
+    /* Hell gedaempft statt Weiss (Inhaber: „zu grell fuers Auge“); jede Schriftmarke so weit
+       nachgedunkelt, dass sie ihren Kontrast von vorher haelt.
+       Flaechen und Schrift ruecken GEMEINSAM: Jede Schriftmarke behaelt ihren Kontrast auf --surface
        (aus dem Verhaeltnis zurueckgerechnet). Die Datenfarben ziehen mit, damit sie 3:1 halten.
        Massgeblich ist die Kontrastmessung in tools/fehlersuche.mjs, nicht dieser Kommentar. */
-    --paper:#F2F2F7;
-    --surface:#FFFFFF;
-    --surface-2:#E5E5EA;
+    --paper:#E6E5E0;
+    --surface:#F3F2EE;
+    --surface-2:#DCDBD5;
     --ink:#000000;
-    --muted:#636366;
+    --muted:#5A5A5D;
     /* Dritte, leise Textstufe fuer Fussnoten — statt opacity (die den Kontrast unter 4,5:1 drueckte).
        So weit zurueckgenommen, wie es auf allen drei Untergruenden 4,6:1 erlaubt. */
-    --muted-soft:#67676C;
-    --line:#C6C6C8;
-    --line-strong:#7C7C80;
-    --accent:#2C6863;
-    --accent-strong:#21524E;
+    --muted-soft:#5E5E63;
+    --line:#BFBEB8;
+    --line-strong:#737377;
+    --accent:#285F5B;
+    --accent-strong:#1D4946;
     /* Runde 63: Unterkante fuer die fuehlbaren Knoepfe — dunkler als --accent-strong, damit die
        Kante als Tiefe gelesen wird und nicht als zweite Farbe. */
     --accent-deep:#133935;
@@ -35,11 +37,11 @@
     --dim-s:#AD4077;
     /* Schrift-Zwillinge der Dimensionsfarben: Als Schrift gilt 4,5:1, als Linie 3:1 — die Zwillinge
        sind so weit abgedunkelt, dass sie auf --paper 4,5:1 erreichen. */
-    --dim-o-text:#7052C4;
-    --dim-c-text:#2366B9;
-    --dim-e-text:#AA4927;
-    --dim-a-text:#08736C;
-    --dim-s-text:#AA3F75;
+    --dim-o-text:#674BB6;
+    --dim-c-text:#1F5EAB;
+    --dim-e-text:#9D4323;
+    --dim-a-text:#076A64;
+    --dim-s-text:#9D396B;
     /* Farben des bewegten Hintergrunds (Dunkelmodus: Sternenhimmel). */
     /* Hellmodus: Staub in einem Lichtstrahl statt Sternenhimmel (22-sternenhimmel.js liest
        --atmosphaere). */
@@ -80,7 +82,7 @@
     /* Fehlerfarbe: steht als Fettschrift auf dem Warnband, das AUS ihr gemischt wird — beide Werte so
        gewaehlt, dass sie dort ~4,8:1 erreichen (im Browser gemessen). */
     --danger:#A83025;
-    --surface-3:#D1D1D6;
+    --surface-3:#C9C8C2;
     --shadow:0 1px 2px rgba(0,0,0,.05), 0 12px 32px -12px rgba(0,0,0,.16);
     --shadow-sm:0 1px 2px rgba(0,0,0,.06);
     --radius-l: 26px;

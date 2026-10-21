@@ -95,11 +95,11 @@
     return set;
   }
   var hell = farbenVon('light'), dunkel = farbenVon('dark');
-  ok(!!hell['#f2f2f7'], "hell: der Grund ist das Papier der Hellfassung (#F2F2F7)");
+  ok(!!hell['#e6e5e0'], "hell: der Grund ist das Papier der Hellfassung (#E6E5E0)");
   ok(!!hell['#000000'], "hell: die Schrift ist die Tinte der Hellfassung (#000000)");
   ok(!!dunkel['#000000'], "dunkel: der Grund ist das Papier der Dunkelfassung (#000000)");
   ok(!!dunkel['#ffffff'], "dunkel: die Schrift ist die Tinte der Dunkelfassung (#FFFFFF)");
-  ok(!dunkel['#f2f2f7'],
+  ok(!dunkel['#e6e5e0'],
      "dunkel: keine einzige Farbe der Hellfassung bleibt im Bild stehen");
   ok(!hell['#ffffff'],
      "hell: keine einzige Farbe der Dunkelfassung bleibt im Bild stehen");
@@ -113,8 +113,8 @@
   var gemeinsam = Object.keys(hell).filter(function(f){ return dunkel[f] && !getauscht[f]; });
   ok(gemeinsam.length === 0,
      "ausser Schwarz und Weiss (die ihre Rolle tauschen) teilen die Fassungen keine Farbe (gemeinsam: "+gemeinsam.join(', ')+")");
-  ok(hell['#f2f2f7'] && !dunkel['#f2f2f7'] && dunkel['#000000'],
-     "der Grund wechselt: hell #F2F2F7, dunkel #000000");
+  ok(hell['#e6e5e0'] && !dunkel['#e6e5e0'] && dunkel['#000000'],
+     "der Grund wechselt: hell #E6E5E0, dunkel #000000");
   console.log("  hell: "+Object.keys(hell).join(', '));
   console.log("  dunkel: "+Object.keys(dunkel).join(', '));
 

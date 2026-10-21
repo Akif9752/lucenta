@@ -440,6 +440,8 @@
         </div>
         <button type="button" class="btn btn-ghost btn-sm" id="btnSettingsEditProfile" data-i18n="profil_bearbeiten">Profil bearbeiten</button>
       </div>
+      <!-- Mit Apple anmelden + iCloud, nur in der App (19d-konto.js). -->
+      <div id="kontoIcloud" class="konto-icloud" hidden></div>
     </div>
 
     <!-- Die Sprachen stehen in ihrer eigenen Schreibweise ("Deutsch", nicht "German"). -->
@@ -681,6 +683,7 @@
       </div>
     </div>
     <button type="button" class="btn btn-primary ob-cta" data-ob-weiter data-i18n="ob_weiter">Weiter</button>
+    <button type="button" class="ob-leise ob-anmelden" id="btnObAnmelden" hidden data-i18n="ob_schon_dabei">Schon dabei? Mit Apple anmelden</button>
   </section>
 
   <section class="ob-step" data-step="2" hidden>

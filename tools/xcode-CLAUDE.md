@@ -234,8 +234,10 @@ mit diesen Kennungen und in derselben Abo-Gruppe.
 
 ## Was die App verspricht und der Code halten muss
 
-Lucenta sendet nichts. Kein Server, kein Konto, keine Werbung, kein Tracking, kein Fremdabruf;
-die Schriften liegen als Daten in der Datei. Die Store-Angabe lautet entsprechend
+Lucenta sendet nichts. Kein eigener Server, kein Konto bei uns, keine Werbung, kein Tracking, kein
+Fremdabruf; die Schriften liegen als Daten in der Datei. Einzige Ausnahme (Runde 149, Entscheidung des
+Inhabers): freiwillig „Mit Apple anmelden“ — der Bestand liegt dann Ende-zu-Ende verschluesselt in der
+privaten iCloud der Person (`LucentaKontoPlugin.swift`, `encryptedValues`, ohne Name/E-Mail-Abfrage). Die Store-Angabe lautet entsprechend
 "Data Not Collected". `capacitor.config.json` setzt dazu passend
 `limitsNavigationsToAppBoundDomains: true`.
 

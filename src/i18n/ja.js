@@ -6,7 +6,7 @@
   CONTENT.ja = {
     RECHT: {
       impressum: '<p><em>この法的情報はドイツ語と英語で用意されています。以下は英語版です。</em></p><h3>Provider</h3><p>{{name}}<br>{{strasse}}<br>{{ort}}<br>{{land}}</p><h3>Contact</h3><p>Email: {{email}}</p><h3>Responsible for content</h3><p>{{name}}, address as above.</p><h3>VAT</h3><p>{{ust}}</p><h3>Dispute resolution</h3><p>The European Commission provides a platform for online dispute resolution: <code>ec.europa.eu/consumers/odr</code>. We are neither willing nor obliged to take part in dispute resolution proceedings before a consumer arbitration board.</p><h3>Liability</h3><p>Lucenta is a tool for self-reflection and not a clinical or diagnostic instrument. Its results do not replace therapeutic, psychological or medical advice and are not intended for decisions about hiring, selection or assessment of people.</p><p>The operators of linked external pages are solely responsible for their content. No legal violations were apparent at the time of linking.</p>',
-      datenschutz: '<p><em>この法的情報はドイツ語と英語で用意されています。以下は英語版です。</em></p><h3>In short</h3><p>Lucenta has no server. Your answers, your result, your history, your check-ins and your profile never leave your device. There is no account, no advertising, no tracking and nothing passed to third parties.</p><h3>Controller</h3><p>{{name}}, {{strasse}}, {{ort}} &mdash; email: {{email}}</p><h3>What is stored on your device</h3><ul><li><code>lucenta_result</code> &mdash; your last result (five numbers)</li><li><code>lucenta_history</code> &mdash; up to twelve earlier results with dates</li><li><code>lucenta_state</code> &mdash; up to 150 entries on energy and mood, each with date and time of day</li><li><code>lucenta_profile</code> &mdash; name, chosen figure, colour and a picture you chose</li><li><code>lucenta_compat_archive</code> &mdash; up to 20 saved comparisons</li><li><code>lucenta_freunde</code> &mdash; 名前・キャラクター・コード付きで保存した友だち（最大 30 人）</li><li><code>lucenta_progress</code> &mdash; one interrupted test run</li><li>settings for appearance, language, haptics and motion</li></ul><p>All of this lives in your device&rsquo;s local storage only. None of it is transmitted to us or to anyone else at any point. You can delete it yourself at any time under Settings &rarr; Data &amp; privacy &rarr; &ldquo;Reset my data&rdquo;, or by deleting Lucenta from your device.</p><h3>Fonts</h3><p>The fonts are part of the file itself. Nothing is fetched when you open the app, and there is no connection to Google Fonts or any other third party. Fraunces, Work Sans and IBM Plex Mono are used under the SIL Open Font License 1.1.</p><h3>Your rights</h3><p>You have the rights to access, rectification, erasure, restriction of processing, data portability and objection (Art. 15 to 21 GDPR), as well as the right to lodge a complaint with a supervisory authority. Because we store no personal data about you, we can neither provide information about your content nor delete it &mdash; it exists only on your device.</p><h3>Changes</h3><p>Version of this statement: {{stand}}.</p>'
+      datenschutz: '<p><em>この法的情報はドイツ語と英語で用意されています。以下は英語版です。</em></p><h3>In short</h3><p>Lucenta has no server. Your answers, your result, your history, your check-ins and your profile never leave your device &ndash; except to your own iCloud if you choose to sign in with Apple (see below). There is no account, no advertising, no tracking and nothing passed to third parties.</p><h3>Sign in with Apple (optional)</h3><p>If you sign in with Apple, Lucenta also backs up your data in your own private iCloud (Apple CloudKit), end-to-end encrypted. We receive neither your name nor your email address, only a random identifier that stays on your device. Only you and your Apple Account can access this data, not us. You can sign out any time in Settings; the iCloud data is deleted in your iPhone’s iCloud settings.</p><h3>Controller</h3><p>{{name}}, {{strasse}}, {{ort}} &mdash; email: {{email}}</p><h3>What is stored on your device</h3><ul><li><code>lucenta_result</code> &mdash; your last result (five numbers)</li><li><code>lucenta_history</code> &mdash; up to twelve earlier results with dates</li><li><code>lucenta_state</code> &mdash; up to 150 entries on energy and mood, each with date and time of day</li><li><code>lucenta_profile</code> &mdash; name, chosen figure, colour and a picture you chose</li><li><code>lucenta_compat_archive</code> &mdash; up to 20 saved comparisons</li><li><code>lucenta_freunde</code> &mdash; 名前・キャラクター・コード付きで保存した友だち（最大 30 人）</li><li><code>lucenta_progress</code> &mdash; one interrupted test run</li><li>settings for appearance, language, haptics and motion</li></ul><p>All of this lives in your device&rsquo;s local storage only. None of it is transmitted to us or to anyone else at any point. You can delete it yourself at any time under Settings &rarr; Data &amp; privacy &rarr; &ldquo;Reset my data&rdquo;, or by deleting Lucenta from your device.</p><h3>Fonts</h3><p>The fonts are part of the file itself. Nothing is fetched when you open the app, and there is no connection to Google Fonts or any other third party. Fraunces, Work Sans and IBM Plex Mono are used under the SIL Open Font License 1.1.</p><h3>Your rights</h3><p>You have the rights to access, rectification, erasure, restriction of processing, data portability and objection (Art. 15 to 21 GDPR), as well as the right to lodge a complaint with a supervisory authority. Because we store no personal data about you, we can neither provide information about your content nor delete it &mdash; it exists only on your device.</p><h3>Changes</h3><p>Version of this statement: {{stand}}.</p>'
     },
     LABELS: {E:'外向性', A:'協調性', C:'誠実性', S:'情緒安定性', O:'開放性'},
     RADAR_LABELS: {E:'外向', A:'協調', C:'誠実', S:'安定', O:'開放'},
@@ -994,7 +994,7 @@
       'ob_fakt_zeit': '5〜10分',
       'ob_fakt_zeit_text': 'いつでも中断して、続きから再開できます。',
       'ob_fakt_privat': 'あなたの手元に',
-      'ob_fakt_privat_text': '回答が端末の外に出ることはありません。アカウントも広告もトラッキングもありません。',
+      'ob_fakt_privat_text': 'サインインしなければ回答は端末の外に出ません。Appleでサインインすると、あなた自身の iCloud に暗号化して保存されます。広告もトラッキングもありません。',
       'ob_4_titel': '何と呼べばいいですか？',
       'ob_figur_waehlen': 'キャラクターを選ぶ',
       'ob_4_hinweis': '名前とキャラクターはプロフィールでいつでも変更できます。',
@@ -1004,6 +1004,22 @@
       'freunde_gruppe_aria': 'グループ図：あなたのプロフィールと',
       'freunde_du': 'あなた',
       'plus_freunde_gruppe': 'Lucenta+ なら、友だちをレーダーにまとめて表示 — 誰がどこで似ているか一目でわかります。',
+      'konto_apple': 'Appleでサインイン',
+      'ob_schon_dabei': 'すでにお使いですか？Appleでサインイン',
+      'konto_text_aus': 'Appleでサインインすると、データがあなた自身の iCloud にも暗号化して保存され、新しい iPhone にも引き継がれます。私たちが見ることはありません。',
+      'konto_text_an': 'Appleでサインイン済み。データは iCloud に暗号化してバックアップされます。',
+      'konto_zuletzt': '最終バックアップ：',
+      'konto_kein_icloud': 'この iPhone で有効な iCloud アカウントがありません。設定で iCloud にサインインするまでバックアップは待機します。',
+      'konto_sichern': '今すぐバックアップ',
+      'konto_laden': 'iCloud から読み込む',
+      'konto_abmelden': 'サインアウト',
+      'konto_gesichert': 'iCloud にバックアップしました。',
+      'konto_offline': '現在接続がありません。次回 Lucenta がバックアップします。',
+      'konto_zu_gross': 'iCloud には大きすぎます。プロフィール写真を削除してもう一度お試しください。',
+      'konto_leer': 'iCloud にはまだ Lucenta のデータがありません。',
+      'konto_frage_laden': 'iCloud に {datum} のバックアップがあります。読み込みますか？この iPhone のデータは置き換えられます。',
+      'konto_abgemeldet': 'サインアウトしました。iCloud のデータは残ります。',
+      'konto_fehler': 'うまくいきませんでした。もう一度お試しください。',
       'analysiere_deine_antworten_h': '回答を分析しています &hellip;'
     }
   };
