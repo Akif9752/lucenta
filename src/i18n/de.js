@@ -726,6 +726,12 @@ CONTENT.de = {
       'ob_4_titel': 'Wie dürfen wir dich nennen?',
       'ob_figur_waehlen': 'Wähle deine Figur',
       'ob_4_hinweis': 'Name und Figur kannst du jederzeit im Profil ändern.',
+      'freunde_als_freund': 'Als Freund speichern',
+      'freunde_naehe_titel': 'Wem bist du am ähnlichsten?',
+      'freunde_gruppe_titel': 'Alle auf einem Bild',
+      'freunde_gruppe_aria': 'Gruppenbild: dein Profil und',
+      'freunde_du': 'Du',
+      'plus_freunde_gruppe': 'Mit Lucenta+ siehst du deine Freunde zusammen in deinem Radar – wer dir wo ähnelt, auf einen Blick.',
       'analysiere_deine_antworten_h': 'Analysiere deine Antworten &hellip;'
     },
     LABELS: {E:'Extraversion', A:'Verträglichkeit', C:'Gewissenhaftigkeit', S:'Emotionale Stabilität', O:'Offenheit'},

@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-19, nach Runde 147)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-21, nach Runde 148)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 147 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 148 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -40,7 +40,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 147 | — | Freunde (`06b-freunde.js`, `view-freunde`), Lucenta+ in der Seitenleiste, Verlauf im Profil kurz + Unterseite `view-verlauf`, Onboarding beim ersten Oeffnen (`19c-onboarding.js`) |
+| 148 | — | Freunde: „Als Freund speichern“ im Vergleich, Rangliste nach Naehe, Gruppen-Radar (Lucenta+); Onboarding im Simulator geprueft; Start ueberlebt Fehler im Onboarding |
+| 147 | `de12cb7` | Freunde (`06b-freunde.js`, `view-freunde`), Lucenta+ in der Seitenleiste, Verlauf im Profil kurz + Unterseite `view-verlauf`, Onboarding beim ersten Oeffnen (`19c-onboarding.js`) |
 | 146 | `fbba58a` | Nach dem echten Tier: Waldkauz dunkle Augen, Reh ohne weisse Brauen, gewoehnlicher (laenglicher) Goldfisch, Buckelwal schiefergrau, Retriever erwachsen, Fuchs schmaler, Dackel seidig, Katze flacheres Unterlid |
 | 145 | `b92ea2b` | Panda und Hase echt proportioniert; Ohren und Flossen durchscheinend (`duenne`, Shader `durchschein…`); feinere Iris; nasse Haut (`Koerper.lack`); Goldfisch mit Dachziegel-Schuppen |
 | 144 | `571179b` | Echte Kopfproportionen bei Fuchs, Reh, Baer (lange Schnauzen, kleinere Hirnschale); weisses Fell bleibt weiss |
@@ -248,6 +249,41 @@ Branch `claude/lucenta-setup-browser-test-j6hn7f`, **nicht gepusht**, kein Pull 
 Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 148 — Freunde ausgebaut, Onboarding in der App, gepusht
+
+**Auftrag des Inhabers:** „Ja, alle drei" — Onboarding im Simulator zeigen, Freunde ausbauen, pushen.
+Fuer Freunde gefragt (Mehrfachwahl); gewaehlt: Speichern nach dem Vergleich, Rangliste nach Naehe,
+Gruppen-Radar als Lucenta+. Nicht gewaehlt: Freund bearbeiten.
+
+**Gepusht:** 63 Commits bis `cce9679` auf `claude/lucenta-setup-browser-test-j6hn7f`.
+
+**Onboarding im Simulator — zwei Fehlalarme, ein echter Fund:**
+- Erst zeigte die App kein Onboarding: `ios/App/App/public/` war veraltet. Der `ios:sync` beim Commit
+  von Runde 147 war still gescheitert — Ausgabe unterdrueckt, `/opt/homebrew/bin` fehlte im Pfad
+  (CocoaPods). **Die App-Fassung aus Runde 147 enthielt weder Onboarding noch Freunde.** Jetzt mit Pfad
+  und sichtbarer Ausgabe; im Bundle nachgezaehlt.
+- Dann ein weisser Bildschirm: kein Fehler, sondern der erste Start nach frischer Installation, der im
+  Simulator 7–9 s dauert (gemessen Runde 143) — das Foto nach 7 s traf das Startbild. Mit 12 s Wartezeit
+  steht das Onboarding da. Ein temporaerer Fehlermelder (nur in der erzeugten Kopie) zeigte: kein JS-Fehler.
+- Behalten als Schutz: Onboarding-Fehler werden abgefangen (`try` um Verdrahten/Zeigen in `init`) — ein
+  Fehler dort haette das Startbild sonst stehen lassen, bei genau dem Menschen, der die App zum ersten
+  Mal oeffnet.
+
+**Freunde (`06b-freunde.js`):**
+- **„Als Freund speichern"** unter jedem Vergleich (`renderCompat`): fuehrt zur Freunde-Seite mit
+  vorausgefuelltem Code und — falls im Archivfeld getippt — Namen. Verschwindet, wenn die Person schon
+  Freund ist. Nicht im gesperrten Vergleich.
+- **„Wem bist du am aehnlichsten?"** oben auf der Seite (ab zwei Freunden, mit eigenem Ergebnis):
+  sortiert nach Uebereinstimmung. Die Formel ist jetzt EINE Funktion (`uebereinstimmung`), die auch
+  `renderCompat` benutzt — die Prozente koennen nicht auseinanderlaufen. Frei.
+- **Gruppenbild** (`gruppenRadarSVG`): eigenes Profil als Flaeche, bis zu fuenf Freunde als Linien in
+  den fuenf Dimensionsfarben, mit Legende. Lucenta+ (Entscheidung des Inhabers); frei als
+  verschwommene Vorschau mit `plus_freunde_gruppe`.
+
+**Geprueft:** auf WebKit der ganze Weg (Vergleich -> Als Freund speichern -> Code/Name vorausgefuellt ->
+speichern; Rangliste Lena 90 / Mira 87 / Tom 80; Knopf weg bei gespeichertem Freund; frei gesperrt);
+keine JS-Fehler; pruef-alles 9/9 (10,8 Min.).
 
 ## Runde 147 — Freunde, Lucenta+ in der Seitenleiste, kurzer Verlauf, Onboarding
 

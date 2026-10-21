@@ -994,6 +994,12 @@
       'ob_4_titel': 'Comment devons-nous t’appeler ?',
       'ob_figur_waehlen': 'Choisis ta figure',
       'ob_4_hinweis': 'Tu peux modifier ton nom et ta figure à tout moment dans le profil.',
+      'freunde_als_freund': 'Enregistrer comme ami',
+      'freunde_naehe_titel': 'À qui ressembles-tu le plus ?',
+      'freunde_gruppe_titel': 'Tout le monde sur une image',
+      'freunde_gruppe_aria': 'Image de groupe : ton profil et',
+      'freunde_du': 'Toi',
+      'plus_freunde_gruppe': 'Avec Lucenta+, tu vois tes amis ensemble dans ton radar – qui te ressemble et où, d’un coup d’œil.',
       'analysiere_deine_antworten_h': 'Analyse de tes réponses &hellip;'
     }
   };

@@ -998,6 +998,12 @@
       'ob_4_titel': '何と呼べばいいですか？',
       'ob_figur_waehlen': 'キャラクターを選ぶ',
       'ob_4_hinweis': '名前とキャラクターはプロフィールでいつでも変更できます。',
+      'freunde_als_freund': '友だちとして保存',
+      'freunde_naehe_titel': 'いちばん似ているのは誰？',
+      'freunde_gruppe_titel': 'みんなをひとつの図に',
+      'freunde_gruppe_aria': 'グループ図：あなたのプロフィールと',
+      'freunde_du': 'あなた',
+      'plus_freunde_gruppe': 'Lucenta+ なら、友だちをレーダーにまとめて表示 — 誰がどこで似ているか一目でわかります。',
       'analysiere_deine_antworten_h': '回答を分析しています &hellip;'
     }
   };

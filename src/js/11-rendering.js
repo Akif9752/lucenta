@@ -415,8 +415,7 @@
       '</details>';
     });
     // Vereinfachte Kennzahl aus der mittleren Abweichung, kein gewichteter Score.
-    var avgDiff = ORDER.reduce(function(s,f){ return s+Math.abs(me[f]-other[f]); },0) / ORDER.length;
-    var match = Math.round(100 - avgDiff);
+    var match = uebereinstimmung(me, other);
     var matchLabel = match>=75 ? tx('js_hohe_übereinstimmung') : match>=45 ? tx('js_gemischtes_profil') : tx('js_deutlich_unterschiedliche_prof');
     var scoreBlock = '<div class="compat-score"><div id="compatRing"></div><div class="compat-score-label">'+matchLabel+'</div></div>';
     // Der Schlusssatz haengt an der Verteilung (null bis fuenf aehnliche Dimensionen).
@@ -432,6 +431,10 @@
       '<div class="field"><label for="compatSaveLabel">'+tx('js_name_optional')+'</label><input type="text" id="compatSaveLabel" maxlength="30" placeholder="'+decodeEntities(tx('ph_z_b_1a2b3c4d5e_mia'))+'"></div>'+
       '<button type="button" class="btn btn-ghost btn-sm" id="btnSaveCompat">'+tx('js_vergleich_speichern')+'</button>'+
       '</div>';
+    // Aus dem Vergleich die Person als Freund speichern (Entscheidung des Inhabers) — ausser sie ist es schon.
+    var andererCode = $('cmpOther').value.trim();
+    var schonFreund = loadFreunde().some(function(f){ return f.code === andererCode; });
+    var freundRow = schonFreund ? '' : '<button type="button" class="btn btn-ghost btn-sm compat-als-freund" id="btnAlsFreund">'+tx('freunde_als_freund')+'</button>';
     // Der frueher hier stehende Hinweiskasten ist raus: Er saesse unter fuenf Karten, die den
     // gleichen Hinweis schon in sich tragen, und wuerde denselben Satz sechsmal sagen.
     if (vergleichGesperrt){
@@ -444,7 +447,11 @@
     var archivVoll = function(){ return !cmpPlus && loadCompatArchive().length >= FREI_ARCHIV; };
     var archivSchloss = '<div class="compat-save-row compat-save-schloss">'+schlossHTML(tx('plus_archiv_leer'))+'</div>';
     box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note +
-      (archivVoll() ? archivSchloss : saveRow);
+      (archivVoll() ? archivSchloss : saveRow) + freundRow;
+    if ($('btnAlsFreund')) $('btnAlsFreund').addEventListener('click', function(){
+      var l = $('compatSaveLabel');
+      freundVorbereiten(andererCode, l ? l.value.trim().slice(0, 30) : '');
+    });
     startCompatBars(box);
     schloesserVerdrahten(box);
     lastCompatSnapshot = { myCode: $('cmpMe').value.trim(), otherCode: $('cmpOther').value.trim(), match: match };

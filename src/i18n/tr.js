@@ -998,6 +998,12 @@
       'ob_4_titel': 'Sana nasıl hitap edelim?',
       'ob_figur_waehlen': 'Figürünü seç',
       'ob_4_hinweis': 'Adını ve figürünü istediğin zaman profilde değiştirebilirsin.',
+      'freunde_als_freund': 'Arkadaş olarak kaydet',
+      'freunde_naehe_titel': 'En çok kime benziyorsun?',
+      'freunde_gruppe_titel': 'Herkes tek resimde',
+      'freunde_gruppe_aria': 'Grup resmi: profilin ve',
+      'freunde_du': 'Sen',
+      'plus_freunde_gruppe': 'Lucenta+ ile arkadaşlarını radarında birlikte görürsün – kim sana nerede benziyor, tek bakışta.',
       'analysiere_deine_antworten_h': 'Yanıtların inceleniyor &hellip;'
     }
   };

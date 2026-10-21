@@ -995,6 +995,12 @@
       'ob_4_titel': 'What should we call you?',
       'ob_figur_waehlen': 'Choose your figure',
       'ob_4_hinweis': 'You can change your name and figure in your profile any time.',
+      'freunde_als_freund': 'Save as friend',
+      'freunde_naehe_titel': 'Who are you most like?',
+      'freunde_gruppe_titel': 'Everyone in one picture',
+      'freunde_gruppe_aria': 'Group picture: your profile and',
+      'freunde_du': 'You',
+      'plus_freunde_gruppe': 'With Lucenta+ you see your friends together in your radar – who resembles you where, at a glance.',
       'analysiere_deine_antworten_h': 'Analysing your answers &hellip;'
     }
   };

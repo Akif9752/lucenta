@@ -757,3 +757,16 @@
   #onboarding .ob-rein{ animation:ob-rein .38s cubic-bezier(.32,.72,0,1) both; }
   @keyframes ob-rein{ from{ transform:translateX(28px); } to{ transform:none; } }
   @media (prefers-reduced-motion: reduce){ #onboarding, #onboarding .ob-dots span{ transition:none; } #onboarding .ob-rein{ animation:none; } }
+  /* Freunde: Naehe-Rangliste und Gruppenbild */
+  #view-freunde .freund-naehe-zeile{ display:flex; align-items:center; gap:10px; min-height:44px; }
+  #view-freunde .freund-naehe-zeile + .freund-naehe-zeile{ border-top:1px solid var(--line); }
+  #view-freunde .freund-naehe-rang{ width:16px; color:var(--muted); font-size:13px; text-align:right; }
+  #view-freunde .freund-avatar-klein{ width:30px; height:30px; flex-shrink:0; font-size:12px; }
+  #view-freunde .freund-naehe-name{ flex:0 1 34%; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #view-freunde .freund-naehe-balken{ flex:1; height:6px; border-radius:3px; background:var(--line); overflow:hidden; }
+  #view-freunde .freund-naehe-balken span{ display:block; height:100%; border-radius:3px; background:var(--accent); }
+  #view-freunde .freund-naehe-wert{ width:44px; text-align:right; font-size:14px; }
+  #view-freunde .freunde-gruppe-radar svg{ display:block; width:100%; max-width:320px; margin:0 auto; }
+  #view-freunde .freunde-legende{ display:flex; flex-wrap:wrap; gap:6px 14px; justify-content:center; font-size:13px; color:var(--muted); margin-top:6px; }
+  #view-freunde .freunde-legende i{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:-1px; }
+  .compat-als-freund{ margin-top:10px; }

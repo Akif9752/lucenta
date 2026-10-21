@@ -398,8 +398,9 @@
     renderQuestion();
     syncHeroState();
     syncHeaderScrollState();
-    onboardingVerdrahten();
-    onboardingZeigenWennErster();
+    // Ein Fehler hier darf den Start nicht anhalten (das Startbild bliebe sonst stehen).
+    try{ onboardingVerdrahten(); onboardingZeigenWennErster(); }
+    catch(e){ try{ console.error('Onboarding: ' + (e && e.message)); }catch(x){} }
     // Splashscreen ausblenden, sobald das erste Bild gezeichnet ist (launchAutoHide ist aus);
     // setTimeout als Sicherung.
     try{

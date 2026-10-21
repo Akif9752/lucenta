@@ -24,6 +24,85 @@
   function clearFreunde(){
     try{ localStorage.removeItem(FREUNDE_SCHLUESSEL); }catch(e){}
   }
+  // Dieselbe Kennzahl wie im Vergleich (renderCompat): 100 minus mittlere Abweichung.
+  function uebereinstimmung(me, other){
+    var d = ORDER.reduce(function(s, f){ return s + Math.abs(me[f] - other[f]); }, 0) / ORDER.length;
+    return Math.round(100 - d);
+  }
+  // Aus dem Vergleich heraus: Freunde-Seite mit vorausgefuelltem Code (und Namen, falls getippt).
+  function freundVorbereiten(code, name){
+    renderFreunde();
+    showView('freunde');
+    $('freundCode').value = code;
+    $('freundName').value = name || '';
+    setTimeout(function(){
+      var f = $('freundName');
+      f.scrollIntoView({behavior:'smooth', block:'center'});
+      try{ f.focus({preventScroll:true}); }catch(e){}
+    }, 350);
+  }
+  // Freunde mit gueltigem Code und ihre Uebereinstimmung mit dem eigenen Ergebnis, aehnlichste zuerst.
+  function freundeNachNaehe(eigen){
+    return loadFreunde().map(function(f){
+      var sc = fromCode(f.code);
+      return sc ? {f: f, sc: sc, match: uebereinstimmung(eigen, sc)} : null;
+    }).filter(Boolean).sort(function(a, b){ return b.match - a.match; });
+  }
+  var GRUPPE_MAX = 5;
+  var GRUPPE_FARBEN = ['--dim-o', '--dim-e', '--dim-c', '--dim-a', '--dim-s'];
+  // Das Gruppenbild: das eigene Profil als Flaeche, bis zu fuenf Freunde als Linien.
+  function gruppenRadarSVG(eigen, liste){
+    var size = 300, c = size/2, r = size*0.34, labelR = size*0.42;
+    function pts(sc){ return polyPoints(sc, c, r).map(function(p){ return p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' '); }
+    var ringe = [0.25,0.5,0.75,1].map(function(frac){
+      return '<polygon points="'+ORDER.map(function(f,i){ var a=-Math.PI/2+i*(2*Math.PI/5); return (c+r*frac*Math.cos(a)).toFixed(1)+','+(c+r*frac*Math.sin(a)).toFixed(1); }).join(' ')+'" fill="none" stroke="var(--line)" stroke-width="1"/>';
+    }).join('');
+    var achsen = ORDER.map(function(f,i){
+      var a=-Math.PI/2+i*(2*Math.PI/5), lx=c+labelR*Math.cos(a), ly=c+labelR*Math.sin(a);
+      var anker = Math.abs(Math.cos(a))<0.2 ? 'middle' : (Math.cos(a)>0?'start':'end');
+      return '<line x1="'+c+'" y1="'+c+'" x2="'+(c+r*Math.cos(a)).toFixed(1)+'" y2="'+(c+r*Math.sin(a)).toFixed(1)+'" stroke="var(--line)" stroke-width="1"/>'+
+        '<text x="'+lx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" text-anchor="'+anker+'" class="radar-axis-label">'+RADAR_LABELS[f]+'</text>';
+    }).join('');
+    var linien = liste.map(function(e, i){
+      return '<polygon points="'+pts(e.sc)+'" fill="none" stroke="var('+GRUPPE_FARBEN[i]+')" stroke-width="2" stroke-linejoin="round"/>';
+    }).join('');
+    var eigenes = '<polygon points="'+pts(eigen)+'" fill="color-mix(in srgb, var(--accent) 22%, transparent)" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>';
+    var aria = tx('freunde_gruppe_aria') + ' ' + liste.map(function(e){ return e.f.name; }).join(', ');
+    return '<svg viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+escapeHTML(aria)+'">'+
+      ringe+achsen+eigenes+linien+'</svg>';
+  }
+  function freundeUebersichtHTML(){
+    var eigen = loadResult();
+    var liste = eigen ? freundeNachNaehe(eigen) : [];
+    if (liste.length < 2) return '';
+    var rang = '<div class="settings-group freunde-naehe"><h2>'+tx('freunde_naehe_titel')+'</h2>'+
+      liste.map(function(e, i){
+        return '<div class="freund-naehe-zeile"><span class="freund-naehe-rang mono">'+(i+1)+'</span>'+
+          '<span class="avatar freund-avatar-klein" data-naehe-avatar="'+i+'" aria-hidden="true"></span>'+
+          '<span class="freund-naehe-name">'+escapeHTML(e.f.name)+'</span>'+
+          '<span class="freund-naehe-balken" aria-hidden="true"><span style="width:'+Math.max(4, e.match)+'%"></span></span>'+
+          '<span class="freund-naehe-wert mono">'+e.match+' %</span></div>';
+      }).join('')+'</div>';
+    var gruppe = liste.slice(0, GRUPPE_MAX);
+    var bild = '<div class="radar-wrap freunde-gruppe-radar">'+gruppenRadarSVG(eigen, gruppe)+'</div>'+
+      '<div class="freunde-legende"><span><i style="background:var(--accent)"></i>'+tx('freunde_du')+'</span>'+
+      gruppe.map(function(e, i){ return '<span><i style="background:var('+GRUPPE_FARBEN[i]+')"></i>'+escapeHTML(e.f.name)+'</span>'; }).join('')+'</div>';
+    // Das Gruppenbild ist Lucenta+ (Entscheidung des Inhabers): Es geht ueber den freien Vergleich mit
+    // zwei Personen hinaus. Frei steht es als verschwommene Vorschau.
+    var gruppenTeil = '<div class="settings-group freunde-gruppe"><h2>'+tx('freunde_gruppe_titel')+'</h2>'+
+      (istPlus() ? bild : vorschauHTML(bild, tx('plus_freunde_gruppe')))+'</div>';
+    return rang + gruppenTeil;
+  }
+  function freundeUebersichtAvatare(wrap){
+    var eigen = loadResult();
+    if (!eigen) return;
+    var liste = freundeNachNaehe(eigen);
+    wrap.querySelectorAll('[data-naehe-avatar]').forEach(function(el){
+      var e = liste[+el.getAttribute('data-naehe-avatar')];
+      if (e) renderAvatarInto(el, {name: e.f.name, figur: e.f.figur || null, avatarColor: 'accent'});
+    });
+  }
+
   function vergleicheMit(code){
     return loadCompatArchive().filter(function(e){ return e.otherCode === code; });
   }
@@ -125,6 +204,8 @@
   function renderFreunde(){
     var wrap = $('freundeListe');
     if (!wrap) return;
+    var oben = $('freundeUebersicht');
+    if (oben){ oben.innerHTML = freundeUebersichtHTML(); freundeUebersichtAvatare(oben); schloesserVerdrahten(oben); }
     var l = loadFreunde().slice().reverse();
     wrap.innerHTML = l.length ? '<div class="history-list">'+l.map(freundZeileHTML).join('')+'</div>'
                               : emptyStateHTML(tx('freunde_leer'));
