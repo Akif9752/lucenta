@@ -4,6 +4,8 @@
     var progress = loadProgress();
     var result = loadResult();
     var profile = loadProfile();
+    $('wiederCodeBox').hidden = !result;
+    $('wiederCode').textContent = result ? toCode(result) : '';
 
     renderAvatarInto($('settingsAvatar'), profile);
     $('settingsAccountName').textContent = profile.name ? profile.name : tx('js_profil');

@@ -517,7 +517,7 @@
   input[type="text"], input[type="time"], input[type="search"], input:not([type]), textarea, select{
     font-size:16px !important;
   }
-  .field input[type="text"], #restoreCodeInput, #myCode{ font-family:var(--code); }
+  .field input[type="text"], #restoreCodeInput, #myCode, #wiederCode{ font-family:var(--code); }
 
   /* Runde 126: Die Hilfe als EINE Zeile, die aufklappt — die zehn Fragen standen vorher offen
      untereinander und zogen die Einstellungen in die Laenge. Gleiche Form wie die Fragen selbst. */
@@ -779,6 +779,13 @@
   .konto-icloud{ margin-top:14px; display:flex; flex-direction:column; gap:10px; }
   .konto-icloud .settings-hint{ margin:0; }
   .konto-icloud .konto-warnung{ color:var(--dim-e-text); }
+  /* Wie "Eigene Daten zuruecksetzen": eigene Gruppe, Warnfarbe, mittig. */
+  #view-settings .konto-icloud > .danger-btn{
+    display:flex; justify-content:center; width:100%; min-height:46px; margin-top:6px;
+    background:var(--surface); border:none; border-radius:var(--radius-m); box-shadow:none;
+    font-family:var(--sans); font-size:16px; font-weight:400; color:var(--danger);
+  }
+  #view-settings .konto-icloud > .danger-btn:active{ transform:none; background:var(--surface-2); }
   #onboarding .ob-anmelden{ margin:12px auto 0; text-align:center; min-height:44px; }
   #view-freunde .freund-eigener-code{ font-size:13px; word-break:break-all; background:var(--surface-2); border-radius:10px; padding:10px 12px; margin:4px 0 12px; color:var(--ink); user-select:all; -webkit-user-select:all; }
   #view-plus .plus-vorteile{ margin:0; }

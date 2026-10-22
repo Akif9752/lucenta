@@ -5,6 +5,7 @@
   var KONTO_ZULETZT = 'lucenta_icloud_zuletzt';
   var kontoStand = {angemeldet: false, icloud: true};
   var kontoLetzterInhalt = null;
+  var kontoGeloescht = false;
 
   function kontoModul(){
     var k = nativVorhanden() && nativModul('Account');
@@ -25,7 +26,8 @@
     if (!kontoModul()){ wrap.hidden = true; return; }
     wrap.hidden = false;
     if (!kontoStand.angemeldet){
-      wrap.innerHTML = '<p class="settings-hint">'+tx('konto_text_aus')+'</p>'+
+      wrap.innerHTML = (kontoGeloescht ? '<p class="settings-hint">'+tx('konto_geloescht')+'</p>' : '')+
+        '<p class="settings-hint">'+tx('konto_text_aus')+'</p>'+
         '<button type="button" class="apple-knopf" data-konto="anmelden">'+APPLE_LOGO+'<span>'+tx('konto_apple')+'</span></button>';
       return;
     }
@@ -37,7 +39,8 @@
         '<button type="button" class="btn btn-ghost btn-sm" data-konto="sichern">'+tx('konto_sichern')+'</button>'+
         '<button type="button" class="btn btn-ghost btn-sm" data-konto="laden">'+tx('konto_laden')+'</button>'+
         '<button type="button" class="btn btn-ghost btn-sm" data-konto="abmelden">'+tx('konto_abmelden')+'</button>'+
-      '</div>';
+      '</div>'+
+      '<button type="button" class="btn btn-ghost btn-sm danger-btn" data-konto="loeschen">'+tx('konto_loeschen')+'</button>';
   }
 
   // Antworten der Bruecke, die keine Fehler sind, sondern etwas, das die Person wissen sollte.
@@ -99,9 +102,28 @@
     k.anmelden().then(function(r){
       if (!r || !r.angemeldet){ if (fertig) fertig(false); return; }
       kontoStand.angemeldet = true;
+      kontoGeloescht = false;
       kontoAnwenden();
       kontoLaden(true, fertig);
     }).catch(function(){ toast(tx('konto_fehler')); if (fertig) fertig(false); });
+  }
+
+  // Die Daten auf diesem iPhone bleiben; geloescht wird die Kopie in der iCloud und die Anmeldung.
+  function kontoLoeschen(){
+    var k = kontoModul();
+    if (!k || !k.loeschen) return;
+    if (!window.confirm(decodeEntities(tx('konto_frage_loeschen')))) return;
+    k.loeschen().then(function(r){
+      if (kontoHinweis(r)) return;
+      if (!r || !r.geloescht){ toast(tx('konto_fehler')); return; }
+      try{ localStorage.removeItem(KONTO_ZULETZT); }catch(e){}
+      kontoLetzterInhalt = null;
+      kontoStand.angemeldet = false;
+      kontoGeloescht = true;
+      kontoAnwenden();
+      var ob = $('btnObAnmelden');
+      if (ob) ob.hidden = false;
+    }).catch(function(){ toast(tx('konto_fehler')); });
   }
 
   function kontoVerdrahten(){
@@ -113,6 +135,7 @@
       if (was === 'anmelden') kontoAnmelden();
       else if (was === 'sichern') kontoSichern(false);
       else if (was === 'laden') kontoLaden(false);
+      else if (was === 'loeschen') kontoLoeschen();
       else if (was === 'abmelden'){
         var k = kontoModul();
         if (k) k.abmelden().then(function(){ kontoStand.angemeldet = false; kontoAnwenden(); toast(tx('konto_abgemeldet')); });

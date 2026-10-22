@@ -43,7 +43,7 @@ sind die Ansichten gefüllt, die den Eintrag tragen — fünf Wochen Verlauf sta
 - **Name (23):** `Lucenta — Big Five Test`
 - **Untertitel (30):** `Persönlichkeit ohne Schubladen`
 - **Schlüsselwörter (93):** `persönlichkeit,bigfive,ocean,charaktertest,selbstreflexion,psychologie,stimmung,tagebuch,ipip`
-- **Werbetext (137):** `Fünfzig Aussagen, sieben Minuten, ein Porträt auf wissenschaftlicher Grundlage. Alles bleibt auf deinem iPhone — kein Konto, kein Server.`
+- **Werbetext (135):** `Fünfzig Aussagen, sieben Minuten, ein Porträt auf wissenschaftlicher Grundlage. Deine Daten gehören dir — kein Tracking, keine Werbung.`
 
 **Beschreibung:**
 
@@ -67,9 +67,11 @@ Ein zehnstelliger Code genügt, um dein Profil mit dem einer anderen Person zu v
 jede Dimension in Alltag, Gespräch und gemeinsamem Unternehmen. Ohne Konto, ohne dass jemand
 Daten austauscht.
 
-ALLES BLEIBT AUF DEINEM GERÄT
-Kein Konto. Kein Server. Keine Werbung, kein Tracking, keine Weitergabe. Deine Antworten, dein
-Ergebnis, dein Verlauf und dein Profil verlassen dein iPhone nicht. Die Schriften stecken in der
+DEINE DATEN GEHÖREN DIR
+Keine Werbung, kein Tracking, keine Weitergabe. Ohne Anmeldung verlassen deine Antworten, dein
+Ergebnis, dein Verlauf und dein Profil dein iPhone nicht. Wer möchte, meldet sich mit Apple an —
+dann liegt eine Sicherung Ende-zu-Ende verschlüsselt in der eigenen iCloud, die wir nicht lesen
+können. Die Schriften stecken in der
 App selbst — beim Öffnen wird nichts nachgeladen, und Lucenta funktioniert vollständig ohne Netz.
 
 LUCENTA+
@@ -91,7 +93,7 @@ Die Ergebnisse ersetzen keine therapeutische, psychologische oder ärztliche Ber
 - **Name (23):** `Lucenta — Big Five Test`
 - **Subtitle (25):** `Personality without boxes`
 - **Keywords (86):** `personality,bigfive,ocean,character,selfreflection,psychology,mood,journal,traits,ipip`
-- **Promotional text (122):** `Fifty statements, seven minutes, a portrait on scientific ground. Everything stays on your iPhone — no account, no server.`
+- **Promotional text (113):** `Fifty statements, seven minutes, a portrait on scientific ground. Your data belongs to you — no tracking, no ads.`
 
 **Description:**
 
@@ -115,9 +117,10 @@ A ten-character code is all it takes to compare your profile with someone else's
 dimension across everyday life, conversation and doing things together. No account, and nobody
 exchanges data.
 
-EVERYTHING STAYS ON YOUR DEVICE
-No account. No server. No advertising, no tracking, nothing passed on. Your answers, your
-result, your history and your profile never leave your iPhone. The fonts are part of the app
+YOUR DATA BELONGS TO YOU
+No advertising, no tracking, nothing passed on. Without signing in, your answers, your result,
+your history and your profile never leave your iPhone. If you like, sign in with Apple — a
+backup then lives end-to-end encrypted in your own iCloud, where we cannot read it. The fonts are part of the app
 itself — nothing is fetched when you open it, and Lucenta works fully offline.
 
 LUCENTA+
@@ -138,11 +141,11 @@ do not replace therapeutic, psychological or medical advice.
 - **Nombre (23):** `Lucenta — Test Big Five`
 - **Subtítulo (26):** `Personalidad sin etiquetas`
 - **Palabras clave (88):** `personalidad,bigfive,ocean,caracter,autoconocimiento,psicologia,animo,diario,rasgos,ipip`
-- **Texto promocional (118):** `Cincuenta frases, siete minutos, un retrato con base científica. Todo se queda en tu iPhone: sin cuenta, sin servidor.`
+- **Texto promocional (112):** `Cincuenta frases, siete minutos, un retrato con base científica. Tus datos son tuyos: sin rastreo, sin anuncios.`
 
 **Descripción (resumen):** El texto largo sigue la estructura alemana, sección por sección:
 modelo Big Five en lugar de signos del zodiaco · cincuenta frases del IPIP · estado del día ·
-comparación mediante código · todo en el dispositivo · Lucenta+ · ocho idiomas · aviso de que no
+comparación mediante código · tus datos son tuyos · Lucenta+ · ocho idiomas · aviso de que no
 es un instrumento clínico.
 
 ### Français
@@ -150,35 +153,35 @@ es un instrumento clínico.
 - **Nom (23):** `Lucenta — Test Big Five`
 - **Sous-titre (26):** `La personnalité sans cases`
 - **Mots-clés (89):** `personnalite,bigfive,ocean,caractere,introspection,psychologie,humeur,journal,traits,ipip`
-- **Texte promotionnel (131):** `Cinquante affirmations, sept minutes, un portrait sur base scientifique. Tout reste sur ton iPhone : pas de compte, pas de serveur.`
+- **Texte promotionnel (128):** `Cinquante affirmations, sept minutes, un portrait sur base scientifique. Tes données t’appartiennent : ni pistage, ni publicité.`
 
 ### Italiano
 
 - **Nome (23):** `Lucenta — Test Big Five`
 - **Sottotitolo (30):** `La personalità senza etichette`
 - **Parole chiave (85):** `personalita,bigfive,ocean,carattere,introspezione,psicologia,umore,diario,tratti,ipip`
-- **Testo promozionale (129):** `Cinquanta affermazioni, sette minuti, un ritratto su base scientifica. Tutto resta sul tuo iPhone: nessun account, nessun server.`
+- **Testo promozionale (133):** `Cinquanta affermazioni, sette minuti, un ritratto su base scientifica. I tuoi dati sono tuoi: niente tracciamento, niente pubblicità.`
 
 ### Português
 
 - **Nome (24):** `Lucenta — Teste Big Five`
 - **Subtítulo (25):** `Personalidade sem gavetas`
 - **Palavras-chave (88):** `personalidade,bigfive,ocean,carater,autoconhecimento,psicologia,humor,diario,tracos,ipip`
-- **Texto promocional (113):** `Cinquenta frases, sete minutos, um retrato com base científica. Tudo fica no seu iPhone: sem conta, sem servidor.`
+- **Texto promocional (115):** `Cinquenta frases, sete minutos, um retrato com base científica. Os seus dados são seus: sem rastreio, sem anúncios.`
 
 ### Türkçe
 
 - **Ad (24):** `Lucenta — Big Five Testi`
 - **Altyazı (25):** `Kutulara sığmayan kişilik`
 - **Anahtar kelimeler (82):** `kisilik,bigfive,ocean,karakter,ozfarkindalik,psikoloji,ruhhali,gunluk,ozellik,ipip`
-- **Tanıtım metni (103):** `Elli ifade, yedi dakika, bilimsel temelli bir portre. Her şey iPhone'unda kalır: hesap yok, sunucu yok.`
+- **Tanıtım metni (96):** `Elli ifade, yedi dakika, bilimsel temelli bir portre. Verilerin sana ait: takip yok, reklam yok.`
 
 ### 日本語
 
 - **名前 (19):** `Lucenta — ビッグファイブ診断`
 - **サブタイトル (11):** `型にはめない性格の地図`
 - **キーワード (42):** `性格,ビッグファイブ,ocean,自己理解,心理学,気分,記録,特性,診断,ipip`
-- **プロモーションテキスト (52):** `50の記述、7分、科学に基づく肖像。すべてiPhoneの中だけに — アカウントもサーバーもありません。`
+- **プロモーションテキスト (47):** `50の記述、7分、科学に基づく肖像。データはあなたのもの — トラッキングも広告もありません。`
 
 ## Kategorie, Altersfreigabe, Datenschutzangaben
 

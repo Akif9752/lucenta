@@ -67,6 +67,18 @@ die Store-Beschreibung muss es genauso halten.
   Container `iCloud.app.lucenta.ios` anlegen; im CloudKit-Dashboard das Schema (Datensatztyp
   `LucentaDaten`) in die Produktion übernehmen, bevor die App in den Store geht. Das vereinfacht die Datenschutzangaben im Store auf den kleinstmöglichen
   Fall (siehe Abschnitt 4).
+- **Konto löschen (Richtlinie 5.1.1(v), Feedback A4):** Einstellungen → Konto → „Anmeldung und
+  iCloud-Daten löschen“ löscht den CloudKit-Datensatz und vergisst die Kennung; danach steht der Weg
+  zur Trennung in den iOS-Einstellungen da. **Kein Token-Widerruf**, weil nie ein Token entsteht
+  (Entscheidung des Inhabers). Diese Notiz gehört in App Store Connect → „Notes for Review“:
+
+      Sign in with Apple is optional and requests no scopes (no name, no email). The app never
+      exchanges the authorization code, so no refresh or access tokens exist that could be revoked;
+      there is no server. Account deletion is in Settings → Account → "Delete sign-in and iCloud
+      data": it deletes the user's record from their private CloudKit database and forgets the
+      local identifier.
+- **Privacy Manifest** (`ios/App/App/PrivacyInfo.xcprivacy`, Feedback A3): kein Tracking, keine
+  gesammelten Daten, `UserDefaults` mit Grund `CA92.1` (nur die App selbst liest, was sie schreibt).
 - **Acht Sprachen** (de, en, es, fr, it, pt, tr, ja), item-für-item durch die Testreihe
   abgesichert.
 - **App-Symbol** in elf Größen unter `assets/icon/`, inklusive 1024 px für den Store.

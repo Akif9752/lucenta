@@ -537,7 +537,8 @@ const NACHBEREITUNG = {
   // auseinander. Das ergibt eine gemischte Verteilung und damit BEIDE Kartensorten in einem
   // Bild — mit zwei gleichen oder zwei entgegengesetzten Codes waere immer nur eine zu sehen.
   vergleich: {ansicht:'result', tun: async (p) => {
-    await p.fill('#cmpMe', '221r1g1y1c');
+    // #cmpMe ist seit Feedback B6 verborgen (immer das eigene Ergebnis); gesetzt wird es deshalb direkt.
+    await p.evaluate(() => { document.getElementById('cmpMe').value = '221r1g1y1c'; });
     await p.fill('#cmpOther', '240k1e1w2d');
     await p.click('#btnCompare');
     await p.waitForTimeout(1400);

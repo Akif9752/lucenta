@@ -59,6 +59,10 @@
   }
   /* Bewusst NICHT Teil der gedämpften Fußnoten-Gruppe: handlungsrelevanter Hinweis in normaler
      Lesegröße, wie .storage-warning — nur ohne Warnfarbe, weil hier nichts schiefgegangen ist. */
+  /* .code-box und .field setzen display und schlagen sonst das hidden-Attribut. */
+  .code-box[hidden], .field[hidden]{display:none;}
+  .einladen-box{font-family:var(--sans);font-size:14px;line-height:1.45;border-style:solid;}
+  .settings-restore .code-box{margin:0 0 10px;}
   .code-lead{margin-top:10px;font-size:13.5px;color:var(--muted);line-height:1.55;position:relative;}
 
   

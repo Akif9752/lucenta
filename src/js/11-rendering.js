@@ -102,7 +102,11 @@
   function disarmQuizAdvance(){
     if (quizAdvanceTimeout){ clearTimeout(quizAdvanceTimeout); quizAdvanceTimeout = null; }
   }
+  // Zwischen Antwort 50 und dem Ergebnis vergeht gut eine Sekunde; jeder Tipp darin speicherte
+  // sonst ein weiteres Ergebnis.
+  var quizSchliesst = false;
   function selectAnswer(v){
+    if (quizSchliesst) return;
     answers[qi] = v;
     tapFeedback();
     saveProgress();
@@ -143,6 +147,8 @@
   }
 
   function finishQuiz(){
+    if (quizSchliesst) return;
+    quizSchliesst = true;
     var previous = loadResult();
     scores = computeScores();
     // Das Gleichfoermigkeits-Kennzeichen reist am Ergebnis mit (answers ist spaeter zurueckgesetzt).
@@ -157,6 +163,7 @@
     }
     clearProgress();
     function reveal(){
+      quizSchliesst = false;
       renderResult(previous);
       showView('result');
       ergebnisEnthuellen();
@@ -231,7 +238,9 @@
     $('resultEyebrow').textContent = guestRun ? tx('js_gastergebnis') : tx('js_dein_porträt');
     $('codeLead').textContent = guestRun
       ? tx('js_dieser_code_ist_die_einzig')
-      : tx('js_dein_ergebnis_liegt_aussch');
+      : tx('js_ergebnis_wiedercode_hinweis');
+    $('gastCodeBox').hidden = !guestRun;
+    $('einladenBox').hidden = guestRun;
     $('radarWrap').innerHTML = radarSVG(scores);
 
     // Listen nach Wert sortiert; das Radar behaelt die feste O-C-E-A-N-Reihenfolge (vergleichbar ueber

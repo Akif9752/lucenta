@@ -19,7 +19,8 @@ public class LucentaKontoPlugin: CAPInstancePlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "anmelden", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "abmelden", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "sichern", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "laden", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "laden", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "loeschen", returnType: CAPPluginReturnPromise)
     ]
 
     private static let kennungSchluessel = "lucenta_apple_kennung"
@@ -110,6 +111,20 @@ public class LucentaKontoPlugin: CAPInstancePlugin, CAPBridgedPlugin {
             }
             let zeit = (satz["geaendert"] as? Date ?? satz.modificationDate ?? Date()).timeIntervalSince1970 * 1000
             call.resolve(["daten": daten, "zeit": zeit])
+        }
+    }
+
+    /// Konto loeschen (Richtlinie 5.1.1(v)): Datensatz in der iCloud weg, dann die Kennung vergessen.
+    /// Kein Token-Widerruf: Wir tauschen den Code nie ein, es entsteht also kein Token (Entscheidung
+    /// des Inhabers). Scheitert das Loeschen, bleibt die Anmeldung, damit man es erneut versuchen kann.
+    @objc func loeschen(_ call: CAPPluginCall) {
+        datenbank.delete(withRecordID: Self.datensatz) { _, fehler in
+            if let fehler, (fehler as? CKError)?.code != .unknownItem {
+                self.cloudFehler(fehler, call)
+                return
+            }
+            UserDefaults.standard.removeObject(forKey: Self.kennungSchluessel)
+            call.resolve(["geloescht": true])
         }
     }
 

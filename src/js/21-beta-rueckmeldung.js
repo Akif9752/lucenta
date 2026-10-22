@@ -251,12 +251,15 @@
   $('restoreCodeInput').addEventListener('keydown', function(e){ if (e.key==='Enter'){ $('btnRestoreCode').click(); } });
   // Keine Zifferntasten-Bedienung im Fragebogen (auf dem iPhone unerreichbar). Bewusst geblieben:
   // Eingabetaste in Textfeldern und Escape/Tab in Fenstern (Tastatur- und Schaltersteuerung).
-  $('btnCopyCode').addEventListener('click', function(){
-    var code = $('myCode').textContent;
+  $('btnResultEinladen').addEventListener('click', freundeEinladen);
+  [['btnCopyCode', 'myCode'], ['btnCopyWiederCode', 'wiederCode']].forEach(function(paar){
+    $(paar[0]).addEventListener('click', function(){ codeKopieren($(paar[1]).textContent); });
+  });
+  function codeKopieren(code){
     if (navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(code).then(function(){ toast(tx('js_code_kopiert')); }).catch(function(){ toast(tx('js_code_doppelpunkt')+code); });
     } else { toast(tx('js_code_doppelpunkt')+code); }
-  });
+  }
   // "Ergebnis teilen" oeffnet den Bild-Dialog; der Text-Weg ist dort der Rueckfall.
   $('btnShare').addEventListener('click', openImgModal);
   $('btnImgModalClose').addEventListener('click', closeImgModal);
@@ -285,6 +288,7 @@
   // "wiring" aus.
   plusStandPruefen();
   plusPreiseHolen();
+  einladungenHoeren();
   // Startbewegung (Fuenfeck zeichnet und fuellt sich, darunter der Name). Nur in der App,
   // durchklickbar, bei reduzierter Bewegung gar nicht.
   (function startBewegung(){
@@ -299,14 +303,15 @@
   function teilenAlsText(){
     var arch = archetypeOf(scores);
     var url = (location.href.split('#')[0]).split('?')[0];
-    var text = tx('js_mein_lucentaporträt')+ (NOUN[arch.top1][scores[arch.top1]>=50?'high':'low']) +' · '+
-      (ADJ[arch.top2][scores[arch.top2]>=50?'high':'low']) + tx('js_mach_den_test_und_verglei')+toCode(scores);
+    var titel = tx('js_mein_lucentaporträt')+ (NOUN[arch.top1][scores[arch.top1]>=50?'high':'low']) +' · '+
+      (ADJ[arch.top2][scores[arch.top2]>=50?'high':'low']);
+    var text = guestRun ? titel + tx('js_mach_den_test_und_verglei') + toCode(scores) : titel + '. ' + einladungsText();
     function inAblage(){
       if (navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(text+' — '+url)
           .then(function(){ toast(tx('js_zum_teilen_kopiert')); })
-          .catch(function(){ toast(tx('js_teilen_nicht_möglich__dein')+toCode(scores)); });
-      } else { toast(tx('js_teilen_nicht_möglich__dein')+toCode(scores)); }
+          .catch(function(){ toast(text); });
+      } else { toast(text); }
     }
     if (navigator.share){
       navigator.share({title:'Lucenta', text:text, url:url}).catch(function(err){

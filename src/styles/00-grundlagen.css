@@ -253,7 +253,7 @@
      eigene Code (#myCode), dessen Verlust endgueltig waere. Eingabefelder brauchen keine Ausnahme —
      auf editierbaren Elementen gilt user-select immer text (pruef-app prueft das). */
   html{ -webkit-user-select:none; user-select:none; }
-  #myCode{ -webkit-user-select:text; user-select:text; }
+  #myCode, #wiederCode{ -webkit-user-select:text; user-select:text; }
   ::selection{background:var(--accent);color:var(--accent-ink);}
   a{color:var(--accent-strong);}
   button{font-family:inherit;}

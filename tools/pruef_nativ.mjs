@@ -87,7 +87,23 @@ await seite.addInitScript(() => {
             ? Promise.reject(new Error('Kauf fehlgeschlagen'))
             : Promise.resolve(window.__kaufAntwort || {aktiv: true, produkt: o.produkt}); }
       },
-      App: { openUrl: (o) => { merke('oeffnen', o); return Promise.resolve(); } }
+      // Feedback B7: '__pruef_link' = der Link, mit dem die App gestartet wurde.
+      App: { openUrl: (o) => { merke('oeffnen', o); return Promise.resolve(); },
+             getLaunchUrl: () => Promise.resolve(localStorage.getItem('__pruef_link') ? {url: localStorage.getItem('__pruef_link')} : {}),
+             addListener: (name, f) => { if (name === 'appUrlOpen') window.__linkOeffnen = f; return Promise.resolve({remove(){}}); } },
+      // Feedback A4: Konto loeschen. '__pruef_konto' = angemeldet; '__pruef_loeschen' = Antwort.
+      Account: {
+        stand: () => Promise.resolve({angemeldet: localStorage.getItem('__pruef_konto') === '1', icloud: true}),
+        anmelden: () => Promise.resolve({angemeldet: true}),
+        abmelden: () => Promise.resolve({angemeldet: false}),
+        sichern: () => Promise.resolve({gesichert: true, zeit: Date.now()}),
+        laden: () => Promise.resolve({leer: true}),
+        loeschen: () => { merke('loeschen');
+          const a = localStorage.getItem('__pruef_loeschen');
+          if (a === 'offline') return Promise.resolve({offline: true});
+          localStorage.removeItem('__pruef_konto');
+          return Promise.resolve({geloescht: true}); }
+      }
     }
   };
 });
@@ -443,6 +459,55 @@ ok(pt.jahr === 'CHF 30.00' && pt.monat === 'CHF 5.00', 'mit Antwort stehen die S
 ok(pt.proMonat === 'nur CHF 2.50 im Monat', 'im Satz wird nur der Betrag getauscht: ' + pt.proMonat);
 ok(pt.statt === 'CHF 60.00' && pt.spar === 'Spare CHF 30' && pt.sparDa, 'Vergleichspreis und Ersparnis aus dem Store: ' + pt.statt + ' / ' + pt.spar);
 await seite.evaluate(() => localStorage.removeItem('__pruef_preise'));
+
+console.log('\n=== Einladung per Link legt den Freund an (Feedback B7) ===');
+const freundeNamen = () => seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_freunde') || '[]').map(f => f.name + '/' + f.figur));
+await seite.evaluate(() => { localStorage.removeItem('lucenta_freunde');
+  localStorage.setItem('__pruef_link', 'https://lucenta.example/f#L1.240k1e1w2d.fuchs.TWFyaWU'); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(700);
+let fn = await freundeNamen();
+ok(fn.length === 1 && fn[0] === 'Marie/fuchs', 'Kaltstart mit Link: Marie mit Fuchs ist angelegt (' + fn.join(',') + ')');
+ok(await seite.evaluate(() => document.getElementById('view-freunde').classList.contains('active')), 'und die Freunde-Seite ist offen');
+await seite.evaluate(() => window.__linkOeffnen && window.__linkOeffnen({url: 'https://lucenta.example/f#L1.240k1e1w2d.fuchs.TWFyaWU'}));
+await seite.waitForTimeout(200);
+ok((await freundeNamen()).length === 1, 'derselbe Link noch einmal (appUrlOpen beim Kaltstart) verdoppelt nichts');
+await seite.evaluate(() => window.__linkOeffnen && window.__linkOeffnen({url: 'https://lucenta.example/f%23L1.1e2s0u1i2a.hase.Tm9haA'}));
+await seite.waitForTimeout(200);
+fn = await freundeNamen();
+ok(fn.length === 2 && fn.includes('Noah/hase'), 'laufende App, kodierter Link: Noah kommt dazu (' + fn.join(',') + ')');
+await seite.evaluate(() => window.__linkOeffnen && window.__linkOeffnen({url: 'https://lucenta.example/f#kaputt'}));
+await seite.waitForTimeout(200);
+ok((await freundeNamen()).length === 2, 'ein Link ohne gueltigen Code tut nichts');
+await seite.evaluate(() => { localStorage.removeItem('__pruef_link'); localStorage.removeItem('lucenta_freunde'); });
+
+console.log('\n=== Konto loeschen (Richtlinie 5.1.1(v)) ===');
+const kontoBild = () => seite.evaluate(() => {
+  const w = document.getElementById('kontoIcloud');
+  return {loeschen: !!w.querySelector('[data-konto="loeschen"]'), anmelden: !!w.querySelector('[data-konto="anmelden"]'),
+          text: w.textContent, log: window.__nativLog.filter(e => e.was === 'loeschen').length};
+});
+await seite.evaluate(() => { localStorage.setItem('__pruef_konto', '1'); localStorage.setItem('__pruef_loeschen', 'offline'); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+let kb = await kontoBild();
+ok(kb.loeschen && !kb.anmelden, 'angemeldet steht der Knopf zum Loeschen da');
+seite.once('dialog', d => d.dismiss());
+await seite.evaluate(() => document.querySelector('[data-konto="loeschen"]').click());
+await seite.waitForTimeout(300);
+kb = await kontoBild();
+ok(kb.log === 0 && kb.loeschen, 'ohne Bestaetigung wird nichts geloescht');
+seite.once('dialog', d => d.accept());
+await seite.evaluate(() => document.querySelector('[data-konto="loeschen"]').click());
+await seite.waitForTimeout(300);
+kb = await kontoBild();
+ok(kb.log === 1 && kb.loeschen, 'ohne Verbindung bleibt die Anmeldung, man kann es erneut versuchen');
+await seite.evaluate(() => localStorage.removeItem('__pruef_loeschen'));
+seite.once('dialog', d => d.accept());
+await seite.evaluate(() => document.querySelector('[data-konto="loeschen"]').click());
+await seite.waitForTimeout(300);
+kb = await kontoBild();
+ok(kb.anmelden && !kb.loeschen && /Mit Apple anmelden/.test(kb.text) && /Apple-ID/.test(kb.text),
+   'danach abgemeldet, mit dem Weg zur Trennung in den iOS-Einstellungen');
+await seite.evaluate(() => localStorage.removeItem('__pruef_konto'));
 
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 

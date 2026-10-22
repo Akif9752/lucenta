@@ -325,6 +325,31 @@ ok(figurPfade.anzahl === 12 && figurPfade.kaputt.length === 0,
 // Gegenstand mehr. Die Lehre aus ihren drei Anlaeufen steht im Journal unter Runde 111.
 await anmutungCtx.close();
 
+// Feedback A1: Nachtipps zwischen Antwort 50 und dem Ergebnis speicherten je ein weiteres Ergebnis.
+// Geeicht: ohne die Sperre stehen hier 2 Eintraege und die Delta-Karte.
+const testCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+const testSeite = await testCtx.newPage();
+await testSeite.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
+await testSeite.click('#btnStart');
+for (let i = 0; i < 49; i++) {
+  await testSeite.locator('#scaleRow button').nth(i % 5).click();
+  await testSeite.waitForTimeout(320);
+}
+for (let k = 0; k < 4; k++) {
+  await testSeite.locator('#scaleRow button').nth(2).click({ force: true, timeout: 1000 }).catch(() => {});
+  await testSeite.waitForTimeout(450);
+}
+await testSeite.waitForTimeout(2500);
+const nachTest = await testSeite.evaluate(() => ({
+  verlauf: (JSON.parse(localStorage.getItem('lucenta_history') || '[]') || []).length,
+  ansicht: document.querySelector('.view.active')?.id,
+  delta: /letzten Ergebnis/.test(document.querySelector('#view-result').innerText),
+}));
+ok(nachTest.ansicht === 'view-result' && nachTest.verlauf === 1 && !nachTest.delta,
+   'vier Nachtipps auf Frage 50 speichern genau EIN Ergebnis, ohne Delta-Karte',
+   `Verlauf ${nachTest.verlauf}, Ansicht ${nachTest.ansicht}, Delta ${nachTest.delta}`);
+await testCtx.close();
+
 await browser.close();
 
 console.log('\n======================================================');

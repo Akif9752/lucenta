@@ -13,10 +13,9 @@ import Capacitor
 /// implizit tat: Fenster zur Szene anlegen, den Anfangs-Controller aus `Main.storyboard`
 /// (unseren `MainViewController`, die Capacitor-Bruecke) einsetzen, sichtbar machen.
 ///
-/// Bewusst NICHT hier: Capacitors `ApplicationDelegateProxy` fuer URL-Aufrufe und
-/// Universal Links. Der bleibt im `AppDelegate` — in Capacitor 6 haengen diese Aufrufe dort, und
-/// sie doppelt zu bedienen wuerde sie zweimal ausloesen. Kommt Deep-Linking dazu, gehoert es
-/// zusaetzlich in `scene(_:openURLContexts:)` und `scene(_:continue:)`.
+/// Universal Links (Einladungen, Feedback B7) kommen im Scene-Lifecycle hier an, nicht im
+/// `AppDelegate`; sie gehen an Capacitors `ApplicationDelegateProxy`, der sie als `appUrlOpen`
+/// bzw. `getLaunchUrl()` an die Seite gibt.
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
@@ -33,5 +32,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.overrideUserInterfaceStyle = MainViewController.gespeicherterStil()
         self.window = window
         window.makeKeyAndVisible()
+        connectionOptions.userActivities.forEach(weiterreichen)
+    }
+
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        weiterreichen(userActivity)
+    }
+
+    private func weiterreichen(_ aktivitaet: NSUserActivity) {
+        _ = ApplicationDelegateProxy.shared.application(UIApplication.shared, continue: aktivitaet,
+                                                        restorationHandler: { _ in })
     }
 }

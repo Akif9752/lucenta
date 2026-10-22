@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		140DCA5C305A229100C3A9BC /* LucentaKaeufePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140DCA5B305A229100C3A9BC /* LucentaKaeufePlugin.swift */; };
 		147A1D3D30891CD200659458 /* LucentaKontoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D3C30891CD200659458 /* LucentaKontoPlugin.swift */; };
+		147A1D403089D0B700659458 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 147A1D3F3089D0B700659458 /* PrivacyInfo.xcprivacy */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -25,6 +26,7 @@
 		140DCA5B305A229100C3A9BC /* LucentaKaeufePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaKaeufePlugin.swift; sourceTree = "<group>"; };
 		147A1D3C30891CD200659458 /* LucentaKontoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaKontoPlugin.swift; sourceTree = "<group>"; };
 		147A1D3E30891D4800659458 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
+		147A1D3F3089D0B700659458 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = file; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,6 +97,7 @@
 				50B271D01FEDC1A000F3C39B /* public */,
 				140DCA5B305A229100C3A9BC /* LucentaKaeufePlugin.swift */,
 				147A1D3C30891CD200659458 /* LucentaKontoPlugin.swift */,
+				147A1D3F3089D0B700659458 /* PrivacyInfo.xcprivacy */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -171,6 +174,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */,
+				147A1D403089D0B700659458 /* PrivacyInfo.xcprivacy in Resources */,
 				50B271D11FEDC1A000F3C39B /* public in Resources */,
 				504EC30F1FED79650016851F /* Assets.xcassets in Resources */,
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,

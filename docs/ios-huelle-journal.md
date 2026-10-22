@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-22, nach Runde 151)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-22, nach Runde 152)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 151 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 152 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -30,8 +30,8 @@ lassen. Die Richtungen:
   wurde angeboten und NICHT gewaehlt.
 - **Freunde und Anmeldung** (Runde 147–150): Freunde mit selbst gewaehltem Namen/Figur (Freundescode),
   „Mit Apple anmelden" + private iCloud. Dunkel als Vorgabe, Hell gedaempft (Runde 149).
-- **Feedbackrunde** (Runde 151): 19 Befunde, siehe „Was offen ist" — der naechste Auftrag kommt
-  sehr wahrscheinlich daraus.
+- **Feedbackrunde** (Runde 151): 19 Befunde. Runde 152 hat A1, A3–A5 und B6–B7 erledigt; offen sind
+  A2 (Impressum, macht der Inhaber), B8, B9 und B10–C19 — siehe „Was offen ist".
 
 Regeln, die er gesetzt hat:
 - **Bei Gestaltungs-, Abo- oder Rechtsfragen mit Optionen fragen** (AskUserQuestion, Empfehlung
@@ -47,6 +47,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 152 | siehe `git log` | Feedback A1 (Sperre nach Antwort 50), A3 (`PrivacyInfo.xcprivacy`), A4 (Konto loeschen), A5 (ehrliche Versprechen, 8 Sprachen + Store), B6 (nur noch Freundescode; Wiederherstellungscode in Einstellungen), B7 (Einladung als Universal Link, scharf erst mit Domain) |
 | 151 | `41c2e29` | Feedbackrunde A bis Z: 19 Befunde in `docs/feedbackrunde-151.md` (5 kritisch: Doppelspeichern auf Frage 50, Impressum leer, Privacy Manifest, Konto loeschen, widerspruechliche Versprechen) |
 | 150 | `428acb7` | Freundescode (`L1.<code>.<figur>.<name>`): Name und Figur kommen von der Person selbst; Beispiel-Freunde; Lucenta+ als eigene Seite (`view-plus`); „Abo verwalten“ als StoreKit-Blatt |
 | 149 | `1728f4c` | Dunkel als Vorgabe; Hellmodus gedaempft (#E6E5E0/#F3F2EE, Schrift nachgedunkelt); Mit Apple anmelden + private iCloud (`LucentaKontoPlugin.swift`, `19d-konto.js`) |
@@ -121,9 +122,21 @@ Regeln, die er gesetzt hat:
 - **Lucenta+-Seite:** `18b-plus-seite.js`, `view-plus` (aus der Seitenleiste); gekauft wird weiter im
   Kauffenster `#plusModal`. „Abo verwalten": `aboVerwalten()` -> `StoreKit.verwalten`
   (`AppStore.showManageSubscriptions`), Link nur als Rueckfall.
+- **Codes (Runde 152):** Geteilt wird NUR der Freundescode — Ergebnisseite `#einladenBox` ->
+  `freundeEinladen()`, `teilenAlsText()` ueber `einladungsText()`. Der 10-stellige Code heisst
+  „Wiederherstellungscode" und steht nur in Einstellungen -> Daten (`#wiederCode`, gesetzt in
+  `renderSettings`). Ausnahme Gastdurchlauf: `#gastCodeBox` mit `#myCode` (nicht gespeichert, der
+  Freundescode kennt ihn nicht). `#cmpMe` ist verborgen (immer das eigene Ergebnis) — Werkzeuge setzen
+  es per `evaluate`, nicht per `fill`.
+- **Einladungslink (Runde 152):** `EINLADUNG_DOMAIN` in `06b-freunde.js` (leer = kein Link, nur Code).
+  Empfang: `einladungenHoeren()`/`freundAusLink()`; Hülle: `SceneDelegate.weiterreichen` ->
+  `ApplicationDelegateProxy` -> `getLaunchUrl`/`appUrlOpen`. Statische Seite + AASA in `einladung/`
+  (Anleitung `einladung/LIESMICH.md`). Entitlement `applinks:` erst mit Domain eintragen.
 - **Anmeldung:** `ios/App/App/LucentaKontoPlugin.swift` (jsName **`Account`** — „Konto" haelt die
   Sprachpruefung fuer unuebersetzt), `src/js/19d-konto.js` (Bereich `#kontoIcloud` in Einstellungen ->
   Konto, `#btnObAnmelden` im Onboarding). Format = `datenSammeln()`; Berechtigungen in `App.entitlements`.
+  Loeschen (Runde 152): `loeschen()` loescht den Datensatz, dann die Kennung; scheitert es (offline),
+  bleibt die Anmeldung. Kein Token-Widerruf (nie ein Token; Prüfnotiz in `docs/app-store-start.md`).
 - **Farbschema:** `loadThemeMode()` Vorgabe `dark`; „System" wird ausdruecklich gespeichert.
   Hellfarben im ersten Block von `00-grundlagen.css`; `SHARE_COLORS` (Bau erzwingt Gleichheit),
   `syncThemeColor`, `theme-color`, `papierfarbe` (Swift) muessen mitziehen.
@@ -144,26 +157,14 @@ Regeln, die er gesetzt hat:
 ### Was offen ist
 
 **Die Feedbackrunde 151** (`docs/feedbackrunde-151.md`, dort mit Begruendung) — der Arbeitsvorrat.
-Empfohlene Reihenfolge: A1, A3, A4, A5, dann B6–B9. Bei Gestaltungsfragen vorher mit Optionen fragen.
+Runde 152 hat A1, A3, A4, A5, B6, B7 erledigt (Eintrag unten). Als naechstes laut Auftrag: **B8, B9**.
+Bei Gestaltungsfragen vorher mit Optionen fragen.
 
-*A — kritisch, vor dem Store-Start*
-1. **Doppelte Ergebnisse auf Frage 50:** jeder weitere Tipp (~0,5 s Abstand) speichert ein weiteres
-   Ergebnis (nachgestellt: 3 binnen 1 s; mit 60-ms-Tipps nur 1). Skala nach Antwort 50 sperren, bis das
-   Ergebnis steht; danach pruefen, dass „Verglichen mit deinem letzten Ergebnis" erst ab Durchlauf 2 kommt.
-2. **Impressum leer** (`IMPRESSUM` in `17-settings.js`) — nur der Inhaber kann es fuellen.
-3. **Privacy Manifest der App fehlt** (`UserDefaults` in `MainViewController.swift` und
-   `LucentaKontoPlugin.swift`, Grund CA92.1) — sonst ITMS-91053 beim Hochladen.
-4. **Konto loeschen fehlt** (Richtlinie 5.1.1(v)): „Anmeldung und iCloud-Daten loeschen". Risiko:
-   Apple will bei Kontoloeschung den Token-Widerruf (REST, braucht Client-Secret/Server) — vor der
-   Einreichung klaeren, ggf. den Inhaber fragen.
-5. **Widerspruechliche Versprechen:** `plus_vertrauen` („Kein Konto · … · Deine Daten bleiben auf dem
-   Geraet", 8 Sprachen) und `docs/store-eintrag.md` („Kein Konto. Kein Server.").
+*A — kritisch*
+2. **Impressum leer** (`IMPRESSUM` in `17-settings.js`) — fuellt der Inhaber selbst.
 
 *B — hoch, Nutzererlebnis*
-6. Zwei Codes (Ergebnis-Code auf Ergebnisseite/Vergleich, Freundescode bei Freunden) -> ueberall den
-   Freundescode zeigen und teilen.
-7. Einladen per Antippen: eigenes URL-Schema (`lucenta://freund/…`, Info.plist `CFBundleURLTypes`),
-   oeffnet die App und legt den Freund an — ohne Server.
+7. (Rest) Einladungslink **scharf schalten**, sobald eine Domain da ist: `einladung/LIESMICH.md`.
 8. Dynamic Type fehlt (kein `-apple-system-body`/`text-size-adjust`).
 9. Navigation: Zurueck-Pille „← Start" unter der Kopfzeile (36 pt); Titel bis zu dreimal (Kopfzeile,
    Ueberzeile, Ueberschrift) -> Pfeil links in der Kopfzeile, Titel einmal.
@@ -180,6 +181,12 @@ Empfohlene Reihenfolge: A1, A3, A4, A5, dann B6–B9. Bei Gestaltungsfragen vorh
 17. Gesperrtes „Weiter" im Onboarding-Schritt 2 sieht aktiv aus.
 18. `ITSAppUsesNonExemptEncryption` fehlt in der Info.plist.
 19. Startbild immer schwarz (Folge der dunklen Vorgabe) — Hell-Nutzer sehen kurz Schwarz.
+
+*Kleinigkeiten aus Runde 152, bewusst nicht angefasst*
+- `dein_ergebnis_liegt_ausschli` („liegt ausschliesslich auf diesem Geraet") ist unbenutzt; der Freunde-Satz
+  „Alles bleibt auf diesem Geraet" meint „nichts geht an den Freund" und stimmt so.
+- `restoreCodeInput` kuerzt einen eingefuegten Freundescode auf 10 Zeichen (dann ungueltig); nur der
+  Wiederherstellungscode gehoert dort hinein.
 
 *Weiter offen von frueher*
 - **Am echten iPhone pruefen:** Erinnerungen und Nacherinnerung, Haptik, Bewegungen, Push/Pop und
@@ -226,7 +233,9 @@ Empfohlene Reihenfolge: A1, A3, A4, A5, dann B6–B9. Bei Gestaltungsfragen vorh
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 150: **ALLE 9 BESTANDEN** (~9–11 Minuten). `tests` 11 Reihen
+`npm run pruef-alles` nach Runde 152: siehe Eintrag Runde 152 (pruef-app 32 mit „vier Nachtipps auf
+Frage 50 = EIN Ergebnis", pruef-nativ 74 mit Einladungslink und Konto loeschen).
+Nach Runde 150: **ALLE 9 BESTANDEN** (~9–11 Minuten). `tests` 11 Reihen
 (`share_test` erwartet jetzt #E6E5E0), `pruef-store` 32, `pruef-app` 31, `pruef-nativ` 65 (erwartet
 die dunkle Vorgabe), `pruef-bewegung` bestanden (laeuft seit Runde 149 ausdruecklich HELL — die
 Flaechenpruefung des stehenden Hintergrunds setzt den Lichtstrahl voraus), `diff-sprachen` 92 (Bericht),
@@ -248,6 +257,9 @@ Was immer wieder durchfaellt, und warum:
 ### Was nur der Inhaber kann
 
 - **Impressum** (`IMPRESSUM` in `17-settings.js`: Name, Strasse, Ort, E-Mail) — Pflicht, heute leer.
+- **Einladungslink:** Domain + statisches Hosting fuer `einladung/`, Associated Domains im bezahlten
+  Account (`einladung/LIESMICH.md`). Bis dahin enthaelt die Einladung nur den Code.
+- **„Notes for Review"** beim Einreichen: der Text zur Anmeldung/Kontoloeschung in `docs/app-store-start.md`.
 - Die zwei Abo-Produkte in App Store Connect: `lucenta.plus.monat` (4,99 EUR) und
   `lucenta.plus.jahr` (29,99 EUR), dieselbe Abo-Gruppe. Ein echter Kauf lief noch nie.
 - **Bezahlter Developer-Account:** Faehigkeiten „Sign in with Apple" und „iCloud -> CloudKit" fuer
@@ -316,9 +328,78 @@ Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), 
 Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 — in Xcode **nicht**
 „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 151 (`git push origin
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 152 — Feedback A1, A3, A4, A5, B6, B7
+
+Auftrag: die Feedbackliste abarbeiten, zuerst A1, A3–A5, dann B6–B9 (A2 Impressum macht der Inhaber).
+B8 und B9 sind noch offen.
+
+**A1 — Doppelte Ergebnisse auf Frage 50.** Zwischen der 50. Antwort und dem Ergebnis vergehen gut
+1,4 s (220 ms Weiterschalten, 260 + 900 ms Ueberlagerung). Die Skala blieb in dieser Zeit bedienbar, jeder
+Tipp rief `finishQuiz()` erneut. Jetzt sperrt `quizSchliesst` (`11-rendering.js`) `selectAnswer` und
+`finishQuiz`, bis `reveal()` laeuft. Auf WebKit nachgestellt (49 Antworten, dann vier Tipps im Abstand von
+450 ms) und **geeicht**: ohne die Sperre 2 Eintraege im Verlauf plus Delta-Karte, mit Sperre 1 und keine.
+Die Pruefung steht jetzt fest in `pruef-app` (32.).
+
+**A3 — Privacy Manifest.** `ios/App/App/PrivacyInfo.xcprivacy`: kein Tracking, keine gesammelten
+Daten, `NSPrivacyAccessedAPICategoryUserDefaults` mit `CA92.1` (Farbschema in `MainViewController`,
+Apple-Kennung in `LucentaKontoPlugin`). Im gebauten Bundle nachgesehen (`plutil -p`). Die Pods bringen
+eigene Manifeste mit (Capacitor hat eins). Unsicher bleibt nur, was App Store Connect beim echten Upload sagt.
+
+**A4 — Konto loeschen** (Richtlinie 5.1.1(v), Wahl des Inhabers: in der App, ohne Token-Widerruf).
+`loeschen()` in `LucentaKontoPlugin.swift` loescht den CloudKit-Datensatz (`unknownItem` gilt als
+erledigt) und vergisst erst danach die Kennung. Ohne Verbindung bleibt die Anmeldung, man kann es erneut
+versuchen. In Einstellungen -> Konto steht der Knopf „Anmeldung und iCloud-Daten loeschen" mit Rueckfrage,
+gestaltet wie „Eigene Daten zuruecksetzen" (eigene Gruppe, `--danger`, mittig; die erste Fassung als
+orange Pille unter der Liste passte nicht zu iOS). Danach zeigt die Seite den Weg in den iOS-Einstellungen
+(Name -> Anmelden & Sicherheit -> Mit Apple anmelden). Begruendung gegen den Widerruf: Die App tauscht den
+Autorisierungscode nie ein, es gibt also kein Token. Die Notiz fuer „Notes for Review" steht in
+`docs/app-store-start.md`. `pruef-nativ` prueft jetzt das Konto: Knopf da, Abbrechen loescht nichts,
+offline bleibt angemeldet, danach abgemeldet mit Hinweis. **Echt getestet ist das nicht** — dafuer braucht
+es den bezahlten Account und CloudKit.
+
+**A5 — Widerspruechliche Versprechen** (Wahl: „Kein Tracking · Keine Werbung · Deine Daten gehoeren
+dir"). Geaendert in 8 Sprachen: `plus_vertrauen`; `lucenta_läuft_vollständig_au` (sagte „keinen Abgleich
+in einer Cloud"); in der Datenschutzerklaerung „kein Konto" -> „kein Konto bei uns", der Absatz zum
+lokalen Speicher („ausschliesslich") und der Loeschweg (jetzt der Knopf in der App statt der
+iCloud-Einstellungen). Im Store-Text: Werbetext in 8 Sprachen und der Abschnitt „Deine Daten gehoeren dir"
+(de/en). Die Zeichenzahlen sind **gezaehlt** (`pruef-store`), nicht geschrieben. Dazu der deutsche
+Vorgabetext `ob_fakt_privat_text` im Markup, der noch den Stand vor Runde 149 trug.
+
+**B6 — ein Code** (Wahl: Knopf statt Code-Zeile). Auf der Ergebnisseite steht statt „Dein Code: … [Kopieren]"
+jetzt „Freunde einladen" (Teilen-Blatt mit dem Freundescode). „Ergebnis teilen" als Text nimmt ebenfalls
+den Freundescode. Im Vergleich ist „Dein Code" verborgen, das Feld heisst „Freundescode der anderen
+Person". Der 10-stellige Code steht nur noch in Einstellungen -> Daten als „Wiederherstellungscode" mit
+„Kopieren". **Eine Ausnahme gegen die Wahl:** Im Gastdurchlauf bleibt die Code-Zeile. Er wird nicht
+gespeichert, der Code ist der einzige Weg, ihn zu behalten, und „Einladen" haette den Code der
+Besitzerin oder des Besitzers verschickt. Falle dabei: `.code-box`/`.field` setzen `display` und schlugen
+`hidden` (wie Befund C14). Jetzt gilt `[hidden]{display:none}` fuer beide. `fehlersuche` setzt `#cmpMe`
+per Skript, weil `fill` an verborgenen Feldern scheitert. Am Bild (WebKit, dunkel) geprueft.
+
+**B7 — Einladen per Antippen** (Wahl: Universal Link, Code hinter `#`). Recherche vorab: ein reines
+`lucenta://` wird in Nachrichten/WhatsApp sehr wahrscheinlich nicht als Link erkannt. Gebaut:
+`EINLADUNG_DOMAIN` (leer), `einladungsText()` haengt `https://<domain>/f#<Freundescode>` erst an, wenn die
+Domain steht. Empfang `freundAusLink()` legt den Freund an und oeffnet die Freunde-Seite. Beim Kaltstart
+kommt der Link zweimal (`getLaunchUrl` und `appUrlOpen`) und wird nur einmal angenommen. Die Huelle:
+`SceneDelegate` reicht `connectionOptions.userActivities` und `scene(_:continue:)` an
+`ApplicationDelegateProxy` (im Scene-Lifecycle ruft iOS den AppDelegate dafuer nicht). Statische Seite
+`einladung/` (AASA mit Team `AXNBT762GY`, `f/index.html` ohne jeden Fremdabruf, Anleitung `LIESMICH.md`).
+Das Entitlement `applinks:` ist **nicht** eingetragen: ohne Domain und mit freiem Account bricht damit
+die Signatur. `pruef-nativ` (74) stellt Kaltstart, laufende App, kodiertes `%23`, Doppelung und kaputten
+Link nach. **Ungeprueft:** ein echter Universal Link. Das geht nur auf dem Geraet mit Domain, im
+Simulator laufen Universal Links nicht.
+
+Ablauf-Fehler meinerseits: B7 entstand, waehrend die volle Runde ueber A + B6 lief, und steckt in
+denselben Dateien. Deshalb ein gemeinsamer Commit nach einer dritten vollen Runde ueber genau diesen Stand.
+
+Pruefungen: `pruef-alles` ueber A1/A3–A5: 9/9; ueber A + B6: 9/9; ueber den Commit-Stand: **9/9** (9,9 Min., fehlersuche ohne
+Fund, pruef-nativ 74, pruef-app 32). Xcode-Bau (Simulator) ohne Fehler, App startet; `PrivacyInfo.xcprivacy` und der neue Code
+im Bundle nachgezaehlt.
 
 ---
 

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lucenta – Einladung</title>
+<!-- Diese Seite sieht nur, wer Lucenta noch nicht hat. Sie laedt nichts nach und zaehlt nichts;
+     der Code steht hinter # und erreicht den Server nie. -->
+<style>
+  :root{ color-scheme: light dark; font-family: -apple-system, system-ui, sans-serif; }
+  body{ margin:0; min-height:100vh; display:grid; place-items:center; background:#000; color:#f2f2f2; }
+  @media (prefers-color-scheme: light){ body{ background:#E6E5E0; color:#1c1c1e; } }
+  main{ max-width:360px; padding:32px 24px; text-align:center; line-height:1.5; }
+  h1{ font-size:26px; margin:0 0 12px; }
+  ol{ text-align:left; padding-left:22px; }
+  code{ display:block; margin:16px 0 8px; padding:12px; border-radius:12px; background:rgba(127,127,127,.18);
+        font: 15px ui-monospace, monospace; word-break:break-all; -webkit-user-select:all; user-select:all; }
+  button{ font:inherit; font-weight:600; border:0; border-radius:999px; padding:12px 22px; background:#5CB4AD; color:#000; }
+</style>
+</head>
+<body>
+<main>
+  <h1 data-de="Du bist eingeladen" data-en="You’re invited">Du bist eingeladen</h1>
+  <p data-de="Jemand möchte sich mit dir in Lucenta vergleichen." data-en="Someone wants to compare themselves with you in Lucenta.">Jemand möchte sich mit dir in Lucenta vergleichen.</p>
+  <ol>
+    <li data-de="Lade Lucenta aus dem App Store." data-en="Get Lucenta from the App Store.">Lade Lucenta aus dem App Store.</li>
+    <li data-de="Tippe danach den Link in der Nachricht noch einmal an – oder füge diesen Code in Lucenta unter Freunde ein:" data-en="Then tap the link in the message again – or paste this code in Lucenta under Friends:">Tippe danach den Link in der Nachricht noch einmal an – oder füge diesen Code in Lucenta unter Freunde ein:</li>
+  </ol>
+  <code id="code">–</code>
+  <button id="kopieren" type="button" data-de="Code kopieren" data-en="Copy code">Code kopieren</button>
+</main>
+<script>
+  var code = decodeURIComponent((location.hash || '').slice(1));
+  if (/^L1\.[0-9a-z]{10}\./.test(code)) document.getElementById('code').textContent = code;
+  if (!/^de\b/i.test(navigator.language || '')){
+    document.documentElement.lang = 'en';
+    document.querySelectorAll('[data-en]').forEach(function(e){ e.textContent = e.getAttribute('data-en'); });
+  }
+  document.getElementById('kopieren').addEventListener('click', function(){
+    if (navigator.clipboard) navigator.clipboard.writeText(document.getElementById('code').textContent);
+  });
+</script>
+</body>
+</html>

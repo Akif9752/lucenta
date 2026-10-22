@@ -192,7 +192,13 @@
         <button class="btn btn-primary btn-sm" id="btnShare" data-i18n="ergebnis_teilen">Ergebnis teilen</button>
         <button class="btn btn-ghost btn-sm" id="btnRetake" data-i18n="test_wiederholen_2">Test wiederholen</button>
       </div>
-      <div class="code-box">
+      <!-- Geteilt wird nur der Freundescode (Entscheidung des Inhabers); die Code-Zeile bleibt fuer den
+           Gastdurchlauf, der nicht gespeichert wird und den der Freundescode nicht kennt. -->
+      <div class="code-box einladen-box" id="einladenBox">
+        <span data-i18n="ergebnis_einladen_text">Vergleich dich mit Freunden: Die Einladung trägt deinen Freundescode mit Name und Figur.</span>
+        <button class="btn btn-ghost btn-sm" id="btnResultEinladen" data-i18n="freunde_einladen">Freunde einladen</button>
+      </div>
+      <div class="code-box" id="gastCodeBox" hidden>
         <span data-i18n-html="dein_code_mdash">Dein Code: <b class="mono" id="myCode">&mdash;</b></span>
         <button class="btn btn-ghost btn-sm" id="btnCopyCode" data-i18n="kopieren">Kopieren</button>
       </div>
@@ -205,10 +211,10 @@
     <div class="traits" id="traitsList"></div>
 
     <h2 class="section-title" id="compareAnchor" data-i18n-html="kompatibilität_optional">Kompatibilität <span class="n">optional</span></h2>
-    <p class="section-lead" data-i18n="vergleiche_dein_profil_mit_d">Vergleiche dein Profil mit dem einer anderen Person &mdash; z. B. Partner:in, beste:r Freund:in oder Familie. Beide Codes eintragen, fertig.</p>
+    <p class="section-lead" data-i18n="vergleich_lead_freundescode">Vergleiche dein Profil mit dem einer anderen Person &mdash; z. B. Partner:in, beste:r Freund:in oder Familie. Freundescode oder Einladung einfügen, fertig.</p>
     <div class="compare-box">
-      <div class="field"><label for="cmpMe" data-i18n="dein_code">Dein Code</label><input type="text" id="cmpMe" maxlength="12" placeholder="z. B. 1a2b3c4d5e" data-i18n-placeholder="ph_z_b_1a2b3c4d5e"></div>
-      <div class="field"><label for="cmpOther" data-i18n="code_der_anderen_person">Code der anderen Person</label><input type="text" id="cmpOther" placeholder="Code einfügen" data-i18n-placeholder="ph_code_einfügen"></div>
+      <div class="field" id="cmpMeFeld" hidden><label for="cmpMe" data-i18n="dein_code">Dein Code</label><input type="text" id="cmpMe" maxlength="12" placeholder="z. B. 1a2b3c4d5e" data-i18n-placeholder="ph_z_b_1a2b3c4d5e"></div>
+      <div class="field"><label for="cmpOther" data-i18n="freundescode_der_anderen">Freundescode der anderen Person</label><input type="text" id="cmpOther" placeholder="Code einfügen" data-i18n-placeholder="ph_code_einfügen"></div>
       <button class="btn btn-primary btn-sm" id="btnCompare" style="align-self:flex-start;" data-i18n="vergleichen">Vergleichen</button>
       <div class="compat-result" id="compatResult" aria-live="polite"></div>
     </div>
@@ -529,12 +535,16 @@
 
     <div class="settings-group">
       <h2 data-i18n="daten_amp_datenschutz">Daten &amp; Datenschutz</h2>
-      <p class="settings-group-desc" data-i18n="lucenta_läuft_vollständig_au">Lucenta läuft vollständig auf diesem Gerät. Es gibt kein Konto beim Anbieter, keinen Server und keinen Abgleich in einer Cloud &mdash; alles unten bleibt ausschließlich hier gespeichert, bis du es löschst.</p>
+      <p class="settings-group-desc" data-i18n="lucenta_läuft_vollständig_au">Lucenta läuft vollständig auf diesem Gerät. Es gibt kein Konto beim Anbieter und keinen Server &mdash; alles unten bleibt hier gespeichert, bis du es löschst. Nur wenn du dich mit Apple anmeldest, liegt zusätzlich eine verschlüsselte Sicherung in deiner eigenen iCloud.</p>
       <ul class="settings-datalist" id="settingsDataList"></ul>
       <p class="settings-empty" id="settingsEmptyNote" data-i18n="aktuell_ist_nichts_gespeiche">Aktuell ist nichts gespeichert außer deiner Darstellung.</p>
       <div class="settings-restore">
         <div class="settings-restore-label" data-i18n="ergebnis_wiederherstellen">Ergebnis wiederherstellen</div>
-        <p class="settings-restore-desc" data-i18n="hast_du_deinen_stelligen_erg">Hast du deinen 10-stelligen Ergebnis-Code von einem anderen Gerät notiert? Hier eingeben, um ihn hier wiederherzustellen &mdash; so lässt sich ein Ergebnis auch ohne Konto auf ein neues Gerät mitnehmen.</p>
+        <div class="code-box" id="wiederCodeBox" hidden>
+          <span><span data-i18n="wiederherstellungscode">Dein Wiederherstellungscode:</span> <b class="mono" id="wiederCode">&mdash;</b></span>
+          <button type="button" class="btn btn-ghost btn-sm" id="btnCopyWiederCode" data-i18n="kopieren">Kopieren</button>
+        </div>
+        <p class="settings-restore-desc" data-i18n="wiederherstellungscode_desc">Nur für dich: Er trägt dein Ergebnis auf ein neues Gerät. Hast du ihn von einem anderen Gerät notiert, gib ihn hier ein. Zum Vergleichen teilst du den Freundescode.</p>
         <div class="settings-restore-row">
           <div class="field"><input type="text" id="restoreCodeInput" maxlength="12" placeholder="Code einfügen" data-i18n-placeholder="ph_code_einfügen" aria-label="Ergebnis-Code zum Wiederherstellen" data-i18n-aria="aria_ergebnis_code_zum_wiederhers"></div>
           <button type="button" class="btn btn-ghost btn-sm" id="btnRestoreCode" data-i18n="wiederherstellen">Wiederherstellen</button>
@@ -720,7 +730,7 @@
       <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path><path d="M9 2h6"></path></svg>
         <div><strong data-i18n="ob_fakt_zeit">5 bis 10 Minuten</strong><span data-i18n="ob_fakt_zeit_text">Du kannst jederzeit unterbrechen und später genau dort weitermachen.</span></div></li>
       <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
-        <div><strong data-i18n="ob_fakt_privat">Bleibt bei dir</strong><span data-i18n="ob_fakt_privat_text">Deine Antworten verlassen dein Gerät nicht. Kein Konto, keine Werbung, kein Tracking.</span></div></li>
+        <div><strong data-i18n="ob_fakt_privat">Bleibt bei dir</strong><span data-i18n="ob_fakt_privat_text">Ohne Anmeldung verlassen deine Antworten dein Gerät nicht; mit Apple-Anmeldung liegen sie verschlüsselt in deiner eigenen iCloud. Keine Werbung, kein Tracking.</span></div></li>
     </ul>
     <div class="ob-fuer-dich" id="obFuerDich"></div>
     <button type="button" class="btn btn-primary ob-cta" data-ob-weiter data-i18n="ob_weiter">Weiter</button>
@@ -876,7 +886,7 @@
     <button type="button" class="btn btn-primary plus-modal-cta" id="btnPlusAktivieren" data-i18n="plus_aktivieren">Lucenta+ aktivieren</button>
     <button type="button" class="plus-modal-leise" id="btnPlusModalWiederherstellen" data-i18n="plus_wiederherstellen">Käufe wiederherstellen</button>
     <p class="plus-modal-kuendigen" data-i18n-html="plus_kuendigen">Verlängert sich automatisch. Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
-    <p class="plus-vertrauen" data-i18n="plus_vertrauen">Kein Konto · Keine Werbung · Deine Daten bleiben auf dem Gerät</p>
+    <p class="plus-vertrauen" data-i18n="plus_vertrauen">Kein Tracking · Keine Werbung · Deine Daten gehören dir</p>
   </div>
 </div>
 

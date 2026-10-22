@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["AXNBT762GY.app.lucenta.ios"],
+        "components": [
+          { "/": "/f", "comment": "Einladung; der Freundescode steht hinter #" }
+        ]
+      }
+    ]
+  }
+}

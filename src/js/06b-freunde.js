@@ -131,9 +131,37 @@
     setTimeout(function(){ $('compareAnchor').scrollIntoView({behavior:'smooth'}); }, 250);
   }
 
+  // Einladung als Universal Link (Entscheidung des Inhabers). Der Code steht hinter #, das schickt kein
+  // Browser an den Server. Leer, solange es keine Domain gibt: dann nur der Code zum Einfuegen — nie ein
+  // Link, der ins Leere fuehrt. Gesetzt wird zugleich applinks:<domain> in App.entitlements.
+  var EINLADUNG_DOMAIN = '';
+  function einladungsText(){
+    if (!loadResult()) return tx('freunde_einladen_ohne');
+    var code = eigenerFreundescode();
+    return tx('freunde_einladen_text').split('{code}').join(code) +
+      (EINLADUNG_DOMAIN ? ' https://' + EINLADUNG_DOMAIN + '/f#' + code : '');
+  }
+  // Ein angetippter Link legt den Freund an. Beim Kaltstart kommt derselbe Link zweimal
+  // (getLaunchUrl und appUrlOpen), deshalb wird er nur einmal angenommen.
+  var letzterEinladungsLink = '';
+  function freundAusLink(url){
+    if (!url || url === letzterEinladungsLink) return;
+    var info = null;
+    try{ info = freundescodeLesen(decodeURIComponent(url)); }catch(e){ info = freundescodeLesen(url); }
+    if (!info) return;
+    letzterEinladungsLink = url;
+    if (!freundAnlegen(info)) return;
+    renderFreunde();
+    showView('freunde');
+  }
+  function einladungenHoeren(){
+    var app = nativModul('App');
+    if (!app) return;
+    if (app.getLaunchUrl) app.getLaunchUrl().then(function(r){ if (r && r.url) freundAusLink(r.url); }).catch(function(){});
+    if (app.addListener) app.addListener('appUrlOpen', function(ev){ if (ev && ev.url) freundAusLink(ev.url); });
+  }
   function freundeEinladen(){
-    var eigen = loadResult();
-    var text = eigen ? tx('freunde_einladen_text').split('{code}').join(eigenerFreundescode()) : tx('freunde_einladen_ohne');
+    var text = einladungsText();
     function inAblage(){
       if (navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(text).then(function(){ toast(tx('js_zum_teilen_kopiert')); })
