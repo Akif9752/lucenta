@@ -1,7 +1,7 @@
 /* ---------- Archetypes overview ---------- */
   .archetypes-head{padding:22px 0 4px;}
-  .archetypes-head h1{font-size:clamp(24px,6vw,32px);line-height:1.15;margin-top:8px;letter-spacing:-.01em;}
-  .archetypes-head p{margin-top:14px;font-size:14.5px;color:var(--muted);max-width:56ch;line-height:1.6;}
+  .archetypes-head h1{font-size:calc(clamp(24px,6vw,32px) * min(var(--dt, 1), 1.3));line-height:1.15;margin-top:8px;letter-spacing:-.01em;}
+  .archetypes-head p{margin-top:14px;font-size:calc(14.5px * var(--dt, 1));color:var(--muted);max-width:56ch;line-height:1.6;}
   .archetypes-head b{color:var(--ink);}
   /* Fuenf Gruppen je Dimension; der Abstand ZWISCHEN den Gruppen (26px) deutlich groesser als
      innerhalb (12px). */
@@ -9,7 +9,7 @@
   .arch-gruppe{display:flex;flex-direction:column;gap:12px;}
   /* Die Linie hinter dem Titel macht ihn zur Trennung. */
   .arch-gruppe-titel{
-    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;
+    font-family:var(--mono);font-size:calc(11px * var(--dt, 1));font-weight:500;letter-spacing:.06em;
     text-transform:uppercase;color:var(--muted);margin:0;
     display:flex;align-items:center;gap:10px;
   }
@@ -21,20 +21,20 @@
   @media (hover:hover){ .role-card:hover{border-color:var(--accent-strong);} }
   @media (prefers-reduced-motion: reduce){ .role-card{animation:none;opacity:1;} }
   .role-tag{
-    font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;
+    font-family:var(--mono);font-size:calc(11px * var(--dt, 1));font-weight:500;letter-spacing:.04em;text-transform:uppercase;
     margin-bottom:8px;
   }
   .role-tag-high{color:var(--accent-strong);}
   .role-tag-low{color:var(--accent-2-text);}
-  .role-title{font-family:var(--serif);font-size:17px;}
-  .role-motto{margin-top:4px;font-family:var(--mono);font-size:12.5px;color:var(--accent-2-text);letter-spacing:.01em;}
-  .role-desc{margin-top:10px;font-size:14px;color:var(--muted);line-height:1.55;}
+  .role-title{font-family:var(--serif);font-size:calc(17px * var(--dt, 1));}
+  .role-motto{margin-top:4px;font-family:var(--mono);font-size:calc(12.5px * var(--dt, 1));color:var(--accent-2-text);letter-spacing:.01em;}
+  .role-desc{margin-top:10px;font-size:calc(14px * var(--dt, 1));color:var(--muted);line-height:1.55;}
 
   .profile-head{padding:22px 0 4px;display:flex;flex-direction:column;align-items:center;text-align:center;}
   .avatar-wrap{position:relative;width:96px;height:96px;}
   .avatar{
     width:96px;height:96px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
-    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:34px;
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:calc(34px * var(--dt, 1));
     background-size:cover;background-position:center;border:1px solid var(--line);overflow:hidden;
   }
   .avatar-edit{
@@ -46,7 +46,7 @@
   @media (hover:hover){ .avatar-edit:hover{color:var(--accent-strong);border-color:var(--accent-strong);} }
   .avatar-edit:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
   .profile-remove-photo{
-    margin-top:10px;background:none;border:none;color:var(--muted);font-size:12.5px;
+    margin-top:10px;background:none;border:none;color:var(--muted);font-size:calc(12.5px * var(--dt, 1));
     text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-family:inherit;
   }
   @media (hover:hover){ .profile-remove-photo:hover{color:var(--ink);} }
@@ -92,10 +92,10 @@
   .avatar-color-swatch.avatar-color-accent{background-image:linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, #FFFFFF), var(--accent));}
   .avatar-color-swatch.avatar-color-ink{background-image:linear-gradient(180deg, color-mix(in srgb, var(--ink) 74%, var(--paper)), var(--ink));}
   .avatar-color-swatch.avatar-color-quiet{background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));}
-  .profile-name-label{margin-top:20px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+  .profile-name-label{margin-top:20px;font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
   .name-input{
     margin-top:6px;border:none;border-bottom:1px solid var(--line);background:none;
-    font-family:var(--serif);font-size:22px;color:var(--ink);text-align:center;padding:4px 2px 8px;
+    font-family:var(--serif);font-size:calc(22px * var(--dt, 1));color:var(--ink);text-align:center;padding:4px 2px 8px;
     width:100%;max-width:280px;
   }
   /* Fokusring zurueck; die Unterlinie bleibt als Hinweis beim Tippen mit der Maus. */
@@ -110,18 +110,18 @@
   /* Leise per eigener Farbstufe (--muted-soft) statt opacity, sonst unter 4,5:1. Diese Regel ist die
      einzige Quelle fuer die Groesse der sechs Klassen. */
   .acronym-note, .radar-note, .profile-note, .delta-note{
-    color:var(--muted-soft); font-size:11.5px;
+    color:var(--muted-soft); font-size:calc(11.5px * var(--dt, 1));
   }
   .profile-empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius-m);padding:20px 18px;margin-top:14px;text-align:center;}
-  .profile-empty p{color:var(--muted);font-size:14px;}
+  .profile-empty p{color:var(--muted);font-size:calc(14px * var(--dt, 1));}
   .profile-empty .btn{margin-top:14px;}
   .profile-empty .empty-icon{color:var(--muted);opacity:.7;margin-bottom:8px;}
   .profile-result-card{
     background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
     padding:16px 18px;margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
   }
-  .profile-result-card strong{font-family:var(--serif);font-size:17px;}
-  .profile-result-card .l{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .profile-result-card strong{font-family:var(--serif);font-size:calc(17px * var(--dt, 1));}
+  .profile-result-card .l{font-size:calc(12.5px * var(--dt, 1));color:var(--muted);margin-top:2px;}
 
   /* Runde 97: .theme-toggle traegt jetzt zusaetzlich .segment und damit dessen Aussehen. Was
      hier bleibt, ist nur der Abstand nach oben; alles Uebrige kommt aus dem Segmentwaehler. */
@@ -132,18 +132,18 @@
   @media (hover:hover){ .danger-btn:hover{background:color-mix(in srgb, var(--accent-2) 12%, transparent);} }
   .danger-btn.armed{background:color-mix(in srgb, var(--accent-2) 10%, var(--surface));border-color:var(--accent-2);color:var(--accent-2-text);font-weight:600;}
 
-  .settings-hint{margin-top:8px;font-size:12.5px;color:var(--muted);}
+  .settings-hint{margin-top:8px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);}
   .settings-row{
     margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
     background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);padding:14px 16px;
   }
-  .settings-row .l{font-size:14px;}
+  .settings-row .l{font-size:calc(14px * var(--dt, 1));}
   .settings-datalist{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
-  .settings-datalist li{font-size:13.5px;color:var(--ink);padding:9px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-s);}
-  .settings-empty{margin-top:12px;font-size:13.5px;color:var(--muted);font-style:italic;}
+  .settings-datalist li{font-size:calc(13.5px * var(--dt, 1));color:var(--ink);padding:9px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-s);}
+  .settings-empty{margin-top:12px;font-size:calc(13.5px * var(--dt, 1));color:var(--muted);font-style:italic;}
   .settings-restore{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);}
-  .settings-restore-label{font-family:var(--serif);font-size:14.5px;color:var(--ink);}
-  .settings-restore-desc{margin-top:4px;font-size:12.5px;color:var(--muted);line-height:1.5;}
+  .settings-restore-label{font-family:var(--serif);font-size:calc(14.5px * var(--dt, 1));color:var(--ink);}
+  .settings-restore-desc{margin-top:4px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);line-height:1.5;}
   .settings-restore-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
   .settings-restore-row .field{flex:1;min-width:160px;}
 
@@ -152,39 +152,39 @@
     padding:20px 20px 22px;
   }
   .archetypes-head + .settings-group{margin-top:26px;}
-  .settings-group h2{font-family:var(--serif);font-size:17px;font-weight:500;margin:0;}
-  .settings-group-desc{margin-top:5px;font-size:12.5px;color:var(--muted);line-height:1.55;}
+  .settings-group h2{font-family:var(--serif);font-size:calc(17px * var(--dt, 1));font-weight:500;margin:0;}
+  .settings-group-desc{margin-top:5px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);line-height:1.55;}
 
   .settings-account-row{margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
   .settings-account-avatar{
     width:48px;height:48px;border-radius:50%;flex-shrink:0;background:var(--accent);color:var(--accent-ink);
-    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:17px;
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:calc(17px * var(--dt, 1));
     background-size:cover;background-position:center;overflow:hidden;border:1px solid var(--line);
   }
   .settings-account-info{flex:1;min-width:120px;}
-  .settings-account-info strong{font-family:var(--serif);font-weight:500;font-size:16px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .settings-account-info .l{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .settings-account-info strong{font-family:var(--serif);font-weight:500;font-size:calc(16px * var(--dt, 1));display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .settings-account-info .l{font-size:calc(12.5px * var(--dt, 1));color:var(--muted);margin-top:2px;}
 
   .faq-item{border-top:1px solid var(--line);}
   .faq-item:first-child{border-top:none;}
   .faq-item summary{
     list-style:none;cursor:pointer;padding:13px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;
-    font-size:14px;color:var(--ink);
+    font-size:calc(14px * var(--dt, 1));color:var(--ink);
   }
   .faq-item summary::-webkit-details-marker{display:none;}
   .faq-item summary .chev{color:var(--muted);flex-shrink:0;transition:transform .2s ease;transform:rotate(90deg);}
   .faq-item[open] summary .chev{transform:rotate(-90deg);}
   .faq-item summary:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
-  .faq-item p{margin:0 0 14px;font-size:13.5px;color:var(--muted);line-height:1.55;}
+  .faq-item p{margin:0 0 14px;font-size:calc(13.5px * var(--dt, 1));color:var(--muted);line-height:1.55;}
 
   .compare-box{
     margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
     padding:18px;display:flex;flex-direction:column;gap:12px;
   }
   .field{display:flex;flex-direction:column;gap:6px;}
-  .field label{font-size:12.5px;color:var(--muted);font-family:var(--mono);}
+  .field label{font-size:calc(12.5px * var(--dt, 1));color:var(--muted);font-family:var(--mono);}
   .field input{
-    font-family:var(--mono);font-size:14px;padding:10px 12px;border-radius:var(--radius-s);
+    font-family:var(--mono);font-size:calc(14px * var(--dt, 1));padding:10px 12px;border-radius:var(--radius-s);
     border:1px solid var(--line);background:var(--surface-2);color:var(--ink);
   }
   .field input:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
@@ -193,7 +193,7 @@
   .compat-radar{margin:6px auto 0;max-width:280px;}
   .dot-me{background:var(--accent);}
   .dot-other{background:var(--accent-2);}
-  .compat-line{font-size:14px;line-height:1.6;padding:12px 14px;background:var(--surface-2);border-radius:var(--radius-s);}
+  .compat-line{font-size:calc(14px * var(--dt, 1));line-height:1.6;padding:12px 14px;background:var(--surface-2);border-radius:var(--radius-s);}
   .compat-line b{color:var(--accent-strong);}
   /* Die Gesamt-Zusammenfassung hebt sich von den fünf Einzelzeilen durch Umriss statt Füllung ab —
      war zuvor als Inline-Style direkt im erzeugten Markup hinterlegt. */
@@ -206,30 +206,30 @@
   input.field-invalid{border-color:var(--danger);}
   .archive-empty-note{margin-top:14px;}
   .archive-row-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-  .archive-match{font-family:var(--mono);font-size:12.5px;color:var(--accent-strong);font-weight:600;white-space:nowrap;}
+  .archive-match{font-family:var(--mono);font-size:calc(12.5px * var(--dt, 1));color:var(--accent-strong);font-weight:600;white-space:nowrap;}
   .archive-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .15s ease,background .15s ease;}
   @media (hover:hover){ .archive-del:hover{color:var(--accent-2-text);background:var(--surface-2);} }
   .archive-del:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
   .understand-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:18px 18px;margin-top:14px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;}
   @media (prefers-reduced-motion: reduce){ .understand-card{animation:none;opacity:1;} }
-  .understand-group-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin:28px 0 4px;}
+  .understand-group-label{font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin:28px 0 4px;}
   /* Die Ausnahme fuer das erste Gruppenlabel nur auf der Startseiten-Karte. */
   .understand-card .understand-group-label:first-child{margin-top:4px;}
-  .understand-card h3{font-family:var(--serif);font-size:16.5px;font-weight:500;}
-  .understand-card p{margin-top:8px;font-size:14px;color:var(--muted);line-height:1.6;}
+  .understand-card h3{font-family:var(--serif);font-size:calc(16.5px * var(--dt, 1));font-weight:500;}
+  .understand-card p{margin-top:8px;font-size:calc(14px * var(--dt, 1));color:var(--muted);line-height:1.6;}
 
   /* Der Tagesform-Check direkt auf der Startseite, mit denselben Skalen; speichert, sobald beide Werte
      gesetzt sind. */
   .state-teaser-card{display:flex;flex-direction:column;gap:16px;}
-  .state-teaser-copy{margin-top:2px;font-size:13.5px;color:var(--muted);line-height:1.5;}
+  .state-teaser-copy{margin-top:2px;font-size:calc(13.5px * var(--dt, 1));color:var(--muted);line-height:1.5;}
 
-  footer.appfoot{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  footer.appfoot{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:calc(12.5px * var(--dt, 1));color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
   /* Der Hinweis als Karte (wie .qcard), nicht als umgekehrte Pille; Rand --line-strong traegt die
      Kante. */
   .toast{
     position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
     background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);
-    font-size:13.5px;padding:10px 16px;border-radius:100px;
+    font-size:calc(13.5px * var(--dt, 1));padding:10px 16px;border-radius:100px;
     box-shadow:var(--shadow);opacity:0;transition:all .25s ease;pointer-events:none;z-index:50;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -239,7 +239,7 @@
   .skip-link{
     position:absolute;left:12px;top:-48px;z-index:200;
     background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:var(--radius-s);
-    font-size:13.5px;text-decoration:none;transition:top .15s ease;
+    font-size:calc(13.5px * var(--dt, 1));text-decoration:none;transition:top .15s ease;
   }
   .skip-link:focus{top:12px;}
 
@@ -295,7 +295,7 @@
   /* "Kein Bild" — die Rueckkehr zum Buchstaben. Ohne diesen Weg waere die Wahl eine Sackgasse. */
   .figur-wahl.figur-keine{
     background:var(--surface-2); display:flex; align-items:center; justify-content:center;
-    color:var(--muted); font-family:var(--mono); font-size:15px;
+    color:var(--muted); font-family:var(--mono); font-size:calc(15px * var(--dt, 1));
   }
 
   /* ---------- Hintergrundvorlagen der Profilzeile ----------
@@ -377,7 +377,7 @@
   @media (prefers-reduced-motion: reduce){ .hg-wahl:active{ transform:none; } }
   .hg-wahl.hg-keine{
     background:var(--surface-2); display:flex; align-items:center; justify-content:center;
-    color:var(--muted); font-family:var(--mono); font-size:13px;
+    color:var(--muted); font-family:var(--mono); font-size:calc(13px * var(--dt, 1));
   }
 
   /* Beispieldaten: ein Rand in --danger an der Profilzeile. */
@@ -389,7 +389,7 @@
   /* ---------- Vergleich je Dimension ----------
      Dieselbe Bauform wie beim eigenen Ergebnis (.trait-card, 08-formulare-und-dialoge.css); hier nur
      zwei Werte und der Abstand. */
-  .compat-paar{display:flex;align-items:baseline;gap:6px;font-size:13px;flex-shrink:0;}
+  .compat-paar{display:flex;align-items:baseline;gap:6px;font-size:calc(13px * var(--dt, 1));flex-shrink:0;}
   .compat-wert-me{color:var(--accent-strong);font-weight:500;}
   .compat-wert-other{color:var(--accent-2-text);font-weight:500;}
   .compat-wert-sep{color:var(--muted);}
@@ -415,7 +415,7 @@
   /* Kombinationen und eigene Daten benutzen .understand-card weiter. */
   /* Welche zwei Dimensionen die Karte behandelt, ueber der Ueberschrift. Klein und in der
      Mono-Schrift wie alle Kennzeichnungen der App: Es ist eine Angabe, keine Aussage. */
-  .kombi-dims{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
+  .kombi-dims{font-size:calc(10.5px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
   /* Die aus den eigenen Daten gerechneten Karten heben sich durch eine Kante ab, nicht durch
      eine Farbe: Sie sind kein Hinweis und keine Warnung, sondern ein anderer Ursprung. */
   .understand-daten{border-left:3px solid var(--accent);}
@@ -430,11 +430,11 @@
     padding:16px 16px;
   }
   .schloss > svg{ color:var(--accent-strong); flex-shrink:0; margin-top:1px; }
-  .schloss-text{ font-size:14px; color:var(--muted); line-height:1.55; }
+  .schloss-text{ font-size:calc(14px * var(--dt, 1)); color:var(--muted); line-height:1.55; }
   .schloss-btn{ margin-top:12px; }
 
   /* Der Entwickler-Umschalter benutzt .settings-row weiter. */
   /* flex:1, sonst rutscht der Schalter unter den Text (.settings-row hat flex-wrap). */
   .settings-row-text{ display:flex; flex-direction:column; gap:3px; min-width:0; flex:1; }
-  .settings-row-text strong{ font-family:var(--serif); font-weight:500; font-size:14.5px; }
-  .settings-row-desc{ font-size:12.5px; color:var(--muted); line-height:1.5; }
+  .settings-row-text strong{ font-family:var(--serif); font-weight:500; font-size:calc(14.5px * var(--dt, 1)); }
+  .settings-row-desc{ font-size:calc(12.5px * var(--dt, 1)); color:var(--muted); line-height:1.5; }

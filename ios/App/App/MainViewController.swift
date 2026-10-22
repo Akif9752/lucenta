@@ -216,7 +216,7 @@ class MainViewController: CAPBridgeViewController {
         (function(){
           var setzen = function(){
             if (!document.documentElement) return;
-            \(Self.transparenzZeile(UIAccessibility.isReduceTransparencyEnabled))
+            \(Self.bedienungshilfenZeilen())
           };
           setzen();
           document.addEventListener('readystatechange', setzen);
@@ -238,6 +238,7 @@ class MainViewController: CAPBridgeViewController {
     /// Lucenta im Hintergrund — dann ist der Stand beim Zurueckkehren der verlaessliche.
     private func transparenzBeobachten() {
         for anlass in [UIAccessibility.reduceTransparencyStatusDidChangeNotification,
+                       UIContentSizeCategory.didChangeNotification,
                        UIApplication.didBecomeActiveNotification] {
             NotificationCenter.default.addObserver(self, selector: #selector(transparenzNachziehen),
                                                    name: anlass, object: nil)
@@ -250,8 +251,23 @@ class MainViewController: CAPBridgeViewController {
         // `JS Eval error`, der in Runde 104 eine Runde Suche gekostet hat. Die noch ladende
         // Seite braucht es auch nicht: Sie bekommt den richtigen Stand aus Weg 1.
         guard let webView, webView.url != nil, !webView.isLoading else { return }
-        let zeile = Self.transparenzZeile(UIAccessibility.isReduceTransparencyEnabled)
-        webView.evaluateJavaScript("if (document.documentElement) { \(zeile) }")
+        webView.evaluateJavaScript("if (document.documentElement) { \(Self.bedienungshilfenZeilen()) }")
+    }
+
+    // MARK: - Dynamic Type (Feedback B8)
+
+    /// WebKit kennt die iOS-Textgroesse nur ueber `-apple-system-body`, und das waere auch im
+    /// Mac-WebKit der Pruefungen aktiv (dort 13 pt). Deshalb ein Faktor `--dt` an `:root`, mit dem
+    /// das Stilblatt jede Schriftgroesse multipliziert; ausserhalb der App bleibt er 1.
+    /// Gedeckelt bei 200 % (Entscheidung des Inhabers).
+    static func textFaktor() -> Double {
+        let faktor = Double(UIFontMetrics(forTextStyle: .body).scaledValue(for: 17)) / 17
+        return min(max(faktor, 0.8), 2.0)
+    }
+
+    private static func bedienungshilfenZeilen() -> String {
+        transparenzZeile(UIAccessibility.isReduceTransparencyEnabled) +
+            String(format: "document.documentElement.style.setProperty('--dt','%.3f');", textFaktor())
     }
 }
 

@@ -3,24 +3,24 @@
   .result-head .eyebrow{justify-content:center;}
   /* 8.6vw (33,5px bei 390px, 27,5px bei 320px), damit sich der Titel gegen den Absatz durchsetzt;
      text-wrap:balance gegen ein einzelnes Wort in der zweiten Zeile. */
-  .archetype{font-size:clamp(27px,8.6vw,42px);margin-top:8px;line-height:1.12;text-wrap:balance;}
+  .archetype{font-size:calc(clamp(27px,8.6vw,42px) * min(var(--dt, 1), 1.3));margin-top:8px;line-height:1.12;text-wrap:balance;}
   /* Runde 93: dieselbe Verwechslung wie auf der Startseite. Hier ist die Schrift 33 px gross,
      also gilt die Schwelle 3:1 statt 4,5 — gemessen waren es 2,88. Auch das reichte nicht. */
   .archetype .sep{color:var(--accent-2-text);font-style:normal;}
-  .motto{margin-top:8px;font-family:var(--mono);font-size:13px;color:var(--accent-2-text);letter-spacing:.01em;}
+  .motto{margin-top:8px;font-family:var(--mono);font-size:calc(13px * var(--dt, 1));color:var(--accent-2-text);letter-spacing:.01em;}
 
   .synthesis{
     margin:22px auto 0;max-width:46ch;text-align:center;
     /* Eine Stufe zurueck, damit der Titel fuehrt statt mit dem Absatz zu konkurrieren. */
-    font-family:var(--serif);font-size:17px;line-height:1.62;color:var(--ink);
+    font-family:var(--serif);font-size:calc(17px * var(--dt, 1));line-height:1.62;color:var(--ink);
   }
 
   .delta-card{
     margin:22px auto 0;max-width:400px;background:var(--surface);border:1px solid var(--line);
     border-radius:var(--radius-m);padding:16px 18px;
   }
-  .delta-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px;border-top:1px solid var(--line);}
-  .delta-move{font-family:var(--mono);font-size:12.5px;}
+  .delta-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:calc(14px * var(--dt, 1));border-top:1px solid var(--line);}
+  .delta-move{font-family:var(--mono);font-size:calc(12.5px * var(--dt, 1));}
   .delta-up, .delta-down{color:var(--ink);font-weight:600;}
   .delta-flat{color:var(--muted);}
   .delta-note{margin-top:10px;line-height:1.5;}
@@ -46,13 +46,13 @@
     pointer-events:none;
   }
   .share-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:relative;}
-  .share-brand{font-family:var(--serif);font-size:14px;color:var(--muted);}
-  .share-title{font-family:var(--serif);font-size:21px;margin-top:8px;position:relative;}
+  .share-brand{font-family:var(--serif);font-size:calc(14px * var(--dt, 1));color:var(--muted);}
+  .share-title{font-family:var(--serif);font-size:calc(21px * var(--dt, 1));margin-top:8px;position:relative;}
   /* Runde 112: .share-scores und .chip sind entfallen, mit den Chips der Ergebniskarte
      (Begruendung in index.body.html). */
   .share-actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;position:relative;}
   .code-box{
-    margin-top:10px;font-family:var(--mono);font-size:13px;background:var(--surface-2);
+    margin-top:10px;font-family:var(--mono);font-size:calc(13px * var(--dt, 1));background:var(--surface-2);
     border:1px dashed var(--line);border-radius:var(--radius-s);padding:10px 12px;
     /* Zoom-Test: Code-Zeile und „Kopieren"-Schaltflaeche zusammen breiter als der Kasten. */
     display:flex;justify-content:space-between;align-items:center;gap:10px;position:relative;flex-wrap:wrap;
@@ -61,9 +61,9 @@
      Lesegröße, wie .storage-warning — nur ohne Warnfarbe, weil hier nichts schiefgegangen ist. */
   /* .code-box und .field setzen display und schlagen sonst das hidden-Attribut. */
   .code-box[hidden], .field[hidden]{display:none;}
-  .einladen-box{font-family:var(--sans);font-size:14px;line-height:1.45;border-style:solid;}
+  .einladen-box{font-family:var(--sans);font-size:calc(14px * var(--dt, 1));line-height:1.45;border-style:solid;}
   .settings-restore .code-box{margin:0 0 10px;}
-  .code-lead{margin-top:10px;font-size:13.5px;color:var(--muted);line-height:1.55;position:relative;}
+  .code-lead{margin-top:10px;font-size:calc(13.5px * var(--dt, 1));color:var(--muted);line-height:1.55;position:relative;}
 
   
   /* ---------- Dimensionsfarbe ----------
@@ -92,10 +92,10 @@
     border-left:2px solid var(--accent); padding-left:14px; text-align:left;
   }
   .rhythmus-titel{
-    font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+    font-family:var(--mono); font-size:calc(11px * var(--dt, 1)); letter-spacing:.05em; text-transform:uppercase;
     color:var(--accent-2-text); margin-bottom:5px;
   }
-  .rhythmus-text{ font-size:13.5px; line-height:1.6; color:var(--ink); margin:0; }
+  .rhythmus-text{ font-size:calc(13.5px * var(--dt, 1)); line-height:1.6; color:var(--ink); margin:0; }
   .rhythmus-text b{ color:var(--ink); font-weight:600; }
 
   /* ---------- Der Schein hinter der Ueberschrift ----------

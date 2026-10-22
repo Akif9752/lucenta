@@ -388,7 +388,8 @@
   }
   header.top.scrolled{border-bottom-color:var(--line);}
   .wordmark{
-    font-family:var(--marke); font-size:20px; font-weight:600; letter-spacing:.01em;
+    font-family:var(--marke); font-size:calc(20px * min(var(--dt, 1), 1.2)); font-weight:600; letter-spacing:.01em;
+    white-space:nowrap; -webkit-hyphens:none; hyphens:none;
     display:flex; align-items:center; gap:8px;
     background:none; border:none; padding:0; margin:0; color:inherit; cursor:pointer;
   }
@@ -400,10 +401,10 @@
   /* Lucenta+ sitzt direkt an der Wortmarke (der Name ist "Lucenta+"); der negative Abstand hebt die
      Flex-Luecke auf. */
   .wordmark-plus{
-    font-family:var(--serif); font-size:19px; font-weight:600; line-height:1;
+    font-family:var(--serif); font-size:calc(19px * min(var(--dt, 1), 1.2)); font-weight:600; line-height:1;
     color:var(--accent); margin-left:-8px; flex-shrink:0;
   }
-  .tagline{font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:.02em;}
+  .tagline{font-size:calc(12px * min(var(--dt, 1), 1.2));color:var(--muted);font-family:var(--mono);letter-spacing:.02em;}
   /* min-width:0, damit die rechte Gruppe bei 320px kuerzt statt aus dem Bild zu ragen (ein
      Flex-Element ist sonst mindestens so breit wie sein laengstes Wort). Die Wortmarke hat Vorrang. */
   .header-right{display:flex;align-items:center;gap:12px;min-width:0;}
@@ -535,12 +536,12 @@
   /* Der Name traegt das Plus in der Akzentfarbe — das Einzige an diesem Fenster, was nach
      Produkt aussehen darf. Alles Weitere ist Text. */
   .plus-modal-marke{
-    font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink);
+    font-family:var(--serif);font-size:calc(15px * var(--dt, 1));font-weight:600;color:var(--ink);
     letter-spacing:.01em;margin:0 0 10px;
   }
   .plus-modal-marke span{color:var(--accent-strong);}
-  .plus-modal-titel{font-family:var(--serif);font-size:20px;line-height:1.25;margin:0 0 8px;text-wrap:balance;}
-  .plus-modal-lead{font-size:13.5px;line-height:1.6;color:var(--muted);margin:0 0 16px;}
+  .plus-modal-titel{font-family:var(--serif);font-size:calc(20px * var(--dt, 1));line-height:1.25;margin:0 0 8px;text-wrap:balance;}
+  .plus-modal-lead{font-size:calc(13.5px * var(--dt, 1));line-height:1.6;color:var(--muted);margin:0 0 16px;}
   .plus-vorteile{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:12px;}
   .plus-vorteil{display:flex;gap:11px;align-items:flex-start;}
   /* Das Haken-Zeichen steht in der Akzentfarbe auf einer eigenen Flaeche: In einer Liste aus
@@ -550,13 +551,13 @@
     display:flex;align-items:center;justify-content:center;
     background:color-mix(in srgb, var(--accent) 18%, transparent);color:var(--accent-strong);
   }
-  .plus-vorteil-text strong{display:block;font-size:14px;line-height:1.35;color:var(--ink);margin-bottom:2px;}
-  .plus-vorteil-text span{display:block;font-size:12.5px;line-height:1.55;color:var(--muted);}
+  .plus-vorteil-text strong{display:block;font-size:calc(14px * var(--dt, 1));line-height:1.35;color:var(--ink);margin-bottom:2px;}
+  .plus-vorteil-text span{display:block;font-size:calc(12.5px * var(--dt, 1));line-height:1.55;color:var(--muted);}
   .plus-modal-fuss{
     border-top:1px solid var(--line);padding-top:14px;
     display:flex;flex-direction:column;gap:9px;
   }
-  .plus-modal-fuss p{margin:0;font-size:12.5px;line-height:1.55;color:var(--muted);}
+  .plus-modal-fuss p{margin:0;font-size:calc(12.5px * var(--dt, 1));line-height:1.55;color:var(--muted);}
   .plus-modal-fuss b{color:var(--ink);font-weight:600;}
   /* Segmentwaehler: die iOS-Form fuer eine Wahl zwischen gleichrangigen Moeglichkeiten. */
   /* grid-auto-flow:column + grid-auto-columns:1fr: die Spaltenzahl folgt der Zahl der Faecher (zwei
@@ -607,15 +608,15 @@
     background:var(--surface);
     -webkit-backdrop-filter:none; backdrop-filter:none;
   }
-  .segment-preis{font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:-.01em;}
-  .segment-spar{font-family:var(--mono);font-size:10.5px;color:var(--accent-2-text);letter-spacing:.02em;}
+  .segment-preis{font-family:var(--sans);font-size:calc(14px * var(--dt, 1));font-weight:600;letter-spacing:-.01em;}
+  .segment-spar{font-family:var(--mono);font-size:calc(10.5px * var(--dt, 1));color:var(--accent-2-text);letter-spacing:.02em;}
   .segment-opt[aria-checked="true"] .segment-spar{color:var(--accent-2-text);}
   .plus-modal-cta{margin-top:12px;width:100%;justify-content:center;}
   .plus-modal-kuendigen{
-    margin:10px 0 0;font-size:11.5px;line-height:1.5;color:var(--muted-soft);text-align:center;
+    margin:10px 0 0;font-size:calc(11.5px * var(--dt, 1));line-height:1.5;color:var(--muted-soft);text-align:center;
   }
 
-  .img-modal-hint{font-size:12.5px;color:var(--muted);line-height:1.5;}
+  .img-modal-hint{font-size:calc(12.5px * var(--dt, 1));color:var(--muted);line-height:1.5;}
   .img-modal-actions{display:flex;justify-content:flex-end;}
   .drawer-head{display:flex;justify-content:flex-end;align-items:center;margin-bottom:14px;}
   .drawer-close{
@@ -631,12 +632,12 @@
      auf den Tag). */
   .drawer-group-title{
     margin-top:24px;padding-top:24px;border-top:1px solid var(--line);
-    font-family:var(--serif);font-size:13.5px;font-weight:500;color:var(--ink);
+    font-family:var(--serif);font-size:calc(13.5px * var(--dt, 1));font-weight:500;color:var(--ink);
   }
   .drawer-profile-row + .drawer-group-title{margin-top:0;padding-top:0;border-top:none;}
   .drawer-group-title + .drawer-section{margin-top:14px;padding-top:0;border-top:none;}
-  .drawer-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
-  .drawer-copy{font-size:13.5px;color:var(--muted);line-height:1.55;}
+  .drawer-label{font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+  .drawer-copy{font-size:calc(13.5px * var(--dt, 1));color:var(--muted);line-height:1.55;}
 
   .drawer-profile-row{
     display:flex;align-items:center;gap:12px;width:100%;text-align:left;font-family:inherit;cursor:pointer;
@@ -647,12 +648,12 @@
   .drawer-profile-row:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
   .drawer-profile-avatar{
     width:42px;height:42px;border-radius:50%;flex-shrink:0;background:var(--accent);color:var(--accent-ink);
-    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:calc(15px * var(--dt, 1));
     background-size:cover;background-position:center;overflow:hidden;border:1px solid var(--line);
   }
   .drawer-profile-text{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
-  .drawer-profile-text strong{font-family:var(--serif);font-weight:500;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .drawer-profile-text .l{font-size:12px;color:var(--muted);}
+  .drawer-profile-text strong{font-family:var(--serif);font-weight:500;font-size:calc(16px * var(--dt, 1));overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .drawer-profile-text .l{font-size:calc(12px * var(--dt, 1));color:var(--muted);}
   .drawer-profile-row .chev{color:var(--muted);flex-shrink:0;}
 
   .view{display:none;}

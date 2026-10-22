@@ -70,4 +70,6 @@ uebersetzungsluecken im sichtbaren Text; Kontraste halten auch im gedaempften He
 ## Stand nach Runde 152
 
 Erledigt: **A1, A3, A4, A5, B6, B7** (B7 scharf erst mit Domain, `einladung/LIESMICH.md`). Begruendung und
-Grenzen im Journal unter Runde 152. Offen: A2 (Inhaber), B8–B12, C13–C19.
+Grenzen im Journal unter Runde 152.
+
+Runde 153: **B8** (Dynamic Type bis 200 %). Offen: A2 (Inhaber), B9–B12, C13–C19.

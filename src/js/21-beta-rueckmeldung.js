@@ -289,6 +289,7 @@
   plusStandPruefen();
   plusPreiseHolen();
   einladungenHoeren();
+  textGroesseBeobachten();
   // Startbewegung (Fuenfeck zeichnet und fuellt sich, darunter der Name). Nur in der App,
   // durchklickbar, bei reduzierter Bewegung gar nicht.
   (function startBewegung(){

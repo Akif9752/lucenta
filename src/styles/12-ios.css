@@ -16,7 +16,7 @@
         so steht er in jeder Einstellung von iOS. Die Systemschrift kommt ueber --sans. */
   #view-settings .settings-group > h2,
   #view-settings .settings-sub > h3{
-    font-family:var(--sans); font-size:13px; font-weight:400; line-height:1.3;
+    font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; line-height:1.3;
     text-transform:uppercase; letter-spacing:.02em; color:var(--muted);
     margin:0 0 7px; padding:0 16px;
   }
@@ -36,7 +36,7 @@
 
   /* 3. Zeilen. Die Sprachliste hatte die Form schon (Runde 97/104) — sie verliert hier nur
         ihren eigenen Rahmen, weil die Gruppe jetzt selbst die Flaeche ist. */
-  #view-settings .wahl-zeile, #view-sprache .wahl-zeile{ font-size:16px; min-height:46px; padding:12px 16px; }
+  #view-settings .wahl-zeile, #view-sprache .wahl-zeile{ font-size:calc(16px * var(--dt, 1)); min-height:46px; padding:12px 16px; }
   #view-settings .wahl-zeile::before, #view-sprache .wahl-zeile::before{ left:16px; }
   /* Runde 136: die Sprachliste steht auf einer eigenen Seite und behaelt dort dieselbe Form. */
   #view-sprache .wahlliste{ margin-top:22px; }
@@ -57,18 +57,18 @@
     content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
   }
   #view-settings .settings-zeile-text{ min-width:0; gap:2px; }
-  #view-settings .settings-zeile-text strong{ font-family:var(--sans); font-weight:400; font-size:16px; }
+  #view-settings .settings-zeile-text strong{ font-family:var(--sans); font-weight:400; font-size:calc(16px * var(--dt, 1)); }
   /* Die Beschreibung bleibt in der Zeile, als zweite, leisere Zeile — die "Untertitel"-Form,
      die iOS selbst fuer Schalter mit Erklaerung benutzt. */
-  #view-settings .settings-zeile-text .settings-hint{ margin-top:0; font-size:13px; line-height:1.35; }
+  #view-settings .settings-zeile-text .settings-hint{ margin-top:0; font-size:calc(13px * var(--dt, 1)); line-height:1.35; }
 
   /* Konto: Bild, Name und der Weg ins Profil auf einer Zeile, wie der Apple-Account ganz oben
      in den iPhone-Einstellungen. */
   #view-settings .settings-account-row{ padding:12px 16px; gap:14px; flex-wrap:nowrap; }
-  #view-settings .settings-account-info strong{ font-family:var(--sans); font-weight:500; font-size:17px; }
+  #view-settings .settings-account-info strong{ font-family:var(--sans); font-weight:500; font-size:calc(17px * var(--dt, 1)); }
 
   #view-settings .settings-row{ padding:12px 16px; }
-  #view-settings .settings-row .l{ font-size:16px; }
+  #view-settings .settings-row .l{ font-size:calc(16px * var(--dt, 1)); }
 
   /* 4. Fussnoten. Was ausserhalb einer Flaeche erklaert, steht auf der Einrueckung der Zeilen,
         klein und gedeckt. */
@@ -76,7 +76,7 @@
   #view-settings .settings-group > .settings-group-desc,
   #view-settings .settings-group > .settings-empty,
   #view-settings .settings-sub > .settings-hint{
-    font-size:13px; line-height:1.4; color:var(--muted); font-style:normal;
+    font-size:calc(13px * var(--dt, 1)); line-height:1.4; color:var(--muted); font-style:normal;
     margin:7px 0 0; padding:0 16px;
   }
   /* Eine Erklaerung VOR der Gruppe (Lucenta+, Datenschutz) steht unter dem Titel und ueber der
@@ -89,7 +89,7 @@
     position:relative; width:100%; min-height:46px; margin:0; padding:12px 16px;
     justify-content:flex-start; text-align:left;
     background:transparent; border:none; border-radius:0; box-shadow:none;
-    font-family:var(--sans); font-size:16px; font-weight:400; color:var(--accent-strong);
+    font-family:var(--sans); font-size:calc(16px * var(--dt, 1)); font-weight:400; color:var(--accent-strong);
   }
   #view-settings .daten-knoepfe .btn + .btn::before{
     content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
@@ -106,23 +106,23 @@
     background:transparent; border:none; border-radius:inherit; box-shadow:none;
     font-size:0; color:var(--muted);
   }
-  #view-settings #btnSettingsEditProfile::after{ content:'\203A'; font-size:24px; line-height:1; font-family:var(--sans); }
+  #view-settings #btnSettingsEditProfile::after{ content:'\203A'; font-size:calc(24px * var(--dt, 1)); line-height:1; font-family:var(--sans); }
   #view-settings #btnSettingsEditProfile:active{ transform:none; background:color-mix(in srgb, var(--ink) 6%, transparent); }
 
   /* Die Datenliste: jeder gespeicherte Eintrag eine Zeile statt ein Kaestchen. */
   #view-settings .settings-datalist{ gap:0; }
   #view-settings .settings-datalist li{
-    position:relative; background:none; border:none; border-radius:0; padding:12px 16px; font-size:15px;
+    position:relative; background:none; border:none; border-radius:0; padding:12px 16px; font-size:calc(15px * var(--dt, 1));
   }
   #view-settings .settings-datalist li + li::before{
     content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
   }
 
   #view-settings .settings-restore{ padding:14px 16px; margin-top:10px; }
-  #view-settings .settings-restore-label{ font-family:var(--sans); font-size:16px; }
+  #view-settings .settings-restore-label{ font-family:var(--sans); font-size:calc(16px * var(--dt, 1)); }
 
   /* Hilfe: die Fragen als Zeilen mit Winkel, aufklappbar. */
-  #view-settings .faq-item summary{ padding:13px 16px; font-size:16px; }
+  #view-settings .faq-item summary{ padding:13px 16px; font-size:calc(16px * var(--dt, 1)); }
   #view-settings .faq-item p{ padding:0 16px; }
   #view-settings .faq-item{ position:relative; border-top:none; }
   #view-settings .faq-item + .faq-item::before{
@@ -133,7 +133,7 @@
   #view-settings #btnResetData{
     display:flex; justify-content:center; width:100%; min-height:46px; margin-top:30px !important;
     background:var(--surface); border:none; border-radius:var(--radius-m); box-shadow:none;
-    font-family:var(--sans); font-size:16px; font-weight:400; color:var(--danger);
+    font-family:var(--sans); font-size:calc(16px * var(--dt, 1)); font-weight:400; color:var(--danger);
   }
   #view-settings #btnResetData:active{ transform:none; background:var(--surface-2); }
   #view-settings #btnResetData.armed{ font-weight:600; }
@@ -145,7 +145,7 @@
   /* Gruppentitel wie in den Einstellungen: klein, grau, ueber der Flaeche. */
   #drawerPanel .drawer-group-title{
     margin-top:26px; padding:0 16px 7px; border-top:none;
-    font-family:var(--sans); font-size:13px; font-weight:400; line-height:1.3;
+    font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; line-height:1.3;
     text-transform:uppercase; letter-spacing:.02em; color:var(--muted);
   }
   #drawerPanel .drawer-profile-row + .drawer-group-title{ margin-top:26px; }
@@ -169,10 +169,10 @@
     border-bottom-left-radius:var(--radius-m); border-bottom-right-radius:var(--radius-m);
   }
   #drawerPanel .drawer-label{
-    font-family:var(--sans); font-size:16px; font-weight:400; text-transform:none;
+    font-family:var(--sans); font-size:calc(16px * var(--dt, 1)); font-weight:400; text-transform:none;
     letter-spacing:0; color:var(--ink);
   }
-  #drawerPanel .drawer-copy{ font-size:13px; line-height:1.35; margin:0; }
+  #drawerPanel .drawer-copy{ font-size:calc(13px * var(--dt, 1)); line-height:1.35; margin:0; }
 
   /* Der Knopf ueber der ganzen Zeile, sichtbar nur der Winkel. */
   #drawerPanel .drawer-section > .btn{
@@ -181,7 +181,7 @@
     background:transparent; border:none; border-radius:inherit; box-shadow:none;
     font-size:0; color:var(--muted-soft);
   }
-  #drawerPanel .drawer-section > .btn::after{ content:'\203A'; font-size:24px; line-height:1; font-family:var(--sans); }
+  #drawerPanel .drawer-section > .btn::after{ content:'\203A'; font-size:calc(24px * var(--dt, 1)); line-height:1; font-family:var(--sans); }
   #drawerPanel .drawer-section > .btn:active{
     transform:none; background:color-mix(in srgb, var(--ink) 6%, transparent);
   }
@@ -200,22 +200,22 @@
   /* Abschnittstitel wie ueberall in iOS. */
   #view-profile .section-title{
     margin-top:30px; padding:0 16px 7px; display:block;
-    font-family:var(--sans); font-size:13px; font-weight:400; line-height:1.3;
+    font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; line-height:1.3;
     text-transform:uppercase; letter-spacing:.02em; color:var(--muted);
   }
-  #view-profile .section-title .n{ border:none; padding:0; margin-left:6px; font-size:13px; }
-  #view-profile .section-lead{ margin:0 0 8px; padding:0 16px; font-size:13px; line-height:1.4; max-width:none; }
+  #view-profile .section-title .n{ border:none; padding:0; margin-left:6px; font-size:calc(13px * var(--dt, 1)); }
+  #view-profile .section-lead{ margin:0 0 8px; padding:0 16px; font-size:calc(13px * var(--dt, 1)); line-height:1.4; max-width:none; }
 
   /* Name: ein Textfeld in einer Zeile, wie "Vorname" in der Kontaktkarte — keine Unterstrich-Linie,
      sondern eine Flaeche mit dem Text linksbuendig. */
   #view-profile .profile-name-label{
     align-self:stretch; text-align:left; margin-top:26px; padding:0 16px 7px;
-    font-family:var(--sans); font-size:13px; letter-spacing:.02em;
+    font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); letter-spacing:.02em;
   }
   #view-profile .name-input{
     max-width:none; width:100%; box-sizing:border-box; margin:0; padding:12px 16px;
     background:var(--surface); border:none; border-radius:var(--radius-m);
-    font-family:var(--sans); font-size:17px; text-align:left;
+    font-family:var(--sans); font-size:calc(17px * var(--dt, 1)); text-align:left;
   }
   #view-profile .name-input:focus{ border:none; }
 
@@ -262,17 +262,17 @@
   /* Der Entwicklerbereich unten (Beispieldaten, Plus-Schalter) wie eine Einstellungsgruppe. */
   #view-profile #demoBlock{ background:none; border:none; box-shadow:none; padding:0; margin-top:30px; }
   #view-profile #demoBlock > h2{
-    font-family:var(--sans); font-size:13px; font-weight:400; text-transform:uppercase;
+    font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; text-transform:uppercase;
     letter-spacing:.02em; color:var(--muted); margin:0 0 7px; padding:0 16px;
   }
-  #view-profile #demoBlock > .settings-group-desc{ font-size:13px; padding:0 16px; margin:0 0 8px; }
+  #view-profile #demoBlock > .settings-group-desc{ font-size:calc(13px * var(--dt, 1)); padding:0 16px; margin:0 0 8px; }
   #view-profile #demoBlock .daten-knoepfe{
     margin-top:0; background:var(--surface); border-radius:var(--radius-m); overflow:hidden;
   }
   #view-profile #demoBlock .daten-knoepfe .btn{
     width:100%; min-height:46px; justify-content:flex-start; padding:12px 16px;
     background:transparent; border:none; border-radius:0; box-shadow:none;
-    font-family:var(--sans); font-size:16px; font-weight:400; color:var(--accent-strong);
+    font-family:var(--sans); font-size:calc(16px * var(--dt, 1)); font-weight:400; color:var(--accent-strong);
   }
   #view-profile #demoBlock .daten-knoepfe .btn:active{ transform:none; background:var(--surface-2); }
   #view-profile #demoBlock .settings-row{
@@ -289,16 +289,16 @@
     font-size:0; color:var(--muted-soft);
   }
   #view-profile #btnProfileViewResult::after{
-    content:'\203A'; font-size:24px; line-height:1; font-family:var(--sans);
+    content:'\203A'; font-size:calc(24px * var(--dt, 1)); line-height:1; font-family:var(--sans);
     position:static; transform:none; width:auto; height:auto; top:auto; left:auto;
   }
   #view-profile #btnProfileViewResult:active{ transform:none; background:color-mix(in srgb, var(--ink) 6%, transparent); }
-  #view-profile .settings-row-text strong{ font-family:var(--sans); font-weight:400; font-size:16px; }
+  #view-profile .settings-row-text strong{ font-family:var(--sans); font-weight:400; font-size:calc(16px * var(--dt, 1)); }
 
   /* "Kein Bild" zeigt das Monogramm. Steht hier, weil eine spaetere background-Kurzform in
      09-archetypen.css die Regel dort loescht. */
   .figur-raster .figur-wahl.figur-keine{
-    font-family:var(--sans); font-weight:500; font-size:16px; color:var(--paper);
+    font-family:var(--sans); font-weight:500; font-size:calc(16px * var(--dt, 1)); color:var(--paper);
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));
   }
 
@@ -505,17 +505,17 @@
   #startOverlay.show .processing-mark .processing-mark-fill{ animation:mark-fuellen .34s ease .62s forwards; }
   /* Der Name "Lucenta" steht auch im Startbild in --marke (Fraunces). pruef-app prueft das. */
   .start-name{
-    font-family:var(--marke); font-size:34px; font-weight:600; letter-spacing:.01em; color:var(--ink);
+    font-family:var(--marke); font-size:calc(34px * var(--dt, 1)); font-weight:600; letter-spacing:.01em; color:var(--ink);
     opacity:0; transform:translateY(6px);
   }
   #startOverlay.show .start-name{ animation:start-name .5s cubic-bezier(.2,.8,.2,1) .5s forwards; }
   @keyframes start-name{ to{ opacity:1; transform:none; } }
 
 
-  /* Eingabefelder mindestens 16 pt, sonst zoomt iOS beim Fokus hinein. Code-Felder in Monospace (l und
+  /* Eingabefelder mindestens 16 pt, sonst zoomt iOS beim Fokus hinein (auch bei kleiner Textgroesse, --dt < 1). Code-Felder in Monospace (l und
      1 unterscheidbar). */
   input[type="text"], input[type="time"], input[type="search"], input:not([type]), textarea, select{
-    font-size:16px !important;
+    font-size:max(16px, calc(16px * var(--dt, 1))) !important;
   }
   .field input[type="text"], #restoreCodeInput, #myCode, #wiederCode{ font-family:var(--code); }
 
@@ -524,7 +524,7 @@
   .hilfe-sammlung > summary{
     list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
     min-height:46px; padding:12px 16px; background:var(--surface); border-radius:var(--radius-m);
-    font-size:16px; color:var(--ink);
+    font-size:calc(16px * var(--dt, 1)); color:var(--ink);
   }
   .hilfe-sammlung > summary::-webkit-details-marker{ display:none; }
   /* Runde 131: Die Zeile in den Einstellungen oeffnet jetzt eine eigene Seite (view-hilfe) — gleiche
@@ -532,7 +532,7 @@
   .hilfe-knopf{
     width:100%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
     min-height:46px; padding:12px 16px; background:var(--surface); border-radius:var(--radius-m);
-    font:inherit; font-size:16px; color:var(--ink); text-align:left;
+    font:inherit; font-size:calc(16px * var(--dt, 1)); color:var(--ink); text-align:left;
   }
   .hilfe-knopf .chev{ color:var(--muted); flex-shrink:0; }
   #view-hilfe .faq-item-list{ margin-top:18px; }
@@ -545,7 +545,7 @@
   /* Rechtliches als leise Zeile, in zwei Schritten erreichbar (Impressumspflicht). */
   .recht-leise{
     margin:10px 0 0; padding:6px 16px; min-height:44px; background:none; border:none; cursor:pointer;
-    font:inherit; font-size:13px; color:var(--muted-soft); text-align:left; text-decoration:underline;
+    font:inherit; font-size:calc(13px * var(--dt, 1)); color:var(--muted-soft); text-align:left; text-decoration:underline;
     text-decoration-color:color-mix(in srgb, var(--muted-soft) 40%, transparent); text-underline-offset:3px;
   }
   .recht-leise:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
@@ -562,7 +562,7 @@
   .plus-persoenlich{
     margin:0 0 16px; padding:11px 14px; border-radius:var(--radius-s);
     background:color-mix(in srgb, var(--accent) 14%, transparent);
-    font-size:14px; line-height:1.45; color:var(--ink); font-weight:500;
+    font-size:calc(14px * var(--dt, 1)); line-height:1.45; color:var(--ink); font-weight:500;
   }
   .plus-persoenlich[hidden]{ display:none; }
 
@@ -589,23 +589,23 @@
     content:''; width:12px; height:12px; border-radius:50%; background:var(--accent-strong);
   }
   .plus-preis-text{ display:flex; flex-direction:column; gap:2px; flex:1; min-width:0; }
-  .plus-preis-name{ font-size:16px; font-weight:600; }
-  .plus-preis-unter{ font-size:12.5px; color:var(--muted-soft); }
+  .plus-preis-name{ font-size:calc(16px * var(--dt, 1)); font-weight:600; }
+  .plus-preis-unter{ font-size:calc(12.5px * var(--dt, 1)); color:var(--muted-soft); }
   .plus-preis-unter s{ color:var(--muted-soft); }
   .plus-preis-rechts{ display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; }
-  .plus-preis-betrag{ font-size:17px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .plus-preis-betrag{ font-size:calc(17px * var(--dt, 1)); font-weight:700; font-variant-numeric:tabular-nums; }
   .plus-preis-spar{
-    font-size:11.5px; font-weight:600; color:var(--accent-ink); background:var(--accent-strong);
+    font-size:calc(11.5px * var(--dt, 1)); font-weight:600; color:var(--accent-ink); background:var(--accent-strong);
     border-radius:100px; padding:2px 8px;
   }
   .plus-preis-abzeichen{
-    position:absolute; top:-9px; left:14px; font-size:11px; font-weight:600; letter-spacing:.02em;
+    position:absolute; top:-9px; left:14px; font-size:calc(11px * var(--dt, 1)); font-weight:600; letter-spacing:.02em;
     color:var(--accent-ink); background:var(--accent-strong); border-radius:100px; padding:2px 9px;
   }
   #plusPreisWahl .segment-opt[data-laufzeit="jahr"]{ margin-top:8px; }
-  #plusModal .plus-modal-cta{ margin-top:12px; min-height:50px; font-size:17px; font-weight:600; }
-  #plusModal .plus-modal-kuendigen{ margin:8px 0 0; font-size:11.5px; line-height:1.45; color:var(--muted-soft); }
-  .plus-vertrauen{ margin:4px 0 0; font-size:11.5px; line-height:1.45; color:var(--muted-soft); text-align:center; }
+  #plusModal .plus-modal-cta{ margin-top:12px; min-height:50px; font-size:calc(17px * var(--dt, 1)); font-weight:600; }
+  #plusModal .plus-modal-kuendigen{ margin:8px 0 0; font-size:calc(11.5px * var(--dt, 1)); line-height:1.45; color:var(--muted-soft); }
+  .plus-vertrauen{ margin:4px 0 0; font-size:calc(11.5px * var(--dt, 1)); line-height:1.45; color:var(--muted-soft); text-align:center; }
 
   /* Runde 126: die aufklappbare Eintragsliste der Tagesform (Form wie .hilfe-sammlung). */
   .tf-liste-sammlung{ margin-top:4px; }
@@ -639,7 +639,7 @@
     -webkit-backdrop-filter:blur(14px) saturate(160%); backdrop-filter:blur(14px) saturate(160%);
     border:1px solid var(--glas-rand); box-shadow:0 10px 30px -12px rgba(0,0,0,.35);
   }
-  .plus-vorschau-text{ margin:0; font-size:14px; line-height:1.45; color:var(--ink); font-weight:500; }
+  .plus-vorschau-text{ margin:0; font-size:calc(14px * var(--dt, 1)); line-height:1.45; color:var(--ink); font-weight:500; }
   /* Runde 137: keine Trennung in der Angebotskarte — sie trennte "Ver-stehen", den Namen einer
      Ansicht, wo das ganze Wort in die naechste Zeile passt. Gleiche Regel wie in der Schublade. */
   .plus-vorschau-text{ -webkit-hyphens:manual; hyphens:manual; }
@@ -707,7 +707,7 @@
 
   .verlauf-alle{ margin-top:10px; }
   /* Wiederherstellen im Kauffenster: leise, wie in iOS-Apps ueblich (Richtlinie 3.1.2). */
-  .plus-modal-leise{ display:block; min-height:44px; margin:6px auto 0; padding:10px 16px; background:none; border:none; font:inherit; font-size:14px; color:var(--muted); cursor:pointer; }
+  .plus-modal-leise{ display:block; min-height:44px; margin:6px auto 0; padding:10px 16px; background:none; border:none; font:inherit; font-size:calc(14px * var(--dt, 1)); color:var(--muted); cursor:pointer; }
 
   /* Freunde: Zeilen wie im Archiv, mit Figur vorn; das Raster der Figuren kleiner als im Profil. */
   #view-freunde .settings-group{ margin-bottom:18px; }
@@ -715,10 +715,10 @@
   #view-freunde .freund-figuren{ margin:6px 0 14px; }
   #view-freunde .freund-zeile{ display:flex; align-items:center; gap:12px; padding:12px 14px;
     background:var(--surface); border-radius:var(--radius-m); }
-  #view-freunde .freund-avatar{ width:44px; height:44px; flex-shrink:0; font-size:15px; }
+  #view-freunde .freund-avatar{ width:44px; height:44px; flex-shrink:0; font-size:calc(15px * var(--dt, 1)); }
   #view-freunde .freund-text{ flex:1; min-width:0; text-align:left; }
-  #view-freunde .freund-vergleiche summary{ font-size:13px; color:var(--accent); cursor:pointer; margin-top:4px; }
-  #view-freunde .freund-vergleiche ul{ list-style:none; padding:0; margin:6px 0 0; font-size:13px; }
+  #view-freunde .freund-vergleiche summary{ font-size:calc(13px * var(--dt, 1)); color:var(--accent); cursor:pointer; margin-top:4px; }
+  #view-freunde .freund-vergleiche ul{ list-style:none; padding:0; margin:6px 0 0; font-size:calc(13px * var(--dt, 1)); }
   #view-freunde .freund-vergleiche li{ display:flex; justify-content:space-between; gap:12px; color:var(--muted); }
 
   /* Onboarding beim ersten Oeffnen: eine ganze Seite ueber allem, Inhalt oben, Weiter unten. */
@@ -729,7 +729,7 @@
   #onboarding.offen{ opacity:1; }
   #onboarding[hidden]{ display:none; }
   #onboarding .ob-kopf{ display:flex; align-items:center; justify-content:space-between; min-height:44px; margin-bottom:18px; }
-  #onboarding .ob-leise{ background:none; border:none; font:inherit; font-size:16px; color:var(--muted); padding:10px 4px; cursor:pointer; min-width:84px; text-align:left; }
+  #onboarding .ob-leise{ background:none; border:none; font:inherit; font-size:calc(16px * var(--dt, 1)); color:var(--muted); padding:10px 4px; cursor:pointer; min-width:84px; text-align:left; }
   #onboarding #btnObUeberspringen{ text-align:right; }
   #onboarding .ob-leise[hidden]{ display:block; visibility:hidden; }
   #onboarding .ob-dots{ display:flex; gap:7px; }
@@ -737,43 +737,43 @@
   #onboarding .ob-dots span.an{ background:var(--accent); }
   #onboarding .ob-step{ display:flex; flex-direction:column; flex:1; }
   #onboarding .ob-step[hidden]{ display:none; }
-  #onboarding .ob-step h1{ font-size:30px; line-height:1.12; letter-spacing:-.02em; margin:6px 0 12px; outline:none; }
-  #onboarding .ob-text{ font-size:17px; line-height:1.45; color:var(--muted); margin:0 0 22px; }
+  #onboarding .ob-step h1{ font-size:calc(30px * var(--dt, 1)); line-height:1.12; letter-spacing:-.02em; margin:6px 0 12px; outline:none; }
+  #onboarding .ob-text{ font-size:calc(17px * var(--dt, 1)); line-height:1.45; color:var(--muted); margin:0 0 22px; }
   #onboarding .ob-vorschau{ margin:0 0 20px; }
-  #onboarding .ob-cta{ width:100%; margin-top:auto; min-height:52px; font-size:17px; }
+  #onboarding .ob-cta{ width:100%; margin-top:auto; min-height:52px; font-size:calc(17px * var(--dt, 1)); }
   #onboarding .ob-ziele{ margin-bottom:22px; }
   #onboarding .ob-fakten{ list-style:none; padding:0; margin:0 0 18px; display:flex; flex-direction:column; gap:16px; }
   #onboarding .ob-fakten li{ display:flex; gap:14px; align-items:flex-start; }
   #onboarding .ob-fakten svg{ color:var(--accent); flex-shrink:0; margin-top:2px; }
-  #onboarding .ob-fakten strong{ display:block; font-size:17px; margin-bottom:2px; }
-  #onboarding .ob-fakten span{ font-size:15px; line-height:1.4; color:var(--muted); }
+  #onboarding .ob-fakten strong{ display:block; font-size:calc(17px * var(--dt, 1)); margin-bottom:2px; }
+  #onboarding .ob-fakten span{ font-size:calc(15px * var(--dt, 1)); line-height:1.4; color:var(--muted); }
   #onboarding .ob-fuer-dich{ background:var(--surface); border-radius:var(--radius-m); padding:14px 16px; margin-bottom:22px; }
-  #onboarding .ob-fuer-dich-titel{ font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--accent); margin-bottom:8px; }
-  #onboarding .ob-fuer-dich ul{ margin:0; padding-left:18px; font-size:15px; line-height:1.45; }
+  #onboarding .ob-fuer-dich-titel{ font-size:calc(13px * var(--dt, 1)); font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--accent); margin-bottom:8px; }
+  #onboarding .ob-fuer-dich ul{ margin:0; padding-left:18px; font-size:calc(15px * var(--dt, 1)); line-height:1.45; }
   #onboarding .ob-fuer-dich li + li{ margin-top:6px; }
   #onboarding .name-input{ margin-bottom:20px; }
   #onboarding .ob-figuren{ margin:8px 0 22px; }
-  #onboarding .ob-hinweis{ font-size:13px; color:var(--muted); text-align:center; margin:12px 0 0; }
+  #onboarding .ob-hinweis{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); text-align:center; margin:12px 0 0; }
   #onboarding .ob-rein{ animation:ob-rein .38s cubic-bezier(.32,.72,0,1) both; }
   @keyframes ob-rein{ from{ transform:translateX(28px); } to{ transform:none; } }
   @media (prefers-reduced-motion: reduce){ #onboarding, #onboarding .ob-dots span{ transition:none; } #onboarding .ob-rein{ animation:none; } }
   /* Freunde: Naehe-Rangliste und Gruppenbild */
   #view-freunde .freund-naehe-zeile{ display:flex; align-items:center; gap:10px; min-height:44px; }
   #view-freunde .freund-naehe-zeile + .freund-naehe-zeile{ border-top:1px solid var(--line); }
-  #view-freunde .freund-naehe-rang{ width:16px; color:var(--muted); font-size:13px; text-align:right; }
-  #view-freunde .freund-avatar-klein{ width:30px; height:30px; flex-shrink:0; font-size:12px; }
+  #view-freunde .freund-naehe-rang{ width:16px; color:var(--muted); font-size:calc(13px * var(--dt, 1)); text-align:right; }
+  #view-freunde .freund-avatar-klein{ width:30px; height:30px; flex-shrink:0; font-size:calc(12px * var(--dt, 1)); }
   #view-freunde .freund-naehe-name{ flex:0 1 34%; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   #view-freunde .freund-naehe-balken{ flex:1; height:6px; border-radius:3px; background:var(--line); overflow:hidden; }
   #view-freunde .freund-naehe-balken span{ display:block; height:100%; border-radius:3px; background:var(--accent); }
-  #view-freunde .freund-naehe-wert{ width:44px; text-align:right; font-size:14px; }
+  #view-freunde .freund-naehe-wert{ width:44px; text-align:right; font-size:calc(14px * var(--dt, 1)); }
   #view-freunde .freunde-gruppe-radar svg{ display:block; width:100%; max-width:320px; margin:0 auto; }
-  #view-freunde .freunde-legende{ display:flex; flex-wrap:wrap; gap:6px 14px; justify-content:center; font-size:13px; color:var(--muted); margin-top:6px; }
+  #view-freunde .freunde-legende{ display:flex; flex-wrap:wrap; gap:6px 14px; justify-content:center; font-size:calc(13px * var(--dt, 1)); color:var(--muted); margin-top:6px; }
   #view-freunde .freunde-legende i{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:-1px; }
   .compat-als-freund{ margin-top:10px; }
 
   /* "Mit Apple anmelden" nach Apples Vorgaben: schwarz auf Hell, weiss auf Dunkel, volle Breite, 44+ pt. */
   .apple-knopf{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:48px;
-    border:none; border-radius:12px; background:#000; color:#fff; font:inherit; font-size:17px; font-weight:600; cursor:pointer; }
+    border:none; border-radius:12px; background:#000; color:#fff; font:inherit; font-size:calc(17px * var(--dt, 1)); font-weight:600; cursor:pointer; }
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .apple-knopf{ background:#fff; color:#000; } }
   :root[data-theme="dark"] .apple-knopf{ background:#fff; color:#000; }
   .konto-icloud{ margin-top:14px; display:flex; flex-direction:column; gap:10px; }
@@ -783,12 +783,28 @@
   #view-settings .konto-icloud > .danger-btn{
     display:flex; justify-content:center; width:100%; min-height:46px; margin-top:6px;
     background:var(--surface); border:none; border-radius:var(--radius-m); box-shadow:none;
-    font-family:var(--sans); font-size:16px; font-weight:400; color:var(--danger);
+    font-family:var(--sans); font-size:calc(16px * var(--dt, 1)); font-weight:400; color:var(--danger);
   }
   #view-settings .konto-icloud > .danger-btn:active{ transform:none; background:var(--surface-2); }
   #onboarding .ob-anmelden{ margin:12px auto 0; text-align:center; min-height:44px; }
-  #view-freunde .freund-eigener-code{ font-size:13px; word-break:break-all; background:var(--surface-2); border-radius:10px; padding:10px 12px; margin:4px 0 12px; color:var(--ink); user-select:all; -webkit-user-select:all; }
+  #view-freunde .freund-eigener-code{ font-size:calc(13px * var(--dt, 1)); word-break:break-all; background:var(--surface-2); border-radius:10px; padding:10px 12px; margin:4px 0 12px; color:var(--ink); user-select:all; -webkit-user-select:all; }
   #view-plus .plus-vorteile{ margin:0; }
   #view-plus .plus-seite-knoepfe{ display:flex; flex-direction:column; gap:8px; margin-top:8px; }
   #view-plus .plus-seite-knoepfe .btn-primary{ width:100%; min-height:50px; }
-  #view-plus .plus-seite-preise{ text-align:center; font-size:14px; color:var(--muted); margin:2px 0 0; }
+  #view-plus .plus-seite-preise{ text-align:center; font-size:calc(14px * var(--dt, 1)); color:var(--muted); margin:2px 0 0; }
+
+  /* Grosse Textgroesse (data-text="gross", ab 140 %, gesetzt in textGroesseBeobachten): Zeilen mit
+     Name und Wert brechen um, Wahlschalter werden zweizeilig. Radar-Beschriftungen bleiben Teil der
+     Grafik (viewBox), die Datumsachse waechst gedeckelt. */
+  :root[data-text="gross"] .trait-top,
+  :root[data-text="gross"] .tf-band-kopf,
+  :root[data-text="gross"] .history-row{ flex-wrap:wrap; }
+  :root[data-text="gross"] .history-title,
+  :root[data-text="gross"] .tf-band-werte{ text-align:left; }
+  :root[data-text="gross"] .segment{ grid-auto-flow:row; grid-template-columns:1fr 1fr; }
+  :root[data-text="gross"] .tf-kal-pfeil{ flex:0 0 44px; min-width:44px; }
+  :root[data-text="gross"] .stat-strip{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
+  :root[data-text="gross"] .field input{ width:100%; min-width:0; box-sizing:border-box; }
+  /* Bei 200 % sind deutsche Komposita breiter als 320 pt: trennen statt herausragen. */
+  :root[data-text="gross"] body{ overflow-wrap:anywhere; -webkit-hyphens:auto; hyphens:auto; }
+  :root[data-text="gross"] .code-box > span{ min-width:0; }

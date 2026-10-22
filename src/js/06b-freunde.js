@@ -154,6 +154,18 @@
     renderFreunde();
     showView('freunde');
   }
+  // Dynamic Type: Die Huelle setzt --dt an :root (MainViewController.textFaktor). Ab 140 % schaltet das
+  // Stilblatt auf umbrechende Zeilen um; die Schwelle steht nur hier.
+  function textGroesseAnwenden(){
+    var f = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dt')) || 1;
+    if (f >= 1.4) document.documentElement.setAttribute('data-text', 'gross');
+    else document.documentElement.removeAttribute('data-text');
+  }
+  function textGroesseBeobachten(){
+    if (typeof MutationObserver === 'undefined') return;
+    textGroesseAnwenden();
+    new MutationObserver(textGroesseAnwenden).observe(document.documentElement, {attributes: true, attributeFilter: ['style']});
+  }
   function einladungenHoeren(){
     var app = nativModul('App');
     if (!app) return;

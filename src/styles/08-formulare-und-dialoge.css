@@ -20,7 +20,7 @@
   @keyframes mark-zeichnen{ to{ stroke-dashoffset:0; } }
   @keyframes mark-fuellen{ from{opacity:0;transform:scale(.94);} to{opacity:.16;transform:none;} }
   .processing-mark .processing-mark-fill{ transform-origin:50% 50%; transform-box:fill-box; }
-  .processing-text{font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.02em;}
+  .processing-text{font-family:var(--mono);font-size:calc(13px * var(--dt, 1));color:var(--muted);letter-spacing:.02em;}
   /* Bei reduzierter Bewegung wird der ganze Moment ohnehin übersprungen (finishQuiz steigt
      vorher aus); die Regel steht trotzdem hier, falls die Überlagerung je anders erreicht wird. */
   @media (prefers-reduced-motion: reduce){
@@ -43,7 +43,7 @@
   .trait-more{
     margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
     display:flex;justify-content:space-between;align-items:center;gap:10px;
-    font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;
+    font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;
     color:var(--accent-strong);
   }
   .trait-more .chev{color:var(--muted);flex-shrink:0;transition:transform .2s ease;transform:rotate(90deg);}
@@ -54,9 +54,9 @@
   .trait-card[open] .tm-open{display:inline;color:var(--muted);}
   @media (prefers-reduced-motion: reduce){ .trait-card{animation:none;opacity:1;} }
   .trait-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
-  .trait-name{font-family:var(--serif);font-size:17px;}
-  .trait-score{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
-  .trait-teaser{margin-top:10px;font-size:14px;color:var(--muted);}
+  .trait-name{font-family:var(--serif);font-size:calc(17px * var(--dt, 1));}
+  .trait-score{font-family:var(--mono);font-size:calc(13px * var(--dt, 1));color:var(--muted);font-variant-numeric:tabular-nums;}
+  .trait-teaser{margin-top:10px;font-size:calc(14px * var(--dt, 1));color:var(--muted);}
   /* Der Inhalt kommt gestaffelt herein; die Hoehe aendert sich sofort (Hoehenanimation auf <details>
      ruckelt). */
   .trait-card[open] .trait-section{ animation:sec-in .3s cubic-bezier(.2,.8,.2,1) both; }
@@ -66,15 +66,15 @@
   @media (prefers-reduced-motion: reduce){ .trait-card[open] .trait-section{animation:none;} }
   .trait-sections{margin-top:14px;display:flex;flex-direction:column;gap:12px;}
   /* Alle einzeiligen Mono-Mikrolabels auf 11px. */
-  .trait-section-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin-bottom:4px;}
-  .trait-section p{font-size:14.5px;color:var(--ink);line-height:1.6;}
+  .trait-section-label{font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin-bottom:4px;}
+  .trait-section p{font-size:calc(14.5px * var(--dt, 1));color:var(--ink);line-height:1.6;}
 
   /* .uniform-note teilt sich die Gestaltung mit .storage-warning (handlungsrelevante Hinweise). */
   .storage-warning, .uniform-note{
     margin-top:24px;display:flex;align-items:flex-start;gap:10px;
     background:color-mix(in srgb, var(--accent-2) 14%, var(--surface));
     border:1px solid color-mix(in srgb, var(--accent-2) 40%, var(--line));
-    border-radius:var(--radius-m);padding:12px 14px;font-size:13.5px;line-height:1.5;
+    border-radius:var(--radius-m);padding:12px 14px;font-size:calc(13.5px * var(--dt, 1));line-height:1.5;
   }
   .storage-warning b, .uniform-note b{color:var(--accent-2-text);}
   .uniform-note{margin:22px auto 0;max-width:46ch;text-align:left;}
@@ -84,7 +84,7 @@
     margin-top:18px;display:flex;flex-direction:column;gap:10px;text-align:left;
     background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);padding:16px;
   }
-  .run-choice-q{font-family:var(--serif);font-size:15.5px;font-weight:500;color:var(--ink);margin:0 0 2px;}
+  .run-choice-q{font-family:var(--serif);font-size:calc(15.5px * var(--dt, 1));font-weight:500;color:var(--ink);margin:0 0 2px;}
   .run-choice-opt{
     display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;font-family:inherit;cursor:pointer;
     background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);
@@ -93,8 +93,8 @@
   @media (hover:hover){ .run-choice-opt:hover{border-color:var(--accent-strong);} }
   .run-choice-opt:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
   .run-choice-opt:active{border-color:var(--accent-strong);}
-  .run-choice-opt-t{font-family:var(--sans);font-size:14.5px;font-weight:600;color:var(--ink);}
-  .run-choice-opt-d{font-size:12.5px;line-height:1.45;color:var(--muted-soft);}
+  .run-choice-opt-t{font-family:var(--sans);font-size:calc(14.5px * var(--dt, 1));font-weight:600;color:var(--ink);}
+  .run-choice-opt-d{font-size:calc(12.5px * var(--dt, 1));line-height:1.45;color:var(--muted-soft);}
 
   /* Gast-Hinweis wie .storage-warning (echte Konsequenz). */
   .guest-note{
@@ -102,7 +102,7 @@
     display:flex;align-items:flex-start;gap:10px;
     background:color-mix(in srgb, var(--accent-2) 14%, var(--surface));
     border:1px solid color-mix(in srgb, var(--accent-2) 40%, var(--line));
-    border-radius:var(--radius-m);padding:12px 14px;font-size:13.5px;line-height:1.5;
+    border-radius:var(--radius-m);padding:12px 14px;font-size:calc(13.5px * var(--dt, 1));line-height:1.5;
   }
   .guest-note b{color:var(--accent-2-text);}
 
@@ -110,20 +110,20 @@
 
   .radar-note{margin-top:10px;text-align:center;max-width:280px;margin-left:auto;margin-right:auto;line-height:1.5;}
 
-  .section-title{margin-top:40px;font-size:19px;font-family:var(--sans);font-weight:400;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-  .section-title .n{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:2px 8px;}
+  .section-title{margin-top:40px;font-size:calc(19px * var(--dt, 1));font-family:var(--sans);font-weight:400;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .section-title .n{font-family:var(--mono);font-size:calc(12px * var(--dt, 1));color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:2px 8px;}
   /* Untergeordnete Abschnittstitel mit engerem Abstand (sonst einheitlich 40px). */
   .section-title-sub{margin-top:30px;}
   /* Einleitungsabsatz unter einem Abschnittstitel — identische Rolle wie .archetypes-head p, war
      auf der Ergebnisseite aber per Inline-Style mit abweichender Größe nachgebaut. */
-  .section-lead{margin-top:8px;font-size:14.5px;color:var(--muted);line-height:1.6;max-width:56ch;}
+  .section-lead{margin-top:8px;font-size:calc(14.5px * var(--dt, 1));color:var(--muted);line-height:1.6;max-width:56ch;}
 
   
   /* Zeile in den Einstellungen: Beschriftung links, Schalter rechts. Auf schmalen Geraeten
      untereinander, damit der Schalter nicht auf Daumenbreite zusammengedrueckt wird. */
   .settings-zeile{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-top:14px; flex-wrap:wrap;}
   .settings-zeile-text{flex:1; min-width:180px; display:flex; flex-direction:column; gap:3px;}
-  .settings-zeile-text strong{font-family:var(--serif); font-weight:500; font-size:15.5px;}
+  .settings-zeile-text strong{font-family:var(--serif); font-weight:500; font-size:calc(15.5px * var(--dt, 1));}
   .settings-zeile .theme-toggle{flex-shrink:0;}
   /* Runde 129: Hier stand das Uhrzeitfeld der Erinnerung (Runde 99). Die Erinnerung kommt jetzt zu
      drei festen Zeiten (19b-native.js), das Feld ist entfallen. */
@@ -131,14 +131,14 @@
   .nutzung-zeile{margin-top:16px;}
   .nutzung-vorschau{
     margin-top:10px; padding:12px 14px; border:1px solid var(--line); border-radius:10px;
-    background:var(--surface-2); color:var(--muted); font-size:12.5px; line-height:1.75;
+    background:var(--surface-2); color:var(--muted); font-size:calc(12.5px * var(--dt, 1)); line-height:1.75;
     white-space:pre-line; overflow-wrap:anywhere;
   }
 
   .settings-sub{margin-top:20px; padding-top:18px; border-top:1px solid var(--line);}
-  .settings-sub h3{font-family:var(--serif); font-weight:500; font-size:15.5px; margin-bottom:4px;}
+  .settings-sub h3{font-family:var(--serif); font-weight:500; font-size:calc(15.5px * var(--dt, 1)); margin-bottom:4px;}
   .daten-knoepfe{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
-  #importFeld{width:100%; margin-top:10px; font-family:var(--mono); font-size:12px;}
+  #importFeld{width:100%; margin-top:10px; font-family:var(--mono); font-size:calc(12px * var(--dt, 1));}
 
   /* Auswahlliste (iOS-Form fuer mehr als drei Moeglichkeiten); der Haken im ::after gehoert zum
      Zustand. */
@@ -154,7 +154,7 @@
     display:flex; align-items:center; justify-content:space-between; gap:12px;
     width:100%; min-height:46px; padding:12px 15px; box-sizing:border-box;
     border:none; background:transparent;
-    font-family:inherit; font-size:15px; color:var(--ink); text-align:left;
+    font-family:inherit; font-size:calc(15px * var(--dt, 1)); color:var(--ink); text-align:left;
     transition:background .14s ease;
   }
   .wahl-zeile::before{
@@ -234,16 +234,16 @@
   /* ---------- Rechtliches (Runde 79) ---------- */
   .recht-text{ margin-top:10px; }
   .recht-text h3{
-    font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+    font-family:var(--mono); font-size:calc(11px * var(--dt, 1)); letter-spacing:.05em; text-transform:uppercase;
     color:var(--accent-strong); font-weight:600; margin:18px 0 5px;
   }
   .recht-text h3:first-child{ margin-top:4px; }
-  .recht-text p, .recht-text li{ font-size:13.5px; line-height:1.65; color:var(--ink); }
+  .recht-text p, .recht-text li{ font-size:calc(13.5px * var(--dt, 1)); line-height:1.65; color:var(--ink); }
   .recht-text p + p{ margin-top:8px; }
   .recht-text ul{ margin:6px 0 0; padding-left:18px; }
   .recht-text li + li{ margin-top:3px; }
   .recht-text code{
-    font-family:var(--mono); font-size:12px; background:var(--surface-2);
+    font-family:var(--mono); font-size:calc(12px * var(--dt, 1)); background:var(--surface-2);
     border-radius:4px; padding:1px 5px;
   }
   /* Ein nicht ausgefuelltes Impressum ist kein Schoenheitsfehler, sondern ein Startverbot.
@@ -252,13 +252,13 @@
     margin-top:18px; display:flex; align-items:flex-start; gap:10px;
     background:color-mix(in srgb, var(--danger) 12%, var(--surface));
     border:2px solid color-mix(in srgb, var(--danger) 45%, var(--line));
-    border-radius:var(--radius-m); padding:13px 15px; font-size:13.5px; line-height:1.55;
+    border-radius:var(--radius-m); padding:13px 15px; font-size:calc(13.5px * var(--dt, 1)); line-height:1.55;
   }
   .recht-luecke b{ color:var(--danger); }
   /* Der Verweis in der Fusszeile sieht aus wie ein Verweis, nicht wie eine Schaltflaeche —
      die Fusszeile traegt sonst nur Text. */
   .fuss-link{
-    background:none; border:none; padding:0; font-family:inherit; font-size:12.5px;
+    background:none; border:none; padding:0; font-family:inherit; font-size:calc(12.5px * var(--dt, 1));
     color:var(--muted); text-decoration:underline; text-underline-offset:2px; cursor:pointer;
   }
   @media (hover:hover){ .fuss-link:hover{ color:var(--ink); } }

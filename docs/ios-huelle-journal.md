@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 152 | siehe `git log` | Feedback A1 (Sperre nach Antwort 50), A3 (`PrivacyInfo.xcprivacy`), A4 (Konto loeschen), A5 (ehrliche Versprechen, 8 Sprachen + Store), B6 (nur noch Freundescode; Wiederherstellungscode in Einstellungen), B7 (Einladung als Universal Link, scharf erst mit Domain) |
+| 153 | siehe `git log` | Feedback B8: Dynamic Type bis 200 % (`--dt` aus der Huelle, `data-text="gross"`, Fehlersuche `320px@200%`) |
+| 152 | `f1ff0e0` | Feedback A1 (Sperre nach Antwort 50), A3 (`PrivacyInfo.xcprivacy`), A4 (Konto loeschen), A5 (ehrliche Versprechen, 8 Sprachen + Store), B6 (nur noch Freundescode; Wiederherstellungscode in Einstellungen), B7 (Einladung als Universal Link, scharf erst mit Domain) |
 | 151 | `41c2e29` | Feedbackrunde A bis Z: 19 Befunde in `docs/feedbackrunde-151.md` (5 kritisch: Doppelspeichern auf Frage 50, Impressum leer, Privacy Manifest, Konto loeschen, widerspruechliche Versprechen) |
 | 150 | `428acb7` | Freundescode (`L1.<code>.<figur>.<name>`): Name und Figur kommen von der Person selbst; Beispiel-Freunde; Lucenta+ als eigene Seite (`view-plus`); „Abo verwalten“ als StoreKit-Blatt |
 | 149 | `1728f4c` | Dunkel als Vorgabe; Hellmodus gedaempft (#E6E5E0/#F3F2EE, Schrift nachgedunkelt); Mit Apple anmelden + private iCloud (`LucentaKontoPlugin.swift`, `19d-konto.js`) |
@@ -149,7 +150,10 @@ Regeln, die er gesetzt hat:
 - **Vergleiche:** `FREI_VERGLEICHE`/`FREI_ARCHIV` und `freieVergleichePersonen()` (`03-speicherung.js`,
   Liste unter `lucenta_vergleich_frei`, alter Einzel-Code wird uebernommen); Grenze in `renderCompat`
   (`11-rendering.js`), Archiv in `06-vergleichsarchiv.js`. Verstehen gesperrt in `16-verstehen.js`.
-- **Huelle:** `MainViewController.swift` (Bildlauf, Zoomsperre, Farbschema, Transparenz,
+- **Textgroesse (Runde 153):** jede `font-size` ist `calc(Npx * var(--dt, 1))` — eine NEUE Schriftgroesse
+  ebenso schreiben, sonst waechst sie nicht mit. Grafik-Text bleibt fest, Titel `min(var(--dt,1),1.3)`.
+  Layout fuer grosse Schrift unter `:root[data-text="gross"]` am Ende von `12-ios.css`.
+- **Huelle:** `MainViewController.swift` (Bildlauf, Zoomsperre, Farbschema, Transparenz, Textgroesse,
   Kauf-Bruecke), `LucentaKaeufePlugin.swift` (StoreKit 2: `stand`, `kaufen`, `restorePurchases`,
   seit Runde 137 `preise` — `displayPrice`, in `19b-native.js` per `plusPreiseHolen/-Anwenden` in die
   Kaufseite gesetzt; ohne Antwort bleiben die festen Texte).
@@ -157,7 +161,8 @@ Regeln, die er gesetzt hat:
 ### Was offen ist
 
 **Die Feedbackrunde 151** (`docs/feedbackrunde-151.md`, dort mit Begruendung) — der Arbeitsvorrat.
-Runde 152 hat A1, A3, A4, A5, B6, B7 erledigt (Eintrag unten). Als naechstes laut Auftrag: **B8, B9**.
+Runde 152 hat A1, A3, A4, A5, B6, B7 erledigt, Runde 153 B8 (Eintraege unten). Als naechstes laut
+Auftrag: **B9**.
 Bei Gestaltungsfragen vorher mit Optionen fragen.
 
 *A — kritisch*
@@ -165,7 +170,6 @@ Bei Gestaltungsfragen vorher mit Optionen fragen.
 
 *B — hoch, Nutzererlebnis*
 7. (Rest) Einladungslink **scharf schalten**, sobald eine Domain da ist: `einladung/LIESMICH.md`.
-8. Dynamic Type fehlt (kein `-apple-system-body`/`text-size-adjust`).
 9. Navigation: Zurueck-Pille „← Start" unter der Kopfzeile (36 pt); Titel bis zu dreimal (Kopfzeile,
    Ueberzeile, Ueberschrift) -> Pfeil links in der Kopfzeile, Titel einmal.
 10. Fragetexte ohne „Ich" („Habe einen reichen Wortschatz", folgt dem IPIP-Original) -> „Ich habe …",
@@ -331,6 +335,42 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 153 — Feedback B8: Dynamic Type
+
+**Der Fehler:** Lucenta ignorierte die in iOS eingestellte Textgroesse; alle ~240 Schriftgroessen standen
+in festen px. **Wahl des Inhabers:** mitwachsen bis 200 % (nach meinem Kenntnisstand Apples Schwelle fuer
+„Larger Text"; vor dem Eintrag in App Store Connect noch einmal nachlesen).
+
+**Der Weg:** Die Huelle setzt `--dt` an `:root` (`MainViewController.textFaktor()`:
+`UIFontMetrics(.body).scaledValue(17)/17`, 0,8–2,0), beim Laden per UserScript und live bei
+`UIContentSizeCategory.didChangeNotification` — mit in `bedienungshilfenZeilen()`, neben der Transparenz.
+Jede Schriftgroesse im Stilblatt ist `calc(Npx * var(--dt, 1))` (per Skript umgestellt, 234 + 5 `clamp`).
+Ausserhalb der App ist `--dt` unbelegt = 1, alle Pruefungen messen also bei 1 denselben Stand wie vorher.
+Nicht `-apple-system-body`: das gaelte auch im Mac-WebKit der Pruefungen (13 pt) und verschoebe alles.
+
+**Was nicht voll waechst, und warum:** Radar-Beschriftungen, 1–5-Skala und Datumsachse bleiben bei 1 — sie
+sind Teil der Grafik (viewBox bzw. feste Diagrammbreite); schon 1,3 liess die Datumsmarken auf 320 pt
+kollidieren. Grosse Titel (die fuenf `clamp`) hoechstens 130 %, Kopfzeile hoechstens 120 % — am Bild:
+bei 200 % trennte die Kopfzeile den Namen („Lu-centa") und die Startseiten-Ueberschrift brach in Silben.
+Der Name traegt jetzt `hyphens:none`. Eingabefelder `max(16px, …)` (nie unter 16 pt). Die
+Antwortbeschriftungen der Skala wachsen voll (sie sind Bedienung, kein Titel).
+
+**Grosse Schrift = anderes Layout:** Ab `--dt >= 1.4` setzt `textGroesseBeobachten()` (`06b-freunde.js`,
+MutationObserver auf `:root`) `data-text="gross"`; die Schwelle steht nur dort. Dann: Name/Wert-Zeilen
+brechen um (`.trait-top`, `.tf-band-kopf`, `.history-row`), Wahlschalter zweispaltig, Kennzahlen dreispaltig,
+Eingabefelder auf Kastenbreite, Silbentrennung fuer die ganze Seite (deutsche Komposita sind bei 200 %
+breiter als 320 pt).
+
+**Gemessen:** neue Fehlersuche-Konfiguration `320px@200%` (beide Motoren). Erster Lauf 27 Funde, dann 7,
+2, 0 — dazwischen einmal die falsche von zwei gleichlautenden CSS-Zeilen getroffen (Skala statt Achse) und
+am Nachmessen erkannt. Am Bild (WebKit, 320 pt, 200 %): Start, Ergebnis, Fragebogen, Skala. Im Simulator
+mit `simctl ui content_size accessibility-medium`: die App waechst, und ein Wechsel bei laufender App
+zieht nach. `pruef-alles`: **9/9** (10,1 Min., fehlersuche ohne Fund, jetzt 28 Durchlaeufe).
+**Ungeprueft:** jede einzelne der ~30 Ansichten am Bild bei 200 % — die Fehlersuche misst
+Ueberlauf, Tippflaechen und Kontrast, nicht ob es gut aussieht.
 
 ---
 

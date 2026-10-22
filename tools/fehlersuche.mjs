@@ -658,7 +658,7 @@ async function pruefeAnsicht(p, ansicht, kennung, breite, melde){
 // Runde 103: Der Motor ebenso, aus demselben Grund. Als eigene Funktion, weil die Kennung auch
 // gebraucht wird, um mit LUCENTA_NUR einen einzelnen Durchlauf nachzufahren.
 function kennungVon(l, motor){
-  return [motor, (l.breite || 390) + 'px', l.thema, l.sprache,
+  return [motor, (l.breite || 390) + 'px' + (l.text ? '@' + Math.round(l.text * 100) + '%' : ''), l.thema, l.sprache,
           l.demo ? (l.plus ? 'Beispielnutzerin' : 'Beispielnutzerin, frei') : 'leer'].join('/');
 }
 
@@ -669,6 +669,11 @@ async function durchlauf(lauf, motor, browser){
   const { funde, melde } = sammler();
   const ctx = await browser.newContext({viewport:{width:breite,height:HOEHE}, isMobile:true, hasTouch:true,
     colorScheme: thema === 'dunkel' ? 'dark' : 'light'});
+  // Feedback B8: die iOS-Textgroesse, wie MainViewController sie als --dt setzt.
+  if (lauf.text) await ctx.addInitScript(f => {
+    const setzen = () => document.documentElement && document.documentElement.style.setProperty('--dt', String(f));
+    setzen(); document.addEventListener('readystatechange', setzen);
+  }, lauf.text);
   const p = await ctx.newPage();
   const abstuerze = [];
   p.on('pageerror', e => abstuerze.push(e.message));
@@ -759,6 +764,9 @@ const laeufe = [
   {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320},
   {thema:'hell',   demo:true,  plus:true,  sprache:'fr', breite:320},
   {thema:'hell',   demo:true,  plus:true,  sprache:'tr', breite:320},
+  // Feedback B8: groesste unterstuetzte Textgroesse (200 %, Entscheidung des Inhabers) auf dem
+  // schmalsten Bildschirm.
+  {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320, text:2},
 ];
 // ---------- Runde 103: je Motor ein Browser, vier Durchlaeufe gleichzeitig ----------
 

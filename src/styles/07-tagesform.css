@@ -1,7 +1,7 @@
 /* ---------- Tagesform / State-Check: kurzfristiger Zustand (Energie/Stimmung), bewusst getrennt
      vom stabilen Trait-Ergebnis oben ---------- */
   .state-check-card{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:20px 18px;display:flex;flex-direction:column;gap:22px;}
-  .state-today-note{margin:0;font-size:12.5px;color:var(--muted);}
+  .state-today-note{margin:0;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);}
   /* Runde 131: die Erfassung als eigener Block, damit sie als Ganzes zuklappen kann. */
   .tf-erfassung{display:flex;flex-direction:column;gap:22px;transform-origin:top center;}
   /* Das Zuklappen (zuklappen()/aufklappen() in 19-feier.js): Die Hoehe laeuft auf null, der Inhalt
@@ -10,9 +10,9 @@
     transition:height .48s cubic-bezier(.6,0,.25,1), opacity .32s ease, transform .48s cubic-bezier(.6,0,.25,1);}
   .klappt-auf{overflow:hidden;transition:height .48s cubic-bezier(.2,.8,.2,1);}
   .state-question{display:flex;flex-direction:column;gap:8px;}
-  .state-q-label{font-family:var(--serif);font-size:16px;}
+  .state-q-label{font-family:var(--serif);font-size:calc(16px * var(--dt, 1));}
   /* gap gegen ineinanderlaufende Skalenenden bei 200 %. */
-  .state-q-sub{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);}
+  .state-q-sub{display:flex;justify-content:space-between;gap:12px;font-size:calc(12px * var(--dt, 1));color:var(--muted);}
 
   /* Der Haken zeichnet sich nur direkt nach dem Speichern, nicht beim Zurueckkehren. */
   #landingStateInputs{display:flex;flex-direction:column;gap:22px;}
@@ -25,13 +25,13 @@
     display:flex;align-items:center;justify-content:center;
   }
   .state-done-text{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;}
-  .state-done-text strong{font-family:var(--serif);font-weight:500;font-size:15.5px;color:var(--ink);}
-  .state-done-vals{font-size:11.5px;color:var(--muted-soft);}
-  .state-done-naechster{font-size:12px;color:var(--muted);margin-top:2px;}
+  .state-done-text strong{font-family:var(--serif);font-weight:500;font-size:calc(15.5px * var(--dt, 1));color:var(--ink);}
+  .state-done-vals{font-size:calc(11.5px * var(--dt, 1));color:var(--muted-soft);}
+  .state-done-naechster{font-size:calc(12px * var(--dt, 1));color:var(--muted);margin-top:2px;}
 
   /* Runde 129: die drei Tageszeiten. Gefuellt = eingetragen, Ring = jetzt dran, leer = offen.
      Das Wort steht neben dem Punkt, damit der Zustand nicht allein an der Farbe haengt. */
-  .tf-abschnitte{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 14px;font-size:12.5px;color:var(--muted);}
+  .tf-abschnitte{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 14px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);}
   .state-check-card .tf-abschnitte{margin:0 0 10px;}
   .tf-abschnitt{display:inline-flex;align-items:center;gap:6px;}
   .tf-abschnitt-punkt{position:relative;width:11px;height:11px;border-radius:50%;flex-shrink:0;
@@ -73,7 +73,7 @@
   /* Runde 82: Die Marke fuer einen Tag mit mehreren Eintraegen. Bewusst neben dem Datum und
      nicht neben den Werten: Sie sagt etwas ueber die Erhebung, nicht ueber das Befinden. */
   .tf-anzahl{
-    margin-left:6px; font-size:10.5px; color:var(--muted);
+    margin-left:6px; font-size:calc(10.5px * var(--dt, 1)); color:var(--muted);
     border:1px solid var(--line); border-radius:100px; padding:1px 5px;
   }
 
@@ -84,12 +84,12 @@
   /* Die freiwilligen Teile der Erfassung: Fragen und Stichworte. */
   .tf-teil{ display:flex; flex-direction:column; gap:10px; padding-top:18px; border-top:1px solid var(--line); }
   .tf-teil-kopf{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
-  .tf-freiwillig{ font-size:12px; color:var(--muted); }
-  .tf-teil-text{ margin:0; font-size:13px; line-height:1.45; color:var(--muted); }
+  .tf-freiwillig{ font-size:calc(12px * var(--dt, 1)); color:var(--muted); }
+  .tf-teil-text{ margin:0; font-size:calc(13px * var(--dt, 1)); line-height:1.45; color:var(--muted); }
   .tf-fragen{ display:flex; flex-direction:column; gap:18px; margin-top:4px; }
   .tf-frage-kopf{ display:flex; align-items:center; gap:8px; }
   .tf-frage-punkt{ width:9px; height:9px; border-radius:50%; background:var(--tf-farbe); flex-shrink:0; }
-  .tf-frage-name{ font-size:14px; font-weight:500; color:var(--ink); }
+  .tf-frage-name{ font-size:calc(14px * var(--dt, 1)); font-weight:500; color:var(--ink); }
   /* Die gewaehlte Stufe traegt die Farbe der Dimension, wie im Radar — so sind fuenf gleich
      gebaute Reihen auf einen Blick auseinanderzuhalten. */
   /* 44 pt je Kreis (Apples Mindestmass), sonst wird die Erfassung zu lang. */
@@ -101,7 +101,7 @@
   .tf-chip{
     /* 44 Punkt hoch: Apples Mindestmass fuer ein Tippziel (die Fehlersuche fand 36). */
     min-height:44px; padding:9px 15px; border-radius:100px; cursor:pointer;
-    font:inherit; font-size:14px; color:var(--ink);
+    font:inherit; font-size:calc(14px * var(--dt, 1)); color:var(--ink);
     background:var(--surface-2); border:1px solid transparent;
     transition:background-color .15s ease, color .15s ease, transform .18s cubic-bezier(.2,.8,.2,1);
   }
@@ -116,18 +116,18 @@
     background:var(--surface); border-radius:var(--radius-m);
   }
   .tf-erinnerung .settings-zeile-text{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
-  .tf-erinnerung strong{ font-weight:400; font-size:16px; }
-  .tf-erinnerung .settings-hint{ font-size:12.5px; color:var(--muted); }
+  .tf-erinnerung strong{ font-weight:400; font-size:calc(16px * var(--dt, 1)); }
+  .tf-erinnerung .settings-hint{ font-size:calc(12.5px * var(--dt, 1)); color:var(--muted); }
 
-  .tf-leer, .tf-hinweis{ margin:8px 0 0; font-size:13px; line-height:1.45; color:var(--muted); }
+  .tf-leer, .tf-hinweis{ margin:8px 0 0; font-size:calc(13px * var(--dt, 1)); line-height:1.45; color:var(--muted); }
 
   /* ---------- Bandbreite ---------- */
   .tf-band-karte{ background:var(--surface); border-radius:var(--radius-m); padding:16px; display:flex; flex-direction:column; gap:16px; }
   .tf-band-kopf{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:7px; }
   /* Als Schrift die -text-Fassung der Datenfarbe: Die Flaechenfarbe erreicht als kleine Schrift
      4,5:1 nicht (Fehlersuche). Dieselbe Trennung wie im Radar (--dim-aktiv-text). */
-  .tf-band-name{ font-size:14.5px; font-weight:500; color:var(--tf-farbe-text, var(--ink)); }
-  .tf-band-werte{ font-size:12px; color:var(--muted-soft); text-align:right; }
+  .tf-band-name{ font-size:calc(14.5px * var(--dt, 1)); font-weight:500; color:var(--tf-farbe-text, var(--ink)); }
+  .tf-band-werte{ font-size:calc(12px * var(--dt, 1)); color:var(--muted-soft); text-align:right; }
   .tf-band-spur{ position:relative; height:12px; border-radius:6px; background:var(--surface-2); }
   /* Die Mitte der Skala als feine Linie: ohne sie ist "ueber" und "unter" nicht abzulesen. */
   .tf-band-mitte50{ position:absolute; left:50%; top:-2px; bottom:-2px; width:1px; background:var(--line); }
@@ -141,30 +141,30 @@
   /* Das Testergebnis als Strich ueber die ganze Hoehe — eine andere FORM als das Mittel, damit
      beide nicht allein an der Farbe zu unterscheiden sind. */
   .tf-band-test{ position:absolute; top:-4px; bottom:-4px; width:3px; margin-left:-1.5px; border-radius:2px; background:var(--ink); }
-  .tf-band-legende{ display:flex; flex-wrap:wrap; gap:6px 14px; font-size:11.5px; color:var(--muted-soft); }
+  .tf-band-legende{ display:flex; flex-wrap:wrap; gap:6px 14px; font-size:calc(11.5px * var(--dt, 1)); color:var(--muted-soft); }
   .tf-band-legende span{ display:inline-flex; align-items:center; gap:6px; }
   .tf-band-legende i{ display:inline-block; }
   .tf-lg-band{ width:18px; height:8px; border-radius:4px; background:color-mix(in srgb, var(--muted) 45%, transparent); }
   .tf-lg-mittel{ width:8px; height:8px; border-radius:50%; box-shadow:0 0 0 2px var(--muted); }
   .tf-lg-test{ width:3px; height:12px; border-radius:2px; background:var(--ink); }
-  .tf-band-satz{ margin:10px 0 0; font-size:14px; line-height:1.45; color:var(--ink); }
+  .tf-band-satz{ margin:10px 0 0; font-size:calc(14px * var(--dt, 1)); line-height:1.45; color:var(--ink); }
 
   /* ---------- Kalender ---------- */
   .tf-kal-karte{ background:var(--surface); border-radius:var(--radius-m); padding:14px 14px 16px; display:flex; flex-direction:column; gap:12px; }
   .tf-kal-kopf{ display:flex; align-items:center; justify-content:space-between; }
-  .tf-kal-monat{ font-size:16px; font-weight:600; color:var(--ink); }
+  .tf-kal-monat{ font-size:calc(16px * var(--dt, 1)); font-weight:600; color:var(--ink); }
   .tf-kal-pfeil{
     width:44px; height:44px; border-radius:50%; border:none; background:transparent; cursor:pointer;
-    font-size:24px; line-height:1; color:var(--accent-strong);
+    font-size:calc(24px * var(--dt, 1)); line-height:1; color:var(--accent-strong);
   }
   /* Ein Pfeil, der nicht weiterfuehrt, wird ausgeblendet statt blass gezeigt — blass erreichte er
      1,7:1 und sah trotzdem bedienbar aus. Der Platz bleibt, damit der Monatsname nicht springt. */
   .tf-kal-pfeil:disabled{ visibility:hidden; }
   .tf-kal-pfeil:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:-2px; }
   .tf-kal-wochentage, .tf-kal-raster{ display:grid; grid-template-columns:repeat(7, 1fr); gap:5px; }
-  .tf-kal-wochentage span{ text-align:center; font-size:11px; color:var(--muted-soft); }
+  .tf-kal-wochentage span{ text-align:center; font-size:calc(11px * var(--dt, 1)); color:var(--muted-soft); }
   .tf-kal-zelle{
-    aspect-ratio:1; border-radius:50%; border:none; padding:0; font:inherit; font-size:13px;
+    aspect-ratio:1; border-radius:50%; border:none; padding:0; font:inherit; font-size:calc(13px * var(--dt, 1));
     display:flex; align-items:center; justify-content:center; color:var(--muted-soft);
     background:transparent;
   }
@@ -185,7 +185,7 @@
   :root[data-theme="dark"] .tf-kal-st4{ color:var(--accent-ink); }
   .tf-kal-st5{ background:var(--accent); color:var(--accent-ink); }
   .tf-kal-tag0{ box-shadow:inset 0 0 0 2px var(--ink); font-weight:600; }
-  .tf-kal-skala{ display:flex; align-items:center; gap:4px; justify-content:center; font-size:11px; color:var(--muted-soft); }
+  .tf-kal-skala{ display:flex; align-items:center; gap:4px; justify-content:center; font-size:calc(11px * var(--dt, 1)); color:var(--muted-soft); }
   .tf-kal-skala i{ width:16px; height:10px; border-radius:3px; display:inline-block; }
 
   /* ---------- Muster ---------- */
@@ -197,8 +197,8 @@
   .tf-wt-energie{ background:var(--daten-energie); }
   .tf-wt-stimmung{ background:var(--daten-stimmung); }
   .tf-wt-ohne{ height:3px; background:var(--line); }
-  .tf-wt-name{ font-size:11px; color:var(--muted-soft); }
+  .tf-wt-name{ font-size:calc(11px * var(--dt, 1)); color:var(--muted-soft); }
   .tf-wt-legende{ margin-top:4px; }
 
   /* Runde 124: die Stichworte eines Tages unter seinen Werten in der Liste. */
-  .tf-liste-tags{ display:block; margin-top:2px; font-size:12px; color:var(--muted); font-family:var(--sans); }
+  .tf-liste-tags{ display:block; margin-top:2px; font-size:calc(12px * var(--dt, 1)); color:var(--muted); font-family:var(--sans); }
