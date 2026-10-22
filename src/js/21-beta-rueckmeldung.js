@@ -252,6 +252,7 @@
   // Keine Zifferntasten-Bedienung im Fragebogen (auf dem iPhone unerreichbar). Bewusst geblieben:
   // Eingabetaste in Textfeldern und Escape/Tab in Fenstern (Tastatur- und Schaltersteuerung).
   $('btnResultEinladen').addEventListener('click', freundeEinladen);
+  $('btnNavZurueck').addEventListener('click', navZurueck);
   [['btnCopyCode', 'myCode'], ['btnCopyWiederCode', 'wiederCode']].forEach(function(paar){
     $(paar[0]).addEventListener('click', function(){ codeKopieren($(paar[1]).textContent); });
   });

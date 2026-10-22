@@ -67,9 +67,15 @@ async function drawer(p,id){ await closeDrawer(p); const t=await p.$('#btnDrawer
   if(t&&await t.isVisible()){await t.click(); await p.waitForTimeout(350);}
   const e=await p.$('#'+id); if(e&&await e.isVisible()){await e.click(); await p.waitForTimeout(600); return true;}
   const c=await p.$('#btnDrawerClose'); if(c&&await c.isVisible())await c.click(); return false; }
-async function home(p){ await closeDrawer(p); for(const s of ['#btnHome','#btnBackFromResult','#btnBackFromSettings','#btnBackFromState',
-  '#btnBackFromProfile','#btnBackFromUnderstand','#btnBackFromArchetypes','#btnBackFromCompatArchive']){
-  const e=await p.$(s); if(e&&await e.isVisible()){await e.click(); break;}} await p.waitForTimeout(500); }
+// Seit Feedback B9 steht der Name nur auf der Startseite, und der Chevron fuehrt eine Ebene zurueck:
+// so oft zurueck, bis die Startseite erreicht ist.
+async function home(p){ await closeDrawer(p);
+  for(let i=0;i<4;i++){
+    if(await p.evaluate(()=>document.getElementById('view-landing').classList.contains('active'))) break;
+    const e=await p.$('#btnNavZurueck'); if(!(e&&await e.isVisible())) break;
+    await e.click(); await p.waitForTimeout(600);
+  }
+  await p.waitForTimeout(300); }
 // alles Aufklappbare oeffnen, damit auch verborgener Text erfasst wird
 async function expandAll(p){ await closeDrawer(p); await p.evaluate(()=>{
   const v=[...document.querySelectorAll('[id^=view-]')].find(x=>getComputedStyle(x).display!=='none');

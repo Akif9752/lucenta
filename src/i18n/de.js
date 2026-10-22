@@ -664,7 +664,6 @@ CONTENT.de = {
       'verlauf_alle_ansehen': 'Alle ansehen',
       'fruehere_ergebnisse_titel': 'Frühere Ergebnisse',
       'zurueck_profil': '← Profil',
-      'profil_eyebrow': 'Profil',
       'plus_schublade_frei': 'Jede Auswertung, dein ganzer Verlauf, Verstehen und jeder Vergleich – Laufzeiten und Preise ansehen.',
       'plus_schublade_aktiv': 'Lucenta+ ist aktiv – alles ist freigeschaltet.',
       'plus_schublade_ansehen': 'Lucenta+ ansehen',

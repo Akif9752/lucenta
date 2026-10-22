@@ -936,7 +936,6 @@
       'verlauf_alle_ansehen': 'すべて表示',
       'fruehere_ergebnisse_titel': '過去の結果',
       'zurueck_profil': '← プロフィール',
-      'profil_eyebrow': 'プロフィール',
       'plus_schublade_frei': 'すべての分析、全履歴、「理解する」、すべての比較 — プランと価格を見る。',
       'plus_schublade_aktiv': 'Lucenta+ は有効です — すべて利用できます。',
       'plus_schublade_ansehen': 'Lucenta+ を見る',

@@ -325,6 +325,26 @@ ok(figurPfade.anzahl === 12 && figurPfade.kaputt.length === 0,
 // Gegenstand mehr. Die Lehre aus ihren drei Anlaeufen steht im Journal unter Runde 111.
 await anmutungCtx.close();
 
+// Feedback B9: Unterseiten wie iOS — Chevron mit Ziel links, der Name verborgen, der Weg zurueck stimmt.
+const navCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+const navSeite = await navCtx.newPage();
+await navSeite.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
+await navSeite.click('#btnDrawerToggle'); await navSeite.waitForTimeout(400);
+await navSeite.click('#btnDrawerSettings'); await navSeite.waitForTimeout(700);
+await navSeite.click('#btnHilfeOeffnen'); await navSeite.waitForTimeout(700);
+const navBild = await navSeite.evaluate(() => ({
+  text: document.getElementById('navZurueckText').textContent,
+  sichtbar: !!document.getElementById('btnNavZurueck').offsetWidth,
+  name: !!document.getElementById('btnHome').offsetWidth,
+  pillen: [...document.querySelectorAll('.quiz-head > button[id^="btnBack"]')].filter(b => b.offsetWidth).length,
+}));
+await navSeite.click('#btnNavZurueck'); await navSeite.waitForTimeout(700);
+const navZiel = await navSeite.evaluate(() => document.querySelector('.view.active').id);
+ok(navBild.sichtbar && navBild.text === 'Einstellungen' && !navBild.name && navBild.pillen === 0 && navZiel === 'view-settings',
+   'Unterseite: Chevron „Einstellungen" links, kein Name, keine Pille; zurueck landet in den Einstellungen',
+   `Text "${navBild.text}", sichtbar ${navBild.sichtbar}, Name ${navBild.name}, Pillen ${navBild.pillen}, Ziel ${navZiel}`);
+await navCtx.close();
+
 // Feedback A1: Nachtipps zwischen Antwort 50 und dem Ergebnis speicherten je ein weiteres Ergebnis.
 // Geeicht: ohne die Sperre stehen hier 2 Eintraege und die Delta-Karte.
 const testCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });

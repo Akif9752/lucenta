@@ -932,7 +932,6 @@
       'verlauf_alle_ansehen': 'Vedi tutti',
       'fruehere_ergebnisse_titel': 'Risultati precedenti',
       'zurueck_profil': '← Profilo',
-      'profil_eyebrow': 'Profilo',
       'plus_schublade_frei': 'Ogni analisi, tutta la tua cronologia, Capire e ogni confronto – vedi piani e prezzi.',
       'plus_schublade_aktiv': 'Lucenta+ è attivo: tutto è sbloccato.',
       'plus_schublade_ansehen': 'Vedi Lucenta+',

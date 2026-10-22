@@ -808,3 +808,29 @@
   /* Bei 200 % sind deutsche Komposita breiter als 320 pt: trennen statt herausragen. */
   :root[data-text="gross"] body{ overflow-wrap:anywhere; -webkit-hyphens:auto; hyphens:auto; }
   :root[data-text="gross"] .code-box > span{ min-width:0; }
+
+  /* Navigation wie iOS (Feedback B9, Entscheidung des Inhabers): Chevron mit Ziel links, kleiner Titel
+     mittig erst nach dem Hochscrollen des grossen. Die Zurueck-Pillen bleiben unsichtbar im Dokument —
+     der Chevron loest sie aus (navLeisteAnwenden in 02-state.js). */
+  .nav-zurueck{
+    display:flex; align-items:center; gap:6px; min-height:44px; max-width:42%; margin:0 0 0 -8px; padding:0 8px;
+    background:none; border:none; color:var(--accent-strong); cursor:pointer;
+    font-family:var(--sans); font-size:calc(17px * min(var(--dt, 1), 1.2)); font-weight:400; letter-spacing:-.01em;
+  }
+  .nav-zurueck[hidden]{ display:none; }
+  .nav-zurueck span{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .nav-zurueck:active{ opacity:.5; }
+  .nav-zurueck:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; border-radius:8px; }
+  header.top.unterseite .wordmark{ display:none; }
+  header.top.nav-ohne-pfeil .nav-chevron{ display:none; }
+  .nav-titel{
+    position:absolute; left:30%; right:30%; bottom:14px; height:44px; line-height:44px; pointer-events:none;
+    text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    font-family:var(--sans); font-size:calc(17px * min(var(--dt, 1), 1.2)); font-weight:600; color:var(--ink);
+    opacity:0; transition:opacity .2s ease;
+  }
+  header.top.titel-sichtbar .nav-titel{ opacity:1; }
+  @media (prefers-reduced-motion: reduce){ .nav-titel{ transition:none; } }
+  .quiz-head > button[id^="btnBack"]{ display:none; }
+  .quiz-head.nur-zurueck{ display:none; }
+  .quiz-head{ justify-content:flex-end; }

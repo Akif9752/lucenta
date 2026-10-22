@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 153 | siehe `git log` | Feedback B8: Dynamic Type bis 200 % (`--dt` aus der Huelle, `data-text="gross"`, Fehlersuche `320px@200%`) |
+| 154 | siehe `git log` | Feedback B9: Navigation wie iOS (Chevron mit Ziel, kleiner Titel beim Scrollen, Pillen verborgen) |
+| 153 | `fe25cbe` | Feedback B8: Dynamic Type bis 200 % (`--dt` aus der Huelle, `data-text="gross"`, Fehlersuche `320px@200%`) |
 | 152 | `f1ff0e0` | Feedback A1 (Sperre nach Antwort 50), A3 (`PrivacyInfo.xcprivacy`), A4 (Konto loeschen), A5 (ehrliche Versprechen, 8 Sprachen + Store), B6 (nur noch Freundescode; Wiederherstellungscode in Einstellungen), B7 (Einladung als Universal Link, scharf erst mit Domain) |
 | 151 | `41c2e29` | Feedbackrunde A bis Z: 19 Befunde in `docs/feedbackrunde-151.md` (5 kritisch: Doppelspeichern auf Frage 50, Impressum leer, Privacy Manifest, Konto loeschen, widerspruechliche Versprechen) |
 | 150 | `428acb7` | Freundescode (`L1.<code>.<figur>.<name>`): Name und Figur kommen von der Person selbst; Beispiel-Freunde; Lucenta+ als eigene Seite (`view-plus`); „Abo verwalten“ als StoreKit-Blatt |
@@ -141,6 +142,9 @@ Regeln, die er gesetzt hat:
 - **Farbschema:** `loadThemeMode()` Vorgabe `dark`; „System" wird ausdruecklich gespeichert.
   Hellfarben im ersten Block von `00-grundlagen.css`; `SHARE_COLORS` (Bau erzwingt Gleichheit),
   `syncThemeColor`, `theme-color`, `papierfarbe` (Swift) muessen mitziehen.
+- **Kopfzeile (Runde 154):** `navLeisteAnwenden()`/`navZurueck()` in `02-state.js`; eine NEUE Unterseite
+  braucht nur ihre Pille `id="btnBack…"` in `.quiz-head` (bei nur der Pille `.nur-zurueck`) — der Chevron
+  findet sie selbst. Werkzeuge klicken `#btnNavZurueck`, nie die Pillen (verborgen).
 - **Navigation:** `showView()` in `02-state.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings; verlauf -> profile}` steuert den
   iOS-Push/Pop (`.nav-push`/`.nav-pop`, die verlassene Seite als `.nav-weg` fixiert; CSS am Ende von
   `12-ios.css`). Die Zurueck-Wischgeste vom linken Rand steht am Ende von `20-wiring.js` (`randGeste`).
@@ -161,8 +165,8 @@ Regeln, die er gesetzt hat:
 ### Was offen ist
 
 **Die Feedbackrunde 151** (`docs/feedbackrunde-151.md`, dort mit Begruendung) — der Arbeitsvorrat.
-Runde 152 hat A1, A3, A4, A5, B6, B7 erledigt, Runde 153 B8 (Eintraege unten). Als naechstes laut
-Auftrag: **B9**.
+Runde 152 hat A1, A3, A4, A5, B6, B7 erledigt, Runde 153 B8, Runde 154 B9 (Eintraege unten). Der
+Auftrag (A1, A3–A5, B6–B9) ist damit abgearbeitet; als naechstes kaemen B10–B12 und C13–C19.
 Bei Gestaltungsfragen vorher mit Optionen fragen.
 
 *A — kritisch*
@@ -170,8 +174,6 @@ Bei Gestaltungsfragen vorher mit Optionen fragen.
 
 *B — hoch, Nutzererlebnis*
 7. (Rest) Einladungslink **scharf schalten**, sobald eine Domain da ist: `einladung/LIESMICH.md`.
-9. Navigation: Zurueck-Pille „← Start" unter der Kopfzeile (36 pt); Titel bis zu dreimal (Kopfzeile,
-   Ueberzeile, Ueberschrift) -> Pfeil links in der Kopfzeile, Titel einmal.
 10. Fragetexte ohne „Ich" („Habe einen reichen Wortschatz", folgt dem IPIP-Original) -> „Ich habe …",
     acht Sprachen einzeln.
 11. Antwortbeschriftungen der Skala sehr klein (~11 pt).
@@ -335,6 +337,41 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 154 — Feedback B9: Navigation wie iOS
+
+**Der Fehler:** Zurueck war eine eigene Pille „← Start" unter der Kopfzeile, der Seitenname stand bis zu
+dreimal (Etikett rechts in der Kopfzeile, Ueberzeile, Ueberschrift). **Wahl des Inhabers:** wie Apples
+Einstellungen — Chevron mit Ziel links oben, Titel einmal gross, klein in der Mitte nach dem Hochscrollen,
+Name nur auf der Startseite, im Fragebogen „Abbrechen".
+
+**Der Weg:** Die 13 Zurueck-Pillen bleiben im Dokument, nur unsichtbar. `navLeisteAnwenden()`
+(`02-state.js`, aus `showView` und beim Sprachwechsel) sucht die Pille der aktiven Seite, setzt deren Text
+ohne „←" in den Chevron `#btnNavZurueck`, und ein Tipp darauf ruft `pille.click()`. Damit bleiben alle
+Rueckwege, die Rueckfrage beim Abbrechen des Tests und die Wischgeste unveraendert — nichts davon musste
+umziehen. Der kleine Titel `#navTitel` kommt aus `VIEW_TITLES` (sonst der h1), sichtbar sobald der grosse
+unter der Kopfzeile verschwunden ist (im vorhandenen Scroll-Hook `syncHeaderScrollState`). Das Etikett
+`#viewLabel` ist verborgen (Testreihe t2 liest es noch). Kopfzeilen nur mit der Pille sind `.nur-zurueck`
+und ausgeblendet. Ueberzeilen, die das Ziel des Chevrons wiederholten, sind weg (Sprache: „Einstellungen",
+Verlauf: „Profil"; Schluessel `profil_eyebrow` entfernt). Die uebrigen sagen etwas anderes als der Titel
+(„Tagesform" ueber „Wie geht es dir gerade?") und bleiben.
+
+**Werkzeuge:** `pruef_bewegung` und `diff_sprachen` klickten die Pillen direkt und nehmen jetzt den
+Chevron. Neue Pruefung in `pruef-app` (33.): Hilfe zeigt „‹ Einstellungen", kein Name, keine Pille, zurueck
+landet in den Einstellungen. Am Bild (WebKit, dunkel): Einstellungen oben/gescrollt, Hilfe, Fragebogen.
+
+**Pruefungen:** Die erste volle Runde fiel in `diff-sprachen`: Das Werkzeug ging ueber den Namen in der
+Kopfzeile nach Hause, der jetzt nur noch auf der Startseite steht; `home()` geht jetzt zurueck, bis die
+Startseite erreicht ist (Bericht unveraendert 92). Die zweite volle Runde: 8/9, `pruef-app` brach ab — nicht
+an einer Pruefung, sondern weil der Playwright-WebKit-Prozess abstuerzte (`CAPresentationModifier: value
+has more elements (20) than initial value (1)`, Core Animation) nach 32 bestandenen. Danach `pruef-app`
+dreimal einzeln: 33/33, kein Absturz. Ein Absturz des Test-Motors, nicht nachstellbar; wenn er
+wiederkehrt, ist er ein Fall fuer sich (er traf den A1-Lauf mit den Antwortkreisen).
+
+**Offen/unsicher:** Im Fragebogen steht „1 / 50" allein in der Zeile darunter — es koennte als kleiner Titel
+in die Mitte; nicht verlangt, nicht gemacht. Wischgeste und Push/Pop am echten Geraet weiter ungeprueft.
 
 ---
 

@@ -936,7 +936,6 @@
       'verlauf_alle_ansehen': 'Tümünü gör',
       'fruehere_ergebnisse_titel': 'Önceki sonuçlar',
       'zurueck_profil': '← Profil',
-      'profil_eyebrow': 'Profil',
       'plus_schublade_frei': 'Her analiz, tüm geçmişin, Anlamak ve her karşılaştırma – planları ve fiyatları gör.',
       'plus_schublade_aktiv': 'Lucenta+ etkin – her şeyin kilidi açık.',
       'plus_schublade_ansehen': 'Lucenta+’ı gör',

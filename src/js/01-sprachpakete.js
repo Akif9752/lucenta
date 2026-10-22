@@ -90,6 +90,7 @@
     markLangShift();
     syncLangButtons();
     $('viewLabel').textContent = VIEW_LABELS[currentView] || '';
+    navLeisteAnwenden();
     document.title = VIEW_TITLES[currentView] ? ('Lucenta — '+VIEW_TITLES[currentView]) : 'Lucenta';
     renderQuestion();
     renderArchetypeGroups();

@@ -933,7 +933,6 @@
       'verlauf_alle_ansehen': 'See all',
       'fruehere_ergebnisse_titel': 'Earlier results',
       'zurueck_profil': '← Profile',
-      'profil_eyebrow': 'Profile',
       'plus_schublade_frei': 'Every insight, your full history, Understand and every comparison – see plans and prices.',
       'plus_schublade_aktiv': 'Lucenta+ is active – everything is unlocked.',
       'plus_schublade_ansehen': 'See Lucenta+',

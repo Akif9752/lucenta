@@ -101,6 +101,7 @@
     currentView = name;
     $('viewLabel').textContent = VIEW_LABELS[name] || '';
     document.title = VIEW_TITLES[name] ? ('Lucenta — '+VIEW_TITLES[name]) : 'Lucenta';
+    navLeisteAnwenden();
     window.scrollTo({top: opts.restoreScroll ? (viewScroll[name]||0) : 0, behavior:'instant' in window ? 'instant':'auto'});
     syncHeaderScrollState();
     // Der Fortschrittsbalken nur im Fragebogen; --fokuslinie-hoehe geht sonst auf 0, die Kopfleiste
@@ -132,11 +133,37 @@
     if (name === currentView) return;
     showView(name, {fromHistory:true, restoreScroll:true});
   });
-  // Die Trennlinie unter der Kopfleiste erst nach dem Scrollen.
+  // Kopfleiste wie iOS: Auf Unterseiten loest der Chevron die (verborgene) Zurueck-Pille der Seite aus
+  // und traegt deren Ziel; so bleiben Rueckfragen und Wege der Pillen unveraendert. Im Fragebogen ohne
+  // Chevron ("Abbrechen").
+  var navPille = null, navGrossTitel = null;
+  function navLeisteAnwenden(){
+    try{
+      var section = $('view-'+currentView), kopf = document.querySelector('header.top');
+      navPille = section ? section.querySelector('.quiz-head > button[id^="btnBack"]') : null;
+      navGrossTitel = section ? section.querySelector('h1, .profile-head') : null;
+      $('btnNavZurueck').hidden = !navPille;
+      kopf.classList.toggle('unterseite', !!navPille);
+      kopf.classList.toggle('nav-ohne-pfeil', currentView === 'quiz');
+      $('navZurueckText').textContent = navPille ? navPille.textContent.replace(/^\s*←\s*/, '').trim() : '';
+      var titel = VIEW_TITLES[currentView] || (navGrossTitel && navGrossTitel.tagName === 'H1' ? navGrossTitel.textContent.trim() : '');
+      $('navTitel').textContent = navPille ? titel : '';
+    }catch(e){}
+  }
+  function navZurueck(){ if (navPille) navPille.click(); }
+  // Die Trennlinie unter der Kopfleiste erst nach dem Scrollen; der kleine Titel, sobald der grosse
+  // unter der Leiste verschwunden ist.
   var headerTopEl = null;
   function syncHeaderScrollState(){
     if (!headerTopEl) headerTopEl = document.querySelector('header.top');
-    if (headerTopEl) headerTopEl.classList.toggle('scrolled', window.scrollY > 2);
+    if (!headerTopEl) return;
+    headerTopEl.classList.toggle('scrolled', window.scrollY > 2);
+    var zeigen = false;
+    try{
+      if (navPille && navGrossTitel && $('navTitel').textContent)
+        zeigen = navGrossTitel.getBoundingClientRect().bottom < headerTopEl.getBoundingClientRect().bottom;
+    }catch(e){}
+    headerTopEl.classList.toggle('titel-sichtbar', zeigen);
   }
   window.addEventListener('scroll', syncHeaderScrollState, {passive:true});
 

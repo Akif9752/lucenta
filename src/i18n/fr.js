@@ -932,7 +932,6 @@
       'verlauf_alle_ansehen': 'Tout voir',
       'fruehere_ergebnisse_titel': 'Résultats précédents',
       'zurueck_profil': '← Profil',
-      'profil_eyebrow': 'Profil',
       'plus_schublade_frei': 'Chaque analyse, tout ton historique, Comprendre et chaque comparaison – voir les formules et les prix.',
       'plus_schublade_aktiv': 'Lucenta+ est actif – tout est débloqué.',
       'plus_schublade_ansehen': 'Voir Lucenta+',

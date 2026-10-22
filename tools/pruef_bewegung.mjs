@@ -96,7 +96,7 @@ async function durchlauf(reduziert){
   await p.click('#btnDrawerToggle'); await p.waitForTimeout(400);
   await p.click('#btnDrawerSettings'); await p.waitForTimeout(40);
   const hinein = await p.evaluate(() => getComputedStyle(document.getElementById('view-settings')).animationName);
-  await p.click('#btnBackFromSettings'); await p.waitForTimeout(40);
+  await p.click('#btnNavZurueck'); await p.waitForTimeout(40);   // seit Feedback B9 der Chevron in der Kopfzeile
   const zurueck = await p.evaluate(() => getComputedStyle(document.getElementById('view-landing')).animationName);
   if (reduziert){
     pruefe(hinein === 'none' && zurueck === 'none', 'Ansichtswechsel ohne Bewegung', `(${hinein}/${zurueck})`);
