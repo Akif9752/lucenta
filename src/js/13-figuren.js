@@ -18,7 +18,14 @@
     {id:'eule', feld:'#E3E7E4'},
     {id:'wal', feld:'#DCE7EE'},
     {id:'goldfisch', feld:'#FCEAD5'},
-    {id:'schildkroete', feld:'#DDEBE1'}
+    {id:'schildkroete', feld:'#DDEBE1'},
+    // Runde 160. Nur HINTEN anhaengen: Der Platz in dieser Liste steht im Freundescode.
+    {id:'delfin', feld:'#DCE6EE'},
+    {id:'seeotter', feld:'#EFE5D8'},
+    {id:'pinguin', feld:'#E3E8EC'},
+    {id:'papagei', feld:'#F5E2DC'},
+    {id:'flamingo', feld:'#F8E4E8'},
+    {id:'rotkehlchen', feld:'#F3E6D8'}
   ];
 
   // ---------- Die Feldfarbe im Dunkelmodus ----------
@@ -49,5 +56,25 @@
 
   // ---------- Hintergruende der Profilzeile ----------
   // CSS-Verlaeufe statt Bilder; jede Vorlage bestimmt Flaeche UND Schriftfarbe.
+  // Angezeigt in Gruppen (Auftrag des Inhabers); die Reihenfolge in FIGUREN bleibt dafuer unberuehrt.
+  var FIGUR_GRUPPEN = [['haus', ['katze','dackel','retriever']],
+                       ['wald', ['fuchs','baer','panda','hase','reh']],
+                       ['voegel', ['eule','pinguin','papagei','flamingo','rotkehlchen']],
+                       ['wasser', ['wal','delfin','seeotter','schildkroete','goldfisch']]];
+  // knopf(f) liefert den Knopf einer Figur; kopf (optional) steht vor der ersten Gruppe.
+  function figurenGruppiertHTML(knopf, kopf){
+    return (kopf ? '<div class="figur-raster">'+kopf+'</div>' : '')+
+      FIGUR_GRUPPEN.map(function(g){
+        return '<div class="figur-gruppe"><div class="hg-gruppe-titel">'+tx('figur_gruppe_'+g[0])+'</div><div class="figur-raster">'+
+          g[1].map(function(id){ return knopf(figurFinden(id)); }).join('')+'</div></div>';
+      }).join('');
+  }
   var HINTERGRUENDE = ['sternenbild','nordlicht','daemmerung','tiefsee','wueste',
-                       'wald','nebel','papier','welle','kohle'];
+                       'wald','nebel','papier','welle','kohle','galaxie','glut','lagune','morgentau'];
+  // Angezeigt in Gruppen; frei sind nur die schlichten Flaechen, der Rest ist Lucenta+ (Entscheidung des
+  // Inhabers). Ein schon gewaehlter gesperrter Hintergrund bleibt.
+  var HG_GRUPPEN = [['hell', ['papier','nebel','wueste','morgentau']],
+                    ['dunkel', ['kohle','sternenbild','tiefsee','galaxie']],
+                    ['farbe', ['nordlicht','daemmerung','welle','wald','glut','lagune']]];
+  var HG_FREI = ['papier','kohle'];
+  function hgFrei(id){ return !id || HG_FREI.indexOf(id) >= 0 || istPlus(); }

@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 159 | siehe `git log` | Anmeldeschritt im Onboarding (ueberspringbar), Freundescode <id>-XXXX-XXXX mit eigener Benutzer-ID |
+| 160 | siehe `git log` | Hintergruende in Gruppen + Lucenta+, vier neue; Delfin, Seeotter, Pinguin, Papagei, Flamingo, Rotkehlchen; Tiere in Gruppen |
+| 159 | `33bfc86` | Anmeldeschritt im Onboarding (ueberspringbar), Freundescode <id>-XXXX-XXXX mit eigener Benutzer-ID |
 | 158 | `1db786c` | Richtlinien-Pruefung + EULA-Links, Lucenta+ vor Einstellungen, Funken einfarbig leuchtend, Zeilenabstand |
 | 157 | `e530d99` | Feedback B10–B12, C13, C15–C18: Ich-Form, Skala mit Enden, Ergebnisseite Radar zuerst, Texte, Exportangabe |
 | 156 | `d25ad40` | Ueberpruefung: Rundgang im Simulator, veraltete Archiv-Texte, Hinweis-Texte, Toast fuer VoiceOver |
@@ -338,6 +339,30 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 160 — Hintergruende in Gruppen mit Lucenta+, vier neue; sechs neue Tiere in Gruppen
+
+**Hintergruende** (Wahl des Inhabers: frei nur „Keiner", Papier, Kohle): Gruppen Hell (Papier, Nebel, Wueste,
+Morgentau), Dunkel (Kohle, Sternenbild, Tiefsee, Galaxie), Farbe & Licht (Nordlicht, Daemmerung, Welle,
+Wald, Glut, Lagune). Gesperrte tragen ein Schloss und oeffnen beim Antippen das Lucenta+-Fenster; ein schon
+gewaehlter gesperrter Hintergrund bleibt (`hgFrei`, `HG_GRUPPEN` in `13-figuren.js`). Vier neue Verlaeufe:
+Galaxie, Glut, Lagune, Morgentau — am Bild in der Profilzeile der Seitenleiste geprueft, Schrift auf allen lesbar.
+
+**Tiere** (Wahl: Delfin und Seeotter; Voegel Pinguin, Papagei, Flamingo, Rotkehlchen): in `Tiere.swift`
+modelliert, Vogelrumpf gemeinsam (`vogelFormen`). Am Bild in drei Durchgaengen: Der erste Flamingo war ein
+rosa Stab ohne Schnabel (jetzt halb seitlich mit geknicktem, schwarz endendem Schnabel, naeher geholt); beim
+Pinguin traf die Farbzone fuer das weisse Band die Kopfoberflaeche nicht (mit einer uebergrossen Testzone
+nachgewiesen, dann in der Tiefe lange Zonen); beim Rotkehlchen lagen die Augen im Braun statt im Orange.
+Delfin, Flamingo, Rotkehlchen ueber `NAEHER` enger zugeschnitten. **Falle:** In `FIGUREN` nur hinten anhaengen
+(Platz steht im Freundescode). Auswahl im Profil und im Onboarding in Gruppen (Hunde & Katzen, Wald & Wiese,
+Voegel, Meer & Wasser; `FIGUR_GRUPPEN`, `figurenGruppiertHTML`); feste fuenf Spalten — sonst wurde „Nur der
+Buchstabe" riesig und die Dreiergruppe groesser als die Fuenfergruppen (am Bild gesehen). `pruef-app` zaehlt
+jetzt 18 Tierbilder. **Ungeprueft:** die neuen Tiere neben den alten auf dem Geraet in Originalgroesse; im
+Vergleich zu den fein ausgearbeiteten alten (Runden 139–146) sind sie einfacher.
+
+`pruef-alles`: **9/9** (11,4 Min.).
 
 ---
 

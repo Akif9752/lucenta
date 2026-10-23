@@ -50,11 +50,11 @@
   function obFigurRaster(){
     var wrap = $('obFigurRaster');
     if (wrap.childNodes.length) return;
-    wrap.innerHTML = FIGUREN.map(function(f){
+    wrap.innerHTML = figurenGruppiertHTML(function(f){
       return '<button type="button" class="figur-wahl" data-ob-figur="'+f.id+'" '+
         'style="--figur-feld:'+f.feld+';--figur-feld-dunkel:'+figFeldDunkel(f.feld)+'" '+
         'aria-pressed="false" aria-label="'+tx('figur_'+f.id)+'">'+figurHTML(f)+'</button>';
-    }).join('');
+    });
     wrap.querySelectorAll('[data-ob-figur]').forEach(function(b){
       b.addEventListener('click', function(){
         obFigur = b.getAttribute('data-ob-figur');

@@ -362,6 +362,36 @@
     --hg-ink:#F0EFEC; --hg-muted:#A7A49E;
     background:linear-gradient(118deg, #2B2A28 0%, #3E3C38 55%, #22211F 100%);
   }
+  /* Runde 160: vier neue (Lucenta+). */
+  .hg-galaxie{
+    --hg-ink:#F3EEFA; --hg-muted:#C2B5DA;
+    background:
+      radial-gradient(1.3px 1.3px at 22% 28%, #FFFFFF, transparent),
+      radial-gradient(1.1px 1.1px at 72% 66%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 86% 24%, #F1E6FF, transparent),
+      radial-gradient(60% 90% at 30% 40%, rgba(146,92,214,.55), transparent 70%),
+      radial-gradient(50% 80% at 78% 70%, rgba(64,120,214,.45), transparent 70%),
+      linear-gradient(126deg, #170F2A 0%, #0B0A1C 100%);
+  }
+  .hg-glut{
+    --hg-ink:#FFF0E6; --hg-muted:#E7B49A;
+    background:
+      radial-gradient(70% 120% at 18% 100%, rgba(232,110,52,.75), transparent 65%),
+      radial-gradient(50% 90% at 70% 110%, rgba(196,60,40,.6), transparent 70%),
+      linear-gradient(160deg, #2A1512 0%, #1A0D0B 100%);
+  }
+  .hg-lagune{
+    --hg-ink:#0F2E33; --hg-muted:#3C6B70;
+    background:
+      radial-gradient(80% 120% at 85% 0%, rgba(255,255,255,.45), transparent 60%),
+      linear-gradient(118deg, #7FD8D2 0%, #4FBFC4 50%, #2E9DB0 100%);
+  }
+  .hg-morgentau{
+    --hg-ink:#22332C; --hg-muted:#5E7468;
+    background:
+      radial-gradient(60% 100% at 20% 10%, rgba(255,255,255,.7), transparent 60%),
+      linear-gradient(118deg, #EAF4EC 0%, #D6EBDD 55%, #F4EEDD 100%);
+  }
 
   /* Die kleinen Vorschauen in der Profilansicht: dieselben Klassen, nur klein. */
   .hg-raster{
@@ -441,3 +471,10 @@
   .settings-row-text{ display:flex; flex-direction:column; gap:3px; min-width:0; flex:1; }
   .settings-row-text strong{ font-family:var(--serif); font-weight:500; font-size:calc(14.5px * var(--dt, 1)); }
   .settings-row-desc{ font-size:calc(12.5px * var(--dt, 1)); color:var(--muted); line-height:1.5; }
+  .hg-gruppen{ margin-top:14px; display:flex; flex-direction:column; gap:14px; max-width:340px; }
+  .hg-gruppen .hg-raster{ margin-top:0; }
+  .hg-gruppe-titel{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); margin:0 0 6px; }
+  .hg-wahl{ position:relative; }
+  .hg-gesperrt .hg-schloss{ position:absolute; right:5px; bottom:5px; color:var(--hg-ink); opacity:.9;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+  .hg-gruppen .hg-raster{ grid-template-columns:repeat(4, minmax(0, 1fr)); }

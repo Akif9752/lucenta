@@ -44,16 +44,14 @@
     if (!wrap || !wrap.querySelectorAll) return;
     var aktiv = profile.figur || '';
     // Jeder Knopf traegt seinen Namen; die Zeichnung ist vor Vorleseprogrammen verborgen.
-    var teile = ['<button type="button" class="figur-wahl figur-keine" data-figur="" aria-pressed="'+
-                 (aktiv ? 'false' : 'true')+'" aria-label="'+tx('figur_keine')+'">'+
-                 avatarInitials(profile.name)+'</button>'];
-    FIGUREN.forEach(function(f){
-      teile.push('<button type="button" class="figur-wahl" data-figur="'+f.id+'" '+
+    var keine = '<button type="button" class="figur-wahl figur-keine" data-figur="" aria-pressed="'+
+                 (aktiv ? 'false' : 'true')+'" aria-label="'+tx('figur_keine')+'">'+avatarInitials(profile.name)+'</button>';
+    wrap.innerHTML = figurenGruppiertHTML(function(f){
+      return '<button type="button" class="figur-wahl" data-figur="'+f.id+'" '+
         'style="--figur-feld:'+f.feld+';--figur-feld-dunkel:'+figFeldDunkel(f.feld)+'" '+
         'aria-pressed="'+(aktiv===f.id?'true':'false')+'" '+
-        'aria-label="'+tx('figur_'+f.id)+'">'+figurHTML(f)+'</button>');
-    });
-    wrap.innerHTML = teile.join('');
+        'aria-label="'+tx('figur_'+f.id)+'">'+figurHTML(f)+'</button>';
+    }, keine);
     wrap.querySelectorAll('[data-figur]').forEach(function(b){
       b.addEventListener('click', function(){
         var pr = loadProfile();
@@ -63,24 +61,29 @@
       });
     });
   }
-  // Zehn Hintergrundvorlagen fuer die Profilzeile der Schublade.
+  // Hintergruende fuer die Profilzeile der Schublade, in Gruppen; gesperrte oeffnen das Lucenta+-Fenster.
+  var SCHLOSS_KLEIN = '<svg class="hg-schloss" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>';
   function renderHintergrundRaster(profile){
     var wrap = $('hgRaster');
     if (!wrap || !wrap.querySelectorAll) return;
     var aktiv = profile.hintergrund || '';
-    // Dieselbe Sache wie bei den Figuren: zehn leere Flaechen sind fuer eine Sprachausgabe
-    // zehn namenlose Schaltflaechen. Jede Vorlage traegt ihren Namen.
-    var teile = ['<button type="button" class="hg-wahl hg-keine" data-hg="" aria-pressed="'+
-                 (aktiv ? 'false' : 'true')+'" aria-label="'+tx('hg_keine')+'">&mdash;</button>'];
-    HINTERGRUENDE.forEach(function(id){
-      teile.push('<button type="button" class="hg-wahl hg-'+id+'" data-hg="'+id+'" aria-pressed="'+
-        (aktiv===id?'true':'false')+'" aria-label="'+tx('hg_'+id)+'"></button>');
-    });
-    wrap.innerHTML = teile.join('');
+    var knopf = function(id){
+      var frei = hgFrei(id);
+      return '<button type="button" class="hg-wahl hg-'+id+(frei ? '' : ' hg-gesperrt')+'" data-hg="'+id+'" aria-pressed="'+
+        (aktiv===id?'true':'false')+'" aria-label="'+tx('hg_'+id)+(frei ? '' : ', Lucenta+')+'">'+(frei ? '' : SCHLOSS_KLEIN)+'</button>';
+    };
+    wrap.innerHTML = '<div class="hg-raster"><button type="button" class="hg-wahl hg-keine" data-hg="" aria-pressed="'+
+        (aktiv ? 'false' : 'true')+'" aria-label="'+tx('hg_keine')+'">&mdash;</button></div>'+
+      HG_GRUPPEN.map(function(g){
+        return '<div class="hg-gruppe"><div class="hg-gruppe-titel">'+tx('hg_gruppe_'+g[0])+'</div>'+
+          '<div class="hg-raster">'+g[1].map(knopf).join('')+'</div></div>';
+      }).join('');
     wrap.querySelectorAll('[data-hg]').forEach(function(b){
       b.addEventListener('click', function(){
+        var id = b.getAttribute('data-hg') || '';
+        if (!hgFrei(id)){ openPlusModal(); return; }
         var pr = loadProfile();
-        pr.hintergrund = b.getAttribute('data-hg') || null;
+        pr.hintergrund = id || null;
         if (saveProfile(pr)){ renderHintergrundRaster(pr); refreshDrawerState(); }
         else toast(tx('js_konnte_nicht_gespeichert_w'));
       });

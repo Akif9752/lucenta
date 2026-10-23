@@ -877,3 +877,7 @@
   .benutzer-id-wahl{ margin-top:4px; }
   .benutzer-id-hinweis{ margin-top:6px; }
   #freundIchId, #profileBenutzerId{ text-align:left; }
+  .figur-gruppen{ display:flex; flex-direction:column; gap:14px; margin-top:14px; }
+  .figur-gruppen .figur-raster{ margin-top:0; }
+  /* Feste fuenf Spalten, sonst richtet sich die Kreisgroesse nach der Zahl der Tiere einer Gruppe. */
+  .figur-gruppen .figur-raster{ grid-template-columns:repeat(5, minmax(0, 1fr)); }

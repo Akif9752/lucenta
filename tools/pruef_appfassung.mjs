@@ -316,8 +316,8 @@ const figurPfade = await anmutungSeite.evaluate(async () => {
   })));
   return { anzahl: pfade.length, kaputt: geladen.filter(Boolean) };
 });
-ok(figurPfade.anzahl === 12 && figurPfade.kaputt.length === 0,
-   'alle 12 Tierbilder der App-Fassung laden aus figuren/',
+ok(figurPfade.anzahl === 18 && figurPfade.kaputt.length === 0,
+   'alle 18 Tierbilder der App-Fassung laden aus figuren/',
    `${figurPfade.anzahl} Pfade, nicht geladen: ${figurPfade.kaputt.join(', ') || 'keins'}`);
 
 // Runde 114: Hier stand die Pruefung "der Hals der Menschenfiguren ist sichtbar" (Runde 111).
