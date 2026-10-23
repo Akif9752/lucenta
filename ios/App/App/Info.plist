@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Lucenta</string>
+	<string>Lucenta</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -20,24 +20,12 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Lucenta sichert dein Ergebnisbild in deiner Fotomediathek, wenn du „In Fotos sichern“ antippst. Es wird nichts gelesen und nichts gesendet.</string>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<!-- Runde 102, vom Geraet gemeldet: "die app haengt und zeigt nur blackscreen beim oeffnen."
-	     Ursache war ein absichtlicher UIKit-Abbruch (EXC_BREAKPOINT/SIGTRAP im Frame
-	     __UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption): Die Capacitor-Vorlage
-	     startet ueber UIMainStoryboardFile im alten App-Lifecycle, und ab iOS 27 verlangt UIKit
-	     die Adoption des Scene-Lifecycles. Solange der Simulator auf iOS 26.5 lief, fiel das nicht
-	     auf; mit der 27.0-Runtime stirbt die App beim Start.
-	     Das Manifest adoptiert den Scene-Lifecycle mit einer einzigen Fenster-Szene, die dasselbe
-	     Main.storyboard laedt (dort steckt der MainViewController). Bewusst OHNE eigenen
-	     SceneDelegate: Die Bruecke kommt weiterhin aus dem Storyboard, und Capacitors
-	     ApplicationDelegateProxy im AppDelegate bleibt unberuehrt.
-	     UIMainStoryboardFile bleibt als Rueckfall fuer aeltere iOS-Fassungen stehen; sobald das
-	     Manifest da ist, gewinnt UISceneStoryboardFile. -->
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -57,26 +45,14 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	<!-- Runde 103: stand hier als "armv7" aus der Capacitor-Vorlage. Das ist eine Angabe, die nicht
-	     stimmt: Das Deployment Target ist 15.0, und kein Geraet mit iOS 15 hat einen 32-Bit-Prozessor;
-	     gebaut wird ausschliesslich arm64 (ARCHS = arm64). Eine Anforderung, die das Geraet gar nicht
-	     erfuellen KANN, ist im schlimmsten Fall ein leerer Kompatibilitaetsbereich im Store — und in
-	     jedem Fall eine Behauptung ueber die App, die falsch ist. -->
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
 	</array>
-	<!-- Runde 103: Hier stand Querformat, aus der Capacitor-Vorlage uebernommen. Lucenta ist
-	     ausschliesslich eine Hochformat-App fuers iPhone, und zwar nicht als Geschmacksfrage:
-	     Das ganze Stilblatt ist auf 320 bis 430 Punkte Breite gebaut (der Bau bricht bei
-	     Desktop-Bezuegen ab, `pruefeIphoneOnly`), und die Fehlersuche messt ausschliesslich
-	     Hochformat-Breiten. Querformat hiesse also: ein Layout, das nie jemand entworfen und keine
-	     Pruefung je gesehen hat — beim ersten Drehen des Telefons.
-	     PortraitUpsideDown steht bewusst NICHT dabei; iPhones bieten es ohnehin nicht an.
-	     Der ~ipad-Block ist entfallen: Die App ist mit TARGETED_DEVICE_FAMILY = 1 keine
-	     iPad-App mehr, und eine Angabe fuer ein Geraet, auf dem sie nicht laeuft, verwirrt nur. -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

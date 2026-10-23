@@ -139,49 +139,34 @@ const suchUeberlauf = (breite) => {
   return raus.slice(0, 6);
 };
 
-// Runde 107: Stehen die fuenf Beschriftungen der Antwortskala unter IHREM Knopf?
-//
-// Bis zu dieser Runde trug die Skala nur an den Enden eine Beschriftung, die drei mittleren
-// <span> waren leer und per display:none ausgeblendet. Mit fuenf Beschriftungen wird aus einer
-// Frage des Aussehens eine Frage der Richtigkeit: Eine Beschriftung, die einen halben Knopf
-// versetzt steht, ordnet die Bedeutung dem falschen Wert zu — und das sieht man auf einem
-// Bildschirmfoto nicht, weil "ungefaehr darunter" genauso aussieht wie "darunter".
-//
-// Messbar wird es, weil .scale-row und .scale-labels denselben Abstand (8px) und dasselbe
-// flex:1 benutzen: Dann muessen die Mittelpunkte paarweise uebereinanderliegen. Weicht einer
-// ab, ist eine der beiden Zeilen anders aufgeteilt als die andere.
-//
-// Der seitliche Ueberlauf braucht hier keine eigene Pruefung — suchUeberlauf laeuft in
-// derselben Reihe ueber dieselbe Ansicht. Was diese Funktion zusaetzlich sieht, ist Text, der
-// aus seiner SPALTE laeuft, ohne die Seite zu verbreitern (scrollWidth > clientWidth): genau
-// das passiert bei einem langen Einzelwort wie "totalmente" in einer 50px-Spalte.
+// Seit Runde 157 (Entscheidung des Inhabers, B11) wieder nur die beiden ENDEN beschriftet; die Mitte zeigt
+// die Bedeutung beim Tippen. Geprueft wird die neue Zusage: genau zwei Beschriftungen, buendig mit dem
+// aeusseren Rand des ersten bzw. letzten Kreises, nicht leer, nicht aus ihrer Spalte laufend — und jeder
+// Kreis traegt seine Bedeutung fuer VoiceOver.
 const suchSkalaVersatz = () => {
   const raus = [];
   const zeile = document.querySelector('.view.active .scale-labels');
   if (!zeile) return raus;
   const knoepfe = [...document.querySelectorAll('.view.active .scale-row .scale-btn')];
   const marken = [...zeile.querySelectorAll('span')];
-  if (marken.length !== 5) raus.push('die Skala hat ' + marken.length + ' statt 5 Beschriftungen');
+  if (marken.length !== 2) raus.push('die Skala hat ' + marken.length + ' statt 2 Endbeschriftungen');
   if (knoepfe.length !== 5) raus.push('die Skala hat ' + knoepfe.length + ' statt 5 Knoepfe');
   marken.forEach((m, i) => {
-    if (!m.textContent.trim()) raus.push('Beschriftung ' + (i + 1) + ' ist leer');
-    if (getComputedStyle(m).display === 'none') raus.push('Beschriftung ' + (i + 1) + ' ist ausgeblendet');
-    if (m.scrollWidth > m.clientWidth + 1){
-      raus.push('Beschriftung ' + (i + 1) + ' ("' + m.textContent.trim() + '") laeuft ' +
-                (m.scrollWidth - m.clientWidth) + 'px aus ihrer Spalte');
-    }
-    const k = knoepfe[i];
-    if (!k) return;
-    const km = k.getBoundingClientRect(), mm = m.getBoundingClientRect();
-    const versatz = (mm.left + mm.width / 2) - (km.left + km.width / 2);
-    // Ein Bildpunkt Spiel, wie bei suchSeitlichesSchieben: flex rechnet auf gebrochenen
-    // Bildpunkten und rundet in den beiden Zeilen nicht zwingend gleich.
-    if (Math.abs(versatz) > 1){
-      raus.push('Beschriftung ' + (i + 1) + ' ("' + m.textContent.trim() + '") steht ' +
-                versatz.toFixed(1) + 'px neben ihrem Knopf');
-    }
+    if (!m.textContent.trim()) raus.push('Endbeschriftung ' + (i + 1) + ' ist leer');
+    if (m.scrollWidth > m.clientWidth + 1)
+      raus.push('Endbeschriftung ' + (i + 1) + ' ("' + m.textContent.trim() + '") laeuft aus ihrer Spalte');
   });
-  return raus.slice(0, 6);
+  if (marken.length === 2 && knoepfe.length === 5){
+    const erst = knoepfe[0].getBoundingClientRect(), letzt = knoepfe[4].getBoundingClientRect();
+    const a = marken[0].getBoundingClientRect(), b = marken[1].getBoundingClientRect();
+    // Ein Bildpunkt Spiel: flex rechnet auf gebrochenen Bildpunkten.
+    if (Math.abs(a.left - erst.left) > 1) raus.push('die linke Endbeschriftung steht ' + (a.left - erst.left).toFixed(1) + 'px neben dem ersten Kreis');
+    if (Math.abs(b.right - letzt.right) > 1) raus.push('die rechte Endbeschriftung steht ' + (b.right - letzt.right).toFixed(1) + 'px neben dem letzten Kreis');
+  }
+  knoepfe.forEach((k, i) => {
+    if (!/,\s*\S/.test(k.getAttribute('aria-label') || '')) raus.push('Kreis ' + (i + 1) + ' traegt keine Bedeutung fuer VoiceOver');
+  });
+  return raus;
 };
 
 // Runde 107: Beschriftet die x-Achse des Verlaufsdiagramms die Stellen, die sie behauptet?

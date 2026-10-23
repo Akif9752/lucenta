@@ -10,7 +10,7 @@
   .motto{margin-top:8px;font-family:var(--mono);font-size:calc(13px * var(--dt, 1));color:var(--accent-2-text);letter-spacing:.01em;}
 
   .synthesis{
-    margin:22px auto 0;max-width:46ch;text-align:center;
+    margin:26px auto 0;max-width:46ch;text-align:center;
     /* Eine Stufe zurueck, damit der Titel fuehrt statt mit dem Absatz zu konkurrieren. */
     font-family:var(--serif);font-size:calc(17px * var(--dt, 1));line-height:1.62;color:var(--ink);
   }
@@ -162,3 +162,6 @@
        Kranz selbst bleibt stehen — er ist Teil des Bildes, nur seine Drehung ist Bewegung. */
     #view-result .archetype::after{ animation:none; }
   }
+  .syn-rest[hidden]{display:none;}
+  .syn-mehr{background:none;border:none;padding:6px 4px;min-height:44px;min-width:44px;cursor:pointer;
+    font-family:var(--sans);font-size:calc(15px * var(--dt, 1));color:var(--accent-strong);}

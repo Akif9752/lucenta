@@ -857,3 +857,5 @@
   /* .btn setzt display und schlug sonst das hidden-Attribut (Befund C14). */
   .btn[hidden]{ display:none; }
   #view-freunde .history-title{ text-align:left; }
+  /* Gesperrte Knoepfe sehen gesperrt aus (Befund C17, Onboarding-Schritt 2). */
+  .btn:disabled{ opacity:.4; box-shadow:none; cursor:default; transform:none; }

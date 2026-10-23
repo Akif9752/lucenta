@@ -138,8 +138,10 @@
     <div class="quiz-body">
       <div class="qcard" id="qCard"><p class="qtext" id="qText" aria-live="polite">&mdash;</p></div>
       <div class="scale">
+        <!-- Die Bedeutung des gewaehlten Kreises, kurz ueber der Skala (Entscheidung des Inhabers). -->
+        <div class="skala-wahl" id="skalaWahl" aria-hidden="true"></div>
         <div class="scale-row" id="scaleRow" role="group" aria-label="Antwort von 1 (trifft gar nicht zu) bis 5 (trifft voll zu)" data-i18n-aria="aria_antwort_von_1_trifft_gar_nic"></div>
-        <div class="scale-labels" data-i18n-html="trifft_gar_nicht_zutrifft_vo"><span>gar nicht</span><span>eher nicht</span><span>teils</span><span>eher ja</span><span>voll</span></div>
+        <div class="scale-labels" aria-hidden="true"><span data-i18n="skala_min">trifft gar nicht zu</span><span data-i18n="skala_max">trifft voll zu</span></div>
       </div>
       <div class="quiz-nav">
         <button class="btn btn-ghost btn-sm" id="btnPrev" data-i18n="zurück">← Zurück</button>
@@ -167,7 +169,6 @@
       <span data-i18n-html="gastdurchlauf_dieses_ergebni"><b>Gastdurchlauf:</b> Dieses Ergebnis wird auf diesem Gerät nicht gespeichert und taucht in keinem Verlauf auf. Notiere oder kopiere den Code weiter unten, wenn du es behalten oder woanders wieder öffnen willst &mdash; sobald du diese Seite verlässt, ist es fort.</span>
     </div>
 
-    <p class="synthesis" id="synthesis"></p>
 
     <!-- Nur bei gleichfoermigem Antwortmuster; steht vor den Zahlen, damit er sie einordnet. -->
     <div class="uniform-note" id="uniformNote" style="display:none;" role="status">
@@ -175,11 +176,12 @@
       <span data-i18n-html="sehr_gleichförmige_antworten"><b>Sehr gleichförmige Antworten:</b> Du hast fast durchgehend denselben Wert gewählt. Ein Teil der 50 Aussagen ist bewusst gegensätzlich formuliert &mdash; eine echte Selbsteinschätzung ergibt deshalb fast immer ein gemischteres Bild. Das Porträt unten wird trotzdem berechnet, sagt so aber mehr über das Antwortmuster aus als über dich. Ein zweiter Durchlauf in Ruhe liefert ein belastbareres Ergebnis.</span>
     </div>
 
-    <div class="stat-strip" id="statStrip"></div>
 
+    <!-- Typ und Radar zuerst (Feedback B12, Entscheidung des Inhabers); die Texte folgen eingeklappt. -->
+    <div class="radar-wrap" id="radarWrap"></div>
+    <div class="stat-strip" id="statStrip"></div>
     <div class="delta-card" id="deltaCard" style="display:none;" aria-live="polite"></div>
 
-    <div class="radar-wrap" id="radarWrap"></div>
     <!-- Ein Ergebnis gilt auf Wochensicht als stabil, ueber Monate verschiebt es sich — darum der
          Hinweis zum Wiederholen. -->
     <div class="rhythmus" id="rhythmusHinweis"></div>
@@ -208,6 +210,7 @@
       <p class="code-lead" id="codeLead">Nur auf diesem Gerät gespeichert. Mit diesem Code holst du es zurück.</p>
     </div>
 
+    <p class="synthesis" id="synthesis"></p>
     <h2 class="section-title" data-i18n-html="deine_fünf_dimensionen_volle">Deine fünf Dimensionen <span class="n">im Detail</span></h2>
     <div class="traits" id="traitsList"></div>
 
@@ -470,7 +473,7 @@
       <div class="settings-zeile">
         <div class="settings-zeile-text">
           <strong data-i18n="haptik">Haptik</strong>
-          <span class="settings-hint" data-i18n="kurzer_impuls_bei_jeder_antw">Kurzer Impuls bei jeder Antwort im Fragebogen.</span>
+          <span class="settings-hint" data-i18n="kurzer_impuls_bei_jeder_antw">Kurzer Impuls bei jedem Tippen.</span>
         </div>
         <!-- Schieber mit role="switch"; die Beschriftung steht links daneben. -->
         <button type="button" class="schalter" id="haptikSchalter" role="switch" aria-checked="true" aria-label="Haptik" data-i18n-aria="aria_haptik"><span class="schalter-knopf"></span></button>
@@ -685,7 +688,7 @@
 
   <section class="ob-step" data-step="1">
     <div class="eyebrow" data-i18n="big_five">Big Five</div>
-    <h1 tabindex="-1" data-i18n="ob_1_titel">Lerne dich kennen – mit Wissenschaft.</h1>
+    <h1 tabindex="-1" data-i18n="ob_1_titel">Lern dich kennen — mit Wissenschaft.</h1>
     <p class="ob-text" data-i18n="ob_1_text">Am Ende hältst du ein Porträt in der Hand, das wirklich zu dir passt: deinen Ergebnistyp, ein Radar über fünf Dimensionen und einen Bericht in Worten statt eines Etiketts.</p>
     <div class="preview-card ob-vorschau">
       <div class="preview-label" data-i18n-html="so_sieht_dein_ergebnis_aus_b">So sieht dein Ergebnis aus <span class="preview-tag">Beispiel</span></div>
@@ -719,7 +722,7 @@
       <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"></path><path d="M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"></path></svg>
         <div><strong data-i18n="ob_fakt_wissen">Wissenschaftlich fundiert</strong><span data-i18n="ob_fakt_wissen_text">Das Big-Five-Modell ist das am besten erforschte Modell der Persönlichkeitspsychologie. Die 50 Aussagen stammen aus dem frei zugänglichen IPIP.</span></div></li>
       <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path><path d="M9 2h6"></path></svg>
-        <div><strong data-i18n="ob_fakt_zeit">5 bis 10 Minuten</strong><span data-i18n="ob_fakt_zeit_text">Du kannst jederzeit unterbrechen und später genau dort weitermachen.</span></div></li>
+        <div><strong data-i18n="ob_fakt_zeit">Etwa 7 Minuten</strong><span data-i18n="ob_fakt_zeit_text">Du kannst jederzeit unterbrechen und später genau dort weitermachen.</span></div></li>
       <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
         <div><strong data-i18n="ob_fakt_privat">Bleibt bei dir</strong><span data-i18n="ob_fakt_privat_text">Ohne Anmeldung verlassen deine Antworten dein Gerät nicht; mit Apple-Anmeldung liegen sie verschlüsselt in deiner eigenen iCloud. Keine Werbung, kein Tracking.</span></div></li>
     </ul>

@@ -74,3 +74,6 @@ Grenzen im Journal unter Runde 152.
 
 Runde 153: **B8** (Dynamic Type bis 200 %). Runde 154: **B9** (Navigation wie iOS). Offen: A2 (Inhaber),
 B10–B12, C13–C19.
+
+Runde 155–157: Freunde neu geordnet, **B10, B11, B12, C13, C14, C15, C16, C17, C18** erledigt; C19 bleibt
+(Entscheidung des Inhabers). Offen nur noch A2 (Inhaber) und der scharfe Einladungslink (Domain).

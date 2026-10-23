@@ -21,6 +21,20 @@
     el.setAttribute('aria-valuetext', index + tx('js_von__fragen_beantwortet'));
   }
 
+  // Die fuenf Bedeutungen stehen als <span>-Folge im Sprachpaket; sichtbar sind nur die Enden.
+  function skalaBedeutung(v){
+    var teile = String(tx('trifft_gar_nicht_zutrifft_vo')).match(/<span>([^<]*)<\/span>/g) || [];
+    return teile[v-1] ? decodeEntities(teile[v-1].replace(/<\/?span>/g, '')) : '';
+  }
+  var skalaWahlUhr = null;
+  function skalaWahlZeigen(v){
+    var el = $('skalaWahl');
+    if (!el || !el.classList) return;
+    el.textContent = skalaBedeutung(v);
+    el.classList.add('zeigen');
+    clearTimeout(skalaWahlUhr);
+    skalaWahlUhr = setTimeout(function(){ el.classList.remove('zeigen'); }, 1100);
+  }
   function renderQuestion(){
     var it = ITEMS[qi];
     $('qNow').textContent = (qi+1);
@@ -33,7 +47,7 @@
       var b = document.createElement('button');
       var isPicked = answers[qi]===v;
       b.className='scale-btn'+(isPicked?' picked':'');
-      b.setAttribute('aria-label',tx('js_wert')+v+tx('js_von'));
+      b.setAttribute('aria-label',tx('js_wert')+v+tx('js_von')+', '+skalaBedeutung(v));
       b.setAttribute('aria-pressed', isPicked ? 'true':'false');
       b.innerHTML='<span class="fill"></span>';
       (function(val){
@@ -109,6 +123,7 @@
     if (quizSchliesst) return;
     answers[qi] = v;
     tapFeedback();
+    skalaWahlZeigen(v);
     saveProgress();
     var row = $('scaleRow');
     if (row && row.classList) row.classList.remove('row-in');
@@ -222,7 +237,7 @@
     $('archTitle').innerHTML = NOUN[arch.top1][pole1] + ' <span class="sep">·</span> ' + ADJ[arch.top2][pole2];
     $('archMotto').textContent = MOTTO[arch.top1][pole1];
     $('shareTitle').textContent = arch.title;
-    $('synthesis').textContent = CORE[arch.top1][pole1] + ' ' + FLAVOR[arch.top2][pole2];
+    synthesisSetzen(CORE[arch.top1][pole1] + ' ' + FLAVOR[arch.top2][pole2]);
     // display:flex statt '' — .uniform-note ist eine Flex-Zeile (Icon + Text); ein leerer String
     // würde zwar auch auf den CSS-Wert zurückfallen, macht die Absicht hier aber weniger deutlich.
     $('uniformNote').style.display = scores.uniform ? 'flex' : 'none';
@@ -258,15 +273,14 @@
       animateCountUp($('statNum-'+f), scores[f]);
     });
 
-    // Die Dimensionskarten sind zugeklappt; die erste (staerkste) steht offen und zeigt, dass sich die
-    // anderen oeffnen lassen.
+    // Die Dimensionskarten beginnen alle zugeklappt; die Kopfzeile traegt Wert, Balken und Kernsatz
+    // (Feedback B12).
     var list = $('traitsList'); list.innerHTML='';
     sortedTraits.forEach(function(f,i){
       var pole = scores[f]>=50 ? 'high':'low';
       var pr = PROFILES[f][pole];
       var card = document.createElement('details');
       card.className='trait-card';
-      if (i===0) card.open = true;
       card.style.animationDelay = (i*60)+'ms';
       card.innerHTML =
         '<summary>'+
@@ -291,6 +305,21 @@
     renderDelta(previous);
   }
 
+  // Kurzportraet: erster Satz, der Rest hinter "Mehr" (Feedback B12).
+  function synthesisSetzen(text){
+    var el = $('synthesis');
+    var teile = ersterSatz(text);
+    if (!teile[1] || !el.querySelector){ el.textContent = text; return; }
+    el.innerHTML = '<span>'+escapeHTML(teile[0])+'</span><span class="syn-rest" hidden>'+escapeHTML(teile[1])+'</span> '+
+      '<button type="button" class="syn-mehr" aria-expanded="false">'+tx('syn_mehr')+'</button>';
+    var b = el.querySelector('.syn-mehr'), rest = el.querySelector('.syn-rest');
+    if (!b || !rest) return;
+    b.addEventListener('click', function(){
+      rest.hidden = !rest.hidden;
+      b.setAttribute('aria-expanded', String(!rest.hidden));
+      b.textContent = tx(rest.hidden ? 'syn_mehr' : 'syn_weniger');
+    });
+  }
   // Der ausfuehrliche Bericht ist Lucenta+ (Entscheidung des Inhabers, Runde 127). Frei: Kopfzeile,
   // Messbalken, Kernsatz und der erste Satz von "Im Alltag"; der Rest verschwommen.
   function ersterSatz(text){

@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 156 | siehe `git log` | Ueberpruefung: Rundgang im Simulator, veraltete Archiv-Texte, Hinweis-Texte, Toast fuer VoiceOver |
+| 157 | siehe `git log` | Feedback B10–B12, C13, C15–C18: Ich-Form, Skala mit Enden, Ergebnisseite Radar zuerst, Texte, Exportangabe |
+| 156 | `d25ad40` | Ueberpruefung: Rundgang im Simulator, veraltete Archiv-Texte, Hinweis-Texte, Toast fuer VoiceOver |
 | 155 | `4e63250` | Fehler „‹ Start" (Klassenname-Kollision); Freunde als einziger Ort (ein Feld, Vergleich `view-compare`, Archiv uebernommen); WebKit-Absturz im Balkenpuls behoben |
 | 154 | `cf6466c` | Feedback B9: Navigation wie iOS (Chevron mit Ziel, kleiner Titel beim Scrollen, Pillen verborgen) |
 | 153 | `fe25cbe` | Feedback B8: Dynamic Type bis 200 % (`--dt` aus der Huelle, `data-text="gross"`, Fehlersuche `320px@200%`) |
@@ -171,26 +172,19 @@ Regeln, die er gesetzt hat:
 
 **Die Feedbackrunde 151** (`docs/feedbackrunde-151.md`, dort mit Begruendung) — der Arbeitsvorrat.
 Runde 152 hat A1, A3, A4, A5, B6, B7 erledigt, Runde 153 B8, Runde 154 B9 (Eintraege unten). Der
-Auftrag (A1, A3–A5, B6–B9) ist damit abgearbeitet; als naechstes kaemen B10–B12 und C13–C19.
+Auftrag ist damit abgearbeitet; seit Runde 157 ist die ganze Feedbackrunde 151 erledigt bis auf A2 (Impressum,
+Inhaber) und den scharfen Einladungslink.
 Bei Gestaltungsfragen vorher mit Optionen fragen.
 
 *A — kritisch*
 2. **Impressum leer** (`IMPRESSUM` in `17-settings.js`) — fuellt der Inhaber selbst.
 
-*B — hoch, Nutzererlebnis*
-7. (Rest) Einladungslink **scharf schalten**, sobald eine Domain da ist: `einladung/LIESMICH.md`.
-10. Fragetexte ohne „Ich" („Habe einen reichen Wortschatz", folgt dem IPIP-Original) -> „Ich habe …",
-    acht Sprachen einzeln.
-11. Antwortbeschriftungen der Skala sehr klein (~11 pt).
-12. Ergebnisseite ~3.600 px lang, viel Text vor dem Radar -> Typ + Radar oben, Erklaerungen einklappbar.
+*B — hoch:* erledigt bis auf den scharfen Einladungslink (B7-Rest, braucht eine Domain: `einladung/LIESMICH.md`).
 
-*C — Feinschliff*
-13. Haptik-Text („bei jeder Antwort im Fragebogen") veraltet — seit Runde 126 bei jedem Tipp.
-15. Dauer: Store „sieben Minuten", Onboarding „5 bis 10 Minuten" — messen, vereinheitlichen.
-16. Ueberschrift Onboarding „Lerne dich kennen …" vs. Startseite „Lern dich kennen …".
-17. Gesperrtes „Weiter" im Onboarding-Schritt 2 sieht aktiv aus.
-18. `ITSAppUsesNonExemptEncryption` fehlt in der Info.plist.
-19. Startbild immer schwarz (Folge der dunklen Vorgabe) — Hell-Nutzer sehen kurz Schwarz.
+*C — Feinschliff:* erledigt; C19 (Startbild schwarz) bleibt auf Entscheidung des Inhabers.
+
+*Notiert in Runde 156, nicht geaendert:* Ring im Vergleich ohne „%", VoiceOver sagt am Vergleichsradar
+„Andere Person" statt des Namens.
 
 *Kleinigkeiten aus Runde 152, bewusst nicht angefasst*
 - `dein_ergebnis_liegt_ausschli` („liegt ausschliesslich auf diesem Geraet") ist unbenutzt; der Freunde-Satz
@@ -342,6 +336,44 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 157 — Feedback B10, B11, B12, C13, C15–C18 (C19 bleibt)
+
+Alle Gestaltungsfragen mit der Empfehlung entschieden.
+
+- **B10 Fragetexte:** Die 50 deutschen Aussagen in der Ich-Form mit Punkt („Ich habe einen reichen
+  Wortschatz."; „Meine Stimmung wechselt oft." bekam nur den Punkt). Befund vorab: es/fr/it/pt/tr standen
+  schon in der ersten Person, ja braucht kein „Ich"; nur Deutsch fehlte (und hatte als einzige Sprache keinen
+  Punkt). Englisch bleibt wortgleich mit dem IPIP-Original (Entscheidung des Inhabers). Die alten Kopien in
+  `tools/renderer/` sind ein eingefrorener Stand und nicht nachgezogen.
+- **B11 Antwortskala:** Unter den Kreisen nur noch die Enden, ausformuliert und in 15 pt („trifft gar nicht
+  zu" / „trifft voll zu", neue Schluessel `skala_min`/`skala_max`); beim Tippen steht die Bedeutung des
+  gewaehlten Kreises 1,1 s ueber der Skala (`#skalaWahl`). Nebenbei: VoiceOver las bisher nur „Wert 3 von 5" —
+  jetzt „Wert 3 von 5, teils" (aus dem vorhandenen Fuenfer-Schluessel). Am Bild 390 pt de und 320 pt fr.
+- **B12 Ergebnisseite:** Titel, Motto, gleich das Radar und die fuenf Werte; dann Teilen und „Mit Freunden
+  vergleichen"; das Kurzportraet zeigt den ersten Satz und „Mehr"; alle fuenf Dimensionskarten beginnen
+  zugeklappt (vorher stand die erste offen). Bezahlgrenze unveraendert. Gemessen in der freien Fassung mit der
+  Beispielnutzerin: 2.690 -> 2.347 px; die 3.600 aus der Feedbackrunde waren die Lucenta+-Fassung, dort spart
+  das Zuklappen mehr (nicht gemessen).
+- **C13:** Haptik-Text „Kurzer Impuls bei jedem Tippen." (8 Sprachen).
+- **C15:** Onboarding „Etwa 7 Minuten" statt „5 bis 10 Minuten", passend zum Store („sieben Minuten").
+  Grundlage: 50 Aussagen bei rund 8 s — gerechnet, nicht an Menschen gemessen.
+- **C16:** Onboarding-Titel „Lern dich kennen — mit Wissenschaft." wie die Startseite (Wortlaut und
+  Gedankenstrich; die anderen Sprachen nur den Gedankenstrich).
+- **C17:** `.btn:disabled` ist blass (opacity .4) — das gesperrte „Weiter" im Onboarding sah aktiv aus.
+- **C18:** `ITSAppUsesNonExemptEncryption = false` in `Info.plist` (im gebauten Bundle nachgesehen). Lucenta
+  verschluesselt nichts selbst; CloudKit ist Apples eigene, ausgenommene Verschluesselung.
+- **Pruefungen:** Die Fehlersuche hielt die alte Skala fest (fuenf Beschriftungen, Runde 107 — die damals
+  genau von Endbeschriftungen weg auf fuenf umgestellt hatte; die neue Entscheidung des Inhabers dreht das
+  ausdruecklich zurueck). `suchSkalaVersatz` prueft jetzt die neue Zusage: zwei Enden buendig mit dem aeusseren
+  Rand des ersten/letzten Kreises, nicht leer, nicht aus der Spalte, jeder Kreis mit Bedeutung fuer VoiceOver.
+  Dabei ein echter Fund: „Plus" (fr fuer „Mehr") war 37 pt breit — jetzt mindestens 44. `pruef-alles` 8/9
+  (nur die Fehlersuche, aus diesen zwei Gruenden), danach Fehlersuche allein: 28 Durchlaeufe ohne Fund,
+  Schnellpruefung gruen.
+- **C19 Startbild bleibt schwarz** (Entscheidung des Inhabers): Die Vorgabe ist dunkel; ein Startbild nach der
+  iOS-Einstellung zeigte mehr Menschen einen Farbblitz als heute.
 
 ---
 
