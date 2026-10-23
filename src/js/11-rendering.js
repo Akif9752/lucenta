@@ -456,9 +456,16 @@
     });
   }
 
+  // Ein neuer Hinweis setzt die Uhr zurueck; danach wird der Text geleert, sonst bliebe er fuer
+  // VoiceOver auf jeder weiteren Seite stehen.
+  var toastUhr = null;
   function toast(msg){
     var t = $('toast'); t.textContent = msg; t.classList.add('show');
-    setTimeout(function(){ t.classList.remove('show'); }, 1800);
+    clearTimeout(toastUhr);
+    toastUhr = setTimeout(function(){
+      t.classList.remove('show');
+      toastUhr = setTimeout(function(){ t.textContent = ''; }, 400);
+    }, 1800);
   }
 
   

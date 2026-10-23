@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 155 | siehe `git log` | Fehler „‹ Start" (Klassenname-Kollision); Freunde als einziger Ort (ein Feld, Vergleich `view-compare`, Archiv uebernommen); WebKit-Absturz im Balkenpuls behoben |
+| 156 | siehe `git log` | Ueberpruefung: Rundgang im Simulator, veraltete Archiv-Texte, Hinweis-Texte, Toast fuer VoiceOver |
+| 155 | `4e63250` | Fehler „‹ Start" (Klassenname-Kollision); Freunde als einziger Ort (ein Feld, Vergleich `view-compare`, Archiv uebernommen); WebKit-Absturz im Balkenpuls behoben |
 | 154 | `cf6466c` | Feedback B9: Navigation wie iOS (Chevron mit Ziel, kleiner Titel beim Scrollen, Pillen verborgen) |
 | 153 | `fe25cbe` | Feedback B8: Dynamic Type bis 200 % (`--dt` aus der Huelle, `data-text="gross"`, Fehlersuche `320px@200%`) |
 | 152 | `f1ff0e0` | Feedback A1 (Sperre nach Antwort 50), A3 (`PrivacyInfo.xcprivacy`), A4 (Konto loeschen), A5 (ehrliche Versprechen, 8 Sprachen + Store), B6 (nur noch Freundescode; Wiederherstellungscode in Einstellungen), B7 (Einladung als Universal Link, scharf erst mit Domain) |
@@ -341,6 +342,36 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 156 — Ueberpruefung: Rundgang in der echten App, veraltete Texte
+
+**Auftrag:** Ueberpruefung und Fehlersuche, dann weiter mit der Feedbackliste.
+
+**Durchsicht des Diffs seit Runde 151:** kein Logikfehler gefunden. Dabei aufgefallen und behoben: zwei
+sichtbare Texte beschrieben noch das Vergleichsarchiv — auf der Lucenta+-Seite „ein Archiv ohne Grenze"
+(ein Verkaufsversprechen fuer etwas, das es nicht mehr gibt; jetzt „das Gruppenbild aller Freunde") und die
+Hilfe-Antwort „Kann ich mehrere Vergleiche speichern?" (jetzt der Weg ueber Freunde). 14 Sprachschluessel ohne
+Verwendung entfernt. Der i18n-Audit fand dabei «…» im Portugiesischen, das sonst “…” nimmt — angeglichen.
+
+**Rundgang im Simulator** (iPhone 17 Pro, mit echten Tipps, ueber den Geraete-Helfer): Seitenleiste,
+Freunde, eigene Karte, Code anzeigen, Vergleich, Einfuegen eines Codes, „‹ Start" (Startseite jedes Mal voll
+breit), Einstellungen mit kleinem Titel, Hilfe mit „‹ Einstellungen", Wischgeste vom Rand, Fragebogen mit
+„Abbrechen" — alles wie erwartet, kein Absturz. Funde und was daraus wurde:
+- Hinweis nach „Abbrechen" sagte „weiter geht's oben rechts" — weitergemacht wird auf der Startseite. Neu in
+  8 Sprachen.
+- „Der Code oben traegt nur dein Ergebnis" stand auch, wenn kein Code angezeigt wird — jetzt „Der
+  Wiederherstellungscode …".
+- Der Hinweis-Text (`#toast`) blieb nach dem Ausblenden im Dokument und damit fuer VoiceOver auf jeder
+  weiteren Seite. Jetzt wird er danach geleert; ein neuer Hinweis setzt die Uhr zurueck (vorher konnte ein
+  alter Zeitgeber einen neuen Hinweis zu frueh ausblenden).
+- Hilfe-Zeilen „zu breit": nachgemessen bei 402 pt, sie liegen genau im Inhaltsbereich — kein Fehler.
+- Nicht geaendert, nur notiert: Der Ring im Vergleich zeigt die Zahl ohne „%"; VoiceOver sagt am Radar
+  „Andere Person" statt des Namens; die Zeile im Fragebogen sitzt wegen des Fortschrittsbalkens tiefer.
+- Im Simulator stehen jetzt ein Freund „Ohne Namen" und ein angefangener Test (Frage 6) — Spuren des Rundgangs.
+
+`pruef-alles`: **9/9** (11,2 Min.).
 
 ---
 
