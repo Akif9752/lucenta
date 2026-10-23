@@ -8,21 +8,60 @@
   // Server reisen sie nur so mit (Entscheidung des Inhabers). Ein eigenes Foto passt nicht hinein; dann
   // zeigt die Liste die Initialen. Gesucht wird im ganzen eingefuegten Text (die Einladung als Ganzes).
   var FREUNDESCODE_MUSTER = /L1\.([0-9a-z]{10})\.([a-z]*)\.([A-Za-z0-9_-]*)/;
-  function b64url(text){
-    return btoa(unescape(encodeURIComponent(text))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  }
   function vonB64url(t){
     try{ t = t.replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; return decodeURIComponent(escape(atob(t))); }
     catch(e){ return ''; }
   }
-  function eigenerFreundescode(){
-    var r = loadResult();
-    if (!r) return '';
+  // ---------- Kurzer Freundescode (Runde 159, Entscheidung des Inhabers): <id>-XXXX-XXXX ----------
+  // Die 8 Zeichen tragen die fuenf Werte, die Figur (als Platz in FIGUREN — neue Tiere nur HINTEN
+  // anhaengen, sonst aendern sich alle Codes) und 2 Bit Pruefsumme; Crockford-Alphabet ohne I L O U.
+  var CODE_ZEICHEN = '0123456789ABCDEFGHJKMNPQRSTVWXYZ', CODE_FIGUREN = 24;
+  var KURZCODE_MUSTER = /([a-z0-9._]{3,20})-([0-9a-hjkmnp-tv-z]{4})-([0-9a-hjkmnp-tv-z]{4})/i;
+  function benutzerIdGueltig(id){ return /^[a-z0-9._]{3,20}$/.test(id || ''); }
+  function benutzerIdAusName(name){
+    var t = String(name || '').toLowerCase();
+    if (t.normalize) t = t.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    t = t.replace(/ß/g, 'ss').replace(/[^a-z0-9._]/g, '').slice(0, 20);
+    return t.length >= 3 ? t : '';
+  }
+  function kurzcodeTeil(sc, figurId){
+    var n = 0;
+    ORDER.forEach(function(f){ n = n * 101 + Math.max(0, Math.min(100, Math.round(sc[f]))); });
+    var fi = 0;
+    for (var i = 0; i < FIGUREN.length; i++) if (FIGUREN[i].id === figurId){ fi = i + 1; break; }
+    n = n * CODE_FIGUREN + fi;
+    var pruef = String(n).split('').reduce(function(a, z){ return a + (+z); }, 0) % 4;
+    n = n * 4 + pruef;
+    var t = '';
+    for (var j = 0; j < 8; j++){ t = CODE_ZEICHEN.charAt(n % 32) + t; n = Math.floor(n / 32); }
+    return t.slice(0, 4) + '-' + t.slice(4);
+  }
+  function kurzcodeLesen(text){
+    var m = KURZCODE_MUSTER.exec(text || '');
+    if (!m) return null;
+    var t = (m[2] + m[3]).toUpperCase(), n = 0;
+    for (var i = 0; i < t.length; i++){ var v = CODE_ZEICHEN.indexOf(t.charAt(i)); if (v < 0) return null; n = n * 32 + v; }
+    var pruef = n % 4; n = Math.floor(n / 4);
+    if (String(n).split('').reduce(function(a, z){ return a + (+z); }, 0) % 4 !== pruef) return null;
+    var fi = n % CODE_FIGUREN; n = Math.floor(n / CODE_FIGUREN);
+    var sc = {};
+    for (var k = ORDER.length - 1; k >= 0; k--){ sc[ORDER[k]] = n % 101; n = Math.floor(n / 101); }
+    if (n !== 0 || fi > FIGUREN.length) return null;
+    return {code: toCode(sc), figur: fi ? FIGUREN[fi - 1].id : '', name: m[1].toLowerCase()};
+  }
+  function eigeneBenutzerId(){
     var p = loadProfile();
-    var fig = (p.figur && figurFinden(p.figur)) ? p.figur : '';
-    return 'L1.' + toCode(r) + '.' + fig + '.' + b64url((p.name || '').trim().slice(0, 30));
+    return benutzerIdGueltig(p.benutzerId) ? p.benutzerId : '';
+  }
+  function eigenerFreundescode(){
+    var r = loadResult(), id = eigeneBenutzerId();
+    if (!r || !id) return '';
+    var p = loadProfile();
+    return id + '-' + kurzcodeTeil(r, (p.figur && figurFinden(p.figur)) ? p.figur : '');
   }
   function freundescodeLesen(text){
+    var kurz = kurzcodeLesen(text);
+    if (kurz) return kurz;
     var m = FREUNDESCODE_MUSTER.exec(text || '');
     if (!m || !fromCode(m[1])) return null;
     return {code: m[1], figur: figurFinden(m[2]) ? m[2] : '', name: vonB64url(m[3]).trim().slice(0, 30)};
@@ -169,6 +208,7 @@
     if (app.addListener) app.addListener('appUrlOpen', function(ev){ if (ev && ev.url) freundAusLink(ev.url); });
   }
   function freundeEinladen(){
+    if (loadResult() && !eigeneBenutzerId()){ toast(tx('benutzer_id_waehlen')); renderFreunde(); showView('freunde'); return; }
     var text = einladungsText();
     function inAblage(){
       if (navigator.clipboard && navigator.clipboard.writeText){
@@ -225,11 +265,16 @@
   // Die eigene Karte: Figur, Name, Einladen und Kopieren; die Zeichenkette erst auf Wunsch.
   function freundIchHTML(){
     var code = eigenerFreundescode(), p = loadProfile();
+    if (loadResult() && !eigeneBenutzerId()) return '<div class="freund-ich-karte"><p class="settings-hint">'+tx('benutzer_id_waehlen')+'</p>'+
+      '<div class="freund-hinzu benutzer-id-wahl"><input type="text" id="freundIchId" class="name-input mono" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" '+
+        'aria-label="'+tx('benutzer_id')+'" placeholder="'+tx('benutzer_id_ph')+'" value="'+escapeHTML(benutzerIdAusName(p.name))+'">'+
+      '<button type="button" class="btn btn-primary btn-sm" data-ich="id">'+tx('benutzer_id_speichern')+'</button></div>'+
+      '<p class="settings-hint">'+tx('benutzer_id_hinweis')+'</p></div>';
     if (!code) return '<div class="freund-ich-karte"><p class="settings-hint">'+tx('freunde_erst_test')+'</p>'+
       '<button type="button" class="btn btn-primary btn-sm" data-ich="test">'+tx('test_starten')+'</button></div>';
     return '<div class="freund-ich-karte">'+
       '<div class="freund-ich-kopf"><span class="avatar freund-avatar" id="freundIchAvatar" aria-hidden="true"></span>'+
-        '<span class="freund-text"><span class="history-title">'+escapeHTML(p.name || tx('freunde_du'))+'</span>'+
+        '<span class="freund-text"><span class="history-title">'+escapeHTML(p.name || tx('freunde_du'))+' <span class="mono freund-ich-id">@'+escapeHTML(eigeneBenutzerId())+'</span></span>'+
         '<span class="history-date">'+tx('freunde_ich_unter')+'</span></span></div>'+
       '<div class="freund-ich-knoepfe">'+
         '<button type="button" class="btn btn-primary btn-sm" data-ich="einladen">'+tx('freunde_einladen_knopf')+'</button>'+
@@ -238,10 +283,17 @@
       '<div class="freund-eigener-code mono" id="freundEigenerCode" hidden>'+escapeHTML(code)+'</div>'+
     '</div>';
   }
+  function benutzerIdSetzen(wert){
+    var id = String(wert || '').trim().toLowerCase();
+    if (!benutzerIdGueltig(id)){ toast(tx('benutzer_id_ungueltig')); return false; }
+    var p = loadProfile(); p.benutzerId = id; saveProfile(p);
+    return true;
+  }
   function freundIchKlick(e){
     var b = e.target.closest ? e.target.closest('[data-ich]') : null;
     if (!b) return;
     var was = b.getAttribute('data-ich'), code = eigenerFreundescode();
+    if (was === 'id'){ if (benutzerIdSetzen($('freundIchId').value)) renderFreunde(); else schuetteln($('freundIchId')); return; }
     if (was === 'einladen') freundeEinladen();
     else if (was === 'test') $('btnStart').click();
     else if (was === 'kopieren' && code){

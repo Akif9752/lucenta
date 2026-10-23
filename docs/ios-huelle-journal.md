@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 158 | siehe `git log` | Richtlinien-Pruefung + EULA-Links, Lucenta+ vor Einstellungen, Funken einfarbig leuchtend, Zeilenabstand |
+| 159 | siehe `git log` | Anmeldeschritt im Onboarding (ueberspringbar), Freundescode <id>-XXXX-XXXX mit eigener Benutzer-ID |
+| 158 | `1db786c` | Richtlinien-Pruefung + EULA-Links, Lucenta+ vor Einstellungen, Funken einfarbig leuchtend, Zeilenabstand |
 | 157 | `e530d99` | Feedback B10–B12, C13, C15–C18: Ich-Form, Skala mit Enden, Ergebnisseite Radar zuerst, Texte, Exportangabe |
 | 156 | `d25ad40` | Ueberpruefung: Rundgang im Simulator, veraltete Archiv-Texte, Hinweis-Texte, Toast fuer VoiceOver |
 | 155 | `4e63250` | Fehler „‹ Start" (Klassenname-Kollision); Freunde als einziger Ort (ein Feld, Vergleich `view-compare`, Archiv uebernommen); WebKit-Absturz im Balkenpuls behoben |
@@ -337,6 +338,32 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 159 — Anmeldeschritt im Onboarding; kurze Freundescodes mit eigener Benutzer-ID
+
+**Anmeldung** (Wahl des Inhabers: am Anfang, ueberspringbar — Pflicht erst mit echten Kontofunktionen,
+Richtlinie 5.1.1(v)): Das Onboarding hat jetzt fuenf Schritte; Schritt 4 „Sichere dein Portraet" mit grosser
+„Mit Apple anmelden"-Flaeche und kleinem „Spaeter". Nach der Anmeldung geht es von selbst zu Name und Figur;
+wurde ein iCloud-Stand uebernommen, laedt die Seite ohnehin neu. Ohne native Bruecke (Browser) oder bei
+bestehender Anmeldung wird der Schritt uebersprungen, in beide Richtungen (`obSchrittZeigen(n, richtung)`).
+`pruef-nativ` (77) prueft: Schritt erscheint, „Spaeter" fuehrt weiter, Anmeldung fuehrt weiter.
+
+**Codes** (Wahl: eigene ID im Code, ohne Server): Freundescode `<id>-XXXX-XXXX`, z. B. `alex-NPAJ-K5S4`
+statt `L1.221r1k1y1c.fuchs.QWxleA`. Die ID waehlt die Person (Profil und Freunde-Karte; 3–20 Zeichen a–z 0–9
+. _; Vorschlag aus dem Namen). Die 8 Zeichen tragen die fuenf Werte, die Figur und 2 Bit Pruefsumme
+(Crockford-Alphabet, Gross/klein egal). **Falle:** Die Figur steht als PLATZ in `FIGUREN` im Code — neue
+Tiere nur hinten anhaengen. Der Freund heisst beim Empfaenger wie seine ID (der Anzeigename reist nicht mehr
+mit; Entscheidung des Inhabers: „den Namen zeigt die ID selbst"). Alte `L1.`- und 10-stellige Codes werden
+weiter gelesen; erzeugt wird nur noch der neue. Ohne ID zeigt die Karte zuerst die ID-Wahl, „Einladen" fuehrt
+dorthin. **Gemessen** in der Testreihe (3.000 zufaellige Ergebnisse x alle Figuren): hin und zurueck immer
+richtig; von einzelnen Tippfehlern in den 8 Zeichen werden 97 % abgewiesen, die uebrigen 3 % ergeben ein
+anderes gueltiges Ergebnis — nie stillschweigend denselben Freund. Mehr geht mit 2 Bit Pruefsumme nicht.
+Nicht moeglich ohne Server und bewusst nicht gebaut: nach einer ID suchen; zwei Menschen koennen dieselbe ID
+waehlen (unterschieden werden Freunde am Ergebnis).
+
+`pruef-alles`: **9/9** (11,3 Min.); `diff-sprachen` 119 -> 112.
 
 ---
 

@@ -103,6 +103,7 @@
   function renderProfile(){
     var profile = loadProfile();
     $('profileName').value = profile.name || '';
+    $('profileBenutzerId').value = profile.benutzerId || '';
     renderAvatar(profile);
     var last = loadResult();
     var block = $('profileResultBlock');

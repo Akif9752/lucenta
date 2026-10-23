@@ -165,6 +165,26 @@
   console.log("\n[13] pickRandomUnderstandCard liefert immer eine gueltige Karte");
   for(var pk=0;pk<300;pk++){ var card=pickRandomUnderstandCard(); ok(card&&card.title&&card.body,"ungueltige Karte"); }
 
+  console.log("\n[14] Kurzer Freundescode <id>-XXXX-XXXX: hin und zurueck, Tippfehler, alte Codes");
+  var rnd=function(){ return Math.floor(Math.random()*101); }, fehlerErkannt=0, fehlerVersuche=0;
+  for(var kc=0;kc<3000;kc++){
+    var sc={O:rnd(),C:rnd(),E:rnd(),A:rnd(),S:rnd()}, fig=(kc%(FIGUREN.length+1))===0 ? '' : FIGUREN[kc%FIGUREN.length].id;
+    var teil=kurzcodeTeil(sc, fig), code='mia.k_'+(kc%7)+'-'+teil, info=freundescodeLesen('Hier: '+code+' – bis bald');
+    ok(/^[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$/.test(teil), "Kurzteil hat falsches Format: "+teil);
+    ok(info && info.code===toCode(sc) && info.figur===fig && info.name==='mia.k_'+(kc%7), "Kurzcode nicht umkehrbar: "+code);
+    ok(freundescodeLesen(code.toLowerCase()) && freundescodeLesen(code.toLowerCase()).code===toCode(sc), "Kleinschreibung nicht gelesen: "+code);
+    // ein Zeichen vertippt
+    var vorne=code.indexOf('-')+1, pos=vorne+Math.floor(Math.random()*9); if(code.charAt(pos)==='-') pos++;
+    var falsch=code.slice(0,pos)+(code.charAt(pos)==='7'?'8':'7')+code.slice(pos+1), r=freundescodeLesen(falsch);
+    fehlerVersuche++; if(!r || r.code!==toCode(sc)) fehlerErkannt++;
+    ok(!r || r.code!==toCode(sc) || r.figur!==fig, "Tippfehler unbemerkt gleich: "+falsch);
+  }
+  var quote=fehlerErkannt/fehlerVersuche;
+  console.log("  Tippfehler ergeben nie stillschweigend denselben Freund; abgelehnt statt falsch gelesen: "+Math.round(100*quote)+" %");
+  ok(!freundescodeLesen('ab-1234-5678'), "zu kurze ID angenommen");
+  ok(freundescodeLesen('L1.221r1k1y1c.fuchs.QWxleA') && freundescodeLesen('L1.221r1k1y1c.fuchs.QWxleA').name==='Alex', "alter L1-Code nicht mehr gelesen");
+  ok(benutzerIdAusName('Jürgen Groß')==='jurgengross' && benutzerIdAusName('Al')==='', "ID-Vorschlag aus dem Namen falsch: "+benutzerIdAusName('Jürgen Groß'));
+
   console.log("\n==================================================");
   console.log(fails===0 ? ("ALLE "+checks+" PRUEFUNGEN BESTANDEN") : (fails+" von "+checks+" PRUEFUNGEN FEHLGESCHLAGEN"));
   console.log("==================================================");

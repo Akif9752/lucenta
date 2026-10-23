@@ -20,7 +20,10 @@
     return !navigator.webdriver;
   }
 
-  function obSchrittZeigen(n){
+  var OB_ANMELDEN = 4, OB_LETZTER = 5;
+  function obSchrittZeigen(n, richtung){
+    // Den Anmeldeschritt gibt es nur mit nativer Bruecke und ohne bestehende Anmeldung.
+    if (n === OB_ANMELDEN && (!kontoModul() || kontoStand.angemeldet)) n += (richtung || 1);
     obSchritt = n;
     var ob = $('onboarding');
     ob.querySelectorAll('.ob-step').forEach(function(s){
@@ -31,7 +34,7 @@
     ob.querySelectorAll('.ob-dots span').forEach(function(p, i){ p.classList.toggle('an', i < n); });
     $('btnObZurueck').hidden = n === 1;
     if (n === 3) obFuerDichAnwenden();
-    if (n === 4) obFigurRaster();
+    if (n === OB_LETZTER) obFigurRaster();
     var h = ob.querySelector('.ob-step[data-step="'+n+'"] h1');
     if (h) setTimeout(function(){ try{ h.focus(); }catch(e){} }, 60);
   }
@@ -94,9 +97,13 @@
     var ob = $('onboarding');
     if (!ob) return;
     ob.querySelectorAll('[data-ob-weiter]').forEach(function(b){
-      b.addEventListener('click', function(){ obSchrittZeigen(Math.min(4, obSchritt + 1)); });
+      b.addEventListener('click', function(){ obSchrittZeigen(Math.min(OB_LETZTER, obSchritt + 1), 1); });
     });
-    $('btnObZurueck').addEventListener('click', function(){ obSchrittZeigen(Math.max(1, obSchritt - 1)); });
+    $('btnObZurueck').addEventListener('click', function(){ obSchrittZeigen(Math.max(1, obSchritt - 1), -1); });
+    // Nach der Anmeldung weiter; wurde ein iCloud-Stand uebernommen, laedt die Seite ohnehin neu.
+    $('btnObApple').addEventListener('click', function(){
+      kontoAnmelden(function(neuGeladen){ if (!neuGeladen && kontoStand.angemeldet) obSchrittZeigen(OB_LETZTER, 1); });
+    });
     $('btnObUeberspringen').addEventListener('click', function(){ onboardingBeenden(false); });
     $('btnObStarten').addEventListener('click', function(){ onboardingBeenden(true); });
     // Neues iPhone: anmelden, und liegt in der iCloud ein Stand, ersetzt er das Onboarding.

@@ -484,6 +484,20 @@ await seite.waitForTimeout(200);
 ok((await freundeNamen()).length === 2, 'ein Link ohne gueltigen Code tut nichts');
 await seite.evaluate(() => { localStorage.removeItem('__pruef_link'); localStorage.removeItem('lucenta_freunde'); });
 
+console.log('\n=== Onboarding: Anmeldung als eigener, ueberspringbarer Schritt (Runde 159) ===');
+await seite.evaluate(() => localStorage.removeItem('__pruef_konto'));
+await seite.goto(URL + '?onboarding=1', {waitUntil: 'networkidle'}); await seite.waitForTimeout(900);
+const obSchritt = () => seite.evaluate(() => [...document.querySelectorAll('#onboarding .ob-step')].find(s => !s.hidden)?.getAttribute('data-step'));
+const obWeiter = async () => { await seite.evaluate(() => [...document.querySelectorAll('#onboarding .ob-step')].find(s => !s.hidden).querySelector('[data-ob-weiter]').click()); await seite.waitForTimeout(350); };
+await obWeiter(); await seite.evaluate(() => document.querySelector('[data-ob-ziel]').click()); await obWeiter(); await obWeiter();
+ok(await obSchritt() === '4', 'nach den Fakten kommt der Anmeldeschritt');
+await obWeiter();
+ok(await obSchritt() === '5', '„Spaeter" fuehrt weiter zu Name und Figur');
+await seite.evaluate(() => document.getElementById('btnObZurueck').click()); await seite.waitForTimeout(350);
+await seite.evaluate(() => document.getElementById('btnObApple').click()); await seite.waitForTimeout(600);
+ok(await obSchritt() === '5', 'nach der Anmeldung geht es von selbst weiter');
+await seite.goto(URL, {waitUntil: 'networkidle'}); await seite.waitForTimeout(500);
+
 console.log('\n=== Konto loeschen (Richtlinie 5.1.1(v)) ===');
 const kontoBild = () => seite.evaluate(() => {
   const w = document.getElementById('kontoIcloud');

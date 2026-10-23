@@ -146,6 +146,12 @@
       toast(tx('js_konnte_nicht_gespeichert_w'));
     }
   });
+  $('profileBenutzerId').addEventListener('change', function(){
+    var feld = $('profileBenutzerId');
+    if (!feld.value.trim()){ var p = loadProfile(); delete p.benutzerId; saveProfile(p); return; }
+    if (benutzerIdSetzen(feld.value)){ feld.value = eigeneBenutzerId(); toast(tx('freunde_gespeichert')); }
+    else { schuetteln(feld); feld.value = eigeneBenutzerId(); }
+  });
   $('profileName').addEventListener('input', function(){
     var profile = loadProfile();
     profile.name = $('profileName').value;

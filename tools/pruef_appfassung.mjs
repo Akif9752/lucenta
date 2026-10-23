@@ -361,6 +361,7 @@ await frCtx.addInitScript(() => {
   if (localStorage.getItem('__fr')) return;
   localStorage.setItem('__fr', '1');
   localStorage.setItem('lucenta_result', JSON.stringify({O:74, C:56, E:63, A:70, S:48}));
+  localStorage.setItem('lucenta_profile', JSON.stringify({name:'Pruef', benutzerId:'pruef', avatarImg:null}));
   localStorage.setItem('lucenta_compat_archive', JSON.stringify([{id:'c1', ts:1, myCode:'x', otherCode:'1e2s0u1i2a', match:60, label:'Mama'}]));
 });
 const fr = await frCtx.newPage();
@@ -374,7 +375,8 @@ const frVorher = await fr.evaluate(() => ({
   namen: [...document.querySelectorAll('#freundeListe .history-title')].map(e => e.textContent),
 }));
 await fr.click('[data-ich="zeigen"]'); await fr.waitForTimeout(200);
-const codeDanach = await fr.evaluate(() => /^L1\./.test(document.getElementById('freundEigenerCode').textContent) && !!document.getElementById('freundEigenerCode').offsetHeight);
+// Runde 159: kurzer Code <id>-XXXX-XXXX statt L1.…
+const codeDanach = await fr.evaluate(() => /^pruef-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$/.test(document.getElementById('freundEigenerCode').textContent) && !!document.getElementById('freundEigenerCode').offsetHeight);
 await fr.fill('#freundCode', '240k1e1w2d'); await fr.click('#btnFreundSpeichern'); await fr.waitForTimeout(1200);
 const frVergleich = await fr.evaluate(() => ({ansicht: document.querySelector('.view.active').id,
   karten: document.querySelectorAll('#view-compare .compat-card').length, zurueck: document.getElementById('navZurueckText').textContent}));
