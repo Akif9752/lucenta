@@ -161,10 +161,10 @@
      1,7:1 und sah trotzdem bedienbar aus. Der Platz bleibt, damit der Monatsname nicht springt. */
   .tf-kal-pfeil:disabled{ visibility:hidden; }
   .tf-kal-pfeil:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:-2px; }
-  .tf-kal-wochentage, .tf-kal-raster{ display:grid; grid-template-columns:repeat(7, 1fr); gap:5px; }
+  .tf-kal-wochentage, .tf-kal-raster{ display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:5px; }
   .tf-kal-wochentage span{ text-align:center; font-size:calc(11px * var(--dt, 1)); color:var(--muted-soft); }
   .tf-kal-zelle{
-    aspect-ratio:1; border-radius:50%; border:none; padding:0; font:inherit; font-size:calc(13px * var(--dt, 1));
+    aspect-ratio:1; border-radius:50%; border:none; padding:0; font:inherit; font-size:calc(13px * min(var(--dt, 1), 1.4));
     display:flex; align-items:center; justify-content:center; color:var(--muted-soft);
     background:transparent;
   }

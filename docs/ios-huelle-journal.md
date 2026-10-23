@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 154 | siehe `git log` | Feedback B9: Navigation wie iOS (Chevron mit Ziel, kleiner Titel beim Scrollen, Pillen verborgen) |
+| 155 | siehe `git log` | Fehler „‹ Start" (Klassenname-Kollision); Freunde als einziger Ort (ein Feld, Vergleich `view-compare`, Archiv uebernommen); WebKit-Absturz im Balkenpuls behoben |
+| 154 | `cf6466c` | Feedback B9: Navigation wie iOS (Chevron mit Ziel, kleiner Titel beim Scrollen, Pillen verborgen) |
 | 153 | `fe25cbe` | Feedback B8: Dynamic Type bis 200 % (`--dt` aus der Huelle, `data-text="gross"`, Fehlersuche `320px@200%`) |
 | 152 | `f1ff0e0` | Feedback A1 (Sperre nach Antwort 50), A3 (`PrivacyInfo.xcprivacy`), A4 (Konto loeschen), A5 (ehrliche Versprechen, 8 Sprachen + Store), B6 (nur noch Freundescode; Wiederherstellungscode in Einstellungen), B7 (Einladung als Universal Link, scharf erst mit Domain) |
 | 151 | `41c2e29` | Feedbackrunde A bis Z: 19 Befunde in `docs/feedbackrunde-151.md` (5 kritisch: Doppelspeichern auf Frage 50, Impressum leer, Privacy Manifest, Konto loeschen, widerspruechliche Versprechen) |
@@ -116,7 +117,10 @@ Regeln, die er gesetzt hat:
 - **Onboarding:** `19c-onboarding.js`, Markup `#onboarding` vor `#drawerScrim`. Merker `lucenta_onboarding`.
   Unter Automatisierung (`navigator.webdriver`) AUS — sonst blockierte es alle Pruefungen; gezielt mit
   `index.html?onboarding=1`. Bestandsnutzer mit Daten bekommen es nie.
-- **Freunde:** `06b-freunde.js` (`lucenta_freunde`, max. 30), verbunden mit dem Archiv ueber den Code.
+- **Freunde (Runde 155 neu geordnet):** einziger Ort fuer Codes und Vergleiche. `renderFreunde`
+  (Karte `freundIchHTML`, Feld `freundSpeichern`, Liste `freundZeileHTML` nach Naehe), Vergleich
+  `freundVergleichen` -> `view-compare`, `archivUebernehmen` (einmalig). Kein Vergleichsarchiv mehr.
+- **Freunde:** `06b-freunde.js` (`lucenta_freunde`, max. 30).
   **Freundescode** `L1.<Ergebnis-Code>.<Figur>.<Name base64url>` (`eigenerFreundescode`,
   `freundescodeLesen` — sucht im ganzen eingefuegten Text). Name/Figur NICHT waehlbar, kommen von der
   Person. Rangliste `freundeNachNaehe`, Gruppenbild `gruppenRadarSVG` (Lucenta+), Formel
@@ -181,7 +185,6 @@ Bei Gestaltungsfragen vorher mit Optionen fragen.
 
 *C — Feinschliff*
 13. Haptik-Text („bei jeder Antwort im Fragebogen") veraltet — seit Runde 126 bei jedem Tipp.
-14. „Kopieren" ohne Freundescode sichtbar: `hidden` wird von `.btn` ueberschrieben.
 15. Dauer: Store „sieben Minuten", Onboarding „5 bis 10 Minuten" — messen, vereinheitlichen.
 16. Ueberschrift Onboarding „Lerne dich kennen …" vs. Startseite „Lern dich kennen …".
 17. Gesperrtes „Weiter" im Onboarding-Schritt 2 sieht aktiv aus.
@@ -205,7 +208,8 @@ Bei Gestaltungsfragen vorher mit Optionen fragen.
 
 - **Bezahlgrenze (Runde 128, geaendert Runde 136):** frei sind Test, Ergebnistyp, Motto, Kurzfassung, Radar, Teilen,
   Code, je Dimension Wert + Kernsatz + erster Satz, Tagesform-Eintragen + 7 Tage, Erinnerung, Vergleiche
-  mit ZWEI Personen und ZWEI Plaetze im Archiv (`FREI_VERGLEICHE`, `FREI_ARCHIV`). "Verstehen" ist seit
+  mit ZWEI Personen (`FREI_VERGLEICHE`; die zwei Archivplaetze `FREI_ARCHIV` entfielen in Runde 155 mit dem
+  Archiv, Entscheidung des Inhabers). "Verstehen" ist seit
   Runde 136 GANZ Lucenta+. Alles andere Lucenta+, gesperrt als verschwommene Vorschau des echten Inhalts.
   Gespeichertes bleibt lesbar.
 - **Ehrliche Verkaufsmittel:** keine Countdowns, keine erfundene Beliebtheit, kein Probezeitraum.
@@ -337,6 +341,66 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 155 — „‹ Start" verrueckt; Freunde als einziger Ort; ein WebKit-Absturz im Fortschrittsbalken
+
+**Fehler (vom Inhaber im Simulator gemeldet):** Nach „‹ Start" stand die Startseite nach links versetzt.
+Ursache war meine eigene Runde 154: Der neue Chevron hiess `.nav-zurueck`, genauso wie die Klasse, die
+`showView` einer Seite fuer die Rueckwaerts-Bewegung gibt. Die Startseite bekam damit die Regeln des Knopfs
+ab (`max-width:42%`, `margin-left:-8px`, `display:flex`, jedes `span` einzeilig): 147 statt 350 pt breit.
+Die Fehlersuche sah es nicht, sie misst Ueberlauf, nicht zu schmale Seiten. Jetzt `.kopf-zurueck`, und
+`pruef-app` prueft nach „‹ Start" die volle Breite (gemessen: vorher 147, jetzt 350).
+
+**Auftrag:** das Code-/Einladungssystem uebersichtlicher und einheitlicher. Befund vorab: drei Eingaenge
+fuer dasselbe (Seitenleiste „Ergebnis vergleichen", „Vergleichsarchiv", „Freunde"), zwei Felder fuer denselben
+Code, die Zeichenkette `L1.…` offen sichtbar, und ein Vergleich mit einem Freund sprang auf die
+Ergebnisseite. **Wahl des Inhabers:** alles unter „Freunde".
+
+**Umgesetzt:**
+- Seitenleiste nur noch „Freunde". Ergebnisseite: eine Zeile „Mit Freunden vergleichen ›" (im
+  Gastdurchlauf stattdessen weiter die Code-Zeile); der Abschnitt „Kompatibilitaet" ist weg.
+- Freunde-Seite: eigene Karte (Figur, Name, „Einladen", „Code kopieren", „Code anzeigen"), EIN Feld
+  „Code oder Einladung einfuegen" (nimmt auch einen alten 10-stelligen Code, dann „Ohne Namen"), darunter die
+  Liste nach Naehe mit Prozent und Balken (die Rangliste ist darin aufgegangen), unten das Gruppenbild.
+- Vergleich = Unterseite `view-compare` („‹ Freunde"), Kopf mit Figur und Name, Legende „Du · <Name>",
+  unten „Aus Freunden entfernen". `renderCompat` ist unveraendert bis auf die Speicher-Zeile und „Als Freund
+  speichern" — wer verglichen wird, ist schon Freund. Ein Einladungslink oeffnet jetzt ebenfalls gleich den
+  Vergleich.
+- **Vergleichsarchiv aufgeloest:** `archivUebernehmen()` macht beim ersten Start jeden gespeicherten
+  Vergleich einmal zum Freund (Name = Beschriftung), Merker `lucenta_archiv_uebernommen`. Die Archivdaten
+  bleiben liegen (Sicherung, Verstehen, Zaehler in den Einstellungen lesen sie noch). `06-vergleichsarchiv.js`
+  und `view-compat-archive` sind entfernt. **Folge fuer die Bezahlgrenze:** `FREI_ARCHIV` (2 freie Plaetze)
+  hat keinen Gegenstand mehr; es bleibt „Vergleiche mit zwei Personen frei" (`FREI_VERGLEICHE`), gezaehlt beim
+  Oeffnen eines Vergleichs; Freunde speichern ist frei, Gruppenbild Lucenta+.
+- Nebenbei: `.btn[hidden]` gilt jetzt (Befund C14, „Kopieren" ohne Code sichtbar), und die Legende unter
+  dem Vergleichsradar hatte nie Stilregeln („DuAndere Person") — jetzt Punkte in den Radarfarben.
+- Der Ansichtsname heisst `compare`, nicht `vergleich`: Der i18n-Audit haelt deutsche Woerter als Literal
+  fuer unuebersetzten Text (`'freunde'` kommt nur durch, weil es zufaellig ein Sprachschluessel ist).
+
+**WebKit-Absturz (ernst, auch fuers iPhone):** Der Absturz in `pruef-app` aus Runde 154 kam wieder — kein
+Zufall. Aufrufstapel: `PlatformCAFilters::updatePresentationModifiers` -> `CAPresentationModifier: value has
+more elements (20) than initial value (1)`. Ursache: `#focusline-fill` trug `filter: blur(0px)` (eine
+Funktion), die Puls-Animation `balken-impuls` aber `brightness() saturate()` — WebKit muss zwischen ungleichen
+Filterlisten uebergehen und stuerzt dabei gelegentlich ab. Der Puls laeuft an den Meilensteinen und am Ende des
+Fragebogens. Nachgestellt (300 Pulse): vorher 1 von 3 Laeufen abgestuerzt, nach der Behebung 0 von 8. Jetzt
+tragen Ruhezustand und Animation dieselbe Liste `brightness() saturate()`. Feste Pruefung in `pruef-app` (ein
+Lauf, schwacher aber billiger Wachposten). **Regel fuer neue Animationen:** eine animierte `filter`-Liste muss
+dieselben Funktionen in derselben Reihenfolge haben wie der Ruhezustand.
+
+**Nachtrag zu B8 (200 %):** Nach dem Datumswechsel fand die Fehlersuche bei `320px@200%` den Tagesform-
+Kalender 164 pt zu breit — die Spalten waren `1fr` und wuchsen mit den Ziffern; jetzt `minmax(0, 1fr)`,
+Ziffern hoechstens 140 %. Am Bild dazu ein Fund, den keine Zaehlung sieht: Das Lucenta+-Kaertchen ueber
+einer verschwommenen Vorschau lag absolut und ragte bei 200 % in den naechsten Abschnitt. Jetzt liegen
+Vorschau und Kaertchen in derselben Gitterzelle; der Kasten waechst mit (bei 100 % unveraendert gemessen:
+Kaertchen mittig, gleiche Abstaende oben und unten).
+
+**Werkzeuge:** `fehlersuche` hat jetzt einen Weg `freunde` (gab es nie) und erreicht `vergleich` ueber das
+Feld (`zu()` kennt dafuer `ueber`: erst Freunde, nach dem Einfuegen der Vergleich). `diff_sprachen` ebenso
+(Bericht 92 -> 119: der Vergleich wird jetzt wirklich erfasst, vorher nur eine Fehlermeldung; die neuen Zeilen
+sind Kuerzel wie „EXTRA." und der verborgene Code). `pruef-nativ`: der Link-Fall erwartet jetzt den Vergleich.
+`pruef-app` 36 (neu: Freundes-Weg, volle Breite nach „‹ Start", Puls ohne Absturz). `pruef-alles`: **9/9** (11,1 Min.).
 
 ---
 

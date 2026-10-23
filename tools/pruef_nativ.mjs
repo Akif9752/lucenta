@@ -467,7 +467,11 @@ await seite.evaluate(() => { localStorage.removeItem('lucenta_freunde');
 await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(700);
 let fn = await freundeNamen();
 ok(fn.length === 1 && fn[0] === 'Marie/fuchs', 'Kaltstart mit Link: Marie mit Fuchs ist angelegt (' + fn.join(',') + ')');
-ok(await seite.evaluate(() => document.getElementById('view-freunde').classList.contains('active')), 'und die Freunde-Seite ist offen');
+// Seit Runde 155 wie das Einfuegen: mit eigenem Ergebnis gleich der Vergleich, sonst die Freunde-Seite.
+const nachLink = await seite.evaluate(() => ({ergebnis: !!localStorage.getItem('lucenta_result'),
+  ansicht: document.querySelector('.view.active').id, name: document.getElementById('vergleichName').textContent}));
+ok(nachLink.ergebnis ? (nachLink.ansicht === 'view-compare' && nachLink.name === 'Marie') : nachLink.ansicht === 'view-freunde',
+   'und es oeffnet sich ' + (nachLink.ergebnis ? 'der Vergleich mit Marie' : 'die Freunde-Seite') + ' (' + nachLink.ansicht + ', ' + nachLink.name + ')');
 await seite.evaluate(() => window.__linkOeffnen && window.__linkOeffnen({url: 'https://lucenta.example/f#L1.240k1e1w2d.fuchs.TWFyaWU'}));
 await seite.waitForTimeout(200);
 ok((await freundeNamen()).length === 1, 'derselbe Link noch einmal (appUrlOpen beim Kaltstart) verdoppelt nichts');

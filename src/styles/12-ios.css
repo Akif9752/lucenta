@@ -618,7 +618,10 @@
   #plusPreisWahl, #plusPreisWahl .segment-opt{ width:100%; max-width:100%; box-sizing:border-box; }
 
   /* ---------- Runde 127: verschwommene Vorschau an gesperrten Stellen ---------- */
-  .plus-vorschau{ position:relative; }
+  /* Vorschau und Kaertchen in derselben Gitterzelle: Ist das Kaertchen hoeher (grosse Schrift), waechst der
+     Kasten mit, statt es in den naechsten Abschnitt ragen zu lassen. */
+  .plus-vorschau{ position:relative; display:grid; }
+  .plus-vorschau > *{ grid-area:1 / 1; min-width:0; }
   /* Die Maske laeuft an allen vier Seiten aus (Schnittmenge zweier Verlaeufe; source-in fuer WebKit).
      Sie wirkt NACH dem Filter, blendet also das verschwommene Bild aus. */
   .plus-unscharf{
@@ -632,7 +635,7 @@
     max-height:340px; overflow:hidden;
   }
   .plus-vorschau-karte{
-    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(300px, 88%);
+    position:relative; z-index:1; align-self:center; justify-self:center; width:min(300px, 88%); box-sizing:border-box;
     display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;
     padding:16px 18px; border-radius:var(--radius-m);
     background:color-mix(in srgb, var(--surface) 88%, transparent);
@@ -710,16 +713,6 @@
   .plus-modal-leise{ display:block; min-height:44px; margin:6px auto 0; padding:10px 16px; background:none; border:none; font:inherit; font-size:calc(14px * var(--dt, 1)); color:var(--muted); cursor:pointer; }
 
   /* Freunde: Zeilen wie im Archiv, mit Figur vorn; das Raster der Figuren kleiner als im Profil. */
-  #view-freunde .settings-group{ margin-bottom:18px; }
-  #view-freunde .name-input{ margin-bottom:12px; }
-  #view-freunde .freund-figuren{ margin:6px 0 14px; }
-  #view-freunde .freund-zeile{ display:flex; align-items:center; gap:12px; padding:12px 14px;
-    background:var(--surface); border-radius:var(--radius-m); }
-  #view-freunde .freund-avatar{ width:44px; height:44px; flex-shrink:0; font-size:calc(15px * var(--dt, 1)); }
-  #view-freunde .freund-text{ flex:1; min-width:0; text-align:left; }
-  #view-freunde .freund-vergleiche summary{ font-size:calc(13px * var(--dt, 1)); color:var(--accent); cursor:pointer; margin-top:4px; }
-  #view-freunde .freund-vergleiche ul{ list-style:none; padding:0; margin:6px 0 0; font-size:calc(13px * var(--dt, 1)); }
-  #view-freunde .freund-vergleiche li{ display:flex; justify-content:space-between; gap:12px; color:var(--muted); }
 
   /* Onboarding beim ersten Oeffnen: eine ganze Seite ueber allem, Inhalt oben, Weiter unten. */
   #onboarding{ position:fixed; inset:0; z-index:9000; background:var(--paper); color:var(--ink);
@@ -758,18 +751,9 @@
   @keyframes ob-rein{ from{ transform:translateX(28px); } to{ transform:none; } }
   @media (prefers-reduced-motion: reduce){ #onboarding, #onboarding .ob-dots span{ transition:none; } #onboarding .ob-rein{ animation:none; } }
   /* Freunde: Naehe-Rangliste und Gruppenbild */
-  #view-freunde .freund-naehe-zeile{ display:flex; align-items:center; gap:10px; min-height:44px; }
-  #view-freunde .freund-naehe-zeile + .freund-naehe-zeile{ border-top:1px solid var(--line); }
-  #view-freunde .freund-naehe-rang{ width:16px; color:var(--muted); font-size:calc(13px * var(--dt, 1)); text-align:right; }
-  #view-freunde .freund-avatar-klein{ width:30px; height:30px; flex-shrink:0; font-size:calc(12px * var(--dt, 1)); }
-  #view-freunde .freund-naehe-name{ flex:0 1 34%; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  #view-freunde .freund-naehe-balken{ flex:1; height:6px; border-radius:3px; background:var(--line); overflow:hidden; }
-  #view-freunde .freund-naehe-balken span{ display:block; height:100%; border-radius:3px; background:var(--accent); }
-  #view-freunde .freund-naehe-wert{ width:44px; text-align:right; font-size:calc(14px * var(--dt, 1)); }
   #view-freunde .freunde-gruppe-radar svg{ display:block; width:100%; max-width:320px; margin:0 auto; }
   #view-freunde .freunde-legende{ display:flex; flex-wrap:wrap; gap:6px 14px; justify-content:center; font-size:calc(13px * var(--dt, 1)); color:var(--muted); margin-top:6px; }
   #view-freunde .freunde-legende i{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:-1px; }
-  .compat-als-freund{ margin-top:10px; }
 
   /* "Mit Apple anmelden" nach Apples Vorgaben: schwarz auf Hell, weiss auf Dunkel, volle Breite, 44+ pt. */
   .apple-knopf{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:48px;
@@ -787,7 +771,6 @@
   }
   #view-settings .konto-icloud > .danger-btn:active{ transform:none; background:var(--surface-2); }
   #onboarding .ob-anmelden{ margin:12px auto 0; text-align:center; min-height:44px; }
-  #view-freunde .freund-eigener-code{ font-size:calc(13px * var(--dt, 1)); word-break:break-all; background:var(--surface-2); border-radius:10px; padding:10px 12px; margin:4px 0 12px; color:var(--ink); user-select:all; -webkit-user-select:all; }
   #view-plus .plus-vorteile{ margin:0; }
   #view-plus .plus-seite-knoepfe{ display:flex; flex-direction:column; gap:8px; margin-top:8px; }
   #view-plus .plus-seite-knoepfe .btn-primary{ width:100%; min-height:50px; }
@@ -812,15 +795,15 @@
   /* Navigation wie iOS (Feedback B9, Entscheidung des Inhabers): Chevron mit Ziel links, kleiner Titel
      mittig erst nach dem Hochscrollen des grossen. Die Zurueck-Pillen bleiben unsichtbar im Dokument —
      der Chevron loest sie aus (navLeisteAnwenden in 02-state.js). */
-  .nav-zurueck{
+  .kopf-zurueck{
     display:flex; align-items:center; gap:6px; min-height:44px; max-width:42%; margin:0 0 0 -8px; padding:0 8px;
     background:none; border:none; color:var(--accent-strong); cursor:pointer;
     font-family:var(--sans); font-size:calc(17px * min(var(--dt, 1), 1.2)); font-weight:400; letter-spacing:-.01em;
   }
-  .nav-zurueck[hidden]{ display:none; }
-  .nav-zurueck span{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .nav-zurueck:active{ opacity:.5; }
-  .nav-zurueck:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; border-radius:8px; }
+  .kopf-zurueck[hidden]{ display:none; }
+  .kopf-zurueck span{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .kopf-zurueck:active{ opacity:.5; }
+  .kopf-zurueck:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; border-radius:8px; }
   header.top.unterseite .wordmark{ display:none; }
   header.top.nav-ohne-pfeil .nav-chevron{ display:none; }
   .nav-titel{
@@ -834,3 +817,43 @@
   .quiz-head > button[id^="btnBack"]{ display:none; }
   .quiz-head.nur-zurueck{ display:none; }
   .quiz-head{ justify-content:flex-end; }
+
+  /* Freunde (Entscheidung des Inhabers): eigene Karte, ein Feld, eine Liste nach Naehe; Tipp = Vergleich. */
+  #view-freunde .settings-group{ margin-bottom:18px; }
+  .freund-ich-karte{ background:var(--surface); border-radius:var(--radius-m); padding:16px; margin-top:18px;
+    display:flex; flex-direction:column; gap:14px; }
+  .freund-ich-kopf{ display:flex; align-items:center; gap:12px; }
+  .freund-ich-knoepfe{ display:flex; gap:10px; flex-wrap:wrap; }
+  .freund-ich-knoepfe .btn{ flex:1 1 auto; min-height:44px; justify-content:center; }
+  .freund-code-zeigen{ align-self:flex-start; background:none; border:none; padding:6px 0; min-height:44px; cursor:pointer;
+    font-family:var(--sans); font-size:calc(15px * var(--dt, 1)); color:var(--accent-strong); }
+  #view-freunde .freund-eigener-code{ font-size:calc(13px * var(--dt, 1)); word-break:break-all; background:var(--surface-2);
+    border-radius:10px; padding:10px 12px; color:var(--ink); user-select:all; -webkit-user-select:all; }
+  #view-freunde .freund-eigener-code[hidden]{ display:none; }
+  .freund-hinzu{ display:flex; gap:10px; align-items:center; margin-top:18px; }
+  #view-freunde .freund-hinzu .name-input{ flex:1; min-width:0; margin:0; }
+  .freund-hinzu .btn{ flex-shrink:0; min-height:44px; }
+  .freund-hinzu-hinweis{ margin:8px 0 20px; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
+  .freund-liste{ background:var(--surface); border-radius:var(--radius-m); overflow:hidden; margin-bottom:22px; }
+  .freund-zeile{ position:relative; width:100%; display:flex; align-items:center; gap:12px; min-height:60px; padding:10px 16px;
+    background:transparent; border:none; cursor:pointer; color:var(--ink); font:inherit; text-align:left; }
+  .freund-zeile + .freund-zeile::before{ content:''; position:absolute; top:0; left:72px; right:0; height:1px; background:var(--line); }
+  .freund-zeile:active{ background:var(--surface-2); }
+  .freund-zeile .chev{ color:var(--muted); flex-shrink:0; }
+  #view-freunde .freund-avatar{ width:44px; height:44px; flex-shrink:0; font-size:calc(15px * var(--dt, 1)); }
+  #view-freunde .freund-text{ flex:1; min-width:0; display:flex; flex-direction:column; gap:6px; text-align:left; }
+  .freund-text .history-title{ overflow:hidden; text-overflow:ellipsis; }
+  .freund-balken{ display:block; height:5px; border-radius:3px; background:var(--line); overflow:hidden; }
+  .freund-balken span{ display:block; height:100%; border-radius:3px; background:var(--accent); }
+  .freund-wert{ flex-shrink:0; font-size:calc(15px * var(--dt, 1)); color:var(--ink); }
+  .ergebnis-freunde{ margin-top:14px; background:var(--surface-2); }
+  .ergebnis-freunde[hidden]{ display:none; }
+  .vergleich-kopf{ display:flex; flex-direction:column; align-items:center; text-align:center; }
+  .vergleich-avatar{ width:72px; height:72px; font-size:calc(24px * var(--dt, 1)); margin-bottom:8px; }
+  .vergleich-box{ margin-top:8px; }
+  .freund-entfernen{ display:flex; justify-content:center; width:100%; min-height:46px; margin:22px 0 8px;
+    background:var(--surface); border:none; border-radius:var(--radius-m); color:var(--danger);
+    font-family:var(--sans); font-size:calc(16px * var(--dt, 1)); }
+  /* .btn setzt display und schlug sonst das hidden-Attribut (Befund C14). */
+  .btn[hidden]{ display:none; }
+  #view-freunde .history-title{ text-align:left; }

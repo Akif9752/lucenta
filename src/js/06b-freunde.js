@@ -82,53 +82,49 @@
     return '<svg viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+escapeHTML(aria)+'">'+
       ringe+achsen+eigenes+linien+'</svg>';
   }
+  // Unter der Liste nur noch das Gruppenbild; die Rangliste ist die Liste selbst (nach Naehe geordnet).
   function freundeUebersichtHTML(){
     var eigen = loadResult();
     var liste = eigen ? freundeNachNaehe(eigen) : [];
     if (liste.length < 2) return '';
-    var rang = '<div class="settings-group freunde-naehe"><h2>'+tx('freunde_naehe_titel')+'</h2>'+
-      liste.map(function(e, i){
-        return '<div class="freund-naehe-zeile"><span class="freund-naehe-rang mono">'+(i+1)+'</span>'+
-          '<span class="avatar freund-avatar-klein" data-naehe-avatar="'+i+'" aria-hidden="true"></span>'+
-          '<span class="freund-naehe-name">'+escapeHTML(freundName(e.f))+'</span>'+
-          '<span class="freund-naehe-balken" aria-hidden="true"><span style="width:'+Math.max(4, e.match)+'%"></span></span>'+
-          '<span class="freund-naehe-wert mono">'+e.match+' %</span></div>';
-      }).join('')+'</div>';
     var gruppe = liste.slice(0, GRUPPE_MAX);
     var bild = '<div class="radar-wrap freunde-gruppe-radar">'+gruppenRadarSVG(eigen, gruppe)+'</div>'+
       '<div class="freunde-legende"><span><i style="background:var(--accent)"></i>'+tx('freunde_du')+'</span>'+
-      gruppe.map(function(e, i){ return '<span><i style="background:var('+GRUPPE_FARBEN[i]+')"></i>'+escapeHTML(e.f.name)+'</span>'; }).join('')+'</div>';
+      gruppe.map(function(e, i){ return '<span><i style="background:var('+GRUPPE_FARBEN[i]+')"></i>'+escapeHTML(freundName(e.f))+'</span>'; }).join('')+'</div>';
     // Das Gruppenbild ist Lucenta+ (Entscheidung des Inhabers): Es geht ueber den freien Vergleich mit
     // zwei Personen hinaus. Frei steht es als verschwommene Vorschau.
-    var gruppenTeil = '<div class="settings-group freunde-gruppe"><h2>'+tx('freunde_gruppe_titel')+'</h2>'+
+    return '<div class="settings-group freunde-gruppe"><h2>'+tx('freunde_gruppe_titel')+'</h2>'+
       (istPlus() ? bild : vorschauHTML(bild, tx('plus_freunde_gruppe')))+'</div>';
-    return rang + gruppenTeil;
-  }
-  function freundeUebersichtAvatare(wrap){
-    var eigen = loadResult();
-    if (!eigen) return;
-    var liste = freundeNachNaehe(eigen);
-    wrap.querySelectorAll('[data-naehe-avatar]').forEach(function(el){
-      var e = liste[+el.getAttribute('data-naehe-avatar')];
-      if (e) renderAvatarInto(el, {name: e.f.name, figur: e.f.figur || null, avatarColor: 'accent'});
-    });
   }
 
-  function vergleicheMit(code){
-    return loadCompatArchive().filter(function(e){ return e.otherCode === code; });
-  }
 
   // Wie "Ansehen" im Archiv: das eigene Ergebnis zeigen und den Vergleich mit dieser Person rechnen.
+  // Der Vergleich mit einem Freund ist eine Unterseite von Freunde (view-compare).
+  var vergleichFreund = null;
   function freundVergleichen(code){
     var eigen = loadResult();
     if (!eigen){ toast(tx('js_kein_eigenes_ergebnis_vorh')); return; }
-    scores = eigen; guestRun = false;
-    renderResult();
-    showView('result');
+    var f = loadFreunde().filter(function(x){ return x.code === code; })[0];
+    if (!f) return;
+    vergleichFreund = f;
     $('cmpMe').value = toCode(eigen);
-    $('cmpOther').value = code;
+    $('cmpOther').value = f.code;
+    $('cmpOther').setAttribute('data-freund', JSON.stringify({code: f.code, name: f.name, figur: f.figur}));
+    $('vergleichName').textContent = freundName(f);
+    renderAvatarInto($('vergleichAvatar'), {name: f.name, figur: f.figur || null, avatarColor: 'accent'});
     renderCompat();
-    setTimeout(function(){ $('compareAnchor').scrollIntoView({behavior:'smooth'}); }, 250);
+    var andere = document.querySelector('#compatResult .compat-legend > span:last-child');
+    if (andere) andere.innerHTML = '<span class="dot dot-other"></span>' + escapeHTML(freundName(f));
+    showView('compare');
+  }
+  function freundEntfernen(){
+    var f = vergleichFreund;
+    if (!f || !window.confirm(decodeEntities(tx('freunde_entfernen_frage').split('{name}').join(freundName(f))))) return;
+    saveFreunde(loadFreunde().filter(function(x){ return x.code !== f.code; }));
+    vergleichFreund = null;
+    toast(tx('freunde_entfernt'));
+    renderFreunde();
+    showView('freunde');
   }
 
   // Einladung als Universal Link (Entscheidung des Inhabers). Der Code steht hinter #, das schickt kein
@@ -152,7 +148,7 @@
     letzterEinladungsLink = url;
     if (!freundAnlegen(info)) return;
     renderFreunde();
-    showView('freunde');
+    if (loadResult()) freundVergleichen(info.code); else showView('freunde');
   }
   // Dynamic Type: Die Huelle setzt --dt an :root (MainViewController.textFaktor). Ab 140 % schaltet das
   // Stilblatt auf umbrechende Zeilen um; die Schwelle steht nur hier.
@@ -198,72 +194,106 @@
     toast(tx('freunde_gespeichert'));
     return true;
   }
+  // EIN Feld fuer alles: Freundescode, ganze Einladung oder ein alter 10-stelliger Code (dann ohne Namen).
+  // Die Person wird angelegt und der Vergleich geoeffnet.
   function freundSpeichern(){
     var feld = $('freundCode');
     var info = freundescodeLesen(feld.value);
     if (!info){
       var nur = (feld.value || '').replace(/[^a-z0-9]/gi, '').toLowerCase();
-      schuetteln(feld);
-      toast(tx(fromCode(nur) ? 'freunde_nur_freundescode' : 'freunde_code_ungueltig'));
-      return;
+      if (nur.length === 10 && fromCode(nur)) info = {code: nur, figur: '', name: ''};
     }
+    if (!info){ schuetteln(feld); toast(tx('freunde_code_ungueltig')); return; }
     if (!freundAnlegen(info)){ schuetteln(feld); return; }
     feld.value = '';
     renderFreunde();
     renderSettings();
+    if (loadResult()) freundVergleichen(info.code);
   }
 
-  function freundZeileHTML(f, i){
-    var vgl = vergleicheMit(f.code);
-    var unter = !vgl.length ? tx('freunde_kein_vergleich') :
-      tx(vgl.length === 1 ? 'freunde_ein_vergleich' : 'freunde_n_vergleiche')
-        .split('{n}').join(String(vgl.length)).split('{p}').join(String(vgl[vgl.length-1].match));
-    var liste = '';
-    if (vgl.length > 1){
-      var fmt = historyDateFmt();
-      liste = '<details class="freund-vergleiche"><summary>'+tx('freunde_vergleiche_zeigen')+'</summary><ul>'+
-        vgl.slice().reverse().map(function(e){
-          var d = ''; try{ d = fmt.format(new Date(e.ts)); }catch(ex){}
-          return '<li><span>'+d+'</span><span class="mono">'+e.match+' %</span></li>';
-        }).join('')+'</ul></details>';
-    }
-    return '<div class="freund-zeile">'+
+  // Eine Zeile = ein Knopf zum Vergleich, mit der Uebereinstimmung rechts.
+  function freundZeileHTML(e, i){
+    var wert = e.match === null ? '' : '<span class="freund-wert mono">'+e.match+' %</span>';
+    return '<button type="button" class="freund-zeile" data-freund-vergleichen="'+i+'">'+
       '<span class="avatar freund-avatar" data-freund-avatar="'+i+'" aria-hidden="true"></span>'+
-      '<div class="freund-text"><div class="history-title">'+escapeHTML(freundName(f))+'</div>'+
-        '<div class="history-date">'+unter+'</div>'+liste+'</div>'+
-      '<div class="archive-row-actions">'+
-        '<button type="button" class="btn btn-ghost btn-sm" data-freund-vergleichen="'+i+'">'+tx('freunde_vergleichen')+'</button>'+
-        '<button type="button" class="archive-del" data-freund-entfernen="'+i+'" aria-label="'+tx('freunde_entfernen_aria')+' '+escapeHTML(freundName(f))+'">'+
-          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>'+
-        '</button>'+
-      '</div></div>';
+      '<span class="freund-text"><span class="history-title">'+escapeHTML(freundName(e.f))+'</span>'+
+        (e.match === null ? '' : '<span class="freund-balken" aria-hidden="true"><span style="width:'+Math.max(4, e.match)+'%"></span></span>')+
+      '</span>'+wert+
+      '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>'+
+    '</button>';
+  }
+  // Die eigene Karte: Figur, Name, Einladen und Kopieren; die Zeichenkette erst auf Wunsch.
+  function freundIchHTML(){
+    var code = eigenerFreundescode(), p = loadProfile();
+    if (!code) return '<div class="freund-ich-karte"><p class="settings-hint">'+tx('freunde_erst_test')+'</p>'+
+      '<button type="button" class="btn btn-primary btn-sm" data-ich="test">'+tx('test_starten')+'</button></div>';
+    return '<div class="freund-ich-karte">'+
+      '<div class="freund-ich-kopf"><span class="avatar freund-avatar" id="freundIchAvatar" aria-hidden="true"></span>'+
+        '<span class="freund-text"><span class="history-title">'+escapeHTML(p.name || tx('freunde_du'))+'</span>'+
+        '<span class="history-date">'+tx('freunde_ich_unter')+'</span></span></div>'+
+      '<div class="freund-ich-knoepfe">'+
+        '<button type="button" class="btn btn-primary btn-sm" data-ich="einladen">'+tx('freunde_einladen_knopf')+'</button>'+
+        '<button type="button" class="btn btn-ghost btn-sm" data-ich="kopieren">'+tx('freunde_code_kopieren2')+'</button></div>'+
+      '<button type="button" class="freund-code-zeigen" data-ich="zeigen" aria-expanded="false">'+tx('freunde_code_zeigen')+'</button>'+
+      '<div class="freund-eigener-code mono" id="freundEigenerCode" hidden>'+escapeHTML(code)+'</div>'+
+    '</div>';
+  }
+  function freundIchKlick(e){
+    var b = e.target.closest ? e.target.closest('[data-ich]') : null;
+    if (!b) return;
+    var was = b.getAttribute('data-ich'), code = eigenerFreundescode();
+    if (was === 'einladen') freundeEinladen();
+    else if (was === 'test') $('btnStart').click();
+    else if (was === 'kopieren' && code){
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(code).then(function(){ toast(tx('freunde_code_kopiert')); }).catch(function(){ toast(code); });
+      } else toast(code);
+    } else if (was === 'zeigen'){
+      var c = $('freundEigenerCode'), offen = c.hidden;
+      c.hidden = !offen;
+      b.setAttribute('aria-expanded', String(offen));
+      b.textContent = tx(offen ? 'freunde_code_verbergen' : 'freunde_code_zeigen');
+    }
   }
 
   function renderFreunde(){
     var wrap = $('freundeListe');
     if (!wrap) return;
+    var ich = $('freundIch');
+    if (ich){
+      ich.innerHTML = freundIchHTML();
+      if ($('freundIchAvatar')) renderAvatarInto($('freundIchAvatar'), loadProfile());
+    }
     var oben = $('freundeUebersicht');
-    if (oben){ oben.innerHTML = freundeUebersichtHTML(); freundeUebersichtAvatare(oben); schloesserVerdrahten(oben); }
-    var l = loadFreunde().slice().reverse();
-    wrap.innerHTML = l.length ? '<div class="history-list">'+l.map(freundZeileHTML).join('')+'</div>'
-                              : emptyStateHTML(tx('freunde_leer'));
+    if (oben){ oben.innerHTML = freundeUebersichtHTML(); schloesserVerdrahten(oben); }
+    var eigen = loadResult();
+    // Mit eigenem Ergebnis nach Naehe, sonst die zuletzt hinzugefuegten zuerst.
+    var l = eigen ? freundeNachNaehe(eigen)
+                  : loadFreunde().slice().reverse().map(function(f){ return {f: f, match: null}; });
+    wrap.innerHTML = l.length ? '<div class="freund-liste">'+l.map(freundZeileHTML).join('')+'</div>'
+                              : emptyStateHTML(tx('freunde_leer2'));
     wrap.querySelectorAll('[data-freund-avatar]').forEach(function(el){
-      var f = l[+el.getAttribute('data-freund-avatar')];
+      var f = l[+el.getAttribute('data-freund-avatar')].f;
       renderAvatarInto(el, {name: f.name, figur: f.figur || null, avatarColor: 'accent'});
     });
     wrap.querySelectorAll('[data-freund-vergleichen]').forEach(function(b){
-      b.addEventListener('click', function(){ freundVergleichen(l[+b.getAttribute('data-freund-vergleichen')].code); });
+      b.addEventListener('click', function(){ freundVergleichen(l[+b.getAttribute('data-freund-vergleichen')].f.code); });
     });
-    wrap.querySelectorAll('[data-freund-entfernen]').forEach(function(b){
-      b.addEventListener('click', function(){
-        var code = l[+b.getAttribute('data-freund-entfernen')].code;
-        saveFreunde(loadFreunde().filter(function(f){ return f.code !== code; }));
-        toast(tx('freunde_entfernt'));
-        renderFreunde();
-        renderSettings();
+  }
+  // Das Vergleichsarchiv ist in Freunde aufgegangen (Entscheidung des Inhabers): Jeder gespeicherte
+  // Vergleich wird einmal zu einem Freund; der Name ist die Beschriftung des Vergleichs.
+  var ARCHIV_UEBERNOMMEN = 'lucenta_archiv_uebernommen';
+  function archivUebernehmen(){
+    try{
+      if (localStorage.getItem(ARCHIV_UEBERNOMMEN)) return;
+      var eigen = loadResult(), eigenCode = eigen ? toCode(eigen) : '';
+      var l = loadFreunde();
+      loadCompatArchive().forEach(function(e){
+        if (!fromCode(e.otherCode) || e.otherCode === eigenCode) return;
+        if (l.some(function(f){ return f.code === e.otherCode; })) return;
+        l.push({id: 'f' + e.id, name: (e.label || '').slice(0, 30), figur: '', code: e.otherCode, ts: e.ts || Date.now()});
       });
-    });
-    var eigen = $('freundEigenerCode'), code = eigenerFreundescode();
-    if (eigen) eigen.textContent = code || tx('freunde_erst_test');
-    if ($('btnFreundCodeKopieren')) $('btnFreundCodeKopieren').hidden = !code;
+      saveFreunde(l);
+      localStorage.setItem(ARCHIV_UEBERNOMMEN, '1');
+    }catch(e){}
   }

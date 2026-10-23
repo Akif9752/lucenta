@@ -204,7 +204,7 @@
   #focusline-fill{ transition:width .5s cubic-bezier(.34,1.4,.64,1); }
   #focusline.beat #focusline-fill{ animation:balken-impuls .6s ease; }
   @keyframes balken-impuls{
-    0%,100%{ filter:brightness(1); }
+    0%,100%{ filter:brightness(1) saturate(1); }
     38%    { filter:brightness(1.5) saturate(1.2); }
   }
 

@@ -168,13 +168,6 @@
       showView('result');
       ergebnisEnthuellen();
       plusAngebotNachTest();
-      if (pendingCompareScroll){
-        pendingCompareScroll = false;
-        setTimeout(function(){
-          $('compareAnchor').scrollIntoView({behavior:'smooth'});
-          $('cmpOther').focus();
-        }, 350);
-      }
     }
     // Kurzer "Analysiere..."-Moment, bei reduzierter Bewegung uebersprungen.
     if (prefersReducedMotion()){ reveal(); return; }
@@ -240,7 +233,7 @@
       ? tx('js_dieser_code_ist_die_einzig')
       : tx('js_ergebnis_wiedercode_hinweis');
     $('gastCodeBox').hidden = !guestRun;
-    $('einladenBox').hidden = guestRun;
+    $('btnErgebnisFreunde').hidden = guestRun;
     $('radarWrap').innerHTML = radarSVG(scores);
 
     // Listen nach Wert sortiert; das Radar behaelt die feste O-C-E-A-N-Reihenfolge (vergleichbar ueber
@@ -435,20 +428,6 @@
     var radarBlock = '<div class="radar-wrap compat-radar">'+radarSVG(me, 300, {scores:other})+'</div>'+
       tx('js_duandere_person');
     var note = tx('js_die_prozentzahl_oben_ist_e');
-    // Speichern erst am Ende, wenn der Vergleich schon sichtbar ist.
-    var saveRow = '<div class="compat-save-row">'+
-      '<div class="field"><label for="compatSaveLabel">'+tx('js_name_optional')+'</label><input type="text" id="compatSaveLabel" maxlength="30" placeholder="'+decodeEntities(tx('ph_z_b_1a2b3c4d5e_mia'))+'"></div>'+
-      '<button type="button" class="btn btn-ghost btn-sm" id="btnSaveCompat">'+tx('js_vergleich_speichern')+'</button>'+
-      '</div>';
-    // Aus dem Vergleich die Person als Freund speichern — nur mit ihrem Freundescode, denn Name und Figur
-    // gibt sich jede Person selbst (Entscheidung des Inhabers). Nicht, wenn sie es schon ist.
-    var andererCode = $('cmpOther').value.trim();
-    var freundInfo = null;
-    try{ freundInfo = JSON.parse($('cmpOther').getAttribute('data-freund') || 'null'); }catch(e){}
-    if (freundInfo && freundInfo.code !== andererCode) freundInfo = null;
-    var schonFreund = loadFreunde().some(function(f){ return f.code === andererCode; });
-    var freundRow = (schonFreund || !freundInfo) ? '' : '<button type="button" class="btn btn-ghost btn-sm compat-als-freund" id="btnAlsFreund">'+
-      tx('freunde_als_freund_name').split('{name}').join(escapeHTML(freundName(freundInfo)))+'</button>';
     // Der frueher hier stehende Hinweiskasten ist raus: Er saesse unter fuenf Karten, die den
     // gleichen Hinweis schon in sich tragen, und wuerde denselben Satz sechsmal sagen.
     if (vergleichGesperrt){
@@ -456,38 +435,10 @@
       schloesserVerdrahten(box);
       return;
     }
-    // Runde 136: Speichern ist frei bis FREI_ARCHIV Eintraege (vorher nur mit Lucenta+). Ist das
-    // Archiv voll, steht an der Stelle des Formulars, was Lucenta+ hier oeffnet.
-    var archivVoll = function(){ return !cmpPlus && loadCompatArchive().length >= FREI_ARCHIV; };
-    var archivSchloss = '<div class="compat-save-row compat-save-schloss">'+schlossHTML(tx('plus_archiv_leer'))+'</div>';
-    box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note +
-      (archivVoll() ? archivSchloss : saveRow) + freundRow;
-    if ($('btnAlsFreund')) $('btnAlsFreund').addEventListener('click', function(){
-      if (freundAnlegen(freundInfo)){ var b = $('btnAlsFreund'); if (b) b.remove(); refreshDrawerState(); }
-    });
+    box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note;
     startCompatBars(box);
     schloesserVerdrahten(box);
     lastCompatSnapshot = { myCode: $('cmpMe').value.trim(), otherCode: $('cmpOther').value.trim(), match: match };
-    var saveBtn = $('btnSaveCompat');
-    if (saveBtn){
-      saveBtn.addEventListener('click', function(){
-        if (!lastCompatSnapshot) return;
-        var labelInput = $('compatSaveLabel');
-        var label = labelInput ? labelInput.value.trim().slice(0,30) : '';
-        var entry = { id: 'c'+Date.now()+Math.random().toString(36).slice(2,7), ts: Date.now(),
-          myCode: lastCompatSnapshot.myCode, otherCode: lastCompatSnapshot.otherCode,
-          match: lastCompatSnapshot.match, label: label };
-        if (archivVoll()) return;
-        if (appendCompatArchiveEntry(entry)){
-          toast(tx('js_vergleich_gespeichert'));
-          refreshDrawerState();
-          var reihe = box.querySelector('.compat-save-row');
-          if (archivVoll() && reihe){ reihe.outerHTML = archivSchloss; schloesserVerdrahten(box); }
-        } else {
-          toast(tx('js_konnte_nicht_gespeichert_w'));
-        }
-      });
-    }
     // Ring erst bei 0 % einfuegen und den Zielversatz ein Bild spaeter am selben Element setzen, sonst
     // laeuft der Uebergang nicht.
     var ringHost = $('compatRing');

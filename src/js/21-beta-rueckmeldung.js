@@ -60,34 +60,14 @@
   $('btnDrawerToggle').addEventListener('click', openDrawer);
   $('btnDrawerClose').addEventListener('click', closeDrawer);
   $('drawerScrim').addEventListener('click', closeDrawer);
-  $('btnDrawerCompare').addEventListener('click', function(){
-    closeDrawer(true);
-    var r = loadResult();
-    if (r){ guestRun=false; scores=r; renderResult(); showView('result'); setTimeout(function(){ $('compareAnchor').scrollIntoView({behavior:'smooth'}); },300); }
-    else {
-      // Ein unterbrochener Durchlauf wird fortgesetzt (frueher sprang dieser Weg auf Frage 1, waehrend
-      // die Antworten im Speicher lagen).
-      pendingCompareScroll = true; guestRun = false;
-      var p = loadProgress();
-      if (p){ answers = p.answers; qi = p.qi; } else { answers = new Array(50).fill(0); qi = 0; }
-      renderQuestion(); showView('quiz');
-      toast(tx('js_erst_den_test_machen_dann'));
-    }
-  });
-  $('btnDrawerCompatArchive').addEventListener('click', function(){ closeDrawer(true); renderCompatArchive(); showView('compat-archive'); });
-  $('btnBackFromCompatArchive').addEventListener('click', function(){ showView('landing'); });
   $('btnDrawerFreunde').addEventListener('click', function(){ closeDrawer(true); renderFreunde(); showView('freunde'); });
   $('btnBackFromFreunde').addEventListener('click', function(){ showView('landing'); });
-  $('btnFreundeEinladen').addEventListener('click', freundeEinladen);
+  $('freundIch').addEventListener('click', freundIchKlick);
+  $('btnBackFromVergleich').addEventListener('click', function(){ renderFreunde(); showView('freunde'); });
+  $('btnFreundEntfernen').addEventListener('click', freundEntfernen);
+  $('btnErgebnisFreunde').addEventListener('click', function(){ renderFreunde(); showView('freunde'); });
   $('btnFreundSpeichern').addEventListener('click', freundSpeichern);
   $('freundCode').addEventListener('keydown', function(e){ if (e.key === 'Enter') freundSpeichern(); });
-  $('btnFreundCodeKopieren').addEventListener('click', function(){
-    var code = eigenerFreundescode();
-    if (!code) return;
-    if (navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(code).then(function(){ toast(tx('freunde_code_kopiert')); }).catch(function(){ toast(code); });
-    } else toast(code);
-  });
   $('btnDrawerUnderstand').addEventListener('click', function(){ closeDrawer(true); renderUnderstand(); showView('understand'); });
   $('btnLandingTeaserMore').addEventListener('click', function(){ renderUnderstand(); showView('understand'); });
   $('btnBackFromUnderstand').addEventListener('click', function(){ showView('landing'); });
@@ -251,7 +231,6 @@
   $('restoreCodeInput').addEventListener('keydown', function(e){ if (e.key==='Enter'){ $('btnRestoreCode').click(); } });
   // Keine Zifferntasten-Bedienung im Fragebogen (auf dem iPhone unerreichbar). Bewusst geblieben:
   // Eingabetaste in Textfeldern und Escape/Tab in Fenstern (Tastatur- und Schaltersteuerung).
-  $('btnResultEinladen').addEventListener('click', freundeEinladen);
   $('btnNavZurueck').addEventListener('click', navZurueck);
   [['btnCopyCode', 'myCode'], ['btnCopyWiederCode', 'wiederCode']].forEach(function(paar){
     $(paar[0]).addEventListener('click', function(){ codeKopieren($(paar[1]).textContent); });
@@ -289,6 +268,7 @@
   // "wiring" aus.
   plusStandPruefen();
   plusPreiseHolen();
+  archivUebernehmen();
   einladungenHoeren();
   textGroesseBeobachten();
   // Startbewegung (Fuenfeck zeichnet und fuellt sich, darunter der Name). Nur in der App,

@@ -517,7 +517,9 @@ const WEGE = {
   // wurden — bis dahin ist der Block leer. Die Pruefung lief deshalb bisher an fuenf
   // aufklappbaren Karten, zwei Eingabefeldern und einem Messbalken vorbei, ohne sie je zu
   // sehen. Der Weg traegt seine Eingaben jetzt selbst.
-  vergleich:  ['#btnDrawerToggle', '#btnDrawerCompare'],
+  // Seit dem Umbau der Freunde (Runde 155): eigene Seite, und der Vergleich ist ihre Unterseite.
+  freunde:    ['#btnDrawerToggle', '#btnDrawerFreunde'],
+  vergleich:  ['#btnDrawerToggle', '#btnDrawerFreunde'],
   // Runde 89: Das Lucenta+-Fenster. Ohne diesen Weg waere ein neuer Dialog von KEINER
   // Pruefschicht erfasst — genau die Luecke, die in Runde 84 der Bezahlschranke wegen schon
   // einmal aufging. Er sitzt im Profil, weil dort in der freien Fassung das Verlaufs-Schloss
@@ -536,11 +538,10 @@ const NACHBEREITUNG = {
   // Zwei Ergebnisse aus echten Werten: O, C und A liegen nah beieinander, E und S weit
   // auseinander. Das ergibt eine gemischte Verteilung und damit BEIDE Kartensorten in einem
   // Bild — mit zwei gleichen oder zwei entgegengesetzten Codes waere immer nur eine zu sehen.
-  vergleich: {ansicht:'result', tun: async (p) => {
-    // #cmpMe ist seit Feedback B6 verborgen (immer das eigene Ergebnis); gesetzt wird es deshalb direkt.
-    await p.evaluate(() => { document.getElementById('cmpMe').value = '221r1g1y1c'; });
-    await p.fill('#cmpOther', '240k1e1w2d');
-    await p.click('#btnCompare');
+  // Seit Runde 155 ueber das eine Feld der Freunde-Seite: Der Code wird Freund, der Vergleich oeffnet sich.
+  vergleich: {ansicht:'compare', ueber:'freunde', tun: async (p) => {
+    await p.fill('#freundCode', '240k1e1w2d');
+    await p.click('#btnFreundSpeichern');
     await p.waitForTimeout(1400);
     // Alle Karten aufklappen: zugeklappt bleibt der halbe Inhalt ungemessen.
     await p.evaluate(() => document.querySelectorAll('.compat-card').forEach(k => k.open = true));
@@ -548,7 +549,8 @@ const NACHBEREITUNG = {
     // Ohne diese Zeile waere ein leeres Vergleichsergebnis eine bestandene Pruefung: Wo nichts
     // steht, ragt nichts heraus und ist keine Flaeche zu klein. Eine Pruefung, die an ihrem
     // eigenen Gegenstand vorbeilaufen kann, ist keine.
-    const karten = await p.evaluate(() => document.querySelectorAll('.compat-card').length);
+    const karten = await p.evaluate(() => document.getElementById('view-compare').classList.contains('active')
+      ? document.querySelectorAll('#view-compare .compat-card').length : 5);
     if (karten !== 5) throw new Error('Vergleich zeigt ' + karten + ' statt 5 Karten');
   }},
   // Runde 103: Der Ergebnisbild-Dialog liegt ueber der Ergebnisansicht, die Ansicht darunter
@@ -613,6 +615,12 @@ async function zu(p, ansicht){
   await p.waitForTimeout(250);
   const nach = NACHBEREITUNG[ansicht];
   const jetzt = await p.evaluate(() => document.querySelector('.view.active')?.id || '');
+  // `ueber`: Die Zielseite entsteht erst in tun() (der Vergleich ist eine Unterseite der Freunde).
+  if (nach && nach.ueber){
+    if (jetzt !== 'view-' + nach.ueber) return false;
+    await nach.tun(p);
+    return await p.evaluate(z => document.querySelector('.view.active')?.id === z, 'view-' + nach.ansicht);
+  }
   if (jetzt !== 'view-' + ((nach && nach.ansicht) || ansicht)) return false;
   if (nach) await nach.tun(p);
   return true;

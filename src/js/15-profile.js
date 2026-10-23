@@ -194,7 +194,7 @@
     if (id === 'view-profile') renderProfile();
     else if (id === 'view-understand') renderUnderstand();
     else if (id === 'view-state') renderStateView();
-    else if (id === 'view-compat-archive') renderCompatArchive();
+    else if (id === 'view-freunde') renderFreunde();
     else if (id === 'view-plus') renderPlusSeite();
     else if (id === 'view-result' && loadResult()) renderResult();
     // Die Startseite traegt die Tagesform-Karte, und die kennt beide Fassungen.

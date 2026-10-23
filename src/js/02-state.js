@@ -2,7 +2,6 @@
   var answers = new Array(50).fill(0);
   var qi = 0;
   var scores = null; // {E,A,C,S,O} 0-100
-  var pendingCompareScroll = false;
   // Läuft gerade ein Gastdurchlauf (eine zweite Person auf demselben Gerät)? Dann wird am Ende
   // weder gespeichert noch in den Verlauf geschrieben noch mit dem fremden Vorergebnis verglichen.
   var guestRun = false;
@@ -44,7 +43,7 @@
   }
 
   // Unterseiten und die Seite, aus der sie kommen (Runde 136).
-  var UNTERSEITE_VON = {hilfe:'settings', sprache:'settings', verlauf:'profile'};
+  var UNTERSEITE_VON = {hilfe:'settings', sprache:'settings', verlauf:'profile', compare:'freunde'};
   var navWegTimer = null;
   function navWegAufraeumen(){
     if (navWegTimer){ clearTimeout(navWegTimer); navWegTimer = null; }

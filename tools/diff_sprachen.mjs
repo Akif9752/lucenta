@@ -102,20 +102,18 @@ async function grab(p){ await expandAll(p);
       hatProgress:!!localStorage.getItem('lucenta_progress'),
       hatResult:!!localStorage.getItem('lucenta_result')};});
 }
-const STOPS=['btnDrawerUnderstand','btnDrawerArchetypes','btnDrawerCompatArchive','btnDrawerProfileRow','btnDrawerSettings','btnDrawerCompare'];
+const STOPS=['btnDrawerUnderstand','btnDrawerArchetypes','btnDrawerFreunde','btnDrawerProfileRow','btnDrawerSettings'];
 async function tour(p){
   const out={};
   out['landing']=await grab(p);
   // Mit vorhandenem Ergebnis fuehrt btnStart in die Ergebnisansicht.
   await p.click('#btnStart'); await p.waitForTimeout(900);
   out['ergebnis']=await grab(p);
-  // Vergleich innerhalb der Ergebnisansicht: zwei Codes eintragen und rechnen lassen
-  const me=await p.$('#cmpMe'), other=await p.$('#cmpOther');
-  if(me&&other){
-    const code=await p.evaluate(()=>{const e=document.getElementById('cmpMe');return e?e.value:'';});
-    if(code){ await other.fill(code); const cb=await p.$('#btnCompare');
-      if(cb&&await cb.isVisible()){ await cb.click(); await p.waitForTimeout(900);
-        out['vergleich']=await grab(p); } }
+  // Seit Runde 155 liegt der Vergleich unter Freunde: einen Code einfuegen, die Vergleichsseite oeffnet sich.
+  if(await drawer(p,'btnDrawerFreunde')){
+    await p.fill('#freundCode','240k1e1w2d'); await p.click('#btnFreundSpeichern'); await p.waitForTimeout(1200);
+    if(await p.evaluate(()=>document.getElementById('view-compare').classList.contains('active'))) out['vergleich']=await grab(p);
+    await home(p); await p.click('#btnStart'); await p.waitForTimeout(900);
   }
   // Fragebogen von der Ergebnisansicht aus
   for(const s of ['#btnRetakeTop','#btnRetake']){ const e=await p.$(s);

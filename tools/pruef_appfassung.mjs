@@ -343,7 +343,67 @@ const navZiel = await navSeite.evaluate(() => document.querySelector('.view.acti
 ok(navBild.sichtbar && navBild.text === 'Einstellungen' && !navBild.name && navBild.pillen === 0 && navZiel === 'view-settings',
    'Unterseite: Chevron „Einstellungen" links, kein Name, keine Pille; zurueck landet in den Einstellungen',
    `Text "${navBild.text}", sichtbar ${navBild.sichtbar}, Name ${navBild.name}, Pillen ${navBild.pillen}, Ziel ${navZiel}`);
+// Der Chevron hiess zuerst .nav-zurueck — wie die Bewegungsklasse der Seiten; die Startseite bekam seine
+// Regeln ab (147 statt 350 pt breit). Deshalb: nach dem Zurueck so breit wie der Inhaltsbereich.
+await navSeite.click('#btnNavZurueck'); await navSeite.waitForTimeout(1200);
+const startBreite = await navSeite.evaluate(() => {
+  const v = document.getElementById('view-landing').getBoundingClientRect(), m = document.getElementById('mainContent').getBoundingClientRect();
+  return {aktiv: document.getElementById('view-landing').classList.contains('active'), v: Math.round(v.width), m: Math.round(m.width), l: Math.round(v.left - m.left)};
+});
+ok(startBreite.aktiv && startBreite.v === startBreite.m && startBreite.l === 0,
+   'nach „‹ Start" steht die Startseite in voller Breite an ihrem Platz',
+   `Startseite ${startBreite.v} pt bei +${startBreite.l}, Inhaltsbereich ${startBreite.m} pt`);
 await navCtx.close();
+
+// Runde 155: Alles mit anderen unter Freunde — ein Feld, Vergleich als Unterseite, Archiv uebernommen.
+const frCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+await frCtx.addInitScript(() => {
+  if (localStorage.getItem('__fr')) return;
+  localStorage.setItem('__fr', '1');
+  localStorage.setItem('lucenta_result', JSON.stringify({O:74, C:56, E:63, A:70, S:48}));
+  localStorage.setItem('lucenta_compat_archive', JSON.stringify([{id:'c1', ts:1, myCode:'x', otherCode:'1e2s0u1i2a', match:60, label:'Mama'}]));
+});
+const fr = await frCtx.newPage();
+await fr.goto(`${BASIS}/index.html`, { waitUntil: 'load' }); await fr.waitForTimeout(500);
+await fr.click('#btnDrawerToggle'); await fr.waitForTimeout(400);
+const altEingaenge = await fr.evaluate(() => ['btnDrawerCompare', 'btnDrawerCompatArchive'].filter(id => document.getElementById(id)).length);
+await fr.click('#btnDrawerFreunde'); await fr.waitForTimeout(700);
+const frVorher = await fr.evaluate(() => ({
+  felder: document.querySelectorAll('#view-freunde input[type="text"]').length,
+  codeSichtbar: !!document.getElementById('freundEigenerCode').offsetHeight,
+  namen: [...document.querySelectorAll('#freundeListe .history-title')].map(e => e.textContent),
+}));
+await fr.click('[data-ich="zeigen"]'); await fr.waitForTimeout(200);
+const codeDanach = await fr.evaluate(() => /^L1\./.test(document.getElementById('freundEigenerCode').textContent) && !!document.getElementById('freundEigenerCode').offsetHeight);
+await fr.fill('#freundCode', '240k1e1w2d'); await fr.click('#btnFreundSpeichern'); await fr.waitForTimeout(1200);
+const frVergleich = await fr.evaluate(() => ({ansicht: document.querySelector('.view.active').id,
+  karten: document.querySelectorAll('#view-compare .compat-card').length, zurueck: document.getElementById('navZurueckText').textContent}));
+ok(altEingaenge === 0 && frVorher.felder === 1 && !frVorher.codeSichtbar && codeDanach && frVorher.namen.includes('Mama') &&
+   frVergleich.ansicht === 'view-compare' && frVergleich.karten === 5 && frVergleich.zurueck === 'Freunde',
+   'Freunde: ein Feld, Code erst auf Wunsch, Archiv als Freund uebernommen, Einfuegen oeffnet den Vergleich',
+   `alte Eingaenge ${altEingaenge}, Felder ${frVorher.felder}, Code vorher ${frVorher.codeSichtbar}/nachher ${codeDanach}, ` +
+   `Namen ${frVorher.namen.join('|')}, ${frVergleich.ansicht} mit ${frVergleich.karten} Karten, zurueck "${frVergleich.zurueck}"`);
+await frCtx.close();
+
+// Runde 155: Der Puls des Fortschrittsbalkens animierte eine andere Filterliste als der Ruhezustand
+// (blur vs. brightness+saturate); WebKit stuerzte dabei ab (CAPresentationModifier). Nachgestellt: 1 von 3
+// Laeufen mit 300 Pulsen, nach der Behebung 0 von 8. Ein Lauf hier ist ein schwacher, aber billiger Wachposten.
+const pulsSeite = await browser.newPage({ viewport: { width: 390, height: 844 } });
+let pulsWeg = false; pulsSeite.on('crash', () => { pulsWeg = true; });
+await pulsSeite.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
+await pulsSeite.click('#btnStart'); await pulsSeite.waitForTimeout(500);
+await pulsSeite.evaluate(async () => {
+  const fl = document.getElementById('focusline'), fill = document.getElementById('focusline-fill');
+  for (let i = 0; i < 300; i++) {
+    fill.style.width = (i % 100) + '%';
+    fl.classList.remove('beat'); void fl.offsetWidth; fl.classList.add('beat');
+    await new Promise(r => setTimeout(r, 20 + (i * 37) % 180));
+  }
+}).catch(() => { pulsWeg = true; });
+const pulsListen = await pulsSeite.evaluate(() => getComputedStyle(document.getElementById('focusline-fill')).filter).catch(() => '');
+ok(!pulsWeg && /brightness/.test(pulsListen) && /saturate/.test(pulsListen),
+   '300 Pulse des Fortschrittsbalkens ohne Absturz, Ruhe- und Pulsfilter gleich gebaut', `Filter "${pulsListen}", Absturz ${pulsWeg}`);
+await pulsSeite.close().catch(() => {});
 
 // Feedback A1: Nachtipps zwischen Antwort 50 und dem Ergebnis speicherten je ein weiteres Ergebnis.
 // Geeicht: ohne die Sperre stehen hier 2 Eintraege und die Delta-Karte.
