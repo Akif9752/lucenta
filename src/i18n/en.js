@@ -1028,6 +1028,8 @@
       'skala_max': 'strongly agree',
       'syn_mehr': 'More',
       'syn_weniger': 'Less',
+      'plus_eula': 'Terms of Use (EULA)',
+      'plus_datenschutz': 'Privacy Policy',
       'konto_fehler': 'That didn’t work. Please try again.',
       'freunde_ohne_namen': 'No name',
       'freunde_erst_test': 'Take the test first – then you get your friend code.',

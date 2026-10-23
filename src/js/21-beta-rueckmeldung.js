@@ -232,6 +232,20 @@
   // Keine Zifferntasten-Bedienung im Fragebogen (auf dem iPhone unerreichbar). Bewusst geblieben:
   // Eingabetaste in Textfeldern und Escape/Tab in Fenstern (Tastatur- und Schaltersteuerung).
   $('btnNavZurueck').addEventListener('click', navZurueck);
+  // Apples Standard-EULA (Richtlinie 3.1.2) oeffnet im Browser; Datenschutz ist die Rechtsseite der App.
+  var EULA_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
+  document.addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('[data-recht]') : null;
+    if (!b) return;
+    if (b.getAttribute('data-recht') === 'eula'){
+      var ap = nativVorhanden() && nativModul('App');
+      if (ap && ap.openUrl){ try{ ap.openUrl({url: EULA_URL}); }catch(ex){} }
+      else window.open(EULA_URL, '_blank', 'noopener');
+      return;
+    }
+    if ($('plusModal').classList.contains('open')) closePlusModal();
+    renderRecht(); showView('recht');
+  });
   [['btnCopyCode', 'myCode'], ['btnCopyWiederCode', 'wiederCode']].forEach(function(paar){
     $(paar[0]).addEventListener('click', function(){ codeKopieren($(paar[1]).textContent); });
   });

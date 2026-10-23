@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 157 | siehe `git log` | Feedback B10–B12, C13, C15–C18: Ich-Form, Skala mit Enden, Ergebnisseite Radar zuerst, Texte, Exportangabe |
+| 158 | siehe `git log` | Richtlinien-Pruefung + EULA-Links, Lucenta+ vor Einstellungen, Funken einfarbig leuchtend, Zeilenabstand |
+| 157 | `e530d99` | Feedback B10–B12, C13, C15–C18: Ich-Form, Skala mit Enden, Ergebnisseite Radar zuerst, Texte, Exportangabe |
 | 156 | `d25ad40` | Ueberpruefung: Rundgang im Simulator, veraltete Archiv-Texte, Hinweis-Texte, Toast fuer VoiceOver |
 | 155 | `4e63250` | Fehler „‹ Start" (Klassenname-Kollision); Freunde als einziger Ort (ein Feld, Vergleich `view-compare`, Archiv uebernommen); WebKit-Absturz im Balkenpuls behoben |
 | 154 | `cf6466c` | Feedback B9: Navigation wie iOS (Chevron mit Ziel, kleiner Titel beim Scrollen, Pillen verborgen) |
@@ -336,6 +337,31 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 158 — Richtlinien-Pruefung, EULA-Links, Seitenleiste, Funken, Zeilenabstand
+
+Auftrag mit elf Punkten (alle als Aufgabe gefuehrt); diese Runde die klaren, die naechsten folgen.
+
+- **Richtlinien-Pruefung:** `docs/richtlinien-pruefung.md` (erfuellt / behoben / offen / Risiken). Harter
+  Fund: Im Kaufablauf fehlte ein Link zu den Nutzungsbedingungen (EULA) — Richtlinie 3.1.2, haeufiger
+  Ablehnungsgrund. Jetzt im Kauffenster und auf der Lucenta+-Seite „Nutzungsbedingungen (EULA)" (Apples
+  Standard-EULA, oeffnet im Browser) und „Datenschutz" (Rechtsseite). Offen beim Inhaber: Impressum,
+  Datenschutz-URL fuer App Store Connect, neue Store-Bilder (die alten sind vom 2026-09-08).
+  Entscheidungen dazu (mit Optionen gefragt): Anmeldung nicht Pflicht, sondern ein prominenter,
+  ueberspringbarer Schritt im Onboarding — Pflicht erst mit echten Kontofunktionen (5.1.1(v)); Benutzer-ID im
+  Code statt Suche ueber einen Server (sonst „Data Not Collected" falsch und Melden/Blockieren noetig).
+- **Seitenleiste:** unter „Verwalten" Lucenta+ vor Einstellungen.
+- **Funken:** eine Lichtfarbe `--funke` statt fuenf Farben (dunkel warmweiss #FFF4D6, hell gold #E0A93B —
+  weiss waere auf hellem Grund unsichtbar), mit weichem Schein (`drop-shadow` in derselben Farbe). Am Bild
+  beide Modi mitten im Aufleuchten (Meilenstein Frage 13).
+- **Zeilenabstand:** gemessen statt geraten (`tools/zeilenabstand.mjs`, mehrzeiliger Text, Knoepfe
+  ausgenommen): Kernsaetze der Karten, Hinweise, Tagesform-Liste, Hilfe-Fragen standen bei 1,2 („normal").
+  Jetzt Fliesstext 1,45, Zwischentitel 1,3, Startseiten-Titel 1,14 (war 1,08), Seitentitel 1,22 (1,15).
+  Nach der Aenderung: nur noch zwei Ueberschriften genau an der Grenze und eine Radar-Beschriftung.
+
+`pruef-alles`: **9/9** (11,2 Min.).
 
 ---
 

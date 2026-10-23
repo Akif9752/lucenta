@@ -1027,6 +1027,8 @@
       'skala_max': 'me describe del todo',
       'syn_mehr': 'Más',
       'syn_weniger': 'Menos',
+      'plus_eula': 'Términos de uso (EULA)',
+      'plus_datenschutz': 'Política de privacidad',
       'konto_fehler': 'No ha funcionado. Inténtalo de nuevo.',
       'freunde_ohne_namen': 'Sin nombre',
       'freunde_erst_test': 'Haz primero el test y obtendrás tu código de amigo.',

@@ -32,8 +32,8 @@
      den Sternen schnitte der Zuschnitt es ab. */
   .funkeln{
     position:fixed; z-index:60; width:0; height:0; pointer-events:none;
-    filter:drop-shadow(0 0 3px color-mix(in srgb, var(--accent-2) 75%, transparent))
-           drop-shadow(0 0 7px color-mix(in srgb, var(--accent) 45%, transparent));
+    filter:drop-shadow(0 0 2px var(--funke))
+           drop-shadow(0 0 8px color-mix(in srgb, var(--funke) 70%, transparent));
   }
   .funkeln i{
     position:absolute; left:0; top:0; display:block;

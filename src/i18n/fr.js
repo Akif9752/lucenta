@@ -1027,6 +1027,8 @@
       'skala_max': 'me correspond tout à fait',
       'syn_mehr': 'Plus',
       'syn_weniger': 'Moins',
+      'plus_eula': 'Conditions d’utilisation (EULA)',
+      'plus_datenschutz': 'Confidentialité',
       'konto_fehler': 'Ça n’a pas marché. Réessaie.',
       'freunde_ohne_namen': 'Sans nom',
       'freunde_erst_test': 'Fais d’abord le test – tu obtiendras ensuite ton code ami.',

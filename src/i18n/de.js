@@ -759,6 +759,8 @@ CONTENT.de = {
       'skala_max': 'trifft voll zu',
       'syn_mehr': 'Mehr',
       'syn_weniger': 'Weniger',
+      'plus_eula': 'Nutzungsbedingungen (EULA)',
+      'plus_datenschutz': 'Datenschutz',
       'konto_fehler': 'Das hat nicht geklappt. Bitte versuch es noch einmal.',
       'freunde_ohne_namen': 'Ohne Namen',
       'freunde_erst_test': 'Mach zuerst den Test – dann bekommst du deinen Freundescode.',

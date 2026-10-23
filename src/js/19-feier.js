@@ -10,7 +10,8 @@
   // auseinanderschweben und verglimmen — kein Fall. Die Bahn steht je Stern in CSS-Eigenschaften, die
   // Bewegung macht .funkeln (11-feier.css). opts: {farben, voll, weite:[min,max]}; `voll` streut
   // rundum.
-  var FUNKEL_FARBEN = ['--accent-2', '--accent', '--dim-o', '--dim-e', '--dim-a'];
+  // Eine Lichtfarbe statt bunt (Entscheidung des Inhabers); der Schein kommt aus .funkeln.
+  var FUNKEL_FARBEN = ['--funke'];
   function funkelStoss(x, y, anzahl, opts){
     opts = opts || {};
     if (prefersReducedMotion()) return;
@@ -103,7 +104,7 @@
       var r = el.getBoundingClientRect();
       if (!r || !r.width) return;
       funkelStoss(r.left + r.width / 2, r.top + r.height / 2, 16,
-        {farben:['--daten-energie', '--daten-stimmung', '--accent-2'], voll:true, weite:[26, 74]});
+        {voll:true, weite:[26, 74]});
     }catch(e){}
   }
   // Nur direkt nach dem Test. Die Klasse bleibt bis zum naechsten renderResult() stehen.

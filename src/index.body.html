@@ -322,6 +322,7 @@
       <p id="plusSeiteStand"></p>
     </div>
     <div id="plusSeiteInhalt"></div>
+    <p class="plus-recht"><button type="button" data-recht="eula" data-i18n="plus_eula">Nutzungsbedingungen (EULA)</button> · <button type="button" data-recht="datenschutz" data-i18n="plus_datenschutz">Datenschutz</button></p>
   </section>
 
   <!-- FREUNDE: nur auf diesem Geraet; verbunden mit dem Archiv ueber den Code. -->
@@ -787,16 +788,16 @@
 
   <!-- Einstellungen als eigene, letzte Gruppe der Schublade. -->
   <div class="drawer-group-title" data-i18n="verwalten">Verwalten</div>
-  <div class="drawer-section">
-    <div class="drawer-label" data-i18n="einstellungen_2">Einstellungen</div>
-    <p class="drawer-copy" data-i18n="konto_darstellung_daten_und">Konto, Darstellung, Daten und Hilfe an einem Ort.</p>
-    <button class="btn btn-ghost btn-sm" id="btnDrawerSettings" style="align-self:flex-start;" data-i18n="einstellungen_öffnen">Einstellungen öffnen</button>
-  </div>
   <!-- Lucenta+: Stand, Kauf, Wiederherstellen und Verwalten an einem Ort (Entscheidung des Inhabers). -->
   <div class="drawer-section">
     <div class="drawer-label" data-i18n="plus_marke_klar">Lucenta+</div>
     <p class="drawer-copy" id="drawerPlusStand" data-i18n="plus_schublade_frei">Jede Auswertung, dein ganzer Verlauf, Verstehen und jeder Vergleich – Laufzeiten und Preise ansehen.</p>
     <button class="btn btn-ghost btn-sm" id="btnDrawerPlus" style="align-self:flex-start;" data-i18n="plus_schublade_ansehen">Lucenta+ ansehen</button>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-label" data-i18n="einstellungen_2">Einstellungen</div>
+    <p class="drawer-copy" data-i18n="konto_darstellung_daten_und">Konto, Darstellung, Daten und Hilfe an einem Ort.</p>
+    <button class="btn btn-ghost btn-sm" id="btnDrawerSettings" style="align-self:flex-start;" data-i18n="einstellungen_öffnen">Einstellungen öffnen</button>
   </div>
 </aside>
 
@@ -869,6 +870,8 @@
     <button type="button" class="plus-modal-leise" id="btnPlusModalWiederherstellen" data-i18n="plus_wiederherstellen">Käufe wiederherstellen</button>
     <p class="plus-modal-kuendigen" data-i18n-html="plus_kuendigen">Verlängert sich automatisch. Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
     <p class="plus-vertrauen" data-i18n="plus_vertrauen">Kein Tracking · Keine Werbung · Deine Daten gehören dir</p>
+    <!-- Richtlinie 3.1.2: Nutzungsbedingungen und Datenschutz muessen im Kaufablauf erreichbar sein. -->
+    <p class="plus-recht"><button type="button" data-recht="eula" data-i18n="plus_eula">Nutzungsbedingungen (EULA)</button> · <button type="button" data-recht="datenschutz" data-i18n="plus_datenschutz">Datenschutz</button></p>
   </div>
 </div>
 

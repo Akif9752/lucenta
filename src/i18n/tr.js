@@ -1031,6 +1031,8 @@
       'skala_max': 'bana tamamen uyuyor',
       'syn_mehr': 'Daha fazla',
       'syn_weniger': 'Daha az',
+      'plus_eula': 'Kullanım Koşulları (EULA)',
+      'plus_datenschutz': 'Gizlilik',
       'konto_fehler': 'Olmadı. Lütfen tekrar dene.',
       'freunde_ohne_namen': 'İsimsiz',
       'freunde_erst_test': 'Önce testi yap – sonra arkadaş kodunu alırsın.',

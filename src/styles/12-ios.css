@@ -859,3 +859,12 @@
   #view-freunde .history-title{ text-align:left; }
   /* Gesperrte Knoepfe sehen gesperrt aus (Befund C17, Onboarding-Schritt 2). */
   .btn:disabled{ opacity:.4; box-shadow:none; cursor:default; transform:none; }
+  .plus-recht{ margin:8px 0 0; text-align:center; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
+  .plus-recht button{ background:none; border:none; padding:0 4px; min-height:44px; cursor:pointer; font:inherit; color:var(--accent-strong); text-decoration:underline; text-underline-offset:2px; }
+
+  /* Zeilenabstand (gemessen: mehrzeiliger Text stand bei 1,2 = "normal"): Fliesstext 1,45, Titel enger. */
+  .trait-teaser, .settings-hint, .history-date, .history-title, .tf-liste-tags, .state-done-naechster,
+  .faq-item summary, .settings-group-desc, .freund-text .history-date{ line-height:1.45; }
+  .understand-card h3, #view-understand h3, #view-hilfe summary{ line-height:1.3; }
+  #view-landing .hero h1{ line-height:1.14; }
+  .archetypes-head h1{ line-height:1.22; }

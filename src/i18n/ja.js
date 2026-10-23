@@ -1031,6 +1031,8 @@
       'skala_max': 'とても当てはまる',
       'syn_mehr': 'もっと見る',
       'syn_weniger': '閉じる',
+      'plus_eula': '利用規約（EULA）',
+      'plus_datenschutz': 'プライバシー',
       'konto_fehler': 'うまくいきませんでした。もう一度お試しください。',
       'freunde_ohne_namen': '名前なし',
       'freunde_erst_test': 'まずテストを受けると、友だちコードがもらえます。',
