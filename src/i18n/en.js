@@ -1115,6 +1115,8 @@
       'vs_kombis': 'Combinations',
       'vs_daten': 'From your data',
       'vs_lead': 'What research knows about people with your profile – in four areas of life, using all five scores. Patterns, not verdicts.',
+      'figur_hintergrund': 'Figure & background',
+      'figur_titel': 'Figure',
       'konto_fehler': 'That didn’t work. Please try again.',
       'freunde_ohne_namen': 'No name',
       'freunde_erst_test': 'Take the test first – then you get your friend code.',

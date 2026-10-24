@@ -393,14 +393,8 @@
         <input type="file" accept="image/*" id="avatarFileInput" style="display:none;">
       </div>
       <button type="button" class="profile-remove-photo" id="btnAvatarRemove" style="display:none;" data-i18n="bild_entfernen">Bild entfernen</button>
-      <!-- Drei ruhige Farbtoene fuer den Initialen-Kreis, nur ohne eigenes Foto. -->
-      <div class="avatar-color-row" id="avatarColorRow" role="group" aria-label="Farbe für den Initialen-Kreis" data-i18n-aria="aria_farbe_für_den_initialen_krei">
-        <button type="button" class="avatar-color-swatch avatar-color-accent" id="avatarColorAccent" data-color="accent" aria-label="Teal" data-i18n-aria="aria_teal" aria-pressed="false"></button>
-        <button type="button" class="avatar-color-swatch avatar-color-ink" id="avatarColorInk" data-color="ink" aria-label="Ink" data-i18n-aria="aria_ink" aria-pressed="false"></button>
-        <button type="button" class="avatar-color-swatch avatar-color-quiet" id="avatarColorQuiet" data-color="quiet" aria-label="Ruhig" data-i18n-aria="aria_ruhig" aria-pressed="false"></button>
-      </div>
-      <!-- Die zwoelf Tiere fuer den Kreis; das erste Feld fuehrt zurueck zum Buchstaben. -->
-      <div class="figur-gruppen" id="figurRaster" role="group" aria-label="Figur wählen" data-i18n-aria="aria_figur_waehlen"></div>
+      <!-- Figur und Hintergrund auf eigener Seite (Entscheidung des Inhabers); hier nur der Weg mit Vorschau. -->
+      <button type="button" class="hilfe-knopf aussehen-zeile" id="btnAussehenOeffnen"><span class="aussehen-mini" id="aussehenMini" aria-hidden="true"></span><span class="aussehen-zeile-text" data-i18n="figur_hintergrund">Figur &amp; Hintergrund</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
       <label class="profile-name-label" for="profileName" data-i18n="name">Name</label>
       <input type="text" id="profileName" class="name-input" placeholder="Dein Name" data-i18n-placeholder="ph_dein_name" maxlength="30" autocomplete="off">
       <label class="profile-name-label" for="profileBenutzerId" data-i18n="benutzer_id">Benutzer-ID</label>
@@ -408,9 +402,6 @@
       <p class="settings-hint benutzer-id-hinweis" data-i18n="benutzer_id_hinweis">Steht vorne in deinem Freundescode und ist der Name, unter dem dich Freunde sehen. 3–20 Zeichen: a–z, 0–9, Punkt, Unterstrich.</p>
     </div>
 
-    <h2 class="section-title" data-i18n="hintergrund">Hintergrund</h2>
-    <p class="section-lead" data-i18n="der_hintergrund_liegt_hinter">Liegt hinter deinem Namen in der Seitenleiste. Jede Vorlage bringt ihre eigenen Schriftfarben mit, damit der Name auf ihr lesbar bleibt.</p>
-    <div class="hg-gruppen" id="hgRaster" role="group" aria-label="Hintergrund wählen" data-i18n-aria="aria_hintergrund_waehlen"></div>
 
     <h2 class="section-title" data-i18n="dein_ergebnis">Dein Ergebnis</h2>
     <div id="profileResultBlock"></div>
@@ -437,6 +428,29 @@
   </section>
 
   <!-- SETTINGS -->
+  <!-- FIGUR & HINTERGRUND: Unterseite des Profils. -->
+  <section class="view" id="view-look" tabindex="-1">
+    <div class="quiz-head nur-zurueck">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromLook" data-i18n="zurueck_profil">← Profil</button>
+    </div>
+    <div class="archetypes-head">
+      <h1 data-i18n="figur_hintergrund">Figur &amp; Hintergrund</h1>
+    </div>
+    <div class="aussehen-buehne" id="aussehenBuehne" aria-hidden="true"></div>
+    <h2 class="section-title" data-i18n="figur_titel">Figur</h2>
+      <!-- Die zwoelf Tiere fuer den Kreis; das erste Feld fuehrt zurueck zum Buchstaben. -->
+      <div class="figur-gruppen" id="figurRaster" role="group" aria-label="Figur wählen" data-i18n-aria="aria_figur_waehlen"></div>
+      <!-- Drei ruhige Farbtoene fuer den Initialen-Kreis, nur ohne eigenes Foto. -->
+      <div class="avatar-color-row" id="avatarColorRow" role="group" aria-label="Farbe für den Initialen-Kreis" data-i18n-aria="aria_farbe_für_den_initialen_krei">
+        <button type="button" class="avatar-color-swatch avatar-color-accent" id="avatarColorAccent" data-color="accent" aria-label="Teal" data-i18n-aria="aria_teal" aria-pressed="false"></button>
+        <button type="button" class="avatar-color-swatch avatar-color-ink" id="avatarColorInk" data-color="ink" aria-label="Ink" data-i18n-aria="aria_ink" aria-pressed="false"></button>
+        <button type="button" class="avatar-color-swatch avatar-color-quiet" id="avatarColorQuiet" data-color="quiet" aria-label="Ruhig" data-i18n-aria="aria_ruhig" aria-pressed="false"></button>
+      </div>
+    <h2 class="section-title" data-i18n="hintergrund">Hintergrund</h2>
+    <p class="section-lead" data-i18n="der_hintergrund_liegt_hinter">Liegt hinter deinem Namen in der Seitenleiste. Jede Vorlage bringt ihre eigenen Schriftfarben mit, damit der Name auf ihr lesbar bleibt.</p>
+    <div class="hg-gruppen" id="hgRaster" role="group" aria-label="Hintergrund wählen" data-i18n-aria="aria_hintergrund_waehlen"></div>
+  </section>
+
   <section class="view" id="view-settings" tabindex="-1">
     <div class="quiz-head nur-zurueck">
       <button class="btn btn-ghost btn-sm" id="btnBackFromSettings" data-i18n="start_7">← Start</button>

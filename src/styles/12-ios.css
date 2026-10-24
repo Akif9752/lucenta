@@ -198,13 +198,13 @@
    zu border-width:2px !important aus 10-druckzustaende.css. */
 
   /* Abschnittstitel wie ueberall in iOS. */
-  #view-profile .section-title{
+  #view-profile .section-title, #view-look .section-title{
     margin-top:30px; padding:0 16px 7px; display:block;
     font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; line-height:1.3;
     text-transform:uppercase; letter-spacing:.02em; color:var(--muted);
   }
   #view-profile .section-title .n{ border:none; padding:0; margin-left:6px; font-size:calc(13px * var(--dt, 1)); }
-  #view-profile .section-lead{ margin:0 0 8px; padding:0 16px; font-size:calc(13px * var(--dt, 1)); line-height:1.4; max-width:none; }
+  #view-profile .section-lead, #view-look .section-lead{ margin:0 0 8px; padding:0 16px; font-size:calc(13px * var(--dt, 1)); line-height:1.4; max-width:none; }
 
   /* Name: ein Textfeld in einer Zeile, wie "Vorname" in der Kontaktkarte — keine Unterstrich-Linie,
      sondern eine Flaeche mit dem Text linksbuendig. */
@@ -220,8 +220,8 @@
   #view-profile .name-input:focus{ border:none; }
 
   /* Bildwahl: Farbtupfer und Figuren auf einer gemeinsamen Flaeche. */
-  #view-profile .figur-raster,
-  #view-profile .hg-raster{
+  #view-profile .figur-raster, #view-look .figur-raster,
+  #view-profile .hg-raster, #view-look .hg-raster{
     max-width:none; width:100%; box-sizing:border-box; padding:14px;
     background:var(--surface); border-radius:var(--radius-m);
   }
@@ -894,3 +894,24 @@
   .vs-label{ font-size:calc(12px * var(--dt, 1)); color:var(--accent-strong); font-weight:600; margin:8px 0 2px; }
   .vs-mehr p{ margin:0 0 6px; line-height:1.5; }
   .vs-frage{ font-style:italic; }
+
+  /* Abstaende Titel -> Folgendes (gemessen mit tools/abstaende.mjs; gemeldet: "Freigeschaltet", "Ergebnis
+     wiederherstellen"). Vor Kasten/Karte mindestens 10 px, Beschriftung vor Text 4 px. */
+  .section-title-sub{ margin-bottom:12px; }
+  #view-settings .settings-restore-label{ margin-bottom:10px; }
+  #view-plus .settings-group > h2{ margin-bottom:12px; }
+  .vs-label{ margin-bottom:4px; }
+  .arch-kombis .hg-gruppe-titel{ margin-bottom:10px; }
+  /* Figur & Hintergrund: Zeile im Profil, Buehne auf der Unterseite (wie die Profilzeile der Seitenleiste). */
+  .aussehen-zeile{ margin-top:18px; gap:12px; justify-content:flex-start; }
+  .aussehen-zeile-text{ flex:1; }
+  .aussehen-mini{ width:40px; height:40px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 1px var(--line) inset; }
+  .aussehen-mini:not([data-hg]){ background:var(--surface-2); }
+  .aussehen-mini .avatar{ width:30px; height:30px; font-size:calc(11px * var(--dt, 1)); }
+  .aussehen-buehne{ display:flex; align-items:center; gap:16px; padding:22px 20px; border-radius:var(--radius-m); margin:6px 0 4px;
+    color:var(--hg-ink, var(--ink)); }
+  .aussehen-buehne:not([data-hg]){ background:var(--surface); }
+  .aussehen-avatar{ width:84px; height:84px; flex-shrink:0; font-size:calc(28px * var(--dt, 1)); }
+  .aussehen-name{ font-family:var(--marke); font-size:calc(22px * min(var(--dt, 1), 1.3)); font-weight:600; color:var(--hg-ink, var(--ink)); }
+  #view-look .avatar-color-row{ margin-top:14px; }

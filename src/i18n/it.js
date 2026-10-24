@@ -1114,6 +1114,8 @@
       'vs_kombis': 'Combinazioni',
       'vs_daten': 'Dai tuoi dati',
       'vs_lead': 'Ciò che la ricerca sa delle persone con il tuo profilo, in quattro ambiti di vita e con tutti e cinque i valori. Relazioni, non giudizi.',
+      'figur_hintergrund': 'Figura e sfondo',
+      'figur_titel': 'Figura',
       'konto_fehler': 'Non ha funzionato. Riprova.',
       'freunde_ohne_namen': 'Senza nome',
       'freunde_erst_test': 'Fai prima il test – poi riceverai il tuo codice amico.',

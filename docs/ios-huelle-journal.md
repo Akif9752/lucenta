@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 162 | siehe `git log` | Verstehen nach Lebensbereichen: 40 neue Karten in acht Sprachen, Inhaltsuebersicht |
+| 163 | siehe `git log` | Figur & Hintergrund als Unterseite, Abstaende (tools/abstaende.mjs), Wort ueber dem Kreis, Vogelfuesse |
+| 162 | `8b50639` | Verstehen nach Lebensbereichen: 40 neue Karten in acht Sprachen, Inhaltsuebersicht |
 | 161 | `a48a012` | Archetypen als persoenlicher Rollenatlas; Kalender mit Tagesdetails und Monatsueberblick; Muster nach Tageszeit und beste/schwere Tage |
 | 160 | `642e7bb` | Hintergruende in Gruppen + Lucenta+, vier neue; Delfin, Seeotter, Pinguin, Papagei, Flamingo, Rotkehlchen; Tiere in Gruppen |
 | 159 | `33bfc86` | Anmeldeschritt im Onboarding (ueberspringbar), Freundescode <id>-XXXX-XXXX mit eigener Benutzer-ID |
@@ -346,6 +347,29 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 163 — Figur & Hintergrund als eigene Seite, Abstaende, Wort ueber dem Kreis, Vogelfuesse
+
+- **Fragebogen:** Die Bedeutung des getippten Kreises steht jetzt UEBER diesem Kreis (vorher mittig), am Rand
+  der Skala abgefangen; gemessen: Mitte des Wortes = Mitte des Kreises.
+- **Abstaende** (gemeldet: „Freigeschaltet" auf der Lucenta+-Seite, „Ergebnis wiederherstellen" ueber dem
+  Code-Kasten): systematisch gemessen mit neuem `tools/abstaende.mjs` (Unterkante der SCHRIFT bis zum
+  Folgeelement; vor Kasten/Karte/Feld mindestens 6 px — Apples Abschnittskopf —, vor Text 4 px). Gefunden und
+  behoben: die zwei gemeldeten (0 px), die drei Tagesform-Titel ueber ihren Karten (0 px), „Letzte Eintraege"
+  (4 px), die Beschriftungen in Verstehen (2 px). Gewollt enge Paare (Titel ueber Untertitel, Beschriftung ueber
+  Zahl) stehen namentlich als Ausnahme im Werkzeug. Danach 0 Treffer.
+- **Figur & Hintergrund** (Wahl des Inhabers: eine Seite): im Profil eine Zeile mit Mini-Vorschau, Unterseite
+  `view-look` („‹ Profil") mit grosser Vorschau wie die Profilzeile der Seitenleiste, Figuren (mit Farbwahl fuer
+  den Buchstaben) und Hintergruende nach Gruppen; jede Wahl sofort in der Vorschau. Falle am Bild: Die
+  Grundflaeche der Vorschau stand spaeter im Stilblatt und verdeckte den Hintergrund — gilt jetzt nur ohne.
+- **Vogelfuesse:** `vogelFuesse` (weiche, abgeflachte Zehen statt duenner Striche) fuer Eule (befiedert, dunkle
+  Krallen), Pinguin (breit, Schwimmhaut), Papagei (grau, Krallen), Rotkehlchen (schlank). Rahmen der vier neu
+  gemessen, beim Rotkehlchen der enge Ausschnitt zurueckgenommen, damit die Fuesse im Kreis bleiben. Der
+  **Flamingo bleibt ein Kopfbild** (langer Hals aus dem Bild heraus) — Beine waeren dort nicht zu sehen.
+
+`pruef-alles`: **9/9** (11,5 Min.); die Vogelbilder wurden waehrend des Laufs neu uebernommen.
 
 ---
 

@@ -52,3 +52,5 @@
   .quiz-nav{margin-top:22px;display:flex;justify-content:space-between;align-items:center;}
 
   
+  .skala-wahl{ position:relative; }
+  .skala-wahl-text{ position:absolute; left:50%; bottom:0; transform:translateX(-50%); white-space:nowrap; }

@@ -30,7 +30,16 @@
   function skalaWahlZeigen(v){
     var el = $('skalaWahl');
     if (!el || !el.classList) return;
-    el.textContent = skalaBedeutung(v);
+    // Ueber dem getippten Kreis, am Rand der Skala abgefangen.
+    el.innerHTML = '<span class="skala-wahl-text"></span>';
+    var t = el.firstChild;
+    if (!t) return;
+    t.textContent = skalaBedeutung(v);
+    try{
+      var k = $('scaleRow').children[v - 1], r = el.getBoundingClientRect(), kr = k.getBoundingClientRect();
+      var halb = t.getBoundingClientRect().width / 2, mitte = kr.left + kr.width / 2 - r.left;
+      t.style.left = Math.max(halb, Math.min(r.width - halb, mitte)) + 'px';
+    }catch(e){}
     el.classList.add('zeigen');
     clearTimeout(skalaWahlUhr);
     skalaWahlUhr = setTimeout(function(){ el.classList.remove('zeigen'); }, 1100);

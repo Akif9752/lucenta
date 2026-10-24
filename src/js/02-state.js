@@ -43,7 +43,7 @@
   }
 
   // Unterseiten und die Seite, aus der sie kommen (Runde 136).
-  var UNTERSEITE_VON = {hilfe:'settings', sprache:'settings', verlauf:'profile', compare:'freunde'};
+  var UNTERSEITE_VON = {hilfe:'settings', sprache:'settings', verlauf:'profile', compare:'freunde', look:'profile'};
   var navWegTimer = null;
   function navWegAufraeumen(){
     if (navWegTimer){ clearTimeout(navWegTimer); navWegTimer = null; }

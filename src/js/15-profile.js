@@ -84,10 +84,26 @@
         if (!hgFrei(id)){ openPlusModal(); return; }
         var pr = loadProfile();
         pr.hintergrund = id || null;
-        if (saveProfile(pr)){ renderHintergrundRaster(pr); refreshDrawerState(); }
+        if (saveProfile(pr)){ renderHintergrundRaster(pr); refreshDrawerState(); aussehenVorschau(); }
         else toast(tx('js_konnte_nicht_gespeichert_w'));
       });
     });
+  }
+  // Vorschau von Figur und Hintergrund: gross auf der Unterseite, klein in der Profilzeile.
+  function aussehenVorschau(){
+    var pr = loadProfile(), hg = (pr.hintergrund && HINTERGRUENDE.indexOf(pr.hintergrund) >= 0) ? pr.hintergrund : '';
+    var buehne = $('aussehenBuehne'), mini = $('aussehenMini');
+    [buehne, mini].forEach(function(el){
+      if (!el || !el.classList) return;
+      HINTERGRUENDE.forEach(function(id){ el.classList.remove('hg-'+id); });
+      if (hg){ el.classList.add('hg-'+hg); el.setAttribute('data-hg', hg); } else el.removeAttribute('data-hg');
+    });
+    if (buehne && buehne.querySelector){
+      buehne.innerHTML = '<span class="avatar aussehen-avatar"></span><span class="aussehen-name"></span>';
+      renderAvatarInto(buehne.querySelector('.aussehen-avatar'), pr);
+      buehne.querySelector('.aussehen-name').textContent = pr.name || tx('js_profil');
+    }
+    if (mini && mini.querySelector){ mini.innerHTML = '<span class="avatar"></span>'; renderAvatarInto(mini.firstChild, pr); }
   }
   function renderAvatar(profile){
     renderAvatarInto($('profileAvatar'), profile);
@@ -102,6 +118,7 @@
     });
     renderFigurRaster(profile);
     renderHintergrundRaster(profile);
+    aussehenVorschau();
   }
   function renderProfile(){
     var profile = loadProfile();

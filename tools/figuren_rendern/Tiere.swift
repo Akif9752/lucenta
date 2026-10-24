@@ -858,6 +858,7 @@ func eule() -> (SCNNode, Float, V) {
     nase(w, [Form(art: .rundkegel(V(0, -0.20, 0.10), 0.09, 0.02), mitte: V(0, 0.28, 0.82))], farbe: hex("#3B3330"), lack: 0.3, rauheit: 0.45)
     // Waldkauz: dunkle, fast schwarze Augen — gelbe haben Uhu und Steinkauz.
     augenEinsetzen(w, kopf, x: 0.30, y: 0.42, r: 0.20, tiefe: 0.35, iris: NSColor(calibratedRed: 0.20, green: 0.11, blue: 0.06, alpha: 1), pupille: 0.62, aussen: 0.1, ausdruck: Ausdruck(oben: 0.06, unten: 0.12, schraeg: 0.08, funke: 1.5, wange: 0.30, zwinkern: true))
+    vogelFuesse(w, unten: -1.08, abstand: 0.28, vorn: 0.30, farbe: hex("#B08A60"), dicke: 0.10, bein: 0.10, zehe: 0.20, kralle: hex("#2E2622"))
     w.eulerAngles = SCNVector3(0.02, -0.12, -0.16)
     return (w, 8.2, V(0, 0.05, 0))
 }
@@ -1120,6 +1121,31 @@ func seeotter() -> (SCNNode, Float, V) {
 }
 
 // Gemeinsamer Vogelrumpf: Kopf, der in einen runden Leib uebergeht, Fluegel an den Seiten.
+// Vogelfuesse (Runde 163, Auftrag des Inhabers): kurzes Bein unter dem Bauch, drei Zehen nach vorn —
+// weiche, abgeflachte Flaechen statt duenner Striche (Lehre: Striche mit runden Enden wirken auf
+// Avatargroesse fremd). `breit` = Schwimmhaut (Pinguin), `kralle` = dunkle Spitzen (Eule).
+func vogelFuesse(_ w: SCNNode, unten: Float, abstand: Float, vorn: Float, farbe: V, dicke: Float = 0.08,
+                 bein: Float = 0.16, zehe: Float = 0.20, breit: Bool = false, kralle: V? = nil) {
+    for s: Float in [-1, 1] {
+        let x = abstand * s, fuss = V(x, unten - bein, vorn + 0.04)
+        var formen: [Form] = [Form(art: .rundkegel(V(0, -bein, 0.04), dicke, dicke * 0.9), mitte: V(x, unten, vorn), weich: 0.05)]
+        if breit {
+            formen.append(Form(art: .ellipsoid(V(zehe * 0.75, 0.035, zehe * 0.70)), mitte: fuss + V(0, -0.01, zehe * 0.45), weich: 0.05))
+        } else {
+            for (dx, lang) in [(Float(-0.075), Float(0.85)), (0, 1), (0.075, 0.85)] {
+                formen.append(Form(art: .ellipsoid(V(dicke * 0.55, dicke * 0.38, zehe * 0.5 * lang)),
+                                   mitte: fuss + V(dx, -0.01, zehe * 0.45 * lang), drehung: simd_quatf(angle: dx * 2.2, axis: V(0, 1, 0)), weich: 0.04))
+            }
+        }
+        nase(w, formen, farbe: farbe, lack: 0.2, rauheit: 0.55)
+        if let k = kralle {
+            for dx: Float in [-0.075, 0, 0.075] {
+                nase(w, [Form(art: .ellipsoid(V(0.022, 0.018, 0.035)), mitte: fuss + V(dx * 1.3, -0.02, zehe * 0.92))], farbe: k, lack: 0.5, rauheit: 0.3)
+            }
+        }
+    }
+}
+
 func vogelFormen(kopf: V = V(0.72, 0.64, 0.68), leib: V = V(0.88, 1.05, 0.80), fluegel: Bool = true) -> [Form] {
     var f: [Form] = [
         Form(art: .ellipsoid(leib), mitte: V(0, -0.30, 0)),
@@ -1155,6 +1181,7 @@ func pinguin() -> (SCNNode, Float, V) {
     let w = SCNNode(); w.addChildNode(kopfKnoten(k, grenze: 1.9))
     nase(w, [Form(art: .rundkegel(V(0, -0.10, 0.42), 0.14, 0.035), mitte: V(0, 0.30, 0.62), stauchung: V(1, 0.7, 1))], farbe: orange, lack: 0.4, rauheit: 0.4)
     augenEinsetzen(w, k, x: 0.33, y: 0.48, r: 0.15, tiefe: 0.38, iris: NSColor(calibratedRed: 0.22, green: 0.12, blue: 0.06, alpha: 1), pupille: 0.62, aussen: 0.15, ausdruck: Ausdruck(oben: 0.05, unten: 0.08, funke: 1.6))
+    vogelFuesse(w, unten: -1.28, abstand: 0.30, vorn: 0.28, farbe: hex("#E89A7A"), dicke: 0.09, bein: 0.08, zehe: 0.30, breit: true)
     w.eulerAngles = SCNVector3(0.02, 0.16, 0.06)
     return (w, 8.2, V(0, 0.05, 0))
 }
@@ -1179,6 +1206,7 @@ func papagei() -> (SCNNode, Float, V) {
              Form(art: .ellipsoid(V(0.16, 0.12, 0.16)), mitte: V(0, 0.20, 0.66), weich: 0.08)], farbe: hex("#EDE3D2"), lack: 0.5, rauheit: 0.35)
     nase(w, [Form(art: .ellipsoid(V(0.13, 0.09, 0.13)), mitte: V(0, -0.02, 0.58), weich: 0.06)], farbe: hex("#2A2422"), lack: 0.4, rauheit: 0.4)
     augenEinsetzen(w, k, x: 0.32, y: 0.48, r: 0.13, tiefe: 0.36, iris: NSColor(calibratedRed: 0.85, green: 0.78, blue: 0.45, alpha: 1), pupille: 0.42, aussen: 0.15, ausdruck: Ausdruck(oben: 0.06, unten: 0.06, funke: 1.5))
+    vogelFuesse(w, unten: -1.18, abstand: 0.26, vorn: 0.30, farbe: hex("#77706C"), dicke: 0.08, bein: 0.14, zehe: 0.20, kralle: hex("#3A3432"))
     w.eulerAngles = SCNVector3(0.0, -0.18, -0.06)
     return (w, 8.2, V(0, 0.05, 0))
 }
@@ -1226,8 +1254,102 @@ func rotkehlchen() -> (SCNNode, Float, V) {
     let w = SCNNode(); w.addChildNode(kopfKnoten(k, grenze: 1.9))
     nase(w, [Form(art: .rundkegel(V(0, -0.04, 0.34), 0.10, 0.02), mitte: V(0, 0.32, 0.68))], farbe: hex("#2A2420"), lack: 0.4, rauheit: 0.4)
     augenEinsetzen(w, k, x: 0.34, y: 0.50, r: 0.19, tiefe: 0.36, iris: NSColor(calibratedRed: 0.10, green: 0.07, blue: 0.05, alpha: 1), pupille: 0.75, aussen: 0.15, ausdruck: Ausdruck(oben: 0.04, unten: 0.06, funke: 1.8))
+    vogelFuesse(w, unten: -1.15, abstand: 0.24, vorn: 0.30, farbe: hex("#6B4F3A"), dicke: 0.06, bein: 0.22, zehe: 0.20)
     w.eulerAngles = SCNVector3(0.0, -0.20, 0.12)
     return (w, 7.0, V(0, 0.15, 0))
+}
+
+// ---------- Runde 163: Mops und Siamkatze (Auftrag des Inhabers) ----------
+
+func mops() -> (SCNNode, Float, V) {
+    // Mops: runder, breiter Kopf, kaum Schnauze, schwarze Maske, Stirnfalten, kleine dunkle Knopfohren,
+    // grosse runde dunkle Augen; falbfarbenes, kurzes Fell.
+    let falb = hex("#D8B888"), maske = hex("#2A2320"), hell = hex("#E8D2AC")
+    var formen: [Form] = [
+        Form(art: .ellipsoid(V(0.96, 0.86, 0.86)), mitte: V(0, 0.10, -0.02)),
+        Form(art: .ellipsoid(V(0.48, 0.38, 0.42)), mitte: V(-0.46, -0.24, 0.28), weich: 0.30),
+        Form(art: .ellipsoid(V(0.48, 0.38, 0.42)), mitte: V(0.46, -0.24, 0.28), weich: 0.30),
+        // kurze, breite Schnauze
+        Form(art: .ellipsoid(V(0.42, 0.28, 0.26)), mitte: V(0, -0.24, 0.80), weich: 0.22),
+        // Stirnfalten: weiche Wuelste ueber der Nase
+        Form(art: .ellipsoid(V(0.20, 0.04, 0.08)), mitte: V(0, 0.36, 0.80), weich: 0.08),
+        Form(art: .ellipsoid(V(0.16, 0.035, 0.07)), mitte: V(0, 0.48, 0.74), weich: 0.08),
+    ]
+    for sx: Float in [-1, 1] {
+        // Knopfohr: nach vorn umgeklappt, klein und dunkel.
+        formen.append(Form(art: .ellipsoid(V(0.24, 0.20, 0.07)), mitte: V(0.74 * sx, 0.58, 0.12),
+                           drehung: simd_quatf(angle: -0.5 * sx, axis: V(0, 0, 1)) * simd_quatf(angle: 0.4 * sx, axis: V(0, 1, 0)), weich: 0.08))
+    }
+    formen += lider(0.34, 0.12, 0.70, 0.16)
+    let kopf = Koerper(formen: formen, farbe: { p, n in
+        var c = farbeMitRauschen(falb, p, 0.07)
+        c = mische(c, hell, glatt(0.0, 0.5, p.y) * 0.25)
+        // schwarze Maske: Schnauze und um die Augen, nach oben weich auslaufend
+        let schnauze = region(p, V(0, -0.20, 0.98), V(0.56, 0.40, 0.44), 0.35)
+        let augen = max(region(p, V(-0.34, 0.12, 0.74), V(0.22, 0.20, 0.30), 0.4), region(p, V(0.34, 0.12, 0.74), V(0.22, 0.20, 0.30), 0.4))
+        c = mische(c, maske, max(schnauze, augen * 0.7))
+        // Falten dunkler in den Tiefen
+        c = mische(c, mische(falb, maske, 0.5), glatt(0.30, 0.52, p.y) * glatt(0.24, 0.0, abs(p.x)) * glatt(0.75, 0.9, n.z) * 0.35)
+        c = mische(c, maske, glatt(0.62, 0.74, abs(p.x)) * glatt(0.40, 0.55, p.y) * 0.9)     // Ohren
+        return c
+    }, rauheit: 0.74, fell: 0.06)
+    var (braue, braueM) = mitBrauen(kopf, x: 0.30, y: 0.32, laenge: 0.12, dicke: 0.05, winkel: 0.25, farbe: mische(falb, maske, 0.35), staerke: 0.7)
+    braue.haar = haarKarte(kopf, FellKarte(kopf: 0.035, rumpf: 0.05, nase: V(0, -0.10, 1.04), schnauze: 0.3,
+        augen: augenStellen(kopf, x: 0.34, y: 0.12), augenR: 0.18,
+        zonen: beide(V(0.46, -0.24, 0.28), V(0.40, 0.32, 0.36), 0.8)), braue: braueM)
+    braue.fellArt = Fell(dichte: 90, ursprung: V(0, -0.10, 1.10), straehnen: 0.2)
+    let maul = mitMaul(braue, Maul(kurven: [Kurve(punkte: [V(0, -0.20, 1.04), V(0, -0.30, 1.02), V(0, -0.36, 0.98)], spitzHinten: false)]
+        + paar(Kurve(punkte: [V(0, -0.36, 0.98), V(0.10, -0.42, 0.95), V(0.22, -0.40, 0.86)], spitzVorn: false)),
+        r: 0.030, farbe: hex("#140F0E"), staerke: 0.85))
+    let bau = Bau(brust: 1.25, tiefe: 1.05, hals: 0.55, bein: 0.18, beinAbstand: 0.30, ruecken: 0.65)
+    let koerper = brustbild(maul, vierbeiner(bau), farbe: { p, _ in farbeMitRauschen(falb, p, 0.07) })
+    let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
+    tierNase(w, mitte: V(0, -0.10, 1.04), r: V(0.17, 0.11, 0.10), farbe: hex("#141010"))
+    augenEinsetzen(w, kopf, x: 0.34, y: 0.12, r: 0.20, iris: NSColor(calibratedRed: 0.20, green: 0.12, blue: 0.07, alpha: 1), pupille: 0.62, ausdruck: Ausdruck(oben: 0.06, unten: 0.10, schraeg: 0.12, funke: 1.7, wange: 0.2))
+    w.eulerAngles = SCNVector3(0.06, -0.24, -0.08)
+    return (w, 7.4, V(0, 0.15, 0))
+}
+
+func siamkatze() -> (SCNNode, Float, V) {
+    // Siamkatze: schlanker Keilkopf, grosse Ohren, cremefarbenes Fell mit dunkler Maske um Nase und
+    // Schnauze, dunkle Ohren; mandelfoermige blaue Augen.
+    let creme = hex("#EEE2CC"), punkt = hex("#4E3729"), rosa = hex("#C9938A")
+    var formen: [Form] = [
+        Form(art: .ellipsoid(V(0.86, 0.80, 0.84)), mitte: V(0, 0.10, 0)),
+        Form(art: .ellipsoid(V(0.36, 0.28, 0.32)), mitte: V(-0.50, -0.22, 0.28), weich: 0.28),
+        Form(art: .ellipsoid(V(0.36, 0.28, 0.32)), mitte: V(0.50, -0.22, 0.28), weich: 0.28),
+        Form(art: .ellipsoid(V(0.20, 0.15, 0.18)), mitte: V(-0.13, -0.26, 0.76), weich: 0.12),
+        Form(art: .ellipsoid(V(0.20, 0.15, 0.18)), mitte: V(0.13, -0.26, 0.76), weich: 0.12),
+        Form(art: .ellipsoid(V(0.15, 0.11, 0.13)), mitte: V(0, -0.40, 0.66), weich: 0.12),
+    ]
+    formen += ohrPaar(0.50, 0.58, -0.05, laenge: V(0.28, 0.72, -0.02), r1: 0.36, r2: 0.05, flach: 0.42)
+    formen += lider(0.31, 0.12, 0.64, 0.17, weich: 0.12)
+    let kopf = Koerper(formen: formen, farbe: { p, n in
+        var c = farbeMitRauschen(creme, p, 0.05)
+        // die Maske: um Nase und Schnauze am dunkelsten, zu den Augen hin weich
+        let maske = region(p, V(0, -0.16, 0.86), V(0.44, 0.44, 0.40), 0.5)
+        c = mische(c, farbeMitRauschen(punkt, p, 0.06), maske * 0.95)
+        let ohr = glatt(0.62, 0.80, p.y) * glatt(0.25, 0.40, abs(p.x))
+        c = mische(c, punkt, ohr * 0.9)
+        let innen = glatt(0.66, 0.80, p.y) * glatt(0.25, 0.36, abs(p.x)) * glatt(0.1, 0.5, n.z) * glatt(1.25, 1.0, p.y)
+        c = mische(c, rosa, innen * 0.5)
+        return c
+    }, rauheit: 0.70, fell: 0.05)
+    var (braue, braueM) = mitBrauen(kopf, x: 0.30, y: 0.34, laenge: 0.12, dicke: 0.04, winkel: 0.18, farbe: mische(creme, punkt, 0.25), staerke: 0.6)
+    braue.haar = haarKarte(kopf, FellKarte(kopf: 0.03, rumpf: 0.05, nase: V(0, -0.06, 0.90), schnauze: 0.4,
+        augen: augenStellen(kopf, x: 0.31, y: 0.12), augenR: 0.18,
+        zonen: beide(V(0.52, -0.22, 0.25), V(0.34, 0.28, 0.36), 1.0)), braue: braueM)
+    braue.fellArt = Fell(dichte: 95, ursprung: V(0, -0.06, 0.90), spitze: 1.04, straehnen: 0.2)
+    let maul = mitMaul(braue, Maul(kurven: [Kurve(punkte: [V(0, -0.17, 0.96), V(0, -0.29, 0.95), V(0, -0.36, 0.92)], spitzHinten: false)]
+        + paar(Kurve(punkte: [V(0, -0.36, 0.92), V(0.06, -0.41, 0.90), V(0.12, -0.41, 0.86), V(0.17, -0.37, 0.80)], spitzVorn: false)),
+        r: 0.028, farbe: hex("#2A1C16"), staerke: 0.8))
+    let bau = Bau(bein: 0.16, ruecken: 0.58)
+    let koerper = brustbild(maul, vierbeiner(bau), farbe: { p, _ in farbeMitRauschen(creme, p, 0.05) })
+    let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
+    tierNase(w, mitte: V(0, -0.08, 0.91), r: V(0.09, 0.06, 0.06), farbe: hex("#3A2A24"), dreieck: true)
+    augenEinsetzen(w, kopf, x: 0.31, y: 0.12, r: 0.20, iris: NSColor(calibratedRed: 0.36, green: 0.62, blue: 0.92, alpha: 1), pupille: 0.50, schlitz: true, schlitzBreite: 0.55, ausdruck: Ausdruck(oben: 0.14, unten: 0.08, schraeg: 0.22, funke: 1.5, wange: 0.3))
+    w.eulerAngles = SCNVector3(0.05, -0.30, -0.10)
+    return (w, 7.3, V(0, 0.18, 0))
 }
 
 let TIERE: [Tier] = [
@@ -1237,4 +1359,5 @@ let TIERE: [Tier] = [
     Tier(name: "wal", bauen: wal), Tier(name: "goldfisch", bauen: goldfisch), Tier(name: "schildkroete", bauen: schildkroete),
     Tier(name: "delfin", bauen: delfin), Tier(name: "seeotter", bauen: seeotter), Tier(name: "pinguin", bauen: pinguin),
     Tier(name: "papagei", bauen: papagei), Tier(name: "flamingo", bauen: flamingo), Tier(name: "rotkehlchen", bauen: rotkehlchen),
+    Tier(name: "mops", bauen: mops), Tier(name: "siamkatze", bauen: siamkatze),
 ]

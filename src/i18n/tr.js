@@ -1118,6 +1118,8 @@
       'vs_kombis': 'Bileşimler',
       'vs_daten': 'Verilerinden',
       'vs_lead': 'Araştırmanın senin profilindeki insanlar hakkında bildikleri – dört yaşam alanında, beş değerin hepsiyle. Yargı değil, ilişkiler.',
+      'figur_hintergrund': 'Figür ve arka plan',
+      'figur_titel': 'Figür',
       'konto_fehler': 'Olmadı. Lütfen tekrar dene.',
       'freunde_ohne_namen': 'İsimsiz',
       'freunde_erst_test': 'Önce testi yap – sonra arkadaş kodunu alırsın.',

@@ -815,6 +815,8 @@ CONTENT.de = {
       'vs_kombis': 'Kombinationen',
       'vs_daten': 'Aus deinen Daten',
       'vs_lead': 'Was die Forschung über Menschen mit deinem Profil weiß – in vier Lebensbereichen, mit allen fünf Werten. Zusammenhänge, keine Urteile.',
+      'figur_hintergrund': 'Figur & Hintergrund',
+      'figur_titel': 'Figur',
       'konto_fehler': 'Das hat nicht geklappt. Bitte versuch es noch einmal.',
       'freunde_ohne_namen': 'Ohne Namen',
       'freunde_erst_test': 'Mach zuerst den Test – dann bekommst du deinen Freundescode.',
