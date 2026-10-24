@@ -202,3 +202,15 @@
 
   /* Runde 124: die Stichworte eines Tages unter seinen Werten in der Liste. */
   .tf-liste-tags{ display:block; margin-top:2px; font-size:calc(12px * var(--dt, 1)); color:var(--muted); font-family:var(--sans); }
+  /* Runde 161: Kalender mit Tagesdetails und Monatsueberblick */
+  button.tf-kal-zelle{ cursor:pointer; }
+  .tf-kal-wahl{ box-shadow:inset 0 0 0 2px var(--accent-strong); }
+  .tf-kal-ueberblick{ margin:0; font-size:calc(13px * var(--dt, 1)); color:var(--muted); line-height:1.5; text-align:center; }
+  .tf-kal-details{ border-top:1px solid var(--line); padding-top:12px; }
+  .tf-kal-hinweis{ margin:0; font-size:calc(13px * var(--dt, 1)); color:var(--muted); text-align:center; }
+  .tf-kal-tag-titel{ font-weight:600; margin-bottom:8px; }
+  .tf-kal-eintraege{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .tf-kal-eintraege li{ display:flex; flex-direction:column; gap:2px; line-height:1.45; }
+  .tf-kal-zeit{ font-size:calc(12px * var(--dt, 1)); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+  .tf-wt-bild.tf-tz-bild{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
+  .tf-beste .befund + .befund{ margin-top:10px; }

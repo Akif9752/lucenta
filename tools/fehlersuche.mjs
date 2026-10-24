@@ -262,6 +262,9 @@ const suchTippflaechen = (min) => {
     // seit Runde 60 in 10-druckzustaende.css. Sie steht hier NAMENTLICH, damit sie eine
     // Entscheidung bleibt und nicht zu einer Zahl wird, die man beliebig senkt.
     if (el.classList && el.classList.contains('scale-btn')) return;
+    // Zweite begruendete Ausnahme (Runde 161, Entscheidung des Inhabers: Kalendertage sind Knoepfe):
+    // sieben Spalten passen auf 320 pt nicht zu 44 pt; ein Fehlgriff zeigt nur den Nachbartag.
+    if (el.classList && el.classList.contains('tf-kal-zelle')) return;
     const fehlt = [];
     if (!trifft(cx, cy - halb) || !trifft(cx, cy + halb)) fehlt.push('hoch');
     if (!trifft(cx - halb, cy) || !trifft(cx + halb, cy)) fehlt.push('breit');

@@ -38,25 +38,62 @@
     return { title: NOUN[top1][pole1] + ' · ' + ADJ[top2][pole2], top1:top1, top2:top2 };
   }
 
-  // ---------- archetypes overview (the 10 primary roles, generated from the same data the real result uses) ----------
+  // ---------- Rollenatlas (Entscheidung des Inhabers, Runde 161) ----------
+  // Oben die eigene Rolle und wie der Titel entsteht; jede der zehn Rollen mit der Naehe zu ihr (der
+  // Wert in Richtung ihres Pols) und den Freunden, die sie haben; aufgeklappt ihre acht Titel.
+  function rolleVon(sc){ var a = archetypeOf(sc); return {f:a.top1, p:sc[a.top1] >= 50 ? 'high' : 'low', f2:a.top2, p2:sc[a.top2] >= 50 ? 'high' : 'low'}; }
   function renderArchetypeGroups(){
-    // 10 Rollen (5 Dimensionen x 2 Pole), jede mit 4 anderen Dimensionen x 2 Polen kombinierbar.
     var totalCombos = (ORDER.length*2) * (ORDER.length-1) * 2;
     $('archTotalCount').textContent = totalCombos;
-    // Fuenf Gruppen (je Dimension) mit je zwei Gegenpolen; die Kante links traegt den Pol als Form.
-    // Die Verzoegerung zaehlt durchgehend 0–9, sonst blitzte die Liste auf.
-    $('archetypeGroups').innerHTML = ORDER.map(function(t, gi){
+    var eigen = loadResult(), ich = eigen ? rolleVon(eigen) : null;
+    var freunde = [];
+    try{ freunde = loadFreunde().map(function(f){ var sc = fromCode(f.code); return sc ? {f:f, r:rolleVon(sc)} : null; }).filter(Boolean); }catch(e){}
+    var kopf = ich
+      ? '<div class="arch-ich"><div class="eyebrow">'+tx('arch_deine_rolle')+'</div>'+
+          '<div class="arch-ich-titel">'+NOUN[ich.f][ich.p]+' <span class="sep">·</span> '+ADJ[ich.f2][ich.p2]+'</div>'+
+          '<p class="arch-ich-text">'+tx('arch_entsteht').split('{d1}').join(LABELS[ich.f]).split('{w1}').join(String(eigen[ich.f]))
+            .split('{d2}').join(LABELS[ich.f2]).split('{w2}').join(String(eigen[ich.f2]))+'</p></div>'
+      : '<p class="arch-ohne-test">'+tx('arch_ohne_test')+'</p>';
+    var figuren = function(liste){
+      return liste.length ? '<span class="arch-freunde">'+liste.slice(0, 5).map(function(x, n){
+        return '<span class="avatar arch-freund" data-arch-freund="'+freunde.indexOf(x)+'" title="'+escapeHTML(freundName(x.f))+'"></span>'; }).join('')+
+        (liste.length > 5 ? '<span class="arch-freunde-mehr">+'+(liste.length - 5)+'</span>' : '')+'</span>' : '';
+    };
+    $('archetypeGroups').innerHTML = kopf + ORDER.map(function(t, gi){
       var karten = ['high','low'].map(function(p, pi){
-        return '<div class="role-card role-pol-'+p+'" style="animation-delay:'+((gi*2+pi)*40)+'ms">'+
-          '<div class="role-tag role-tag-'+p+'">'+ADJ[t][p]+'</div>'+
-          '<div class="role-title">'+NOUN[t][p]+'</div>'+
-          '<div class="role-motto">'+MOTTO[t][p]+'</div>'+
-          '<p class="role-desc">'+CORE[t][p]+'</p>'+
-          '</div>';
+        var naehe = eigen ? (p === 'high' ? eigen[t] : 100 - eigen[t]) : null;
+        var istIch = ich && ich.f === t && ich.p === p;
+        var mitRolle = freunde.filter(function(x){ return x.r.f === t && x.r.p === p; });
+        var kombis = ORDER.filter(function(o){ return o !== t; }).map(function(o){
+          return ['high','low'].map(function(q){
+            var meins = istIch && ich.f2 === o && ich.p2 === q;
+            var ihre = mitRolle.filter(function(x){ return x.r.f2 === o && x.r.p2 === q; });
+            return '<li class="arch-kombi'+(meins ? ' arch-kombi-ich' : '')+'"><span class="arch-kombi-titel">'+NOUN[t][p]+' · '+ADJ[o][q]+'</span>'+
+              (meins ? '<span class="arch-du">'+tx('arch_du')+'</span>' : '')+figuren(ihre)+
+              '<span class="arch-kombi-satz">'+FLAVOR[o][q]+'</span></li>';
+          }).join('');
+        }).join('');
+        return '<details class="role-card role-pol-'+p+(istIch ? ' role-ich' : '')+'" style="animation-delay:'+((gi*2+pi)*40)+'ms">'+
+          '<summary>'+
+            '<div class="role-tag role-tag-'+p+'">'+ADJ[t][p]+(istIch ? ' · '+tx('arch_du') : '')+'</div>'+
+            '<div class="role-title">'+NOUN[t][p]+'</div>'+
+            '<div class="role-motto">'+MOTTO[t][p]+'</div>'+
+            '<p class="role-desc">'+CORE[t][p]+'</p>'+
+            (naehe === null ? '' : '<div class="arch-naehe"><span>'+tx('arch_naehe')+'</span>'+
+              '<span class="arch-naehe-balken" aria-hidden="true"><span style="width:'+Math.max(3, naehe)+'%"></span></span>'+
+              '<span class="mono">'+naehe+' %</span></div>')+
+            figuren(mitRolle)+
+          '</summary>'+
+          '<div class="arch-kombis"><div class="hg-gruppe-titel">'+tx('arch_kombis')+'</div><ul>'+kombis+'</ul></div>'+
+        '</details>';
       }).join('');
-      return '<section class="arch-gruppe">'+
-        '<h2 class="arch-gruppe-titel">'+LABELS[t]+'</h2>'+karten+'</section>';
+      return '<section class="arch-gruppe"><h2 class="arch-gruppe-titel">'+LABELS[t]+'</h2>'+karten+'</section>';
     }).join('');
+    var wrap = $('archetypeGroups');
+    if (wrap.querySelectorAll) wrap.querySelectorAll('[data-arch-freund]').forEach(function(el){
+      var x = freunde[+el.getAttribute('data-arch-freund')];
+      if (x) renderAvatarInto(el, {name: x.f.name, figur: x.f.figur || null, avatarColor: 'accent'});
+    });
   }
 
   

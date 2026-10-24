@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 160 | siehe `git log` | Hintergruende in Gruppen + Lucenta+, vier neue; Delfin, Seeotter, Pinguin, Papagei, Flamingo, Rotkehlchen; Tiere in Gruppen |
+| 161 | siehe `git log` | Archetypen als persoenlicher Rollenatlas; Kalender mit Tagesdetails und Monatsueberblick; Muster nach Tageszeit und beste/schwere Tage |
+| 160 | `642e7bb` | Hintergruende in Gruppen + Lucenta+, vier neue; Delfin, Seeotter, Pinguin, Papagei, Flamingo, Rotkehlchen; Tiere in Gruppen |
 | 159 | `33bfc86` | Anmeldeschritt im Onboarding (ueberspringbar), Freundescode <id>-XXXX-XXXX mit eigener Benutzer-ID |
 | 158 | `1db786c` | Richtlinien-Pruefung + EULA-Links, Lucenta+ vor Einstellungen, Funken einfarbig leuchtend, Zeilenabstand |
 | 157 | `e530d99` | Feedback B10–B12, C13, C15–C18: Ich-Form, Skala mit Enden, Ergebnisseite Radar zuerst, Texte, Exportangabe |
@@ -339,6 +340,27 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 161 — Archetypen als persoenlicher Rollenatlas; Tagesform: Kalender und Muster
+
+**Archetypen** (Wahl des Inhabers: persoenlicher Rollenatlas): oben die eigene Rolle und wie der Titel
+entsteht (Hauptwort aus der deutlichsten Dimension, Eigenschaft aus der zweitdeutlichsten, mit Werten); jede
+der zehn Rollen mit „Naehe" (Wert in Richtung ihres Pols) und den Figuren der Freunde, die sie haben;
+aufgeklappt die acht Titel der Rolle mit Satz, der eigene mit „Du", Freunde mit Figur. Ohne Ergebnis der
+Katalog mit Hinweis. Weiter frei. (`renderArchetypeGroups`, `rolleVon` in `04-scoring.js`.)
+
+**Kalender** (Wahl: Tagesdetails und Monatsueberblick): Tage sind Knoepfe; ein Tipp zeigt darunter die
+Eintraege (Tageszeit, Werte, Stichworte), ein zweiter schliesst. Ueber dem Raster Durchschnitt, Zahl der Tage
+und Vergleich zum Vormonat (ab drei Tagen dort). Die Fehlersuche hat dafuer eine zweite, namentlich
+begruendete Ausnahme bei den Tippflaechen (sieben Spalten passen auf 320 pt nicht zu 44 pt).
+**Muster** (Wahl: Tageszeit, beste & schwere Tage): Saeulen fuer morgens/mittags/abends (ab drei Eintraegen je
+Tageszeit; zuerst im Siebener-Raster der Wochentage gequetscht, am Bild gesehen); „Deine besten und
+schwierigeren Tage" (je ein Fuenftel, ab 14 Tagen): Wochentag, Tageszeit und Stichwort nur, wenn sie
+deutlich haeufiger sind als sonst; Hinweis „Zusammenhaenge, keine Ursachen". Bezahlgrenze unveraendert.
+
+`pruef-alles`: **9/9** (11,4 Min.).
 
 ---
 

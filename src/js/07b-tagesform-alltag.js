@@ -193,6 +193,37 @@
     }
     return zellen;
   }
+  var tfKalenderWahl = '';
+  function tfZahl(x){ return zahl1(x); }
+  function tfDiff(x){ var t = zahl1(Math.abs(x)); return (x > 0.05 ? '+' : x < -0.05 ? '−' : '±') + t; }
+  // Monat auf einen Blick: Durchschnitte, Eintragstage, Vergleich zum Vormonat (ab drei Tagen dort).
+  function tfMonatUeberblick(alle, anfang){
+    var key = tfTagSchluessel(anfang).slice(0, 7);
+    var vor = new Date(anfang.getFullYear(), anfang.getMonth() - 1, 1), keyVor = tfTagSchluessel(vor).slice(0, 7);
+    var mittel = function(liste, g){ return liste.reduce(function(a, t){ return a + t[g]; }, 0) / liste.length; };
+    var dieser = alle.filter(function(t){ return t.day.slice(0, 7) === key; });
+    if (!dieser.length) return '<p class="tf-kal-ueberblick">'+tx('tf_kal_tippen')+'</p>';
+    var zeile = tx('tf_kal_schnitt').split('{e}').join(tfZahl(mittel(dieser, 'energy'))).split('{s}').join(tfZahl(mittel(dieser, 'valence')))
+      .split('{n}').join(String(dieser.length));
+    var vorige = alle.filter(function(t){ return t.day.slice(0, 7) === keyVor; });
+    var vgl = vorige.length >= 3 ? '<br>'+tx('tf_kal_vgl').split('{e}').join(tfDiff(mittel(dieser, 'energy') - mittel(vorige, 'energy')))
+      .split('{s}').join(tfDiff(mittel(dieser, 'valence') - mittel(vorige, 'valence'))) : '';
+    return '<p class="tf-kal-ueberblick">'+zeile+vgl+'</p>';
+  }
+  // Die Eintraege eines Tages: je Tageszeit Werte und Stichworte.
+  function tfTagDetails(tag){
+    if (!tag) return '<p class="tf-kal-hinweis">'+tx('tf_kal_tippen')+'</p>';
+    var datum = tag;
+    try{ datum = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {weekday:'long', day:'numeric', month:'long'}).format(new Date(tag + 'T12:00:00')); }catch(e){}
+    var eintraege = loadStateHistory().filter(function(e){ return e.day === tag; })
+      .sort(function(a, b){ return TF_ABSCHNITTE.indexOf(a.slot || zeitabschnitt(a.ts)) - TF_ABSCHNITTE.indexOf(b.slot || zeitabschnitt(b.ts)); });
+    if (!eintraege.length) return '<div class="tf-kal-tag-titel">'+datum+'</div><p class="tf-kal-hinweis">'+tx('tf_kal_kein_eintrag')+'</p>';
+    return '<div class="tf-kal-tag-titel">'+datum+'</div><ul class="tf-kal-eintraege">'+eintraege.map(function(e){
+      return '<li><span class="tf-kal-zeit">'+tx('tf_abschnitt_'+(e.slot || zeitabschnitt(e.ts)))+'</span>'+
+        '<span>'+tx('js_energie')+'&nbsp;'+e.energy+'/5 · '+tx('js_stimmung')+'&nbsp;'+e.valence+'/5</span>'+
+        (e.tags && e.tags.length ? '<span class="tf-liste-tags">'+e.tags.map(function(t){ return tx('tf_tag_'+t); }).join(' · ')+'</span>' : '')+'</li>';
+    }).join('')+'</ul>';
+  }
   function tfKalenderRendern(){
     var wrap = $('tfKalender');
     if (!wrap) return;
@@ -221,11 +252,10 @@
       var name = z.nr + '';
       var label = z.tag ? (tx('js_energie')+' '+tagWert(z.tag.energy)+'/5, '+tx('js_stimmung')+' '+tagWert(z.tag.valence)+'/5')
                         : tx('tf_kal_kein_eintrag');
-      // Die Felder sind Anzeige, kein Bedienelement (sieben Spalten zu 44 pt passen auf 320 pt nicht);
-      // die Liste darunter nennt dieselben Tage in Worten.
-      return '<span class="tf-kal-zelle'+(z.tag ? ' tf-kal-st'+stufe : '')+
-        (z.day === heute ? ' tf-kal-tag0' : '')+'" role="img" '+
-        'aria-label="'+z.nr+'. '+monatName+': '+label+'"><span aria-hidden="true">'+name+'</span></span>';
+      // Seit Runde 161 Knoepfe (Entscheidung des Inhabers): ein Tipp zeigt die Eintraege des Tages darunter.
+      return '<button type="button" class="tf-kal-zelle'+(z.tag ? ' tf-kal-st'+stufe : '')+
+        (z.day === heute ? ' tf-kal-tag0' : '')+(z.day === tfKalenderWahl ? ' tf-kal-wahl' : '')+'" data-kal-tag="'+z.day+'" '+
+        'aria-pressed="'+(z.day === tfKalenderWahl ? 'true' : 'false')+'" aria-label="'+z.nr+'. '+monatName+': '+label+'"><span aria-hidden="true">'+name+'</span></button>';
     }).join('');
     var karte =
       '<div class="tf-kal-karte">'+
@@ -240,10 +270,12 @@
               '<span class="segment-preis">'+tx(g === 'energy' ? 'js_energie' : 'js_stimmung')+'</span></button>';
           }).join('')+
         '</div>'+
+        tfMonatUeberblick(alle, anfang)+
         '<div class="tf-kal-wochentage" aria-hidden="true">'+wochentage.map(function(w){ return '<span>'+w+'</span>'; }).join('')+'</div>'+
         '<div class="tf-kal-raster">'+zellen+'</div>'+
         '<div class="tf-kal-skala" aria-hidden="true"><span>1</span>'+
           [1,2,3,4,5].map(function(s){ return '<i class="tf-kal-st'+s+'"></i>'; }).join('')+'<span>5</span></div>'+
+        '<div class="tf-kal-details" aria-live="polite">'+tfTagDetails(tfKalenderWahl)+'</div>'+
       '</div>';
     // Runde 127: Kalender nur mit Lucenta+, frei verschwommen (laufender Monat, echte Tage).
     wrap.innerHTML = '<h2 class="section-title section-title-sub">'+tx('tf_kal_titel')+'</h2>'+
@@ -255,6 +287,13 @@
         if (b.disabled) return;
         tfKalenderVersatz = Math.min(0, tfKalenderVersatz + parseInt(b.getAttribute('data-kal'), 10));
         tapFeedback();
+        tfKalenderRendern();
+      });
+    });
+    wrap.querySelectorAll('[data-kal-tag]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var t = b.getAttribute('data-kal-tag');
+        tfKalenderWahl = tfKalenderWahl === t ? '' : t;
         tfKalenderRendern();
       });
     });
@@ -298,6 +337,49 @@
       return n[i] ? {energy: s.energy / n[i], valence: s.valence / n[i], anzahl: n[i]} : null;
     });
   }
+  function tfTageszeitMittel(eintraege){
+    return TF_ABSCHNITTE.map(function(a){
+      var l = eintraege.filter(function(e){ return (e.slot || zeitabschnitt(e.ts)) === a; });
+      if (l.length < 3) return null;
+      return {energy: l.reduce(function(x, e){ return x + e.energy; }, 0) / l.length,
+              valence: l.reduce(function(x, e){ return x + e.valence; }, 0) / l.length, anzahl: l.length};
+    });
+  }
+  // Was die besten und die schwierigeren Tage gemeinsam haben (je ein Fuenftel, mindestens drei Tage):
+  // Wochentag, Tageszeit, Stichwort — nur wenn es deutlich haeufiger vorkommt als sonst. "an Tagen mit".
+  function tfBesteSchwere(tage, eintraege){
+    if (tage.length < 14) return '';
+    var wert = function(t){ return (t.energy + t.valence) / 2; };
+    var sortiert = tage.slice().sort(function(a, b){ return wert(b) - wert(a); });
+    var n = Math.max(3, Math.round(tage.length / 5));
+    var wtName = function(i){ try{ return new Intl.DateTimeFormat(tx('datum_gebietsschema'), {weekday:'long'}).format(new Date(2024, 0, 1 + i)); }catch(e){ return String(i + 1); } };
+    var wtVon = function(t){ return (new Date(t.ts).getDay() + 6) % 7; };
+    var anteilGesamt = function(test){ return tage.filter(test).length / tage.length; };
+    var beschreibe = function(gruppe){
+      var teile = [];
+      var zaehle = function(werte){ var z = {}; werte.forEach(function(v){ z[v] = (z[v] || 0) + 1; }); return Object.keys(z).sort(function(a, b){ return z[b] - z[a]; }).map(function(k){ return [k, z[k]]; }); };
+      var wt = zaehle(gruppe.map(wtVon))[0];
+      if (wt && wt[1] >= Math.max(2, gruppe.length * 0.35) && wt[1] / gruppe.length >= anteilGesamt(function(t){ return wtVon(t) === +wt[0]; }) * 1.5)
+        teile.push(tx('tf_gemeinsam_wt').split('{wt}').join(wtName(+wt[0])));
+      var tageSet = {}; gruppe.forEach(function(t){ tageSet[t.day] = 1; });
+      var dieseEintraege = eintraege.filter(function(e){ return tageSet[e.day]; });
+      var zt = zaehle(dieseEintraege.map(function(e){ return e.slot || zeitabschnitt(e.ts); }))[0];
+      if (zt && dieseEintraege.length && zt[1] / dieseEintraege.length >= 0.5 && zt[1] / dieseEintraege.length >= eintraege.filter(function(e){ return (e.slot || zeitabschnitt(e.ts)) === zt[0]; }).length / eintraege.length * 1.3)
+        teile.push(tx('tf_gemeinsam_zeit').split('{zeit}').join(tx('tf_abschnitt_'+zt[0]).toLowerCase()));
+      var besterTag = null, bestWert = 0;
+      STICHWORTE.forEach(function(s){
+        var hier = gruppe.filter(function(t){ return t.tags && t.tags[s]; }).length / gruppe.length;
+        var sonst = anteilGesamt(function(t){ return t.tags && t.tags[s]; });
+        if (hier >= 0.4 && hier - sonst >= 0.15 && hier - sonst > bestWert){ bestWert = hier - sonst; besterTag = s; }
+      });
+      if (besterTag) teile.push(tx('tf_gemeinsam_tag').split('{tag}').join(tx('tf_tag_'+besterTag)));
+      return teile.length ? teile.join(' · ') : tx('tf_gemeinsam_nichts');
+    };
+    return '<div class="tf-muster-karte tf-beste"><div class="befund-titel">'+tx('tf_beste_titel')+'</div>'+
+      '<div class="befund"><div class="befund-titel">'+tx('tf_beste_tage')+'</div><p class="befund-text">'+beschreibe(sortiert.slice(0, n))+'</p></div>'+
+      '<div class="befund"><div class="befund-titel">'+tx('tf_schwere_tage')+'</div><p class="befund-text">'+beschreibe(sortiert.slice(-n))+'</p></div>'+
+      '<p class="tf-hinweis">'+tx('tf_beste_hinweis')+'</p></div>';
+  }
   function tfMusterRendern(){
     var wrap = $('tfMuster');
     if (!wrap) return;
@@ -331,6 +413,26 @@
           '<span class="vl-eintrag"><span class="vl-punkt vl-stimmung"></span>'+tx('js_stimmung')+'</span>'+
         '</div></div>');
     }
+    var tz = tfTageszeitMittel(loadStateHistory());
+    if (tz.filter(Boolean).length >= 2){
+      var saeuleTz = function(v, art){
+        return v === null ? '<i class="tf-wt-saeule tf-wt-'+art+' tf-wt-ohne"></i>'
+                          : '<i class="tf-wt-saeule tf-wt-'+art+'" style="height:'+((v - 1) / 4 * 100).toFixed(0)+'%"></i>';
+      };
+      teile.push('<div class="tf-muster-karte"><div class="befund-titel">'+tx('tf_muster_tageszeit')+'</div>'+
+        '<div class="tf-wt-bild tf-tz-bild" role="img" aria-label="'+tz.map(function(m, i){ return tx('tf_abschnitt_'+TF_ABSCHNITTE[i])+(m ? ': '+tx('js_energie')+' '+zahl1(m.energy)+', '+tx('js_stimmung')+' '+zahl1(m.valence) : ''); }).join('; ')+'">'+
+          tz.map(function(m, i){
+            return '<div class="tf-wt-tag"><div class="tf-wt-saeulen">'+saeuleTz(m ? m.energy : null, 'energie')+saeuleTz(m ? m.valence : null, 'stimmung')+
+              '</div><span class="tf-wt-name">'+tx('tf_abschnitt_'+TF_ABSCHNITTE[i])+'</span></div>';
+          }).join('')+
+        '</div>'+
+        '<div class="verlauf-legende tf-wt-legende">'+
+          '<span class="vl-eintrag"><span class="vl-punkt vl-energie"></span>'+tx('js_energie')+'</span>'+
+          '<span class="vl-eintrag"><span class="vl-punkt vl-stimmung"></span>'+tx('js_stimmung')+'</span>'+
+        '</div></div>');
+    }
+    var bs = tfBesteSchwere(tage, loadStateHistory());
+    if (bs) teile.push(bs);
     var sb = tfStichwortBefunde(tage);
     if (sb.length){
       teile.push('<div class="befund-liste">'+sb.map(function(b){
