@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 161 | siehe `git log` | Archetypen als persoenlicher Rollenatlas; Kalender mit Tagesdetails und Monatsueberblick; Muster nach Tageszeit und beste/schwere Tage |
+| 162 | siehe `git log` | Verstehen nach Lebensbereichen: 40 neue Karten in acht Sprachen, Inhaltsuebersicht |
+| 161 | `a48a012` | Archetypen als persoenlicher Rollenatlas; Kalender mit Tagesdetails und Monatsueberblick; Muster nach Tageszeit und beste/schwere Tage |
 | 160 | `642e7bb` | Hintergruende in Gruppen + Lucenta+, vier neue; Delfin, Seeotter, Pinguin, Papagei, Flamingo, Rotkehlchen; Tiere in Gruppen |
 | 159 | `33bfc86` | Anmeldeschritt im Onboarding (ueberspringbar), Freundescode <id>-XXXX-XXXX mit eigener Benutzer-ID |
 | 158 | `1db786c` | Richtlinien-Pruefung + EULA-Links, Lucenta+ vor Einstellungen, Funken einfarbig leuchtend, Zeilenabstand |
@@ -340,6 +341,27 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 162 — Verstehen nach Lebensbereichen
+
+**Wahl des Inhabers:** vier Lebensbereiche (Beziehungen, Arbeit & Lernen, Stress & Erholung, Wachstum),
+jeder mit allen fuenf Werten. Neu geschrieben: 40 Karten (4 Bereiche x 5 Dimensionen x 2 Pole) mit Titel,
+Kernaussage, „Was heisst das fuer dich" und einer Frage zum Nachdenken, in acht Sprachen (`LEBEN` in den
+Sprachpaketen, neben `UNDERSTAND`). Forschungsnah ohne erfundene Zahlen oder Quellen; wo die Forschung einen
+robusten Zusammenhang kennt (Verträglichkeit–Beziehungszufriedenheit, Gewissenhaftigkeit–Leistung,
+Stabilitaet–Belastung, Reifung mit dem Alter), steht er als Zusammenhang, nie als Urteil; neutrale Sprache.
+Seite: Inhaltsuebersicht als Sprungknoepfe, je Bereich die deutlichste Dimension zuerst (aufgeklappt), dann
+Kombinationen und „Aus deinen Daten" wie bisher. Frei: verschwommene Vorschau des ersten Bereichs (Bezahlgrenze
+unveraendert). Gemessen: in allen acht Sprachen 20 Karten je Profil, keine leer. Die alten Zwei-Gruppen-Karten
+(`UNDERSTAND`) traegt nur noch die Kostprobe auf der Startseite.
+
+**Pruefungen:** `pruef-alles` 8/9 — die Fehlersuche fand die Sprungknoepfe der Inhaltsuebersicht 40 statt
+44 pt hoch (sonst nichts); behoben, danach die WebKit-Durchlaeufe mit Beispieldaten ohne Fund.
+
+**Ungeprueft:** die Inhalte durch eine Fachperson (Psychologie) und muttersprachliche Durchsicht der sieben
+Uebersetzungen — beides vor dem Store-Start sinnvoll.
 
 ---
 

@@ -881,3 +881,16 @@
   .figur-gruppen .figur-raster{ margin-top:0; }
   /* Feste fuenf Spalten, sonst richtet sich die Kreisgroesse nach der Zahl der Tiere einer Gruppe. */
   .figur-gruppen .figur-raster{ grid-template-columns:repeat(5, minmax(0, 1fr)); }
+  /* Verstehen nach Lebensbereichen */
+  .vs-inhalt{ display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 22px; }
+  .vs-sprung{ border:none; border-radius:999px; padding:8px 14px; min-height:44px; background:var(--surface); color:var(--ink);
+    font:inherit; font-size:calc(14px * var(--dt, 1)); cursor:pointer; }
+  .vs-bereich{ scroll-margin-top:110px; margin-bottom:10px; }
+  #vs-combos, #vs-data{ scroll-margin-top:110px; }
+  details.vs-karte > summary{ list-style:none; cursor:pointer; }
+  details.vs-karte > summary::-webkit-details-marker{ display:none; }
+  .vs-dim{ display:block; font-size:calc(12px * var(--dt, 1)); color:var(--muted); letter-spacing:.03em; text-transform:uppercase; margin-bottom:4px; }
+  .vs-mehr{ border-top:1px solid var(--line); margin-top:12px; padding-top:10px; }
+  .vs-label{ font-size:calc(12px * var(--dt, 1)); color:var(--accent-strong); font-weight:600; margin:8px 0 2px; }
+  .vs-mehr p{ margin:0 0 6px; line-height:1.5; }
+  .vs-frage{ font-style:italic; }

@@ -7,30 +7,41 @@
       $('btnUnderstandStart').addEventListener('click', function(){ beginRun(false); });
       return;
     }
-    var arch = archetypeOf(last);
-    var traitsToShow = [
-      {f:arch.top1, pole: last[arch.top1]>=50?'high':'low'},
-      {f:arch.top2, pole: last[arch.top2]>=50?'high':'low'}
-    ];
-    var html = traitsToShow.map(function(t){
-      var cards = UNDERSTAND[t.f][t.pole];
-      var groupLabel = LABELS[t.f]+' &middot; '+ADJ[t.f][t.pole];
-      return '<div class="understand-group-label">'+groupLabel+'</div>'+
-        cards.map(function(c,i){
-          return '<div class="understand-card" style="animation-delay:'+(i*60)+'ms"><h3>'+c.title+'</h3><p>'+c.body+'</p></div>';
-        }).join('');
-    }).join('');
+    // Vier Lebensbereiche mit allen fuenf Werten (Entscheidung des Inhabers, Runde 162); je Bereich die
+    // deutlichste Dimension zuerst. Jede Karte: Kernsatz, was das fuer dich heisst, eine Frage.
+    var BEREICHE = ['beziehungen', 'arbeit', 'stress', 'wachstum'];
+    var reihe = ORDER.slice().sort(function(a, b){ return Math.abs(last[b]-50) - Math.abs(last[a]-50); });
+    var bereichHTML = function(b){
+      return '<section class="vs-bereich" id="vs-'+b+'"><div class="understand-group-label">'+tx('vs_bereich_'+b)+'</div>'+
+        reihe.map(function(f, i){
+          var pol = last[f] >= 50 ? 'high' : 'low', k = LEBEN[b][f][pol];
+          return '<details class="understand-card vs-karte" style="animation-delay:'+(i*50)+'ms"'+(i === 0 ? ' open' : '')+'><summary>'+
+              '<span class="vs-dim">'+LABELS[f]+' · '+last[f]+'</span><h3>'+k.t+'</h3><p>'+k.k+'</p></summary>'+
+            '<div class="vs-mehr"><div class="vs-label">'+tx('vs_fuer_dich')+'</div><p>'+k.d+'</p>'+
+            '<div class="vs-label">'+tx('vs_frage')+'</div><p class="vs-frage">'+k.f+'</p></div></details>';
+        }).join('')+'</section>';
+    };
+    var inhalt = '<nav class="vs-inhalt" aria-label="'+tx('vs_inhalt')+'">'+
+      BEREICHE.map(function(b){ return [b, 'vs_bereich_'+b]; }).concat([['combos', 'vs_kombis'], ['data', 'vs_daten']]).map(function(z){
+        return '<button type="button" class="vs-sprung" data-vs-ziel="vs-'+z[0]+'">'+tx(z[1])+'</button>';
+      }).join('')+'</nav>';
     // "Verstehen" ist ganz Lucenta+ (Entscheidung des Inhabers, Runde 136). Frei nur die verschwommene
-    // Vorschau der echten ersten Gruppe — nur die erste, weil die Angebotskarte mittig sitzt und sonst
-    // unter dem Bildschirm laege.
+    // Vorschau des ersten Bereichs.
     if (!istPlus()){
-      var ersteGruppe = html.split('<div class="understand-group-label">').slice(0, 2).join('<div class="understand-group-label">');
-      wrap.innerHTML = vorschauHTML(ersteGruppe, tx('plus_verstehen'));
+      wrap.innerHTML = vorschauHTML(bereichHTML(BEREICHE[0]), tx('plus_verstehen'));
       schloesserVerdrahten(wrap);
       return;
     }
-    wrap.innerHTML = html + kombiBlock(last) + eigeneDatenBlock(last) + tx('js_diese_einordnungen_fassen');
+    wrap.innerHTML = inhalt + BEREICHE.map(bereichHTML).join('') +
+      '<section id="vs-combos">'+kombiBlock(last)+'</section>'+
+      '<section id="vs-data">'+eigeneDatenBlock(last)+'</section>' + tx('js_diese_einordnungen_fassen');
     schloesserVerdrahten(wrap);
+    if (wrap.querySelectorAll) wrap.querySelectorAll('[data-vs-ziel]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var ziel = $(b.getAttribute('data-vs-ziel'));
+        if (ziel) ziel.scrollIntoView({behavior: prefersReducedMotion() ? 'auto' : 'smooth', block:'start'});
+      });
+    });
   }
 
   // ---------- Kombinationen ----------
