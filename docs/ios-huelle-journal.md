@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-22, nach Runde 152)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-24, nach Runde 162)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -187,6 +187,11 @@ Bei Gestaltungsfragen vorher mit Optionen fragen.
 *B — hoch:* erledigt bis auf den scharfen Einladungslink (B7-Rest, braucht eine Domain: `einladung/LIESMICH.md`).
 
 *C — Feinschliff:* erledigt; C19 (Startbild schwarz) bleibt auf Entscheidung des Inhabers.
+
+*Seit Runde 158–162 offen:* Fachdurchsicht der 40 Verstehen-Karten (Psychologie) und muttersprachliche
+Durchsicht der Uebersetzungen; neue Store-Bilder (`node tools/store_bilder.mjs`, alte vom 2026-09-08);
+Datenschutz-URL fuer App Store Connect; die sechs neuen Tiere sind einfacher als die alten (ggf. nacharbeiten).
+Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 *Notiert in Runde 156, nicht geaendert:* Ring im Vergleich ohne „%", VoiceOver sagt am Vergleichsradar
 „Andere Person" statt des Namens.
