@@ -205,9 +205,8 @@
         <span data-i18n-html="dein_code_mdash">Dein Code: <b class="mono" id="myCode">&mdash;</b></span>
         <button class="btn btn-ghost btn-sm" id="btnCopyCode" data-i18n="kopieren">Kopieren</button>
       </div>
-      <!-- Der wichtigste Satz in normaler Lesegroesse: Das Ergebnis liegt nur auf diesem Geraet; wer den
-           Code mitnimmt, verliert nichts. -->
-      <p class="code-lead" id="codeLead">Nur auf diesem Gerät gespeichert. Mit diesem Code holst du es zurück.</p>
+      <!-- Nur im Gastdurchlauf: ohne den Code ist das Ergebnis fort. -->
+      <p class="code-lead" id="codeLead" hidden></p>
     </div>
 
     <p class="synthesis" id="synthesis"></p>
@@ -216,7 +215,6 @@
 
     <footer class="appfoot">
       <span data-i18n-html="lucenta_middot_bigfivemodell">Lucenta &middot; Big-Five-Modell (<a href="https://ipip.ori.org/new_ipip-50-item-scale.htm" target="_blank" rel="noopener">IPIP</a>)</span>
-      <span data-i18n="kein_klinisches_instrument_m">Kein klinisches Instrument &mdash; dient der Selbstreflexion.</span>
       <button type="button" class="fuss-link" id="btnRechtFuss" data-i18n="recht_leise">Impressum, Datenschutz &amp; Lizenzen</button>
     </footer>
   </section>
@@ -340,7 +338,7 @@
     <div class="archetypes-head">
       <div class="eyebrow" data-i18n="mit_anderen">Mit anderen</div>
       <h1 data-i18n="freunde_titel">Deine Freunde</h1>
-      <p data-i18n="freunde_lead">Deine Freunde – mit dem Namen und der Figur, die sie sich selbst gegeben haben. Alles bleibt auf diesem Gerät.</p>
+      <p data-i18n="freunde_lead">Deine Freunde – mit dem Namen und der Figur, die sie sich selbst gegeben haben.</p>
     </div>
     <!-- Eigene Karte, ein Feld, eine Liste: Ein Freundescode legt die Person an und oeffnet den Vergleich
          (Entscheidung des Inhabers). Die Zeichenkette erst auf Wunsch. -->
@@ -555,7 +553,7 @@
 
     <div class="settings-group">
       <h2 data-i18n="daten_amp_datenschutz">Daten &amp; Datenschutz</h2>
-      <p class="settings-group-desc" data-i18n="lucenta_läuft_vollständig_au">Lucenta läuft vollständig auf diesem Gerät. Es gibt kein Konto beim Anbieter und keinen Server &mdash; alles unten bleibt hier gespeichert, bis du es löschst. Nur wenn du dich mit Apple anmeldest, liegt zusätzlich eine verschlüsselte Sicherung in deiner eigenen iCloud.</p>
+      <p class="settings-group-desc" data-i18n="lucenta_läuft_vollständig_au">Alles unten liegt auf diesem Gerät, bis du es löschst &mdash; mit Apple-Anmeldung zusätzlich verschlüsselt in deiner iCloud.</p>
       <ul class="settings-datalist" id="settingsDataList"></ul>
       <p class="settings-empty" id="settingsEmptyNote" data-i18n="aktuell_ist_nichts_gespeiche">Aktuell ist nichts gespeichert außer deiner Darstellung.</p>
       <div class="settings-restore">
@@ -607,7 +605,7 @@
 
     <div class="settings-group">
       <h2 data-i18n="über_lucenta">Über Lucenta</h2>
-      <p class="settings-group-desc" data-i18n="version__middot_basiert_auf">Version 1.0 &middot; basiert auf dem wissenschaftlichen Big-Five-Modell (OCEAN) &middot; keine Werbung, kein Tracking, keine Weitergabe an Dritte.</p>
+      <p class="settings-group-desc" data-i18n="version__middot_basiert_auf">Version 1.0 &middot; basiert auf dem Big-Five-Modell (OCEAN)</p>
       <button type="button" class="recht-leise" id="btnRecht" data-i18n="recht_leise">Impressum, Datenschutz &amp; Lizenzen</button>
     </div>
   </section>
@@ -671,7 +669,7 @@
         </details>
         <details class="faq-item">
           <summary data-i18n-text="für_wen_ist_lucenta_gedacht">Für wen ist Lucenta gedacht?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
-          <p data-i18n="für_erwachsene_die_sich_selb">Für Erwachsene, die sich selbst besser verstehen wollen &mdash; als Anstoß zum Nachdenken, nicht als Urteil. Lucenta ist kein klinisches oder diagnostisches Instrument und ersetzt keine therapeutische oder medizinische Unterstützung. Falls es dir gerade nicht gut geht, wende dich bitte an eine Beratungsstelle oder eine Person deines Vertrauens.</p>
+          <p data-i18n="für_erwachsene_die_sich_selb">Für Erwachsene, die sich selbst besser verstehen wollen &mdash; als Anstoß zum Nachdenken. Lucenta ist kein klinisches Instrument.</p>
         </details>
         <details class="faq-item">
           <summary data-i18n-text="was_ist_der_unterschied_zwis">Was ist der Unterschied zwischen meinem Ergebnis und der Tagesform?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
@@ -748,8 +746,6 @@
         <div><strong data-i18n="ob_fakt_wissen">Wissenschaftlich fundiert</strong><span data-i18n="ob_fakt_wissen_text">Das Big-Five-Modell ist das am besten erforschte Modell der Persönlichkeitspsychologie. Die 50 Aussagen stammen aus dem frei zugänglichen IPIP.</span></div></li>
       <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path><path d="M9 2h6"></path></svg>
         <div><strong data-i18n="ob_fakt_zeit">Etwa 7 Minuten</strong><span data-i18n="ob_fakt_zeit_text">Du kannst jederzeit unterbrechen und später genau dort weitermachen.</span></div></li>
-      <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
-        <div><strong data-i18n="ob_fakt_privat">Bleibt bei dir</strong><span data-i18n="ob_fakt_privat_text">Ohne Anmeldung verlassen deine Antworten dein Gerät nicht; mit Apple-Anmeldung liegen sie verschlüsselt in deiner eigenen iCloud. Keine Werbung, kein Tracking.</span></div></li>
     </ul>
     <div class="ob-fuer-dich" id="obFuerDich"></div>
     <button type="button" class="btn btn-primary ob-cta" data-ob-weiter data-i18n="ob_weiter">Weiter</button>
@@ -903,7 +899,6 @@
     <button type="button" class="btn btn-primary plus-modal-cta" id="btnPlusAktivieren" data-i18n="plus_aktivieren">Lucenta+ aktivieren</button>
     <button type="button" class="plus-modal-leise" id="btnPlusModalWiederherstellen" data-i18n="plus_wiederherstellen">Käufe wiederherstellen</button>
     <p class="plus-modal-kuendigen" data-i18n-html="plus_kuendigen">Verlängert sich automatisch. Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
-    <p class="plus-vertrauen" data-i18n="plus_vertrauen">Kein Tracking · Keine Werbung · Deine Daten gehören dir</p>
     <!-- Richtlinie 3.1.2: Nutzungsbedingungen und Datenschutz muessen im Kaufablauf erreichbar sein. -->
     <p class="plus-recht"><button type="button" data-recht="eula" data-i18n="plus_eula">Nutzungsbedingungen (EULA)</button> · <button type="button" data-recht="datenschutz" data-i18n="plus_datenschutz">Datenschutz</button></p>
   </div>

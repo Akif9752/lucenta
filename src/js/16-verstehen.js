@@ -37,7 +37,7 @@
     }
     wrap.innerHTML = inhalt + BEREICHE.map(bereichHTML).join('') +
       '<section class="vs-teil" data-vs-teil="combos" id="vs-combos">'+kombiBlock(last)+'</section>'+
-      '<section class="vs-teil" data-vs-teil="data" id="vs-data">'+eigeneDatenBlock(last)+'</section>' + tx('js_diese_einordnungen_fassen');
+      '<section class="vs-teil" data-vs-teil="data" id="vs-data">'+eigeneDatenBlock(last)+'</section>';
     wrap.setAttribute('data-vs-reiter', vsReiter);
     schloesserVerdrahten(wrap);
     if (wrap.querySelectorAll) wrap.querySelectorAll('[data-vs-ziel]').forEach(function(b){

@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-25, nach Runde 164)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-25, nach Runde 165)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 164 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 165 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 165 | (dieser) | Warntexte gekuerzt: „kein klinisches Instrument" nur noch in der Hilfe, Datenschutz-Beteuerungen aus Ergebnis, Lucenta+, Freunde, Onboarding, Ueber |
 | 164 | `a43aa52` | Mops, Siamkatze; Tagesform und Verstehen mit Reitern; Fehlersuche je Reiter |
 | 163 | `0e70ed7` | Figur & Hintergrund als Unterseite, Abstaende (tools/abstaende.mjs), Wort ueber dem Kreis, Vogelfuesse |
 | 162 | `8b50639` | Verstehen nach Lebensbereichen: 40 neue Karten in acht Sprachen, Inhaltsuebersicht |
@@ -228,6 +229,11 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
+- **Warntexte sparsam (Runde 165, Entscheidung des Inhabers):** „kein klinisches Instrument" steht in der App
+  NUR in Hilfe -> „Fuer wen ist Lucenta gedacht?" (ein Satz, Beleg fuer Richtlinie 1.4.1). Keine
+  Datenschutz-Beteuerungen („kein Tracking", „bleibt auf dem Geraet", „Wir sehen sie nie") an Ergebnis,
+  Lucenta+, Freunden, Onboarding, Ueber. Datenschutzerklaerung, Impressum, Store-Texte bleiben vollstaendig.
+
 - **Bezahlgrenze (Runde 128, geaendert Runde 136):** frei sind Test, Ergebnistyp, Motto, Kurzfassung, Radar, Teilen,
   Code, je Dimension Wert + Kernsatz + erster Satz, Tagesform-Eintragen + 7 Tage, Erinnerung, Vergleiche
   mit ZWEI Personen (`FREI_VERGLEICHE`; die zwei Archivplaetze `FREI_ARCHIV` entfielen in Runde 155 mit dem
@@ -264,6 +270,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 165: ALLE 9 BESTANDEN** (14,2 Min.), Zahlen wie nach 164, `fehlersuche` 28 Durchlaeufe ohne Fund.
 
 **Nach Runde 164: ALLE 9 BESTANDEN** (14,3 Min.): `tests` 11 Reihen, `pruef-store` 32, `pruef-app` 36
 (erwartet 20 Tierbilder), `pruef-nativ` 77, `pruef-bewegung` (klickt den Reiter „Verlauf"), `diff-sprachen`
@@ -369,6 +377,33 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 165 — Warntexte gekuerzt
+
+**Auftrag:** unnoetige Warntexte kuerzen („kein klinisches Instrument", „Daten werden nicht gesammelt").
+Gefragt: Hinweis einmal in der Hilfe behalten (gewaehlt) — und „noch strenger" (gewaehlt): auch das
+Onboarding-Faktum „Bleibt bei dir" und die Datenschutz-Zeile unter dem Ergebnis entfernen.
+
+**Entfernt (alle acht Sprachen, Schluessel geloescht):** Fusszeile Ergebnis `kein_klinisches_instrument_m`;
+Lucenta+-Seite `plus_vertrauen` (+ CSS `.plus-vertrauen`); Verstehen-Fuss `js_diese_einordnungen_fassen`;
+Onboarding Schritt 3 `ob_fakt_privat(_text)` (bleiben zwei Fakten); Ergebnis `js_ergebnis_wiedercode_hinweis` —
+`#codeLead` erscheint nur noch im Gastdurchlauf (`js_dieser_code_ist_die_einzig`), dort ist er Funktion, nicht Warnung.
+
+**Gekuerzt:** Ueber (`version__middot_basiert_auf`, ohne „kein Tracking …"), Freunde-Einleitung (ohne „Alles bleibt
+auf diesem Geraet"), Vergleichshinweis (ein Satz statt drei), Tagesform-Befund `js_befund_erholung_zaeh` (ohne „keine
+Diagnose"), `konto_text_aus` (ohne „Wir sehen sie nie"), Einstellungen -> Daten (ein Satz), Hilfe „Fuer wen" (ohne
+Beratungsstellen-Satz; „Lucenta ist kein klinisches Instrument." bleibt).
+
+**Nicht angefasst:** Datenschutzerklaerung, Impressum, Store-Texte, Hilfe „Wo werden meine Daten gespeichert?".
+
+**Nebenwirkung, von der Fehlersuche gefunden:** Der geloeschte Fusszeilen-Satz stand auf de/fr zwischen dem IPIP-Link
+und „Impressum, Datenschutz & Lizenzen". Ohne ihn lagen beide 44er-Tippflaechen bei 16 px Reihenabstand uebereinander
+(14 Funde „Tippflaeche unter 44px — a. 22×15 zu wenig: hoch"). Reihenabstand `footer.appfoot` jetzt 30 px; am Bild
+(WebKit, 320 px) geprueft — zwei ruhige Zeilen.
+
+**Pruefungen:** `pruef-alles` 9/9 (14,2 Min.).
+
+**Unsicher:** Uebersetzungen der gekuerzten Saetze in sieben Sprachen sind von mir, nicht fachlich gegengelesen.
 
 ## Runde 164 — Mops und Siamkatze; Tagesform und Verstehen mit Reitern
 

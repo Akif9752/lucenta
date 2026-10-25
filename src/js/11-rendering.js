@@ -253,9 +253,8 @@
     // Gastdurchlauf sichtbar kennzeichnen.
     $('guestNote').style.display = guestRun ? 'flex' : 'none';
     $('resultEyebrow').textContent = guestRun ? tx('js_gastergebnis') : tx('js_dein_porträt');
-    $('codeLead').textContent = guestRun
-      ? tx('js_dieser_code_ist_die_einzig')
-      : tx('js_ergebnis_wiedercode_hinweis');
+    $('codeLead').textContent = guestRun ? tx('js_dieser_code_ist_die_einzig') : '';
+    $('codeLead').hidden = !guestRun;
     $('gastCodeBox').hidden = !guestRun;
     $('btnErgebnisFreunde').hidden = guestRun;
     $('radarWrap').innerHTML = radarSVG(scores);

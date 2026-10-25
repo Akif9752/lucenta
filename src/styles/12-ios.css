@@ -605,7 +605,6 @@
   #plusPreisWahl .segment-opt[data-laufzeit="jahr"]{ margin-top:8px; }
   #plusModal .plus-modal-cta{ margin-top:12px; min-height:50px; font-size:calc(17px * var(--dt, 1)); font-weight:600; }
   #plusModal .plus-modal-kuendigen{ margin:8px 0 0; font-size:calc(11.5px * var(--dt, 1)); line-height:1.45; color:var(--muted-soft); }
-  .plus-vertrauen{ margin:4px 0 0; font-size:calc(11.5px * var(--dt, 1)); line-height:1.45; color:var(--muted-soft); text-align:center; }
 
   /* Runde 126: die aufklappbare Eintragsliste der Tagesform (Form wie .hilfe-sammlung). */
   .tf-liste-sammlung{ margin-top:4px; }
