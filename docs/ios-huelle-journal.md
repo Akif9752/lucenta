@@ -204,7 +204,7 @@ Bei Gestaltungsfragen vorher mit Optionen fragen.
 
 *B — hoch:* erledigt bis auf den scharfen Einladungslink (B7-Rest, braucht eine Domain: `einladung/LIESMICH.md`).
 
-*C — Feinschliff:* erledigt; C19 (Startbild schwarz) bleibt auf Entscheidung des Inhabers.
+*C — Feinschliff:* erledigt; C19: Startbild bleibt schwarz (Inhaber, 2026-10-25: „passt“).
 
 *Seit Runde 158–164 offen:* Fachdurchsicht der 40 Verstehen-Karten (Psychologie) und muttersprachliche
 Durchsicht der Uebersetzungen; Datenschutz-URL fuer App Store Connect. Store-Bilder sind seit Runde 166 neu.
@@ -223,7 +223,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 - **Am echten iPhone pruefen:** Erinnerungen und Nacherinnerung, Haptik, Bewegungen, Push/Pop und
   Wischgeste mit dem Finger, Symbol auf dem Homescreen, das Teilen-Blatt beim Einladen, das
   StoreKit-Verwalten-Blatt, eine echte Anmeldung mit Apple und echtes CloudKit.
-- **Urteil des Inhabers ausstehend:** Polwoerter der Tagesform-Fragen, Strahlenkranz, Push/Pop.
+- **Vom Inhaber abgenommen (2026-10-25, „passt“):** Polwoerter der Tagesform-Fragen, Strahlenkranz, Push/Pop,
+  schwarzes Startbild. Nicht erneut zur Wahl stellen.
 - Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht noch einmal suchen**.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
