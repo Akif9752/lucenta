@@ -25,7 +25,9 @@
     {id:'pinguin', feld:'#E3E8EC'},
     {id:'papagei', feld:'#F5E2DC'},
     {id:'flamingo', feld:'#F8E4E8'},
-    {id:'rotkehlchen', feld:'#F3E6D8'}
+    {id:'rotkehlchen', feld:'#F3E6D8'},
+    {id:'mops', feld:'#F2E7D6'},
+    {id:'siamkatze', feld:'#E9E3EE'}
   ];
 
   // ---------- Die Feldfarbe im Dunkelmodus ----------
@@ -57,7 +59,7 @@
   // ---------- Hintergruende der Profilzeile ----------
   // CSS-Verlaeufe statt Bilder; jede Vorlage bestimmt Flaeche UND Schriftfarbe.
   // Angezeigt in Gruppen (Auftrag des Inhabers); die Reihenfolge in FIGUREN bleibt dafuer unberuehrt.
-  var FIGUR_GRUPPEN = [['haus', ['katze','dackel','retriever']],
+  var FIGUR_GRUPPEN = [['haus', ['katze','siamkatze','dackel','retriever','mops']],
                        ['wald', ['fuchs','baer','panda','hase','reh']],
                        ['voegel', ['eule','pinguin','papagei','flamingo','rotkehlchen']],
                        ['wasser', ['wal','delfin','seeotter','schildkroete','goldfisch']]];

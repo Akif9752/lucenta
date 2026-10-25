@@ -22,7 +22,7 @@ GROESSE = 288     # Runde 133: fuellt jetzt den ganzen Kreis; 96 pt bei 3x = 288
 # wo das Tier zwischenzeitlich gewechselt hat (Runde 123: Pudel/Hund statt Dackel/Retriever).
 TIERE = ['fuchs', 'katze', 'baer', 'panda', 'hase', 'reh', 'dackel', 'retriever',
          'eule', 'wal', 'goldfisch', 'schildkroete',
-         'delfin', 'seeotter', 'pinguin', 'papagei', 'flamingo', 'rotkehlchen']
+         'delfin', 'seeotter', 'pinguin', 'papagei', 'flamingo', 'rotkehlchen', 'mops', 'siamkatze']
 
 
 # ---------- PNG lesen und schreiben, nur mit der Standardbibliothek ----------

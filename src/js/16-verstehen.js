@@ -1,4 +1,5 @@
 // ---------- "Verstehen": profilbasierte Kurz-Einordnungen ----------
+  var vsReiter = '';
   function renderUnderstand(){
     var last = loadResult();
     var wrap = $('understandContent');
@@ -12,7 +13,7 @@
     var BEREICHE = ['beziehungen', 'arbeit', 'stress', 'wachstum'];
     var reihe = ORDER.slice().sort(function(a, b){ return Math.abs(last[b]-50) - Math.abs(last[a]-50); });
     var bereichHTML = function(b){
-      return '<section class="vs-bereich" id="vs-'+b+'"><div class="understand-group-label">'+tx('vs_bereich_'+b)+'</div>'+
+      return '<section class="vs-bereich vs-teil" data-vs-teil="'+b+'" id="vs-'+b+'"><div class="understand-group-label">'+tx('vs_bereich_'+b)+'</div>'+
         reihe.map(function(f, i){
           var pol = last[f] >= 50 ? 'high' : 'low', k = LEBEN[b][f][pol];
           return '<details class="understand-card vs-karte" style="animation-delay:'+(i*50)+'ms"'+(i === 0 ? ' open' : '')+'><summary>'+
@@ -21,10 +22,12 @@
             '<div class="vs-label">'+tx('vs_frage')+'</div><p class="vs-frage">'+k.f+'</p></div></details>';
         }).join('')+'</section>';
     };
-    var inhalt = '<nav class="vs-inhalt" aria-label="'+tx('vs_inhalt')+'">'+
+    // Reiter (Entscheidung des Inhabers, Runde 163): immer nur ein Teil sichtbar; die Wahl bleibt.
+    if (!vsReiter) vsReiter = BEREICHE[0];
+    var inhalt = '<div class="vs-inhalt" role="tablist" aria-label="'+tx('vs_inhalt')+'">'+
       BEREICHE.map(function(b){ return [b, 'vs_bereich_'+b]; }).concat([['combos', 'vs_kombis'], ['data', 'vs_daten']]).map(function(z){
-        return '<button type="button" class="vs-sprung" data-vs-ziel="vs-'+z[0]+'">'+tx(z[1])+'</button>';
-      }).join('')+'</nav>';
+        return '<button type="button" class="vs-sprung" role="tab" data-vs-ziel="'+z[0]+'" aria-selected="'+(z[0] === vsReiter ? 'true' : 'false')+'">'+tx(z[1])+'</button>';
+      }).join('')+'</div>';
     // "Verstehen" ist ganz Lucenta+ (Entscheidung des Inhabers, Runde 136). Frei nur die verschwommene
     // Vorschau des ersten Bereichs.
     if (!istPlus()){
@@ -33,13 +36,16 @@
       return;
     }
     wrap.innerHTML = inhalt + BEREICHE.map(bereichHTML).join('') +
-      '<section id="vs-combos">'+kombiBlock(last)+'</section>'+
-      '<section id="vs-data">'+eigeneDatenBlock(last)+'</section>' + tx('js_diese_einordnungen_fassen');
+      '<section class="vs-teil" data-vs-teil="combos" id="vs-combos">'+kombiBlock(last)+'</section>'+
+      '<section class="vs-teil" data-vs-teil="data" id="vs-data">'+eigeneDatenBlock(last)+'</section>' + tx('js_diese_einordnungen_fassen');
+    wrap.setAttribute('data-vs-reiter', vsReiter);
     schloesserVerdrahten(wrap);
     if (wrap.querySelectorAll) wrap.querySelectorAll('[data-vs-ziel]').forEach(function(b){
       b.addEventListener('click', function(){
-        var ziel = $(b.getAttribute('data-vs-ziel'));
-        if (ziel) ziel.scrollIntoView({behavior: prefersReducedMotion() ? 'auto' : 'smooth', block:'start'});
+        vsReiter = b.getAttribute('data-vs-ziel');
+        wrap.setAttribute('data-vs-reiter', vsReiter);
+        wrap.querySelectorAll('[data-vs-ziel]').forEach(function(x){ x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+        tapFeedback();
       });
     });
   }

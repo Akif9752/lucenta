@@ -235,7 +235,7 @@
   </section>
 
   <!-- STATE CHECK -->
-  <section class="view" id="view-state" tabindex="-1">
+  <section class="view" id="view-state" tabindex="-1" data-reiter="heute">
     <div class="quiz-head nur-zurueck">
       <button class="btn btn-ghost btn-sm" id="btnBackFromState" data-i18n="start_3">← Start</button>
     </div>
@@ -244,10 +244,17 @@
       <h1 data-i18n="wie_geht_es_dir_gerade">Wie geht es dir gerade?</h1>
       <!-- Runde 124: Der alte Satz ("Deine fuenf Dimensionen aendern sich nicht von Tag zu Tag") stimmt
            fuer das Mittel, nicht fuer den Tag — und die Tagesform fragt jetzt genau danach. -->
-      <p data-i18n="tf_einleitung">Dein Testergebnis beschreibt, wie du im Schnitt bist. Der Alltag schwankt darum herum: an manchen Tagen bist du geselliger, an anderen ruhiger. Die Tagesform hält beides fest – wie es dir geht und wie du heute warst. So entsteht mit der Zeit dein eigenes Bild.</p>
+      <p data-tf-teil="heute" data-i18n="tf_einleitung">Dein Testergebnis beschreibt, wie du im Schnitt bist. Der Alltag schwankt darum herum: an manchen Tagen bist du geselliger, an anderen ruhiger. Die Tagesform hält beides fest – wie es dir geht und wie du heute warst. So entsteht mit der Zeit dein eigenes Bild.</p>
+    </div>
+    <!-- Reiter statt einer langen Seite (Entscheidung des Inhabers); sichtbar ist nur der gewaehlte Teil. -->
+    <div class="segment tf-reiter" role="tablist" aria-label="Bereich der Tagesform" data-i18n-aria="tf_reiter_aria">
+      <button type="button" class="segment-opt" role="tab" data-reiter="heute" aria-selected="true"><span class="segment-preis" data-i18n="tf_reiter_heute">Heute</span></button>
+      <button type="button" class="segment-opt" role="tab" data-reiter="verlauf" aria-selected="false"><span class="segment-preis" data-i18n="tf_verlauf_titel">Verlauf</span></button>
+      <button type="button" class="segment-opt" role="tab" data-reiter="kalender" aria-selected="false"><span class="segment-preis" data-i18n="tf_kal_titel">Kalender</span></button>
+      <button type="button" class="segment-opt" role="tab" data-reiter="muster" aria-selected="false"><span class="segment-preis" data-i18n="tf_muster_titel">Muster</span></button>
     </div>
 
-    <div class="state-check-card">
+    <div class="state-check-card" data-tf-teil="heute">
       <div class="tf-abschnitte" id="stateTfAbschnitte"></div>
       <p class="state-today-note" id="stateTodayNote"></p>
       <!-- Ist die laufende Tageszeit eingetragen, steht hier die Bestaetigung (zuklappen() in
@@ -294,7 +301,7 @@
 
     <!-- Runde 124: die Erinnerung dort, wo sie gebraucht wird. Derselbe Stand wie in den
          Einstellungen (erinnerungAnwenden() setzt beide). -->
-    <div class="tf-erinnerung">
+    <div class="tf-erinnerung" data-tf-teil="heute">
       <div class="settings-zeile-text">
         <strong data-i18n="tf_erinnerung_titel">Tägliche Erinnerung</strong>
         <span class="settings-hint" id="tfErinnerungHinweis"></span>
@@ -302,11 +309,11 @@
       <button type="button" class="schalter" id="tfErinnerungSchalter" role="switch" aria-checked="false" aria-label="Tägliche Erinnerung" data-i18n-aria="aria_erinnerung_tf"><span class="schalter-knopf"></span></button>
     </div>
 
-    <div id="tfBandbreite"></div>
-    <div id="tfKalender"></div>
-    <div id="tfMuster"></div>
-    <h2 class="section-title section-title-sub tf-verlauf-titel" data-i18n="tf_verlauf_titel">Verlauf</h2>
-    <div id="stateTrendContent"></div>
+    <div id="tfBandbreite" data-tf-teil="muster"></div>
+    <div id="tfKalender" data-tf-teil="kalender"></div>
+    <div id="tfMuster" data-tf-teil="muster"></div>
+    <h2 class="section-title section-title-sub tf-verlauf-titel" data-tf-teil="verlauf" data-i18n="tf_verlauf_titel">Verlauf</h2>
+    <div id="stateTrendContent" data-tf-teil="verlauf"></div>
   </section>
 
   <!-- COMPAT ARCHIVE -->

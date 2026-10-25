@@ -214,3 +214,21 @@
   .tf-kal-zeit{ font-size:calc(12px * var(--dt, 1)); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
   .tf-wt-bild.tf-tz-bild{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
   .tf-beste .befund + .befund{ margin-top:10px; }
+  /* Reiter (Runde 163): nur der gewaehlte Teil ist sichtbar. */
+  .tf-reiter{ margin:4px 0 18px; }
+  .tf-reiter .segment-opt{ min-height:44px; }
+  .tf-reiter .segment-opt[aria-selected="true"]{ background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.18); }
+  #view-state[data-reiter="heute"] [data-tf-teil]:not([data-tf-teil="heute"]),
+  #view-state[data-reiter="verlauf"] [data-tf-teil]:not([data-tf-teil="verlauf"]),
+  #view-state[data-reiter="kalender"] [data-tf-teil]:not([data-tf-teil="kalender"]),
+  #view-state[data-reiter="muster"] [data-tf-teil]:not([data-tf-teil="muster"]){ display:none; }
+  #view-state [data-tf-teil] > .section-title-sub:first-child,
+  #view-state .tf-verlauf-titel{ margin-top:0; }
+  /* Der Reiter nennt den Teil schon: keine zweite gleiche Ueberschrift darunter. */
+  #view-state .tf-verlauf-titel,
+  #tfKalender > .section-title:first-child,
+  #tfMuster > .section-title:first-child{ display:none; }
+  /* Feste Viertel: sonst wachsen die Spalten mit dem laengsten Wort ("Aujourd'hui", "Calendrier" auf 320 pt). */
+  .tf-reiter{ grid-template-columns:repeat(4, minmax(0, 1fr)); }
+  .tf-reiter .segment-opt{ padding:8px 4px; }
+  .tf-reiter .segment-preis{ font-size:calc(14px * var(--dt, 1)); overflow-wrap:anywhere; -webkit-hyphens:auto; hyphens:auto; text-align:center; }

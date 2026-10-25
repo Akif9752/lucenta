@@ -432,6 +432,9 @@ async function durchlauf(reduziert){
   await p.waitForTimeout(600);
   await p.click('#btnLandingStateHistory');
   await p.waitForTimeout(600);
+  // Seit Runde 164 steht der Verlauf in seinem Reiter.
+  await p.click('.tf-reiter [data-reiter="verlauf"]');
+  await p.waitForTimeout(300);
 
   const waehler = await p.$('.tf-fenster .segment-opt[data-fenster="90"]');
   if (!waehler){

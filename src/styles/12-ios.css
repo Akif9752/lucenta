@@ -915,3 +915,12 @@
   .aussehen-avatar{ width:84px; height:84px; flex-shrink:0; font-size:calc(28px * var(--dt, 1)); }
   .aussehen-name{ font-family:var(--marke); font-size:calc(22px * min(var(--dt, 1), 1.3)); font-weight:600; color:var(--hg-ink, var(--ink)); }
   #view-look .avatar-color-row{ margin-top:14px; }
+  /* Verstehen-Reiter: nur der gewaehlte Teil (data-vs-reiter am Inhalt). */
+  .vs-sprung[aria-selected="true"]{ background:var(--accent-strong); color:var(--accent-ink); font-weight:600; }
+  #understandContent[data-vs-reiter="beziehungen"] .vs-teil:not([data-vs-teil="beziehungen"]){ display:none; }
+  #understandContent[data-vs-reiter="arbeit"] .vs-teil:not([data-vs-teil="arbeit"]){ display:none; }
+  #understandContent[data-vs-reiter="stress"] .vs-teil:not([data-vs-teil="stress"]){ display:none; }
+  #understandContent[data-vs-reiter="wachstum"] .vs-teil:not([data-vs-teil="wachstum"]){ display:none; }
+  #understandContent[data-vs-reiter="combos"] .vs-teil:not([data-vs-teil="combos"]){ display:none; }
+  #understandContent[data-vs-reiter="data"] .vs-teil:not([data-vs-teil="data"]){ display:none; }
+  #understandContent .vs-teil > .understand-group-label:first-child{ display:none; }

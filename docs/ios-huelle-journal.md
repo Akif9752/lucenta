@@ -47,7 +47,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 163 | siehe `git log` | Figur & Hintergrund als Unterseite, Abstaende (tools/abstaende.mjs), Wort ueber dem Kreis, Vogelfuesse |
+| 164 | siehe `git log` | Mops, Siamkatze; Tagesform und Verstehen mit Reitern; Fehlersuche je Reiter |
+| 163 | `0e70ed7` | Figur & Hintergrund als Unterseite, Abstaende (tools/abstaende.mjs), Wort ueber dem Kreis, Vogelfuesse |
 | 162 | `8b50639` | Verstehen nach Lebensbereichen: 40 neue Karten in acht Sprachen, Inhaltsuebersicht |
 | 161 | `a48a012` | Archetypen als persoenlicher Rollenatlas; Kalender mit Tagesdetails und Monatsueberblick; Muster nach Tageszeit und beste/schwere Tage |
 | 160 | `642e7bb` | Hintergruende in Gruppen + Lucenta+, vier neue; Delfin, Seeotter, Pinguin, Papagei, Flamingo, Rotkehlchen; Tiere in Gruppen |
@@ -347,6 +348,27 @@ Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 —
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+
+---
+
+## Runde 164 — Mops und Siamkatze; Tagesform und Verstehen mit Reitern
+
+- **Mops und Siamkatze** (Wahl des Inhabers) in `Tiere.swift`: Mops mit schwarzer Maske, Stirnfalten,
+  Knopfohren (erster Wurf hatte einen Querbalken ueber den Augen — die untere Stirnfalte lag auf Augenhoehe,
+  am Bild gesehen und hochgesetzt); Siamkatze mit Keilkopf, dunkler Maske und Ohren, blauen Augen. Hinten an
+  `FIGUREN`; „Hunde & Katzen" hat jetzt fuenf. `pruef-app` zaehlt 20 Tierbilder.
+- **Reiter** (Wahl: Reiter oben): Tagesform „Heute · Verlauf · Kalender · Muster" (`data-reiter` an der Seite,
+  `data-tf-teil` an den Bloecken); Verstehen: die Sprungknoepfe sind Reiter (vier Bereiche, Kombinationen,
+  eigene Daten), die Wahl bleibt beim Wiederkommen. Feinschliff: Ueberschriften, die den Reiternamen
+  wiederholten, ausgeblendet; die lange Einfuehrung der Tagesform nur bei „Heute". Gemessen (Beispieldaten,
+  Lucenta+): Tagesform-Teile 910–1.830 px statt einer durchgehenden Seite, Verstehen-Teile 870–1.740 px.
+- **Fehlersuche:** je Reiter ein eigener Weg (`tf_verlauf`, `tf_kalender`, `tf_muster`, `vs_arbeit` …), sonst
+  bliebe alles ausser dem ersten Reiter ungemessen.
+
+`pruef-alles` erster Lauf 7/9: `pruef-bewegung` suchte die Verlaufskurve auf „Heute" (klickt jetzt erst den
+Reiter „Verlauf"); `fehlersuche` fand die Reiterleiste bei 320 px auf Franzoesisch zu breit — jetzt feste
+Viertel, 14 px, Umbruch erlaubt; „Aujourd’hui" brach am Bild dreizeilig und heisst im Reiter „Jour".
+Zweiter Lauf **9/9** (14,3 Min.).
 
 ---
 

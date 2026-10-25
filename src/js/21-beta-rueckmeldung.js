@@ -238,6 +238,15 @@
   // Keine Zifferntasten-Bedienung im Fragebogen (auf dem iPhone unerreichbar). Bewusst geblieben:
   // Eingabetaste in Textfeldern und Escape/Tab in Fenstern (Tastatur- und Schaltersteuerung).
   $('btnNavZurueck').addEventListener('click', navZurueck);
+  // Tagesform-Reiter: setzt data-reiter an der Seite; das Stilblatt blendet die uebrigen Teile aus.
+  document.querySelectorAll('.tf-reiter [data-reiter]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var r = b.getAttribute('data-reiter');
+      $('view-state').setAttribute('data-reiter', r);
+      document.querySelectorAll('.tf-reiter [data-reiter]').forEach(function(x){ x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+      tapFeedback();
+    });
+  });
   $('btnAussehenOeffnen').addEventListener('click', function(){ var pr = loadProfile(); renderAvatar(pr); renderHintergrundRaster(pr); showView('look'); });
   $('btnBackFromLook').addEventListener('click', function(){ renderProfile(); showView('profile'); });
   // Apples Standard-EULA (Richtlinie 3.1.2) oeffnet im Browser; Datenschutz ist die Rechtsseite der App.

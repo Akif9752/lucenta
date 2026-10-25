@@ -499,6 +499,16 @@ const WEGE = {
   // 0,46 s des Schiebeuebergangs — gemessen wird also die angekommene Seite, nicht der Weg dorthin.
   sprache:    ['#btnDrawerToggle', '#btnDrawerSettings', '#btnSpracheOeffnen'],
   state:      ['#btnHome', '#btnLandingStateHistory'],
+  // Runde 163: Tagesform und Verstehen haben Reiter; jeder Teil bekommt einen eigenen Weg, sonst bliebe
+  // alles ausser dem ersten Reiter ungemessen.
+  tf_verlauf:  ['#btnHome', '#btnLandingStateHistory'],
+  tf_kalender: ['#btnHome', '#btnLandingStateHistory'],
+  tf_muster:   ['#btnHome', '#btnLandingStateHistory'],
+  vs_arbeit:   ['#btnDrawerToggle', '#btnDrawerUnderstand'],
+  vs_stress:   ['#btnDrawerToggle', '#btnDrawerUnderstand'],
+  vs_wachstum: ['#btnDrawerToggle', '#btnDrawerUnderstand'],
+  vs_combos:   ['#btnDrawerToggle', '#btnDrawerUnderstand'],
+  vs_data:     ['#btnDrawerToggle', '#btnDrawerUnderstand'],
   result:     ['#btnDrawerToggle', '#btnDrawerProfileRow', '#btnProfileViewResult'],
   quiz:       ['#btnHome', '#btnStart', '#btnRunSelf'],
   // Runde 81: Das Vergleichsergebnis entsteht erst, wenn zwei Codes eingetragen und verglichen
@@ -523,6 +533,15 @@ const WEGE = {
 };
 // Ansichten, deren Kennung nicht 'view-<name>' lautet, und was nach dem Weg noch zu tun ist.
 const NACHBEREITUNG = {
+  tf_verlauf: {ansicht:'state', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '.tf-reiter [data-reiter="verlauf"]'); await p.waitForTimeout(350); }},
+  tf_kalender: {ansicht:'state', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '.tf-reiter [data-reiter="kalender"]'); await p.waitForTimeout(350); }},
+  tf_muster: {ansicht:'state', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '.tf-reiter [data-reiter="muster"]'); await p.waitForTimeout(350); }},
+  vs_arbeit: {ansicht:'understand', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '[data-vs-ziel="arbeit"]'); await p.waitForTimeout(350); }},
+  vs_stress: {ansicht:'understand', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '[data-vs-ziel="stress"]'); await p.waitForTimeout(350); }},
+  vs_wachstum: {ansicht:'understand', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '[data-vs-ziel="wachstum"]'); await p.waitForTimeout(350); }},
+  vs_combos: {ansicht:'understand', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '[data-vs-ziel="combos"]'); await p.waitForTimeout(350); }},
+  vs_data: {ansicht:'understand', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '[data-vs-ziel="data"]'); await p.waitForTimeout(350); }},
+
   // Zwei Ergebnisse aus echten Werten: O, C und A liegen nah beieinander, E und S weit
   // auseinander. Das ergibt eine gemischte Verteilung und damit BEIDE Kartensorten in einem
   // Bild — mit zwei gleichen oder zwei entgegengesetzten Codes waere immer nur eine zu sehen.
