@@ -21,8 +21,9 @@
     }catch(e){ return null; }
   }
 
-  // ---------- Erinnerung: drei Tageszeiten ----------
-  // Ein Schalter, feste Zeiten (Entscheidung des Inhabers). Fuer eine schon eingetragene Tageszeit
+  // ---------- Erinnerung: einmal am Tag, auf Wunsch zu jeder Tageszeit ----------
+  // Vorgabe EINE am Tag um 20 Uhr, nur wenn der Tag noch leer ist; drei Zeiten + Nacherinnerung nur ueber
+  // den zweiten Schalter (Entscheidung des Inhabers, loest die feste Dreierregel ab). Fuer eine schon eingetragene Tageszeit
   // kommt keine Erinnerung — iOS kann eine Wiederholung nicht fuer einen Tag aussetzen, deshalb werden
   // die Mitteilungen der naechsten ERINNERUNG_TAGE Tage EINZELN geplant und bei jedem Eintrag und
   // Oeffnen neu gesetzt. Wer zehn Tage nicht oeffnet, bekommt keine mehr (gewollt).
@@ -37,10 +38,15 @@
   var ERINNERUNG_NACH_STUNDEN = 2;
   var ERINNERUNG_TITEL = {morgen:'erinnerung_titel_morgen', mittag:'erinnerung_titel_mittag', abend:'erinnerung_titel_abend'};
   var ERINNERUNG_NACH_TITEL = {morgen:'erinnerung_nach_morgen', mittag:'erinnerung_nach_mittag', abend:'erinnerung_nach_abend'};
+  var ERINNERUNG_ALLE = 'lucenta_erinnerung_alle';
   function erinnerungAn(){
     return schalterLesen(ERINNERUNG_AN, 'aus') === 'an';
   }
+  function erinnerungAlle(){
+    return schalterLesen(ERINNERUNG_ALLE, 'aus') === 'an';
+  }
   function erinnerungHinweisText(){
+    if (!erinnerungAlle()) return tfText('erinnerung_hinweis_einmal', {abend: tfUhrzeit(ERINNERUNG_STUNDE.abend)});
     return tfText('erinnerung_hinweis', {morgen: tfUhrzeit(ERINNERUNG_STUNDE.morgen),
       mittag: tfUhrzeit(ERINNERUNG_STUNDE.mittag), abend: tfUhrzeit(ERINNERUNG_STUNDE.abend)});
   }
@@ -56,6 +62,15 @@
       s.disabled = !moeglich;
       if (h) h.textContent = decodeEntities(moeglich ? erinnerungHinweisText() : tx('erinnerung_nur_app'));
     });
+    var alle = $('erinnerungAlleSchalter'), zeile = $('erinnerungAlleZeile');
+    if (zeile) zeile.hidden = !(moeglich && erinnerungAn());
+    if (alle) alle.setAttribute('aria-checked', erinnerungAlle() ? 'true' : 'false');
+  }
+  function erinnerungAlleUmschalten(){
+    if (!nativVorhanden() || !erinnerungAn()) return;
+    schalterSetzen(ERINNERUNG_ALLE, erinnerungAlle() ? 'aus' : 'an', null);
+    erinnerungPlanen();
+    erinnerungAnwenden();
   }
   function istErinnerungsId(id){
     return id === ERINNERUNG_ID ||
@@ -77,6 +92,17 @@
   // kann. `jetzt` als Parameter aus demselben Grund.
   function erinnerungListe(jetzt){
     var heute = heuteEingetragen(), liste = [];
+    if (!erinnerungAlle()){
+      var heuteLeer = !TF_ABSCHNITTE.some(function(s){ return heute[s]; });
+      for (var d = 0; d < ERINNERUNG_TAGE; d++){
+        if (d === 0 && !heuteLeer) continue;
+        var um1 = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() + d, ERINNERUNG_STUNDE.abend, 0, 0);
+        if (um1.getTime() <= jetzt.getTime()) continue;
+        liste.push({id: ERINNERUNG_ID_BASIS + d * ERINNERUNG_JE_TAG, title: decodeEntities(tx(ERINNERUNG_TITEL.abend)),
+          body: decodeEntities(tx('erinnerung_text_mitteilung')), schedule: {at: um1, allowWhileIdle: true}});
+      }
+      return liste;
+    }
     for (var t = 0; t < ERINNERUNG_TAGE; t++){
       TF_ABSCHNITTE.forEach(function(s, k){
         if (t === 0 && heute[s]) return;                   // heute schon eingetragen: keine Erinnerung

@@ -149,10 +149,28 @@
         qi++; renderQuestion();
         animateQuestionIn();
         saveProgress();
-        if (QUIZ_MILESTONES[qi]){ toast(QUIZ_MILESTONES[qi]); pulseFocusline(); funkelnAmFortschritt(); }
+        if (qi === 25){ toast(halbzeitText(), 3500); pulseFocusline(); funkelnAmFortschritt(); }
+        else if (QUIZ_MILESTONES[qi]){ toast(QUIZ_MILESTONES[qi]); pulseFocusline(); funkelnAmFortschritt(); }
       }
       else { finishQuiz(); }
     }, 220);
+  }
+
+  // Halbzeit: die Dimension mit der bisher groessten Abweichung von der Mitte — ohne Richtung, ohne Wertung.
+  function halbzeitText(){
+    var summe = {}, n = {};
+    for (var i = 0; i < 25; i++){
+      var it = ITEMS[i], a = answers[i];
+      if (!it || !a) continue;
+      summe[it.factor] = (summe[it.factor] || 0) + (it.key === 1 ? a : 6 - a) - 3;
+      n[it.factor] = (n[it.factor] || 0) + 1;
+    }
+    var beste = null, abstand = 0.6;     // unter 0,6 Punkten im Mittel ist nichts deutlich
+    ORDER.forEach(function(f){
+      var m = n[f] ? Math.abs(summe[f] / n[f]) : 0;
+      if (m > abstand){ abstand = m; beste = f; }
+    });
+    return beste ? tx('js_halbzeit_vorgeschmack').replace('{dim}', LABELS[beste]) : QUIZ_MILESTONES[25];
   }
 
   // Nach dem Test EINMAL das Kaufangebot, ein paar Sekunden nach dem Ergebnis, nie wieder von selbst,
@@ -504,13 +522,13 @@
   // Ein neuer Hinweis setzt die Uhr zurueck; danach wird der Text geleert, sonst bliebe er fuer
   // VoiceOver auf jeder weiteren Seite stehen.
   var toastUhr = null;
-  function toast(msg){
+  function toast(msg, dauer){
     var t = $('toast'); t.textContent = msg; t.classList.add('show');
     clearTimeout(toastUhr);
     toastUhr = setTimeout(function(){
       t.classList.remove('show');
       toastUhr = setTimeout(function(){ t.textContent = ''; }, 400);
-    }, 1800);
+    }, dauer || 1800);
   }
 
   

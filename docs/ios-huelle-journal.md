@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-25, nach Runde 166)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-25, nach Runde 167)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 166 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 167 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 167 | (dieser) | Aus der Test-Simulation: Erinnerung einmal am Tag (Dreierregel als Zusatzschalter), Tagesform vor Verlauf auf der Kaufseite, Halbzeit-Vorgeschmack, Store-Bilder mit Ueberschrift |
 | 166 | (dieser) | Vergleich: Ring mit %, Name statt „Andere Person“; Freundescode im Wiederherstellungsfeld abgefangen; Flamingo neu (Brustbild), Rotkehlchen, Pinguin; Store-Bilder neu |
 | 165 | (dieser) | Warntexte gekuerzt: „kein klinisches Instrument" nur noch in der Hilfe, Datenschutz-Beteuerungen aus Ergebnis, Lucenta+, Freunde, Onboarding, Ueber |
 | 164 | `a43aa52` | Mops, Siamkatze; Tagesform und Verstehen mit Reitern; Fehlersuche je Reiter |
@@ -108,7 +109,8 @@ Regeln, die er gesetzt hat:
   ersetzt im selben Abschnitt). Oberflaeche in `07-tagesform.js` (Startkarte, `tfAbschnitteRendern`,
   `tfErledigtAnwenden`, Zeitraumwaehler `FENSTER = [14, 30, 90, 0]` — 0 = Gesamt) und
   `07b-tagesform-alltag.js` (Fragen, Stichworte, Bandbreite, Kalender, Muster).
-- **Erinnerungen:** `19b-native.js` — `erinnerungListe(jetzt)` plant 10 Tage × 6 einzeln
+- **Erinnerungen:** `19b-native.js` — `erinnerungListe(jetzt)` plant 10 Tage einzeln: Vorgabe 1 × 20 Uhr,
+  mit `erinnerungAlle()` 6 am Tag
   (`ERINNERUNG_STUNDE`, `ERINNERUNG_NACH_STUNDEN`), `erinnerungNachziehen()` bei jedem Eintrag und
   jedem Oeffnen (`visibilitychange`).
 - **Bewegung:** `19-feier.js` — `funkelStoss`, `funkenAn`, `ergebnisEnthuellen`,
@@ -229,6 +231,10 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
+- **Erinnerung (Runde 167, Entscheidung des Inhabers, loest Runde 131 ab):** Vorgabe EINE Mitteilung am Tag um
+  20 Uhr, nur wenn der Tag leer ist. Drei Tageszeiten + Nacherinnerung nur ueber den Schalter „Zu jeder
+  Tageszeit" (`lucenta_erinnerung_alle`, nur in Einstellungen, erscheint erst bei eingeschalteter Erinnerung).
+
 - **Warntexte sparsam (Runde 165, Entscheidung des Inhabers):** „kein klinisches Instrument" steht in der App
   NUR in Hilfe -> „Fuer wen ist Lucenta gedacht?" (ein Satz, Beleg fuer Richtlinie 1.4.1). Keine
   Datenschutz-Beteuerungen („kein Tracking", „bleibt auf dem Geraet", „Wir sehen sie nie") an Ergebnis,
@@ -270,6 +276,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 167: ALLE 9 BESTANDEN** (14,2 Min.), `pruef-nativ` jetzt 83, sonst wie nach 164.
 
 **Nach Runde 166: ALLE 9 BESTANDEN** (14,2 Min.), Zahlen wie nach 164.
 
@@ -379,6 +387,36 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 167 — Vier Punkte aus der Test-Simulation
+
+**Auftrag:** Der Inhaber liess 100 Testpersonen ueber einen Monat simulieren (Bericht im Gespraech, KEINE
+Messung — Schaetzungen auf Grundlage des Codes) und gab die vier Punkte frei, die ohne seine Entscheidung gehen.
+Offen bei ihm: Probezeit fuers Jahresabo, Zeitpunkt der Tagesform-Sperre, Altersgrenze (16 oder „Fuer Erwachsene"),
+Einladungs-Domain (in der Simulation der groesste Wachstumshebel).
+
+**Erinnerung.** Bis zu sechs Mitteilungen am Tag (9/14/20 + Nacherinnerung) — in der Simulation der Hauptgrund,
+Mitteilungen in Woche 1 abzuschalten. Jetzt Vorgabe: eine um 20 Uhr, nur wenn der Tag noch leer ist; dieselben 10 Tage
+im Voraus, Kennungen im alten Bereich (Absagen erfasst sie). Der Zusatzschalter „Zu jeder Tageszeit" stellt das alte
+Verhalten her. Bestandsnutzer mit eingeschalteter Erinnerung fallen auf die Vorgabe (gewollt). `pruef-nativ` 77 -> 83:
+eine je Tag, 20 Uhr, Zusatzschalter erscheint und steht aus, Eintrag heute laesst heute aus, Zusatzschalter plant die 6.
+
+**Kaufseite.** `PLUS_VORTEILE`: Bericht bleibt vorn (Entscheidung Runde 127), Tagesform auf Platz 2, der Verlauf der
+Testergebnisse ans Ende — er fuellt sich erst ueber Monate, die App sagt das selbst.
+
+**Halbzeit.** Bei Frage 25 statt des allgemeinen Satzes die Dimension mit der bisher groessten mittleren Abweichung von
+der Mitte (> 0,6 Punkte), ohne Richtung und ohne Wertung („Am deutlichsten zeichnet sich bisher ab: Offenheit.");
+sonst der alte Satz. `toast(msg, dauer)` — hier 3,5 s. In WebKit durchgespielt: gemischte Antworten -> „Offenheit",
+lauter Mitte -> alter Satz.
+
+**Store-Bilder.** `tools/store_bilder.mjs` legt ueber jeden Bildschirm eine Ueberschrift (Fraunces, `<em>` in #5CB4AD)
+und zeigt ihn darunter auf 78 % mit runden Ecken, unten angeschnitten; Masse unveraendert (nachgemessen). Texte in
+`UEBERSCHRIFT`, nur de/en — andere Sprachen bekaemen ohne Eintrag keine Zeile. Drei Bilder angesehen.
+
+**Pruefungen:** `pruef-alles` 9/9 (14,2 Min.), `fehlersuche` ohne Fund.
+
+**Unsicher:** Sieben Uebersetzungen je neuer Zeile von mir. Ob eine Erinnerung am Tag die Bindung wirklich haelt, misst
+erst ein echter Test (TestFlight) — die Simulation ist eine Begruendung, kein Beleg.
 
 ## Runde 166 — Was ohne den Inhaber ging
 

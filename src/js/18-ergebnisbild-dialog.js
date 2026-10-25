@@ -42,11 +42,12 @@
   var plusModalLetzterFokus = null;
   // Volle Schluesselnamen, damit sie im Quelltext auffindbar bleiben.
   var PLUS_VORTEILE = [
-    {titel:'plus_v_bericht_titel',    text:'plus_v_bericht_text'},   // Runde 127: zuerst, das staerkste
-    {titel:'plus_v_verlauf_titel',    text:'plus_v_verlauf_text'},
+    {titel:'plus_v_bericht_titel',    text:'plus_v_bericht_text'},   // zuerst, das staerkste (Entscheidung des Inhabers)
+    // Tagesform vor dem Verlauf: Sie traegt die ersten Wochen; der Verlauf der Testergebnisse fuellt sich erst ueber Monate.
     {titel:'plus_v_tagesform_titel',  text:'plus_v_tagesform_text'},
     {titel:'plus_v_vergleich_titel',  text:'plus_v_vergleich_text'},
-    {titel:'plus_v_verstehen_titel',  text:'plus_v_verstehen_text'}
+    {titel:'plus_v_verstehen_titel',  text:'plus_v_verstehen_text'},
+    {titel:'plus_v_verlauf_titel',    text:'plus_v_verlauf_text'}
   ];
   function plusHaken(){
     return '<span class="plus-vorteil-marke">'+

@@ -57,6 +57,14 @@ const AUFNAHMEN = [
                       await p.evaluate(() => document.getElementById('btnDrawerUnderstand')?.click()); }}
 ];
 
+// Je Motiv eine Zeile, <em> in der Markenfarbe. Andere Sprachen ohne Eintrag bleiben ohne Ueberschrift.
+const UEBERSCHRIFT = {
+  '1-start':     {de:'Deine Persönlichkeit,<br><em>klar erklärt</em>',  en:'Your personality,<br><em>clearly explained</em>'},
+  '2-ergebnis':  {de:'Dein Porträt in<br><em>fünf Dimensionen</em>',    en:'Your portrait in<br><em>five dimensions</em>'},
+  '3-bericht':   {de:'Verstehe, was dich<br><em>ausmacht</em>',         en:'Understand what<br><em>makes you, you</em>'},
+  '4-tagesform': {de:'Sieh, wie es dir<br><em>wirklich</em> geht',      en:'See how you’re<br><em>really</em> doing'},
+  '5-verstehen': {de:'Was die Forschung<br><em>über dich</em> weiß',    en:'What research<br><em>knows about you</em>'}
+};
 async function zuErgebnis(p){
   await p.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
   await p.waitForTimeout(300);
@@ -109,6 +117,28 @@ for (const sprache of SPRACHEN){
       await p.waitForTimeout(250);
 
       const datei = path.join(ZIEL, sprache + '-' + g.name + '-' + a.id + '.png');
+      const roh = await p.screenshot();
+      // Ueberschrift darueber, Bildschirm darunter (unten angeschnitten): Die ersten zwei Bilder
+      // entscheiden im Store ueber die Installation, ein nackter Bildschirm sagt nicht, worum es geht.
+      const zeile = (UEBERSCHRIFT[a.id] || {})[sprache];
+      if (zeile){
+        await p.evaluate(({bild, zeile}) => {
+          const d = document.createElement('div');
+          d.id = 'storeBild';
+          d.innerHTML = '<h1>'+zeile+'</h1><img src="data:image/png;base64,'+bild+'">';
+          document.body.appendChild(d);
+        }, {bild: roh.toString('base64'), zeile});
+        await p.addStyleTag({content:
+          '#storeBild{position:fixed;inset:0;z-index:2147483647;overflow:hidden;'+
+          'background:radial-gradient(120% 60% at 50% 0%, #12302D 0%, #070B0B 62%, #000 100%);}'+
+          '#storeBild h1{margin:0;padding:'+Math.round(g.hoehe*0.085)+'px 28px 0;text-align:center;'+
+          'font:500 '+Math.round(g.breite*0.092)+'px/1.12 Fraunces, Georgia, serif;color:#F2F0EA;letter-spacing:-0.01em;}'+
+          '#storeBild h1 em{font-style:italic;color:#5CB4AD;}'+
+          '#storeBild img{position:absolute;left:11%;width:78%;top:'+Math.round(g.hoehe*0.255)+'px;'+
+          'border-radius:'+Math.round(g.breite*0.1)+'px;border:1.5px solid rgba(255,255,255,.14);'+
+          'box-shadow:0 30px 80px rgba(0,0,0,.6), 0 0 0 8px rgba(255,255,255,.03);}'});
+        await p.waitForTimeout(300);
+      }
       await p.screenshot({path: datei});
       const gross = fs.statSync(datei).size;
       gezaehlt++;

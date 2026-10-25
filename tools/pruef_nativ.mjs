@@ -128,11 +128,36 @@ ok(!/nur in der App|only in the App/i.test(zustand.hinweis), 'und der Browser-Hi
 
 // Runde 129: Statt EINER taeglichen Mitteilung zur gewaehlten Uhrzeit drei feste Zeiten (8, 13, 19 Uhr),
 // fuer 14 Tage einzeln geplant, damit ein schon eingetragener Abschnitt ausgelassen werden kann.
-console.log('\n=== Einschalten fragt um Erlaubnis und plant die drei Tageszeiten fuer 14 Tage ===');
+console.log('\n=== Einschalten fragt um Erlaubnis und plant EINE Erinnerung am Tag (Vorgabe) ===');
 await seite.evaluate(() => document.getElementById('erinnerungSchalter').click());
 await seite.waitForTimeout(500);
 let log = await seite.evaluate(() => window.__nativLog);
 ok(log.some(e => e.was === 'erlaubnis'), 'die Erlaubnis wird erfragt');
+const einmal = log.filter(e => e.was === 'planen')[0]?.arg?.notifications || [];
+ok(einmal.length >= 9 && einmal.length <= 10, 'eine je Tag fuer 10 Tage (sind: '+einmal.length+')');
+ok(einmal.every(x => new Date(x.schedule.at).getHours() === 20 && new Date(x.schedule.at).getMinutes() === 0), 'immer um 20 Uhr');
+ok(await seite.evaluate(() => !document.getElementById('erinnerungAlleZeile').hidden), 'der Schalter "Zu jeder Tageszeit" erscheint');
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_erinnerung_alle') !== 'an'), 'und steht auf aus');
+
+console.log('\n=== Einmal am Tag: ein Eintrag heute laesst den heutigen Abend aus ===');
+await seite.evaluate(() => {
+  const d = new Date(), key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  localStorage.setItem('lucenta_state', JSON.stringify([{day:key, ts:Date.now() - 3000, energy:3, valence:3, slot:'morgen'}]));
+  window.__nativLog = [];
+  document.dispatchEvent(new Event('visibilitychange'));
+});
+await seite.waitForTimeout(400);
+log = await seite.evaluate(() => window.__nativLog);
+const einmal2 = log.filter(e => e.was === 'planen')[0]?.arg?.notifications || [];
+ok(einmal2.length === 9 && einmal2.every(x => new Date(x.schedule.at).toDateString() !== new Date().toDateString()),
+   'heute schon eingetragen: 9 Tage, heute keine (sind: '+einmal2.length+')');
+await seite.evaluate(() => localStorage.removeItem('lucenta_state'));
+
+console.log('\n=== "Zu jeder Tageszeit" plant die drei Tageszeiten mit Nacherinnerung ===');
+await seite.evaluate(() => { window.__nativLog = []; document.getElementById('erinnerungAlleSchalter').click(); });
+await seite.waitForTimeout(500);
+log = await seite.evaluate(() => window.__nativLog);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_erinnerung_alle') === 'an'), 'der Zustand ist gemerkt');
 const geplant = log.filter(e => e.was === 'planen');
 ok(geplant.length === 1, 'genau ein schedule-Aufruf ('+geplant.length+')');
 const liste = geplant[0]?.arg?.notifications || [];

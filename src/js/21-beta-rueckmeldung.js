@@ -403,6 +403,7 @@
     ['erinnerungSchalter','tfErinnerungSchalter'].forEach(function(id){
       if ($(id)) $(id).addEventListener('click', erinnerungUmschalten);
     });
+    if ($('erinnerungAlleSchalter')) $('erinnerungAlleSchalter').addEventListener('click', erinnerungAlleUmschalten);
     // Runde 129: Die Mitteilungen sind fuer 14 Tage einzeln geplant. Jedes Oeffnen schiebt das
     // Fenster nach und laesst die Abschnitte aus, die heute schon eingetragen sind.
     erinnerungNachziehen();
