@@ -592,6 +592,8 @@
   .plus-preis-name{ font-size:calc(16px * var(--dt, 1)); font-weight:600; }
   .plus-preis-unter{ font-size:calc(12.5px * var(--dt, 1)); color:var(--muted-soft); }
   .plus-preis-unter s{ color:var(--muted-soft); }
+  .plus-preis-probe{ display:block; margin-top:2px; font-size:calc(12.5px * var(--dt, 1)); font-weight:600; color:var(--accent); }
+  #plusModal .plus-probe-hinweis{ margin:8px 0 0; font-size:calc(12.5px * var(--dt, 1)); line-height:1.45; color:var(--ink); text-align:center; }
   .plus-preis-rechts{ display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; }
   .plus-preis-betrag{ font-size:calc(17px * var(--dt, 1)); font-weight:700; font-variant-numeric:tabular-nums; }
   .plus-preis-spar{
@@ -612,7 +614,8 @@
   /* Runde 126, am Simulator gesehen: das Kreuz fest an der Fensterecke; Preise brechen nicht um
      (ein einzelnes "€" stand sonst allein in der zweiten Zeile); keine Silbentrennung im Fenster. */
   #btnPlusModalClose{ position:absolute; top:12px; right:12px; z-index:2; }
-  .plus-preis-unter span, .plus-preis-unter s, .plus-preis-betrag{ white-space:nowrap; }
+  .plus-preis-unter s, .plus-preis-betrag, .plus-preis-probe{ white-space:nowrap; }
+  /* Der Monatssatz darf umbrechen (bei 320 pt lief er in den Preis); Betrag und Zeichen haelt ein festes Leerzeichen zusammen. */
   #plusModal p, #plusModal li{ -webkit-hyphens:manual; hyphens:manual; }
   #plusPreisWahl, #plusPreisWahl .segment-opt{ width:100%; max-width:100%; box-sizing:border-box; }
 

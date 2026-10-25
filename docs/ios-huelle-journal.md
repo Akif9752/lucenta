@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-25, nach Runde 167)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-25, nach Runde 168)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 167 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 168 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 168 | (dieser) | 7 Tage Probezeit am Jahresabo (nur wenn der Store sie meldet), erstes Tagesform-Muster frei ab Tag 7, Altersgrenze 16+ |
 | 167 | (dieser) | Aus der Test-Simulation: Erinnerung einmal am Tag (Dreierregel als Zusatzschalter), Tagesform vor Verlauf auf der Kaufseite, Halbzeit-Vorgeschmack, Store-Bilder mit Ueberschrift |
 | 166 | (dieser) | Vergleich: Ring mit %, Name statt „Andere Person“; Freundescode im Wiederherstellungsfeld abgefangen; Flamingo neu (Brustbild), Rotkehlchen, Pinguin; Store-Bilder neu |
 | 165 | (dieser) | Warntexte gekuerzt: „kein klinisches Instrument" nur noch in der Hilfe, Datenschutz-Beteuerungen aus Ergebnis, Lucenta+, Freunde, Onboarding, Ueber |
@@ -231,6 +232,13 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
+- **Probezeit (Runde 168, Inhaber):** 7 Tage kostenlos am Jahresabo. Angezeigt NUR, wenn `preise()` ein
+  `jahrProbeTage > 0` meldet (Swift: `introductoryOffer.paymentMode == .freeTrial` und
+  `isEligibleForIntroOffer`) — nie aus festen Texten versprechen. Angebot in App Store Connect legt der Inhaber an.
+- **Altersgrenze 16+ (Runde 168, Inhaber):** Hilfe „Für alle ab 16 …"; in App Store Connect die hoehere Stufe 16+ waehlen.
+- **Tagesform frei (Runde 168, vom Inhaber an mich delegiert):** ab 7 Tagen ist das ERSTE Muster frei, die
+  uebrigen verschwommen; einmaliger Hinweis am 7. Tag (`lucenta_erstes_muster`). Ersetzt „alle Muster verschwommen" (Runde 127).
+
 - **Erinnerung (Runde 167, Entscheidung des Inhabers, loest Runde 131 ab):** Vorgabe EINE Mitteilung am Tag um
   20 Uhr, nur wenn der Tag leer ist. Drei Tageszeiten + Nacherinnerung nur ueber den Schalter „Zu jeder
   Tageszeit" (`lucenta_erinnerung_alle`, nur in Einstellungen, erscheint erst bei eingeschalteter Erinnerung).
@@ -276,6 +284,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 168:** 8/9 im letzten Lauf, `fehlersuche` nur im Lauf davor (ohne Fund) — siehe Eintrag 168, nachfahren.
 
 **Nach Runde 167: ALLE 9 BESTANDEN** (14,2 Min.), `pruef-nativ` jetzt 83, sonst wie nach 164.
 
@@ -387,6 +397,42 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 168 — Probezeit, erstes Muster frei, ab 16
+
+**Auftrag:** „ja 7 tage probeabo, ab 16 ist okay und tagesform sperre entscheide du".
+
+**Probezeit.** `LucentaKaeufePlugin.preise()` meldet zusaetzlich `jahrProbeTage`: nur wenn das Jahresabo ein
+kostenloses Einfuehrungsangebot hat UND das Konto berechtigt ist (Apple gewaehrt es einmal je Abo-Gruppe), sonst 0.
+Die Kaufseite zeigt dann am Jahresabo „7 Tage kostenlos", der Knopf heisst „7 Tage kostenlos testen", und direkt
+darunter steht „7 Tage kostenlos, danach 29,99 € im Jahr. Kündigst du vorher, zahlst du nichts." (Richtlinie 3.1.2:
+Dauer und Preis danach am Kaufknopf). Beim Monatsabo nichts davon; ohne Store-Antwort nichts davon. Die Lucenta+-Seite
+nennt die Probezeit im Knopf. `Lucenta.storekit` traegt das Angebot (P1W, free) fuer den Simulator.
+`pruef-nativ` 83 -> 89. Am Bild (WebKit, nachgestellte Bruecke, 320 und 390 px) geprueft.
+Dabei gefunden und behoben: Bei 320 px lief „nur 2,50 € im Monat" in den Preis „29,99 €" hinein (die Zeile war
+seit Runde 126 unumbrechbar, damit kein „€" allein steht). Jetzt darf der Satz umbrechen; Betrag und Zeichen haelt
+ein festes Leerzeichen zusammen (in allen Sprachen und beim Betrag aus dem Store).
+
+**Tagesform-Sperre** (vom Inhaber an mich gegeben). Bisher: frei die letzten 7 Tage, ALLE Muster immer
+verschwommen — wer eine Woche eintrug, sah nie, was dabei herauskommt. Jetzt: ab 7 erfassten Tagen ist das erste
+Muster (meist „Wochentage im Schnitt") frei mit der Zeile „Dein erstes Muster – frei für dich.", die uebrigen bleiben
+Vorschau (Text der Vorschau angepasst: wirbt nicht mehr mit den Wochentagen). Am 7. Tag einmalig der Hinweis
+„Sieben Tage erfasst: Dein erstes Muster ist da – unter Tagesform → Muster." (Bereichsnamen je Sprache wie in der App).
+In WebKit durchgespielt: 6 Tage + Eintrag -> Hinweis, Merker gesetzt; Muster-Reiter -> eine freie Karte + Vorschau.
+
+**Ab 16.** Hilfe „Für alle ab 16 …" (8 Sprachen; Schluessel `für_erwachsene_die_sich_selb` bleibt — Umbenennen
+waere Risiko ohne Nutzen). `docs/app-store-start.md`, `docs/store-eintrag.md`: 16+ statt 12+ (Apples Stufen seit 2025:
+4+, 9+, 13+, 16+, 18+; der Fragebogen ergibt weniger, daher die hoehere Stufe von Hand waehlen).
+
+**Pruefungen:** Erster `pruef-alles`-Lauf 8/9 — `audit-i18n` fand das Literal `'jahr'` im JS (Vergleich ueber den
+Textschluessel ersetzt, gleiches Verhalten); `fehlersuche` dort 28 Durchlaeufe ohne Fund. Zweiter Lauf: build, tests,
+audit-i18n, pruef-store, pruef-app 36, pruef-nativ 89, pruef-bewegung, diff-sprachen bestanden; seine `fehlersuche`
+wurde abgebrochen (im selben Befehl gestartet, der nach 10 Min. abgeschnitten wurde) — **nicht erneut gelaufen**.
+Zwischen den Laeufen aenderte sich nur die eine Vergleichszeile. Naechste Sitzung: `pruef-alles` einmal nachfahren.
+
+**Swift** mit `xcodebuild` uebersetzt, ohne Fehler; neuer Stand im Simulator installiert. **Nicht geprueft:** der
+echte StoreKit-Ablauf der Probezeit im Simulator — `simctl launch` nutzt die `.storekit`-Datei nicht, das geht nur
+ueber Xcode (Cmd-R) und einen Tipp auf Lucenta+.
 
 ## Runde 167 — Vier Punkte aus der Test-Simulation
 

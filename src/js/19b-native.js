@@ -279,13 +279,21 @@
     setze('plus_betrag_jahr', PLUS_PREISE.jahr);
     setze('plus_betrag_monat', PLUS_PREISE.monat);
     setze('plus_jahr_statt', PLUS_PREISE.jahrStatt);
-    if (PLUS_PREISE.jahrProMonat) setze('plus_jahr_pro_monat', tx('plus_jahr_pro_monat').replace(BETRAG_MUSTER, PLUS_PREISE.jahrProMonat));
+    if (PLUS_PREISE.jahrProMonat) setze('plus_jahr_pro_monat', tx('plus_jahr_pro_monat').replace(BETRAG_MUSTER, String(PLUS_PREISE.jahrProMonat).replace(/ /g, '\u00a0')));
     // Keine Ersparnis (oder keine berechenbare): dann steht dort auch keine.
     var spar = wahl.querySelector('[data-i18n="plus_jahr_spar"]');
     if (spar){
       if (PLUS_PREISE.jahrSpar) spar.textContent = tx('plus_jahr_spar').replace(BETRAG_MUSTER, PLUS_PREISE.jahrSpar);
       spar.hidden = !PLUS_PREISE.jahrSpar;
     }
+    var probe = probeTage(), abz = $('plusProbeAbzeichen');
+    if (abz){ abz.textContent = probe ? tfText('plus_probe_abzeichen', {n: probe}) : ''; abz.hidden = !probe; }
+    plusKnopfAnwenden();
+  }
+  // Tage der Probezeit, wie der Store sie fuer dieses Konto meldet; ohne Antwort 0 (nichts versprechen).
+  function probeTage(){
+    var n = PLUS_PREISE && +PLUS_PREISE.jahrProbeTage;
+    return n > 0 ? Math.round(n) : 0;
   }
 
   // ---------- Kaeufe wiederherstellen (Richtlinie 3.1.2) ----------

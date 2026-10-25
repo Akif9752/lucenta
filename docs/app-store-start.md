@@ -140,8 +140,11 @@ Zwei Fallen dabei:
   Angabe.** Ein Eintrag, der einmal „Data Not Collected" sagt und es später nicht mehr ist,
   ist der Punkt, an dem aus einer Formalie ein Problem wird.
 
-**Altersfreigabe:** 12+ ist die vertretbare Einstufung (keine Gewalt, keine
-Erwachseneninhalte; die Selbstreflexionsthematik spricht gegen 4+).
+**Altersfreigabe: 16+** (Entscheidung des Inhabers, 2026-10-25). Apple stuft seit 2025 in 4+, 9+, 13+,
+16+ und 18+ ein. Der Fragebogen in App Store Connect ergibt bei Lucenta voraussichtlich eine niedrigere Stufe
+(keine Gewalt, keine Erwachseneninhalte); dort die **hoehere Altersfreigabe 16+ von Hand waehlen**. Die Hilfe in
+der App sagt dasselbe („Für alle ab 16 …“). Das Abo kaufen 16- und 17-Jaehrige ueber die Familienfreigabe bzw.
+das eigene Apple-Konto — daran aendert die App nichts.
 **Kategorie:** Gesundheit & Fitness wäre falsch — Lucenta ist kein Gesundheitsprodukt.
 Richtig: **Lifestyle**, zweitrangig **Bildung**.
 
@@ -178,6 +181,11 @@ blockiert.
    Prüfhinweis. Genau diese zwei Kennungen stehen im Code (`src/js/19b-native.js` und
    `ios/App/App/LucentaKaeufePlugin.swift`); eine dritte Kennung im Store bleibt unerreichbar,
    eine abweichende Schreibweise lässt den Kauf ins Leere laufen. Das kann nur der Inhaber.
+
+   **Probezeit (Entscheidung des Inhabers, 2026-10-25):** Beim Jahresabo `lucenta.plus.jahr` unter
+   „Abopreise → Einführungsangebot" ein **kostenloses Probeabo, 1 Woche**, für alle Länder anlegen. Die App
+   zeigt die Probezeit NUR, wenn der Store sie dem Konto meldet (`isEligibleForIntroOffer`) — fehlt das
+   Angebot, steht einfach der normale Kaufknopf da. Im Simulator ist es über `Lucenta.storekit` schon da.
 
    **Der Code selbst ist seit Runde 103 fertig** — was hier früher stand, ist erledigt:
    - Der Name `StoreKit` war ein Platzhalter (es gibt kein solches Modul von Apple oder Ionic).

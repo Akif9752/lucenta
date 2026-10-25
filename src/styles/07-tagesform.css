@@ -120,6 +120,7 @@
   .tf-erinnerung .settings-hint{ font-size:calc(12.5px * var(--dt, 1)); color:var(--muted); }
 
   .tf-leer, .tf-hinweis{ margin:8px 0 0; font-size:calc(13px * var(--dt, 1)); line-height:1.45; color:var(--muted); }
+  .tf-muster-frei{ margin:0 0 8px; font-size:calc(12px * var(--dt, 1)); font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--accent); }
 
   /* ---------- Bandbreite ---------- */
   .tf-band-karte{ background:var(--surface); border-radius:var(--radius-m); padding:16px; display:flex; flex-direction:column; gap:16px; }

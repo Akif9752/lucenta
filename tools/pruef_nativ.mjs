@@ -80,7 +80,8 @@ await seite.addInitScript(() => {
         // die Produkte noch nicht angelegt sind; mit Schalter wie ein Schweizer Konto.
         preise: () => { merke('preise');
           return Promise.resolve(localStorage.getItem('__pruef_preise') === '1'
-            ? {monat:'CHF 5.00', jahr:'CHF 30.00', jahrProMonat:'CHF 2.50', jahrStatt:'CHF 60.00', jahrSpar:'CHF 30'}
+            ? {monat:'CHF 5.00', jahr:'CHF 30.00', jahrProMonat:'CHF 2.50', jahrStatt:'CHF 60.00', jahrSpar:'CHF 30',
+               jahrProbeTage: localStorage.getItem('__pruef_probe') === '1' ? 7 : 0}
             : {}); },
         kaufen: (o) => { merke('kaufen', o);
           return window.__kaufFehler
@@ -481,8 +482,28 @@ await seite.evaluate(() => localStorage.setItem('__pruef_preise', '1'));
 await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
 pt = await preisTexte();
 ok(pt.jahr === 'CHF 30.00' && pt.monat === 'CHF 5.00', 'mit Antwort stehen die Store-Betraege da: ' + pt.jahr + ' / ' + pt.monat);
-ok(pt.proMonat === 'nur CHF 2.50 im Monat', 'im Satz wird nur der Betrag getauscht: ' + pt.proMonat);
+ok(pt.proMonat.replace(/\u00a0/g, ' ') === 'nur CHF 2.50 im Monat', 'im Satz wird nur der Betrag getauscht: ' + pt.proMonat);
+ok(/CHF\u00a02\.50/.test(pt.proMonat), 'Betrag und Waehrung bleiben zusammen (festes Leerzeichen)');
 ok(pt.statt === 'CHF 60.00' && pt.spar === 'Spare CHF 30' && pt.sparDa, 'Vergleichspreis und Ersparnis aus dem Store: ' + pt.statt + ' / ' + pt.spar);
+const probeStand = () => seite.evaluate(() => {
+  const sichtbar = id => { const el = document.getElementById(id); return el && !el.hidden ? el.textContent : ''; };
+  return {abz: sichtbar('plusProbeAbzeichen'), hinweis: sichtbar('plusProbeHinweis'), knopf: document.getElementById('btnPlusAktivieren').textContent};
+});
+let ps = await probeStand();
+ok(ps && !ps.abz && !ps.hinweis && !/kostenlos/.test(ps.knopf), 'ohne Probezeit vom Store: keine Probezeit versprochen ('+ps.knopf+')');
+
+console.log('\n=== Probezeit: nur, wenn der Store sie diesem Konto gewaehrt ===');
+await seite.evaluate(() => { localStorage.setItem('__pruef_probe', '1'); localStorage.setItem('lucenta_laufzeit', 'jahr'); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+ps = await probeStand();
+ok(ps.abz === '7 Tage kostenlos', 'Abzeichen am Jahresabo: ' + ps.abz);
+ok(ps.knopf === '7 Tage kostenlos testen', 'Kaufknopf nennt die Probezeit: ' + ps.knopf);
+ok(/7 Tage kostenlos, danach CHF 30\.00 im Jahr/.test(ps.hinweis) && /zahlst du nichts/.test(ps.hinweis), 'am Knopf: Dauer und Preis danach (3.1.2): ' + ps.hinweis);
+await seite.evaluate(() => document.querySelector('#plusPreisWahl [data-laufzeit="monat"]').click());
+await seite.waitForTimeout(200);
+ps = await probeStand();
+ok(!ps.hinweis && !/kostenlos/.test(ps.knopf), 'beim Monatsabo keine Probezeit: ' + ps.knopf);
+await seite.evaluate(() => { localStorage.removeItem('__pruef_probe'); localStorage.setItem('lucenta_laufzeit', 'jahr'); });
 await seite.evaluate(() => localStorage.removeItem('__pruef_preise'));
 
 console.log('\n=== Einladung per Link legt den Freund an (Feedback B7) ===');

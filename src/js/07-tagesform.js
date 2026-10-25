@@ -98,6 +98,7 @@
       return;
     }
     var abschnitt = aktuellerAbschnitt();
+    erstesMusterMelden();
     // Die Karte bestaetigt selbst (kein Toast). Erst klappen die Skalen zu, dann springt die
     // Bestaetigung auf; geleert werden die Skalen erst danach.
     var eintrag = heuteEingetragen()[abschnitt];

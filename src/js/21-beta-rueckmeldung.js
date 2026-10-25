@@ -109,6 +109,7 @@
       refreshDrawerState();
       renderLandingStateTeaser();
       erinnerungNachziehen();
+      erstesMusterMelden();
     } else {
       toast(tx('js_konnte_nicht_gespeichert_w_2'));
     }

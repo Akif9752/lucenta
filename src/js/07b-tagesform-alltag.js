@@ -380,6 +380,16 @@
       '<div class="befund"><div class="befund-titel">'+tx('tf_schwere_tage')+'</div><p class="befund-text">'+beschreibe(sortiert.slice(-n))+'</p></div>'+
       '<p class="tf-hinweis">'+tx('tf_beste_hinweis')+'</p></div>';
   }
+  // Einmal, wenn der siebte Tag erfasst ist: Das erste Muster ist da.
+  var ERSTES_MUSTER = 'lucenta_erstes_muster';
+  function erstesMusterMelden(){
+    if (istPlus() || stateTage(loadStateHistory()).length < 7) return;
+    try{
+      if (localStorage.getItem(ERSTES_MUSTER)) return;
+      localStorage.setItem(ERSTES_MUSTER, '1');
+    }catch(e){ return; }
+    toast(tx('tf_erstes_muster_da'), 3500);
+  }
   function tfMusterRendern(){
     var wrap = $('tfMuster');
     if (!wrap) return;
@@ -446,11 +456,13 @@
     } else if (tage.filter(function(t){ return !!t.tags; }).length){
       teile.push('<p class="tf-leer">'+tx('tf_stichwort_noch')+'</p>');
     }
-    // Runde 127, Entscheidung des Inhabers: frei als verschwommene Vorschau der ECHTEN Muster.
-    // Die leise Zeile aus Runde 124 bleibt nur, wo es noch nichts zu zeigen gibt.
+    // Frei ist das ERSTE Muster ab sieben Tagen, die uebrigen als verschwommene Vorschau der echten
+    // (Entscheidung des Inhabers): erst ein Gewinn, dann das Angebot.
     if (!istPlus()){
-      wrap.innerHTML = titel + (teile.length ? vorschauHTML(teile.join(''), tx('tf_muster_plus'))
-                                             : '<p class="tf-leer">'+tx('tf_muster_plus')+'</p>');
+      wrap.innerHTML = titel + (teile.length
+        ? '<p class="tf-muster-frei">'+tx('tf_muster_erstes_frei')+'</p>'+teile[0]+
+          (teile.length > 1 ? vorschauHTML(teile.slice(1).join(''), tx('tf_muster_plus')) : '<p class="tf-leer">'+tx('tf_muster_plus')+'</p>')
+        : '<p class="tf-leer">'+tx('tf_muster_plus')+'</p>');
       schloesserVerdrahten(wrap);
       return;
     }

@@ -676,7 +676,7 @@
         </details>
         <details class="faq-item">
           <summary data-i18n-text="für_wen_ist_lucenta_gedacht">Für wen ist Lucenta gedacht?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
-          <p data-i18n="für_erwachsene_die_sich_selb">Für Erwachsene, die sich selbst besser verstehen wollen &mdash; als Anstoß zum Nachdenken. Lucenta ist kein klinisches Instrument.</p>
+          <p data-i18n="für_erwachsene_die_sich_selb">Für alle ab 16, die sich selbst besser verstehen wollen &mdash; als Anstoß zum Nachdenken. Lucenta ist kein klinisches Instrument.</p>
         </details>
         <details class="faq-item">
           <summary data-i18n-text="was_ist_der_unterschied_zwis">Was ist der Unterschied zwischen meinem Ergebnis und der Tagesform?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
@@ -886,6 +886,7 @@
         <span class="plus-preis-text">
           <span class="plus-preis-name" data-i18n="plus_name_jahr">Jährlich</span>
           <span class="plus-preis-unter"><span data-i18n="plus_jahr_pro_monat">nur 2,50 € im Monat</span> · <s data-i18n="plus_jahr_statt">59,88 €</s></span>
+          <span class="plus-preis-probe" id="plusProbeAbzeichen" hidden></span>
         </span>
         <span class="plus-preis-rechts">
           <span class="plus-preis-betrag" data-i18n="plus_betrag_jahr">29,99 €</span>
@@ -904,6 +905,8 @@
       </button>
     </div>
     <button type="button" class="btn btn-primary plus-modal-cta" id="btnPlusAktivieren" data-i18n="plus_aktivieren">Lucenta+ aktivieren</button>
+    <!-- Richtlinie 3.1.2: Dauer der Probezeit und Preis danach direkt am Kaufknopf. -->
+    <p class="plus-probe-hinweis" id="plusProbeHinweis" hidden></p>
     <button type="button" class="plus-modal-leise" id="btnPlusModalWiederherstellen" data-i18n="plus_wiederherstellen">Käufe wiederherstellen</button>
     <p class="plus-modal-kuendigen" data-i18n-html="plus_kuendigen">Verlängert sich automatisch. Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
     <!-- Richtlinie 3.1.2: Nutzungsbedingungen und Datenschutz muessen im Kaufablauf erreichbar sein. -->

@@ -24,7 +24,7 @@
       : tx('plus_stand_frei');
     var knoepfe = aktiv
       ? '<button type="button" class="btn btn-primary" data-plus-seite="verwalten">'+tx('plus_verwalten')+'</button>'
-      : '<button type="button" class="btn btn-primary" data-plus-seite="kaufen">'+tx('plus_aktivieren')+'</button>'+
+      : '<button type="button" class="btn btn-primary" data-plus-seite="kaufen">'+(probeTage() ? tfText('plus_cta_probe', {n: probeTage()}) : tx('plus_aktivieren'))+'</button>'+
         '<p class="plus-seite-preise">'+plusPreisZeile()+'</p>';
     $('plusSeiteInhalt').innerHTML =
       '<div class="settings-group"><h2>'+tx(aktiv ? 'plus_seite_freigeschaltet' : 'plus_seite_enthalten')+'</h2>'+

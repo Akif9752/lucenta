@@ -105,7 +105,14 @@
     if (!b) return;
     // Runde 126: Der Knopf nennt, was man bekommt — "Jahresabo starten" statt "aktivieren".
     var cta = {monat:'plus_cta_monat', jahr:'plus_cta_jahr'};
-    b.textContent = tx(istPlus() ? 'plus_verwalten' : (cta[laufzeitLesen()] || 'plus_cta_jahr'));
+    var probe = !istPlus() && cta[laufzeitLesen()] === 'plus_cta_jahr' ? probeTage() : 0;
+    b.textContent = probe ? tfText('plus_cta_probe', {n: probe})
+                          : tx(istPlus() ? 'plus_verwalten' : (cta[laufzeitLesen()] || 'plus_cta_jahr'));
+    var h = $('plusProbeHinweis');
+    if (h){
+      h.textContent = probe ? decodeEntities(tfText('plus_probe_hinweis', {n: probe, preis: PLUS_PREISE.jahr})) : '';
+      h.hidden = !probe;
+    }
     b.classList.toggle('btn-primary', !istPlus());
     b.classList.toggle('btn-ghost', istPlus());
   }

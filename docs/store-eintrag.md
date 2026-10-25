@@ -189,7 +189,7 @@ Steht vollständig in `app-store-start.md`, Abschnitt 4. In Kürze:
 
 - **Kategorie:** Lifestyle, zweitrangig Bildung. *Nicht* Gesundheit & Fitness — Lucenta ist kein
   Gesundheitsprodukt, und diese Kategorie zieht zusätzliche Prüfungen nach sich.
-- **Altersfreigabe:** 12+.
+- **Altersfreigabe:** 16+ (Entscheidung des Inhabers, 2026-10-25; Apples Stufen seit 2025: 4+, 9+, 13+, 16+, 18+).
 - **Datenschutzangaben:** in jeder Kategorie **Data Not Collected**. Sobald ein
   Absturzberichts-Dienst oder eine Statistik dazukommt, ändert sich das — und ein Eintrag, der
   einmal „nicht erhoben" sagte und es später nicht mehr ist, ist der Punkt, an dem aus einer

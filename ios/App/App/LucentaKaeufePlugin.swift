@@ -167,7 +167,20 @@ public class LucentaKaeufePlugin: CAPInstancePlugin, CAPBridgedPlugin {
             var spar = monat.price * 12 - jahr.price
             var abgerundet = Decimal()
             NSDecimalRound(&abgerundet, &spar, 0, .down)
+            // Probezeit nur, wenn der Store sie DIESEM Konto gewaehrt (einmal je Abo-Gruppe); sonst 0.
+            var probeTage = 0
+            if let abo = jahr.subscription, let angebot = abo.introductoryOffer,
+               angebot.paymentMode == .freeTrial, await abo.isEligibleForIntroOffer {
+                switch angebot.period.unit {
+                case .day: probeTage = angebot.period.value
+                case .week: probeTage = angebot.period.value * 7
+                case .month: probeTage = angebot.period.value * 30
+                case .year: probeTage = angebot.period.value * 365
+                @unknown default: probeTage = 0
+                }
+            }
             call.resolve([
+                "jahrProbeTage": probeTage,
                 "monat": monat.displayPrice,
                 "jahr": jahr.displayPrice,
                 "jahrProMonat": (jahr.price / 12).formatted(format),
