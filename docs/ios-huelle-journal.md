@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-24, nach Runde 162)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-25, nach Runde 164)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 152 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 164 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -30,8 +30,11 @@ lassen. Die Richtungen:
   wurde angeboten und NICHT gewaehlt.
 - **Freunde und Anmeldung** (Runde 147–150): Freunde mit selbst gewaehltem Namen/Figur (Freundescode),
   „Mit Apple anmelden" + private iCloud. Dunkel als Vorgabe, Hell gedaempft (Runde 149).
-- **Feedbackrunde** (Runde 151): 19 Befunde. Runde 152 hat A1, A3–A5 und B6–B7 erledigt; offen sind
-  A2 (Impressum, macht der Inhaber), B8, B9 und B10–C19 — siehe „Was offen ist".
+- **Feedbackrunde** (Runde 151): 19 Befunde, bis auf A2 (Impressum, Inhaber) erledigt (Runde 152–157).
+- **Grosse Liste** (Runde 158–162) und **Feinschliff** (Runde 163–164) erledigt: Richtlinien, Verstehen
+  nach Lebensbereichen, Rollenatlas, Anmeldeschritt, Kalender/Muster, Hintergruende in Gruppen,
+  20 Tiere in vier Gruppen, kurze Codes mit eigener Benutzer-ID, Figur & Hintergrund als Unterseite,
+  Reiter in Tagesform und Verstehen. Es gibt **keinen offenen Auftrag** — der naechste kommt im Gespraech.
 
 Regeln, die er gesetzt hat:
 - **Bei Gestaltungs-, Abo- oder Rechtsfragen mit Optionen fragen** (AskUserQuestion, Empfehlung
@@ -47,7 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 164 | siehe `git log` | Mops, Siamkatze; Tagesform und Verstehen mit Reitern; Fehlersuche je Reiter |
+| 164 | `a43aa52` | Mops, Siamkatze; Tagesform und Verstehen mit Reitern; Fehlersuche je Reiter |
 | 163 | `0e70ed7` | Figur & Hintergrund als Unterseite, Abstaende (tools/abstaende.mjs), Wort ueber dem Kreis, Vogelfuesse |
 | 162 | `8b50639` | Verstehen nach Lebensbereichen: 40 neue Karten in acht Sprachen, Inhaltsuebersicht |
 | 161 | `a48a012` | Archetypen als persoenlicher Rollenatlas; Kalender mit Tagesdetails und Monatsueberblick; Muster nach Tageszeit und beste/schwere Tage |
@@ -130,9 +133,10 @@ Regeln, die er gesetzt hat:
   (Karte `freundIchHTML`, Feld `freundSpeichern`, Liste `freundZeileHTML` nach Naehe), Vergleich
   `freundVergleichen` -> `view-compare`, `archivUebernehmen` (einmalig). Kein Vergleichsarchiv mehr.
 - **Freunde:** `06b-freunde.js` (`lucenta_freunde`, max. 30).
-  **Freundescode** `L1.<Ergebnis-Code>.<Figur>.<Name base64url>` (`eigenerFreundescode`,
-  `freundescodeLesen` — sucht im ganzen eingefuegten Text). Name/Figur NICHT waehlbar, kommen von der
-  Person. Rangliste `freundeNachNaehe`, Gruppenbild `gruppenRadarSVG` (Lucenta+), Formel
+  **Freundescode (Runde 159)** `<benutzer-id>-XXXX-XXXX` (Crockford-Base32, Werte Basis 101, Figurindex,
+  2-Bit-Pruefsumme; `kurzcodeTeil`/`kurzcodeLesen`, `eigeneBenutzerId`/`benutzerIdSetzen`). Alte `L1.`- und
+  10-stellige Codes werden weiter gelesen. **`FIGUREN` nur hinten erweitern** — der Index steht im Code
+  (`CODE_FIGUREN = 24`, heute 20 belegt). Name/Figur kommen von der Person. Rangliste `freundeNachNaehe`, Gruppenbild `gruppenRadarSVG` (Lucenta+), Formel
   `uebereinstimmung()` gemeinsam mit `renderCompat`. Im Vergleichsfeld merkt `data-freund` Name/Figur.
 - **Lucenta+-Seite:** `18b-plus-seite.js`, `view-plus` (aus der Seitenleiste); gekauft wird weiter im
   Kauffenster `#plusModal`. „Abo verwalten": `aboVerwalten()` -> `StoreKit.verwalten`
@@ -158,7 +162,8 @@ Regeln, die er gesetzt hat:
 - **Kopfzeile (Runde 154):** `navLeisteAnwenden()`/`navZurueck()` in `02-state.js`; eine NEUE Unterseite
   braucht nur ihre Pille `id="btnBack…"` in `.quiz-head` (bei nur der Pille `.nur-zurueck`) — der Chevron
   findet sie selbst. Werkzeuge klicken `#btnNavZurueck`, nie die Pillen (verborgen).
-- **Navigation:** `showView()` in `02-state.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings; verlauf -> profile}` steuert den
+- **Navigation:** `showView()` in `02-state.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings; verlauf, look -> profile;
+  compare -> freunde}` steuert den
   iOS-Push/Pop (`.nav-push`/`.nav-pop`, die verlassene Seite als `.nav-weg` fixiert; CSS am Ende von
   `12-ios.css`). Die Zurueck-Wischgeste vom linken Rand steht am Ende von `20-wiring.js` (`randGeste`).
   Eine neue Unterseite = Eintrag in `UNTERSEITE_VON` + `view-…` + Knopf mit `.hilfe-knopf` (Pfeil).
@@ -170,6 +175,15 @@ Regeln, die er gesetzt hat:
 - **Textgroesse (Runde 153):** jede `font-size` ist `calc(Npx * var(--dt, 1))` — eine NEUE Schriftgroesse
   ebenso schreiben, sonst waechst sie nicht mit. Grafik-Text bleibt fest, Titel `min(var(--dt,1),1.3)`.
   Layout fuer grosse Schrift unter `:root[data-text="gross"]` am Ende von `12-ios.css`.
+- **Figur & Hintergrund (Runde 163):** Unterseite `view-look` (Profilzeile `#btnAussehenOeffnen` mit
+  `#aussehenMini`), Vorschau `aussehenVorschau()` in `15-profile.js`. Tiere/Gruppen `FIGUREN`,
+  `FIGUR_GRUPPEN`, Hintergruende `HINTERGRUENDE`, `HG_GRUPPEN`, frei nur `HG_FREI` (`13-figuren.js`).
+- **Reiter (Runde 164):** Tagesform `#view-state[data-reiter]` + `data-tf-teil` an den Bloecken, Klick in
+  `21-beta-rueckmeldung.js`, Regeln in `07-tagesform.css`. Verstehen `vsReiter`, `.vs-teil[data-vs-teil]`,
+  `.vs-sprung[data-vs-ziel]` (`16-verstehen.js`). Ein neuer Block braucht sein `data-tf-teil`, sonst steht
+  er auf jedem Reiter; die Fehlersuche hat je Reiter einen Weg (`tf_*`, `vs_*`).
+- **Messwerkzeuge (Runde 158/163):** `tools/abstaende.mjs` (Schrift-Unterkante bis Folgeelement),
+  `tools/zeilenabstand.mjs`. Nicht in `pruef-alles` — nach Layout-Aenderungen von Hand.
 - **Huelle:** `MainViewController.swift` (Bildlauf, Zoomsperre, Farbschema, Transparenz, Textgroesse,
   Kauf-Bruecke), `LucentaKaeufePlugin.swift` (StoreKit 2: `stand`, `kaufen`, `restorePurchases`,
   seit Runde 137 `preise` — `displayPrice`, in `19b-native.js` per `plusPreiseHolen/-Anwenden` in die
@@ -190,9 +204,10 @@ Bei Gestaltungsfragen vorher mit Optionen fragen.
 
 *C — Feinschliff:* erledigt; C19 (Startbild schwarz) bleibt auf Entscheidung des Inhabers.
 
-*Seit Runde 158–162 offen:* Fachdurchsicht der 40 Verstehen-Karten (Psychologie) und muttersprachliche
+*Seit Runde 158–164 offen:* Fachdurchsicht der 40 Verstehen-Karten (Psychologie) und muttersprachliche
 Durchsicht der Uebersetzungen; neue Store-Bilder (`node tools/store_bilder.mjs`, alte vom 2026-09-08);
-Datenschutz-URL fuer App Store Connect; die sechs neuen Tiere sind einfacher als die alten (ggf. nacharbeiten).
+Datenschutz-URL fuer App Store Connect; die acht neuen Tiere (Runde 160/164) sind einfacher als die alten (ggf.
+nacharbeiten). Der Flamingo ist ein Kopfbild ohne Beine (Hals laeuft aus dem Bild) — dem Inhaber gesagt.
 Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 *Notiert in Runde 156, nicht geaendert:* Ring im Vergleich ohne „%", VoiceOver sagt am Vergleichsradar
@@ -250,7 +265,11 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Stand der Pruefungen
 
-`npm run pruef-alles` nach Runde 152: siehe Eintrag Runde 152 (pruef-app 32 mit „vier Nachtipps auf
+**Nach Runde 164: ALLE 9 BESTANDEN** (14,3 Min.): `tests` 11 Reihen, `pruef-store` 32, `pruef-app` 36
+(erwartet 20 Tierbilder), `pruef-nativ` 77, `pruef-bewegung` (klickt den Reiter „Verlauf"), `diff-sprachen`
+107 (Bericht), `fehlersuche` 28 Durchlaeufe WebKit + Chromium ohne Fund.
+
+Aeltere Staende — `npm run pruef-alles` nach Runde 152: siehe Eintrag Runde 152 (pruef-app 32 mit „vier Nachtipps auf
 Frage 50 = EIN Ergebnis", pruef-nativ 74 mit Einladungslink und Konto loeschen).
 Nach Runde 150: **ALLE 9 BESTANDEN** (~9–11 Minuten). `tests` 11 Reihen
 (`share_test` erwartet jetzt #E6E5E0), `pruef-store` 32, `pruef-app` 31, `pruef-nativ` 65 (erwartet
@@ -341,11 +360,11 @@ Was immer wieder durchfaellt, und warum:
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), Bundle-ID
-`app.lucenta.ios`; installiert ist der Stand von Runde 150. In diesem Xcode gibt es kein eigenes
+`app.lucenta.ios`; installiert ist der Stand von Runde 164. In diesem Xcode gibt es kein eigenes
 Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 — in Xcode **nicht**
 „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 152 (`git push origin
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 164 (`git push origin
 claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
