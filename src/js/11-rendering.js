@@ -462,8 +462,14 @@
     var summary = '<div class="compat-line compat-line-total"><b>'+tx('js_insgesamt')+'</b> '+similar+
       tx('js_von__dimensionen_ähnlich')+diff+tx('js_unterschiedlich_punkt')+
       '<div class="compat-gesamt-satz">'+gesamtSatz+'</div></div>';
-    var radarBlock = '<div class="radar-wrap compat-radar">'+radarSVG(me, 300, {scores:other})+'</div>'+
-      tx('js_duandere_person');
+    // Name nur, wenn das Feld noch den Code des gemerkten Freundes traegt.
+    var freund = null;
+    try { freund = JSON.parse($('cmpOther').getAttribute('data-freund') || 'null'); } catch(e){}
+    var andererName = (freund && freund.name && freund.code === $('cmpOther').value.trim()) ? escapeHTML(freund.name) : '';
+    var legende = tx('js_duandere_person');
+    if (andererName) legende = legende.replace(/(dot-other"><\/span>)[^<]*/, '$1' + andererName);
+    var radarBlock = '<div class="radar-wrap compat-radar">'+radarSVG(me, 300, {scores:other, name:andererName})+'</div>'+
+      legende;
     var note = tx('js_die_prozentzahl_oben_ist_e');
     // Der frueher hier stehende Hinweiskasten ist raus: Er saesse unter fuenf Karten, die den
     // gleichen Hinweis schon in sich tragen, und wuerde denselben Satz sechsmal sagen.
@@ -481,7 +487,7 @@
     var ringHost = $('compatRing');
     ringHost.innerHTML = ringGaugeSVG(0, 132, tx('js_übereinstimmung'));
     var fillCircle = ringHost.querySelector('.ring-fill');
-    var textEl = ringHost.querySelector('.ring-text');
+    var textEl = ringHost.querySelector('.ring-zahl');
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){
         if (fillCircle){
@@ -489,6 +495,8 @@
           fillCircle.style.strokeDashoffset = (circumf * (1 - match/100)).toFixed(1);
         }
         if (textEl) textEl.textContent = match;
+        var ringSvg = ringHost.querySelector('svg');
+        if (ringSvg) ringSvg.setAttribute('aria-label', tx('js_übereinstimmung')+': '+match+tx('js_prozent'));
       });
     });
   }

@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-25, nach Runde 165)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-25, nach Runde 166)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 165 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 166 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 166 | (dieser) | Vergleich: Ring mit %, Name statt „Andere Person“; Freundescode im Wiederherstellungsfeld abgefangen; Flamingo neu (Brustbild), Rotkehlchen, Pinguin; Store-Bilder neu |
 | 165 | (dieser) | Warntexte gekuerzt: „kein klinisches Instrument" nur noch in der Hilfe, Datenschutz-Beteuerungen aus Ergebnis, Lucenta+, Freunde, Onboarding, Ueber |
 | 164 | `a43aa52` | Mops, Siamkatze; Tagesform und Verstehen mit Reitern; Fehlersuche je Reiter |
 | 163 | `0e70ed7` | Figur & Hintergrund als Unterseite, Abstaende (tools/abstaende.mjs), Wort ueber dem Kreis, Vogelfuesse |
@@ -206,19 +207,17 @@ Bei Gestaltungsfragen vorher mit Optionen fragen.
 *C — Feinschliff:* erledigt; C19 (Startbild schwarz) bleibt auf Entscheidung des Inhabers.
 
 *Seit Runde 158–164 offen:* Fachdurchsicht der 40 Verstehen-Karten (Psychologie) und muttersprachliche
-Durchsicht der Uebersetzungen; neue Store-Bilder (`node tools/store_bilder.mjs`, alte vom 2026-09-08);
-Datenschutz-URL fuer App Store Connect; die acht neuen Tiere (Runde 160/164) sind einfacher als die alten (ggf.
-nacharbeiten). Der Flamingo ist ein Kopfbild ohne Beine (Hals laeuft aus dem Bild) — dem Inhaber gesagt.
+Durchsicht der Uebersetzungen; Datenschutz-URL fuer App Store Connect. Store-Bilder sind seit Runde 166 neu.
+Von den acht neuen Tieren sind Flamingo, Rotkehlchen, Pinguin in Runde 166 nachgearbeitet; Delfin, Seeotter,
+Papagei, Mops, Siamkatze halten in der Uebersicht mit und blieben.
 Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
-*Notiert in Runde 156, nicht geaendert:* Ring im Vergleich ohne „%", VoiceOver sagt am Vergleichsradar
-„Andere Person" statt des Namens.
+*Notiert in Runde 156:* Ring ohne „%“ und „Andere Person“ am Radar — erledigt in Runde 166.
 
 *Kleinigkeiten aus Runde 152, bewusst nicht angefasst*
-- `dein_ergebnis_liegt_ausschli` („liegt ausschliesslich auf diesem Geraet") ist unbenutzt; der Freunde-Satz
-  „Alles bleibt auf diesem Geraet" meint „nichts geht an den Freund" und stimmt so.
-- `restoreCodeInput` kuerzt einen eingefuegten Freundescode auf 10 Zeichen (dann ungueltig); nur der
-  Wiederherstellungscode gehoert dort hinein.
+- Beide erledigt in Runde 165/166 (unbenutzter Text geloescht, Freundescode im Wiederherstellungsfeld abgefangen).
+- Rund 160 Texte haben keinen woertlichen Verweis im Code; die meisten werden zusammengesetzt (`figur_`, `hg_`,
+  `tf_tag_`, …). Nicht pauschal loeschen — je Schluessel nach dem Praefix im Code suchen.
 
 *Weiter offen von frueher*
 - **Am echten iPhone pruefen:** Erinnerungen und Nacherinnerung, Haptik, Bewegungen, Push/Pop und
@@ -270,6 +269,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 166: ALLE 9 BESTANDEN** (14,2 Min.), Zahlen wie nach 164.
 
 **Nach Runde 165: ALLE 9 BESTANDEN** (14,2 Min.), Zahlen wie nach 164, `fehlersuche` 28 Durchlaeufe ohne Fund.
 
@@ -377,6 +378,46 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 166 — Was ohne den Inhaber ging
+
+**Auftrag:** „erst die Sachen, die du alleine machen kannst" — aus der Liste nach Runde 165.
+
+**Vergleich.** Der Ring zeigte die Zahl ohne „%" (`ringGaugeSVG`, `08-code.js`): jetzt `<tspan class="ring-zahl">` +
+kleineres, gedaempftes `%`. Die Zahl im Ring waechst nur bis 125 % Textgroesse mit — der Ring waechst nicht, und
+bei 200 % lief „100%" ueber den Rand (am Bild geprueft). Dabei gefunden: VoiceOver las am Ring IMMER
+„Übereinstimmung: 0 Prozent" — der Ring wird fuer die Bewegung bei 0 eingesetzt und das `aria-label` danach
+nie nachgezogen; jetzt im selben Bild wie die Zahl. Legende und Radar-`aria-label` nennen den Namen des Freundes,
+wenn `#cmpOther[data-freund]` noch zum Code im Feld passt (sonst wie bisher „Andere Person").
+
+**Wiederherstellungsfeld.** `maxlength="12"` schnitt einen eingefuegten Freundescode schon VOR dem `input`-
+Ereignis ab; danach kuerzte die Normalisierung auf 10 Zeichen — ein ungueltiger Code ohne Erklaerung. Jetzt:
+`maxlength` weg, ein Freundescode (`freundescodeLesen`, nur bei > 10 Zeichen) leert das Feld mit Hinweis
+`js_freundescode_im_wiederfeld` (8 Sprachen). Ein Freundescode traegt das Ergebnis eines anderen Menschen und darf
+nie als eigenes wiederhergestellt werden. Gemessen in WebKit: L1-Code -> leer + Hinweis; 10-stelliger Code geht durch.
+
+**Aufraeumen.** `dein_ergebnis_liegt_ausschli`, `js_dein_ergebnis_liegt_aussch` geloescht (8 Sprachen).
+
+**Tiere** (`tools/figuren_rendern/Tiere.swift`, Bilder am Kreis beurteilt, alt neben neu):
+- *Flamingo* neu als Brustbild: Kopf, Hals als kubische S-Kurve aus 12 Stuecken (mit 3 Stuecken knickte er an
+  den Stoessen, mit 8 sah man Perlen), Leib mit kraeftigeren Fluegeldecken und schwarzen Schwungfedern, Schnabel
+  in drei Stuecken mit deutlichem Knick, Kopf und Augen etwas groesser. Im Profil (Drehung 1,05), sonst sieht man
+  das S nicht. **Keine Beine** — auf Avatargroesse waeren es Striche (Lehre aus CLAUDE.md). Rahmen am GANZEN
+  Vogel gemessen (es gibt hier keinen sinnvollen „Kopf allein"); Ausschnitt `NAEHER['flamingo'] = (1.03, 0.20, -0.20)`.
+- *Rotkehlchen*: Kopf etwas abgesetzt, Schwanz, Fluegel dunkler mit hellen Federsaeumen, laengerer Schnabel,
+  staerker schraeg (−0,42), damit Schnabel und Fluegel lesbar sind.
+- *Pinguin*: Die weissen Flecken ueber den Augen lasen sich als Taucherbrille; jetzt ein Band als Bogen ueber
+  dem Scheitel, das seitlich auslaeuft (Eselspinguin). Schnabel groesser, Drehung 0,36.
+
+**Store-Bilder** (`tools/store_bilder.mjs`, 20 Stueck, de/en, 6,7" und 6,1"): Ergebnis-Knopf ueber die Kennung
+`#btnProfileViewResult` statt ueber den Knopftext; Tagesform auf dem Reiter „Verlauf" (auf „Heute" stand im
+Browser „Taegliche Erinnerungen sind auf diesem Geraet nicht verfuegbar" — im Store-Bild falsch); Bericht ab der
+Ueberschrift „Deine fuenf Dimensionen". Alle fuenf deutschen 6,7"-Bilder und ein englisches angesehen.
+
+**Pruefungen:** `pruef-alles` 9/9 (14,2 Min.).
+
+**Unsicher:** Die neue Hinweiszeile ist in sieben Sprachen von mir uebersetzt. Die Store-Bilder kommen aus Chromium,
+nicht vom Geraet (wie bisher, `docs/app-store-start.md`).
 
 ## Runde 165 — Warntexte gekuerzt
 

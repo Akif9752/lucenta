@@ -102,7 +102,7 @@ def sichtbar(b, pixel):
 # naeher heran und zum Kopf hin verschoben; Schwanz und Hinterflossen schneidet der Kreis an.
 # (Faktor, Verschiebung x, y als Anteil des Ausschnitts; negativ = nach links/oben)
 NAEHER = {'wal': (1.55, -0.13, 0.02), 'schildkroete': (1.45, -0.19, -0.13), 'delfin': (1.55, -0.12, 0.0),
-          'flamingo': (1.55, -0.02, -0.16), 'rotkehlchen': (1.12, 0.0, 0.0)}
+          'flamingo': (1.03, 0.20, -0.20), 'rotkehlchen': (1.12, 0.0, 0.0)}
 
 
 def zuschneiden(b, h, pixel, rahmen, kennung=''):

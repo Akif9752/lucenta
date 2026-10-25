@@ -45,9 +45,13 @@ const AUFNAHMEN = [
   {id:'1-start',    hin: async (p) => { /* Startseite, wie sie ist */ }},
   {id:'2-ergebnis', hin: async (p) => { await zuErgebnis(p); }},
   {id:'3-bericht',  hin: async (p) => { await zuErgebnis(p);
-                      await p.evaluate(() => { const t=document.querySelector('#traitsList'); t?.scrollIntoView({block:'start'}); });
+                      // Ab der Ueberschrift ueber den Karten, sonst beginnt das Bild mitten in einem Satz.
+                      await p.evaluate(() => { const t=document.querySelector('#traitsList'); const h=t?.previousElementSibling || t; h?.scrollIntoView({block:'start'}); window.scrollBy(0, -130); });
                       await p.waitForTimeout(700); }},
-  {id:'4-tagesform',hin: async (p) => { await p.evaluate(() => document.getElementById('btnLandingStateHistory')?.click()); }},
+  // Reiter "Verlauf": Die Kurve traegt die Tagesform; "Heute" zeigt im Browser nur die Erinnerungszeile ohne Bruecke.
+  {id:'4-tagesform',hin: async (p) => { await p.evaluate(() => document.getElementById('btnLandingStateHistory')?.click());
+                      await p.waitForTimeout(500);
+                      await p.evaluate(() => document.querySelector('#view-state .tf-reiter [data-reiter="verlauf"]')?.click()); }},
   {id:'5-verstehen',hin: async (p) => { await p.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
                       await p.waitForTimeout(300);
                       await p.evaluate(() => document.getElementById('btnDrawerUnderstand')?.click()); }}
@@ -58,10 +62,7 @@ async function zuErgebnis(p){
   await p.waitForTimeout(300);
   await p.evaluate(() => document.getElementById('btnDrawerProfileRow')?.click());
   await p.waitForTimeout(400);
-  await p.evaluate(() => {
-    const b = [...document.querySelectorAll('button')].find(x => /Dein Ergebnis|Your result|Tu resultado|Ton résultat|Il tuo risultato|O seu resultado|Sonucun|あなたの結果/.test(x.textContent||''));
-    b?.click();
-  });
+  await p.evaluate(() => document.getElementById('btnProfileViewResult')?.click());
 }
 
 fs.mkdirSync(ZIEL, {recursive:true});

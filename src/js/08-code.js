@@ -103,7 +103,7 @@
       '<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="none" class="ring-track" stroke-width="9"/>'+
       '<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="none" class="ring-fill" stroke-width="9" stroke-linecap="round" '+
         'stroke-dasharray="'+circumf.toFixed(1)+'" stroke-dashoffset="'+offset.toFixed(1)+'" transform="rotate(-90 '+c+' '+c+')"/>'+
-      '<text x="'+c+'" y="'+(c+9)+'" text-anchor="middle" class="ring-text">'+pct+'</text>'+
+      '<text x="'+c+'" y="'+(c+9)+'" text-anchor="middle" class="ring-text"><tspan class="ring-zahl">'+pct+'</tspan><tspan class="ring-pct">%</tspan></text>'+
       '</svg>';
   }
 

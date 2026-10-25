@@ -202,7 +202,7 @@ blockiert.
    Produkte, und das Schema `App` verweist darauf. Im Simulator laufen Kauf, Abbruch und
    Wiederherstellen damit ohne Konto. Für die Einreichung ersetzt der echte Store diese Datei;
    sie gehört **nicht** ins App-Bundle.
-7. **Die Bildschirmfotos hochladen.** Erzeugt sind sie (Runde 99, `assets/store/`, beide
+7. **Die Bildschirmfotos hochladen.** Erzeugt sind sie (zuletzt Runde 166, `assets/store/`, beide
    Größen, deutsch und englisch) — hochladen kann sie nur, wer in App Store Connect angemeldet
    ist. Sie stammen aus dem Browser, nicht vom Gerät: für die Einreichung reicht das, Apple
    prüft die Pixelmaße, nicht die Herkunft. Wenn dir auf dem echten iPhone etwas auffällt, was

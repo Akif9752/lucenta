@@ -223,6 +223,11 @@
     if (info){ $('cmpOther').setAttribute('data-freund', JSON.stringify(info)); $('cmpOther').value = info.code; }
     else if ($('cmpOther').value.length < 10) $('cmpOther').removeAttribute('data-freund');
   }, true);
+  // Ein Freundescode traegt das Ergebnis eines ANDEREN Menschen: nie als eigenes wiederherstellen.
+  $('restoreCodeInput').addEventListener('input', function(){
+    var inp = $('restoreCodeInput');
+    if (inp.value.length > 10 && freundescodeLesen(inp.value)){ inp.value = ''; toast(tx('js_freundescode_im_wiederfeld')); schuetteln(inp); }
+  }, true);
   [$('cmpMe'), $('cmpOther'), $('restoreCodeInput')].forEach(function(inp){
     inp.addEventListener('input', function(){
       var clean = inp.value.replace(/[^a-z0-9]/gi,'').toLowerCase().slice(0,10);

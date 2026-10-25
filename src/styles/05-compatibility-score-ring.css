@@ -3,7 +3,9 @@
   .ring-track{stroke:var(--surface-2);}
   .ring-fill{stroke:var(--accent);transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1);}
   @media (prefers-reduced-motion: reduce){ .ring-fill{transition:none;} }
-  .ring-text{font-family:var(--mono);font-size:calc(27px * var(--dt, 1));font-weight:700;fill:var(--ink);}
+  /* Der Ring waechst nicht mit; groesser als 125 % laeuft "100%" ueber den Rand. */
+  .ring-text{font-family:var(--mono);font-size:calc(27px * min(var(--dt, 1), 1.25));font-weight:700;fill:var(--ink);}
+  .ring-pct{font-size:0.6em;font-weight:600;fill:var(--muted);}
   .compat-score-label{font-family:var(--serif);font-size:calc(16px * var(--dt, 1));}
 
   
