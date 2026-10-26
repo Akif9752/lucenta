@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-25, nach Runde 168)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-26, nach Runde 169)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 168 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 169 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 169 | (dieser) | pruef-alles 9/9 nachgefahren; Datenschutz-Seite als Werkzeug (`npm run datenschutz-seite` -> `web/datenschutz/`), App auf dem iPhone 15 Pro |
 | 168 | (dieser) | 7 Tage Probezeit am Jahresabo (nur wenn der Store sie meldet), erstes Tagesform-Muster frei ab Tag 7, Altersgrenze 16+ |
 | 167 | (dieser) | Aus der Test-Simulation: Erinnerung einmal am Tag (Dreierregel als Zusatzschalter), Tagesform vor Verlauf auf der Kaufseite, Halbzeit-Vorgeschmack, Store-Bilder mit Ueberschrift |
 | 166 | (dieser) | Vergleich: Ring mit %, Name statt „Andere Person“; Freundescode im Wiederherstellungsfeld abgefangen; Flamingo neu (Brustbild), Rotkehlchen, Pinguin; Store-Bilder neu |
@@ -285,7 +286,7 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Stand der Pruefungen
 
-**Nach Runde 168:** 8/9 im letzten Lauf, `fehlersuche` nur im Lauf davor (ohne Fund) — siehe Eintrag 168, nachfahren.
+**Nach Runde 169: ALLE 9 BESTANDEN** (nachgefahren fuer den Stand von Runde 168): `pruef-nativ` 89, `fehlersuche` ohne Fund.
 
 **Nach Runde 167: ALLE 9 BESTANDEN** (14,2 Min.), `pruef-nativ` jetzt 83, sonst wie nach 164.
 
@@ -397,6 +398,24 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 169 — Pruefung nachgefahren, Datenschutz-Seite, App auf dem iPhone
+
+**Pruefung.** `pruef-alles` fuer den Stand von Runde 168 vollstaendig: 9/9, `fehlersuche` 28 Durchlaeufe ohne Fund.
+Damit ist die Luecke aus Runde 168 geschlossen. (Lehre: `nohup … &` nie im selben Befehl wie ein langes `sleep` —
+wird der Befehl abgeschnitten, stirbt die Pruefung mit. Jetzt `(nohup … &)` als eigener Aufruf.)
+
+**iPhone 15 Pro.** Installiert mit dem Personal Team; das kann iCloud, Sign in with Apple und Push nicht signieren.
+Deshalb fuer das Geraet mit leerem Entitlements-Plist per `CODE_SIGN_ENTITLEMENTS=` auf der Kommandozeile gebaut
+(Projekt unveraendert), `devicectl device install/launch`. Auf dem Geraet ohne Anmeldung/iCloud; Kaeufe finden keine
+Produkte. Signatur 7 Tage.
+
+**Datenschutz-Seite.** App Store Connect verlangt eine Datenschutz-URL. `tools/datenschutz_seite.mjs` erzeugt
+`web/datenschutz/<sprache>.html` (8 Sprachen, `index.html` = Deutsch) aus `CONTENT.<sprache>.RECHT.datenschutz` und
+`IMPRESSUM` aus `17-settings.js` — eine Quelle mit der App, damit nichts auseinanderdriftet. Fehlen Impressumsangaben,
+stehen sichtbare Platzhalter da und das Werkzeug warnt: so NICHT veroeffentlichen (Art. 13 DSGVO verlangt den
+Verantwortlichen). **Nicht veroeffentlicht** — Ort (GitHub Pages aus diesem oeffentlichen Repository o. ae.) entscheidet
+der Inhaber; vorher muss das Impressum gefuellt sein.
 
 ## Runde 168 — Probezeit, erstes Muster frei, ab 16
 

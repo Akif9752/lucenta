@@ -22,7 +22,8 @@
     "mac:entlasten": "node tools/mac_entlasten.mjs",
     "pruef-app": "node tools/pruef_appfassung.mjs",
     "pruef-alles": "node tools/pruef_alles.mjs",
-    "pruef-schnell": "node tools/pruef_alles.mjs --schnell"
+    "pruef-schnell": "node tools/pruef_alles.mjs --schnell",
+    "datenschutz-seite": "node tools/datenschutz_seite.mjs"
   },
   "license": "UNLICENSED",
   "devDependencies": {
