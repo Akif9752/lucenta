@@ -33,7 +33,7 @@
     $('imgModalScrim').classList.remove('show');
     var shell = $('shell'); if (shell) shell.removeAttribute('inert');
     document.removeEventListener('keydown', imgModalKeydown);
-    if (imgModalLastFocus && imgModalLastFocus.focus) imgModalLastFocus.focus();
+    if (imgModalLastFocus && imgModalLastFocus.focus) imgModalLastFocus.focus({preventScroll:true});
     if (keepHistory !== true) popOverlayState();
   }
 
@@ -157,6 +157,6 @@
     $('plusModalScrim').classList.remove('show');
     var shell = $('shell'); if (shell) shell.removeAttribute('inert');
     document.removeEventListener('keydown', plusModalKeydown);
-    if (plusModalLetzterFokus && plusModalLetzterFokus.focus) plusModalLetzterFokus.focus();
+    if (plusModalLetzterFokus && plusModalLetzterFokus.focus) plusModalLetzterFokus.focus({preventScroll:true});
     if (keepHistory !== true) popOverlayState();
   }

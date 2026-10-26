@@ -346,13 +346,13 @@
       b.textContent = tx(rest.hidden ? 'syn_mehr' : 'syn_weniger');
     });
   }
-  // Der ausfuehrliche Bericht ist Lucenta+ (Entscheidung des Inhabers, Runde 127). Frei: Kopfzeile,
-  // Messbalken, Kernsatz und der erste Satz von "Im Alltag"; der Rest verschwommen.
   function ersterSatz(text){
     var t = String(text || '');
     var m = /^(.{40,}?[.!?。])(\s|$)/.exec(t);
     return m ? [m[1], t.slice(m[1].length)] : [t, ''];
   }
+  // Der ausfuehrliche Bericht ist Lucenta+, alle drei Abschnitte (Entscheidung des Inhabers). Frei: Kopfzeile,
+  // Messbalken und Kernsatz; die Abschnitte verschwommen.
   function berichtTeileHTML(pr){
     var abschnitt = function(label, text){
       return '<div class="trait-section"><div class="trait-section-label">'+tx(label)+'</div><p>'+text+'</p></div>';
@@ -361,10 +361,8 @@
       return '<div class="trait-sections">'+abschnitt('js_im_alltag', pr.alltag)+
         abschnitt('js_in_beziehungen', pr.beziehungen)+abschnitt('js_wachstumsimpuls', pr.wachstum)+'</div>';
     }
-    var teile = ersterSatz(pr.alltag);
     return '<div class="trait-sections">'+
-      '<div class="trait-section"><div class="trait-section-label">'+tx('js_im_alltag')+'</div><p>'+teile[0]+'</p></div>'+
-      vorschauHTML('<p>'+teile[1]+'</p>'+abschnitt('js_in_beziehungen', pr.beziehungen)+abschnitt('js_wachstumsimpuls', pr.wachstum),
+      vorschauHTML(abschnitt('js_im_alltag', pr.alltag)+abschnitt('js_in_beziehungen', pr.beziehungen)+abschnitt('js_wachstumsimpuls', pr.wachstum),
                    tx('plus_bericht_weiter'))+
       '</div>';
   }

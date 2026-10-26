@@ -662,10 +662,10 @@
   .drawer-profile-row .chev{color:var(--muted);flex-shrink:0;}
 
   .view{display:none;}
-  /* Uebergang zwischen Ansichten: 16px seitlich plus 4 % aus der Tiefe nach innen (kann nicht ueber
-     den Rand). Dauer .45s — darauf sind die Wartezeiten der Pruefungen abgestimmt. */
+  /* Uebergang zwischen Ansichten: nur Lage, keine Deckkraft — aus Deckkraft 0 stand auf dem Geraet fuer
+     ein Bild nur der Hintergrund da (Flackern). Dauer .45s — darauf sind die Wartezeiten der Pruefungen abgestimmt. */
   .view.active{display:block; animation:rise .45s cubic-bezier(.2,.8,.2,1) both;}
-  @keyframes rise{from{opacity:0;transform:translateY(13px) scale(.96);}to{opacity:1;transform:none;}}
+  @keyframes rise{from{transform:translateY(10px);}to{transform:none;}}
   @media (prefers-reduced-motion: reduce){ .view.active{animation:none;} }
 
   

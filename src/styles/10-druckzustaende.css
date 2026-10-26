@@ -134,12 +134,10 @@
 
   /* 1. Richtung im Ansichtswechsel: 16px, in den Rand hinein, nicht darueber. Dieselbe Kurve und Dauer
      wie rise. */
-  /* Dazu 4 % Tiefe nach innen: macht den Uebergang groesser und den Ueberhang kleiner (die Fehlersuche
-     misst ihn). */
   .view.active.nav-vor{ animation:view-vor .45s cubic-bezier(.2,.8,.2,1) both; }
   .view.active.nav-zurueck{ animation:view-zurueck .45s cubic-bezier(.2,.8,.2,1) both; }
-  @keyframes view-vor{ from{opacity:0;transform:translateX(16px) scale(.96);} to{opacity:1;transform:none;} }
-  @keyframes view-zurueck{ from{opacity:0;transform:translateX(-16px) scale(.96);} to{opacity:1;transform:none;} }
+  @keyframes view-vor{ from{transform:translateX(16px);} to{transform:none;} }
+  @keyframes view-zurueck{ from{transform:translateX(-16px);} to{transform:none;} }
 
   /* 2. Ergebniskarten blenden ein, wenn sie in den Blick kommen (Klasse defer setzt nur das JS). */
   .trait-card.defer{ animation:none; opacity:0; }

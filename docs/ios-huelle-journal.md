@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-26, nach Runde 169)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-26, nach Runde 170)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 169 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 170 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 170 | (dieser) | Flackern beim Seitenwechsel (zwei Ursachen, im Simulator gemessen, `tools/flackern/`); Typ-Text unter die Werte; „Im Alltag" ganz Lucenta+ |
 | 169 | (dieser) | pruef-alles 9/9 nachgefahren; Datenschutz-Seite als Werkzeug (`npm run datenschutz-seite` -> `web/datenschutz/`), App auf dem iPhone 15 Pro |
 | 168 | (dieser) | 7 Tage Probezeit am Jahresabo (nur wenn der Store sie meldet), erstes Tagesform-Muster frei ab Tag 7, Altersgrenze 16+ |
 | 167 | (dieser) | Aus der Test-Simulation: Erinnerung einmal am Tag (Dreierregel als Zusatzschalter), Tagesform vor Verlauf auf der Kaufseite, Halbzeit-Vorgeschmack, Store-Bilder mit Ueberschrift |
@@ -233,6 +234,10 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
+- **Seitenwechsel ohne Deckkraft (Runde 170):** `rise`, `view-vor`, `view-zurueck` nur noch Lage, keine Deckkraft
+  und kein `scale`. Aus Deckkraft 0 stand auf dem Geraet fuer ein Bild nur der Hintergrund da (Flackern).
+  Fokus-Rueckgaben immer mit `{preventScroll:true}`. Nachmessen: `sh tools/flackern/messen.sh <sim-id>`.
+
 - **Probezeit (Runde 168, Inhaber):** 7 Tage kostenlos am Jahresabo. Angezeigt NUR, wenn `preise()` ein
   `jahrProbeTage > 0` meldet (Swift: `introductoryOffer.paymentMode == .freeTrial` und
   `isEligibleForIntroOffer`) — nie aus festen Texten versprechen. Angebot in App Store Connect legt der Inhaber an.
@@ -250,7 +255,7 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
   Lucenta+, Freunden, Onboarding, Ueber. Datenschutzerklaerung, Impressum, Store-Texte bleiben vollstaendig.
 
 - **Bezahlgrenze (Runde 128, geaendert Runde 136):** frei sind Test, Ergebnistyp, Motto, Kurzfassung, Radar, Teilen,
-  Code, je Dimension Wert + Kernsatz + erster Satz, Tagesform-Eintragen + 7 Tage, Erinnerung, Vergleiche
+  Code, je Dimension Wert + Kernsatz (seit Runde 170 ohne den ersten Satz von „Im Alltag" — alle drei Abschnitte Lucenta+, Inhaber), Tagesform-Eintragen + 7 Tage, Erinnerung, Vergleiche
   mit ZWEI Personen (`FREI_VERGLEICHE`; die zwei Archivplaetze `FREI_ARCHIV` entfielen in Runde 155 mit dem
   Archiv, Entscheidung des Inhabers). "Verstehen" ist seit
   Runde 136 GANZ Lucenta+. Alles andere Lucenta+, gesperrt als verschwommene Vorschau des echten Inhalts.
@@ -285,6 +290,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 170: ALLE 9 BESTANDEN** (14 Min.), Zahlen wie nach 169; `tools/flackern/messen.sh` zweimal 0.
 
 **Nach Runde 169: ALLE 9 BESTANDEN** (nachgefahren fuer den Stand von Runde 168): `pruef-nativ` 89, `fehlersuche` ohne Fund.
 
@@ -398,6 +405,36 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 170 — Flackern, Typ-Text, „Im Alltag"
+
+**Auftrag:** Typ-Text unter die Visualisierung statt unter „Mit Freunden vergleichen"; die App flackert beim
+Seitenwechsel; „Im Alltag" soll in der freien Fassung nicht mehr lesbar sein.
+
+**Typ-Text.** `#synthesis` steht jetzt direkt unter Radar und Wertestreifen, vor Delta-Karte, Rhythmus und Teilen.
+
+**Flackern — zwei Ursachen, beide gemessen.** Headless-WebKit sah nichts (Deckkraft stieg in jedem Bild gleichmaessig,
+keine Animation startete doppelt) — es zeichnet nicht auf einen Bildschirm. Gemessen deshalb IN DER APP im Simulator:
+Testskript an die installierte `index.html` gehaengt (klickt 15 Wechsel), `simctl io recordVideo`, Helligkeit je Bild
+per AVFoundation (`tools/flackern/helligkeit.swift`). Flackern = Einbruch in EINEM Bild, der zurueckkommt.
+1. *Einblenden aus Deckkraft 0:* `.view.active` (rise) und `.nav-vor/.nav-zurueck` begannen bei `opacity:0` — die alte
+   Seite war sofort weg, die neue unsichtbar, fuer ein Bild stand nur der Hintergrund da. Vorher 10 Funde in 15 Wechseln.
+   Jetzt nur Lage (10 px bzw. 16 px), ohne Deckkraft und ohne `scale(.96)` (das waere ohne Einblenden als Zoomen zu sehen
+   gewesen). Danach 1 Fund.
+2. *Fokus-Rueckgabe der Schublade:* `closeDrawer()` gab den Fokus an das vorher fokussierte Element zurueck — nach einem
+   Wechsel die Seite selbst — mit `focus()` OHNE `preventScroll`. Das scrollte die frisch geoeffnete Seite einen Augenblick
+   spaeter (im Einzelbild: „Einstellungen" erst oben, ein Bild spaeter ~150 pt tiefer). Nur beim zweiten Weg ueber die
+   Schublade, weil beim ersten nichts fokussiert war. Jetzt `{preventScroll:true}`, ebenso in Bild- und Lucenta+-Fenster.
+   Danach zweimal 0 Funde.
+Werkzeug: `sh tools/flackern/messen.sh <simulator-id>` (veraendert die installierte Kopie — danach neu installieren).
+
+**„Im Alltag".** Frei war der erste Satz (Runde 127). Jetzt sind alle drei Abschnitte verschwommen; frei bleiben
+Kopfzeile, Messbalken und Kernsatz der Karte. Am Bild (WebKit, 390 px) geprueft.
+
+**Pruefungen:** `pruef-alles` 9/9, `fehlersuche` ohne Fund.
+
+**iPhone 15 Pro:** neuer Stand installiert (Personal Team, ohne iCloud/Anmeldung); der automatische Start wurde mit
+„Security" abgewiesen — Geraet vermutlich gesperrt.
 
 ## Runde 169 — Pruefung nachgefahren, Datenschutz-Seite, App auf dem iPhone
 

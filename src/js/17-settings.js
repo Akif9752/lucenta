@@ -74,7 +74,8 @@
     document.body.style.overflow='';
     var shell = $('shell'); if (shell) shell.removeAttribute('inert');
     document.removeEventListener('keydown', drawerKeydown);
-    if (drawerLastFocus && drawerLastFocus.focus) drawerLastFocus.focus();
+    // Ohne preventScroll scrollte die Rueckgabe des Fokus die gerade geoeffnete Seite nachtraeglich (Sprung).
+    if (drawerLastFocus && drawerLastFocus.focus) drawerLastFocus.focus({preventScroll:true});
     if (keepHistory !== true) popOverlayState();
   }
 
