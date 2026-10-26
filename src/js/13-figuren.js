@@ -64,19 +64,22 @@
                        ['voegel', ['eule','pinguin','papagei','flamingo','rotkehlchen']],
                        ['wasser', ['wal','delfin','seeotter','schildkroete','goldfisch']]];
   // knopf(f) liefert den Knopf einer Figur; kopf (optional) steht vor der ersten Gruppe.
-  function figurenGruppiertHTML(knopf, kopf){
-    return (kopf ? '<div class="figur-raster">'+kopf+'</div>' : '')+
+  // Eine Karte, die Gruppen darin als Zeilen mit Zwischentitel (Entscheidung des Inhabers: zusammengehoerig).
+  function figurenGruppiertHTML(knopf, kopf, kopfTitel){
+    return (kopf ? '<div class="figur-gruppe">'+(kopfTitel ? '<div class="hg-gruppe-titel">'+kopfTitel+'</div>' : '')+
+                   '<div class="figur-raster">'+kopf+'</div></div>' : '')+
       FIGUR_GRUPPEN.map(function(g){
         return '<div class="figur-gruppe"><div class="hg-gruppe-titel">'+tx('figur_gruppe_'+g[0])+'</div><div class="figur-raster">'+
           g[1].map(function(id){ return knopf(figurFinden(id)); }).join('')+'</div></div>';
       }).join('');
   }
   var HINTERGRUENDE = ['sternenbild','nordlicht','daemmerung','tiefsee','wueste',
-                       'wald','nebel','papier','welle','kohle','galaxie','glut','lagune','morgentau'];
+                       'wald','nebel','papier','welle','kohle','galaxie','glut','lagune','morgentau',
+                       'kirschbluete','gletscher','mondnacht','neon','prisma','sonnenstrahl'];
   // Angezeigt in Gruppen; frei sind nur die schlichten Flaechen, der Rest ist Lucenta+ (Entscheidung des
   // Inhabers). Ein schon gewaehlter gesperrter Hintergrund bleibt.
-  var HG_GRUPPEN = [['hell', ['papier','nebel','wueste','morgentau']],
-                    ['dunkel', ['kohle','sternenbild','tiefsee','galaxie']],
-                    ['farbe', ['nordlicht','daemmerung','welle','wald','glut','lagune']]];
+  var HG_GRUPPEN = [['hell', ['papier','nebel','wueste','morgentau','kirschbluete','gletscher']],
+                    ['dunkel', ['kohle','sternenbild','tiefsee','galaxie','mondnacht','neon']],
+                    ['farbe', ['nordlicht','daemmerung','welle','wald','glut','lagune','prisma','sonnenstrahl']]];
   var HG_FREI = ['papier','kohle'];
   function hgFrei(id){ return !id || HG_FREI.indexOf(id) >= 0 || istPlus(); }

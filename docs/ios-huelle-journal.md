@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-26, nach Runde 170)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-26, nach Runde 171)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 170 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 171 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 171 | (dieser) | Figur & Hintergrund als je eine Karte mit Gruppenzeilen; 6 neue Hintergruende (Lucenta+); Licht fuer alle Tiere, Fuchs/Dackel/Schildkroete/Wal nachgearbeitet |
 | 170 | (dieser) | Flackern beim Seitenwechsel (zwei Ursachen, im Simulator gemessen, `tools/flackern/`); Typ-Text unter die Werte; „Im Alltag" ganz Lucenta+ |
 | 169 | (dieser) | pruef-alles 9/9 nachgefahren; Datenschutz-Seite als Werkzeug (`npm run datenschutz-seite` -> `web/datenschutz/`), App auf dem iPhone 15 Pro |
 | 168 | (dieser) | 7 Tage Probezeit am Jahresabo (nur wenn der Store sie meldet), erstes Tagesform-Muster frei ab Tag 7, Altersgrenze 16+ |
@@ -291,6 +292,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Stand der Pruefungen
 
+**Nach Runde 171: ALLE 9 BESTANDEN**, Zahlen wie nach 169 (20 Tierbilder, 431,5 KB).
+
 **Nach Runde 170: ALLE 9 BESTANDEN** (14 Min.), Zahlen wie nach 169; `tools/flackern/messen.sh` zweimal 0.
 
 **Nach Runde 169: ALLE 9 BESTANDEN** (nachgefahren fuer den Stand von Runde 168): `pruef-nativ` 89, `fehlersuche` ohne Fund.
@@ -405,6 +408,30 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 171 — Gruppen zusammengehoerig, sechs Hintergruende, alle Tiere
+
+**Auftrag:** Figuren und Hintergruende sahen trotz Unterkategorien zu getrennt aus; alle Avatare weiter verbessern;
+sechs neue Hintergruende.
+
+**Gruppen.** Vorher je Gruppe ein eigener Kasten, „Nur der Buchstabe" bzw. „Kein Hintergrund" in einem Kasten fuer sich.
+Jetzt EINE Karte fuer Figur und EINE fuer Hintergrund (`.figur-gruppen`/`.hg-gruppen` tragen die Flaeche), die Gruppen
+als Zeilen mit kleinem Zwischentitel (Versalien, 12 px) und Haarlinie; die Wahl ohne Figur/Hintergrund ist die erste
+Zeile mit eigenem Titel. `figurenGruppiertHTML(knopf, kopf, kopfTitel)` — gilt auch im Onboarding. Am Bild geprueft.
+
+**Hintergruende** (`09-archetypen.css`, `HG_GRUPPEN`, 8 Sprachen, alle Lucenta+): Hell + Kirschbluete, Gletscher;
+Dunkel + Mondnacht, Neon; Farbe & Licht + Prisma, Sonnenstrahl. Gruppen jetzt 6/6/8 (volle Viererzeilen). Am Bild
+in Profilzeilen-Groesse und als Kachel geprueft; nachgearbeitet: Kirschbluete (Blaetter zu klein), Mondnacht (Mond
+zu hart), Neon (Sonne lag ueber dem Namen — jetzt Horizont unten rechts, Gitter nur am Boden, unter der Textzeile).
+`HINTERGRUENDE` nur hinten erweitert.
+
+**Tiere.** Fuer alle (`Szene.swift`): warmes Gegenlicht von unten vorn (hellt Kinn/Brust, zweiter Augenglanz),
+Kamera `contrast 0.08`, `saturation 1.06`. Einzeln: *Fuchs* Auge 0,205, Schlitz 0,52, weniger Oberlid (wirkte
+verschlagen); *Dackel* Fell laenger und aufrechter, matter (wirkte wie Plastik), Augen 0,18; *Schildkroete* zum
+Betrachter gedreht (−0,22 / π+1,30), Augen 0,165 und wacher, Ausschnitt `NAEHER (1.7, −0.02, −0.12)`; *Wal* Auge 0,14.
+Alle 20 neu gerendert, alt neben neu und als Uebersicht beurteilt.
+
+**Pruefungen:** `pruef-alles` 9/9, `fehlersuche` ohne Fund.
 
 ## Runde 170 — Flackern, Typ-Text, „Im Alltag"
 

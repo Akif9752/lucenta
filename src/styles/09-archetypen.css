@@ -393,6 +393,61 @@
       linear-gradient(118deg, #EAF4EC 0%, #D6EBDD 55%, #F4EEDD 100%);
   }
 
+  .hg-kirschbluete{
+    --hg-ink:#3A2230; --hg-muted:#7E5868;
+    background:
+      radial-gradient(9px 6px at 12% 22%, rgba(232,132,168,.8), transparent),
+      radial-gradient(7px 5px at 30% 78%, rgba(240,160,190,.75), transparent),
+      radial-gradient(10px 7px at 58% 30%, rgba(228,120,160,.7), transparent),
+      radial-gradient(7px 5px at 74% 70%, rgba(236,146,180,.8), transparent),
+      radial-gradient(8px 5px at 90% 34%, rgba(232,134,170,.75), transparent),
+      radial-gradient(6px 4px at 46% 88%, rgba(240,164,192,.7), transparent),
+      radial-gradient(6px 4px at 84% 12%, rgba(236,150,182,.7), transparent),
+      radial-gradient(70% 90% at 90% 0%, rgba(255,255,255,.6), transparent 60%),
+      linear-gradient(126deg, #FBEEF2 0%, #F5D6E1 55%, #F0DFE8 100%);
+  }
+  .hg-gletscher{
+    --hg-ink:#1D3140; --hg-muted:#56707F;
+    background:
+      linear-gradient(118deg, transparent 0 38%, rgba(255,255,255,.55) 38% 39%, transparent 39% 100%),
+      linear-gradient(64deg, transparent 0 58%, rgba(170,205,225,.35) 58% 72%, transparent 72% 100%),
+      linear-gradient(150deg, transparent 0 20%, rgba(255,255,255,.4) 20% 34%, transparent 34% 100%),
+      linear-gradient(126deg, #F2F8FB 0%, #D9EAF2 55%, #C4DDEA 100%);
+  }
+  .hg-mondnacht{
+    --hg-ink:#EEF2FA; --hg-muted:#AEBBD4;
+    background:
+      radial-gradient(circle at 84% 34%, #F4F1E2 0 13px, rgba(244,241,226,.6) 14px, rgba(244,241,226,.12) 22px, transparent 48px),
+      radial-gradient(1.2px 1.2px at 16% 24%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 40% 66%, #E6ECFF, transparent),
+      radial-gradient(1.3px 1.3px at 58% 18%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 26% 82%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 68% 78%, #E6ECFF, transparent),
+      linear-gradient(170deg, #1B2A4E 0%, #0E1730 70%, #0A1024 100%);
+  }
+  .hg-neon{
+    --hg-ink:#FDF0FF; --hg-muted:#E9C2F5;
+    background:
+      repeating-linear-gradient(90deg, rgba(90,225,255,.5) 0 1px, transparent 1px 18px) 0 100% / 100% 28% no-repeat,
+      repeating-linear-gradient(180deg, rgba(255,90,220,.65) 0 1px, transparent 1px 7px) 0 100% / 100% 28% no-repeat,
+      linear-gradient(180deg, #2A0B4A 0%, #0B0620 100%) 0 100% / 100% 28% no-repeat,
+      radial-gradient(circle at 80% 72%, #FFD36B 0, #FF8A7A 9px, #FF4FA8 17px, rgba(255,79,168,.35) 19px, transparent 40px),
+      linear-gradient(180deg, #120726 0%, #3E1262 45%, #9A2C78 64%);
+  }
+  .hg-prisma{
+    --hg-ink:#1E1E2E; --hg-muted:#4E4E66;
+    background:
+      radial-gradient(80% 120% at 20% 10%, rgba(255,255,255,.55), transparent 60%),
+      linear-gradient(118deg, #FFD3E8 0%, #D6CCFF 25%, #C2F0F4 50%, #FFF3C4 75%, #FFD0D6 100%);
+  }
+  .hg-sonnenstrahl{
+    --hg-ink:#3A2508; --hg-muted:#7A5A2C;
+    background:
+      repeating-conic-gradient(from 100deg at 0% 0%, rgba(255,255,255,.28) 0deg 4deg, transparent 4deg 11deg),
+      radial-gradient(90% 120% at 0% 0%, #FFF4C8 0%, transparent 70%),
+      linear-gradient(126deg, #FFD978 0%, #F7B548 55%, #EE9A3A 100%);
+  }
+
   /* Die kleinen Vorschauen in der Profilansicht: dieselben Klassen, nur klein. */
   .hg-raster{
     margin-top:14px; display:grid; gap:8px;

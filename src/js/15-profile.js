@@ -51,7 +51,7 @@
         'style="--figur-feld:'+f.feld+';--figur-feld-dunkel:'+figFeldDunkel(f.feld)+'" '+
         'aria-pressed="'+(aktiv===f.id?'true':'false')+'" '+
         'aria-label="'+tx('figur_'+f.id)+'">'+figurHTML(f)+'</button>';
-    }, keine);
+    }, keine, tx('figur_keine'));
     wrap.querySelectorAll('[data-figur]').forEach(function(b){
       b.addEventListener('click', function(){
         var pr = loadProfile();
@@ -72,8 +72,9 @@
       return '<button type="button" class="hg-wahl hg-'+id+(frei ? '' : ' hg-gesperrt')+'" data-hg="'+id+'" aria-pressed="'+
         (aktiv===id?'true':'false')+'" aria-label="'+tx('hg_'+id)+(frei ? '' : ', Lucenta+')+'">'+(frei ? '' : SCHLOSS_KLEIN)+'</button>';
     };
-    wrap.innerHTML = '<div class="hg-raster"><button type="button" class="hg-wahl hg-keine" data-hg="" aria-pressed="'+
-        (aktiv ? 'false' : 'true')+'" aria-label="'+tx('hg_keine')+'">&mdash;</button></div>'+
+    wrap.innerHTML = '<div class="hg-gruppe"><div class="hg-gruppe-titel">'+tx('hg_keine')+'</div><div class="hg-raster">'+
+        '<button type="button" class="hg-wahl hg-keine" data-hg="" aria-pressed="'+
+        (aktiv ? 'false' : 'true')+'" aria-label="'+tx('hg_keine')+'">&mdash;</button></div></div>'+
       HG_GRUPPEN.map(function(g){
         return '<div class="hg-gruppe"><div class="hg-gruppe-titel">'+tx('hg_gruppe_'+g[0])+'</div>'+
           '<div class="hg-raster">'+g[1].map(knopf).join('')+'</div></div>';

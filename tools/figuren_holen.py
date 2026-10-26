@@ -101,7 +101,7 @@ def sichtbar(b, pixel):
 # Lange Tiere (Wal, Schildkroete) wirkten nach der laengeren Seite zugeschnitten "zu weit weg" (Inhaber):
 # naeher heran und zum Kopf hin verschoben; Schwanz und Hinterflossen schneidet der Kreis an.
 # (Faktor, Verschiebung x, y als Anteil des Ausschnitts; negativ = nach links/oben)
-NAEHER = {'wal': (1.55, -0.13, 0.02), 'schildkroete': (1.45, -0.19, -0.13), 'delfin': (1.55, -0.12, 0.0),
+NAEHER = {'wal': (1.55, -0.13, 0.02), 'schildkroete': (1.7, -0.02, -0.12), 'delfin': (1.55, -0.12, 0.0),
           'flamingo': (1.03, 0.20, -0.20), 'rotkehlchen': (1.12, 0.0, 0.0)}
 
 

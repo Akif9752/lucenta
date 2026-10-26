@@ -926,3 +926,17 @@
   #understandContent[data-vs-reiter="combos"] .vs-teil:not([data-vs-teil="combos"]){ display:none; }
   #understandContent[data-vs-reiter="data"] .vs-teil:not([data-vs-teil="data"]){ display:none; }
   #understandContent .vs-teil > .understand-group-label:first-child{ display:none; }
+
+  /* Figur & Hintergrund: EINE Karte je Wahl, die Gruppen darin als Zeilen mit Zwischentitel und feiner Linie
+     (Entscheidung des Inhabers: Unterkategorien ja, aber zusammengehoerig). */
+  .figur-gruppen, .hg-gruppen{
+    gap:0; max-width:none; padding:2px 14px; background:var(--surface); border-radius:var(--radius-m); box-sizing:border-box;
+  }
+  .figur-gruppen > .figur-gruppe, .hg-gruppen > .hg-gruppe{ padding:12px 0; }
+  .figur-gruppen > .figur-gruppe + .figur-gruppe, .hg-gruppen > .hg-gruppe + .hg-gruppe{ border-top:0.5px solid var(--line); }
+  #view-look .figur-gruppen .figur-raster, #view-look .hg-gruppen .hg-raster,
+  .figur-gruppen .figur-raster, .hg-gruppen .hg-raster{ padding:0; background:none; border-radius:0; margin-top:0; }
+  .figur-gruppen .hg-gruppe-titel, .hg-gruppen .hg-gruppe-titel{
+    margin:0 0 8px; font-size:calc(12px * var(--dt, 1)); font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted);
+  }
+

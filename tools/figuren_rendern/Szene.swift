@@ -340,6 +340,9 @@ func studio(_ szene: SCNScene) {
     licht(.directional, NSColor(calibratedRed: 1, green: 0.95, blue: 0.86, alpha: 1), 1500, V(-5, 6, 6), schatten: true)  // Hauptlicht
     licht(.directional, NSColor(calibratedRed: 0.78, green: 0.86, blue: 1, alpha: 1), 220, V(6, 0, 4))                   // Fuelllicht
     licht(.directional, NSColor(calibratedRed: 1, green: 0.98, blue: 0.95, alpha: 1), 1100, V(4, 4, -6))                  // Kante
+    // Warmes Gegenlicht von unten vorn, wie eine helle Flaeche vor dem Tier: hellt Kinn und Brust auf,
+    // die sonst unter dem Kopf absaufen, und gibt den Augen einen zweiten, schwachen Glanz.
+    licht(.directional, NSColor(calibratedRed: 1, green: 0.90, blue: 0.80, alpha: 1), 260, V(0, -5, 5))
 }
 
 // Runde 133: `leinwand` vergroessert das Bild um diesen Faktor, ohne den Massstab zu aendern — der
@@ -351,6 +354,8 @@ func rendern(_ szene: SCNScene, groesse: Int, leinwand: Float = 1, kameraAbstand
     let kam = SCNCamera()
     kam.fieldOfView = CGFloat(2 * atanf(tanf(12 * .pi / 180) * leinwand) * 180 / .pi); kam.zNear = 0.1; kam.zFar = 100
     kam.wantsHDR = true; kam.wantsExposureAdaptation = false; kam.exposureOffset = -0.35
+    // Etwas mehr Kontrast und Farbe: Auf Avatargroesse wirkten die Tiere sonst blass und weich.
+    kam.contrast = 0.08; kam.saturation = 1.06
     kam.screenSpaceAmbientOcclusionIntensity = 1.1
     kam.screenSpaceAmbientOcclusionRadius = 0.25
     kam.screenSpaceAmbientOcclusionNormalThreshold = 0.3

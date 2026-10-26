@@ -454,7 +454,7 @@ func fuchs() -> (SCNNode, Float, V) {
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     tierNase(w, mitte: V(0, -0.290, 1.740), r: V(0.115, 0.08, 0.10), farbe: hex("#161112"))
-    augenEinsetzen(w, kopf, x: 0.34, y: 0.18, r: 0.19, iris: NSColor(calibratedRed: 0.93, green: 0.63, blue: 0.16, alpha: 1), pupille: 0.6, schlitz: true, schlitzBreite: 0.36, ausdruck: Ausdruck(oben: 0.08, unten: 0.15, schraeg: 0.10, funke: 1.4, wange: 0.30))
+    augenEinsetzen(w, kopf, x: 0.34, y: 0.18, r: 0.205, iris: NSColor(calibratedRed: 0.93, green: 0.63, blue: 0.16, alpha: 1), pupille: 0.62, schlitz: true, schlitzBreite: 0.52, ausdruck: Ausdruck(oben: 0.03, unten: 0.10, schraeg: 0.04, funke: 1.6, wange: 0.30))
     // Kopfhaltung je Tier verschieden (Auftrag des Inhabers: nicht alle in dieselbe Richtung).
     w.eulerAngles = SCNVector3(0.08, -0.48, -0.06)
     return (w, 7.6, V(0, 0.22, 0.2))
@@ -743,14 +743,14 @@ func dackel() -> (SCNNode, Float, V) {
         c = mische(c, hell, region(p, V(0, -0.30, 0.95), V(0.30, 0.18, 0.40), 0.4) * 0.5)
         c *= 1 - 0.20 * glatt(1.1, 1.45, p.z)                                    // Schnauzenspitze dunkler
         return c
-    }, rauheit: 0.56, fell: 0.02)
+    }, rauheit: 0.72, fell: 0.02)
     // Dackel: deutlicher Brauenwulst, dunkler schattiert — der treuherzige Dackelblick; Kurzhaar,
     // glatt und anliegend.
     var (braue, braueM) = mitBrauen(kopf, x: 0.27, y: 0.38, laenge: 0.11, dicke: 0.065, winkel: 0.38, farbe: dunkel, staerke: 0.75)
-    braue.haar = haarKarte(kopf, FellKarte(kopf: 0.014, rumpf: 0.016, nase: V(0, -0.17, 1.44), schnauze: 0.7,
+    braue.haar = haarKarte(kopf, FellKarte(kopf: 0.032, rumpf: 0.036, nase: V(0, -0.17, 1.44), schnauze: 0.7,
         augen: augenStellen(kopf, x: 0.30, y: 0.20), augenR: 0.15, braue: 0.3), braue: braueM)
     // Glattes Kurzhaar glaenzt: wenig Abstand, kaum Helligkeitsunterschied, glatte Haut darunter.
-    braue.fellArt = Fell(dichte: 160, dicke: 0.5, aufrecht: 0.15, neigung: 2.0, ursprung: V(0, -0.17, 1.44), wurzel: 0.85, spitze: 1.03, straehnen: 0.05, streuung: 0.04)
+    braue.fellArt = Fell(dichte: 120, dicke: 0.5, aufrecht: 0.32, neigung: 1.6, ursprung: V(0, -0.17, 1.44), wurzel: 0.78, spitze: 1.08, straehnen: 0.08, streuung: 0.07)
     // Dackel: lange Lefzen zwischen Schnauze und Unterkiefer, geschlossen.
     let maul = mitMaul(braue, Maul(kurven: [Kurve(punkte: [V(0, -0.26, 1.43), V(0, -0.32, 1.37)], spitzHinten: false)]
         + paar(Kurve(punkte: [V(0, -0.32, 1.37), V(0.09, -0.36, 1.24), V(0.16, -0.38, 1.04), V(0.21, -0.37, 0.82), V(0.24, -0.32, 0.70)], spitzVorn: false)),
@@ -761,7 +761,7 @@ func dackel() -> (SCNNode, Float, V) {
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     tierNase(w, mitte: V(0, -0.17, 1.44), r: V(0.14, 0.10, 0.10), farbe: hex("#161010"))
-    augenEinsetzen(w, kopf, x: 0.30, y: 0.20, r: 0.16, iris: NSColor(calibratedRed: 0.40, green: 0.22, blue: 0.10, alpha: 1), pupille: 0.58, ausdruck: Ausdruck(oben: 0.08, unten: 0.00, schraeg: 0.38, funke: 1.7, wange: 0))
+    augenEinsetzen(w, kopf, x: 0.30, y: 0.20, r: 0.18, iris: NSColor(calibratedRed: 0.40, green: 0.22, blue: 0.10, alpha: 1), pupille: 0.58, ausdruck: Ausdruck(oben: 0.08, unten: 0.00, schraeg: 0.38, funke: 1.7, wange: 0))
     w.eulerAngles = SCNVector3(0.06, -0.50, 0)
     return (w, 8.0, V(0, 0.10, 0.25))
 }
@@ -912,7 +912,7 @@ func wal() -> (SCNNode, Float, V) {
     for sz: Float in [-1, 1] {
         // Weiter vorn und groesser als beim echten Wal: Nur ein Auge, dessen Oeffnung zum Betrachter zeigt,
         // liest sich als Blick zu ihm (Auftrag des Inhabers: alle sehen einen an).
-        seitenAuge(w, koerper, x: 1.04, y: 0.0, tiefe: 0.04, sz: sz, r: 0.115,
+        seitenAuge(w, koerper, x: 1.04, y: 0.0, tiefe: 0.04, sz: sz, r: 0.14,
                    iris: NSColor(calibratedRed: 0.14, green: 0.11, blue: 0.10, alpha: 1), pupille: 0.7,
                    Ausdruck(oben: 0.22, unten: 0.15, funke: 1.5))
     }
@@ -1032,11 +1032,11 @@ func schildkroete() -> (SCNNode, Float, V) {
     w.addChildNode(kopfKnoten(panzerK, grenze: 2.0, n: 200))
     w.addChildNode(kopfKnoten(hautK, grenze: 2.0, n: 200))
     for sz: Float in [-1, 1] {
-        seitenAuge(w, hautK, x: 1.52, y: 0.21, tiefe: 0.05, sz: sz, r: 0.14,
-                   iris: NSColor(calibratedRed: 0.36, green: 0.26, blue: 0.10, alpha: 1), pupille: 0.6,
-                   Ausdruck(oben: 0.24, unten: 0.13, schraeg: 0.14, funke: 1.5))
+        seitenAuge(w, hautK, x: 1.52, y: 0.21, tiefe: 0.05, sz: sz, r: 0.165,
+                   iris: NSColor(calibratedRed: 0.36, green: 0.26, blue: 0.10, alpha: 1), pupille: 0.62,
+                   Ausdruck(oben: 0.14, unten: 0.10, schraeg: 0.10, funke: 1.7))
     }
-    w.eulerAngles = SCNVector3(-0.35, .pi + 1.05, 0)
+    w.eulerAngles = SCNVector3(-0.22, .pi + 1.30, 0)
     return (w, 9.2, V(0.05, 0.0, 0))
 }
 
