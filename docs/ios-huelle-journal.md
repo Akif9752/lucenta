@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-27, nach Runde 176)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 177)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 176 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 177 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 177 | (dieser) | Fusszeile unter dem Ergebnis entfernt (IPIP gemeinfrei, keine Nennungspflicht); Abschnitt „Lizenzen" mit Fraunces (OFL), Capacitor (MIT), Apache Cordova (Apache 2.0), IPIP |
 | 176 | (dieser) | Impressum nur noch in den Einstellungen; aus dem Kaufablauf nur die Datenschutzerklaerung |
 | 175 | (dieser) | Verstehen: Karten zeigen, dass sie aufklappbar sind (Fusszeile „Mehr lesen" + Pfeil wie die Ergebniskarten) |
 | 174 | (dieser) | Simulation mit 1000 Personen; Einstellungen wie iOS neu gegliedert; Erinnerungszeit waehlbar |
@@ -313,6 +314,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Stand der Pruefungen
 
+**Nach Runde 177: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
+
 **Nach Runde 176: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
 
 **Nach Runde 175: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
@@ -439,6 +442,26 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 177 — Fusszeile weg, Abschnitt „Lizenzen"
+
+**Frage des Inhabers:** Muss „Lucenta · Big-Five-Modell (IPIP)" unter dem Ergebnis stehen? Nein: Die IPIP-Aussagen sind
+gemeinfrei, ohne Nennungspflicht; Apple verlangt nichts dazu. Die Quelle steht weiter im Onboarding und in der Hilfe.
+
+**Gefunden dabei:** Der Eintrag heisst „Impressum, Datenschutz & Lizenzen", einen Abschnitt Lizenzen gab es aber nicht —
+obwohl mitgelieferte Bestandteile einen Hinweis verlangen: Fraunces (SIL OFL 1.1), Capacitor + Plugins (MIT), und in
+`@capacitor/ios/CapacitorCordova` Code von Apache Cordova (Apache 2.0, nachgeprueft an den Dateikoepfen).
+
+**Aenderung:** `footer.appfoot` samt Stilen und `lucenta_middot_bigfivemodell` entfernt. In `view-recht` neue Gruppe
+`#rechtLizenzGruppe`: kurze Liste (Komponente, Copyright, Lizenz; Zwischentexte in 8 Sprachen) und die drei VOLLTEXTE im
+englischen Original zum Aufklappen. Die Texte sind uebernommen, nicht abgetippt: OFL aus dem Fraunces-Projekt
+(`undercasetype/Fraunces/OFL.txt`, mit Copyright-Zeile), MIT aus `node_modules/@capacitor/app/LICENSE`, Apache 2.0 aus
+`node_modules/playwright/LICENSE`. Vom Kaufablauf aus (`renderRecht(true)`) verborgen wie das Impressum. Am Bild geprueft;
+ein fest deutsches „(Teile von Capacitor)" im Markup in einen uebersetzten Text gezogen.
+
+**Pruefungen:** `pruef-alles` 9/9, `fehlersuche` ohne Fund.
+
+**Offen:** Kommt ein weiteres Plugin oder eine Schrift dazu, gehoert es hier dazu — keine Pruefung erzwingt das.
 
 ## Runde 176 — Impressum nur in den Einstellungen
 

@@ -226,7 +226,6 @@
   .state-teaser-card{display:flex;flex-direction:column;gap:16px;}
   .state-teaser-copy{margin-top:2px;font-size:calc(13.5px * var(--dt, 1));color:var(--muted);line-height:1.5;}
 
-  footer.appfoot{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:calc(12.5px * var(--dt, 1));color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
   /* Der Hinweis als Karte (wie .qcard), nicht als umgekehrte Pille; Rand --line-strong traegt die
      Kante. */
   .toast{

@@ -981,4 +981,17 @@
   details.vs-karte[open] .tm-open{ display:inline; color:var(--muted); }
   details.vs-karte[open] .vs-zu .chev{ transform:rotate(-90deg); }
   details.vs-karte > summary:active .vs-zu{ opacity:.62; }
+  /* Lizenzen: kurze Liste, Volltexte zum Aufklappen. */
+  .lizenz-liste{ margin:0; padding:12px 16px; list-style:none; background:var(--surface); border-radius:var(--radius-m);
+    display:flex; flex-direction:column; gap:10px; font-size:calc(13.5px * var(--dt, 1)); line-height:1.45; color:var(--muted); }
+  .lizenz-liste strong{ color:var(--ink); font-weight:600; }
+  .lizenz-text{ margin-top:10px; background:var(--surface); border-radius:var(--radius-m); }
+  .lizenz-text > summary{ list-style:none; display:flex; justify-content:space-between; align-items:center; min-height:46px;
+    padding:12px 16px; cursor:pointer; font-size:calc(15px * var(--dt, 1)); color:var(--ink); }
+  .lizenz-text > summary::-webkit-details-marker{ display:none; }
+  .lizenz-text > summary .chev{ color:var(--muted); transition:transform .2s ease; }
+  .lizenz-text[open] > summary .chev{ transform:rotate(90deg); }
+  .lizenz-text pre{ margin:0; padding:0 16px 16px; white-space:pre-wrap; word-break:break-word;
+    font-family:var(--code); font-size:calc(11px * var(--dt, 1)); line-height:1.5; color:var(--muted); }
+  #rechtLizenzGruppe[hidden]{ display:none; }
 

@@ -83,13 +83,6 @@
   /* Hier darf die Flaeche selbst wachsen (Farbflaechen; an Eingabefeldern wirkt ::after nicht). */
   .hg-wahl{ height:44px; }
 
-  /* Mehrere Reihen untereinander: Abstand so, dass die 44er-Flaechen zweier Zeilen (je ~15 px) aneinanderstossen. */
-  footer.appfoot{ gap:30px 16px; }
-  footer.appfoot a{ position:relative; display:inline-block; }
-  footer.appfoot a::after{
-    content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:max(100%, 44px); height:44px;
-  }
   input[type="text"], input:not([type]), textarea{ min-height:44px; }
 
 /* ================= Bewegung, die einen Wechsel beantwortet =================

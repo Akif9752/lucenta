@@ -184,6 +184,7 @@
     var quelle = (CONTENT[LANG] && CONTENT[LANG].RECHT) || (CONTENT.de && CONTENT.de.RECHT) || {};
     var imp = $('rechtImpressum'), ds = $('rechtDatenschutz'), hinweis = $('rechtHinweis');
     if ($('rechtImpressumGruppe')) $('rechtImpressumGruppe').hidden = !!nurDatenschutz;
+    if ($('rechtLizenzGruppe')) $('rechtLizenzGruppe').hidden = !!nurDatenschutz;
     if ($('rechtTitel')) $('rechtTitel').textContent = tx(nurDatenschutz ? 'datenschutz' : 'impressum_und_datenschutz');
     if (imp) imp.innerHTML = rechtFuellen(quelle.impressum || '');
     if (ds) ds.innerHTML = rechtFuellen(quelle.datenschutz || '');
