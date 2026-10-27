@@ -251,6 +251,19 @@
     }catch(e){}
   }
 
+  // ---------- Bitte um Bewertung ----------
+  // Einmal, im guten Moment (das erste freie Muster ist da). Nur mit Bruecke; iOS begrenzt selbst.
+  var BEWERTUNG_GEFRAGT = 'lucenta_bewertung';
+  function bewertungErbitten(){
+    var sk = nativModul('StoreKit');
+    if (!sk || !sk.bewerten) return;
+    try{
+      if (localStorage.getItem(BEWERTUNG_GEFRAGT)) return;
+      localStorage.setItem(BEWERTUNG_GEFRAGT, '1');
+    }catch(e){ return; }
+    try{ sk.bewerten(); }catch(e){}
+  }
+
   // ---------- Preise aus dem Store ----------
   // Mit Bruecke setzt die App die Betraege des Stores ein (Land, Waehrung, Preisaenderungen); ohne
   // Antwort bleiben die festen Texte. In den Saetzen wird nur der Betrag getauscht — keine neuen

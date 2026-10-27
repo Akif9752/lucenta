@@ -82,5 +82,5 @@
   var HG_GRUPPEN = [['hell', ['papier','nebel','wueste','morgentau','kirschbluete','gletscher','lavendel','wolken']],
                     ['dunkel', ['kohle','sternenbild','tiefsee','galaxie','mondnacht','neon','sternschnuppe','artdeco']],
                     ['farbe', ['nordlicht','daemmerung','welle','wald','glut','lagune','prisma','sonnenstrahl']]];
-  var HG_FREI = ['papier','kohle'];
+  var HG_FREI = ['papier','kohle','wolken','sternenbild','daemmerung'];
   function hgFrei(id){ return !id || HG_FREI.indexOf(id) >= 0 || istPlus(); }

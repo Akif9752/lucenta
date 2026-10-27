@@ -69,6 +69,7 @@ await seite.addInitScript(() => {
       // Uebung: Kauf, Abbruch, Warten und Fehlschlag sind vier verschiedene Ausgaenge, und nur
       // der erste darf etwas freischalten.
       StoreKit: {
+        bewerten: () => { merke('bewerten'); return Promise.resolve({}); },
         restorePurchases: () => { merke('wiederherstellen');
           if (window.__wiederAbbruch && !window.__aboAktiv) return Promise.resolve({aktiv: false, produkt: '', abgebrochen: true});
           return Promise.resolve({aktiv: !!window.__aboAktiv, produkt: window.__aboAktiv ? 'lucenta.plus.jahr' : ''}); },
@@ -572,6 +573,45 @@ kb = await kontoBild();
 ok(kb.anmelden && !kb.loeschen && /Mit Apple anmelden/.test(kb.text) && /Apple-ID/.test(kb.text),
    'danach abgemeldet, mit dem Weg zur Trennung in den iOS-Einstellungen');
 await seite.evaluate(() => localStorage.removeItem('__pruef_konto'));
+
+console.log('\n=== Bitte um Bewertung: einmal, wenn das erste Muster da ist ===');
+const tageSaeen = (n) => seite.evaluate(n => { localStorage.removeItem('lucenta_erstes_muster'); localStorage.removeItem('lucenta_bewertung');
+  localStorage.removeItem('lucenta_plus'); const h = [];
+  for (let i = 1; i <= n; i++){ const d = new Date(Date.now() - i*864e5);
+    h.push({day: d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'), ts: d.getTime(), energy:3, valence:4, slot:'abend'}); }
+  localStorage.setItem('lucenta_state', JSON.stringify(h.reverse())); }, n);
+const heuteEintragen = async () => {
+  await seite.evaluate(() => document.querySelector('#landingStateEnergyRow button:nth-child(4)')?.click()); await seite.waitForTimeout(150);
+  await seite.evaluate(() => document.querySelector('#landingStateValenceRow button:nth-child(3)')?.click()); };
+await tageSaeen(6);
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+await seite.evaluate(() => { window.__nativLog = []; });
+await heuteEintragen(); await seite.waitForTimeout(5200);
+let bw = (await seite.evaluate(() => window.__nativLog)).filter(e => e.was === 'bewerten').length;
+ok(bw === 1, 'am siebten Tag genau eine Bitte um Bewertung (' + bw + ')');
+await tageSaeen(7);
+await seite.evaluate(() => { localStorage.setItem('lucenta_erstes_muster', '1'); localStorage.setItem('lucenta_bewertung', '1'); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+await seite.evaluate(() => { window.__nativLog = []; });
+await heuteEintragen(); await seite.waitForTimeout(5200);
+bw = (await seite.evaluate(() => window.__nativLog)).filter(e => e.was === 'bewerten').length;
+ok(bw === 0, 'danach nie wieder von selbst (' + bw + ')');
+await seite.evaluate(() => { localStorage.removeItem('lucenta_state'); });
+
+console.log('\n=== Kaufangebot nach dem Test erst, wenn die Dimensionen in den Blick kommen ===');
+await seite.evaluate(() => { localStorage.removeItem('lucenta_plus_angebot'); localStorage.removeItem('lucenta_plus');
+  localStorage.removeItem('lucenta_result'); localStorage.removeItem('lucenta_progress'); localStorage.removeItem('lucenta_history'); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+await seite.evaluate(() => document.getElementById('btnStart')?.click()); await seite.waitForTimeout(600);
+for (let i = 0; i < 50; i++){ await seite.evaluate(v => document.querySelector('#scaleRow button:nth-child(' + v + ')')?.click(), 1 + (i * 3) % 5); await seite.waitForTimeout(260); }
+await seite.waitForTimeout(3000);
+const amErgebnis = await seite.evaluate(() => document.querySelector('.view.active')?.id);
+await seite.evaluate(() => window.scrollTo(0, 0)); await seite.waitForTimeout(5000);
+const zuFrueh = await seite.evaluate(() => document.getElementById('plusModal').classList.contains('open'));
+ok(amErgebnis === 'view-result' && !zuFrueh, 'oben auf dem Ergebnis kommt nach 5 s noch kein Fenster (' + amErgebnis + ', offen: ' + zuFrueh + ')');
+await seite.evaluate(() => { document.getElementById('traitsList').scrollIntoView({block:'center'}); window.dispatchEvent(new Event('scroll')); });
+await seite.waitForTimeout(2200);
+ok(await seite.evaluate(() => document.getElementById('plusModal').classList.contains('open')), 'nach dem Scrollen zu den Dimensionen erscheint es');
 
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 

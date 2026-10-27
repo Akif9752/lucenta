@@ -40,7 +40,8 @@ public class LucentaKaeufePlugin: CAPInstancePlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "kaufen", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "restorePurchases", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "preise", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "verwalten", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "verwalten", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "bewerten", returnType: CAPPluginReturnPromise)
     ]
 
     /// Die beiden Abo-Produkte, in derselben Abo-Gruppe. Die Liste steht hier UND in
@@ -225,6 +226,18 @@ public class LucentaKaeufePlugin: CAPInstancePlugin, CAPBridgedPlugin {
             } catch {
                 call.resolve(["geoeffnet": false])
             }
+        }
+    }
+
+    /// Apples eigenes Bewertungsfenster. Ob es erscheint, entscheidet iOS (hoechstens dreimal im Jahr);
+    /// eine Antwort gibt es nicht — die App erfaehrt nie, ob oder wie bewertet wurde.
+    @objc func bewerten(_ call: CAPPluginCall) {
+        Task { @MainActor in
+            if let szene = self.bridge?.viewController?.view.window?.windowScene {
+                if #available(iOS 16.0, *) { AppStore.requestReview(in: szene) }
+                else { SKStoreReviewController.requestReview(in: szene) }
+            }
+            call.resolve()
         }
     }
 }

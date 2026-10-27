@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-27, nach Runde 172)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-27, nach Runde 173)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 172 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 173 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 173 | (dieser) | Zweite Simulation umgesetzt: Muster-Versprechen ehrlich, Bewertungsbitte, Kaufangebot nach dem Scrollen, 5 freie Hintergruende, Kurzportraet ganz |
 | 172 | (dieser) | Tiere artgerechter (Brauen nur angedeutet, kleinere Lichtpunkte, Fuchs-Ohrspitzen, Hasen-Augenring); 4 Hintergruende: Lavendel, Wolken, Sternschnuppe, Art déco |
 | 171 | (dieser) | Figur & Hintergrund als je eine Karte mit Gruppenzeilen; 6 neue Hintergruende (Lucenta+); Licht fuer alle Tiere, Fuchs/Dackel/Schildkroete/Wal nachgearbeitet |
 | 170 | (dieser) | Flackern beim Seitenwechsel (zwei Ursachen, im Simulator gemessen, `tools/flackern/`); Typ-Text unter die Werte; „Im Alltag" ganz Lucenta+ |
@@ -236,6 +237,11 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
+- **Runde 173 (Inhaber):** frei sind die Hintergruende papier, kohle, wolken, sternenbild, daemmerung (`HG_FREI`).
+  Kurzportraet `#synthesis` vollstaendig, ohne „Mehr" (loest Feedback B12 ab); sein Kernsatz steht im Teiltext.
+  Kaufangebot nach dem Test erst, wenn `#traitsList` in den Blick kommt (+1,5 s), nicht nach 4 s.
+  Bewertungsbitte (`StoreKit.bewerten`) einmal, 4,5 s nach dem Hinweis „erstes Muster" (`lucenta_bewertung`).
+
 - **Tiere realistischer (Runde 172, Inhaber):** `mitBrauen` setzt Farbe ×0,4 und Wulst ×0,55 (aufgemalte Brauen hat
   keine dieser Arten), `auge` Lichtpunkt ×0,7. „echt, aber liebenswert" gilt weiter (Augen etwas groesser als echt).
 
@@ -295,6 +301,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 173: ALLE 9 BESTANDEN**, `pruef-nativ` 93, sonst wie nach 169.
 
 **Nach Runde 172: ALLE 9 BESTANDEN**, Zahlen wie nach 169.
 
@@ -414,6 +422,31 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 173 — Zweite Simulation: fuenf Punkte
+
+**Auftrag:** Die Simulation mit 100 Personen auf dem Stand von Runde 172 wiederholt (Schaetzung, keine Messung);
+umgesetzt die Punkte 1, 3, 4, 5, 6.
+
+**1 — ehrliches Muster-Versprechen.** Das Tageszeit-Muster braucht ≥ 3 Eintraege in ≥ 2 Tageszeiten
+(`tfTageszeitMittel`); mit der Erinnerung nur am Abend (Runde 167) haben die meisten nur Abendeintraege — die Kaufseite
+versprach es trotzdem. `tf_muster_plus` und `plus_v_tagesform_text` sagen jetzt „sobald genug Eintraege da sind" und
+„wenn du zu zwei Tageszeiten eintraegst"; Lucenta+ zeigt solange `tf_tageszeit_noch` (wie viel noch fehlt). 8 Sprachen.
+
+**3 — Kurzportraet.** `synthesisSetzen` zeigt den ganzen Text (CORE + FLAVOR) ohne „Mehr"; `ersterSatz`, `.syn-mehr`,
+`syn_mehr`/`syn_weniger` entfernt. `teilenAlsText` traegt jetzt den Kernsatz (CORE) zwischen Typ und Einladung.
+
+**4 — Bewertungsbitte.** `LucentaKaeufePlugin.bewerten` (`AppStore.requestReview(in:)`, vor iOS 16 `SKStoreReviewController`).
+JS `bewertungErbitten()` einmal, 4,5 s nach `erstesMusterMelden()`. iOS entscheidet selbst, ob das Fenster erscheint
+(hoechstens dreimal im Jahr), und meldet nichts zurueck — keine Daten.
+
+**5 — mehr frei.** `HG_FREI` + wolken, sternenbild, daemmerung (je einer pro Gruppe; von mir gewaehlt, „zwei, drei" war der Vorschlag).
+
+**6 — Kaufangebot spaeter.** `plusAngebotNachTest` wartet nicht mehr 4 s, sondern bis `#traitsList` oberhalb von 70 % des
+Fensters steht, dann 1,5 s.
+
+**Pruefungen:** `pruef-nativ` 89 -> 93 (Bewertungsbitte genau einmal und danach nie wieder; Kaufangebot nicht nach 5 s
+oben, wohl nach dem Scrollen — mit einem echten Durchlauf aller 50 Fragen). Swift mit `xcodebuild` uebersetzt. `pruef-alles` 9/9, `fehlersuche` ohne Fund.
 
 ## Runde 172 — Tiere artgerechter, vier Hintergruende
 

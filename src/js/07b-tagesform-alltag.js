@@ -389,6 +389,7 @@
       localStorage.setItem(ERSTES_MUSTER, '1');
     }catch(e){ return; }
     toast(tx('tf_erstes_muster_da'), 3500);
+    setTimeout(bewertungErbitten, 4500);
   }
   function tfMusterRendern(){
     var wrap = $('tfMuster');
@@ -441,6 +442,7 @@
           '<span class="vl-eintrag"><span class="vl-punkt vl-stimmung"></span>'+tx('js_stimmung')+'</span>'+
         '</div></div>');
     }
+    else if (istPlus()) teile.push('<p class="tf-hinweis">'+tx('tf_tageszeit_noch')+'</p>');
     var bs = tfBesteSchwere(tage, loadStateHistory());
     if (bs) teile.push(bs);
     var sb = tfStichwortBefunde(tage);

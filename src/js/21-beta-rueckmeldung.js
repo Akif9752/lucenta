@@ -324,7 +324,8 @@
     var url = (location.href.split('#')[0]).split('?')[0];
     var titel = tx('js_mein_lucentaporträt')+ (NOUN[arch.top1][scores[arch.top1]>=50?'high':'low']) +' · '+
       (ADJ[arch.top2][scores[arch.top2]>=50?'high':'low']);
-    var text = guestRun ? titel + tx('js_mach_den_test_und_verglei') + toCode(scores) : titel + '. ' + einladungsText();
+    var kern = CORE[arch.top1][scores[arch.top1]>=50?'high':'low'] || '';
+    var text = guestRun ? titel + tx('js_mach_den_test_und_verglei') + toCode(scores) : titel + '. ' + kern + ' ' + einladungsText();
     function inAblage(){
       if (navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(text+' — '+url)

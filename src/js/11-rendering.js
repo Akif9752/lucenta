@@ -182,10 +182,23 @@
       if (localStorage.getItem(PLUS_ANGEBOT_SCHLUESSEL)) return;
       localStorage.setItem(PLUS_ANGEBOT_SCHLUESSEL, '1');
     }catch(e){ return; }
-    setTimeout(function(){
-      var v = $('view-result'), m = $('plusModal');
-      if (v && v.classList.contains('active') && m && !m.classList.contains('open') && !istPlus()) openPlusModal();
-    }, 4000);
+    // Erst wenn die Dimensionen in den Blick kommen: Nach 4 s schlossen die meisten das Fenster, bevor sie
+    // ihr Ergebnis gelesen hatten.
+    var gezeigt = false, ziel = $('traitsList');
+    var zeigen = function(){
+      if (gezeigt) return; gezeigt = true;
+      window.removeEventListener('scroll', pruefen);
+      setTimeout(function(){
+        var v = $('view-result'), m = $('plusModal');
+        if (v && v.classList.contains('active') && m && !m.classList.contains('open') && !istPlus()) openPlusModal();
+      }, 1500);
+    };
+    var pruefen = function(){
+      var v = $('view-result');
+      if (!v || !v.classList.contains('active')){ window.removeEventListener('scroll', pruefen); return; }
+      if (ziel && ziel.getBoundingClientRect().top < window.innerHeight * 0.7) zeigen();
+    };
+    window.addEventListener('scroll', pruefen, {passive:true});
   }
 
   function finishQuiz(){
@@ -331,25 +344,9 @@
     renderDelta(previous);
   }
 
-  // Kurzportraet: erster Satz, der Rest hinter "Mehr" (Feedback B12).
+  // Kurzportraet vollstaendig (Entscheidung des Inhabers, loest „Mehr" aus Feedback B12 ab): frei und zum Teilen gedacht.
   function synthesisSetzen(text){
-    var el = $('synthesis');
-    var teile = ersterSatz(text);
-    if (!teile[1] || !el.querySelector){ el.textContent = text; return; }
-    el.innerHTML = '<span>'+escapeHTML(teile[0])+'</span><span class="syn-rest" hidden>'+escapeHTML(teile[1])+'</span> '+
-      '<button type="button" class="syn-mehr" aria-expanded="false">'+tx('syn_mehr')+'</button>';
-    var b = el.querySelector('.syn-mehr'), rest = el.querySelector('.syn-rest');
-    if (!b || !rest) return;
-    b.addEventListener('click', function(){
-      rest.hidden = !rest.hidden;
-      b.setAttribute('aria-expanded', String(!rest.hidden));
-      b.textContent = tx(rest.hidden ? 'syn_mehr' : 'syn_weniger');
-    });
-  }
-  function ersterSatz(text){
-    var t = String(text || '');
-    var m = /^(.{40,}?[.!?。])(\s|$)/.exec(t);
-    return m ? [m[1], t.slice(m[1].length)] : [t, ''];
+    $('synthesis').textContent = text;
   }
   // Der ausfuehrliche Bericht ist Lucenta+, alle drei Abschnitte (Entscheidung des Inhabers). Frei: Kopfzeile,
   // Messbalken und Kernsatz; die Abschnitte verschwommen.
