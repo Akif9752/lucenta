@@ -179,13 +179,16 @@
     });
   }
 
-  function renderRecht(){
+  // nurDatenschutz: aus dem Kaufablauf (Richtlinie 3.1.2) — dort ohne Impressum.
+  function renderRecht(nurDatenschutz){
     var quelle = (CONTENT[LANG] && CONTENT[LANG].RECHT) || (CONTENT.de && CONTENT.de.RECHT) || {};
     var imp = $('rechtImpressum'), ds = $('rechtDatenschutz'), hinweis = $('rechtHinweis');
+    if ($('rechtImpressumGruppe')) $('rechtImpressumGruppe').hidden = !!nurDatenschutz;
+    if ($('rechtTitel')) $('rechtTitel').textContent = tx(nurDatenschutz ? 'datenschutz' : 'impressum_und_datenschutz');
     if (imp) imp.innerHTML = rechtFuellen(quelle.impressum || '');
     if (ds) ds.innerHTML = rechtFuellen(quelle.datenschutz || '');
     if (!hinweis) return;
-    var fehlt = impressumLuecken();
+    var fehlt = nurDatenschutz ? [] : impressumLuecken();
     hinweis.innerHTML = fehlt.length
       ? '<div class="recht-luecke" role="status"><span><b>' + tx('js_recht_luecke_titel') + '</b> ' +
         tx('js_recht_luecke_text') + ' <code>' + fehlt.join('</code>, <code>') + '</code></span></div>'

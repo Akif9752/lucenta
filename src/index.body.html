@@ -216,7 +216,6 @@
 
     <footer class="appfoot">
       <span data-i18n-html="lucenta_middot_bigfivemodell">Lucenta &middot; Big-Five-Modell (<a href="https://ipip.ori.org/new_ipip-50-item-scale.htm" target="_blank" rel="noopener">IPIP</a>)</span>
-      <button type="button" class="fuss-link" id="btnRechtFuss" data-i18n="recht_leise">Impressum, Datenschutz &amp; Lizenzen</button>
     </footer>
   </section>
 
@@ -677,10 +676,11 @@
     </div>
     <div class="archetypes-head">
       <div class="eyebrow" data-i18n="rechtliches">Rechtliches</div>
-      <h1 data-i18n="impressum_und_datenschutz">Impressum und Datenschutz</h1>
+      <h1 id="rechtTitel">Impressum und Datenschutz</h1>
     </div>
     <div id="rechtHinweis"></div>
-    <div class="settings-group"><h2 data-i18n="impressum">Impressum</h2><div class="recht-text" id="rechtImpressum"></div></div>
+    <!-- Das Impressum nur ueber die Einstellungen (Entscheidung des Inhabers); vom Kaufablauf aus nur der Datenschutz. -->
+    <div class="settings-group" id="rechtImpressumGruppe"><h2 data-i18n="impressum">Impressum</h2><div class="recht-text" id="rechtImpressum"></div></div>
     <div class="settings-group"><h2 data-i18n="datenschutz">Datenschutz</h2><div class="recht-text" id="rechtDatenschutz"></div></div>
   </section>
   </main>

@@ -85,8 +85,8 @@
 
   /* Mehrere Reihen untereinander: Abstand so, dass die 44er-Flaechen zweier Zeilen (je ~15 px) aneinanderstossen. */
   footer.appfoot{ gap:30px 16px; }
-  .fuss-link, footer.appfoot a{ position:relative; display:inline-block; }
-  .fuss-link::after, footer.appfoot a::after{
+  footer.appfoot a{ position:relative; display:inline-block; }
+  footer.appfoot a::after{
     content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     width:max(100%, 44px); height:44px;
   }

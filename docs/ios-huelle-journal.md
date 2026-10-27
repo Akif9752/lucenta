@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-27, nach Runde 175)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-27, nach Runde 176)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 175 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 176 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 176 | (dieser) | Impressum nur noch in den Einstellungen; aus dem Kaufablauf nur die Datenschutzerklaerung |
 | 175 | (dieser) | Verstehen: Karten zeigen, dass sie aufklappbar sind (Fusszeile „Mehr lesen" + Pfeil wie die Ergebniskarten) |
 | 174 | (dieser) | Simulation mit 1000 Personen; Einstellungen wie iOS neu gegliedert; Erinnerungszeit waehlbar |
 | 173 | (dieser) | Zweite Simulation umgesetzt: Muster-Versprechen ehrlich, Bewertungsbitte, Kaufangebot nach dem Scrollen, 5 freie Hintergruende, Kurzportraet ganz |
@@ -239,6 +240,10 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
+- **Impressum nur in den Einstellungen (Runde 176, Inhaber).** Kein Fusszeilen-Link mehr; die Links „Datenschutz" im
+  Kaufablauf (3.1.2, Pflicht) oeffnen `view-recht` mit `renderRecht(true)` — nur die Datenschutzerklaerung. Absicherung
+  ausserhalb der App: dieselben Angaben als EU-Haendlerangaben und Support-Seite in App Store Connect (Inhaber).
+
 - **Einstellungen (Runde 174, Inhaber):** gegliedert wie iOS — Konto + Lucenta+-Karte, Allgemein, Erinnerung, Test (nur bei
   unterbrochenem Test), Daten & Datenschutz, Hilfe & Ueber. **Keine Erinnerung vor Ende der Probezeit** (Inhaber: „soll es
   nicht geben"). Erinnerungszeit waehlbar (`lucenta_erinnerung_zeit`, Vorgabe 20:00).
@@ -307,6 +312,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 176: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
 
 **Nach Runde 175: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
 
@@ -432,6 +439,25 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 176 — Impressum nur in den Einstellungen
+
+**Frage des Inhabers:** Muss das Impressum (Apple) auch unter dem Ergebnis stehen? **Antwort:** Apple verlangt kein Impressum
+(das ist § 5 DDG); Apple verlangt die Datenschutzerklaerung leicht erreichbar in der App (5.1.1), Datenschutz und
+Nutzungsbedingungen im Kaufablauf (3.1.2) und — wer Abos verkauft — die EU-Haendlerangaben (DSA) in App Store Connect.
+Nach deutschem Recht genuegt eine feste, leicht auffindbare Stelle; nicht jede Seite. Keine Rechtsberatung.
+
+**Aenderung (Entscheidung des Inhabers):** `#btnRechtFuss` unter dem Ergebnis entfernt (samt `.fuss-link`-Stilen).
+Die zwei „Datenschutz"-Links im Kauffenster und auf der Lucenta+-Seite oeffneten dieselbe Seite MIT Impressum —
+jetzt `renderRecht(true)`: Impressum-Gruppe verborgen, Titel „Datenschutz", kein Luecken-Hinweis. Aus den
+Einstellungen (`#btnRecht`) wie bisher beides. In WebKit beide Wege geprueft. `audit-i18n` fand die Marke auf dem jetzt
+vom Skript gesetzten Titel (`#rechtTitel`) — entfernt.
+
+**Nebenbei: Zeitumstellung in einer Pruefung.** `pruef-nativ` „am siebten Tag genau eine Bitte um Bewertung" fiel um
+23:27 Uhr durch (zuvor zweimal bestanden). Ursache in der PRUEFUNG: Sie saete „vor i Tagen" als `jetzt − i·24 h`; am
+25. Oktober (25 Stunden, Ende der Sommerzeit) landeten so zwei Eintraege auf demselben Tag — 6 statt 7 Tage, die App
+meldete zu Recht noch kein erstes Muster. Jetzt Kalendertage (`new Date(y, m, d − i, 12)`), wie in `tests/nutzung_test.js`.
+`pruef-alles` danach 9/9.
 
 ## Runde 175 — Verstehen: aufklappbar sichtbar machen
 

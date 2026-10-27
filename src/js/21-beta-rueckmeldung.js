@@ -268,7 +268,7 @@
       return;
     }
     if ($('plusModal').classList.contains('open')) closePlusModal();
-    renderRecht(); showView('recht');
+    renderRecht(true); showView('recht');
   });
   [['btnCopyCode', 'myCode'], ['btnCopyWiederCode', 'wiederCode']].forEach(function(paar){
     $(paar[0]).addEventListener('click', function(){ codeKopieren($(paar[1]).textContent); });

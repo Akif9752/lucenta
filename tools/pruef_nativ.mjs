@@ -588,7 +588,8 @@ await seite.evaluate(() => localStorage.removeItem('__pruef_konto'));
 console.log('\n=== Bitte um Bewertung: einmal, wenn das erste Muster da ist ===');
 const tageSaeen = (n) => seite.evaluate(n => { localStorage.removeItem('lucenta_erstes_muster'); localStorage.removeItem('lucenta_bewertung');
   localStorage.removeItem('lucenta_plus'); const h = [];
-  for (let i = 1; i <= n; i++){ const d = new Date(Date.now() - i*864e5);
+  // Kalendertage, nicht i x 24 h: an einem Tag mit Zeitumstellung fielen sonst zwei Eintraege auf denselben Tag.
+  for (let i = 1; i <= n; i++){ const j = new Date(); const d = new Date(j.getFullYear(), j.getMonth(), j.getDate() - i, 12);
     h.push({day: d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'), ts: d.getTime(), energy:3, valence:4, slot:'abend'}); }
   localStorage.setItem('lucenta_state', JSON.stringify(h.reverse())); }, n);
 const heuteEintragen = async () => {
