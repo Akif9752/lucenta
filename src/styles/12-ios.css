@@ -940,3 +940,37 @@
     margin:0 0 8px; font-size:calc(12px * var(--dt, 1)); font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted);
   }
 
+  /* Einstellungen wie iOS (Entscheidung des Inhabers): Knopfzeilen, Lucenta+-Zeile, Darstellung, Uhrzeit, Aufklappen. */
+  #view-settings .settings-zeile[hidden], #view-settings .settings-group[hidden]{ display:none; }
+  #view-settings .einst-knopf{
+    display:flex; width:100%; min-height:46px; border:none; font:inherit; color:var(--ink); text-align:left; cursor:pointer;
+    justify-content:space-between;
+  }
+  #view-settings .einst-knopf:active{ background:var(--surface-2); }
+  #view-settings .einst-wert{ display:flex; align-items:center; gap:6px; color:var(--muted); font-size:calc(16px * var(--dt, 1)); flex-shrink:0; }
+  #view-settings .einst-wert .chev, #view-settings .einst-plus-zeile .chev, #view-settings .einst-aufklapp summary .chev{ color:var(--muted); flex-shrink:0; }
+  #view-settings .settings-account-row + .konto-icloud + .einst-plus, #view-settings .settings-account-row + .einst-plus{ margin-top:12px; }
+  #view-settings .einst-plus{ margin-top:12px; }
+  #view-settings .einst-plus .einst-plus-zeile{ justify-content:space-between; align-items:center; color:var(--ink); }
+  #view-settings .einst-plus-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+  #view-settings .einst-plus-text strong{ font-weight:600; font-size:calc(16px * var(--dt, 1)); color:var(--accent-strong); }
+  #view-settings .einst-plus-text span{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
+  #view-settings .einst-darstellung{ flex-direction:column; align-items:stretch; gap:10px; }
+  #view-settings .einst-darstellung .segment{ margin:0; }
+  #view-settings .einst-zeit{
+    font:inherit; font-size:calc(16px * var(--dt, 1)); color:var(--ink); background:var(--surface-2);
+    border:none; border-radius:8px; padding:6px 10px; min-height:36px; flex-shrink:0;
+  }
+  #view-settings .einst-daten{ margin-top:12px; }
+  #view-settings .einst-aufklapp{ padding:0; }
+  #view-settings .einst-aufklapp summary{
+    list-style:none; display:flex; justify-content:space-between; align-items:center; min-height:46px; padding:12px 16px; cursor:pointer;
+  }
+  #view-settings .einst-aufklapp summary::-webkit-details-marker{ display:none; }
+  #view-settings .einst-aufklapp[open] summary .chev{ transform:rotate(90deg); }
+  #view-settings .einst-aufklapp > :not(summary){ margin-left:16px; margin-right:16px; }
+  #view-settings .einst-aufklapp > :last-child{ margin-bottom:14px; }
+  #view-settings .einst-nutzung{ margin-top:12px; }
+  #view-settings .einst-nutzung .settings-zeile{ border-radius:var(--radius-m); }
+
+  #view-settings .settings-group > .settings-hint{ -webkit-hyphens:manual; hyphens:manual; }

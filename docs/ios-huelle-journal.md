@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-27, nach Runde 173)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-27, nach Runde 174)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 173 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 174 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 174 | (dieser) | Simulation mit 1000 Personen; Einstellungen wie iOS neu gegliedert; Erinnerungszeit waehlbar |
 | 173 | (dieser) | Zweite Simulation umgesetzt: Muster-Versprechen ehrlich, Bewertungsbitte, Kaufangebot nach dem Scrollen, 5 freie Hintergruende, Kurzportraet ganz |
 | 172 | (dieser) | Tiere artgerechter (Brauen nur angedeutet, kleinere Lichtpunkte, Fuchs-Ohrspitzen, Hasen-Augenring); 4 Hintergruende: Lavendel, Wolken, Sternschnuppe, Art déco |
 | 171 | (dieser) | Figur & Hintergrund als je eine Karte mit Gruppenzeilen; 6 neue Hintergruende (Lucenta+); Licht fuer alle Tiere, Fuchs/Dackel/Schildkroete/Wal nachgearbeitet |
@@ -237,6 +238,10 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
+- **Einstellungen (Runde 174, Inhaber):** gegliedert wie iOS — Konto + Lucenta+-Karte, Allgemein, Erinnerung, Test (nur bei
+  unterbrochenem Test), Daten & Datenschutz, Hilfe & Ueber. **Keine Erinnerung vor Ende der Probezeit** (Inhaber: „soll es
+  nicht geben"). Erinnerungszeit waehlbar (`lucenta_erinnerung_zeit`, Vorgabe 20:00).
+
 - **Runde 173 (Inhaber):** frei sind die Hintergruende papier, kohle, wolken, sternenbild, daemmerung (`HG_FREI`).
   Kurzportraet `#synthesis` vollstaendig, ohne „Mehr" (loest Feedback B12 ab); sein Kernsatz steht im Teiltext.
   Kaufangebot nach dem Test erst, wenn `#traitsList` in den Blick kommt (+1,5 s), nicht nach 4 s.
@@ -301,6 +306,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 174: ALLE 9 BESTANDEN** (fehlersuche nach Korrektur der Pruefung erneut, 28 ohne Fund), `pruef-nativ` 96.
 
 **Nach Runde 173: ALLE 9 BESTANDEN**, `pruef-nativ` 93, sonst wie nach 169.
 
@@ -422,6 +429,35 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 174 — Simulation mit 1000, Einstellungen, Erinnerungszeit
+
+**Simulation** (Schaetzung, keine Messung) mit 1000 Personen auf dem Stand von Runde 173. Neue Befunde, im Code nachgeprueft:
+Impressum/Datenschutz zeigen Platzhalter (Inhaber); beide Abos `familyShareable: false` (Inhaber, App Store Connect);
+keine Erinnerung vor Ende der Probezeit (vom Inhaber abgelehnt); Erinnerung fest 20 Uhr (umgesetzt).
+
+**Erinnerungszeit.** Neue Zeile „Uhrzeit" mit `<input type="time">` (auf dem iPhone das Zeitrad), sichtbar bei
+eingeschalteter Erinnerung und nicht bei „Zu jeder Tageszeit". `erinnerungZeit()` liest `lucenta_erinnerung_zeit`
+(„HH:MM", sonst 20:00), `erinnerungListe` plant die eine Mitteilung dorthin, der Hinweis nennt sie im Format der Sprache
+(„Um {zeit} – nur, wenn …", 8 Sprachen; vorher „Abends um …").
+
+**Einstellungen.** Vorher neun Gruppen, ~2740 pt: „Test" stand fast immer leer da, sechs Zaehlzeilen ohne Funktion,
+die Lucenta+-Gruppe ohne Weg zur Lucenta+-Seite, Ueberschrift doppelt. Jetzt (Wahl des Inhabers aus zwei Optionen):
+Titel „Einstellungen"; Konto-Karte; Lucenta+-Karte (Zeile zur Seite mit Kurzstatus `plus_kurz_*`, Kaeufe wiederherstellen,
+Abo verwalten — 3.1.2); Allgemein (Sprache als Zeile, Darstellung, Haptik, Bewegung); Erinnerung (an/aus, Uhrzeit, zu jeder
+Tageszeit); Test nur bei unterbrochenem Test; Daten (eine Zusammenfassungszeile, Sichern/Einspielen, „Ergebnis
+wiederherstellen" zum Aufklappen, Nutzungszahlen, Zuruecksetzen); Hilfe & Ueber (Haeufige Fragen, Impressum als Zeilen,
+Version). ~2060 pt mit eingeschalteter Erinnerung. Alle Kennungen, an denen Logik und Pruefungen haengen, blieben.
+Nebenbei gefunden: „Zu jeder Tageszeit" erschien auch bei ausgeschalteter Erinnerung — `.settings-zeile` (display:flex)
+ueberstimmte `[hidden]`; jetzt `#view-settings .settings-zeile[hidden]{display:none}`.
+
+**Pruefungen:** `pruef-nativ` 93 -> 96 (Uhrzeitzeile erscheint, neu geplant auf 7:30, Hinweis nennt die Zeit);
+`pruef-bewegung` klappt „Ergebnis wiederherstellen" vor dem Abweisungstest auf. `pruef-alles` zuerst 8/9: die
+`fehlersuche` meldete 12 zu kleine Tippflaechen (Kopieren, Wiederherstellen, Codefeld) bei 320 px fr/tr und 200 % — alle
+im ZUGEKLAPPTEN `<details>`: Dort behalten Elemente ihre Masse, sind aber weder sichtbar noch antippbar; die Tastpunkte
+trafen die Nachbarn. Messfehler der Pruefung, kein Fehler der App. `fehlersuche` ueberspringt jetzt Elemente in
+`details:not([open])` (wie schon `[inert]`) und klappt den Bereich in den Einstellungen auf (`NACHBEREITUNG.settings`),
+damit er gemessen wird, wie man ihn aufgeklappt sieht. Danach 28 Durchlaeufe ohne Fund.
 
 ## Runde 173 — Zweite Simulation: fuenf Punkte
 

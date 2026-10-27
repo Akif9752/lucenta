@@ -39,6 +39,17 @@
   var ERINNERUNG_TITEL = {morgen:'erinnerung_titel_morgen', mittag:'erinnerung_titel_mittag', abend:'erinnerung_titel_abend'};
   var ERINNERUNG_NACH_TITEL = {morgen:'erinnerung_nach_morgen', mittag:'erinnerung_nach_mittag', abend:'erinnerung_nach_abend'};
   var ERINNERUNG_ALLE = 'lucenta_erinnerung_alle';
+  // Uhrzeit der einen Erinnerung am Tag, waehlbar (Entscheidung des Inhabers); "HH:MM", Vorgabe 20:00.
+  var ERINNERUNG_ZEIT = 'lucenta_erinnerung_zeit';
+  function erinnerungZeit(){
+    var m = /^(\d{1,2}):(\d{2})$/.exec(schalterLesen(ERINNERUNG_ZEIT, ''));
+    var h = m ? +m[1] : ERINNERUNG_STUNDE.abend, mi = m ? +m[2] : 0;
+    return (h >= 0 && h < 24 && mi >= 0 && mi < 60) ? {h: h, m: mi} : {h: ERINNERUNG_STUNDE.abend, m: 0};
+  }
+  function zeitText(z){
+    try{ return new Intl.DateTimeFormat(tx('datum_gebietsschema'), {hour:'numeric', minute:'2-digit'}).format(new Date(2024, 0, 1, z.h, z.m)); }
+    catch(e){ return (z.h < 10 ? '0' : '') + z.h + ':' + (z.m < 10 ? '0' : '') + z.m; }
+  }
   function erinnerungAn(){
     return schalterLesen(ERINNERUNG_AN, 'aus') === 'an';
   }
@@ -46,7 +57,7 @@
     return schalterLesen(ERINNERUNG_ALLE, 'aus') === 'an';
   }
   function erinnerungHinweisText(){
-    if (!erinnerungAlle()) return tfText('erinnerung_hinweis_einmal', {abend: tfUhrzeit(ERINNERUNG_STUNDE.abend)});
+    if (!erinnerungAlle()) return tfText('erinnerung_hinweis_einmal', {abend: zeitText(erinnerungZeit())});
     return tfText('erinnerung_hinweis', {morgen: tfUhrzeit(ERINNERUNG_STUNDE.morgen),
       mittag: tfUhrzeit(ERINNERUNG_STUNDE.mittag), abend: tfUhrzeit(ERINNERUNG_STUNDE.abend)});
   }
@@ -64,7 +75,16 @@
     });
     var alle = $('erinnerungAlleSchalter'), zeile = $('erinnerungAlleZeile');
     if (zeile) zeile.hidden = !(moeglich && erinnerungAn());
+    var zz = $('erinnerungZeitZeile'), zf = $('erinnerungZeit');
+    if (zz) zz.hidden = !(moeglich && erinnerungAn() && !erinnerungAlle());
+    if (zf && document.activeElement !== zf){ var z = erinnerungZeit(); zf.value = (z.h < 10 ? '0' : '') + z.h + ':' + (z.m < 10 ? '0' : '') + z.m; }
     if (alle) alle.setAttribute('aria-checked', erinnerungAlle() ? 'true' : 'false');
+  }
+  function erinnerungZeitSetzen(wert){
+    if (!/^\d{1,2}:\d{2}$/.test(wert || '')) return;
+    schalterSetzen(ERINNERUNG_ZEIT, wert, null);
+    if (nativVorhanden() && erinnerungAn()) erinnerungPlanen();
+    erinnerungAnwenden();
   }
   function erinnerungAlleUmschalten(){
     if (!nativVorhanden() || !erinnerungAn()) return;
@@ -96,7 +116,8 @@
       var heuteLeer = !TF_ABSCHNITTE.some(function(s){ return heute[s]; });
       for (var d = 0; d < ERINNERUNG_TAGE; d++){
         if (d === 0 && !heuteLeer) continue;
-        var um1 = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() + d, ERINNERUNG_STUNDE.abend, 0, 0);
+        var zt = erinnerungZeit();
+        var um1 = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() + d, zt.h, zt.m, 0);
         if (um1.getTime() <= jetzt.getTime()) continue;
         liste.push({id: ERINNERUNG_ID_BASIS + d * ERINNERUNG_JE_TAG, title: decodeEntities(tx(ERINNERUNG_TITEL.abend)),
           body: decodeEntities(tx('erinnerung_text_mitteilung')), schedule: {at: um1, allowWhileIdle: true}});

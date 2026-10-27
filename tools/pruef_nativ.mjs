@@ -141,6 +141,17 @@ ok(einmal.every(x => new Date(x.schedule.at).getHours() === 20 && new Date(x.sch
 ok(await seite.evaluate(() => !document.getElementById('erinnerungAlleZeile').hidden), 'der Schalter "Zu jeder Tageszeit" erscheint');
 ok(await seite.evaluate(() => localStorage.getItem('lucenta_erinnerung_alle') !== 'an'), 'und steht auf aus');
 
+console.log('\n=== Die Uhrzeit der Erinnerung ist waehlbar ===');
+ok(await seite.evaluate(() => !document.getElementById('erinnerungZeitZeile').hidden), 'die Zeile "Uhrzeit" erscheint bei eingeschalteter Erinnerung');
+await seite.evaluate(() => { window.__nativLog = []; const f = document.getElementById('erinnerungZeit'); f.value = '07:30'; f.dispatchEvent(new Event('change')); });
+await seite.waitForTimeout(400);
+const zeitListe = (await seite.evaluate(() => window.__nativLog)).filter(e => e.was === 'planen')[0]?.arg?.notifications || [];
+ok(zeitListe.length >= 9 && zeitListe.every(x => { const d = new Date(x.schedule.at); return d.getHours() === 7 && d.getMinutes() === 30; }),
+   'neu geplant, alle um 7:30 (' + zeitListe.length + ')');
+ok(await seite.evaluate(() => /7:30/.test(document.getElementById('erinnerungHinweis').textContent)), 'und der Hinweis nennt die Zeit');
+await seite.evaluate(() => { const f = document.getElementById('erinnerungZeit'); f.value = '20:00'; f.dispatchEvent(new Event('change')); });
+await seite.waitForTimeout(300);
+
 console.log('\n=== Einmal am Tag: ein Eintrag heute laesst den heutigen Abend aus ===');
 await seite.evaluate(() => {
   const d = new Date(), key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');

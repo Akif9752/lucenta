@@ -239,6 +239,9 @@ const suchTippflaechen = (min) => {
     // der freien Fassung), ist kein Bedienelement: Es nimmt absichtlich keinen Tipp an. Gemessen
     // wird, was jemand bedienen kann; der Knopf ueber der Vorschau wird weiter gemessen.
     if (el.closest('[inert]')) return;
+    // Runde 174: In einem zugeklappten <details> behalten Elemente ihre Masse, sind aber weder sichtbar noch
+    // antippbar — kein Bedienelement. Gemessen werden sie aufgeklappt (siehe NACHBEREITUNG.settings).
+    if (el.closest('details:not([open])') && !el.closest('summary')) return;
     // Am oberen oder unteren Bildrand laege ein Tastpunkt ausserhalb des Fensters, und
     // elementFromPoint gibt dort nichts zurueck — der erste Entwurf zaehlte das als zu klein
     // und meldete jedes Bedienelement am Seitenende. Uebergehen waere der bequeme Ausweg
@@ -546,6 +549,11 @@ const NACHBEREITUNG = {
   // auseinander. Das ergibt eine gemischte Verteilung und damit BEIDE Kartensorten in einem
   // Bild — mit zwei gleichen oder zwei entgegengesetzten Codes waere immer nur eine zu sehen.
   // Seit Runde 155 ueber das eine Feld der Freunde-Seite: Der Code wird Freund, der Vergleich oeffnet sich.
+  // Runde 174: "Ergebnis wiederherstellen" ist eingeklappt — aufgeklappt messen, wie man es sieht.
+  settings: {ansicht:'settings', tun: async (p) => {
+    await p.evaluate(() => { const d = document.getElementById('einstWiederherstellen'); if (d) d.open = true; });
+    await p.waitForTimeout(250);
+  }},
   vergleich: {ansicht:'compare', ueber:'freunde', tun: async (p) => {
     await p.fill('#freundCode', '240k1e1w2d');
     await p.click('#btnFreundSpeichern');

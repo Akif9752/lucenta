@@ -199,7 +199,7 @@
   // Zeile in den Einstellungen nennt die laufende Fassung neben "Kaeufe wiederherstellen".
   function plusStandAnwenden(){
     var el = $('plusStand');
-    if (el) el.innerHTML = tx(istPlus() ? 'plus_stand_plus' : 'plus_stand_frei');
+    if (el) el.innerHTML = tx(istPlus() ? 'plus_kurz_aktiv' : 'plus_kurz_frei');
   }
   function landingPlusKarteAnwenden(){
     var k = $('landingPlusKarte');

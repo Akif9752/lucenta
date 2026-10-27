@@ -160,6 +160,7 @@
   });
   $('btnDrawerSettings').addEventListener('click', function(){ closeDrawer(true); applyTheme(loadThemeMode()); renderSettings(); showView('settings'); });
   $('btnDrawerPlus').addEventListener('click', function(){ closeDrawer(true); renderPlusSeite(); showView('plus'); });
+  $('btnEinstPlus').addEventListener('click', function(){ renderPlusSeite(); showView('plus'); });
   plusSeiteVerdrahten();
   $('btnPlusModalWiederherstellen').addEventListener('click', kaeufeWiederherstellen);
   $('btnBackFromSettings').addEventListener('click', function(){ showView('landing'); });
@@ -406,6 +407,7 @@
       if ($(id)) $(id).addEventListener('click', erinnerungUmschalten);
     });
     if ($('erinnerungAlleSchalter')) $('erinnerungAlleSchalter').addEventListener('click', erinnerungAlleUmschalten);
+    if ($('erinnerungZeit')) $('erinnerungZeit').addEventListener('change', function(){ erinnerungZeitSetzen($('erinnerungZeit').value); });
     // Runde 129: Die Mitteilungen sind fuer 14 Tage einzeln geplant. Jedes Oeffnen schiebt das
     // Fenster nach und laesst die Abschnitte aus, die heute schon eingetragen sind.
     erinnerungNachziehen();

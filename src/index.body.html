@@ -461,15 +461,13 @@
     <div class="quiz-head nur-zurueck">
       <button class="btn btn-ghost btn-sm" id="btnBackFromSettings" data-i18n="start_7">← Start</button>
     </div>
+    <!-- Gegliedert wie die iOS-Einstellungen (Entscheidung des Inhabers): Konto und Lucenta+ oben, dann
+         Allgemein, Erinnerung, Daten, Hilfe & Ueber. -->
     <div class="archetypes-head">
-      <div class="eyebrow" data-i18n="einstellungen">Einstellungen</div>
-      <h1 data-i18n="konto_darstellung_amp_mehr">Konto, Darstellung &amp; mehr</h1>
+      <h1 data-i18n="einstellungen">Einstellungen</h1>
     </div>
 
     <div class="settings-group">
-      <h2 data-i18n="konto">Konto</h2>
-      <!-- Feedback: dieselbe Aussage steht wenige Abschnitte weiter unten unter "Daten & Datenschutz"
-           bereits vollständig — auf derselben Ansicht doppelt, daher hier raus statt nur umformuliert. -->
       <div class="settings-account-row">
         <div class="settings-account-avatar" id="settingsAvatar" aria-hidden="true"></div>
         <div class="settings-account-info">
@@ -480,20 +478,27 @@
       </div>
       <!-- Mit Apple anmelden + iCloud, nur in der App (19d-konto.js). -->
       <div id="kontoIcloud" class="konto-icloud" hidden></div>
+      <!-- Lucenta+ fuehrt auf seine Seite; Wiederherstellen bleibt hier erreichbar (Richtlinie 3.1.2). -->
+      <div class="daten-knoepfe einst-plus">
+        <button type="button" class="btn btn-ghost btn-sm einst-plus-zeile" id="btnEinstPlus"><span class="einst-plus-text"><strong data-i18n="plus_marke_klar">Lucenta+</strong><span id="plusStand" data-i18n="plus_kurz_frei">Alles, was über die Zeit entsteht</span></span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnPlusWiederherstellen" data-i18n="plus_wiederherstellen">Käufe wiederherstellen</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnAboVerwalten" data-i18n="plus_verwalten">Abo verwalten</button>
+      </div>
+      <p class="settings-hint" data-i18n-html="plus_kuendigen">Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
     </div>
 
-    <!-- Die Sprachen stehen in ihrer eigenen Schreibweise ("Deutsch", nicht "German"). -->
     <div class="settings-group">
-      <h2 data-i18n="sprache">Sprache</h2>
-      <!-- Jede Sprache traegt ihr eigenes lang-Attribut (Vorleseprogramme sprechen sie richtig aus). -->
-      <!-- Die Sprache ist eine Zeile mit Pfeil, die eine eigene Seite oeffnet (view-sprache), wie in
-           Apples Einstellungen (Auftrag des Inhabers). Rechts die gewaehlte Sprache. -->
-      <button type="button" class="hilfe-knopf" id="btnSpracheOeffnen"><span id="spracheAktuell" lang="de">Deutsch</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
-    </div>
-
-    <!-- Bedienung: Haptik und Bewegung lassen sich fuer diese App abstellen. -->
-    <div class="settings-group">
-      <h2 data-i18n="bedienung">Bedienung</h2>
+      <h2 data-i18n="allgemein">Allgemein</h2>
+      <!-- Jede Sprache in ihrer eigenen Schreibweise; die Liste liegt auf einer eigenen Seite (view-sprache). -->
+      <button type="button" class="settings-zeile einst-knopf" id="btnSpracheOeffnen"><span class="settings-zeile-text"><strong data-i18n="sprache">Sprache</strong></span><span class="einst-wert"><span id="spracheAktuell" lang="de">Deutsch</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span></button>
+      <div class="settings-zeile einst-darstellung">
+        <div class="settings-zeile-text"><strong data-i18n="darstellung">Darstellung</strong></div>
+        <div class="segment theme-toggle" role="radiogroup" aria-label="Darstellung wählen" data-i18n-aria="aria_darstellung_wählen">
+        <button type="button" class="segment-opt" id="themeSystem" role="radio" data-mode="system" aria-checked="false"><span class="segment-preis" data-i18n="system">System</span></button>
+        <button type="button" class="segment-opt" id="themeLight" role="radio" data-mode="light" aria-checked="false"><span class="segment-preis" data-i18n="hell">Hell</span></button>
+        <button type="button" class="segment-opt" id="themeDark" role="radio" data-mode="dark" aria-checked="false"><span class="segment-preis" data-i18n="dunkel">Dunkel</span></button>
+      </div>
+      </div>
       <div class="settings-zeile">
         <div class="settings-zeile-text">
           <strong data-i18n="haptik">Haptik</strong>
@@ -509,14 +514,22 @@
         </div>
         <button type="button" class="schalter" id="bewegungSchalter" role="switch" aria-checked="true" aria-label="Bewegung" data-i18n-aria="aria_bewegung"><span class="schalter-knopf"></span></button>
       </div>
-      <!-- Die Erinnerung gibt es nur in der App (Richtlinie 4.2); im Browser ist der Schalter
-           abgeschaltet und sagt warum. -->
+      <p class="settings-hint" data-i18n="systemldquo_übernimmt_automa">„System&ldquo; übernimmt automatisch die Einstellung deines Geräts.</p>
+    </div>
+
+    <!-- Die Erinnerung gibt es nur in der App (Richtlinie 4.2); im Browser ist der Schalter abgeschaltet. -->
+    <div class="settings-group">
+      <h2 data-i18n="erinnerung_gruppe">Erinnerung</h2>
       <div class="settings-zeile">
         <div class="settings-zeile-text">
           <strong data-i18n="erinnerung_titel">Tägliche Erinnerung</strong>
           <span class="settings-hint" id="erinnerungHinweis"></span>
         </div>
         <button type="button" class="schalter" id="erinnerungSchalter" role="switch" aria-checked="false" aria-label="Tägliche Erinnerung" data-i18n-aria="aria_erinnerung"><span class="schalter-knopf"></span></button>
+      </div>
+      <div class="settings-zeile" id="erinnerungZeitZeile" hidden>
+        <div class="settings-zeile-text"><strong data-i18n="erinnerung_uhrzeit">Uhrzeit</strong></div>
+        <input type="time" class="einst-zeit" id="erinnerungZeit" value="20:00" step="300" aria-label="Uhrzeit der Erinnerung" data-i18n-aria="aria_erinnerung_uhrzeit">
       </div>
       <div class="settings-zeile" id="erinnerungAlleZeile" hidden>
         <div class="settings-zeile-text">
@@ -527,19 +540,8 @@
       </div>
     </div>
 
-    <div class="settings-group">
-      <h2 data-i18n="darstellung">Darstellung</h2>
-      <!-- Runde 97: Segmentwaehler statt dreier Knoepfe — dieselbe Form wie bei der Laufzeit
-           im Kauffenster, und die Form, in der iOS genau diese Wahl zeigt. -->
-      <div class="segment theme-toggle" role="radiogroup" aria-label="Darstellung wählen" data-i18n-aria="aria_darstellung_wählen">
-        <button type="button" class="segment-opt" id="themeSystem" role="radio" data-mode="system" aria-checked="false"><span class="segment-preis" data-i18n="system">System</span></button>
-        <button type="button" class="segment-opt" id="themeLight" role="radio" data-mode="light" aria-checked="false"><span class="segment-preis" data-i18n="hell">Hell</span></button>
-        <button type="button" class="segment-opt" id="themeDark" role="radio" data-mode="dark" aria-checked="false"><span class="segment-preis" data-i18n="dunkel">Dunkel</span></button>
-      </div>
-      <p class="settings-hint" data-i18n="systemldquo_übernimmt_automa">„System&ldquo; übernimmt automatisch die Einstellung deines Geräts.</p>
-    </div>
-
-    <div class="settings-group">
+    <!-- Nur, wenn ein Test unterbrochen ist (renderSettings). -->
+    <div class="settings-group" id="einstTestGruppe" hidden>
       <h2 data-i18n="test">Test</h2>
       <div class="settings-row">
         <div class="l" id="settingsTestStatus">Gerade kein unterbrochener Test.</div>
@@ -547,25 +549,18 @@
       </div>
     </div>
 
-    <!-- Kaeufe wiederherstellen (Richtlinie 3.1.2); gekuendigt wird bei Apple, der zweite Knopf fuehrt
-         dorthin. -->
-    <div class="settings-group">
-      <h2 data-i18n="plus_marke_klar">Lucenta+</h2>
-      <p class="settings-group-desc" id="plusStand" data-i18n="plus_stand_frei">Du benutzt die freie Fassung: der Test, dein Porträt und der volle Bericht.</p>
-      <div class="daten-knoepfe">
-        <button type="button" class="btn btn-ghost btn-sm" id="btnPlusWiederherstellen" data-i18n="plus_wiederherstellen">Käufe wiederherstellen</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="btnAboVerwalten" data-i18n="plus_verwalten">Abo verwalten</button>
-      </div>
-      <p class="settings-hint" data-i18n-html="plus_kuendigen">Kündigen jederzeit in den iPhone-Einstellungen unter deinem Namen &rarr; Abos.</p>
-    </div>
-
     <div class="settings-group">
       <h2 data-i18n="daten_amp_datenschutz">Daten &amp; Datenschutz</h2>
       <p class="settings-group-desc" data-i18n="lucenta_läuft_vollständig_au">Alles unten liegt auf diesem Gerät, bis du es löschst &mdash; mit Apple-Anmeldung zusätzlich verschlüsselt in deiner iCloud.</p>
       <ul class="settings-datalist" id="settingsDataList"></ul>
       <p class="settings-empty" id="settingsEmptyNote" data-i18n="aktuell_ist_nichts_gespeiche">Aktuell ist nichts gespeichert außer deiner Darstellung.</p>
-      <div class="settings-restore">
-        <div class="settings-restore-label" data-i18n="ergebnis_wiederherstellen">Ergebnis wiederherstellen</div>
+      <div class="daten-knoepfe einst-daten">
+        <button type="button" class="btn btn-ghost btn-sm" id="btnExport" data-i18n="daten_sichern">Daten sichern</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnImport" data-i18n="daten_einspielen">Daten einspielen</button>
+      </div>
+        <textarea id="importFeld" rows="3" style="display:none;" placeholder="Gesicherte Daten hier einfügen" data-i18n-placeholder="ph_gesicherte_daten_hier_ein"></textarea>
+      <details class="settings-restore einst-aufklapp" id="einstWiederherstellen">
+        <summary class="settings-restore-label"><span data-i18n="ergebnis_wiederherstellen">Ergebnis wiederherstellen</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></summary>
         <div class="code-box" id="wiederCodeBox" hidden>
           <span><span data-i18n="wiederherstellungscode">Dein Wiederherstellungscode:</span> <b class="mono" id="wiederCode">&mdash;</b></span>
           <button type="button" class="btn btn-ghost btn-sm" id="btnCopyWiederCode" data-i18n="kopieren">Kopieren</button>
@@ -575,23 +570,11 @@
           <div class="field"><input type="text" id="restoreCodeInput" placeholder="Code einfügen" data-i18n-placeholder="ph_code_einfügen" aria-label="Ergebnis-Code zum Wiederherstellen" data-i18n-aria="aria_ergebnis_code_zum_wiederhers"></div>
           <button type="button" class="btn btn-ghost btn-sm" id="btnRestoreCode" data-i18n="wiederherstellen">Wiederherstellen</button>
         </div>
-      </div>
-      <!-- Der Code traegt nur das Ergebnis — hier geht alles mit. -->
-      <div class="settings-sub">
-        <h3 data-i18n="alles_mitnehmen">Alles mitnehmen</h3>
-        <p class="settings-hint" data-i18n="der_code_oben_traegt_nur_das">Der Wiederherstellungscode trägt nur dein Ergebnis. Hier bekommst du alles: Ergebnis, Verlauf, Tagesform, Profil und Freunde.</p>
-        <div class="daten-knoepfe">
-          <button type="button" class="btn btn-ghost btn-sm" id="btnExport" data-i18n="daten_sichern">Daten sichern</button>
-          <button type="button" class="btn btn-ghost btn-sm" id="btnImport" data-i18n="daten_einspielen">Daten einspielen</button>
-        </div>
-        <textarea id="importFeld" rows="3" style="display:none;" placeholder="Gesicherte Daten hier einfügen" data-i18n-placeholder="ph_gesicherte_daten_hier_ein"></textarea>
-      </div>
-      <!-- Wer entscheidet, was sein Geraet verlaesst, sucht das unter Daten und Datenschutz. Der Kasten
-           zeigt woertlich, was mitginge. -->
-      <div class="settings-sub">
-        <h3 data-i18n="nutzung_titel">Nutzungszahlen mitschicken</h3>
+      </details>
+      <div class="einst-nutzung">
         <div class="settings-zeile nutzung-zeile">
           <div class="settings-zeile-text">
+            <strong data-i18n="nutzung_titel">Nutzungszahlen mitschicken</strong>
             <span class="settings-hint" data-i18n="nutzung_hinweis">Aus wie oft die App offen war, wie oft du getestet hast und wie regelmäßig du Tagesform einträgst. Nur Anzahlen und Tage, keine Werte, kein Code, keine Uhrzeiten, keine Kennung. Standardmäßig aus — schalte es ein und du siehst genau, was mitginge.</span>
           </div>
           <button type="button" class="schalter" id="nutzungSchalter" role="switch" aria-checked="false" aria-label="Nutzungszahlen mitschicken" data-i18n-aria="aria_nutzung"><span class="schalter-knopf"></span></button>
@@ -605,16 +588,10 @@
     </div>
 
     <div class="settings-group">
-      <h2 data-i18n="hilfe">Hilfe</h2>
-      <!-- Runde 131, Auftrag des Inhabers: Die Fragen oeffnen sich in einem eigenen Fenster (view-hilfe),
-           statt als Liste aufzuklappen — wie eine Unterseite in Apples Einstellungen. -->
-      <button type="button" class="hilfe-knopf" id="btnHilfeOeffnen"><span data-i18n="tf_haeufige_fragen">Häufige Fragen</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
-    </div>
-
-    <div class="settings-group">
-      <h2 data-i18n="über_lucenta">Über Lucenta</h2>
-      <p class="settings-group-desc" data-i18n="version__middot_basiert_auf">Version 1.0 &middot; basiert auf dem Big-Five-Modell (OCEAN)</p>
-      <button type="button" class="recht-leise" id="btnRecht" data-i18n="recht_leise">Impressum, Datenschutz &amp; Lizenzen</button>
+      <h2 data-i18n="hilfe_ueber">Hilfe &amp; Über</h2>
+      <button type="button" class="settings-zeile einst-knopf" id="btnHilfeOeffnen"><span class="settings-zeile-text"><strong data-i18n="tf_haeufige_fragen">Häufige Fragen</strong></span><span class="einst-wert"><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span></button>
+      <button type="button" class="settings-zeile einst-knopf" id="btnRecht"><span class="settings-zeile-text"><strong data-i18n="recht_leise">Impressum, Datenschutz &amp; Lizenzen</strong></span><span class="einst-wert"><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span></button>
+      <p class="settings-hint" data-i18n="version__middot_basiert_auf">Version 1.0 &middot; basiert auf dem Big-Five-Modell (OCEAN)</p>
     </div>
   </section>
 

@@ -276,6 +276,8 @@ async function durchlauf(reduziert){
   // --- Abweisung: schuettelt das Feld, das den Code nicht annimmt?
   await p.click('#btnDrawerToggle'); await p.waitForTimeout(400);
   await p.click('#btnDrawerSettings'); await p.waitForTimeout(500);
+  // Runde 174: "Ergebnis wiederherstellen" ist eingeklappt.
+  await p.evaluate(() => { const d = document.getElementById('einstWiederherstellen'); if (d) d.open = true; });
   await p.fill('#restoreCodeInput', 'KEINCODE');
   await p.click('#btnRestoreCode'); await p.waitForTimeout(60);
   const schuettel = await p.evaluate(() => {

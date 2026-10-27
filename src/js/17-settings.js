@@ -11,6 +11,7 @@
     $('settingsAccountName').textContent = profile.name ? profile.name : tx('js_profil');
     $('settingsAccountSub').textContent = profile.name ? tx('js_name_gesetzt') : (profile.avatarImg ? tx('js_bild_gesetzt_noch_kein_nam') : tx('js_noch_kein_name_gesetzt'));
 
+    $('einstTestGruppe').hidden = !progress;
     if (progress){
       $('settingsTestStatus').textContent = tx('js_unterbrochen_bei_frage') + (progress.qi+1) + tx('js_von_2');
       $('btnDiscardProgress').style.display = '';
@@ -38,7 +39,7 @@
     if (freundeCount) items.push(tx(freundeCount===1 ? 'freunde_datenpunkt_1' : 'freunde_datenpunkt_n').split('{n}').join(String(freundeCount)));
     var list = $('settingsDataList');
     if (items.length){
-      list.innerHTML = items.map(function(t){ return '<li>'+t+'</li>'; }).join('');
+      list.innerHTML = '<li>'+items.join(' · ')+'</li>';   // eine Zeile statt einer je Bestand
       list.style.display = '';
       $('settingsEmptyNote').style.display = 'none';
     } else {
