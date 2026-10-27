@@ -1129,6 +1129,7 @@
       'vs_bereich_wachstum': 'Évolution',
       'vs_fuer_dich': 'Ce que cela veut dire pour toi',
       'vs_frage': 'À méditer',
+      'vs_mehr_lesen': 'Lire la suite',
       'vs_inhalt': 'Sommaire',
       'vs_kombis': 'Combinaisons',
       'vs_daten': 'D’après tes données',

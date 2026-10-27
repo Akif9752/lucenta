@@ -17,7 +17,11 @@
         reihe.map(function(f, i){
           var pol = last[f] >= 50 ? 'high' : 'low', k = LEBEN[b][f][pol];
           return '<details class="understand-card vs-karte" style="animation-delay:'+(i*50)+'ms"'+(i === 0 ? ' open' : '')+'><summary>'+
-              '<span class="vs-dim">'+LABELS[f]+' · '+last[f]+'</span><h3>'+k.t+'</h3><p>'+k.k+'</p></summary>'+
+              '<span class="vs-dim">'+LABELS[f]+' · '+last[f]+'</span><h3>'+k.t+'</h3><p>'+k.k+'</p>'+
+              // Fusszeile wie bei den Ergebniskarten: sagt, dass und was sich aufklappen laesst.
+              '<span class="trait-more vs-zu"><span class="tm-shut">'+tx('vs_mehr_lesen')+'</span>'+
+              '<span class="tm-open">'+tx('js_weniger_anzeigen')+'</span>'+
+              '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></span></summary>'+
             '<div class="vs-mehr"><div class="vs-label">'+tx('vs_fuer_dich')+'</div><p>'+k.d+'</p>'+
             '<div class="vs-label">'+tx('vs_frage')+'</div><p class="vs-frage">'+k.f+'</p></div></details>';
         }).join('')+'</section>';

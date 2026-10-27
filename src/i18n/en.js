@@ -1130,6 +1130,7 @@
       'vs_bereich_wachstum': 'Growth',
       'vs_fuer_dich': 'What it means for you',
       'vs_frage': 'To reflect on',
+      'vs_mehr_lesen': 'Read more',
       'vs_inhalt': 'Contents',
       'vs_kombis': 'Combinations',
       'vs_daten': 'From your data',

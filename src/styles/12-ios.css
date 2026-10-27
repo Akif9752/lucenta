@@ -974,3 +974,11 @@
   #view-settings .einst-nutzung .settings-zeile{ border-radius:var(--radius-m); }
 
   #view-settings .settings-group > .settings-hint{ -webkit-hyphens:manual; hyphens:manual; }
+  /* Verstehen: dieselbe Aufklapp-Fusszeile wie die Ergebniskarten (Pfeil dreht sich, Text wechselt). */
+  details.vs-karte .vs-zu{ margin-top:12px; }
+  details.vs-karte .tm-open{ display:none; }
+  details.vs-karte[open] .tm-shut{ display:none; }
+  details.vs-karte[open] .tm-open{ display:inline; color:var(--muted); }
+  details.vs-karte[open] .vs-zu .chev{ transform:rotate(-90deg); }
+  details.vs-karte > summary:active .vs-zu{ opacity:.62; }
+

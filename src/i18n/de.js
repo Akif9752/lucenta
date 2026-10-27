@@ -830,6 +830,7 @@ CONTENT.de = {
       'vs_bereich_wachstum': 'Wachstum',
       'vs_fuer_dich': 'Was heißt das für dich',
       'vs_frage': 'Zum Nachdenken',
+      'vs_mehr_lesen': 'Mehr lesen',
       'vs_inhalt': 'Inhalt',
       'vs_kombis': 'Kombinationen',
       'vs_daten': 'Aus deinen Daten',

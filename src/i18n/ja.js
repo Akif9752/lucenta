@@ -1133,6 +1133,7 @@
       'vs_bereich_wachstum': '成長',
       'vs_fuer_dich': 'あなたにとっての意味',
       'vs_frage': '考えてみよう',
+      'vs_mehr_lesen': '続きを読む',
       'vs_inhalt': '目次',
       'vs_kombis': '組み合わせ',
       'vs_daten': 'あなたのデータから',

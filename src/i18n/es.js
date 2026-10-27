@@ -1129,6 +1129,7 @@
       'vs_bereich_wachstum': 'Crecimiento',
       'vs_fuer_dich': 'Qué significa para ti',
       'vs_frage': 'Para pensar',
+      'vs_mehr_lesen': 'Leer más',
       'vs_inhalt': 'Contenido',
       'vs_kombis': 'Combinaciones',
       'vs_daten': 'De tus datos',

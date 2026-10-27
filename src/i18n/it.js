@@ -1129,6 +1129,7 @@
       'vs_bereich_wachstum': 'Crescita',
       'vs_fuer_dich': 'Cosa significa per te',
       'vs_frage': 'Su cui riflettere',
+      'vs_mehr_lesen': 'Leggi di più',
       'vs_inhalt': 'Indice',
       'vs_kombis': 'Combinazioni',
       'vs_daten': 'Dai tuoi dati',

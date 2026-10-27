@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-27, nach Runde 174)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-27, nach Runde 175)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 174 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 175 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 175 | (dieser) | Verstehen: Karten zeigen, dass sie aufklappbar sind (Fusszeile „Mehr lesen" + Pfeil wie die Ergebniskarten) |
 | 174 | (dieser) | Simulation mit 1000 Personen; Einstellungen wie iOS neu gegliedert; Erinnerungszeit waehlbar |
 | 173 | (dieser) | Zweite Simulation umgesetzt: Muster-Versprechen ehrlich, Bewertungsbitte, Kaufangebot nach dem Scrollen, 5 freie Hintergruende, Kurzportraet ganz |
 | 172 | (dieser) | Tiere artgerechter (Brauen nur angedeutet, kleinere Lichtpunkte, Fuchs-Ohrspitzen, Hasen-Augenring); 4 Hintergruende: Lavendel, Wolken, Sternschnuppe, Art déco |
@@ -307,6 +308,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Stand der Pruefungen
 
+**Nach Runde 175: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
+
 **Nach Runde 174: ALLE 9 BESTANDEN** (fehlersuche nach Korrektur der Pruefung erneut, 28 ohne Fund), `pruef-nativ` 96.
 
 **Nach Runde 173: ALLE 9 BESTANDEN**, `pruef-nativ` 93, sonst wie nach 169.
@@ -429,6 +432,16 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 175 — Verstehen: aufklappbar sichtbar machen
+
+**Auftrag:** Bei „Verstehen" war nicht offensichtlich, dass die Karten aufklappbar sind.
+
+**Ursache.** `details.vs-karte` blendet das Dreieck des Browsers aus (`list-style:none`), ein eigenes Zeichen gab es nicht —
+der Kopf (Dimension, Titel, Kernsatz) sah aus wie eine fertige Karte. **Aenderung:** dieselbe Fusszeile wie die
+Ergebniskarten (`.trait-more`): zu „Mehr lesen" mit Pfeil nach unten, offen „Weniger anzeigen" mit Pfeil nach oben, beim
+Druecken leicht gedimmt. Erst „Was heißt das für dich · Zum Nachdenken" — brach bei 390 pt auf zwei Zeilen; jetzt
+`vs_mehr_lesen` (8 Sprachen). Am Bild geprueft (WebKit, 390 pt, erste Karte offen, weitere zu). `pruef-alles` 9/9.
 
 ## Runde 174 — Simulation mit 1000, Einstellungen, Erinnerungszeit
 

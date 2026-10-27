@@ -1133,6 +1133,7 @@
       'vs_bereich_wachstum': 'Gelişim',
       'vs_fuer_dich': 'Senin için anlamı',
       'vs_frage': 'Düşünmek için',
+      'vs_mehr_lesen': 'Devamını oku',
       'vs_inhalt': 'İçindekiler',
       'vs_kombis': 'Bileşimler',
       'vs_daten': 'Verilerinden',
