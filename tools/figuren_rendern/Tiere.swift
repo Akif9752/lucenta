@@ -290,6 +290,9 @@ func mitBrauen(_ k: Koerper, x: Float, y: Float, laenge: Float, dicke: Float, wi
         formen.append(Form(art: .ellipsoid(V(laenge, dicke, dicke * 1.3)), mitte: V(x * s, y, zf - dicke * (1.1 - 0.5 * wulst)),
                            drehung: dreh, weich: 0.10))
     }
+    // Realistischer (Entscheidung des Inhabers): aufgemalte Brauen gibt es bei keiner dieser Arten — Farbe und
+    // Wulst nur noch als Andeutung, damit der Ausdruck bleibt.
+    let staerke = staerke * 0.4, wulst = wulst * 0.55
     var w = k
     if wulst > 0 { w.formen += formen }
     let maske: (V) -> Float = { p in formen.map { glatt(0.07, -0.01, $0.abstand(p)) }.max() ?? 0 }
@@ -430,7 +433,7 @@ func fuchs() -> (SCNNode, Float, V) {
         let ohr = glatt(0.86, 1.00, p.y) * glatt(0.20, 0.34, abs(p.x))
         let innen = glatt(-0.1, 0.3, n.z) * glatt(1.42, 1.15, p.y)
         c = mische(c, mische(mische(c, dunkel, 0.65), creme, innen), ohr)
-        c = mische(c, dunkel, glatt(1.30, 1.44, p.y))
+        c = mische(c, dunkel, glatt(1.16, 1.32, p.y))
         c *= 1 - 0.25 * glatt(1.1, 1.6, p.z) * glatt(-0.30, -0.05, p.y)
         return c
     }, rauheit: 0.72, fell: 0.07)
@@ -636,6 +639,9 @@ func hase() -> (SCNNode, Float, V) {
         c = mische(c, hell, region(p, V(0, -0.080, 0.950), V(0.20, 0.12, 0.2), 0.4) * 0.7)
         let ohrInnen = glatt(0.65, 0.85, p.y) * glatt(0.0, 0.4, n.z)
         c = mische(c, rosa, ohrInnen * 0.8)
+        // Heller Augenring wie beim Wildkaninchen (statt eines Flecks darueber).
+        let dAuge = simd_length(simd_float2(abs(p.x) - 0.40, p.y - 0.14))
+        c = mische(c, hell, glatt(0.12, 0.15, dAuge) * glatt(0.25, 0.19, dAuge) * glatt(0.1, 0.5, n.z) * 0.75)
         return c
     }, rauheit: 0.80, fell: 0.07)
     // Hase: heller Saum ueber dem Auge (Wildkaninchen tragen einen hellen Augenring); sehr feines,

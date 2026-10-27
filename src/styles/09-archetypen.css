@@ -448,6 +448,72 @@
       linear-gradient(126deg, #FFD978 0%, #F7B548 55%, #EE9A3A 100%);
   }
 
+  .hg-lavendel{
+    --hg-ink:#2E2640; --hg-muted:#665C80;
+    background:
+      radial-gradient(3px 4px at 70% 58%, rgba(150,118,205,.85), transparent),
+      radial-gradient(3px 4px at 70% 65%, rgba(144,114,201,.85), transparent),
+      radial-gradient(3px 4px at 70% 72%, rgba(138,110,197,.85), transparent),
+      radial-gradient(3px 4px at 70% 79%, rgba(132,106,193,.85), transparent),
+      radial-gradient(3px 4px at 76% 48%, rgba(150,118,205,.85), transparent),
+      radial-gradient(3px 4px at 76% 55%, rgba(144,114,201,.85), transparent),
+      radial-gradient(3px 4px at 76% 62%, rgba(138,110,197,.85), transparent),
+      radial-gradient(3px 4px at 76% 69%, rgba(132,106,193,.85), transparent),
+      radial-gradient(3px 4px at 82% 62%, rgba(150,118,205,.85), transparent),
+      radial-gradient(3px 4px at 82% 69%, rgba(144,114,201,.85), transparent),
+      radial-gradient(3px 4px at 82% 76%, rgba(138,110,197,.85), transparent),
+      radial-gradient(3px 4px at 82% 83%, rgba(132,106,193,.85), transparent),
+      radial-gradient(3px 4px at 88% 50%, rgba(150,118,205,.85), transparent),
+      radial-gradient(3px 4px at 88% 57%, rgba(144,114,201,.85), transparent),
+      radial-gradient(3px 4px at 88% 64%, rgba(138,110,197,.85), transparent),
+      radial-gradient(3px 4px at 88% 71%, rgba(132,106,193,.85), transparent),
+      radial-gradient(3px 4px at 94% 60%, rgba(150,118,205,.85), transparent),
+      radial-gradient(3px 4px at 94% 67%, rgba(144,114,201,.85), transparent),
+      radial-gradient(3px 4px at 94% 74%, rgba(138,110,197,.85), transparent),
+      radial-gradient(3px 4px at 94% 81%, rgba(132,106,193,.85), transparent),
+      linear-gradient(90deg, transparent calc(70% - 0.5px), rgba(110,140,100,.45) calc(70% - 0.5px) calc(70% + 0.5px), transparent calc(70% + 0.5px)) 0 100% / 100% 22% no-repeat,
+      linear-gradient(90deg, transparent calc(76% - 0.5px), rgba(110,140,100,.45) calc(76% - 0.5px) calc(76% + 0.5px), transparent calc(76% + 0.5px)) 0 100% / 100% 32% no-repeat,
+      linear-gradient(90deg, transparent calc(82% - 0.5px), rgba(110,140,100,.45) calc(82% - 0.5px) calc(82% + 0.5px), transparent calc(82% + 0.5px)) 0 100% / 100% 18% no-repeat,
+      linear-gradient(90deg, transparent calc(88% - 0.5px), rgba(110,140,100,.45) calc(88% - 0.5px) calc(88% + 0.5px), transparent calc(88% + 0.5px)) 0 100% / 100% 30% no-repeat,
+      linear-gradient(90deg, transparent calc(94% - 0.5px), rgba(110,140,100,.45) calc(94% - 0.5px) calc(94% + 0.5px), transparent calc(94% + 0.5px)) 0 100% / 100% 20% no-repeat,
+      radial-gradient(80% 100% at 10% 0%, rgba(255,255,255,.6), transparent 60%),
+      linear-gradient(126deg, #F3EEF9 0%, #E6DCF3 55%, #DCD0EE 100%);
+  }
+  .hg-wolken{
+    --hg-ink:#1F3550; --hg-muted:#46607E;
+    background:
+      radial-gradient(circle at 66% 72%, #FFFFFF 0 15px, transparent 16px),
+      radial-gradient(circle at 74% 62%, #FFFFFF 0 20px, transparent 21px),
+      radial-gradient(circle at 83% 68%, #FFFFFF 0 17px, transparent 18px),
+      radial-gradient(circle at 91% 74%, #FFFFFF 0 12px, transparent 13px),
+      radial-gradient(60% 18% at 78% 82%, #FFFFFF 0 60%, transparent 62%),
+      radial-gradient(circle at 36% 22%, rgba(255,255,255,.9) 0 8px, transparent 9px),
+      radial-gradient(circle at 41% 17%, rgba(255,255,255,.9) 0 10px, transparent 11px),
+      radial-gradient(circle at 46% 22%, rgba(255,255,255,.9) 0 7px, transparent 8px),
+      linear-gradient(170deg, #9CCBEE 0%, #C3E0F6 60%, #E2F0FA 100%);
+  }
+  .hg-sternschnuppe{
+    --hg-ink:#EFF2FB; --hg-muted:#AFB9D6;
+    background:
+      radial-gradient(3px 3px at 69% 64%, #FFFFFF, transparent),
+      radial-gradient(14px 14px at 69% 64%, rgba(200,220,255,.4), transparent),
+      linear-gradient(152deg, transparent 0 66.6%, rgba(220,232,255,.0) 66.6%, rgba(220,232,255,.7) 69.6%, transparent 70% 100%) 100% 0 / 60% 70% no-repeat,
+      radial-gradient(1.2px 1.2px at 20% 30%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 44% 72%, #E6ECFF, transparent),
+      radial-gradient(1.2px 1.2px at 60% 56%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 12% 76%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 92% 82%, #E6ECFF, transparent),
+      linear-gradient(160deg, #151E3C 0%, #0C1228 70%, #080C1C 100%);
+  }
+  .hg-artdeco{
+    --hg-ink:#F6EFDD; --hg-muted:#C9B68A;
+    background:
+      radial-gradient(circle at 78% 120%, #D9B46A 0 22px, transparent 23px),
+      radial-gradient(circle at 78% 120%, transparent 0 30px, rgba(217,180,106,.8) 30px 31.5px, transparent 32px),
+      repeating-conic-gradient(from 270deg at 78% 120%, rgba(217,180,106,.38) 0deg 0.8deg, transparent 0.8deg 9deg),
+      linear-gradient(180deg, #1C1B19 0%, #121110 100%);
+  }
+
   /* Die kleinen Vorschauen in der Profilansicht: dieselben Klassen, nur klein. */
   .hg-raster{
     margin-top:14px; display:grid; gap:8px;

@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-26, nach Runde 171)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-27, nach Runde 172)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 171 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 172 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 172 | (dieser) | Tiere artgerechter (Brauen nur angedeutet, kleinere Lichtpunkte, Fuchs-Ohrspitzen, Hasen-Augenring); 4 Hintergruende: Lavendel, Wolken, Sternschnuppe, Art déco |
 | 171 | (dieser) | Figur & Hintergrund als je eine Karte mit Gruppenzeilen; 6 neue Hintergruende (Lucenta+); Licht fuer alle Tiere, Fuchs/Dackel/Schildkroete/Wal nachgearbeitet |
 | 170 | (dieser) | Flackern beim Seitenwechsel (zwei Ursachen, im Simulator gemessen, `tools/flackern/`); Typ-Text unter die Werte; „Im Alltag" ganz Lucenta+ |
 | 169 | (dieser) | pruef-alles 9/9 nachgefahren; Datenschutz-Seite als Werkzeug (`npm run datenschutz-seite` -> `web/datenschutz/`), App auf dem iPhone 15 Pro |
@@ -235,6 +236,9 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
+- **Tiere realistischer (Runde 172, Inhaber):** `mitBrauen` setzt Farbe ×0,4 und Wulst ×0,55 (aufgemalte Brauen hat
+  keine dieser Arten), `auge` Lichtpunkt ×0,7. „echt, aber liebenswert" gilt weiter (Augen etwas groesser als echt).
+
 - **Seitenwechsel ohne Deckkraft (Runde 170):** `rise`, `view-vor`, `view-zurueck` nur noch Lage, keine Deckkraft
   und kein `scale`. Aus Deckkraft 0 stand auf dem Geraet fuer ein Bild nur der Hintergrund da (Flackern).
   Fokus-Rueckgaben immer mit `{preventScroll:true}`. Nachmessen: `sh tools/flackern/messen.sh <sim-id>`.
@@ -291,6 +295,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 172: ALLE 9 BESTANDEN**, Zahlen wie nach 169.
 
 **Nach Runde 171: ALLE 9 BESTANDEN**, Zahlen wie nach 169 (20 Tierbilder, 431,5 KB).
 
@@ -408,6 +414,25 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 172 — Tiere artgerechter, vier Hintergruende
+
+**Auftrag:** Avatare fuer ihre jeweilige Tierart realistischer; zwei helle und zwei dunkle Hintergruende.
+
+**Tiere.** Am Bild (alt neben neu, 230 px) das gemeinsame Nicht-Arttypische gefunden: helle „Brauen"-Flecken ueber den
+Augen (Baer, Katze, Hase, Fuchs, Hunde — keine dieser Arten hat so etwas; ein Animationsmittel) und grosse, rein weisse
+Lichtpunkte. Zentral geaendert: `mitBrauen` Farbe ×0,4, Wulst ×0,55 (Andeutung bleibt fuer den Ausdruck); `auge`
+Lichtpunkt ×0,7 (die Spiegelung der Hornhaut traegt den Rest). Arttypisch: *Fuchs* schwarze Ohrspitzen (ab y 1,16 statt
+1,30); *Hase* echter heller Augenring wie beim Wildkaninchen statt eines Flecks darueber. Die Tigerkatze hatte das „M"
+schon. Alle 20 neu gerendert, Uebersicht beurteilt.
+
+**Hintergruende** (Lucenta+, 8 Sprachen, `HINTERGRUENDE` hinten erweitert): Hell + Lavendel (Rispen an Stielen, rechts),
+Wolken; Dunkel + Sternschnuppe, Art déco (goldener Strahlenfaecher mit Sonne). Gruppen jetzt 8/8/8. „Marmor" war geplant —
+gerade Goldlinien lasen sich nicht als Stein, sondern als Art-déco-Muster; daraus wurde bewusst Art déco. Nach dem ersten
+Bild nachgearbeitet: Lavendel (Strich quer durchs Bild), Wolken (zu blass), Sternschnuppe (Stern neben der Bahn), Art déco
+(Strahlen unter dem Namen zu kraeftig).
+
+**Pruefungen:** `pruef-alles` 9/9, `fehlersuche` ohne Fund.
 
 ## Runde 171 — Gruppen zusammengehoerig, sechs Hintergruende, alle Tiere
 

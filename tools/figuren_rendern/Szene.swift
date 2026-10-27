@@ -257,8 +257,10 @@ func augapfel(_ r: CGFloat, _ bild: NSImage) -> SCNGeometry {
 }
 
 func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, quer: Bool = false,
-          schlitzBreite: CGFloat = 0.32, irisAnteil: CGFloat = 0.86, funke f: CGFloat = 1) -> SCNNode {
+          schlitzBreite: CGFloat = 0.32, irisAnteil: CGFloat = 0.86, funke f0: CGFloat = 1) -> SCNNode {
     let knoten = SCNNode()
+    // Realistischer (Entscheidung des Inhabers): kleinere Lichtpunkte; die Spiegelung der Hornhaut traegt den Rest.
+    let f = f0 * 0.7
     // Das Bild traegt aussen die dunkle Randfarbe, innen die Iris (Anteil irisAnteil).
     let g: CGFloat = 1024
     let voll = NSImage(size: NSSize(width: g, height: g))
