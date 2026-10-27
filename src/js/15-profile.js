@@ -200,6 +200,8 @@
   function plusStandAnwenden(){
     var el = $('plusStand');
     if (el) el.innerHTML = tx(istPlus() ? 'plus_kurz_aktiv' : 'plus_kurz_frei');
+    // Verwalten nur mit Abo; Wiederherstellen immer (Richtlinie 3.1.2).
+    if ($('btnAboVerwalten')) $('btnAboVerwalten').hidden = !istPlus();
   }
   function landingPlusKarteAnwenden(){
     var k = $('landingPlusKarte');

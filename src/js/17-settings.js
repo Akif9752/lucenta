@@ -1,6 +1,18 @@
 // ---------- settings ----------
+  var APP_VERSION = '';
+  function versionHolen(){
+    var app = nativModul('App');
+    if (!app || !app.getInfo) return;
+    try{ app.getInfo().then(function(i){ APP_VERSION = (i && i.version) || ''; versionAnwenden(); }).catch(function(){}); }catch(e){}
+  }
+  // Die Zahl aus der App selbst (CFBundleShortVersionString); ohne Bruecke keine statt einer falschen.
+  function versionAnwenden(){
+    var el = $('einstVersion');
+    if (el) el.textContent = APP_VERSION ? tx('version_wort') + ' ' + APP_VERSION + ' · ' : '';
+  }
   function renderSettings(){
     kontoAnwenden();
+    versionAnwenden();
     var progress = loadProgress();
     var result = loadResult();
     var profile = loadProfile();
@@ -85,7 +97,7 @@
   // Der Code traegt nur das Ergebnis; das hier nimmt alles mit. Erst als Datei, sonst (eingebettet,
   // Downloads unterbunden) in die Zwischenablage.
   var DATEN_SCHLUESSEL = ['lucenta_result','lucenta_history','lucenta_state','lucenta_profile',
-                          'lucenta_compat_archive','lucenta_freunde','lucenta_progress','lucenta_nutzung'];
+                          'lucenta_compat_archive','lucenta_freunde','lucenta_progress'];
 
   function datenSammeln(){
     var d = {app:'lucenta', fassung:1, ts:Date.now(), daten:{}};

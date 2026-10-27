@@ -1,49 +1,3 @@
-// ---------- Nutzungszahlen ----------
-// Unter Einstellungen > Daten und Datenschutz: ausgeschaltet, und darunter woertlich, was mitginge.
-  var NUTZUNG_SCHALTER = 'lucenta_nutzung_teilen';
-  function nutzungTeilenAn(){
-    return schalterLesen(NUTZUNG_SCHALTER, 'aus') === 'an';
-  }
-  function nutzungZeilen(){
-    var k = nutzungKennzahlen();
-    var paare = [
-      ['nutzung_l_seitstart',   k.seitStart],
-      ['nutzung_l_geoeffnet',   k.tageGeoeffnet],
-      ['nutzung_l_letzte30',    k.letzte30],
-      ['nutzung_l_d30',         k.d30 === null ? tx('nutzung_offen') : tx(k.d30 ? 'nutzung_ja' : 'nutzung_nein')],
-      ['nutzung_l_durchlaeufe', k.durchlaeufe],
-      ['nutzung_l_zweiter',     k.tageBisZweiter === null ? tx('nutzung_keiner') : k.tageBisZweiter],
-      ['nutzung_l_tagesform',   k.tagesformTage],
-      ['nutzung_l_prowoche',    k.tagesformTage ? zahl1(k.tagesformProWoche) : tx('nutzung_keiner')]
-    ];
-    // decodeEntities, weil die Beschriftungen aus derselben Tabelle kommen wie die Oberflaeche
-    // und dort Entitaeten tragen duerfen. In einem Teilen-Text stuenden sie woertlich da.
-    return paare.map(function(z){ return decodeEntities(tx(z[0])) + ': ' + decodeEntities(String(z[1])); });
-  }
-  function nutzungVorschauZeigen(){
-    var kasten = $('nutzungVorschau'), aktion = $('nutzungAktion');
-    if (!kasten) return;
-    var an = nutzungTeilenAn();
-    kasten.hidden = !an;
-    if (aktion) aktion.hidden = !an;
-    // Nur fuellen, wenn sichtbar: Die Zahlen sollen zum Zeitpunkt des Hinsehens stimmen, nicht
-    // zum Zeitpunkt des Startens.
-    if (an) kasten.textContent = nutzungZeilen().join('\n');
-  }
-  function nutzungWeitergeben(){
-    // Die Zahlen neu holen, nicht aus der Anzeige lesen.
-    var text = decodeEntities(tx('nutzung_titel')) + '\n' + nutzungZeilen().join('\n');
-    var fertig = function(){ toast(tx('js_danke__das_hilft_wirklich')); };
-    if (navigator.share){
-      navigator.share({text:text}).then(fertig).catch(function(){ nutzungKopieren(text, fertig); });
-    } else { nutzungKopieren(text, fertig); }
-  }
-  function nutzungKopieren(text, fertig){
-    if (navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(function(){ toast(tx('js_in_die_zwischenablage_kopi')); }).catch(function(){ fertig(); });
-    } else { fertig(); }
-  }
-
   // Runde 109: Hier wurde der Formatwaehler des Ergebnisbildes verdrahtet. Es gibt nur noch ein
   // Format — die Begruendung steht bei SHARE_FORMAT in 10-ergebnisbild.js.
 
@@ -208,8 +162,6 @@
     clearStateHistory();
     clearCompatArchive();
     clearFreunde();
-    // Die Nutzungstage gehoeren zum Zuruecksetzen dazu.
-    nutzungLoeschen();
     scores = null; answers = new Array(50).fill(0); qi = 0; guestRun = false;
     refreshDrawerState();
     renderSettings();
@@ -390,17 +342,9 @@
       var el = $(z[0]);
       if (el) el.addEventListener('click', function(){ schalterUmlegen(z[1], z[0]); });
     });
-    // Der Nutzungsschalter steht standardmaessig auf 'aus' — hier geht etwas hinaus.
-    schalterSetzen(NUTZUNG_SCHALTER, schalterLesen(NUTZUNG_SCHALTER, 'aus'), 'nutzungSchalter');
-    if ($('btnNutzungTeilen')) $('btnNutzungTeilen').addEventListener('click', nutzungWeitergeben);
-    nutzungVorschauZeigen();
-    if ($('nutzungSchalter')) $('nutzungSchalter').addEventListener('click', function(){
-      // Nicht ueber schalterUmlegen (das nimmt 'an' als Vorgabe).
-      schalterSetzen(NUTZUNG_SCHALTER, nutzungTeilenAn() ? 'aus' : 'an', 'nutzungSchalter');
-      nutzungVorschauZeigen();
-    });
-    // Erst hier, wenn feststeht, dass localStorage erreichbar ist.
-    nutzungTagVermerken();
+    versionHolen();
+    // Altbestand der entfernten Nutzungszahlen (Beta) einmal wegraeumen.
+    try{ localStorage.removeItem('lucenta_nutzung'); localStorage.removeItem('lucenta_nutzung_teilen'); }catch(e){}
     // Runde 99: die native Bruecke verdrahten. Alles darin prueft selbst, ob es nativ laeuft.
     erinnerungAnwenden();
     ['erinnerungSchalter','tfErinnerungSchalter'].forEach(function(id){

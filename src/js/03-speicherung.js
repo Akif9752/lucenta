@@ -118,41 +118,11 @@
     return [roh];
   }
 
-  // ---------- Nutzungsmessung ----------
-  // Nur an WELCHEN Kalendertagen die App offen war — keine Uhrzeiten, Ansichten, Kennungen. Bleibt auf
-  // dem Geraet; geht nur mit, wer es bei der Beta-Rueckmeldung ausdruecklich einschaltet und vorher
-  // sieht, was mitginge.
-  var NUTZUNG_SCHLUESSEL = 'lucenta_nutzung';
-  // Vier Monate; der erste Tag steht separat in `start`, damit das Kuerzen den Bezugspunkt nicht
-  // wegwirft.
-  var NUTZUNG_MAX_TAGE = 120;
+  // ---------- Tagesschluessel ----------
   // Monat und Tag werden mitgeprueft: Date.UTC rechnet Ueberlaeufe still um ('2026-13-99' wird ein Tag
   // im Maerz).
   function istTagesschluessel(t){
     return typeof t === 'string' && /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(t);
-  }
-  function nutzungLesen(){
-    try{
-      var r = localStorage.getItem(NUTZUNG_SCHLUESSEL);
-      if (!r) return {start:'', tage:[]};
-      var n = JSON.parse(r);
-      if (!n || typeof n!=='object' || !Array.isArray(n.tage)) return {start:'', tage:[]};
-      var tage = n.tage.filter(istTagesschluessel);
-      var start = istTagesschluessel(n.start) ? n.start : (tage[0]||'');
-      return {start:start, tage:tage};
-    }catch(e){ return {start:'', tage:[]}; }
-  }
-  function nutzungTagVermerken(){
-    var n = nutzungLesen(), heute = todayKey();
-    if (!n.start) n.start = heute;
-    // indexOf zusaetzlich, damit eine zurueckgestellte Geraeteuhr keinen doppelten Tag erzeugt.
-    if (n.tage[n.tage.length-1] !== heute && n.tage.indexOf(heute) < 0) n.tage.push(heute);
-    if (n.tage.length > NUTZUNG_MAX_TAGE) n.tage = n.tage.slice(n.tage.length - NUTZUNG_MAX_TAGE);
-    try{ localStorage.setItem(NUTZUNG_SCHLUESSEL, JSON.stringify(n)); }catch(e){}
-    return n;
-  }
-  function nutzungLoeschen(){
-    try{ localStorage.removeItem(NUTZUNG_SCHLUESSEL); }catch(e){}
   }
   // Ueber Date.UTC aus den drei Zahlen, nicht new Date('2026-09-08'): Der Schluessel ist ORTSZEIT; als
   // UTC gelesen waere er westlich von Greenwich einen Tag daneben.
@@ -160,38 +130,6 @@
     if (!istTagesschluessel(key)) return NaN;
     var t = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key);
     return Math.floor(Date.UTC(+t[1], +t[2]-1, +t[3]) / 86400000);
-  }
-  function nutzungKennzahlen(){
-    var n = nutzungLesen();
-    var heute = tagAlsZahl(todayKey()), start = tagAlsZahl(n.start);
-    var seitStart = (isNaN(start) || isNaN(heute)) ? 0 : Math.max(0, heute - start + 1);
-    var letzte30 = n.tage.filter(function(t){
-      var z = tagAlsZahl(t);
-      return !isNaN(z) && heute - z < 30 && heute - z >= 0;
-    }).length;
-    // D30: War jemand nach dem dreissigsten Tag noch da? Vorher "noch nicht messbar" (null),
-    // ausdruecklich nicht "nein".
-    var d30 = seitStart < 31 ? null : n.tage.some(function(t){
-      var z = tagAlsZahl(t);
-      return !isNaN(z) && z - start >= 30;
-    });
-    var h = loadHistory();
-    // Abstand zwischen erstem und zweitem Durchlauf.
-    var tageBisZweiter = (h.length >= 2 && typeof h[0].date === 'number' && typeof h[1].date === 'number')
-      ? Math.max(0, Math.round((h[1].date - h[0].date) / 86400000)) : null;
-    var eintraege = loadStateHistory(), tage = stateTage(eintraege);
-    var proWoche = 0;
-    if (tage.length){
-      var erste = tagAlsZahl(tage[0].day);
-      // Die Spanne laeuft bis HEUTE, sonst haette, wer aufgehoert hat, eine tadellose Quote.
-      var spanne = (isNaN(erste) || isNaN(heute)) ? tage.length : Math.max(1, heute - erste + 1);
-      proWoche = tage.length / (spanne / 7);
-    }
-    return {
-      seitStart: seitStart, tageGeoeffnet: n.tage.length, letzte30: letzte30, d30: d30,
-      durchlaeufe: h.length, tageBisZweiter: tageBisZweiter,
-      tagesformTage: tage.length, tagesformEintraege: eintraege.length, tagesformProWoche: proWoche
-    };
   }
 
   // 800 Eintraege (~130 KB): Der Monatskalender blaettert weit zurueck.

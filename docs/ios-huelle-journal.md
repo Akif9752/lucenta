@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 177)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 178)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 177 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 178 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 178 | (dieser) | Nutzungszahlen (Beta) entfernt; „Abo verwalten" nur mit Abo; Version aus der App; Anmeldeschritt geprueft; verwaiste Texte; Store-Bilder neu |
 | 177 | (dieser) | Fusszeile unter dem Ergebnis entfernt (IPIP gemeinfrei, keine Nennungspflicht); Abschnitt „Lizenzen" mit Fraunces (OFL), Capacitor (MIT), Apache Cordova (Apache 2.0), IPIP |
 | 176 | (dieser) | Impressum nur noch in den Einstellungen; aus dem Kaufablauf nur die Datenschutzerklaerung |
 | 175 | (dieser) | Verstehen: Karten zeigen, dass sie aufklappbar sind (Fusszeile „Mehr lesen" + Pfeil wie die Ergebniskarten) |
@@ -314,6 +315,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Stand der Pruefungen
 
+**Nach Runde 178: ALLE 9 BESTANDEN**: `tests` 10 Reihen, `pruef-nativ` 99, sonst wie nach 174.
+
 **Nach Runde 177: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
 
 **Nach Runde 176: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
@@ -442,6 +445,25 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 178 — Aufraeumen vor dem Store
+
+**Auftrag:** „setze alle um" — fuenf Befunde aus der Durchsicht nach Runde 177.
+
+1. **Nutzungszahlen entfernt.** Beta-Ueberbleibsel: Schalter + Teilen-Fenster („Danke, das hilft wirklich"), ohne Empfaenger
+   und ohne Erwaehnung in der Datenschutzerklaerung. Weg: Markup, `21-beta-rueckmeldung.js` (Kopf), Zaehlung in
+   `03-speicherung.js` (`nutzungLesen/-TagVermerken/-Kennzahlen`; die Datumshelfer `istTagesschluessel`, `tagAlsZahl`
+   bleiben — die Tagesform braucht sie), `lucenta_nutzung` aus der Datensicherung, Stile, 16 Texte, `tests/nutzung_test.js`
+   (`tests` jetzt **10 Reihen**, `tools/xcode-CLAUDE.md` angepasst). Beim Start einmal `lucenta_nutzung(_teilen)` geloescht.
+2. **„Abo verwalten" nur mit Lucenta+** (`plusStandAnwenden`); „Kaeufe wiederherstellen" bleibt immer (3.1.2).
+3. **Versionsnummer aus der App:** `App.getInfo().version` (CFBundleShortVersionString) in `#einstVersion`; ohne Bruecke keine
+   Zahl statt einer falschen. Text getrennt in `version_wort` + `version_basis` (8 Sprachen).
+4. **Anmeldeschritt ohne bezahlten Account:** geprueft, kein Code noetig — scheitert die Anmeldung, kommt `konto_fehler`, der
+   Schritt bleibt ueberspringbar (pruef-nativ deckt den Fall ab). Auf dem Geraet nicht angetippt.
+5. **Verwaiste Texte:** 23 Schluessel geloescht, je einzeln gegen den Code geprueft (u. a. `konto`, `bedienung`,
+   `konto_darstellung_amp_mehr`, `alles_mitnehmen`). **Store-Bilder** neu (20), drei angesehen.
+
+**Pruefungen:** `pruef-nativ` 96 -> 99 (Version aus der App; ohne Abo kein Verwalten, mit Abo schon). `pruef-alles` 9/9.
 
 ## Runde 177 — Fusszeile weg, Abschnitt „Lizenzen"
 

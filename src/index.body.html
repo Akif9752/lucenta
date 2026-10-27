@@ -567,19 +567,6 @@
           <button type="button" class="btn btn-ghost btn-sm" id="btnRestoreCode" data-i18n="wiederherstellen">Wiederherstellen</button>
         </div>
       </details>
-      <div class="einst-nutzung">
-        <div class="settings-zeile nutzung-zeile">
-          <div class="settings-zeile-text">
-            <strong data-i18n="nutzung_titel">Nutzungszahlen mitschicken</strong>
-            <span class="settings-hint" data-i18n="nutzung_hinweis">Aus wie oft die App offen war, wie oft du getestet hast und wie regelmäßig du Tagesform einträgst. Nur Anzahlen und Tage, keine Werte, kein Code, keine Uhrzeiten, keine Kennung. Standardmäßig aus — schalte es ein und du siehst genau, was mitginge.</span>
-          </div>
-          <button type="button" class="schalter" id="nutzungSchalter" role="switch" aria-checked="false" aria-label="Nutzungszahlen mitschicken" data-i18n-aria="aria_nutzung"><span class="schalter-knopf"></span></button>
-        </div>
-        <div class="nutzung-vorschau" id="nutzungVorschau" hidden></div>
-        <div class="daten-knoepfe" id="nutzungAktion" hidden>
-          <button type="button" class="btn btn-ghost btn-sm" id="btnNutzungTeilen" data-i18n="nutzung_senden">Zahlen weitergeben</button>
-        </div>
-      </div>
       <button type="button" class="btn btn-ghost btn-sm danger-btn" id="btnResetData" aria-live="polite" style="margin-top:14px;" data-i18n="eigene_daten_zurücksetzen">Eigene Daten zurücksetzen</button>
     </div>
 
@@ -587,7 +574,7 @@
       <h2 data-i18n="hilfe_ueber">Hilfe &amp; Über</h2>
       <button type="button" class="settings-zeile einst-knopf" id="btnHilfeOeffnen"><span class="settings-zeile-text"><strong data-i18n="tf_haeufige_fragen">Häufige Fragen</strong></span><span class="einst-wert"><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span></button>
       <button type="button" class="settings-zeile einst-knopf" id="btnRecht"><span class="settings-zeile-text"><strong data-i18n="recht_leise">Impressum, Datenschutz &amp; Lizenzen</strong></span><span class="einst-wert"><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span></button>
-      <p class="settings-hint" data-i18n="version__middot_basiert_auf">Version 1.0 &middot; basiert auf dem Big-Five-Modell (OCEAN)</p>
+      <p class="settings-hint"><span id="einstVersion"></span><span data-i18n="version_basis">basiert auf dem Big-Five-Modell (OCEAN)</span></p>
     </div>
   </section>
 

@@ -90,7 +90,7 @@ await seite.addInitScript(() => {
             : Promise.resolve(window.__kaufAntwort || {aktiv: true, produkt: o.produkt}); }
       },
       // Feedback B7: '__pruef_link' = der Link, mit dem die App gestartet wurde.
-      App: { openUrl: (o) => { merke('oeffnen', o); return Promise.resolve(); },
+      App: { getInfo: () => Promise.resolve({version: '1.4.2', build: '17'}), openUrl: (o) => { merke('oeffnen', o); return Promise.resolve(); },
              getLaunchUrl: () => Promise.resolve(localStorage.getItem('__pruef_link') ? {url: localStorage.getItem('__pruef_link')} : {}),
              addListener: (name, f) => { if (name === 'appUrlOpen') window.__linkOeffnen = f; return Promise.resolve({remove(){}}); } },
       // Feedback A4: Konto loeschen. '__pruef_konto' = angemeldet; '__pruef_loeschen' = Antwort.
@@ -584,6 +584,24 @@ kb = await kontoBild();
 ok(kb.anmelden && !kb.loeschen && /Mit Apple anmelden/.test(kb.text) && /Apple-ID/.test(kb.text),
    'danach abgemeldet, mit dem Weg zur Trennung in den iOS-Einstellungen');
 await seite.evaluate(() => localStorage.removeItem('__pruef_konto'));
+
+console.log('\n=== Einstellungen: Version aus der App, Abo verwalten nur mit Abo ===');
+await seite.evaluate(() => { localStorage.removeItem('lucenta_plus'); localStorage.removeItem('__pruef_abo'); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+await seite.evaluate(() => { document.getElementById('btnDrawerToggle').click(); });
+await seite.waitForTimeout(300);
+await seite.evaluate(() => document.getElementById('btnDrawerSettings').click()); await seite.waitForTimeout(500);
+let einst = await seite.evaluate(() => ({v: document.getElementById('einstVersion').textContent, verwalten: !document.getElementById('btnAboVerwalten').hidden,
+  wieder: !document.getElementById('btnPlusWiederherstellen').hidden}));
+ok(einst.v === 'Version 1.4.2 · ', 'die Versionsnummer kommt aus der App: "' + einst.v + '"');
+ok(!einst.verwalten && einst.wieder, 'ohne Abo kein "Abo verwalten", "Kaeufe wiederherstellen" bleibt');
+await seite.evaluate(() => { localStorage.setItem('lucenta_plus', '1'); localStorage.setItem('__pruef_abo', '1'); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+await seite.evaluate(() => { document.getElementById('btnDrawerToggle').click(); });
+await seite.waitForTimeout(300);
+await seite.evaluate(() => document.getElementById('btnDrawerSettings').click()); await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => !document.getElementById('btnAboVerwalten').hidden), 'mit Abo erscheint "Abo verwalten"');
+await seite.evaluate(() => { localStorage.removeItem('lucenta_plus'); localStorage.removeItem('__pruef_abo'); });
 
 console.log('\n=== Bitte um Bewertung: einmal, wenn das erste Muster da ist ===');
 const tageSaeen = (n) => seite.evaluate(n => { localStorage.removeItem('lucenta_erstes_muster'); localStorage.removeItem('lucenta_bewertung');

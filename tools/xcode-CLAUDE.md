@@ -56,7 +56,7 @@ alles Weitere wuerde einen Stand messen, den es nicht gibt. Der Exit-Code passt 
 Die neun einzeln, falls eine davon nachzufahren ist:
 
     node build.js
-    node tests/run.js              # 11 Reihen
+    node tests/run.js              # 10 Reihen
     python3 tools/audit_i18n.py    # 8 statische Pruefungen ueber alle 8 Sprachen
     npm run pruef-store            # Zeichenzahlen der Store-Texte
     npm run pruef-app              # 29 Pruefungen an dist/index.html (die Fassung im App-Bundle)

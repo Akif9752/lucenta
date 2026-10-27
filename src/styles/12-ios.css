@@ -970,8 +970,6 @@
   #view-settings .einst-aufklapp[open] summary .chev{ transform:rotate(90deg); }
   #view-settings .einst-aufklapp > :not(summary){ margin-left:16px; margin-right:16px; }
   #view-settings .einst-aufklapp > :last-child{ margin-bottom:14px; }
-  #view-settings .einst-nutzung{ margin-top:12px; }
-  #view-settings .einst-nutzung .settings-zeile{ border-radius:var(--radius-m); }
 
   #view-settings .settings-group > .settings-hint{ -webkit-hyphens:manual; hyphens:manual; }
   /* Verstehen: dieselbe Aufklapp-Fusszeile wie die Ergebniskarten (Pfeil dreht sich, Text wechselt). */
@@ -994,4 +992,4 @@
   .lizenz-text pre{ margin:0; padding:0 16px 16px; white-space:pre-wrap; word-break:break-word;
     font-family:var(--code); font-size:calc(11px * var(--dt, 1)); line-height:1.5; color:var(--muted); }
   #rechtLizenzGruppe[hidden]{ display:none; }
-
+  #view-settings .daten-knoepfe .btn[hidden]{ display:none; }
