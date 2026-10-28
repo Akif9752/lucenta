@@ -522,8 +522,9 @@ Nachbildung von `appUrlOpen` berichtigt — sie hielt nur den letzten Horcher, C
 jedes Tippen einen Unteragenten, den ich ohne Auftrag nicht starte. (2) Ob das Widget die ausstehenden Erinnerungen der App
 absagen kann (`erinnerungenHeuteAbsagen`): Mitteilungen gehoeren der App; sieht die Erweiterung sie nicht, kommt die heutige
 Erinnerung trotz Widget-Eintrag, bis die App einmal geoeffnet wurde. (3) Auf dem iPhone des Inhabers: Das Personal Team kann
-weder App Group noch (vermutlich) HealthKit signieren — dort zeigt das Widget nur „offen" und den Sprung in die App, die
-Health-Zeile erscheint, aber die Erlaubnis scheitert. Beides wird erst mit dem bezahlten Account echt.
+keine App Group signieren — dort zeigt das Widget nur „offen" und den Sprung in die App. HealthKit dagegen signiert es
+(nachgemessen: Geraetebau mit `/tmp/lucenta-health.entitlements`, nur `com.apple.developer.healthkit`) — Health ist auf
+dem iPhone 15 Pro also echt pruefbar.
 
 ## Runde 180 — Bestand gegen Verlust gespiegelt, Uebergabe berichtigt
 
