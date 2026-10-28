@@ -59,6 +59,7 @@ class MainViewController: CAPBridgeViewController {
         super.capacitorDidLoad()
         bridge?.registerPluginInstance(LucentaKaeufePlugin())
         bridge?.registerPluginInstance(LucentaKontoPlugin())
+        bridge?.registerPluginInstance(LucentaGesundheitPlugin())
         transparenzVorzeichnen()
         transparenzBeobachten()
         themaEmpfangen()
@@ -170,6 +171,7 @@ class MainViewController: CAPBridgeViewController {
         guard let inhalt = webView?.configuration.userContentController else { return }
         if let skript = LucentaBestand.wiederherstellenSkript() { inhalt.addUserScript(skript) }
         inhalt.add(BestandEmpfaenger(), name: LucentaBestand.empfaengerName)
+        inhalt.add(WidgetEmpfaenger(ansicht: webView), name: WidgetEmpfaenger.name)
     }
 
     fileprivate func themaUebernehmen(_ wert: String) {

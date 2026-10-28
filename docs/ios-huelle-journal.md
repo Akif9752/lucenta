@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 180)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 181)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 180 | (dieser) | Bestand als Datei gespiegelt (`LucentaBestand.swift`), vor dem Start zurueckgeholt, wenn WebKit ihn geleert hat; Uebergabe berichtigt |
+| 181 | (dieser) | Tagesform-Widget (klein, mittel mit Eintragen, Sperrbildschirm; App Group) und Apple Health (Stimmung als Gemuetszustand, nur schreiben, Vorgabe aus) |
+| 180 | `82ab3dd` | Bestand als Datei gespiegelt (`LucentaBestand.swift`), vor dem Start zurueckgeholt, wenn WebKit ihn geleert hat; Uebergabe berichtigt |
 | 179 | (dieser) | Kaufquote: Probezeit an jeder Sperre, Angebot unter dem ersten Muster mit echter Zahl, Rueckgewinnung (Kaeufe ausserhalb des Fensters schalten sofort frei) |
 | 178 | (dieser) | Nutzungszahlen (Beta) entfernt; „Abo verwalten" nur mit Abo; Version aus der App; Anmeldeschritt geprueft; verwaiste Texte; Store-Bilder neu |
 | 177 | (dieser) | Fusszeile unter dem Ergebnis entfernt (IPIP gemeinfrei, keine Nennungspflicht); Abschnitt „Lizenzen" mit Fraunces (OFL), Capacitor (MIT), Apache Cordova (Apache 2.0), IPIP |
@@ -115,6 +116,13 @@ Regeln, die er gesetzt hat:
 
 ### Wo was steht
 
+- **Widget (Runde 181):** Ziel `LucentaWidgetExtension`, `ios/App/LucentaWidget/` (`TagesformAblage.swift` = Format,
+  `LucentaWidget.swift` = Intent, Zeitleiste, Ansichten, `Localizable.xcstrings`). App-Seite `LucentaWidgetBruecke.swift`,
+  JS `widgetEinrichten`/`widgetEingangUebernehmen`/`widgetLink` (19b). Dateinamen und Format stehen auf BEIDEN Seiten.
+  Aussehen pruefen: Xcode-Vorschau haengt (`timelineReloadTimeout`) — die Ansicht per `ImageRenderer` in einem kleinen
+  Simulator-Programm rendern (Rezept `python3 tools/widget_bild.py [sprache] [hell|dunkel]`).
+- **Health (Runde 181):** `LucentaGesundheitPlugin.swift` (`Health`), JS `healthEinrichten`/`healthNachEintrag` (19b),
+  Schalter `#healthSchalter` (`lucenta_health`), Kennung `hk` am Eintrag.
 - **Spiegel (Runde 180):** `LucentaBestand.swift` (Datei `Application Support/lucenta-bestand.json`, Zurueckholen als
   `WKUserScript` atDocumentStart nur in leeren localStorage, einmal je Start), JS `bestandSpiegelnEinrichten` (19b).
   Ein NEUER Weg, der alle `lucenta_`-Schluessel loescht, muss den Spiegel mit leeren.
@@ -222,10 +230,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Laufender Auftrag (Runde 180 ff.):** Tagesform-Widget (klein: drei Tageszeiten, Tipp oeffnet Erfassung; mittel:
-zusaetzlich Stimmung + Energie als je 5 Tipp-Punkte; Sperrbildschirm rund/rechteckig; frei, nicht Lucenta+) und
-Apple Health (nur schreiben, Stimmung als Gemuetszustand ab iOS 18, Schalter in Einstellungen -> Allgemein, Vorgabe aus)
-— beides vom Inhaber so gewaehlt. Runden 165–180 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–181 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -238,7 +243,8 @@ Apple Health (nur schreiben, Stimmung als Gemuetszustand ab iOS 18, Schalter in 
 Uebersetzungen (alle neuen Texte seit Runde 165 hat die Sitzung selbst uebersetzt). Store-Bilder kurz vor dem Einreichen
 neu erzeugen (`node tools/store_bilder.mjs`, zuletzt Runde 178). Pruefbericht Richtlinien: `docs/richtlinien-pruefung.md`.
 
-*Am echten iPhone noch nie geprueft:* echte Anmeldung mit Apple + CloudKit, echter Kauf/Probezeit/Win-back, Teilen-Blatt
+*Am echten iPhone noch nie geprueft:* Widget antippen und Health-Erlaubnis (braucht den bezahlten Account fuer App
+Group/HealthKit), ob das Widget die heutige Erinnerung absagen kann, echte Anmeldung mit Apple + CloudKit, echter Kauf/Probezeit/Win-back, Teilen-Blatt
 beim Einladen, Abo-verwalten-Blatt. (Haptik, Wischgesten, Erinnerungen laufen auf dem iPhone 15 Pro des Inhabers.)
 
 *Nicht erneut zur Wahl stellen (abgenommen, „passt"):* Polwoerter der Tagesform, Strahlenkranz, Push/Pop, schwarzes
@@ -318,6 +324,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 181: ALLE 9 BESTANDEN**: `pruef-nativ` 120, `fehlersuche` ohne Fund, sonst wie nach 178.
 
 **Nach Runde 180: ALLE 9 BESTANDEN**: `pruef-nativ` 106, sonst wie nach 178.
 
@@ -473,6 +481,49 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 181 — Tagesform-Widget und Apple Health
+
+**Auftrag (Inhaber, aus meinen Empfehlungen 4 und 5, alle vier Fragen mit der Empfehlung beantwortet):** Widget klein =
+drei Tageszeiten, Tipp oeffnet die Erfassung; mittel = zusaetzlich Stimmung und Energie als je 5 Tipp-Punkte (ab iOS 17,
+ohne die App zu oeffnen); Sperrbildschirm rund und rechteckig; frei, nicht Lucenta+. Health: nur schreiben, Schalter in
+Einstellungen -> Allgemein, Vorgabe aus, Erlaubnis erst beim Einschalten.
+
+**Widget:** neues Ziel `LucentaWidgetExtension` (Ordner `ios/App/LucentaWidget/`, iOS 17, nur iPhone; die Vorlage hatte
+iOS 27, iPad, Mac und Vision Pro gesetzt — zurueckgestellt). Austausch ueber die App Group `group.app.lucenta.ios` mit drei
+Dateien: `widget-stand.json` (schreibt die App: heutige Eintraege je Tageszeit + Erinnerungsart), `widget-eingang.json`
+(schreibt das Widget), `widget-entwurf.json` (halber Eintrag, gilt nur fuer den laufenden Abschnitt). Erst wenn Stimmung UND
+Energie getippt sind, entsteht ein Eintrag. App-Seite: `LucentaWidgetBruecke.swift` (Empfaenger `lucentaWidget`), JS
+`widgetEinrichten` (19b): Stand bei jedem Speichern (`saveStateHistoryList`), Abholen beim Start und beim Zurueckkehren,
+Quittung -> Swift streicht aus dem Eingang. Ein Widget-Eintrag ersetzt nur einen AELTEREN derselben Tageszeit; gueltig nur
+ganze Werte 1–5 und hoechstens drei Tage alt. Tipp auf das Widget: `lucenta://tagesform` (CFBundleURLTypes, `SceneDelegate`
+reicht `openURLContexts` an Capacitor, `widgetLink`). Texte: `Localizable.xcstrings` im Widget, acht Sprachen, Woerter aus den
+Sprachpaketen der App (Tagesform/Daily check-in/…); das Widget folgt der SYSTEMsprache, nicht der Wahl in der App. Farben:
+Marke #5CB4AD dunkel, in Hell #2A7570 (Schrift auf #F3F2EE sonst unter 4,5:1); Zahl auf der Marke schwarz bzw. weiss.
+
+**Health:** `LucentaGesundheitPlugin.swift` (jsName `Health`: `stand`, `erlauben`, `schreiben`, `loeschen`), HKStateOfMind
+`.momentaryEmotion`, Stimmung 1–5 -> Valenz (v-3)/2, keine Labels. Entitlement `com.apple.developer.healthkit`,
+`NSHealthUpdateUsageDescription` (deutsch wie die Foto-Angabe), keine Leseberechtigung. Die Kennung des Health-Eintrags steht
+als `hk` am Tagesform-Eintrag; Ersetzen derselben Tageszeit loescht den alten Health-Eintrag (sonst doppelt). Auch
+Widget-Eintraege gehen nach Health — beim naechsten Oeffnen der App, mit ihrer Original-Uhrzeit. Widerruft man in Health,
+steht der Schalter beim naechsten Start wieder aus. Datenschutzerklaerung um den Abschnitt „Apple Health (freiwillig)"
+ergaenzt (de, tr; die uebrigen Sprachen sind dort schon englisch), `web/datenschutz/` neu erzeugt; Store-Hinweise in
+`docs/app-store-start.md` (HealthKit- und App-Group-Faehigkeit im Portal, Widget-App-ID, Pruefhinweis).
+
+**Gemessen:** Simulator iPhone 18 Pro: App schreibt `widget-stand.json`; ein von Hand in den Eingang gelegter Eintrag (Format
+des Widgets) stand nach dem Kaltstart in `lucenta_state` (Mittag, 2/4), der Eingang war geleert, der Stand nannte „mittag".
+Aussehen klein/mittel/rechteckig per `ImageRenderer` im Simulator gerendert (Xcode-Vorschau brach mit
+`timelineReloadTimeout` ab, ohne Absturz der Erweiterung) — daraus behoben: Der Hinweis „Jetzt Energie waehlen" stand auch im
+kleinen Widget und auf dem Sperrbildschirm, wo man nichts waehlen kann. `pruef-nativ` 106 -> 120 (Stand/Abholen/Quittung,
+ungueltige und zu alte Eintraege, Health aus/verweigert/an, Kennung, Ersetzen loescht, Link oeffnet Tagesform); dabei die
+Nachbildung von `appUrlOpen` berichtigt — sie hielt nur den letzten Horcher, Capacitor ruft alle.
+
+**Ungeprueft, und warum:** (1) Antippen im ECHTEN Widget und der Health-Erlaubnisdialog — die Geraete-Werkzeuge verlangen fuer
+jedes Tippen einen Unteragenten, den ich ohne Auftrag nicht starte. (2) Ob das Widget die ausstehenden Erinnerungen der App
+absagen kann (`erinnerungenHeuteAbsagen`): Mitteilungen gehoeren der App; sieht die Erweiterung sie nicht, kommt die heutige
+Erinnerung trotz Widget-Eintrag, bis die App einmal geoeffnet wurde. (3) Auf dem iPhone des Inhabers: Das Personal Team kann
+weder App Group noch (vermutlich) HealthKit signieren — dort zeigt das Widget nur „offen" und den Sprung in die App, die
+Health-Zeile erscheint, aber die Erlaubnis scheitert. Beides wird erst mit dem bezahlten Account echt.
 
 ## Runde 180 — Bestand gegen Verlust gespiegelt, Uebergabe berichtigt
 

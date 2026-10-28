@@ -33,10 +33,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = window
         window.makeKeyAndVisible()
         connectionOptions.userActivities.forEach(weiterreichen)
+        connectionOptions.urlContexts.forEach { oeffnen($0.url) }
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         weiterreichen(userActivity)
+    }
+
+    /// `lucenta://…` aus dem Widget; kommt in der Seite als `appUrlOpen` an.
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        URLContexts.forEach { oeffnen($0.url) }
+    }
+
+    private func oeffnen(_ url: URL) {
+        _ = ApplicationDelegateProxy.shared.application(UIApplication.shared, open: url, options: [:])
     }
 
     private func weiterreichen(_ aktivitaet: NSUserActivity) {

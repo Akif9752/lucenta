@@ -238,7 +238,9 @@ Lucenta sendet nichts. Kein eigener Server, kein Konto bei uns, keine Werbung, k
 Fremdabruf; die Schriften liegen als Daten in der Datei. Einzige Ausnahme (Runde 149, Entscheidung des
 Inhabers): freiwillig „Mit Apple anmelden“ — der Bestand liegt dann Ende-zu-Ende verschluesselt in der
 privaten iCloud der Person (`LucentaKontoPlugin.swift`, `encryptedValues`, ohne Name/E-Mail-Abfrage). Die Store-Angabe lautet entsprechend
-"Data Not Collected". `capacitor.config.json` setzt dazu passend
+"Data Not Collected". Ebenso auf dem Geraet bleiben: der Spiegel des Bestands (`LucentaBestand.swift`), das
+Tagesform-Widget (App Group `group.app.lucenta.ios`, `LucentaWidgetBruecke.swift`) und Apple Health (nur schreiben,
+`LucentaGesundheitPlugin.swift`). `capacitor.config.json` setzt dazu passend
 `limitsNavigationsToAppBoundDomains: true`.
 
 Was auch immer hier hinzukommt: Sobald irgendetwas nach aussen geht — ein Absturzberichts-

@@ -136,6 +136,12 @@ Zwei Fallen dabei:
 - **Das Profilbild** wird nicht gesammelt — es liegt im lokalen Speicher des Geräts und
   verlässt es nicht. Nur „gesammelt" (also übertragen) ist anzugeben. Trotzdem
   wahrheitsgemäß im Beschreibungstext erwähnen.
+- **Apple Health (Runde 181)** ändert daran nichts: Lucenta schreibt auf Wunsch die Stimmung als
+  Gemütszustand in Health auf dem Gerät, liest nichts und überträgt nichts an uns. Apple verlangt dafür
+  (Richtlinie 5.1.3): HealthKit in der Datenschutzerklärung genannt (steht seit Runde 181 drin), keine
+  Werbung damit. Im Developer-Portal braucht die App-ID die Fähigkeit **HealthKit**, App und Widget die
+  **App Group** `group.app.lucenta.ios`, und das Widget eine eigene App-ID `app.lucenta.ios.LucentaWidget`.
+  Im Prüfhinweis an Apple erwähnen: Health ist aus, bis man es unter Einstellungen → Allgemein einschaltet.
 - **Sobald ein Absturzberichts-Dienst oder eine Statistik hinzukommt, ändert sich diese
   Angabe.** Ein Eintrag, der einmal „Data Not Collected" sagt und es später nicht mehr ist,
   ist der Punkt, an dem aus einer Formalie ein Problem wird.

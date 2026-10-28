@@ -55,7 +55,9 @@ await seite.addInitScript(() => {
   const merke = (was, arg) => { window.__nativLog.push({was, arg}); };
   // Spiegel des Bestands (LucentaBestand.swift): jede Meldung der Seite wird festgehalten.
   window.__bestand = [];
-  window.webkit = {messageHandlers: {lucentaBestand: {postMessage: (d) => { window.__bestand.push(d); }}}};
+  window.__widget = [];
+  window.webkit = {messageHandlers: {lucentaBestand: {postMessage: (d) => { window.__bestand.push(d); }},
+                                     lucentaWidget: {postMessage: (d) => { window.__widget.push(d); }}}};
   window.Capacitor = {
     isNativePlatform: () => true,
     Plugins: {
@@ -96,7 +98,15 @@ await seite.addInitScript(() => {
       // Feedback B7: '__pruef_link' = der Link, mit dem die App gestartet wurde.
       App: { getInfo: () => Promise.resolve({version: '1.4.2', build: '17'}), openUrl: (o) => { merke('oeffnen', o); return Promise.resolve(); },
              getLaunchUrl: () => Promise.resolve(localStorage.getItem('__pruef_link') ? {url: localStorage.getItem('__pruef_link')} : {}),
-             addListener: (name, f) => { if (name === 'appUrlOpen') window.__linkOeffnen = f; return Promise.resolve({remove(){}}); } },
+             addListener: (name, f) => { if (name === 'appUrlOpen'){ const alt = window.__linkOeffnen;   // wie Capacitor: alle Horcher
+               window.__linkOeffnen = alt ? (ev) => { alt(ev); f(ev); } : f; } return Promise.resolve({remove(){}}); } },
+      // Apple Health: '__pruef_health' = Erlaubnis, die der Dialog erteilt.
+      Health: {
+        stand: () => Promise.resolve({verfuegbar: true, erlaubt: localStorage.getItem('__pruef_health') === '1'}),
+        erlauben: () => { merke('health_erlauben'); return Promise.resolve({erlaubt: localStorage.getItem('__pruef_health') === '1'}); },
+        schreiben: (o) => { merke('health_schreiben', o); return Promise.resolve({uuid: 'U' + o.ts}); },
+        loeschen: (o) => { merke('health_loeschen', o); return Promise.resolve({geloescht: true}); }
+      },
       // Feedback A4: Konto loeschen. '__pruef_konto' = angemeldet; '__pruef_loeschen' = Antwort.
       Account: {
         stand: () => Promise.resolve({angemeldet: localStorage.getItem('__pruef_konto') === '1', icloud: true}),
@@ -674,6 +684,50 @@ await seite.evaluate(() => { window.__bestand = []; localStorage.removeItem('luc
   delete document.visibilityState; });
 spiegel = await seite.evaluate(() => window.__bestand);
 ok(spiegel.length === 1 && !('lucenta_pruef_spiegel' in spiegel[0]), 'Loeschen wird gespiegelt, beim Verlassen der App sofort');
+
+console.log('\n=== Tagesform-Widget: Stand melden, Eintraege uebernehmen ===');
+await seite.evaluate(() => { localStorage.removeItem('lucenta_state'); window.__widget = []; });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(500);
+let wl = await seite.evaluate(() => window.__widget);
+ok(wl.some(m => m.abholen) && wl.some(m => m.stand && m.stand.tag && typeof m.stand.eintraege === 'object'),
+  'beim Start: Eingang abholen und Stand melden');
+await seite.evaluate(() => { window.__widget = []; const t = Date.now();
+  window.lucentaWidgetEingang([{ts: t - 1000, energy: 2, valence: 5}, {ts: t, energy: 9, valence: 1}, {ts: 'x'}]); });
+await seite.waitForTimeout(200);
+const tf = await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_state') || '[]'));
+wl = await seite.evaluate(() => window.__widget);
+ok(tf.length === 1 && tf[0].energy === 2 && tf[0].valence === 5, 'gueltiger Widget-Eintrag uebernommen, ungueltiger nicht (' + tf.length + ')');
+ok(wl.some(m => m.verarbeitet && m.verarbeitet.length === 2), 'beide Zahlen-Eintraege quittiert, auch der verworfene');
+ok(wl.some(m => m.stand && Object.values(m.stand.eintraege).some(w => w.energy === 2)), 'der neue Stand geht ans Widget');
+await seite.evaluate(() => { window.__widget = []; window.lucentaWidgetEingang([{ts: Date.now() - 864e5 * 5, energy: 3, valence: 3}]); });
+ok((await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_state')).length)) === 1, 'ein Eintrag aelter als drei Tage wird verworfen');
+
+console.log('\n=== Apple Health: nur auf Wunsch, nur schreiben ===');
+await seite.evaluate(() => { localStorage.removeItem('lucenta_state'); localStorage.removeItem('lucenta_health'); localStorage.removeItem('__pruef_health'); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => !document.getElementById('healthZeile').hidden), 'die Zeile erscheint in der App');
+ok(await seite.evaluate(() => document.getElementById('healthSchalter').getAttribute('aria-checked') === 'false'), 'Vorgabe aus');
+await seite.evaluate(() => { window.__nativLog = []; }); await heuteEintragen(); await seite.waitForTimeout(300);
+ok(!(await seite.evaluate(() => window.__nativLog)).some(e => e.was === 'health_schreiben'), 'aus: nichts geht nach Health');
+await seite.evaluate(() => document.getElementById('healthSchalter').click()); await seite.waitForTimeout(200);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_health') !== 'an'), 'Erlaubnis verweigert: bleibt aus');
+await seite.evaluate(() => { localStorage.setItem('__pruef_health', '1'); document.getElementById('healthSchalter').click(); }); await seite.waitForTimeout(200);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_health') === 'an'), 'Erlaubnis erteilt: an');
+await seite.evaluate(() => { window.__nativLog = []; localStorage.removeItem('lucenta_state'); });
+await seite.evaluate(() => { const t = Date.now(); window.lucentaWidgetEingang([{ts: t - 2000, energy: 4, valence: 2}]); }); await seite.waitForTimeout(200);
+let hl = (await seite.evaluate(() => window.__nativLog)).filter(e => e.was === 'health_schreiben');
+ok(hl.length === 1 && hl[0].arg.valence === 2, 'an: der Eintrag geht mit seiner Stimmung nach Health');
+ok(await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_state')).some(e => /^U/.test(e.hk || ''))), 'die Health-Kennung steht am Eintrag');
+await seite.evaluate(() => { window.__nativLog = []; window.lucentaWidgetEingang([{ts: Date.now() - 1000, energy: 5, valence: 5}]); }); await seite.waitForTimeout(200);
+const lg = await seite.evaluate(() => window.__nativLog);
+ok(lg.some(e => e.was === 'health_loeschen' && /^U/.test(e.arg.uuid)) && lg.some(e => e.was === 'health_schreiben'),
+  'Ersetzen loescht den alten Health-Eintrag und schreibt den neuen');
+await seite.evaluate(() => { document.getElementById('healthSchalter').click(); localStorage.removeItem('lucenta_state'); localStorage.removeItem('__pruef_health'); });
+
+console.log('\n=== Widget-Link oeffnet die Tagesform ===');
+await seite.evaluate(() => { window.__linkOeffnen && window.__linkOeffnen({url: 'lucenta://tagesform'}); }).catch(() => {});
+await seite.waitForTimeout(600);
+ok((await seite.evaluate(() => document.querySelector('.view.active')?.id)) === 'view-state', 'lucenta://tagesform zeigt die Tagesform');
 
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 

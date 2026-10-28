@@ -257,6 +257,8 @@
   // Steht hier und nicht oben in der Verdrahtung: Die Testreihen fuehren den Code nur bis zur Marke
   // "wiring" aus.
   bestandSpiegelnEinrichten();
+  widgetEinrichten();
+  healthEinrichten();
   plusStandPruefen();
   plusPreiseHolen();
   archivUebernehmen();

@@ -18,12 +18,25 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>app.lucenta.ios</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lucenta</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Lucenta trägt die Stimmung deiner Tagesform als Gemütszustand in Health ein, wenn du das in den Einstellungen einschaltest. Es wird nichts gelesen und nichts gesendet.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Lucenta sichert dein Ergebnisbild in deiner Fotomediathek, wenn du „In Fotos sichern“ antippst. Es wird nichts gelesen und nichts gesendet.</string>
 	<key>UIApplicationSceneManifest</key>

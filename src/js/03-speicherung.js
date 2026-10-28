@@ -211,7 +211,9 @@
     }catch(e){ return []; }
   }
   function saveStateHistoryList(h){
-    try{ localStorage.setItem('lucenta_state', JSON.stringify(h)); return true; }catch(e){ return false; }
+    try{ localStorage.setItem('lucenta_state', JSON.stringify(h)); }catch(e){ return false; }
+    try{ widgetStandMelden(); }catch(e){}
+    return true;
   }
   function addStateEntry(energy, valence, extra){
     var h = loadStateHistory();
@@ -219,6 +221,7 @@
     var eintrag = {day:todayKey(), ts:jetzt, energy:energy, valence:valence, slot:zeitabschnitt(jetzt)};
     // Runde 129: Ein Eintrag im selben Abschnitt desselben Tages ersetzt den vorhandenen — so kann
     // ein Tag nie mehr als drei tragen. Auch mehrfacher Altbestand im Abschnitt geht dabei auf.
+    var alt = h.filter(function(e){ return e.day === eintrag.day && e.slot === eintrag.slot; })[0];
     h = h.filter(function(e){ return !(e.day === eintrag.day && e.slot === eintrag.slot); });
     var o = tfOceanBereinigen(extra && extra.ocean);
     var t = tfTagsBereinigen(extra && extra.tags);
@@ -227,7 +230,9 @@
     h.push(eintrag);
     h.sort(function(a,b){ return a.ts-b.ts; });
     if (h.length>MAX_STATE_EINTRAEGE) h = h.slice(h.length-MAX_STATE_EINTRAEGE);
-    return saveStateHistoryList(h);
+    var ok = saveStateHistoryList(h);
+    if (ok) try{ healthNachEintrag(eintrag, alt); }catch(e){}
+    return ok;
   }
   // Fasst Eintraege zu Tagen zusammen (sonst haette ein Tag mit drei Eintraegen dreifaches Gewicht).
   // Jede Dimension wird nur ueber die Eintraege gemittelt, die sie tragen; Stichworte eines Tages sind

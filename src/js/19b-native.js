@@ -63,6 +63,113 @@
     bestandJetztSpiegeln();
   }
 
+  // ---------- Tagesform-Widget ----------
+  // Austausch ueber die App Group (LucentaWidgetBruecke.swift): Die Seite meldet den heutigen Stand,
+  // holt Eintraege aus dem Widget ab und quittiert sie. Im Browser geschieht nichts.
+  function widgetEmpfaenger(){
+    try{ return window.webkit.messageHandlers.lucentaWidget || null; }catch(e){ return null; }
+  }
+  function widgetStandMelden(){
+    var empf = widgetEmpfaenger();
+    if (!empf) return;
+    var eintraege = {}, heute = heuteEingetragen();
+    Object.keys(heute).forEach(function(s){
+      eintraege[s] = {energy: Math.round(heute[s].energy), valence: Math.round(heute[s].valence)};
+    });
+    try{ empf.postMessage({stand: {tag: todayKey(), eintraege: eintraege, erinnerungAlle: erinnerungAlle()}}); }catch(e){}
+  }
+  function widgetAbholen(){
+    var empf = widgetEmpfaenger();
+    if (empf) try{ empf.postMessage({abholen: true}); }catch(e){}
+  }
+  function tagSchluessel(ts){
+    var d = new Date(ts);
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  // Ein Widget-Eintrag ersetzt einen aelteren derselben Tageszeit, nie einen neueren aus der App.
+  function widgetEingangUebernehmen(liste){
+    if (!Array.isArray(liste)) return;
+    var h = loadStateHistory(), jetzt = Date.now(), quittiert = [], neu = [];
+    liste.forEach(function(x){
+      if (!x || typeof x.ts !== 'number') return;
+      quittiert.push(x.ts);
+      var gueltig = [x.energy, x.valence].every(function(v){ return v === Math.round(v) && v >= 1 && v <= 5; });
+      if (!gueltig || x.ts > jetzt + 6e4 || x.ts < jetzt - 3 * 864e5) return;
+      var e = {day: tagSchluessel(x.ts), ts: x.ts, energy: x.energy, valence: x.valence, slot: zeitabschnitt(x.ts)};
+      if (h.some(function(a){ return a.day === e.day && a.slot === e.slot && a.ts >= e.ts; })) return;
+      var alt = h.filter(function(a){ return a.day === e.day && a.slot === e.slot; })[0];
+      h = h.filter(function(a){ return a !== alt; });
+      h.push(e); neu.push([e, alt]);
+    });
+    if (neu.length){
+      h.sort(function(a,b){ return a.ts-b.ts; });
+      saveStateHistoryList(h);
+      try{
+        var aktiv = document.querySelector('.view.active');
+        if (aktiv && aktiv.id === 'view-state') renderStateView();
+        refreshDrawerState(); renderLandingStateTeaser();
+      }catch(e){}
+      erinnerungNachziehen();
+      neu.forEach(function(p){ healthNachEintrag(p[0], p[1]); });
+    }
+    var empf = widgetEmpfaenger();
+    if (empf && quittiert.length) try{ empf.postMessage({verarbeitet: quittiert}); }catch(e){}
+  }
+  function widgetLink(url){
+    if (!/^lucenta:\/\/tagesform/.test(url || '')) return;
+    try{ closeDrawer(true); }catch(e){}
+    renderStateView(); showView('state');
+  }
+  function widgetEinrichten(){
+    if (!widgetEmpfaenger()) return;
+    window.lucentaWidgetEingang = widgetEingangUebernehmen;
+    var app = nativModul('App');
+    if (app && app.getLaunchUrl) app.getLaunchUrl().then(function(r){ if (r) widgetLink(r.url); }).catch(function(){});
+    if (app && app.addListener) app.addListener('appUrlOpen', function(ev){ if (ev) widgetLink(ev.url); });
+    document.addEventListener('visibilitychange', function(){
+      if (document.visibilityState === 'visible'){ widgetAbholen(); widgetStandMelden(); }
+    });
+    widgetAbholen();
+    widgetStandMelden();
+  }
+
+  // ---------- Apple Health: Stimmung als Gemuetszustand ----------
+  // Nur schreiben, nie lesen; Vorgabe aus (Entscheidung des Inhabers). LucentaGesundheitPlugin.swift,
+  // ab iOS 18. Die Kennung des Health-Eintrags steht als `hk` am Eintrag, damit Ersetzen ihn mitnimmt.
+  var HEALTH_AN = 'lucenta_health';
+  function healthModul(){
+    var h = nativVorhanden() && nativModul('Health');
+    return (h && h.stand) ? h : null;
+  }
+  function healthAn(){ return schalterLesen(HEALTH_AN, 'aus') === 'an'; }
+  function healthNachEintrag(e, alt){
+    var h = healthModul();
+    if (!h || !healthAn() || !e) return;
+    if (alt && alt.hk) h.loeschen({uuid: alt.hk}).catch(function(){});
+    h.schreiben({ts: e.ts, valence: e.valence}).then(function(r){
+      if (!r || !r.uuid) return;
+      var liste = loadStateHistory(), x = liste.filter(function(a){ return a.ts === e.ts; })[0];
+      if (x){ x.hk = r.uuid; saveStateHistoryList(liste); }
+    }).catch(function(){});
+  }
+  function healthEinrichten(){
+    var zeile = $('healthZeile'), schalter = $('healthSchalter'), h = healthModul();
+    if (!zeile || !schalter || !h) return;
+    h.stand().then(function(r){
+      if (!r || !r.verfuegbar) return;
+      zeile.hidden = false;
+      // In Health widerrufen: Der Schalter steht dann wieder aus.
+      schalterSetzen(HEALTH_AN, healthAn() && r.erlaubt !== false ? 'an' : 'aus', 'healthSchalter');
+    }).catch(function(){});
+    schalter.addEventListener('click', function(){
+      if (healthAn()){ schalterSetzen(HEALTH_AN, 'aus', 'healthSchalter'); return; }
+      h.erlauben().then(function(r){
+        if (r && r.erlaubt) schalterSetzen(HEALTH_AN, 'an', 'healthSchalter');
+        else toast(tx('health_verweigert'));
+      }).catch(function(){ toast(tx('health_verweigert')); });
+    });
+  }
+
   // ---------- Erinnerung: einmal am Tag, auf Wunsch zu jeder Tageszeit ----------
   // Vorgabe EINE am Tag um 20 Uhr, nur wenn der Tag noch leer ist; drei Zeiten + Nacherinnerung nur ueber
   // den zweiten Schalter (Entscheidung des Inhabers, loest die feste Dreierregel ab). Fuer eine schon eingetragene Tageszeit

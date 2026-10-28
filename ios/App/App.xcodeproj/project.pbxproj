@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,6 +11,11 @@
 		147A1D3D30891CD200659458 /* LucentaKontoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D3C30891CD200659458 /* LucentaKontoPlugin.swift */; };
 		147A1D403089D0B700659458 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 147A1D3F3089D0B700659458 /* PrivacyInfo.xcprivacy */; };
 		147A1D4230921BAE00659458 /* LucentaBestand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D4130921BAE00659458 /* LucentaBestand.swift */; };
+		147A1D49309221CC00659458 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 147A1D48309221CC00659458 /* WidgetKit.framework */; };
+		147A1D4B309221CC00659458 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 147A1D4A309221CC00659458 /* SwiftUI.framework */; };
+		147A1D56309221CD00659458 /* LucentaWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 147A1D47309221CC00659458 /* LucentaWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		147A1D62309222E400659458 /* LucentaWidgetBruecke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D61309222E400659458 /* LucentaWidgetBruecke.swift */; };
+		147A1D703092271200659458 /* LucentaGesundheitPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D6F3092271200659458 /* LucentaGesundheitPlugin.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -23,12 +28,42 @@
 		AA0000010000000000000003 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000010000000000000004 /* SceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		147A1D54309221CD00659458 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 147A1D46309221CC00659458;
+			remoteInfo = LucentaWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		147A1D57309221CD00659458 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				147A1D56309221CD00659458 /* LucentaWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		140DCA5B305A229100C3A9BC /* LucentaKaeufePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaKaeufePlugin.swift; sourceTree = "<group>"; };
 		147A1D3C30891CD200659458 /* LucentaKontoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaKontoPlugin.swift; sourceTree = "<group>"; };
 		147A1D3E30891D4800659458 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		147A1D3F3089D0B700659458 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		147A1D4130921BAE00659458 /* LucentaBestand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaBestand.swift; sourceTree = "<group>"; };
+		147A1D47309221CC00659458 /* LucentaWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LucentaWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		147A1D48309221CC00659458 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
+		147A1D4A309221CC00659458 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
+		147A1D5C309221F500659458 /* LucentaWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LucentaWidgetExtension.entitlements; sourceTree = "<group>"; };
+		147A1D61309222E400659458 /* LucentaWidgetBruecke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaWidgetBruecke.swift; sourceTree = "<group>"; };
+		147A1D6F3092271200659458 /* LucentaGesundheitPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaGesundheitPlugin.swift; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -45,7 +80,30 @@
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		147A1D5A309221CD00659458 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 147A1D46309221CC00659458 /* LucentaWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		147A1D4C309221CC00659458 /* LucentaWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (147A1D5A309221CD00659458 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LucentaWidget; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
+		147A1D44309221CC00659458 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				147A1D4B309221CC00659458 /* SwiftUI.framework in Frameworks */,
+				147A1D49309221CC00659458 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		504EC3011FED79650016851F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -61,6 +119,8 @@
 			isa = PBXGroup;
 			children = (
 				AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */,
+				147A1D48309221CC00659458 /* WidgetKit.framework */,
+				147A1D4A309221CC00659458 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -68,7 +128,9 @@
 		504EC2FB1FED79650016851F = {
 			isa = PBXGroup;
 			children = (
+				147A1D5C309221F500659458 /* LucentaWidgetExtension.entitlements */,
 				504EC3061FED79650016851F /* App */,
+				147A1D4C309221CC00659458 /* LucentaWidget */,
 				504EC3051FED79650016851F /* Products */,
 				7F8756D8B27F46E3366F6CEA /* Pods */,
 				27E2DDA53C4D2A4D1A88CE4A /* Frameworks */,
@@ -79,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				504EC3041FED79650016851F /* App.app */,
+				147A1D47309221CC00659458 /* LucentaWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -101,6 +164,8 @@
 				147A1D3C30891CD200659458 /* LucentaKontoPlugin.swift */,
 				147A1D3F3089D0B700659458 /* PrivacyInfo.xcprivacy */,
 				147A1D4130921BAE00659458 /* LucentaBestand.swift */,
+				147A1D61309222E400659458 /* LucentaWidgetBruecke.swift */,
+				147A1D6F3092271200659458 /* LucentaGesundheitPlugin.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -117,6 +182,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		147A1D46309221CC00659458 /* LucentaWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 147A1D5B309221CD00659458 /* Build configuration list for PBXNativeTarget "LucentaWidgetExtension" */;
+			buildPhases = (
+				147A1D43309221CC00659458 /* Sources */,
+				147A1D44309221CC00659458 /* Frameworks */,
+				147A1D45309221CC00659458 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				147A1D4C309221CC00659458 /* LucentaWidget */,
+			);
+			name = LucentaWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = LucentaWidgetExtension;
+			productReference = 147A1D47309221CC00659458 /* LucentaWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		504EC3031FED79650016851F /* App */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 504EC3161FED79650016851F /* Build configuration list for PBXNativeTarget "App" */;
@@ -126,10 +213,12 @@
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
 				9592DBEFFC6D2A0C8D5DEB22 /* [CP] Embed Pods Frameworks */,
+				147A1D57309221CD00659458 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				147A1D55309221CD00659458 /* PBXTargetDependency */,
 			);
 			name = App;
 			productName = App;
@@ -143,9 +232,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 0920;
+				LastSwiftUpdateCheck = 2710;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
+					147A1D46309221CC00659458 = {
+						CreatedOnToolsVersion = 27.1;
+					};
 					504EC3031FED79650016851F = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1100;
@@ -167,11 +259,19 @@
 			projectRoot = "";
 			targets = (
 				504EC3031FED79650016851F /* App */,
+				147A1D46309221CC00659458 /* LucentaWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		147A1D45309221CC00659458 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		504EC3021FED79650016851F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -242,6 +342,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		147A1D43309221CC00659458 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		504EC3001FED79650016851F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -249,6 +356,8 @@
 				147A1D3D30891CD200659458 /* LucentaKontoPlugin.swift in Sources */,
 				140DCA5C305A229100C3A9BC /* LucentaKaeufePlugin.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				147A1D703092271200659458 /* LucentaGesundheitPlugin.swift in Sources */,
+				147A1D62309222E400659458 /* LucentaWidgetBruecke.swift in Sources */,
 				AA0000010000000000000001 /* MainViewController.swift in Sources */,
 				147A1D4230921BAE00659458 /* LucentaBestand.swift in Sources */,
 				AA0000010000000000000003 /* SceneDelegate.swift in Sources */,
@@ -256,6 +365,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		147A1D55309221CD00659458 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 147A1D46309221CC00659458 /* LucentaWidgetExtension */;
+			targetProxy = 147A1D54309221CD00659458 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		504EC30B1FED79650016851F /* Main.storyboard */ = {
@@ -277,6 +394,104 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		147A1D58309221CD00659458 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = LucentaWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LucentaWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Lucenta;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = app.lucenta.ios.LucentaWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				XROS_DEPLOYMENT_TARGET = 27.0;
+			};
+			name = Debug;
+		};
+		147A1D59309221CD00659458 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = LucentaWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LucentaWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Lucenta;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = app.lucenta.ios.LucentaWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				XROS_DEPLOYMENT_TARGET = 27.0;
+			};
+			name = Release;
+		};
 		504EC3141FED79650016851F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -416,6 +631,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\" \"-Xcc\" \"-Wno-deprecated-declarations\"";
 				PRODUCT_BUNDLE_IDENTIFIER = app.lucenta.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -441,6 +657,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-Xcc\" \"-Wno-deprecated-declarations\"";
 				PRODUCT_BUNDLE_IDENTIFIER = app.lucenta.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -450,6 +667,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		147A1D5B309221CD00659458 /* Build configuration list for PBXNativeTarget "LucentaWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				147A1D58309221CD00659458 /* Debug */,
+				147A1D59309221CD00659458 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		504EC2FF1FED79650016851F /* Build configuration list for PBXProject "App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -510,6 +510,14 @@
         </div>
         <button type="button" class="schalter" id="bewegungSchalter" role="switch" aria-checked="true" aria-label="Bewegung" data-i18n-aria="aria_bewegung"><span class="schalter-knopf"></span></button>
       </div>
+      <!-- Nur in der App ab iOS 18 sichtbar (19b-native.js, healthEinrichten). -->
+      <div class="settings-zeile" id="healthZeile" hidden>
+        <div class="settings-zeile-text">
+          <strong data-i18n="health_titel">Stimmung in Health</strong>
+          <span class="settings-hint" data-i18n="health_hinweis">Trägt die Stimmung jedes Eintrags als Gemütszustand in Health ein. Lucenta liest dort nichts.</span>
+        </div>
+        <button type="button" class="schalter" id="healthSchalter" role="switch" aria-checked="false" aria-label="Stimmung in Health ein- oder ausschalten" data-i18n-aria="aria_health"><span class="schalter-knopf"></span></button>
+      </div>
       <p class="settings-hint" data-i18n="systemldquo_übernimmt_automa">„System&ldquo; übernimmt automatisch die Einstellung deines Geräts.</p>
     </div>
 
