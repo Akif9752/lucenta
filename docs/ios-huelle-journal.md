@@ -31,6 +31,10 @@ lassen. Die Richtungen:
 - **Freunde und Anmeldung** (Runde 147–150): Freunde mit selbst gewaehltem Namen/Figur (Freundescode),
   „Mit Apple anmelden" + private iCloud. Dunkel als Vorgabe, Hell gedaempft (Runde 149).
 - **Feedbackrunde** (Runde 151): 19 Befunde, bis auf A2 (Impressum, Inhaber) erledigt (Runde 152–157).
+- **Runde 165–179** (Tabelle unten): Warntexte gekuerzt, Tiere artgerechter, 24 Hintergruende in 3×8, Figur &
+  Hintergrund als je eine Karte, Einstellungen wie iOS, Flackern behoben, Kaufquote (Probezeit, Muster-Angebot,
+  Rueckgewinnung, Bewertungsbitte), Impressum nur in Einstellungen, Lizenzen. Der Inhaber laesst gern **Nutzer-
+  Simulationen** rechnen (100/1000/10.000 Personen) und waehlt daraus Punkte aus.
 - **Grosse Liste** (Runde 158–162) und **Feinschliff** (Runde 163–164) erledigt: Richtlinien, Verstehen
   nach Lebensbereichen, Rollenatlas, Anmeldeschritt, Kalender/Muster, Hintergruende in Gruppen,
   20 Tiere in vier Gruppen, kurze Codes mit eigener Benutzer-ID, Figur & Hintergrund als Unterseite,
@@ -110,6 +114,13 @@ Regeln, die er gesetzt hat:
 
 ### Wo was steht
 
+- **Neu seit Runde 165:** Einstellungen `#view-settings` (Gruppen: Konto+Lucenta+-Karte `#btnEinstPlus`, Allgemein,
+  Erinnerung mit `#erinnerungZeit`, `#einstTestGruppe`, Daten mit `#einstWiederherstellen`, Hilfe & Ueber mit
+  `#einstVersion`); Rechtliches `view-recht` mit `renderRecht(nurDatenschutz)` und `#rechtLizenzGruppe`; Erinnerung
+  `19b-native.js` (`erinnerungZeit`, `erinnerungAlle`); Kaufpfade `plusKnopfText` (05), `probeTage`/`plusStandUebernehmen`/
+  `bewertungErbitten` (19b), `aboGeaendert` + `bewerten` in `LucentaKaeufePlugin.swift`; erstes Muster frei +
+  `musterAngebotText` (07b); Hintergruende `HINTERGRUENDE`/`HG_GRUPPEN`/`HG_FREI` (13-figuren.js) + `.hg-*` (09-archetypen.css).
+  Werkzeuge: `tools/flackern/`, `tools/datenschutz_seite.mjs` (→ `web/datenschutz/`), `tools/store_bilder.mjs` (mit Ueberschriften).
 - **Stil:** `src/styles/12-ios.css` (letzte Datei, schlaegt alle) fuer iOS-Form, Glas, Kaufseite,
   Vorschauen, Hilfe-Knopf. Farbmarken in `00-grundlagen.css` — **je drei Bloecke**. Bewegung und
   Feiern in `11-feier.css` (Abschnitt 8 = Runde 129–132). Tagesform in `07-tagesform.css`.
@@ -207,39 +218,24 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Die Feedbackrunde 151** (`docs/feedbackrunde-151.md`, dort mit Begruendung) — der Arbeitsvorrat.
-Runde 152 hat A1, A3, A4, A5, B6, B7 erledigt, Runde 153 B8, Runde 154 B9 (Eintraege unten). Der
-Auftrag ist damit abgearbeitet; seit Runde 157 ist die ganze Feedbackrunde 151 erledigt bis auf A2 (Impressum,
-Inhaber) und den scharfen Einladungslink.
-Bei Gestaltungsfragen vorher mit Optionen fragen.
+**Kein laufender Auftrag.** Runden 165–179 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
-*A — kritisch*
-2. **Impressum leer** (`IMPRESSUM` in `17-settings.js`) — fuellt der Inhaber selbst.
+*Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
+- **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
+  `@property` erst ab 16.4 — auf iOS 15–16.1 fehlen Farben. Alternative: Ersatzfarben fuer alle 62 Stellen.
+- **Kontaktzeile** unter „Hilfe & Ueber" (`mailto:`) — braucht die E-Mail-Adresse des Inhabers.
+- **Einmalkauf** „Lucenta+ für immer" (~59,99 €) neben den Abos.
+- **Bericht teilweise oeffnen** (Mittelweg: „Im Alltag" der staerksten Dimension frei).
 
-*B — hoch:* erledigt bis auf den scharfen Einladungslink (B7-Rest, braucht eine Domain: `einladung/LIESMICH.md`).
+*Seit laengerem offen:* Fachdurchsicht der 40 Verstehen-Karten (Psychologie) und muttersprachliche Durchsicht aller
+Uebersetzungen (alle neuen Texte seit Runde 165 hat die Sitzung selbst uebersetzt). Store-Bilder kurz vor dem Einreichen
+neu erzeugen (`node tools/store_bilder.mjs`, zuletzt Runde 178). Pruefbericht Richtlinien: `docs/richtlinien-pruefung.md`.
 
-*C — Feinschliff:* erledigt; C19: Startbild bleibt schwarz (Inhaber, 2026-10-25: „passt“).
+*Am echten iPhone noch nie geprueft:* echte Anmeldung mit Apple + CloudKit, echter Kauf/Probezeit/Win-back, Teilen-Blatt
+beim Einladen, Abo-verwalten-Blatt. (Haptik, Wischgesten, Erinnerungen laufen auf dem iPhone 15 Pro des Inhabers.)
 
-*Seit Runde 158–164 offen:* Fachdurchsicht der 40 Verstehen-Karten (Psychologie) und muttersprachliche
-Durchsicht der Uebersetzungen; Datenschutz-URL fuer App Store Connect. Store-Bilder sind seit Runde 166 neu.
-Von den acht neuen Tieren sind Flamingo, Rotkehlchen, Pinguin in Runde 166 nachgearbeitet; Delfin, Seeotter,
-Papagei, Mops, Siamkatze halten in der Uebersicht mit und blieben.
-Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
-
-*Notiert in Runde 156:* Ring ohne „%“ und „Andere Person“ am Radar — erledigt in Runde 166.
-
-*Kleinigkeiten aus Runde 152, bewusst nicht angefasst*
-- Beide erledigt in Runde 165/166 (unbenutzter Text geloescht, Freundescode im Wiederherstellungsfeld abgefangen).
-- Rund 160 Texte haben keinen woertlichen Verweis im Code; die meisten werden zusammengesetzt (`figur_`, `hg_`,
-  `tf_tag_`, …). Nicht pauschal loeschen — je Schluessel nach dem Praefix im Code suchen.
-
-*Weiter offen von frueher*
-- **Am echten iPhone pruefen:** Erinnerungen und Nacherinnerung, Haptik, Bewegungen, Push/Pop und
-  Wischgeste mit dem Finger, Symbol auf dem Homescreen, das Teilen-Blatt beim Einladen, das
-  StoreKit-Verwalten-Blatt, eine echte Anmeldung mit Apple und echtes CloudKit.
-- **Vom Inhaber abgenommen (2026-10-25, „passt“):** Polwoerter der Tagesform-Fragen, Strahlenkranz, Push/Pop,
-  schwarzes Startbild. Nicht erneut zur Wahl stellen.
-- Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht noch einmal suchen**.
+*Nicht erneut zur Wahl stellen (abgenommen, „passt"):* Polwoerter der Tagesform, Strahlenkranz, Push/Pop, schwarzes
+Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht noch einmal suchen**.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
@@ -371,20 +367,40 @@ Was immer wieder durchfaellt, und warum:
 
 ### Was nur der Inhaber kann
 
-- **Impressum** (`IMPRESSUM` in `17-settings.js`: Name, Strasse, Ort, E-Mail) — Pflicht, heute leer.
-- **Einladungslink:** Domain + statisches Hosting fuer `einladung/`, Associated Domains im bezahlten
-  Account (`einladung/LIESMICH.md`). Bis dahin enthaelt die Einladung nur den Code.
-- **„Notes for Review"** beim Einreichen: der Text zur Anmeldung/Kontoloeschung in `docs/app-store-start.md`.
-- Die zwei Abo-Produkte in App Store Connect: `lucenta.plus.monat` (4,99 EUR) und
-  `lucenta.plus.jahr` (29,99 EUR), dieselbe Abo-Gruppe. Ein echter Kauf lief noch nie.
-- **Bezahlter Developer-Account:** Faehigkeiten „Sign in with Apple" und „iCloud -> CloudKit" fuer
-  `app.lucenta.ios`, Container `iCloud.app.lucenta.ios`, Schema `LucentaDaten` vor dem Store-Start in die
-  Produktion (`docs/app-store-start.md`). Bis dahin ist die Anmeldung nur mit nachgestellter Bruecke geprueft.
-- Die App auf einem **echten iPhone** (iPhone 15 Pro war verbunden, aber gesperrt; der Inhaber wollte
-  zuletzt nur im Simulator messen).
-- Der Rest der Einreichung: `docs/app-store-start.md`.
+Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
+1. **Impressum** (`IMPRESSUM` in `17-settings.js`: Name, Strasse, Ort, E-Mail, ggf. USt-ID) — Pflicht, heute leer.
+   Steht NUR in den Einstellungen (Entscheidung Runde 176).
+2. **Datenschutz-URL:** Seite liegt fertig in `web/datenschutz/` (`npm run datenschutz-seite`, aus den App-Texten erzeugt,
+   warnt bei leerem Impressum). Ort offen — GitHub Pages aus diesem oeffentlichen Repo vorgeschlagen; erst nach Impressum.
+3. **Bezahlter Developer-Account** (Team heute ist ein Personal Team `AXNBT762GY`): Faehigkeiten Sign in with Apple,
+   iCloud/CloudKit (`iCloud.app.lucenta.ios`, Schema `LucentaDaten` in Produktion), Push.
+4. **Abo-Produkte** `lucenta.plus.monat` (4,99 €) und `lucenta.plus.jahr` (29,99 €), eine Abo-Gruppe; beim Jahresabo
+   **Probeabo 1 Woche**; **Rueckgewinnungsangebote** (Vorschlag in der Doku); **Familienfreigabe** einschalten
+   (heute `familyShareable: false`).
+5. **EU-Haendlerangaben (DSA)** und Support-URL in App Store Connect; Altersfreigabe **16+** von Hand waehlen.
+6. **Einladungslink:** Domain + Hosting fuer `einladung/` + Associated Domains (`einladung/LIESMICH.md`).
+7. „Notes for Review" (Text in `docs/app-store-start.md`), Store-Bilder hochladen.
 
 ### Arbeitsweise, die sich bewaehrt hat
+
+- **Neu seit Runde 165 (zuerst lesen):**
+  - `pruef-alles` IMMER als eigener Aufruf starten: `(nohup npm run pruef-alles > /tmp/pruef.log 2>&1 &)` — steht es im
+    selben Befehl wie ein langes `sleep` und wird der Befehl abgeschnitten, stirbt die Pruefung mit (Runde 168).
+    Danach ein `sleep 560` und ein `sleep 400` reichen fuer die ~14 Minuten.
+  - **Flackern/Zeichnen misst nur der Simulator:** `sh tools/flackern/messen.sh <sim-id>` (Video + Helligkeit je Bild).
+    Headless-WebKit sah das Flackern nicht. Veraendert die installierte Kopie — danach neu installieren.
+  - **Aufs iPhone 15 Pro** (`00008130-001E79CC0178001C`): Personal Team kann iCloud/Anmeldung/Push nicht signieren →
+    `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-geraet.entitlements` (leeres plist) beim `xcodebuild`, dann
+    `xcrun devicectl device install app …` und `… process launch …`. Signatur 7 Tage. Startet es mit „Security"/
+    „not trusted" nicht: Geraet gesperrt oder Entwickler unter VPN & Geraeteverwaltung nicht vertraut.
+  - **Testdaten mit Kalendertagen** saeen (`new Date(y, m, d − i, 12)`), nie `jetzt − i·24 h` (Zeitumstellung, Runde 176).
+  - **fehlersuche** ueberspringt Elemente in zugeklappten `<details>`; wer Wichtiges einklappt, klappt es in
+    `NACHBEREITUNG` auf (Muster: `settings`).
+  - **Tiere:** Vor Aenderungen `cp -R src/figuren /tmp/fig-alt`, dann `bauen.sh <tier>` → `figuren_holen.py <tier>` →
+    `vorschau.py /tmp/fig-alt <tier>` (links alt in alter Vorschaugroesse, rechts neu); Ausschnitt ueber `NAEHER` in
+    `figuren_holen.py`. Zentrale Regler: `mitBrauen` (Farbe ×0,4, Wulst ×0,55), `auge` Lichtpunkt ×0,7, Licht in `Szene.swift`.
+  - **Simulationen** („stell dir 100/1000/10.000 Menschen vor"): immer als Schaetzung kennzeichnen, Befunde VORHER im
+    Code nachpruefen, Empfehlungen in „kann ich bauen" / „braucht deine Entscheidung" / „nur du" teilen.
 
 - **`ios:sync` immer mit `export PATH="/opt/homebrew/bin:$PATH"`** und NIE mit `>/dev/null`: ohne den
   Pfad scheitert CocoaPods still, und die App bleibt auf altem Stand (Runde 147/148 so passiert). Danach im
@@ -438,14 +454,14 @@ Was immer wieder durchfaellt, und warum:
 
 ### Stand der Umgebung
 
-Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), Bundle-ID
-`app.lucenta.ios`; installiert ist der Stand von Runde 164. In diesem Xcode gibt es kein eigenes
-Simulator-Programm — der Simulator laeuft in Xcode. Deployment Target 15.0 — in Xcode **nicht**
-„Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
+Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 179** installiert. Bundle-ID `app.lucenta.ios`.
+Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
+**nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 164 (`git push origin
-claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne Bitte. Arbeitsbaum sauber
-bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 179 (`git push` erlaubt); kein Pull Request ohne
+Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
+Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
 
