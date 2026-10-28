@@ -21,6 +21,48 @@
     }catch(e){ return null; }
   }
 
+  // ---------- Bestand auf dem Geraet spiegeln ----------
+  // iOS darf den Speicher der WebView leeren; die Huelle haelt eine Kopie in einer Datei
+  // (LucentaBestand.swift) und spielt sie vor dem Start zurueck, wenn localStorage leer ist.
+  var BESTAND_VERZOEGERUNG = 1000;
+  var bestandUhr = 0;
+  function bestandEmpfaenger(){
+    try{ return window.webkit.messageHandlers.lucentaBestand || null; }catch(e){ return null; }
+  }
+  function bestandJetztSpiegeln(){
+    clearTimeout(bestandUhr); bestandUhr = 0;
+    var empf = bestandEmpfaenger();
+    if (!empf) return;
+    var d = {};
+    try{
+      for (var i = 0; i < localStorage.length; i++){
+        var k = localStorage.key(i);
+        if (k && k.indexOf('lucenta_') === 0) d[k] = localStorage.getItem(k);
+      }
+      empf.postMessage(d);
+    }catch(e){}
+  }
+  function bestandSpaeterSpiegeln(){
+    if (!bestandUhr) bestandUhr = setTimeout(bestandJetztSpiegeln, BESTAND_VERZOEGERUNG);
+  }
+  // Faengt jeden Schreibzugriff, statt jede Speicherstelle einzeln zu verdrahten.
+  function bestandSpiegelnEinrichten(){
+    if (!bestandEmpfaenger() || !window.Storage) return;
+    ['setItem', 'removeItem'].forEach(function(name){
+      var alt = Storage.prototype[name];
+      Storage.prototype[name] = function(k){
+        var r = alt.apply(this, arguments);
+        if (this === window.localStorage && String(k).indexOf('lucenta_') === 0) bestandSpaeterSpiegeln();
+        return r;
+      };
+    });
+    document.addEventListener('visibilitychange', function(){
+      if (document.visibilityState === 'hidden') bestandJetztSpiegeln();
+    });
+    window.addEventListener('pagehide', bestandJetztSpiegeln);
+    bestandJetztSpiegeln();
+  }
+
   // ---------- Erinnerung: einmal am Tag, auf Wunsch zu jeder Tageszeit ----------
   // Vorgabe EINE am Tag um 20 Uhr, nur wenn der Tag noch leer ist; drei Zeiten + Nacherinnerung nur ueber
   // den zweiten Schalter (Entscheidung des Inhabers, loest die feste Dreierregel ab). Fuer eine schon eingetragene Tageszeit

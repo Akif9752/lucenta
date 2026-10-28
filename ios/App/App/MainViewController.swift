@@ -62,6 +62,7 @@ class MainViewController: CAPBridgeViewController {
         transparenzVorzeichnen()
         transparenzBeobachten()
         themaEmpfangen()
+        bestandSpiegeln()
         zoomAbschalten()
         #if DEBUG
         entwicklungsbauMelden()
@@ -163,6 +164,12 @@ class MainViewController: CAPBridgeViewController {
     private func themaEmpfangen() {
         guard let inhalt = webView?.configuration.userContentController else { return }
         inhalt.add(ThemaEmpfaenger(ansicht: self), name: "lucentaThema")
+    }
+
+    private func bestandSpiegeln() {
+        guard let inhalt = webView?.configuration.userContentController else { return }
+        if let skript = LucentaBestand.wiederherstellenSkript() { inhalt.addUserScript(skript) }
+        inhalt.add(BestandEmpfaenger(), name: LucentaBestand.empfaengerName)
     }
 
     fileprivate func themaUebernehmen(_ wert: String) {

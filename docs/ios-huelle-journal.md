@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 179)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 180)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,6 +54,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 180 | (dieser) | Bestand als Datei gespiegelt (`LucentaBestand.swift`), vor dem Start zurueckgeholt, wenn WebKit ihn geleert hat; Uebergabe berichtigt |
 | 179 | (dieser) | Kaufquote: Probezeit an jeder Sperre, Angebot unter dem ersten Muster mit echter Zahl, Rueckgewinnung (Kaeufe ausserhalb des Fensters schalten sofort frei) |
 | 178 | (dieser) | Nutzungszahlen (Beta) entfernt; „Abo verwalten" nur mit Abo; Version aus der App; Anmeldeschritt geprueft; verwaiste Texte; Store-Bilder neu |
 | 177 | (dieser) | Fusszeile unter dem Ergebnis entfernt (IPIP gemeinfrei, keine Nennungspflicht); Abschnitt „Lizenzen" mit Fraunces (OFL), Capacitor (MIT), Apache Cordova (Apache 2.0), IPIP |
@@ -114,6 +115,9 @@ Regeln, die er gesetzt hat:
 
 ### Wo was steht
 
+- **Spiegel (Runde 180):** `LucentaBestand.swift` (Datei `Application Support/lucenta-bestand.json`, Zurueckholen als
+  `WKUserScript` atDocumentStart nur in leeren localStorage, einmal je Start), JS `bestandSpiegelnEinrichten` (19b).
+  Ein NEUER Weg, der alle `lucenta_`-Schluessel loescht, muss den Spiegel mit leeren.
 - **Neu seit Runde 165:** Einstellungen `#view-settings` (Gruppen: Konto+Lucenta+-Karte `#btnEinstPlus`, Allgemein,
   Erinnerung mit `#erinnerungZeit`, `#einstTestGruppe`, Daten mit `#einstWiederherstellen`, Hilfe & Ueber mit
   `#einstVersion`); Rechtliches `view-recht` mit `renderRecht(nurDatenschutz)` und `#rechtLizenzGruppe`; Erinnerung
@@ -218,7 +222,10 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–179 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Laufender Auftrag (Runde 180 ff.):** Tagesform-Widget (klein: drei Tageszeiten, Tipp oeffnet Erfassung; mittel:
+zusaetzlich Stimmung + Energie als je 5 Tipp-Punkte; Sperrbildschirm rund/rechteckig; frei, nicht Lucenta+) und
+Apple Health (nur schreiben, Stimmung als Gemuetszustand ab iOS 18, Schalter in Einstellungen -> Allgemein, Vorgabe aus)
+— beides vom Inhaber so gewaehlt. Runden 165–180 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -281,8 +288,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   Archiv, Entscheidung des Inhabers). "Verstehen" ist seit
   Runde 136 GANZ Lucenta+. Alles andere Lucenta+, gesperrt als verschwommene Vorschau des echten Inhalts.
   Gespeichertes bleibt lesbar.
-- **Ehrliche Verkaufsmittel:** keine Countdowns, keine erfundene Beliebtheit, kein Probezeitraum.
-  Preis, Laufzeit und „verlaengert sich automatisch" am Knopf (Richtlinie 3.1.2).
+- **Ehrliche Verkaufsmittel:** keine Countdowns, keine erfundene Beliebtheit. Probezeit nur so,
+  wie der Store sie meldet (Runde 168, siehe oben) — nie aus festem Text versprochen. Preis, Laufzeit und „verlaengert sich automatisch" am Knopf (Richtlinie 3.1.2).
 - **Nichts nach aussen** — „Data Not Collected". Kein Beleg-Server; Bilder, Schriften, Sprachen im
   Bundle, nie zur Laufzeit laden. **Einzige Ausnahme (Runde 149):** freiwillig „Mit Apple anmelden",
   Bestand Ende-zu-Ende verschluesselt in der privaten iCloud der Person, ohne Name/E-Mail-Abfrage.
@@ -296,8 +303,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
 - **Lucenta+ aus der Seitenleiste = eigene Seite** (Runde 150), nicht das Kauffenster.
 - **Tagesform (Runde 130/131):** hoechstens drei Eintraege am Tag, je Tageszeit einer (morgens < 12,
   mittags < 18, abends); ein zweiter ersetzt. Nach dem Eintrag klappt die Erfassung zu, „Aendern"
-  oeffnet sie wieder. Erinnerung: EIN Schalter, feste Zeiten 9/14/20 + Nacherinnerung 2 h spaeter,
-  beides entfaellt fuer eine schon eingetragene Tageszeit; keine Uhrzeitwahl. 10 Tage voraus
+  oeffnet sie wieder. Erinnerung: abgeloest durch Runde 167/174 (siehe oben: eine am Tag zur
+  waehlbaren Zeit, Vorgabe 20:00; 9/14/20 + Nacherinnerung nur mit „Zu jeder Tageszeit"). 10 Tage voraus
   (60 ≤ 64, Apples Grenze) — wer zehn Tage nicht oeffnet, bekommt keine mehr (gewollt).
 - **Schrift (Runde 126/131):** SF ueberall, ausser dem Namen (`--marke`) und dem Startseiten-Titel
   (Fraunces). `pruef-app` prueft alle drei Stellen und einen SF-Titel.
@@ -311,6 +318,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 180: ALLE 9 BESTANDEN**: `pruef-nativ` 106, sonst wie nach 178.
 
 **Nach Runde 179: ALLE 9 BESTANDEN**: `pruef-nativ` 102, sonst wie nach 178.
 
@@ -464,6 +473,37 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 180 — Bestand gegen Verlust gespiegelt, Uebergabe berichtigt
+
+**Auftrag:** Aus meinen Empfehlungen waehlte der Inhaber 1 (Bestand absichern), 4 (Tagesform-Widget), 5 (Apple Health)
+und 9 (Uebergabe aufraeumen). Dieser Eintrag deckt 1 und 9; Widget und Health folgen als eigene Runden.
+
+**Der Fehler (1):** Ohne Anmeldung lag ALLES — Ergebnis, Tagesform, Freunde — nur im localStorage der WKWebView. iOS darf
+diesen Speicher leeren (Speicherdruck), und dann stand jemand nach Wochen Tagesform vor einer leeren App. Nativ lag bisher
+nur das Farbschema (UserDefaults).
+
+**Die Aenderung:** `ios/App/App/LucentaBestand.swift` + Empfaenger `lucentaBestand` (angemeldet in
+`MainViewController.bestandSpiegeln`). Die Seite (`bestandSpiegelnEinrichten`, 19b-native.js) meldet alle `lucenta_*`-
+Eintraege beim Start, 1 s nach jedem Schreiben (gesammelt; `Storage.prototype.setItem/removeItem` werden dafuer nur in
+der App umwickelt) und sofort beim Verlassen. Die Huelle schreibt `Application Support/lucenta-bestand.json` (atomar).
+Zurueckgeholt wird per `WKUserScript` bei `atDocumentStart` — also vor jedem Skript der Seite, ohne Neuladen —, und nur,
+wenn localStorage KEINEN `lucenta_`-Schluessel hat und nur beim ersten Laden je Start (Merker in sessionStorage; sonst
+holte das Neuladen nach „Daten einspielen" oder Demo-Ende den alten Stand zurueck). Schutz gegen das Ueberschreiben
+der guten Kopie: Ein Stand ohne Ergebnis, Verlauf und Tagesform ersetzt keinen mit diesen.
+Nichts verlaesst das Geraet; „Data Not Collected" bleibt wahr.
+
+**Gemessen im Simulator (iPhone 18 Pro):** Spiegel nach dem Start mit 17 Schluesseln; App beendet,
+`Library/WebKit` ganz geloescht, neu gestartet -> alle 17 Schluessel (auch `lucenta_state`, `lucenta_result`,
+`lucenta_history`) wieder im localStorage, Spiegeldatei unveraendert (gleiche Pruefsumme). `pruef-nativ` 102 -> 106
+(Meldung beim Start, gesammelt statt je Schreiben, nur `lucenta_`, Loeschen und Verlassen).
+
+**Unsicher:** Wer „Alles loeschen" haette, der ALLE `lucenta_`-Schluessel entfernt und die App dann beendet, bekaeme beim
+naechsten Start den Spiegel zurueck. Einen solchen Weg gibt es heute nicht (`lucenta_theme` wird bei jedem Start
+geschrieben); wer einen baut, muss den Spiegel mit leeren.
+
+**9:** Im Uebergabeblock widersprachen zwei alte Zeilen neueren Entscheidungen — „kein Probezeitraum" (gilt seit Runde 168
+nicht mehr) und „feste Zeiten 9/14/20, keine Uhrzeitwahl" (abgeloest durch Runde 167/174). Beide berichtigt.
 
 ## Runde 179 — Kaufquote: drei Hebel
 

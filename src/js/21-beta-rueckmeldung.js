@@ -256,6 +256,7 @@
   });
   // Steht hier und nicht oben in der Verdrahtung: Die Testreihen fuehren den Code nur bis zur Marke
   // "wiring" aus.
+  bestandSpiegelnEinrichten();
   plusStandPruefen();
   plusPreiseHolen();
   archivUebernehmen();

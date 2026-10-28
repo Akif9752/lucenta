@@ -53,6 +53,9 @@ await seite.addInitScript(() => {
     if (localStorage.getItem('__pruef_entwicklung') === '1') window.__lucentaEntwicklungsbau = true;
   } catch (e) {}
   const merke = (was, arg) => { window.__nativLog.push({was, arg}); };
+  // Spiegel des Bestands (LucentaBestand.swift): jede Meldung der Seite wird festgehalten.
+  window.__bestand = [];
+  window.webkit = {messageHandlers: {lucentaBestand: {postMessage: (d) => { window.__bestand.push(d); }}}};
   window.Capacitor = {
     isNativePlatform: () => true,
     Plugins: {
@@ -652,6 +655,25 @@ ok(amErgebnis === 'view-result' && !zuFrueh, 'oben auf dem Ergebnis kommt nach 5
 await seite.evaluate(() => { document.getElementById('traitsList').scrollIntoView({block:'center'}); window.dispatchEvent(new Event('scroll')); });
 await seite.waitForTimeout(2200);
 ok(await seite.evaluate(() => document.getElementById('plusModal').classList.contains('open')), 'nach dem Scrollen zu den Dimensionen erscheint es');
+
+console.log('\n=== Der Bestand wird auf dem Geraet gespiegelt ===');
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(400);
+let spiegel = await seite.evaluate(() => window.__bestand);
+ok(spiegel.length >= 1 && Object.keys(spiegel[0]).every(k => k.indexOf('lucenta_') === 0),
+  'beim Start einmal gemeldet, nur lucenta_-Schluessel (' + spiegel.length + ')');
+await seite.waitForTimeout(1500);   // Schreibzugriffe des Starts sind dann gemeldet
+await seite.evaluate(() => { window.__bestand = []; localStorage.setItem('lucenta_pruef_spiegel', 'a'); localStorage.setItem('lucenta_pruef_spiegel', 'b'); localStorage.setItem('__fremd', '1'); });
+await seite.waitForTimeout(300);
+ok((await seite.evaluate(() => window.__bestand.length)) === 0, 'nicht bei jedem Schreiben sofort, sondern gesammelt');
+await seite.waitForTimeout(1100);
+spiegel = await seite.evaluate(() => window.__bestand);
+ok(spiegel.length === 1 && spiegel[0].lucenta_pruef_spiegel === 'b' && !('__fremd' in spiegel[0]),
+  'eine Meldung mit dem letzten Stand, ohne fremde Schluessel (' + spiegel.length + ')');
+await seite.evaluate(() => { window.__bestand = []; localStorage.removeItem('lucenta_pruef_spiegel'); localStorage.removeItem('__fremd');
+  Object.defineProperty(document, 'visibilityState', {value: 'hidden', configurable: true}); document.dispatchEvent(new Event('visibilitychange'));
+  delete document.visibilityState; });
+spiegel = await seite.evaluate(() => window.__bestand);
+ok(spiegel.length === 1 && !('lucenta_pruef_spiegel' in spiegel[0]), 'Loeschen wird gespiegelt, beim Verlassen der App sofort');
 
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 
