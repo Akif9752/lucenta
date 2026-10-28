@@ -159,6 +159,10 @@
       gesehen[x] = 1; return true;
     });
   }
+  var TF_NOTIZ_MAX = 200;
+  function tfNotizBereinigen(n){
+    return typeof n === 'string' ? n.replace(/\s+/g, ' ').trim().slice(0, TF_NOTIZ_MAX) : '';
+  }
   // Grobe Tageszeiten statt Uhrzeiten.
   function zeitabschnitt(ts){
     var h;
@@ -206,6 +210,8 @@
         if (o) e.ocean = o; else delete e.ocean;
         var t = tfTagsBereinigen(e.tags);
         if (t.length) e.tags = t; else delete e.tags;
+        var n = tfNotizBereinigen(e.notiz);
+        if (n) e.notiz = n; else delete e.notiz;
         return e;
       });
     }catch(e){ return []; }
@@ -227,6 +233,8 @@
     var t = tfTagsBereinigen(extra && extra.tags);
     if (o) eintrag.ocean = o;
     if (t.length) eintrag.tags = t;
+    var n = tfNotizBereinigen(extra && extra.notiz);
+    if (n) eintrag.notiz = n;
     h.push(eintrag);
     h.sort(function(a,b){ return a.ts-b.ts; });
     if (h.length>MAX_STATE_EINTRAEGE) h = h.slice(h.length-MAX_STATE_EINTRAEGE);

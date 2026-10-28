@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 183)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 184)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 183 | (dieser) | App-Sperre mit Face ID/Touch ID/Code, frei, Sofort/1/15 Min. (`LucentaSperre.swift`, Plugin `Lock`) |
+| 184 | (dieser) | Jahr auf einen Blick (Kalender), Monatsrueckblick (Kalender + Karte auf Heute), Notiz am Eintrag; teilbar als Bild |
+| 183 | `635e588` | App-Sperre mit Face ID/Touch ID/Code, frei, Sofort/1/15 Min. (`LucentaSperre.swift`, Plugin `Lock`) |
 | 182 | `c1ab038` | Version ohne Big-Five-Zusatz, Freunde-Hinweis weg, Rollenkarten mit Aufklapp-Fusszeile, Freunde im Rollenatlas mit Namen, OCEAN-Text 10,5 px |
 | 181 | `9f82b17` | Tagesform-Widget (klein, mittel mit Eintragen, Sperrbildschirm; App Group) und Apple Health (Stimmung als Gemuetszustand, nur schreiben, Vorgabe aus) |
 | 180 | `82ab3dd` | Bestand als Datei gespiegelt (`LucentaBestand.swift`), vor dem Start zurueckgeholt, wenn WebKit ihn geleert hat; Uebergabe berichtigt |
@@ -118,6 +119,9 @@ Regeln, die er gesetzt hat:
 
 ### Wo was steht
 
+- **Jahr/Rueckblick/Notiz (Runde 184):** `07c-rueckblick.js` (`tfJahrHTML`, `tfRueckblickDaten/HTML/Bild`, `tfJahrBild`,
+  `tfRueckblickHeuteRendern`), Umschalter `tfKalenderAnsicht` in `tfKalenderRendern` (07b), Notiz `#tfNotiz`/`tfNotizBereinigen`.
+  Bildfenster: `openImgModal(bild)`.
 - **Sperre (Runde 183):** `LucentaSperre.swift` (`AppSperre`, Plugin `Lock`), JS `sperreEinrichten`/`sperreNachziehen` (19b),
   Zeilen `#sperreZeile`/`#sperreNachZeile`. Zum Testen im Simulator: `defaults write app.lucenta.ios lucenta_sperre_an -bool YES`,
   Face ID per `notifyutil -p com.apple.BiometricKit_Sim.pearl.match`.
@@ -235,7 +239,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–183 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–184 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -329,6 +333,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 184: ALLE 9 BESTANDEN**: `pruef-nativ` 131, `fehlersuche` ohne Fund.
 
 **Nach Runde 183: ALLE 9 BESTANDEN**: `pruef-nativ` 126, `fehlersuche` ohne Fund.
 
@@ -490,6 +496,37 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 184 — Jahr auf einen Blick, Monatsrueckblick, Notiz
+
+**Auftrag:** Punkte 2, 6 und 7 aus der Vergleichsliste; alle vier Fragen mit der Empfehlung beantwortet.
+
+**Notiz (frei):** Feld `#tfNotiz` unter den Stichworten, `maxlength` 200; `tfNotizBereinigen` (03) fasst Leerraum zusammen und
+kuerzt — auch beim Lesen. Steht als `notiz` am Eintrag, erscheint in den Tagesdetails des Kalenders (escaped). Geht NICHT nach
+Health, nicht in den Freundescode, nicht ans Widget; wohl in Spiegel und eigene iCloud (Teil von `lucenta_state`).
+
+**Jahr (Lucenta+ wie der Kalender):** Umschalter „Monat | Jahr" oben im Kalender (`tfKalenderAnsicht`); zwoelf Monatsblaetter
+wie in Apples Kalender (`tfJahrHTML`, neue Datei `src/js/07c-rueckblick.js`), Farbe nach Stimmung/Energie wie im Monat, Tipp auf
+einen Monat oeffnet ihn. Jahre zurueck bis zum ersten Eintrag. „Als Bild teilen" -> `tfJahrBild` (1080x1350).
+
+**Monatsrueckblick (Lucenta+, frei verschwommen):** unter jedem vergangenen Monat im Kalender und in den ersten 7 Tagen eines
+Monats als Karte auf „Heute" (`#tfRueckblickHeute`). Ab 3 Eintragstagen. Zeilen nur mit Grundlage: Schnitt + Tage; Vormonat
+(dort ab 3 Tagen); beste Tageszeit (mind. zwei Tageszeiten mit je zwei Eintraegen und 0,3 Abstand); Stichwort an den besten
+Tagen (oberes Drittel nach Stimmung) bzw. das haeufigste (je mind. zwei Tage); Mini-Kalender. Teilbild `tfRueckblickBild`.
+
+**Teilen:** `openImgModal(bild)` nimmt jetzt optional `{canvas, datei, text}`; ohne (auch beim Klick-Ereignis) wie bisher das
+Ergebnisbild. Teilen und „In Fotos sichern" benutzen Dateiname und Text des gezeigten Bildes (`lucenta-2026.png`,
+`lucenta-2026-10.png`).
+
+**Am Bild gefunden und behoben:** Untertitel zeigte woertlich „state" (der Schluessel liegt in einer Ansichtsliste, nicht in den
+Texten — jetzt `tagesform_2`); im Monatsbild lagen die Zeilen uebereinander (`wrapCanvasText` gibt die Grundlinie der LETZTEN
+Zeile zurueck); in der Legende fehlte die „1". Zweimal `audit_i18n`: Klassennamen mit deutschem Wort (`tf-jahr-heute`,
+`-jetzt`) -> `tf-jahr-tag0` wie `tf-kal-tag0`.
+
+**Gemessen:** WebKit, 120 Tage Beispieldaten, Uhr auf 3. November: Jahresansicht, Karte „Dein Oktober" auf Heute (alle vier
+Zeilen), Rueckblick unter dem Oktober, beide Teilbilder angesehen. `pruef-nativ` 126 -> 131 (Notiz gekuerzt/zusammengefasst,
+Feld danach leer, Notiz in den Tagesdetails, zwoelf Monate, Monat oeffnen + Rueckblick nur mit vorhandenen Zeilen). Dabei: Die
+Pruefung muss `__pruef_abo` setzen, sonst nimmt der Stand beim Neuladen Lucenta+ zu Recht weg.
 
 ## Runde 183 — App-Sperre mit Face ID
 

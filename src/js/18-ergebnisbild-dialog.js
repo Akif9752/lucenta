@@ -1,7 +1,11 @@
 // ---------- Ergebnisbild-Dialog ----------
-  var imgModalLastFocus = null, currentShareCanvas = null;
-  function renderShareImage(){
-    currentShareCanvas = buildShareCanvas();
+  var imgModalLastFocus = null, currentShareCanvas = null, currentShareDatei = '', currentShareText = '';
+  // Ohne Bild (auch beim Klick-Ereignis) das Ergebnisbild; sonst {canvas, datei, text} aus Jahr/Rueckblick.
+  function renderShareImage(bild){
+    if (!bild || !bild.canvas) bild = {canvas: buildShareCanvas(),
+      datei: decodeEntities(tx('js_dateiname_ergebnis')) + new Date().toISOString().slice(0,10) + '.png',
+      text: tx('js_mein_lucentaergebnis')};
+    currentShareCanvas = bild.canvas; currentShareDatei = bild.datei; currentShareText = bild.text;
     $('shareImagePreview').src = currentShareCanvas.toDataURL('image/png');
   }
   function imgModalKeydown(e){
@@ -15,9 +19,9 @@
       else if (!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
     }
   }
-  function openImgModal(){
+  function openImgModal(bild){
     imgModalLastFocus = document.activeElement;
-    renderShareImage();
+    renderShareImage(bild);
     bildSichernAnwenden();
     $('imgModal').classList.add('open');
     $('imgModal').setAttribute('aria-hidden','false');

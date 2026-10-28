@@ -290,12 +290,21 @@
         </div>
         <div class="tf-chips" id="tfStichworte" role="group" aria-label="Stichworte zum Tag" data-i18n-aria="aria_tf_stichworte"></div>
       </div>
+      <!-- Bleibt auf dem Geraet; nicht nach Health, nicht in den Freundescode (Entscheidung des Inhabers). -->
+      <div class="tf-teil">
+        <div class="tf-teil-kopf">
+          <span class="state-q-label" data-i18n="tf_notiz_titel">Notiz</span>
+          <span class="tf-freiwillig" data-i18n="tf_freiwillig_2">freiwillig</span>
+        </div>
+        <textarea id="tfNotiz" class="tf-notiz" rows="2" maxlength="200" placeholder="Was dir heute wichtig war" data-i18n-placeholder="tf_notiz_ph" aria-label="Notiz zum Eintrag" data-i18n-aria="aria_tf_notiz"></textarea>
+      </div>
       <button type="button" class="btn btn-primary btn-sm" id="btnStateSave" style="align-self:flex-start;" data-i18n="speichern">Speichern</button>
       </div>
     </div>
 
     <!-- Runde 124: die Erinnerung dort, wo sie gebraucht wird. Derselbe Stand wie in den
          Einstellungen (erinnerungAnwenden() setzt beide). -->
+    <div id="tfRueckblickHeute" data-tf-teil="heute"></div>
     <div class="tf-erinnerung" data-tf-teil="heute">
       <div class="settings-zeile-text">
         <strong data-i18n="tf_erinnerung_titel">Tägliche Erinnerung</strong>

@@ -760,6 +760,29 @@ await seite.evaluate(() => document.getElementById('sperreSchalter').click()); a
 ok(await seite.evaluate(() => document.getElementById('sperreNachZeile').hidden), 'ausgeschaltet: Zeitwahl verschwindet');
 await seite.evaluate(() => { ['__pruef_sperre','__pruef_sperre_ok','__pruef_sperre_nach'].forEach(k => localStorage.removeItem(k)); });
 
+console.log('\n=== Notiz, Jahr und Monatsrueckblick (Tagesform) ===');
+await tageSaeen(45);
+await seite.evaluate(() => { localStorage.setItem('lucenta_plus', '1'); localStorage.setItem('__pruef_abo', '1'); });   // sonst nimmt der Stand beim Start Lucenta+ weg
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(500);
+await seite.evaluate(() => { document.getElementById('btnDrawerToggle').click(); });
+await seite.waitForTimeout(300);
+await seite.evaluate(() => { document.getElementById('btnDrawerState').click(); }); await seite.waitForTimeout(700);
+await seite.evaluate(() => { document.querySelector('#stateEnergyRow button:nth-child(4)')?.click(); document.querySelector('#stateValenceRow button:nth-child(2)')?.click();
+  document.getElementById('tfNotiz').value = '  Langer   Spaziergang \n am See  ' + 'x'.repeat(300); document.getElementById('btnStateSave').click(); });
+await seite.waitForTimeout(1500);
+const nz = await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_state')).slice(-1)[0].notiz || '');
+ok(nz.indexOf('Langer Spaziergang am See') === 0 && nz.length === 200, 'Notiz gespeichert, Leerraum zusammengefasst, auf 200 Zeichen begrenzt (' + nz.length + ')');
+ok(await seite.evaluate(() => document.getElementById('tfNotiz').value === ''), 'nach dem Speichern ist das Feld leer');
+await seite.evaluate(() => document.querySelector('[data-reiter="kalender"]').click()); await seite.waitForTimeout(400);
+await seite.evaluate(() => document.querySelector('[data-kal-tag="' + new Date().toISOString().slice(0,10) + '"]')?.click()); await seite.waitForTimeout(300);
+ok(await seite.evaluate(() => /Langer Spaziergang/.test(document.querySelector('.tf-kal-details')?.textContent || '')), 'die Notiz steht in den Tagesdetails des Kalenders');
+await seite.evaluate(() => document.querySelector('[data-kal-ansicht="jahr"]').click()); await seite.waitForTimeout(300);
+ok((await seite.evaluate(() => document.querySelectorAll('.tf-jahr-monat').length)) === 12, 'Jahresansicht mit zwoelf Monaten');
+await seite.evaluate(() => document.querySelector('[data-jahr-monat="' + (new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).getMonth()) + '"]')?.click()); await seite.waitForTimeout(300);
+const rbk = await seite.evaluate(() => ({ansicht: !!document.querySelector('.tf-kal-raster'), rb: document.querySelector('.tf-kal-karte .tf-rb')?.textContent || ''}));
+ok(rbk.ansicht && /4,0|4\.0/.test(rbk.rb), 'Tipp auf einen Monat oeffnet ihn, darunter der Rueckblick mit echten Zahlen (' + JSON.stringify(rbk).slice(0, 160) + ')');
+await seite.evaluate(() => { localStorage.removeItem('lucenta_plus'); localStorage.removeItem('__pruef_abo'); localStorage.removeItem('lucenta_state'); });
+
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 
 await browser.close();

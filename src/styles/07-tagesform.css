@@ -98,6 +98,13 @@
   .tf-frage .scale-btn.picked .fill{ background:var(--tf-farbe); }
 
   .tf-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  /* 16 px Mindestgroesse: darunter zoomt iOS beim Tippen ins Feld. */
+  .tf-notiz{ display:block; width:100%; box-sizing:border-box; resize:none; padding:10px 14px; border:1px solid var(--line);
+    border-radius:var(--radius-m); background:var(--paper); color:var(--ink); font-family:var(--sans);
+    font-size:calc(16px * var(--dt, 1)); line-height:1.4; }
+  .tf-notiz::placeholder{ color:var(--muted-soft); opacity:1; }
+  .tf-notiz:focus{ outline:2px solid var(--accent-strong); outline-offset:1px; }
+  .tf-kal-notiz{ display:block; color:var(--ink); font-style:italic; white-space:pre-wrap; overflow-wrap:anywhere; }
   .tf-chip{
     /* 44 Punkt hoch: Apples Mindestmass fuer ein Tippziel (die Fehlersuche fand 36). */
     min-height:44px; padding:9px 15px; border-radius:100px; cursor:pointer;
@@ -233,3 +240,24 @@
   .tf-reiter{ grid-template-columns:repeat(4, minmax(0, 1fr)); }
   .tf-reiter .segment-opt{ padding:8px 4px; }
   .tf-reiter .segment-preis{ font-size:calc(14px * var(--dt, 1)); overflow-wrap:anywhere; -webkit-hyphens:auto; hyphens:auto; text-align:center; }
+
+  /* Jahr auf einen Blick: zwoelf Monatsblaetter wie in Apples Kalender. */
+  .tf-kal-ansicht{ margin-bottom:12px; }
+  .tf-jahr{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px 12px; margin-top:12px; }
+  .tf-jahr-monat{ display:flex; flex-direction:column; gap:5px; padding:0; border:none; background:none; color:inherit; text-align:left; cursor:pointer; }
+  .tf-jahr-monat:active{ opacity:.62; }
+  .tf-jahr-name{ font-size:calc(13px * var(--dt, 1)); font-weight:600; color:var(--accent-strong); }
+  .tf-jahr-tage, .tf-rb-tage{ display:grid; grid-template-columns:repeat(7, 1fr); gap:2px; }
+  .tf-jahr-tage i, .tf-rb-tage i{ display:block; aspect-ratio:1; border-radius:22%; }
+  .tf-jahr-ohne{ background:var(--line); }
+  .tf-jahr-zukunft{ background:var(--line); opacity:.35; }
+  .tf-jahr-tag0{ box-shadow:0 0 0 1.5px var(--ink); }
+  .tf-teilen{ margin-top:14px; }
+  /* Monatsrueckblick */
+  .tf-rb{ margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
+  #tfRueckblickHeute .tf-rb{ margin-top:0; padding:18px; border:none; border-radius:var(--radius-m); background:var(--surface); }
+  #tfRueckblickHeute:not(:empty){ margin:16px 0; }
+  .tf-rb-titel{ font-family:var(--serif); font-size:calc(22px * min(var(--dt, 1), 1.3)); line-height:1.2; margin-bottom:8px; }
+  .tf-rb-zeilen{ list-style:none; margin:0 0 14px; padding:0; display:flex; flex-direction:column; gap:6px;
+    color:var(--muted); font-size:calc(14px * var(--dt, 1)); line-height:1.45; }
+  .tf-rb-tage{ gap:4px; max-width:260px; }

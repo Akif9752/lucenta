@@ -299,19 +299,17 @@
   }
   if ($('btnImgModalSichern')) $('btnImgModalSichern').addEventListener('click', function(){
     var bild = $('shareImagePreview');
-    bildSichern(bild ? bild.src : '', decodeEntities(tx('js_dateiname_ergebnis')) +
-      new Date().toISOString().slice(0,10) + '.png');
+    bildSichern(bild ? bild.src : '', currentShareDatei);
   });
   $('btnImgModalShare').addEventListener('click', function(){
     if (!currentShareCanvas){ teilenAlsText(); return; }
     currentShareCanvas.toBlob(function(blob){
       if (!blob){ teilenAlsText(); return; }
       var file;
-      try{ file = new File([blob], decodeEntities(tx('js_dateiname_ergebnis')) +
-        new Date().toISOString().slice(0,10) + '.png', {type:'image/png'}); }
+      try{ file = new File([blob], currentShareDatei, {type:'image/png'}); }
       catch(e){ teilenAlsText(); return; }
       if (navigator.canShare && navigator.canShare({files:[file]})){
-        navigator.share({files:[file], title:'Lucenta', text:tx('js_mein_lucentaergebnis')}).catch(function(err){
+        navigator.share({files:[file], title:'Lucenta', text:currentShareText}).catch(function(err){
           if (err && err.name === 'AbortError') return;
           teilenAlsText();
         });

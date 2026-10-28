@@ -316,6 +316,7 @@
     erinnerungAnwenden();
     renderStateTrend();
     tfAuswertungenRendern();
+    tfRueckblickHeuteRendern();
   }
   // Ist die laufende Tageszeit eingetragen, steht statt der Skalen die Bestaetigung mit "Aendern".
   // `neu` = direkt nach dem Speichern (sichtbar zuklappen).
