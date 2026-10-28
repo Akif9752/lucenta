@@ -592,6 +592,8 @@
       'tf_kal_groesse': 'Colour calendar by',
       'tf_muster_titel': 'Patterns',
       'tf_muster_plus': 'With Lucenta+ you see every pattern once there are enough entries: what good and hard days have in common, which tags go along with your mood – and, if you log at two times of day, how you feel in the morning, at midday and in the evening.',
+      'tf_muster_weitere_1': 'That was your first pattern. One more is already waiting, drawn from your entries.',
+      'tf_muster_weitere_n': 'That was your first pattern. {n} more are already waiting, drawn from your entries.',
       'tf_tageszeit_noch': 'Your time-of-day pattern appears once you have logged three times each at two times of day – for example morning and evening.',
       'tf_muster_erstes_frei': 'Your first pattern – free for you.',
       'tf_erstes_muster_da': 'Seven days logged: your first pattern is ready – under Check-in → Patterns.',

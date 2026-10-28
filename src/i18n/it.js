@@ -591,6 +591,8 @@
       'tf_kal_groesse': 'Colora il calendario per',
       'tf_muster_titel': 'Schemi',
       'tf_muster_plus': 'Con Lucenta+ vedi tutti gli schemi non appena ci sono abbastanza voci: cosa hanno in comune i giorni buoni e quelli difficili, quali parole chiave vanno con il tuo umore e, se registri in due momenti della giornata, come stai al mattino, a mezzogiorno e la sera.',
+      'tf_muster_weitere_1': 'Questo era il tuo primo schema. Un altro ti aspetta già, ricavato dalle tue voci.',
+      'tf_muster_weitere_n': 'Questo era il tuo primo schema. Altri {n} ti aspettano già, ricavati dalle tue voci.',
       'tf_tageszeit_noch': 'Il tuo schema per momento della giornata compare quando avrai registrato tre volte in due momenti, per esempio al mattino e la sera.',
       'tf_muster_erstes_frei': 'Il tuo primo schema, gratis per te.',
       'tf_erstes_muster_da': 'Sette giorni registrati: il tuo primo schema è pronto, in Diario → Schemi.',

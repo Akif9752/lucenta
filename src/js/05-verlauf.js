@@ -38,7 +38,12 @@
         '<path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"></path></svg>'+
       '<div><p class="schloss-text">'+text+'</p>'+
       '<button type="button" class="btn btn-primary btn-sm schloss-btn" data-plus-info>'+
-      tx('plus_knopf')+'</button></div></div>';
+      plusKnopfText('plus_knopf')+'</button></div></div>';
+  }
+  // Meldet der Store eine Probezeit fuer dieses Konto, nennt jede Sperre sie; sonst der gewohnte Text.
+  function plusKnopfText(sonst){
+    var n = typeof probeTage === 'function' ? probeTage() : 0;
+    return n ? tfText('plus_cta_probe', {n: n}) : tx(sonst || 'plus_freischalten');
   }
   // Gesperrte Stellen zeigen den ECHTEN Inhalt verschwommen, darueber das Angebot (Entscheidung des
   // Inhabers). Der Inhalt ist aria-hidden und inert; nur der Knopf ist bedienbar.
@@ -47,7 +52,7 @@
       '<div class="plus-unscharf" aria-hidden="true" inert>'+innenHTML+'</div>'+
       '<div class="plus-vorschau-karte">'+
         '<p class="plus-vorschau-text">'+text+'</p>'+
-        '<button type="button" class="btn btn-primary btn-sm" data-plus-info>'+tx('plus_freischalten')+'</button>'+
+        '<button type="button" class="btn btn-primary btn-sm" data-plus-info>'+plusKnopfText()+'</button>'+
       '</div></div>';
   }
   // Ein Tipp oeffnet das Lucenta+-Fenster (kein Toast — der verschwaende zu schnell).

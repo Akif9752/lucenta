@@ -255,21 +255,25 @@
   // gekauftes soll auf einem neuen Geraet da sein).
   // Weggenommen wird NUR bei einer klaren Antwort: Keine Bruecke, Fehler oder Unerwartetes aendern
   // nichts.
+  function plusStandUebernehmen(r){
+    if (!r || typeof r.aktiv !== 'boolean') return;
+    if (r.aktiv && r.produkt) schalterSetzen(PLUS_PRODUKT, r.produkt, null);
+    if (r.aktiv === istPlus()) return;
+    // Im Entwicklungsbau nimmt die Abfrage nichts weg — sonst ueberlebte der Umschalter im
+    // Profil keinen Neustart. Geben darf sie weiterhin: Ein echter Testkauf soll ankommen.
+    if (!r.aktiv && entwicklungsBau()) return;
+    plusSetzen(r.aktiv);
+    plusAnsichtenAuffrischen();
+  }
   function plusStandPruefen(){
     var sk = nativModul('StoreKit');
     if (!sk || !sk.stand) return;
-    try{
-      sk.stand().then(function(r){
-        if (!r || typeof r.aktiv !== 'boolean') return;
-        if (r.aktiv && r.produkt) schalterSetzen(PLUS_PRODUKT, r.produkt, null);
-        if (r.aktiv === istPlus()) return;
-        // Im Entwicklungsbau nimmt die Abfrage nichts weg — sonst ueberlebte der Umschalter im
-        // Profil keinen Neustart. Geben darf sie weiterhin: Ein echter Testkauf soll ankommen.
-        if (!r.aktiv && entwicklungsBau()) return;
-        plusSetzen(r.aktiv);
-        plusAnsichtenAuffrischen();
-      }).catch(function(){});
-    }catch(e){}
+    try{ sk.stand().then(plusStandUebernehmen).catch(function(){}); }catch(e){}
+    // Kaeufe ausserhalb des Kauffensters (Rueckgewinnungs-Angebot, App Store) melden sich selbst.
+    if (sk.addListener && !plusStandPruefen.horcht){
+      plusStandPruefen.horcht = true;
+      try{ sk.addListener('aboGeaendert', plusStandUebernehmen); }catch(e){}
+    }
   }
 
   // ---------- Bitte um Bewertung ----------
@@ -320,6 +324,8 @@
       if (PLUS_PREISE.jahrSpar) spar.textContent = tx('plus_jahr_spar').replace(BETRAG_MUSTER, PLUS_PREISE.jahrSpar);
       spar.hidden = !PLUS_PREISE.jahrSpar;
     }
+    document.querySelectorAll('.plus-vorschau [data-plus-info]').forEach(function(b){ b.textContent = plusKnopfText(); });
+    document.querySelectorAll('.schloss-btn[data-plus-info]').forEach(function(b){ b.textContent = plusKnopfText('plus_knopf'); });
     var probe = probeTage(), abz = $('plusProbeAbzeichen');
     if (abz){ abz.textContent = probe ? tfText('plus_probe_abzeichen', {n: probe}) : ''; abz.hidden = !probe; }
     plusKnopfAnwenden();

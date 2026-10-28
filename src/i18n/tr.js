@@ -595,6 +595,8 @@
       'tf_kal_groesse': 'Takvimi renklendir',
       'tf_muster_titel': 'Örüntüler',
       'tf_muster_plus': 'Lucenta+ ile yeterli kayıt olunca tüm örüntüleri görürsün: iyi ve zor günlerin ortak noktaları, hangi etiketlerin ruh hâlinle birlikte gittiği ve günün iki bölümünde kayıt yaparsan sabah, öğlen ve akşam nasıl hissettiğin.',
+      'tf_muster_weitere_1': 'Bu ilk örüntündü. Kayıtlarından bir tane daha seni bekliyor.',
+      'tf_muster_weitere_n': 'Bu ilk örüntündü. Kayıtlarından {n} tane daha seni bekliyor.',
       'tf_tageszeit_noch': 'Gün bölümü örüntün, günün iki bölümünde üçer kez kayıt yaptığında görünür – örneğin sabah ve akşam.',
       'tf_muster_erstes_frei': 'İlk örüntün – sana ücretsiz.',
       'tf_erstes_muster_da': 'Yedi gün kaydedildi: İlk örüntün hazır – Günlük durum → Örüntüler bölümünde.',

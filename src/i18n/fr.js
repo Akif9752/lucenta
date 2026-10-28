@@ -591,6 +591,8 @@
       'tf_kal_groesse': 'Colorer le calendrier selon',
       'tf_muster_titel': 'Tendances',
       'tf_muster_plus': 'Avec Lucenta+, tu vois toutes les tendances dès qu’il y a assez d’entrées : ce que les bons et les mauvais jours ont en commun, quels mots-clés vont avec ton humeur – et, si tu notes à deux moments de la journée, comment tu te sens le matin, le midi et le soir.',
+      'tf_muster_weitere_1': 'C’était ta première tendance. Une autre t’attend déjà, tirée de tes entrées.',
+      'tf_muster_weitere_n': 'C’était ta première tendance. {n} autres t’attendent déjà, tirées de tes entrées.',
       'tf_tageszeit_noch': 'Ta tendance selon le moment de la journée apparaît dès que tu as noté trois fois à deux moments – par exemple le matin et le soir.',
       'tf_muster_erstes_frei': 'Ta première tendance – offerte.',
       'tf_erstes_muster_da': 'Sept jours notés : ta première tendance est prête – dans Relevé → Tendances.',

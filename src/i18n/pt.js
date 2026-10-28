@@ -591,6 +591,8 @@
       'tf_kal_groesse': 'Colorir calendário por',
       'tf_muster_titel': 'Padrões',
       'tf_muster_plus': 'Com o Lucenta+ vês todos os padrões assim que houver registos suficientes: o que os dias bons e os difíceis têm em comum, que etiquetas acompanham o teu humor – e, se registares em dois momentos do dia, como te sentes de manhã, ao meio-dia e à noite.',
+      'tf_muster_weitere_1': 'Esse foi o teu primeiro padrão. Mais um já está à tua espera, a partir dos teus registos.',
+      'tf_muster_weitere_n': 'Esse foi o teu primeiro padrão. Mais {n} já estão à tua espera, a partir dos teus registos.',
       'tf_tageszeit_noch': 'O teu padrão por momento do dia aparece quando tiveres registado três vezes em dois momentos – por exemplo de manhã e à noite.',
       'tf_muster_erstes_frei': 'O teu primeiro padrão – grátis para ti.',
       'tf_erstes_muster_da': 'Sete dias registados: o teu primeiro padrão está pronto – em Registo → Padrões.',

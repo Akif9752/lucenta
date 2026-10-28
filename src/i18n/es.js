@@ -591,6 +591,8 @@
       'tf_kal_groesse': 'Colorear calendario según',
       'tf_muster_titel': 'Patrones',
       'tf_muster_plus': 'Con Lucenta+ ves todos los patrones en cuanto haya suficientes registros: qué tienen en común los días buenos y los difíciles, qué etiquetas van con tu ánimo y, si registras en dos momentos del día, cómo estás por la mañana, a mediodía y por la noche.',
+      'tf_muster_weitere_1': 'Ese fue tu primer patrón. Otro más ya te espera, a partir de tus registros.',
+      'tf_muster_weitere_n': 'Ese fue tu primer patrón. {n} más ya te esperan, a partir de tus registros.',
       'tf_tageszeit_noch': 'Tu patrón por momento del día aparece cuando hayas registrado tres veces en dos momentos del día, por ejemplo por la mañana y por la noche.',
       'tf_muster_erstes_frei': 'Tu primer patrón, gratis para ti.',
       'tf_erstes_muster_da': 'Siete días registrados: tu primer patrón está listo, en Registro → Patrones.',

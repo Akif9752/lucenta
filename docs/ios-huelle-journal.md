@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 178)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 179)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 178 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 179 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -50,6 +50,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 179 | (dieser) | Kaufquote: Probezeit an jeder Sperre, Angebot unter dem ersten Muster mit echter Zahl, Rueckgewinnung (Kaeufe ausserhalb des Fensters schalten sofort frei) |
 | 178 | (dieser) | Nutzungszahlen (Beta) entfernt; „Abo verwalten" nur mit Abo; Version aus der App; Anmeldeschritt geprueft; verwaiste Texte; Store-Bilder neu |
 | 177 | (dieser) | Fusszeile unter dem Ergebnis entfernt (IPIP gemeinfrei, keine Nennungspflicht); Abschnitt „Lizenzen" mit Fraunces (OFL), Capacitor (MIT), Apache Cordova (Apache 2.0), IPIP |
 | 176 | (dieser) | Impressum nur noch in den Einstellungen; aus dem Kaufablauf nur die Datenschutzerklaerung |
@@ -315,6 +316,8 @@ Pruefbericht zu den Richtlinien: `docs/richtlinien-pruefung.md`.
 
 ### Stand der Pruefungen
 
+**Nach Runde 179: ALLE 9 BESTANDEN**: `pruef-nativ` 102, sonst wie nach 178.
+
 **Nach Runde 178: ALLE 9 BESTANDEN**: `tests` 10 Reihen, `pruef-nativ` 99, sonst wie nach 174.
 
 **Nach Runde 177: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
@@ -445,6 +448,25 @@ claude/lucenta-setup-browser-test-j6hn7f` ist erlaubt); kein Pull Request ohne B
 bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 
 ---
+
+## Runde 179 — Kaufquote: drei Hebel
+
+**Auftrag:** Nach der Simulation mit 10.000 (Schaetzung) die Hebel 1 und 2 und die Rueckgewinnung umsetzen. Offen beim
+Inhaber aus derselben Liste: Einmalkauf, Bericht teilweise oeffnen, Mindestversion iOS 16.4, Kontakt-E-Mail.
+
+**1 — Probezeit an jeder Sperre.** `plusKnopfText()` (05-verlauf.js): meldet `preise()` eine Probezeit, heisst jeder
+Vorschau- und Schloss-Knopf „7 Tage kostenlos testen", sonst wie bisher. Die Preise kommen asynchron —
+`plusPreiseAnwenden` zieht schon gezeichnete Knoepfe nach. Der Knopf oeffnet weiter das Kauffenster (Jahr vorgewaehlt).
+
+**2 — Angebot unter dem ersten Muster.** Der Text der Vorschau unter dem freien Muster nennt die ECHTE Zahl der schon
+berechneten weiteren Muster (`musterAngebotText`, zaehlt `.tf-muster-karte`/`.befund-liste`): „Das war dein erstes Muster.
+3 weitere liegen aus deinen Eintraegen schon bereit." (`tf_muster_weitere_1/_n`, 8 Sprachen); ohne weitere der alte Text.
+
+**3 — Rueckgewinnung.** Win-back-Angebote richtet der Inhaber in App Store Connect ein; iOS 18 zeigt sie selbst an.
+Damit ein solcher Kauf (ebenso Kauf im App Store, Familienfreigabe, Ablauf, Erstattung) SOFORT wirkt: Der
+`Transaction.updates`-Horcher in `LucentaKaeufePlugin` meldet `aboGeaendert` mit dem frischen Stand, JS uebernimmt ihn ueber
+`plusStandUebernehmen` (dieselbe Regel wie beim Start: weggenommen nur bei klarer Antwort). Anleitung mit Vorschlag in
+`docs/app-store-start.md`. `pruef-nativ` 99 -> 102. Swift uebersetzt. `pruef-alles` 9/9.
 
 ## Runde 178 — Aufraeumen vor dem Store
 

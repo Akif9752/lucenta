@@ -58,10 +58,15 @@ public class LucentaKaeufePlugin: CAPInstancePlugin, CAPBridgedPlugin {
     private var horcher: Task<Void, Never>?
 
     override public func load() {
-        horcher = Task.detached {
+        // Kaeufe ausserhalb des Kauffensters (Win-back-Angebot, Kauf im App Store, Familienfreigabe,
+        // Verlaengerung, Erstattung) kommen hier an — die Oberflaeche erfaehrt es sofort, nicht erst beim Neustart.
+        horcher = Task.detached { [weak self] in
             for await ergebnis in Transaction.updates {
                 guard case .verified(let transaktion) = ergebnis else { continue }
                 await transaktion.finish()
+                guard let self else { continue }
+                let stand = await self.aktivesAbo()
+                self.notifyListeners("aboGeaendert", data: ["aktiv": stand.aktiv, "produkt": stand.produkt ?? ""])
             }
         }
     }

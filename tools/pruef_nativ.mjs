@@ -70,6 +70,7 @@ await seite.addInitScript(() => {
       // der erste darf etwas freischalten.
       StoreKit: {
         bewerten: () => { merke('bewerten'); return Promise.resolve({}); },
+        addListener: (name, f) => { if (name === 'aboGeaendert') window.__aboGeaendert = f; return Promise.resolve({remove(){}}); },
         restorePurchases: () => { merke('wiederherstellen');
           if (window.__wiederAbbruch && !window.__aboAktiv) return Promise.resolve({aktiv: false, produkt: '', abgebrochen: true});
           return Promise.resolve({aktiv: !!window.__aboAktiv, produkt: window.__aboAktiv ? 'lucenta.plus.jahr' : ''}); },
@@ -602,6 +603,15 @@ await seite.waitForTimeout(300);
 await seite.evaluate(() => document.getElementById('btnDrawerSettings').click()); await seite.waitForTimeout(500);
 ok(await seite.evaluate(() => !document.getElementById('btnAboVerwalten').hidden), 'mit Abo erscheint "Abo verwalten"');
 await seite.evaluate(() => { localStorage.removeItem('lucenta_plus'); localStorage.removeItem('__pruef_abo'); });
+
+console.log('\n=== Rueckgewinnung: ein Kauf ausserhalb des Kauffensters schaltet sofort frei ===');
+await seite.evaluate(() => { localStorage.removeItem('lucenta_plus'); localStorage.removeItem('__pruef_abo'); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+ok(await seite.evaluate(() => typeof window.__aboGeaendert === 'function'), 'die App hoert auf Kaeufe, die nicht aus ihrem Fenster kommen');
+await seite.evaluate(() => window.__aboGeaendert({aktiv: true, produkt: 'lucenta.plus.jahr'})); await seite.waitForTimeout(300);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'), 'ein Win-back-Kauf schaltet ohne Neustart frei');
+await seite.evaluate(() => window.__aboGeaendert({aktiv: false, produkt: ''})); await seite.waitForTimeout(300);
+ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') !== '1'), 'ein Ablauf/Erstattung nimmt es ebenso sofort zurueck');
 
 console.log('\n=== Bitte um Bewertung: einmal, wenn das erste Muster da ist ===');
 const tageSaeen = (n) => seite.evaluate(n => { localStorage.removeItem('lucenta_erstes_muster'); localStorage.removeItem('lucenta_bewertung');

@@ -187,6 +187,12 @@ blockiert.
    zeigt die Probezeit NUR, wenn der Store sie dem Konto meldet (`isEligibleForIntroOffer`) — fehlt das
    Angebot, steht einfach der normale Kaufknopf da. Im Simulator ist es über `Lucenta.storekit` schon da.
 
+   **Rückgewinnung (Win-back, Entscheidung des Inhabers, 2026-10-28):** Unter dem Abo → „Abo-Angebote" →
+   „Rückgewinnungsangebot" anlegen, für beide Abos. Vorschlag: einen Monat zum halben Preis bzw. das Jahr um 30 % günstiger,
+   für Personen mit mindestens einem bezahlten Monat, deren Abo seit 1–6 Monaten abgelaufen ist; höchstens einmal je Person.
+   iOS (ab 18) zeigt das Angebot selbst an — beim Öffnen der App, im App Store und in den Abo-Einstellungen. Die App muss
+   dafür nichts anzeigen; ein so abgeschlossener Kauf schaltet sofort frei (`aboGeaendert` aus `Transaction.updates`).
+
    **Der Code selbst ist seit Runde 103 fertig** — was hier früher stand, ist erledigt:
    - Der Name `StoreKit` war ein Platzhalter (es gibt kein solches Modul von Apple oder Ionic).
      Jetzt gibt es unser eigenes: `ios/App/App/LucentaKaeufePlugin.swift`, StoreKit 2, angemeldet

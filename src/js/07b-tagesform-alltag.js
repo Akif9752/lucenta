@@ -391,6 +391,12 @@
     toast(tx('tf_erstes_muster_da'), 3500);
     setTimeout(bewertungErbitten, 4500);
   }
+  // Unter dem freien Muster: wie viele weitere aus den eigenen Eintraegen schon berechnet sind (echte Zahl).
+  function musterAngebotText(rest){
+    var n = rest.filter(function(h){ return /tf-muster-karte|befund-liste/.test(h); }).length;
+    if (!n) return tx('tf_muster_plus');
+    return tfText(n === 1 ? 'tf_muster_weitere_1' : 'tf_muster_weitere_n', {n: n});
+  }
   function tfMusterRendern(){
     var wrap = $('tfMuster');
     if (!wrap) return;
@@ -463,7 +469,7 @@
     if (!istPlus()){
       wrap.innerHTML = titel + (teile.length
         ? '<p class="tf-muster-frei">'+tx('tf_muster_erstes_frei')+'</p>'+teile[0]+
-          (teile.length > 1 ? vorschauHTML(teile.slice(1).join(''), tx('tf_muster_plus')) : '<p class="tf-leer">'+tx('tf_muster_plus')+'</p>')
+          (teile.length > 1 ? vorschauHTML(teile.slice(1).join(''), musterAngebotText(teile.slice(1))) : '<p class="tf-leer">'+tx('tf_muster_plus')+'</p>')
         : '<p class="tf-leer">'+tx('tf_muster_plus')+'</p>');
       schloesserVerdrahten(wrap);
       return;

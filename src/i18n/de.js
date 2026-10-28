@@ -292,6 +292,8 @@ CONTENT.de = {
       'tf_kal_groesse': 'Kalender färben nach',
       'tf_muster_titel': 'Muster',
       'tf_muster_plus': 'Mit Lucenta+ siehst du alle Muster, sobald genug Einträge da sind: was gute und schwere Tage gemeinsam haben, welche Stichworte mit deiner Stimmung zusammenhängen – und wenn du zu zwei Tageszeiten einträgst, wie es dir morgens, mittags und abends geht.',
+      'tf_muster_weitere_1': 'Das war dein erstes Muster. Ein weiteres liegt aus deinen Einträgen schon bereit.',
+      'tf_muster_weitere_n': 'Das war dein erstes Muster. {n} weitere liegen aus deinen Einträgen schon bereit.',
       'tf_tageszeit_noch': 'Dein Tageszeit-Muster zeigt sich, sobald du zu zwei Tageszeiten je dreimal eingetragen hast – zum Beispiel morgens und abends.',
       'tf_muster_erstes_frei': 'Dein erstes Muster – frei für dich.',
       'tf_erstes_muster_da': 'Sieben Tage erfasst: Dein erstes Muster ist da – unter Tagesform → Muster.',
