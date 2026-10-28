@@ -69,7 +69,7 @@
     var aktiv = profile.hintergrund || '';
     var knopf = function(id){
       var frei = hgFrei(id);
-      return '<button type="button" class="hg-wahl hg-'+id+(frei ? '' : ' hg-gesperrt')+'" data-hg="'+id+'" aria-pressed="'+
+      return '<button type="button" class="hg-wahl hg-'+id+(frei ? '' : ' hg-zu')+'" data-hg="'+id+'" aria-pressed="'+
         (aktiv===id?'true':'false')+'" aria-label="'+tx('hg_'+id)+(frei ? '' : ', Lucenta+')+'">'+(frei ? '' : SCHLOSS_KLEIN)+'</button>';
     };
     wrap.innerHTML = '<div class="hg-gruppe"><div class="hg-gruppe-titel">'+tx('hg_keine')+'</div><div class="hg-raster">'+

@@ -35,6 +35,8 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Lucenta nutzt Face ID nur, wenn du die App-Sperre einschaltest – damit nur du Lucenta öffnest.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Lucenta trägt die Stimmung deiner Tagesform als Gemütszustand in Health ein, wenn du das in den Einstellungen einschaltest. Es wird nichts gelesen und nichts gesendet.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

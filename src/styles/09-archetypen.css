@@ -597,7 +597,7 @@
   .hg-gruppen .hg-raster{ margin-top:0; }
   .hg-gruppe-titel{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); margin:0 0 6px; }
   .hg-wahl{ position:relative; }
-  .hg-gesperrt .hg-schloss{ position:absolute; right:5px; bottom:5px; color:var(--hg-ink); opacity:.9;
+  .hg-zu .hg-schloss{ position:absolute; right:5px; bottom:5px; color:var(--hg-ink); opacity:.9;
     filter:drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
   .hg-gruppen .hg-raster{ grid-template-columns:repeat(4, minmax(0, 1fr)); }
   /* Rollenatlas */

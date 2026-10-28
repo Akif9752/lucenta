@@ -555,6 +555,22 @@
     <div class="settings-group">
       <h2 data-i18n="daten_amp_datenschutz">Daten &amp; Datenschutz</h2>
       <p class="settings-group-desc" data-i18n="lucenta_läuft_vollständig_au">Alles unten liegt auf diesem Gerät, bis du es löschst &mdash; mit Apple-Anmeldung zusätzlich verschlüsselt in deiner iCloud.</p>
+      <!-- Nur in der App mit Face ID, Touch ID oder Code (19b-native.js, sperreEinrichten). Frei (Entscheidung des Inhabers). -->
+      <div class="settings-zeile" id="sperreZeile" hidden>
+        <div class="settings-zeile-text">
+          <strong id="sperreTitel" data-i18n="sperre_titel_faceid">Mit Face ID sperren</strong>
+          <span class="settings-hint" data-i18n="sperre_hinweis">Du entsperrst Lucenta wie dein iPhone.</span>
+        </div>
+        <button type="button" class="schalter" id="sperreSchalter" role="switch" aria-checked="false" aria-label="App-Sperre ein- oder ausschalten" data-i18n-aria="aria_sperre"><span class="schalter-knopf"></span></button>
+      </div>
+      <div class="settings-zeile einst-darstellung" id="sperreNachZeile" hidden>
+        <div class="settings-zeile-text"><strong data-i18n="sperre_wann">Sperren</strong></div>
+        <div class="segment" id="sperreNach" role="radiogroup" aria-label="Wann Lucenta sich sperrt" data-i18n-aria="aria_sperre_wann">
+          <button type="button" class="segment-opt" role="radio" data-nach="0" aria-checked="true"><span class="segment-preis" data-i18n="sperre_sofort">Sofort</span></button>
+          <button type="button" class="segment-opt" role="radio" data-nach="60" aria-checked="false"><span class="segment-preis" data-i18n="sperre_1">Nach 1 Min.</span></button>
+          <button type="button" class="segment-opt" role="radio" data-nach="900" aria-checked="false"><span class="segment-preis" data-i18n="sperre_15">Nach 15 Min.</span></button>
+        </div>
+      </div>
       <ul class="settings-datalist" id="settingsDataList"></ul>
       <p class="settings-empty" id="settingsEmptyNote" data-i18n="aktuell_ist_nichts_gespeiche">Aktuell ist nichts gespeichert außer deiner Darstellung.</p>
       <div class="daten-knoepfe einst-daten">

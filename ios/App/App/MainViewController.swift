@@ -45,6 +45,7 @@ class MainViewController: CAPBridgeViewController {
         super.viewDidLoad()
         stelleBildlaufEin()
         faerbeLadeluecke()
+        AppSperre.shared.einrichten(self)
     }
 
     /// Runde 103: Die Kauf-Bruecke anmelden.
@@ -60,6 +61,7 @@ class MainViewController: CAPBridgeViewController {
         bridge?.registerPluginInstance(LucentaKaeufePlugin())
         bridge?.registerPluginInstance(LucentaKontoPlugin())
         bridge?.registerPluginInstance(LucentaGesundheitPlugin())
+        bridge?.registerPluginInstance(LucentaSperrePlugin())
         transparenzVorzeichnen()
         transparenzBeobachten()
         themaEmpfangen()
@@ -94,6 +96,7 @@ class MainViewController: CAPBridgeViewController {
         // Doppelt gesetzt, falls Capacitor die WebView erst nach viewDidLoad bereitstellt.
         stelleBildlaufEin()
         faerbeLadeluecke()
+        AppSperre.shared.anFensterHeben()
     }
 
     private func stelleBildlaufEin() {

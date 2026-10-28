@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 182)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 183)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 182 | (dieser) | Version ohne Big-Five-Zusatz, Freunde-Hinweis weg, Rollenkarten mit Aufklapp-Fusszeile, Freunde im Rollenatlas mit Namen, OCEAN-Text 10,5 px |
+| 183 | (dieser) | App-Sperre mit Face ID/Touch ID/Code, frei, Sofort/1/15 Min. (`LucentaSperre.swift`, Plugin `Lock`) |
+| 182 | `c1ab038` | Version ohne Big-Five-Zusatz, Freunde-Hinweis weg, Rollenkarten mit Aufklapp-Fusszeile, Freunde im Rollenatlas mit Namen, OCEAN-Text 10,5 px |
 | 181 | `9f82b17` | Tagesform-Widget (klein, mittel mit Eintragen, Sperrbildschirm; App Group) und Apple Health (Stimmung als Gemuetszustand, nur schreiben, Vorgabe aus) |
 | 180 | `82ab3dd` | Bestand als Datei gespiegelt (`LucentaBestand.swift`), vor dem Start zurueckgeholt, wenn WebKit ihn geleert hat; Uebergabe berichtigt |
 | 179 | (dieser) | Kaufquote: Probezeit an jeder Sperre, Angebot unter dem ersten Muster mit echter Zahl, Rueckgewinnung (Kaeufe ausserhalb des Fensters schalten sofort frei) |
@@ -117,6 +118,9 @@ Regeln, die er gesetzt hat:
 
 ### Wo was steht
 
+- **Sperre (Runde 183):** `LucentaSperre.swift` (`AppSperre`, Plugin `Lock`), JS `sperreEinrichten`/`sperreNachziehen` (19b),
+  Zeilen `#sperreZeile`/`#sperreNachZeile`. Zum Testen im Simulator: `defaults write app.lucenta.ios lucenta_sperre_an -bool YES`,
+  Face ID per `notifyutil -p com.apple.BiometricKit_Sim.pearl.match`.
 - **Widget (Runde 181):** Ziel `LucentaWidgetExtension`, `ios/App/LucentaWidget/` (`TagesformAblage.swift` = Format,
   `LucentaWidget.swift` = Intent, Zeitleiste, Ansichten, `Localizable.xcstrings`). App-Seite `LucentaWidgetBruecke.swift`,
   JS `widgetEinrichten`/`widgetEingangUebernehmen`/`widgetLink` (19b). Dateinamen und Format stehen auf BEIDEN Seiten.
@@ -231,7 +235,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–182 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–183 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -325,6 +329,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 183: ALLE 9 BESTANDEN**: `pruef-nativ` 126, `fehlersuche` ohne Fund.
 
 **Nach Runde 182: 9 von 9** (pruef-nativ nach Anpassung der Versionspruefung einzeln nachgefahren, 120).
 
@@ -484,6 +490,32 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 183 — App-Sperre mit Face ID
+
+**Auftrag:** Aus der Vergleichsliste (beliebte Funktionen aehnlicher Apps) zuerst Punkt 1. Inhaber: frei, nicht Lucenta+;
+Zeitpunkt waehlbar (Sofort / Nach 1 Min. / Nach 15 Min.).
+
+**Gebaut:** `ios/App/App/LucentaSperre.swift` — `AppSperre` (Decke ueber dem FENSTER, gesetzt bei
+`UIScene.didEnterBackground`, also bevor iOS das Bild fuer den App-Umschalter aufnimmt, und beim Kaltstart vor der Seite;
+bei `didActivate` Entsperren per `LAContext.deviceOwnerAuthentication` = Face ID/Touch ID mit Code als Rueckfall) und das
+Plugin `Lock` (`stand`, `setzen`, `texte`). Einschalten erst nach gelungenem Entsperren. Einstellungen in UserDefaults
+(`lucenta_sperre_an/_nach/_texte`), nicht im localStorage — die Sperre gehoert zum Geraet, nicht zum gesicherten Bestand.
+Die Texte der Decke liefert die Seite in der Sprache der App (`sperreNachziehen` bei jedem Oeffnen der Einstellungen).
+Zeile in Einstellungen -> Daten & Datenschutz, Titel nach Art des Geraets („Mit Face ID / Touch ID / Code sperren"), 13 Texte
+in acht Sprachen. `NSFaceIDUsageDescription` (deutsch wie die anderen Angaben).
+
+**Zwei Fallen, beim Messen gefunden:** (1) Ohne Code auf dem Geraet kann iOS nicht entsperren — wer den Code nach dem
+Einschalten entfernt, waere ausgesperrt. `AppSperre.wirksam` verlangt deshalb `an` UND ein Geraet, das entsperren kann.
+(2) Der Face-ID-Dialog macht die Szene inaktiv und wieder aktiv; ohne Merker (`prueft`) fragte sie in einer Schleife.
+Nebenbei: `hg-gesperrt` (Klasse der gesperrten Hintergruende) heisst jetzt `hg-zu` — mit dem neuen Text „Lucenta ist
+gesperrt" wurde das Wort zu deutschem Wortschatz, und `audit_i18n` meldete die Klasse als deutsches Literal.
+
+**Gemessen im Simulator:** Kaltstart mit Sperre -> schwarze Decke mit Schloss + Face-ID-Dialog; Face ID per
+`notifyutil -p com.apple.BiometricKit_Sim.pearl.match` -> App offen. Wechsel in die Einstellungen und zurueck: bei „Sofort"
+erneut gefragt, bei „Nach 1 Min." (3 s draussen) direkt offen. `pruef-nativ` 120 -> 126 (Zeile mit Art, Texte gehen an die
+Huelle, misslungenes Entsperren laesst aus, Zeitwahl erscheint/verschwindet, 15 Min. gewaehlt).
+**Ungeprueft:** auf dem iPhone selbst; das Bild im App-Umschalter nur aus dem Ablauf geschlossen, nicht fotografiert.
 
 ## Runde 182 — Fuenf kleine Punkte aus dem Gespraech
 

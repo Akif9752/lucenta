@@ -107,6 +107,17 @@ await seite.addInitScript(() => {
         schreiben: (o) => { merke('health_schreiben', o); return Promise.resolve({uuid: 'U' + o.ts}); },
         loeschen: (o) => { merke('health_loeschen', o); return Promise.resolve({geloescht: true}); }
       },
+      // App-Sperre: '__pruef_sperre_ok' = Entsperren gelingt.
+      Lock: {
+        stand: () => Promise.resolve({verfuegbar: true, art: 'faceID', an: localStorage.getItem('__pruef_sperre') === '1',
+                                      nach: +(localStorage.getItem('__pruef_sperre_nach') || 0)}),
+        setzen: (o) => { merke('sperre_setzen', o);
+          if (typeof o.nach === 'number') localStorage.setItem('__pruef_sperre_nach', String(o.nach));
+          if (o.an === true && localStorage.getItem('__pruef_sperre_ok') === '1') localStorage.setItem('__pruef_sperre', '1');
+          if (o.an === false) localStorage.removeItem('__pruef_sperre');
+          return window.Capacitor.Plugins.Lock.stand(); },
+        texte: (o) => { merke('sperre_texte', o); return Promise.resolve({}); }
+      },
       // Feedback A4: Konto loeschen. '__pruef_konto' = angemeldet; '__pruef_loeschen' = Antwort.
       Account: {
         stand: () => Promise.resolve({angemeldet: localStorage.getItem('__pruef_konto') === '1', icloud: true}),
@@ -728,6 +739,26 @@ console.log('\n=== Widget-Link oeffnet die Tagesform ===');
 await seite.evaluate(() => { window.__linkOeffnen && window.__linkOeffnen({url: 'lucenta://tagesform'}); }).catch(() => {});
 await seite.waitForTimeout(600);
 ok((await seite.evaluate(() => document.querySelector('.view.active')?.id)) === 'view-state', 'lucenta://tagesform zeigt die Tagesform');
+
+console.log('\n=== App-Sperre: frei, Zeitpunkt waehlbar ===');
+await seite.evaluate(() => { ['__pruef_sperre','__pruef_sperre_ok','__pruef_sperre_nach'].forEach(k => localStorage.removeItem(k)); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(500);
+await seite.evaluate(() => document.getElementById('btnDrawerToggle').click()); await seite.waitForTimeout(300);
+await seite.evaluate(() => { window.__nativLog = []; document.getElementById('btnDrawerSettings').click(); }); await seite.waitForTimeout(500);
+let sp = await seite.evaluate(() => ({zeile: !document.getElementById('sperreZeile').hidden, nach: !document.getElementById('sperreNachZeile').hidden,
+  titel: document.getElementById('sperreTitel').textContent}));
+ok(sp.zeile && !sp.nach && sp.titel === 'Mit Face ID sperren', 'Zeile mit der Art des Geraets, Zeitwahl erst wenn an (' + sp.titel + ')');
+ok((await seite.evaluate(() => window.__nativLog)).some(e => e.was === 'sperre_texte' && e.arg.knopf === 'Entsperren'), 'die Texte der Decke gehen in der Sprache der App an die Huelle');
+await seite.evaluate(() => document.getElementById('sperreSchalter').click()); await seite.waitForTimeout(200);
+ok(await seite.evaluate(() => document.getElementById('sperreSchalter').getAttribute('aria-checked') === 'false'), 'Entsperren misslingt: bleibt aus');
+await seite.evaluate(() => { localStorage.setItem('__pruef_sperre_ok', '1'); document.getElementById('sperreSchalter').click(); }); await seite.waitForTimeout(200);
+sp = await seite.evaluate(() => ({an: document.getElementById('sperreSchalter').getAttribute('aria-checked'), nach: !document.getElementById('sperreNachZeile').hidden}));
+ok(sp.an === 'true' && sp.nach, 'Entsperren gelingt: an, die Zeitwahl erscheint');
+await seite.evaluate(() => document.querySelector('#sperreNach [data-nach="900"]').click()); await seite.waitForTimeout(200);
+ok(await seite.evaluate(() => document.querySelector('#sperreNach [data-nach="900"]').getAttribute('aria-checked') === 'true'), 'Nach 15 Min. gewaehlt und angezeigt');
+await seite.evaluate(() => document.getElementById('sperreSchalter').click()); await seite.waitForTimeout(200);
+ok(await seite.evaluate(() => document.getElementById('sperreNachZeile').hidden), 'ausgeschaltet: Zeitwahl verschwindet');
+await seite.evaluate(() => { ['__pruef_sperre','__pruef_sperre_ok','__pruef_sperre_nach'].forEach(k => localStorage.removeItem(k)); });
 
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 

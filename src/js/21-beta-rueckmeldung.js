@@ -259,6 +259,7 @@
   bestandSpiegelnEinrichten();
   widgetEinrichten();
   healthEinrichten();
+  sperreEinrichten();
   plusStandPruefen();
   plusPreiseHolen();
   archivUebernehmen();

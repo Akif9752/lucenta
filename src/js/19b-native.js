@@ -133,6 +133,52 @@
     widgetStandMelden();
   }
 
+  // ---------- App-Sperre (Face ID, Touch ID, Code) ----------
+  // Gesperrt wird nativ (LucentaSperre.swift); hier nur Schalter, Zeitpunkt und die Texte der Decke.
+  // Frei, Zeitpunkt waehlbar (Entscheidungen des Inhabers).
+  var SPERRE_TITEL = {faceID: 'sperre_titel_faceid', touchID: 'sperre_titel_touchid', code: 'sperre_titel_code'};
+  var sperreStand = null;
+  function sperreModul(){
+    var m = nativVorhanden() && nativModul('Lock');
+    return (m && m.stand) ? m : null;
+  }
+  function sperreAnwenden(r){
+    var zeile = $('sperreZeile'), nach = $('sperreNachZeile');
+    if (!zeile || !nach) return;
+    sperreStand = (r && r.verfuegbar) ? r : null;
+    zeile.hidden = !sperreStand;
+    nach.hidden = !(sperreStand && sperreStand.an);
+    if (!sperreStand) return;
+    var titel = $('sperreTitel'), schluessel = SPERRE_TITEL[r.art] || SPERRE_TITEL.code;
+    titel.setAttribute('data-i18n', schluessel);
+    titel.textContent = decodeEntities(tx(schluessel));
+    $('sperreSchalter').setAttribute('aria-checked', r.an ? 'true' : 'false');
+    nach.querySelectorAll('[data-nach]').forEach(function(b){
+      b.setAttribute('aria-checked', +b.getAttribute('data-nach') === (r.nach || 0) ? 'true' : 'false');
+    });
+  }
+  // Bei jedem Oeffnen der Einstellungen: Stand und Texte in der aktuellen Sprache.
+  function sperreNachziehen(){
+    var m = sperreModul();
+    if (!m) return;
+    m.stand().then(sperreAnwenden).catch(function(){});
+    m.texte({titel: decodeEntities(tx('sperre_gesperrt')), knopf: decodeEntities(tx('sperre_entsperren')),
+             grund: decodeEntities(tx('sperre_grund'))}).catch(function(){});
+  }
+  function sperreEinrichten(){
+    var m = sperreModul(), schalter = $('sperreSchalter'), nach = $('sperreNach');
+    if (!m || !schalter || !nach) return;
+    schalter.addEventListener('click', function(){
+      if (!sperreStand) return;
+      m.setzen({an: !sperreStand.an}).then(sperreAnwenden).catch(function(){});
+    });
+    nach.addEventListener('click', function(e){
+      var b = e.target.closest ? e.target.closest('[data-nach]') : null;
+      if (b) m.setzen({nach: +b.getAttribute('data-nach')}).then(sperreAnwenden).catch(function(){});
+    });
+    sperreNachziehen();
+  }
+
   // ---------- Apple Health: Stimmung als Gemuetszustand ----------
   // Nur schreiben, nie lesen; Vorgabe aus (Entscheidung des Inhabers). LucentaGesundheitPlugin.swift,
   // ab iOS 18. Die Kennung des Health-Eintrags steht als `hk` am Eintrag, damit Ersetzen ihn mitnimmt.

@@ -16,6 +16,7 @@
 		147A1D56309221CD00659458 /* LucentaWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 147A1D47309221CC00659458 /* LucentaWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		147A1D62309222E400659458 /* LucentaWidgetBruecke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D61309222E400659458 /* LucentaWidgetBruecke.swift */; };
 		147A1D703092271200659458 /* LucentaGesundheitPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D6F3092271200659458 /* LucentaGesundheitPlugin.swift */; };
+		147A1D8A30925DAA00659458 /* LucentaSperre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D8930925DAA00659458 /* LucentaSperre.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -64,6 +65,7 @@
 		147A1D5C309221F500659458 /* LucentaWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LucentaWidgetExtension.entitlements; sourceTree = "<group>"; };
 		147A1D61309222E400659458 /* LucentaWidgetBruecke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaWidgetBruecke.swift; sourceTree = "<group>"; };
 		147A1D6F3092271200659458 /* LucentaGesundheitPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaGesundheitPlugin.swift; sourceTree = "<group>"; };
+		147A1D8930925DAA00659458 /* LucentaSperre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaSperre.swift; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,6 +168,7 @@
 				147A1D4130921BAE00659458 /* LucentaBestand.swift */,
 				147A1D61309222E400659458 /* LucentaWidgetBruecke.swift */,
 				147A1D6F3092271200659458 /* LucentaGesundheitPlugin.swift */,
+				147A1D8930925DAA00659458 /* LucentaSperre.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -359,6 +362,7 @@
 				147A1D703092271200659458 /* LucentaGesundheitPlugin.swift in Sources */,
 				147A1D62309222E400659458 /* LucentaWidgetBruecke.swift in Sources */,
 				AA0000010000000000000001 /* MainViewController.swift in Sources */,
+				147A1D8A30925DAA00659458 /* LucentaSperre.swift in Sources */,
 				147A1D4230921BAE00659458 /* LucentaBestand.swift in Sources */,
 				AA0000010000000000000003 /* SceneDelegate.swift in Sources */,
 			);

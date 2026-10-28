@@ -15,6 +15,7 @@
   function renderSettings(){
     kontoAnwenden();
     versionAnwenden();
+    sperreNachziehen();
     var progress = loadProgress();
     var result = loadResult();
     var profile = loadProfile();
