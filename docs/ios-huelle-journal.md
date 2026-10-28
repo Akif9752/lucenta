@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 181)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 182)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 181 | (dieser) | Tagesform-Widget (klein, mittel mit Eintragen, Sperrbildschirm; App Group) und Apple Health (Stimmung als Gemuetszustand, nur schreiben, Vorgabe aus) |
+| 182 | (dieser) | Version ohne Big-Five-Zusatz, Freunde-Hinweis weg, Rollenkarten mit Aufklapp-Fusszeile, Freunde im Rollenatlas mit Namen, OCEAN-Text 10,5 px |
+| 181 | `9f82b17` | Tagesform-Widget (klein, mittel mit Eintragen, Sperrbildschirm; App Group) und Apple Health (Stimmung als Gemuetszustand, nur schreiben, Vorgabe aus) |
 | 180 | `82ab3dd` | Bestand als Datei gespiegelt (`LucentaBestand.swift`), vor dem Start zurueckgeholt, wenn WebKit ihn geleert hat; Uebergabe berichtigt |
 | 179 | (dieser) | Kaufquote: Probezeit an jeder Sperre, Angebot unter dem ersten Muster mit echter Zahl, Rueckgewinnung (Kaeufe ausserhalb des Fensters schalten sofort frei) |
 | 178 | (dieser) | Nutzungszahlen (Beta) entfernt; „Abo verwalten" nur mit Abo; Version aus der App; Anmeldeschritt geprueft; verwaiste Texte; Store-Bilder neu |
@@ -230,7 +231,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–181 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–182 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -324,6 +325,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 182: 9 von 9** (pruef-nativ nach Anpassung der Versionspruefung einzeln nachgefahren, 120).
 
 **Nach Runde 181: ALLE 9 BESTANDEN**: `pruef-nativ` 120, `fehlersuche` ohne Fund, sonst wie nach 178.
 
@@ -481,6 +484,30 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 182 — Fuenf kleine Punkte aus dem Gespraech
+
+**Version** (Inhaber, gewaehlt mit Empfehlung): In den Einstellungen steht nur noch „Version 1.0"; „basiert auf dem
+Big-Five-Modell (OCEAN)" ist weg (keine Pflicht — IPIP gemeinfrei, Runde 177; das Modell erklaeren Hilfe und Startseite).
+Ohne Bruecke (Browser) ist die Zeile ganz verborgen. Schluessel `version_basis` aus allen acht Sprachen entfernt.
+
+**Freunde** (Inhaber, mit Empfehlung): Der Satz unter dem Code-Feld („Name und Figur kommen von der Person selbst. Lucenta
+sendet nichts.") ist weg — der erste Teil stand schon im Text darueber, der zweite widersprach Runde 165. Der Abstand nach
+unten liegt jetzt an `.freund-hinzu`; `freunde_hinzufuegen_hinweis` entfernt.
+
+**Rollenatlas aufklappbar erkennbar:** jede Rollenkarte traegt die Fusszeile wie Ergebnis- und Verstehen-Karten
+(„Acht Titel zeigen" / „Weniger anzeigen" + Pfeil, `arch_titel_zeigen`, 8 Sprachen).
+
+**Freunde im Rollenatlas eindeutig:** statt ueberlappender Figuren je Freund eine Marke mit Figur UND Namen (bis fuenf,
+dann „+n"; Name mit Auslassung ab 9em). Gemessen in WebKit mit allen Beispiel-Freunden auf derselben Figur: Elif, Noah,
+Jonas … stehen lesbar daneben.
+
+**Pruefung:** `pruef-alles` lief mit diesem `src/`-Stand: 8 von 9 bestanden, `pruef-nativ` scheiterte an einer Pruefung, die den alten
+Trenner „Version 1.4.2 · " verlangte. Pruefung angepasst (ohne Zusatz, Zeile sichtbar), `pruef-nativ` danach 120/120; die
+uebrigen acht nicht erneut gefahren, weil sich an `src/` nichts mehr aenderte.
+
+**Startseite:** die OCEAN-Erklaerung ganz unten 11,5 -> 10,5 px (waechst mit Dynamic Type). Nicht kleiner: Apples kleinste
+Textstufe ist 11 pt, darunter wird sie auf dem Geraet muehsam.
 
 ## Runde 181 — Tagesform-Widget und Apple Health
 

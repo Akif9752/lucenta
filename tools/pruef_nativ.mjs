@@ -605,9 +605,9 @@ await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
 await seite.evaluate(() => { document.getElementById('btnDrawerToggle').click(); });
 await seite.waitForTimeout(300);
 await seite.evaluate(() => document.getElementById('btnDrawerSettings').click()); await seite.waitForTimeout(500);
-let einst = await seite.evaluate(() => ({v: document.getElementById('einstVersion').textContent, verwalten: !document.getElementById('btnAboVerwalten').hidden,
+let einst = await seite.evaluate(() => ({v: document.getElementById('einstVersion').textContent, sichtbar: !document.getElementById('einstVersion').hidden, verwalten: !document.getElementById('btnAboVerwalten').hidden,
   wieder: !document.getElementById('btnPlusWiederherstellen').hidden}));
-ok(einst.v === 'Version 1.4.2 · ', 'die Versionsnummer kommt aus der App: "' + einst.v + '"');
+ok(einst.v === 'Version 1.4.2' && einst.sichtbar, 'die Versionsnummer kommt aus der App, ohne Zusatz: "' + einst.v + '"');
 ok(!einst.verwalten && einst.wieder, 'ohne Abo kein "Abo verwalten", "Kaeufe wiederherstellen" bleibt');
 await seite.evaluate(() => { localStorage.setItem('lucenta_plus', '1'); localStorage.setItem('__pruef_abo', '1'); });
 await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);

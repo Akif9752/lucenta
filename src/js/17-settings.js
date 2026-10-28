@@ -8,7 +8,9 @@
   // Die Zahl aus der App selbst (CFBundleShortVersionString); ohne Bruecke keine statt einer falschen.
   function versionAnwenden(){
     var el = $('einstVersion');
-    if (el) el.textContent = APP_VERSION ? tx('version_wort') + ' ' + APP_VERSION + ' · ' : '';
+    if (!el) return;
+    el.textContent = APP_VERSION ? tx('version_wort') + ' ' + APP_VERSION : '';
+    el.hidden = !APP_VERSION;
   }
   function renderSettings(){
     kontoAnwenden();

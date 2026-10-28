@@ -832,10 +832,9 @@
   #view-freunde .freund-eigener-code{ font-size:calc(13px * var(--dt, 1)); word-break:break-all; background:var(--surface-2);
     border-radius:10px; padding:10px 12px; color:var(--ink); user-select:all; -webkit-user-select:all; }
   #view-freunde .freund-eigener-code[hidden]{ display:none; }
-  .freund-hinzu{ display:flex; gap:10px; align-items:center; margin-top:18px; }
+  .freund-hinzu{ display:flex; gap:10px; align-items:center; margin:18px 0 20px; }
   #view-freunde .freund-hinzu .name-input{ flex:1; min-width:0; margin:0; }
   .freund-hinzu .btn{ flex-shrink:0; min-height:44px; }
-  .freund-hinzu-hinweis{ margin:8px 0 20px; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
   .freund-liste{ background:var(--surface); border-radius:var(--radius-m); overflow:hidden; margin-bottom:22px; }
   .freund-zeile{ position:relative; width:100%; display:flex; align-items:center; gap:12px; min-height:60px; padding:10px 16px;
     background:transparent; border:none; cursor:pointer; color:var(--ink); font:inherit; text-align:left; }

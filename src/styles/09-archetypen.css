@@ -112,6 +112,8 @@
   .acronym-note, .radar-note, .profile-note, .delta-note{
     color:var(--muted-soft); font-size:calc(11.5px * var(--dt, 1));
   }
+  /* Noch eine Stufe leiser (Entscheidung des Inhabers); nicht unter 10,5 px, sonst unleserlich. */
+  .acronym-note{ font-size:calc(10.5px * var(--dt, 1)); }
   .profile-empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius-m);padding:20px 18px;margin-top:14px;text-align:center;}
   .profile-empty p{color:var(--muted);font-size:calc(14px * var(--dt, 1));}
   .profile-empty .btn{margin-top:14px;}
@@ -609,14 +611,23 @@
   .arch-naehe{ display:flex; align-items:center; gap:10px; margin-top:12px; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
   .arch-naehe-balken{ flex:1; height:6px; border-radius:3px; background:var(--line); overflow:hidden; }
   .arch-naehe-balken span{ display:block; height:100%; background:var(--accent); border-radius:3px; }
-  .arch-freunde{ display:flex; align-items:center; margin-top:10px; }
-  .arch-freund{ width:26px; height:26px; margin-right:-6px; border:2px solid var(--surface); font-size:calc(10px * var(--dt, 1)); }
-  .arch-freunde-mehr{ margin-left:12px; font-size:calc(12px * var(--dt, 1)); color:var(--muted); }
+  .arch-freunde{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:10px; }
+  .arch-freund-marke{ display:inline-flex; align-items:center; gap:6px; max-width:100%; padding:2px 10px 2px 2px;
+    border-radius:999px; background:var(--line); }
+  .arch-freund{ width:24px; height:24px; flex-shrink:0; font-size:calc(10px * var(--dt, 1)); }
+  .arch-freund-name{ font-size:calc(13px * var(--dt, 1)); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:9em; }
+  .arch-freunde-mehr{ margin-left:4px; font-size:calc(12px * var(--dt, 1)); color:var(--muted); }
+  details.role-card .arch-zu{ margin-top:12px; }
+  details.role-card .tm-open{ display:none; }
+  details.role-card[open] .tm-shut{ display:none; }
+  details.role-card[open] .tm-open{ display:inline; color:var(--muted); }
+  details.role-card[open] .arch-zu .chev{ transform:rotate(-90deg); }
+  details.role-card > summary:active .arch-zu{ opacity:.62; }
   .arch-kombis{ margin-top:14px; border-top:1px solid var(--line); padding-top:12px; }
   .arch-kombis ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
   .arch-kombi{ display:grid; grid-template-columns:1fr auto; gap:2px 10px; align-items:center; }
   .arch-kombi-titel{ font-weight:600; }
   .arch-kombi-satz{ grid-column:1 / -1; color:var(--muted); font-size:calc(14px * var(--dt, 1)); line-height:1.45; }
-  .arch-kombi .arch-freunde{ margin-top:0; }
+  .arch-kombi .arch-freunde{ margin-top:2px; grid-column:1 / -1; }
   .arch-kombi-ich .arch-kombi-titel{ color:var(--accent-strong); }
   .arch-du{ font-size:calc(12px * var(--dt, 1)); font-weight:600; color:var(--accent-ink); background:var(--accent-strong); border-radius:999px; padding:2px 8px; }

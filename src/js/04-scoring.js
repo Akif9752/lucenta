@@ -55,8 +55,10 @@
             .split('{d2}').join(LABELS[ich.f2]).split('{w2}').join(String(eigen[ich.f2]))+'</p></div>'
       : '<p class="arch-ohne-test">'+tx('arch_ohne_test')+'</p>';
     var figuren = function(liste){
-      return liste.length ? '<span class="arch-freunde">'+liste.slice(0, 5).map(function(x, n){
-        return '<span class="avatar arch-freund" data-arch-freund="'+freunde.indexOf(x)+'" title="'+escapeHTML(freundName(x.f))+'"></span>'; }).join('')+
+      // Mit Namen: Mehrere Freunde koennen dieselbe Figur haben.
+      return liste.length ? '<span class="arch-freunde">'+liste.slice(0, 5).map(function(x){
+        return '<span class="arch-freund-marke"><span class="avatar arch-freund" data-arch-freund="'+freunde.indexOf(x)+'" aria-hidden="true"></span>'+
+          '<span class="arch-freund-name">'+escapeHTML(freundName(x.f))+'</span></span>'; }).join('')+
         (liste.length > 5 ? '<span class="arch-freunde-mehr">+'+(liste.length - 5)+'</span>' : '')+'</span>' : '';
     };
     $('archetypeGroups').innerHTML = kopf + ORDER.map(function(t, gi){
@@ -83,6 +85,10 @@
               '<span class="arch-naehe-balken" aria-hidden="true"><span style="width:'+Math.max(3, naehe)+'%"></span></span>'+
               '<span class="mono">'+naehe+' %</span></div>')+
             figuren(mitRolle)+
+            // Fusszeile wie bei Ergebnis und Verstehen: sagt, dass sich die Karte aufklappen laesst.
+            '<span class="trait-more arch-zu"><span class="tm-shut">'+tx('arch_titel_zeigen')+'</span>'+
+            '<span class="tm-open">'+tx('js_weniger_anzeigen')+'</span>'+
+            '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></span>'+
           '</summary>'+
           '<div class="arch-kombis"><div class="hg-gruppe-titel">'+tx('arch_kombis')+'</div><ul>'+kombis+'</ul></div>'+
         '</details>';
