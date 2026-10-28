@@ -123,6 +123,8 @@
   function widgetEinrichten(){
     if (!widgetEmpfaenger()) return;
     window.lucentaWidgetEingang = widgetEingangUebernehmen;
+    window.lucentaWidgetAbholen = widgetAbholen;     // Kurzbefehl bei offener App (LucentaWidgetBruecke.swift)
+    window.lucentaWidgetLink = widgetLink;
     var app = nativModul('App');
     if (app && app.getLaunchUrl) app.getLaunchUrl().then(function(r){ if (r) widgetLink(r.url); }).catch(function(){});
     if (app && app.addListener) app.addListener('appUrlOpen', function(ev){ if (ev) widgetLink(ev.url); });

@@ -17,6 +17,9 @@
 		147A1D62309222E400659458 /* LucentaWidgetBruecke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D61309222E400659458 /* LucentaWidgetBruecke.swift */; };
 		147A1D703092271200659458 /* LucentaGesundheitPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D6F3092271200659458 /* LucentaGesundheitPlugin.swift */; };
 		147A1D8A30925DAA00659458 /* LucentaSperre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1D8930925DAA00659458 /* LucentaSperre.swift */; };
+		147A1DA43092B6AA00659458 /* LucentaKurzbefehle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1DA33092B6AA00659458 /* LucentaKurzbefehle.swift */; };
+		147A1DA63092B6FC00659458 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 147A1DA53092B6FC00659458 /* Localizable.xcstrings */; };
+		147A1DB83092B72D00659458 /* AppShortcuts.strings in Resources */ = {isa = PBXBuildFile; fileRef = 147A1DB63092B72D00659458 /* AppShortcuts.strings */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -66,6 +69,16 @@
 		147A1D61309222E400659458 /* LucentaWidgetBruecke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaWidgetBruecke.swift; sourceTree = "<group>"; };
 		147A1D6F3092271200659458 /* LucentaGesundheitPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaGesundheitPlugin.swift; sourceTree = "<group>"; };
 		147A1D8930925DAA00659458 /* LucentaSperre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaSperre.swift; sourceTree = "<group>"; };
+		147A1DA33092B6AA00659458 /* LucentaKurzbefehle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaKurzbefehle.swift; sourceTree = "<group>"; };
+		147A1DA53092B6FC00659458 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		147A1DB73092B72D00659458 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		147A1DC03092B72D00659458 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		147A1DC13092B72D00659458 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		147A1DC23092B72D00659458 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		147A1DC33092B72D00659458 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		147A1DC43092B72D00659458 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		147A1DC53092B72D00659458 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		147A1DC63092B72D00659458 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -169,6 +182,9 @@
 				147A1D61309222E400659458 /* LucentaWidgetBruecke.swift */,
 				147A1D6F3092271200659458 /* LucentaGesundheitPlugin.swift */,
 				147A1D8930925DAA00659458 /* LucentaSperre.swift */,
+				147A1DA33092B6AA00659458 /* LucentaKurzbefehle.swift */,
+				147A1DA53092B6FC00659458 /* Localizable.xcstrings */,
+				147A1DB63092B72D00659458 /* AppShortcuts.strings */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -255,6 +271,13 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
+				es,
+				fr,
+				it,
+				pt,
+				tr,
+				ja,
 			);
 			mainGroup = 504EC2FB1FED79650016851F;
 			productRefGroup = 504EC3051FED79650016851F /* Products */;
@@ -281,8 +304,10 @@
 			files = (
 				504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */,
 				147A1D403089D0B700659458 /* PrivacyInfo.xcprivacy in Resources */,
+				147A1DA63092B6FC00659458 /* Localizable.xcstrings in Resources */,
 				50B271D11FEDC1A000F3C39B /* public in Resources */,
 				504EC30F1FED79650016851F /* Assets.xcassets in Resources */,
+				147A1DB83092B72D00659458 /* AppShortcuts.strings in Resources */,
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
@@ -364,6 +389,7 @@
 				AA0000010000000000000001 /* MainViewController.swift in Sources */,
 				147A1D8A30925DAA00659458 /* LucentaSperre.swift in Sources */,
 				147A1D4230921BAE00659458 /* LucentaBestand.swift in Sources */,
+				147A1DA43092B6AA00659458 /* LucentaKurzbefehle.swift in Sources */,
 				AA0000010000000000000003 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -379,6 +405,21 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		147A1DB63092B72D00659458 /* AppShortcuts.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				147A1DB73092B72D00659458 /* de */,
+				147A1DC03092B72D00659458 /* en */,
+				147A1DC13092B72D00659458 /* es */,
+				147A1DC23092B72D00659458 /* fr */,
+				147A1DC33092B72D00659458 /* it */,
+				147A1DC43092B72D00659458 /* pt */,
+				147A1DC53092B72D00659458 /* tr */,
+				147A1DC63092B72D00659458 /* ja */,
+			);
+			name = AppShortcuts.strings;
+			sourceTree = "<group>";
+		};
 		504EC30B1FED79650016851F /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -637,6 +678,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -663,6 +705,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

@@ -1,0 +1,4 @@
+"Log my check-in in ${applicationName}" = "Noter mon relevé dans ${applicationName}";
+"Log my mood in ${applicationName}" = "Noter mon humeur dans ${applicationName}";
+"Open check-in in ${applicationName}" = "Ouvrir le relevé dans ${applicationName}";
+"${applicationName} check-in" = "Relevé ${applicationName}";

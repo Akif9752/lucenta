@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-28, nach Runde 184)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 185)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 184 | (dieser) | Jahr auf einen Blick (Kalender), Monatsrueckblick (Kalender + Karte auf Heute), Notiz am Eintrag; teilbar als Bild |
+| 185 | (dieser) | Siri und Kurzbefehle: Tagesform eintragen (ohne App) und oeffnen, 8 Sprachen |
+| 184 | `5d68b60` | Jahr auf einen Blick (Kalender), Monatsrueckblick (Kalender + Karte auf Heute), Notiz am Eintrag; teilbar als Bild |
 | 183 | `635e588` | App-Sperre mit Face ID/Touch ID/Code, frei, Sofort/1/15 Min. (`LucentaSperre.swift`, Plugin `Lock`) |
 | 182 | `c1ab038` | Version ohne Big-Five-Zusatz, Freunde-Hinweis weg, Rollenkarten mit Aufklapp-Fusszeile, Freunde im Rollenatlas mit Namen, OCEAN-Text 10,5 px |
 | 181 | `9f82b17` | Tagesform-Widget (klein, mittel mit Eintragen, Sperrbildschirm; App Group) und Apple Health (Stimmung als Gemuetszustand, nur schreiben, Vorgabe aus) |
@@ -239,7 +240,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–184 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–185 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -333,6 +334,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 185: ALLE 9 BESTANDEN**: `pruef-nativ` 132.
 
 **Nach Runde 184: ALLE 9 BESTANDEN**: `pruef-nativ` 131, `fehlersuche` ohne Fund.
 
@@ -496,6 +499,27 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 185 — Siri und Kurzbefehle
+
+**Auftrag:** Punkt 8 der Vergleichsliste (ohne Gestaltungsfrage). **Gebaut:** `ios/App/App/LucentaKurzbefehle.swift` —
+`TagesformEintragenIntent` (Stimmung und Energie 1–5, Siri fragt nach fehlenden Werten, laeuft OHNE die App zu oeffnen) und
+`TagesformOeffnenIntent` (`openAppWhenRun` in einer `@available(*, deprecated)`-Erweiterung, wie Apple es fuer iOS 16–25
+empfiehlt; `supportedModes` gaebe es erst ab 26). `LucentaKurzbefehle` (AppShortcutsProvider) mit je zwei Saetzen.
+Eingetragen wird ueber den Widget-Eingang (`WidgetEmpfaenger.eintragen`); ohne App Group (Personal Team) faellt der Eingang auf
+den eigenen Ordner der App zurueck — Siri funktioniert damit auch auf dem iPhone des Inhabers, das Widget dort weiter nicht.
+Laeuft die Seite, stoesst die Huelle das Abholen sofort an (`window.lucentaWidgetAbholen`); „oeffnen" merkt sich die Huelle und
+fuehrt es beim naechsten Abholen aus (`window.lucentaWidgetLink`).
+
+**Texte:** `App/Localizable.xcstrings` (Titel, Dialoge, Zusammenfassung; `SWIFT_EMIT_LOC_STRINGS` dafuer an) und die Siri-Saetze
+als `xx.lproj/AppShortcuts.strings` in acht Sprachen — `AppShortcuts.xcstrings` lehnt Xcode unter iOS 17 als Mindestversion ab
+(Lucenta: 15). `knownRegions` um die sieben Sprachen ergaenzt. Die Gruppe `de.lproj`, die Xcode beim Anlegen erzeugte,
+verdoppelte die Pfade — die Sprachgruppe haengt jetzt direkt unter `App`.
+
+**Gemessen:** Bau ohne Fehler, im Paket je Sprache `AppShortcuts.strings`, `Localizable.strings`, `nlu.appintents`.
+`pruef-nativ` 131 -> 132 (Einstiege fuer die Huelle). Nebenbei behoben: Die Notiz-Pruefung bildete „heute" in UTC und
+scheiterte kurz nach Mitternacht. **Ungeprueft:** Siri selbst — laesst sich im Simulator nicht per Befehl ausloesen; am
+iPhone: „Tagesform in Lucenta eintragen".
 
 ## Runde 184 — Jahr auf einen Blick, Monatsrueckblick, Notiz
 

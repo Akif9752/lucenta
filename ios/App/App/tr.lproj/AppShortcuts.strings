@@ -1,0 +1,4 @@
+"Log my check-in in ${applicationName}" = "${applicationName} ile günlük durumu kaydet";
+"Log my mood in ${applicationName}" = "${applicationName} ile ruh halimi kaydet";
+"Open check-in in ${applicationName}" = "${applicationName} günlük durumu aç";
+"${applicationName} check-in" = "${applicationName} günlük durum";

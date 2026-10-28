@@ -735,6 +735,9 @@ ok(lg.some(e => e.was === 'health_loeschen' && /^U/.test(e.arg.uuid)) && lg.some
   'Ersetzen loescht den alten Health-Eintrag und schreibt den neuen');
 await seite.evaluate(() => { document.getElementById('healthSchalter').click(); localStorage.removeItem('lucenta_state'); localStorage.removeItem('__pruef_health'); });
 
+await seite.evaluate(() => { window.__widget = []; window.lucentaWidgetAbholen && window.lucentaWidgetAbholen(); });
+ok((await seite.evaluate(() => typeof window.lucentaWidgetLink === 'function' && window.__widget.some(m => m.abholen))),
+  'Kurzbefehl bei offener App: die Huelle kann das Abholen anstossen und die Tagesform oeffnen');
 console.log('\n=== Widget-Link oeffnet die Tagesform ===');
 await seite.evaluate(() => { window.__linkOeffnen && window.__linkOeffnen({url: 'lucenta://tagesform'}); }).catch(() => {});
 await seite.waitForTimeout(600);
@@ -774,7 +777,8 @@ const nz = await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_s
 ok(nz.indexOf('Langer Spaziergang am See') === 0 && nz.length === 200, 'Notiz gespeichert, Leerraum zusammengefasst, auf 200 Zeichen begrenzt (' + nz.length + ')');
 ok(await seite.evaluate(() => document.getElementById('tfNotiz').value === ''), 'nach dem Speichern ist das Feld leer');
 await seite.evaluate(() => document.querySelector('[data-reiter="kalender"]').click()); await seite.waitForTimeout(400);
-await seite.evaluate(() => document.querySelector('[data-kal-tag="' + new Date().toISOString().slice(0,10) + '"]')?.click()); await seite.waitForTimeout(300);
+await seite.evaluate(() => (() => { const d = new Date(), k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    document.querySelector('[data-kal-tag="' + k + '"]')?.click(); })()); await seite.waitForTimeout(300);
 ok(await seite.evaluate(() => /Langer Spaziergang/.test(document.querySelector('.tf-kal-details')?.textContent || '')), 'die Notiz steht in den Tagesdetails des Kalenders');
 await seite.evaluate(() => document.querySelector('[data-kal-ansicht="jahr"]').click()); await seite.waitForTimeout(300);
 ok((await seite.evaluate(() => document.querySelectorAll('.tf-jahr-monat').length)) === 12, 'Jahresansicht mit zwoelf Monaten');
