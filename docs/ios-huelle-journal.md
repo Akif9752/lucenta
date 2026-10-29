@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 193)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 194)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 193 | (dieser) | Neue Modelle: Wal laenger, Delfin mit Schnabel, Seeotter dunkler Koerper, kleinere Augen |
+| 194 | (dieser) | Katze, Siamkatze, Fuchs, Reh: kleinere Augen, feinere Tigerung, kraeftigere Siam-Maske, Reh-Fell |
+| 193 | `4f77b6a` | Neue Modelle: Wal laenger, Delfin mit Schnabel, Seeotter dunkler Koerper, kleinere Augen |
 | 192 | `4bd9578` | Neue Modelle: Rotkehlchen, Waldkauz (ohne Federohren), Hellroter Ara, Flamingo |
 | 191 | `e6b51a5` | Pinguin als neues Modell: Koenigspinguin-Brustbild, Ausdruck ueber die Haltung |
 | 190 | `20721e9` | Mehr Fotorealismus: Gefieder als Fellschalen, Hase/Dackel/Hunde natuerlicher |
@@ -248,7 +249,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–193 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–194 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -342,6 +343,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 194: ALLE 9 BESTANDEN**.
 
 **Nach Runde 193: ALLE 9 BESTANDEN**.
 
@@ -525,6 +528,16 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 194 — Neue Modelle Gruppe 3: Katze, Siamkatze, Fuchs, Reh
+
+**Augen:** Katze, Siamkatze, Fuchs lagen bei 0,20–0,21, das Reh bei 0,19 — auf 0,155–0,17 genommen. Bleibt sichtbar groesser als echt
+(Entscheidung des Inhabers „echt, aber liebenswert"), wirkt aber nicht mehr comichaft. **Katze:** Tigerlinien feiner und dichter
+(lasen sich als aufgemalte Balken). **Siamkatze:** dunkle Maske groesser und kraeftiger. **Reh:** Fell laenger und unregelmaessiger.
+Dackel, Retriever, Mops, Baer, Panda, Hase bleiben auf dem Stand von Runde 190 (dort schon naeher am Foto).
+
+**Offen:** Das Reh bleibt am weitesten vom Foto entfernt (Hals und Koerper zu glatt und rund) — ein Neubau wie beim Pinguin waere
+der naechste Schritt; ebenso fuer Katze und Retriever die Kopfproportionen (Welpe statt erwachsen). Alle drei Ausdruecke neu.
 
 ## Runde 193 — Neue Modelle Gruppe 2: Wal, Delfin, Seeotter, Schildkroete, Goldfisch
 

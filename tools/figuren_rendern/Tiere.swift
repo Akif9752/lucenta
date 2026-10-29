@@ -486,7 +486,7 @@ func fuchs() -> (SCNNode, Float, V) {
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     tierNase(w, mitte: V(0, -0.290, 1.740), r: V(0.115, 0.08, 0.10), farbe: hex("#161112"))
-    augenEinsetzen(w, kopf, x: 0.34, y: 0.18, r: 0.205, iris: NSColor(calibratedRed: 0.93, green: 0.63, blue: 0.16, alpha: 1), pupille: 0.62, schlitz: true, schlitzBreite: 0.52, ausdruck: Ausdruck(oben: 0.03, unten: 0.10, schraeg: 0.04, funke: 1.6, wange: 0.30))
+    augenEinsetzen(w, kopf, x: 0.34, y: 0.18, r: 0.17, iris: NSColor(calibratedRed: 0.93, green: 0.63, blue: 0.16, alpha: 1), pupille: 0.62, schlitz: true, schlitzBreite: 0.52, ausdruck: Ausdruck(oben: 0.03, unten: 0.10, schraeg: 0.04, funke: 1.6, wange: 0.30))
     // Kopfhaltung je Tier verschieden (Auftrag des Inhabers: nicht alle in dieselbe Richtung).
     w.eulerAngles = SCNVector3(0.08, -0.48, -0.06)
     return (w, 7.6, V(0, 0.22, 0.2))
@@ -511,9 +511,9 @@ func katze() -> (SCNNode, Float, V) {
         var c = farbeMitRauschen(rot, p, 0.07)
         // Tigerung: Streifen quer ueber Stirn und Wangen, auf der Stirn das "M".
         // feine Linien wie bei einer echten Tigerkatze: das "M" auf der Stirn, Linien ueber die Wangen
-        let band = sinf(p.x * 24 + sinf(p.y * 4) * 1.2 + fbm(p * 3) * 2) * 0.5 + 0.5
-        let stirn = glatt(0.30, 0.55, p.y) * glatt(0.62, 0.2, abs(p.x)) * glatt(0.80, 0.90, band)
-        let wange = glatt(0.35, 0.65, abs(p.x)) * glatt(0.82, 0.92, sinf(p.y * 20 + abs(p.x) * 5 + fbm(p * 3) * 2) * 0.5 + 0.5)
+        let band = sinf(p.x * 36 + sinf(p.y * 4) * 1.2 + fbm(p * 3) * 2) * 0.5 + 0.5
+        let stirn = glatt(0.30, 0.55, p.y) * glatt(0.62, 0.2, abs(p.x)) * glatt(0.86, 0.95, band)
+        let wange = glatt(0.35, 0.65, abs(p.x)) * glatt(0.87, 0.95, sinf(p.y * 30 + abs(p.x) * 5 + fbm(p * 3) * 2) * 0.5 + 0.5)
         c = mische(c, streifen, (stirn + wange * 0.8) * glatt(-0.4, 0.2, p.y + 0.5))
         // Weiss: Schnurrhaarpolster, Kinn.
         let weissAnteil = glatt(-0.08, -0.18, p.y) * glatt(0.35, 0.65, p.z) + glatt(-0.30, -0.42, p.y)
@@ -545,7 +545,7 @@ func katze() -> (SCNNode, Float, V) {
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     tierNase(w, mitte: V(0, -0.08, 0.93), r: V(0.095, 0.06, 0.06), farbe: hex("#C97F7C"), dreieck: true)
-    augenEinsetzen(w, kopf, x: 0.33, y: 0.12, r: 0.21, iris: NSColor(calibratedRed: 0.62, green: 0.74, blue: 0.22, alpha: 1), pupille: 0.55, schlitz: true, schlitzBreite: 0.62, ausdruck: Ausdruck(oben: 0.10, unten: 0.07, schraeg: 0.14, funke: 1.5, wange: 0.40))
+    augenEinsetzen(w, kopf, x: 0.33, y: 0.12, r: 0.17, iris: NSColor(calibratedRed: 0.62, green: 0.74, blue: 0.22, alpha: 1), pupille: 0.55, schlitz: true, schlitzBreite: 0.62, ausdruck: Ausdruck(oben: 0.10, unten: 0.07, schraeg: 0.14, funke: 1.5, wange: 0.40))
     w.eulerAngles = SCNVector3(0.06, 0.34, 0.12)
     return (w, 7.3, V(0, 0.18, 0))
 }
@@ -731,10 +731,10 @@ func reh() -> (SCNNode, Float, V) {
     }, rauheit: 0.75, fell: 0.06)
     // Reh: nur ein Hauch heller ueber dem Auge (weisse Brauen hat es nicht); kurzes, anliegendes Fell.
     var (braue, braueM) = mitBrauen(kopf, x: 0.34, y: 0.41, laenge: 0.11, dicke: 0.045, winkel: 0.2, farbe: mische(braun, weiss, 0.30), staerke: 0.45, wulst: 0.6)
-    braue.haar = haarKarte(kopf, FellKarte(kopf: 0.025, rumpf: 0.03, nase: V(0, -0.360, 1.380), schnauze: 0.6,
+    braue.haar = haarKarte(kopf, FellKarte(kopf: 0.045, rumpf: 0.055, nase: V(0, -0.360, 1.380), schnauze: 0.6,
         augen: augenStellen(kopf, x: 0.36, y: 0.22), augenR: 0.17, braue: 0.3,
         zonen: beide(V(0.92, 0.62, -0.18), V(0.55, 0.30, 0.25), 0.6)), braue: braueM)
-    braue.fellArt = Fell(dichte: 100, aufrecht: 0.2, neigung: 1.6, ursprung: V(0, -0.360, 1.380), straehnen: 0.15)
+    braue.fellArt = Fell(dichte: 120, aufrecht: 0.28, neigung: 1.6, ursprung: V(0, -0.360, 1.380), wurzel: 0.58, spitze: 1.18, straehnen: 0.2, streuung: 0.16)
     // Reh: geschlossenes, schmales Maul tief an der Schnauzenspitze, mit kaum angehobenem Winkel — sanft.
     let maul = mitMaul(braue, Maul(kurven: [Kurve(punkte: [V(0, -0.470, 1.440), V(0, -0.525, 1.420)], spitzHinten: false)]
         + paar(Kurve(punkte: [V(0, -0.525, 1.420), V(0.08, -0.550, 1.350), V(0.15, -0.540, 1.230), V(0.20, -0.500, 1.120)], spitzVorn: false)),
@@ -747,7 +747,7 @@ func reh() -> (SCNNode, Float, V) {
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     tierNase(w, mitte: V(0, -0.360, 1.380), r: V(0.18, 0.12, 0.10), farbe: hex("#141011"))
-    augenEinsetzen(w, kopf, x: 0.36, y: 0.22, r: 0.19, iris: NSColor(calibratedRed: 0.26, green: 0.14, blue: 0.08, alpha: 1), pupille: 0.55, aussen: 0.45, ausdruck: Ausdruck(oben: 0.14, unten: 0.05, schraeg: 0.26, funke: 1.5, wange: 0.40))
+    augenEinsetzen(w, kopf, x: 0.36, y: 0.22, r: 0.155, iris: NSColor(calibratedRed: 0.26, green: 0.14, blue: 0.08, alpha: 1), pupille: 0.55, aussen: 0.45, ausdruck: Ausdruck(oben: 0.14, unten: 0.05, schraeg: 0.26, funke: 1.5, wange: 0.40))
     w.eulerAngles = SCNVector3(0.10, 0.48, 0.04)
     return (w, 8.0, V(0, 0.15, 0.2))
 }
@@ -1143,8 +1143,8 @@ func seeotter() -> (SCNNode, Float, V) {
     let braun = hex("#5B3B27"), kopfHell = hex("#CBB497"), polster = hex("#E3D3BD")
     var formen: [Form] = [
         Form(art: .ellipsoid(V(0.92, 0.80, 0.84)), mitte: V(0, 0.08, 0)),
-        Form(art: .ellipsoid(V(0.27, 0.21, 0.23)), mitte: V(-0.21, -0.26, 0.80), weich: 0.18),
-        Form(art: .ellipsoid(V(0.27, 0.21, 0.23)), mitte: V(0.21, -0.26, 0.80), weich: 0.18),
+        Form(art: .ellipsoid(V(0.32, 0.25, 0.25)), mitte: V(-0.23, -0.27, 0.80), weich: 0.18),
+        Form(art: .ellipsoid(V(0.32, 0.25, 0.25)), mitte: V(0.23, -0.27, 0.80), weich: 0.18),
         Form(art: .ellipsoid(V(0.20, 0.15, 0.18)), mitte: V(0, -0.38, 0.74), weich: 0.16),
     ]
     for sx: Float in [-1, 1] {
@@ -1162,7 +1162,7 @@ func seeotter() -> (SCNNode, Float, V) {
     }, rauheit: 0.80, fell: 0.07)
     var (braue, braueM) = mitBrauen(kopf, x: 0.30, y: 0.38, laenge: 0.11, dicke: 0.05, winkel: 0.20, farbe: mische(kopfHell, polster, 0.5), staerke: 0.6)
     braue.haar = haarKarte(kopf, FellKarte(kopf: 0.06, rumpf: 0.09, nase: V(0, -0.12, 1.02), schnauze: 0.35,
-        augen: augenStellen(kopf, x: 0.33, y: 0.20), augenR: 0.12,
+        augen: augenStellen(kopf, x: 0.36, y: 0.22), augenR: 0.10,
         zonen: beide(V(0.21, -0.26, 0.85), V(0.27, 0.21, 0.23), 0.8)), braue: braueM)
     braue.fellArt = Fell(dichte: 75, ursprung: V(0, -0.12, 1.10), straehnen: 0.4)
     let maul = mitMaul(braue, Maul(kurven: [Kurve(punkte: [V(0, -0.24, 1.03), V(0, -0.33, 1.00), V(0, -0.40, 0.95)], spitzHinten: false)]
@@ -1173,8 +1173,8 @@ func seeotter() -> (SCNNode, Float, V) {
         mische(farbeMitRauschen(braun, p, 0.08), farbeMitRauschen(kopfHell, p, 0.06), latz(p, breite: 0.22) * 0.12)
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
-    tierNase(w, mitte: V(0, -0.12, 1.02), r: V(0.16, 0.11, 0.10), farbe: hex("#1A1310"))
-    augenEinsetzen(w, kopf, x: 0.33, y: 0.20, r: 0.13, iris: NSColor(calibratedRed: 0.12, green: 0.08, blue: 0.06, alpha: 1), pupille: 0.7, ausdruck: Ausdruck(oben: 0.08, unten: 0.04, schraeg: 0.15, funke: 1.7))
+    tierNase(w, mitte: V(0, -0.12, 1.02), r: V(0.19, 0.12, 0.10), farbe: hex("#1A1310"))
+    augenEinsetzen(w, kopf, x: 0.36, y: 0.22, r: 0.10, iris: NSColor(calibratedRed: 0.12, green: 0.08, blue: 0.06, alpha: 1), pupille: 0.7, ausdruck: Ausdruck(oben: 0.08, unten: 0.04, schraeg: 0.15, funke: 1.7))
     w.eulerAngles = SCNVector3(0.04, 0.20, -0.05)
     return (w, 7.3, V(0, 0.15, 0))
 }
@@ -1499,7 +1499,7 @@ func siamkatze() -> (SCNNode, Float, V) {
     let kopf = Koerper(formen: formen, farbe: { p, n in
         var c = farbeMitRauschen(creme, p, 0.05)
         // die Maske: um Nase und Schnauze am dunkelsten, zu den Augen hin weich
-        let maske = region(p, V(0, -0.16, 0.86), V(0.44, 0.44, 0.40), 0.5)
+        let maske = region(p, V(0, -0.12, 0.84), V(0.54, 0.52, 0.46), 0.35)
         c = mische(c, farbeMitRauschen(punkt, p, 0.06), maske * 0.95)
         let ohr = glatt(0.62, 0.80, p.y) * glatt(0.25, 0.40, abs(p.x))
         c = mische(c, punkt, ohr * 0.9)
@@ -1519,7 +1519,7 @@ func siamkatze() -> (SCNNode, Float, V) {
     let koerper = brustbild(maul, vierbeiner(bau), farbe: { p, _ in farbeMitRauschen(creme, p, 0.05) })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
     tierNase(w, mitte: V(0, -0.08, 0.91), r: V(0.09, 0.06, 0.06), farbe: hex("#3A2A24"), dreieck: true)
-    augenEinsetzen(w, kopf, x: 0.31, y: 0.12, r: 0.20, iris: NSColor(calibratedRed: 0.36, green: 0.62, blue: 0.92, alpha: 1), pupille: 0.50, schlitz: true, schlitzBreite: 0.55, ausdruck: Ausdruck(oben: 0.14, unten: 0.08, schraeg: 0.22, funke: 1.5, wange: 0.3))
+    augenEinsetzen(w, kopf, x: 0.31, y: 0.12, r: 0.17, iris: NSColor(calibratedRed: 0.36, green: 0.62, blue: 0.92, alpha: 1), pupille: 0.50, schlitz: true, schlitzBreite: 0.55, ausdruck: Ausdruck(oben: 0.14, unten: 0.08, schraeg: 0.22, funke: 1.5, wange: 0.3))
     w.eulerAngles = SCNVector3(0.05, -0.30, -0.10)
     return (w, 7.3, V(0, 0.18, 0))
 }
