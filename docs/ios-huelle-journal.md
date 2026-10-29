@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 189)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 190)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 189 | (dieser) | Goldfisch, fuenf Voegel, Dackel nachgearbeitet; drei Nachthimmel getrennt; Hintergruende Farbe/Hell/Dunkel |
+| 190 | (dieser) | Mehr Fotorealismus: Gefieder als Fellschalen, Hase/Dackel/Hunde natuerlicher |
+| 189 | `6b4a1a9` | Goldfisch, fuenf Voegel, Dackel nachgearbeitet; drei Nachthimmel getrennt; Hintergruende Farbe/Hell/Dunkel |
 | 188 | `9994138` | Ausfuehrlicher Test mit denselben Bausteinen wie der normale (Balken, Antwortwort, Meilensteine, Funkeln); Quellenhinweis weg |
 | 187 | `bd1f7bb` | Ausfuehrlicher Test: 116 Aussagen (IPIP-NEO-120 ohne O6), 29 Facetten, Lucenta+ |
 | 186 | `f131d52` | Tier als Begleiter der Tagesform mit drei Ausdruecken (60 Renderings), Bericht ueber zwei Freunde (Lucenta+) |
@@ -244,7 +245,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–189 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–190 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -338,6 +339,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 190: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
 
 **Nach Runde 189: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
 
@@ -513,6 +516,23 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 190 — Mehr Fotorealismus bei sieben Tieren
+
+**Auftrag:** „noch mehr Fotorealismus" bei Dackel, Kaninchen (Hase), den Hunden (Retriever, Mops), Pinguin, Flamingo, Rotkehlchen.
+Grenze des Werkzeugs wie in Runde 141–146 benannt: eigene 3D-Figuren, kein Foto.
+
+**Gefunden:** Die Voegel trugen glatte Haut — `fell:` am Koerper veraendert nur die Normale, echtes Fell (Schalen) entsteht nur mit
+`haar` (Haarkarte), und die hatten Voegel nie. **Geaendert:** Gefieder als sehr kurze Fellschalen: Rotkehlchen flauschig
+(0,05/0,07, Straehnen 0,35), Flamingo kurz (0,026/0,04; `brustbild` uebernimmt die Karte fuer Hals und Leib), Pinguin zuerst
+0,02 — las sich als Pluesch, daher 0,012 und glaenzender (Rauheit 0,48). Hase: Fell laenger und gesprenkelt (Streuung 0,22),
+Ohren mit kurzem Fell, innen nur dezent rosa, dunkler Ohrrand, Augenring 0,75 -> 0,45. Dackel: Fell dichter und laenger half auf
+Avatargroesse kaum — ein Kurzhaardackel wirkt durch GLANZ echt: Rauheit 0,72 -> 0,52, dunkler Ruecken, Augen 0,18 -> 0,16 (bleiben
+etwas groesser als echt, Entscheidung des Inhabers). Retriever und Mops: mehr Streuung von Haar zu Haar (gleichmaessiges Fell wirkt
+wie Pluesch), Fell etwas laenger. Alle drei Ausdruecke neu.
+
+**Gemessen:** alt/neu nebeneinander in WebKit (180 px). Deutlich: Hase, Rotkehlchen, Dackel, Pinguin; dezent: Retriever, Mops,
+Flamingo. Vor dem Bild schien die Fellverlaengerung beim Dackel richtig — das Bild zeigte: kaum sichtbar.
 
 ## Runde 189 — Sieben Tiere nachgearbeitet, drei Nachthimmel getrennt, Hintergruende neu gruppiert
 
