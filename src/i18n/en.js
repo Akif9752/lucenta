@@ -1342,7 +1342,7 @@
       'hg_artdeco': 'Art déco',
       'hg_gruppe_hell': 'Light',
       'hg_gruppe_dunkel': 'Dark',
-      'hg_gruppe_farbe': 'Colour & light',
+      'hg_gruppe_farbe': 'Colour',
       'figur_delfin': 'Dolphin',
       'figur_seeotter': 'Sea otter',
       'figur_pinguin': 'Penguin',

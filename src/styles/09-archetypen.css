@@ -311,17 +311,16 @@
   /* Der Avatar braucht auf einer gemusterten Flaeche einen eigenen Rand, sonst verschwimmt er. */
   .drawer-profile-row[data-hg] .drawer-profile-avatar{ border-color:var(--hg-ink); }
 
+  /* Ein echtes Sternbild (Grosser Wagen) auf Indigo — unterscheidet sich von Mondnacht und Sternschnuppe
+     in Farbe UND Motiv (Auftrag des Inhabers). */
   .hg-sternenbild{
-    --hg-ink:#F2F4F0; --hg-muted:#B9C6D6;
+    --hg-ink:#F2F3FB; --hg-muted:#BDC3E6;
     background:
-      radial-gradient(1.4px 1.4px at 18% 30%, #FFFFFF, transparent),
-      radial-gradient(1.2px 1.2px at 62% 22%, #FFFFFF, transparent),
-      radial-gradient(1.6px 1.6px at 80% 62%, #FFFFFF, transparent),
-      radial-gradient(1.1px 1.1px at 34% 72%, #DCE7FF, transparent),
-      radial-gradient(1.3px 1.3px at 47% 48%, #FFFFFF, transparent),
-      radial-gradient(1px 1px at 88% 34%, #DCE7FF, transparent),
-      radial-gradient(1px 1px at 8% 60%, #FFFFFF, transparent),
-      linear-gradient(126deg, #16233B 0%, #0C1220 100%);
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'%3E%3Cg fill='none' stroke='rgba%28214%2C224%2C255%2C.5%29' stroke-width='.9'%3E%3Cpath d='M22 22 L48 30 L72 40 L96 48 L104 74 L142 78 L148 50 Z' /%3E%3Cpath d='M96 48 L148 50'/%3E%3C/g%3E%3Cg fill='%23FFFFFF'%3E%3Ccircle cx='22' cy='22' r='2.3'/%3E%3Ccircle cx='48' cy='30' r='2'/%3E%3Ccircle cx='72' cy='40' r='2.2'/%3E%3Ccircle cx='96' cy='48' r='2.4'/%3E%3Ccircle cx='104' cy='74' r='2.1'/%3E%3Ccircle cx='142' cy='78' r='2.4'/%3E%3Ccircle cx='148' cy='50' r='2.6'/%3E%3C/g%3E%3C/svg%3E") 88% 50% / auto 78% no-repeat,
+      radial-gradient(1px 1px at 12% 70%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 30% 84%, #DCE3FF, transparent),
+      radial-gradient(1px 1px at 46% 16%, #FFFFFF, transparent),
+      linear-gradient(135deg, #1E1A4D 0%, #121034 100%);
   }
   .hg-nordlicht{
     --hg-ink:#EAF6F1; --hg-muted:#A9D5C4;
@@ -415,16 +414,16 @@
       linear-gradient(150deg, transparent 0 20%, rgba(255,255,255,.4) 20% 34%, transparent 34% 100%),
       linear-gradient(126deg, #F2F8FB 0%, #D9EAF2 55%, #C4DDEA 100%);
   }
+  /* Mond ueber dunklen Huegeln, Petrol statt Nachtblau. */
   .hg-mondnacht{
-    --hg-ink:#EEF2FA; --hg-muted:#AEBBD4;
+    --hg-ink:#EEF6F6; --hg-muted:#A9CACB;
     background:
-      radial-gradient(circle at 84% 34%, #F4F1E2 0 13px, rgba(244,241,226,.6) 14px, rgba(244,241,226,.12) 22px, transparent 48px),
-      radial-gradient(1.2px 1.2px at 16% 24%, #FFFFFF, transparent),
-      radial-gradient(1px 1px at 40% 66%, #E6ECFF, transparent),
-      radial-gradient(1.3px 1.3px at 58% 18%, #FFFFFF, transparent),
-      radial-gradient(1px 1px at 26% 82%, #FFFFFF, transparent),
-      radial-gradient(1px 1px at 68% 78%, #E6ECFF, transparent),
-      linear-gradient(170deg, #1B2A4E 0%, #0E1730 70%, #0A1024 100%);
+      radial-gradient(ellipse 62% 46% at 22% 118%, #06171C 96%, transparent 98%),
+      radial-gradient(ellipse 70% 52% at 86% 122%, #0A2228 96%, transparent 98%),
+      radial-gradient(circle at 78% 30%, #FBF6E4 0 15px, rgba(251,246,228,.55) 16px, rgba(251,246,228,.14) 26px, transparent 54px),
+      radial-gradient(1px 1px at 18% 22%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 42% 36%, #E6F2F2, transparent),
+      linear-gradient(180deg, #164A57 0%, #0F3340 60%, #0B2630 100%);
   }
   .hg-neon{
     --hg-ink:#FDF0FF; --hg-muted:#E9C2F5;
@@ -493,18 +492,16 @@
       radial-gradient(circle at 46% 22%, rgba(255,255,255,.9) 0 7px, transparent 8px),
       linear-gradient(170deg, #9CCBEE 0%, #C3E0F6 60%, #E2F0FA 100%);
   }
+  /* Violetter Abendhimmel mit warmem Horizont und EINER langen, deutlichen Schnuppe. */
+  /* Violetter Abendhimmel mit warmem Horizont und EINER langen Schnuppe; Schweif und Kopf als eine Zeichnung. */
   .hg-sternschnuppe{
-    --hg-ink:#EFF2FB; --hg-muted:#AFB9D6;
+    --hg-ink:#FBF1F6; --hg-muted:#E2BFD3;
     background:
-      radial-gradient(3px 3px at 69% 64%, #FFFFFF, transparent),
-      radial-gradient(14px 14px at 69% 64%, rgba(200,220,255,.4), transparent),
-      linear-gradient(152deg, transparent 0 66.6%, rgba(220,232,255,.0) 66.6%, rgba(220,232,255,.7) 69.6%, transparent 70% 100%) 100% 0 / 60% 70% no-repeat,
-      radial-gradient(1.2px 1.2px at 20% 30%, #FFFFFF, transparent),
-      radial-gradient(1px 1px at 44% 72%, #E6ECFF, transparent),
-      radial-gradient(1.2px 1.2px at 60% 56%, #FFFFFF, transparent),
-      radial-gradient(1px 1px at 12% 76%, #FFFFFF, transparent),
-      radial-gradient(1px 1px at 92% 82%, #E6ECFF, transparent),
-      linear-gradient(160deg, #151E3C 0%, #0C1228 70%, #080C1C 100%);
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFEFF6' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23FFEFF6' stop-opacity='.95'/%3E%3C/linearGradient%3E%3CradialGradient id='k'%3E%3Cstop offset='0' stop-color='%23FFFFFF'/%3E%3Cstop offset='.35' stop-color='%23FFE2F0' stop-opacity='.8'/%3E%3Cstop offset='1' stop-color='%23FFE2F0' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M92 14 L152 60 L150.4 62 Z' fill='url%28%23s%29'/%3E%3Ccircle cx='151.5' cy='61' r='9' fill='url%28%23k%29'/%3E%3Ccircle cx='151.5' cy='61' r='2.2' fill='%23FFFFFF'/%3E%3C/svg%3E") 100% 50% / auto 100% no-repeat,
+      radial-gradient(1px 1px at 16% 24%, #FFFFFF, transparent),
+      radial-gradient(1px 1px at 38% 40%, #FFE9F4, transparent),
+      radial-gradient(1px 1px at 8% 58%, #FFFFFF, transparent),
+      linear-gradient(175deg, #2B1A4A 0%, #4A2760 55%, #8C4A6E 88%, #B8687A 100%);
   }
   .hg-artdeco{
     --hg-ink:#F6EFDD; --hg-muted:#C9B68A;

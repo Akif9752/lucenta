@@ -1345,7 +1345,7 @@
       'hg_artdeco': 'アールデコ',
       'hg_gruppe_hell': '明るい',
       'hg_gruppe_dunkel': '暗い',
-      'hg_gruppe_farbe': '色と光',
+      'hg_gruppe_farbe': '色',
       'figur_delfin': 'イルカ',
       'figur_seeotter': 'ラッコ',
       'figur_pinguin': 'ペンギン',

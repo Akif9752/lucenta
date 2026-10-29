@@ -1042,7 +1042,7 @@ CONTENT.de = {
       'hg_artdeco': 'Art déco',
       'hg_gruppe_hell': 'Hell',
       'hg_gruppe_dunkel': 'Dunkel',
-      'hg_gruppe_farbe': 'Farbe & Licht',
+      'hg_gruppe_farbe': 'Farbe',
       'figur_delfin': 'Delfin',
       'figur_seeotter': 'Seeotter',
       'figur_pinguin': 'Pinguin',

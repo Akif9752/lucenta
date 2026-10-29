@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 188)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 189)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 188 | (dieser) | Ausfuehrlicher Test mit denselben Bausteinen wie der normale (Balken, Antwortwort, Meilensteine, Funkeln); Quellenhinweis weg |
+| 189 | (dieser) | Goldfisch, fuenf Voegel, Dackel nachgearbeitet; drei Nachthimmel getrennt; Hintergruende Farbe/Hell/Dunkel |
+| 188 | `9994138` | Ausfuehrlicher Test mit denselben Bausteinen wie der normale (Balken, Antwortwort, Meilensteine, Funkeln); Quellenhinweis weg |
 | 187 | `bd1f7bb` | Ausfuehrlicher Test: 116 Aussagen (IPIP-NEO-120 ohne O6), 29 Facetten, Lucenta+ |
 | 186 | `f131d52` | Tier als Begleiter der Tagesform mit drei Ausdruecken (60 Renderings), Bericht ueber zwei Freunde (Lucenta+) |
 | 185 | `54a3dfc` | Siri und Kurzbefehle: Tagesform eintragen (ohne App) und oeffnen, 8 Sprachen |
@@ -243,7 +244,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–188 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–189 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -337,6 +338,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 189: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
 
 **Nach Runde 188: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
 
@@ -510,6 +513,30 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 189 — Sieben Tiere nachgearbeitet, drei Nachthimmel getrennt, Hintergruende neu gruppiert
+
+**Auftrag:** Goldfisch, die Voegel und der Dackel „muessen unbedingt ueberarbeitet und verbessert werden"; die drei aehnlichen
+Sternenhimmel klar unterscheiden; alle einfarbigen Hintergruende ohne Motiv unter „Farbe", diese Gruppe zuerst, dann Hell, dann
+Dunkel.
+
+**Tiere (am Bild beurteilt, alt/neu nebeneinander):** Pinguin: Schwarz-Weiss-Grenze war ueber 0,5 Einheiten verwaschen, jetzt eng;
+das weisse Band ueber den Scheitel (las sich als Streifen) wird ein Augenring. Rotkehlchen: Farbgrenzen 0,25 -> 0,10. Papagei:
+Gesichtsfelder kleiner, gelb-blaue Fluegel breiter, Kopf leicht abgesetzt. Flamingo: Kopf groesser, staerker zur Kamera. Eule:
+heller Gesichtsschleier mit dunklem Rand, unregelmaessige Tropfen auf der Brust (erster Versuch mit Sinusreihen ergab Balken —
+verworfen); das Zwinkern bleibt (Runde 137). Goldfisch: von fast Profil (-0,38) auf Dreiviertel (-0,88), groessere Schwanz- und
+Rueckenflosse, kraeftige Strahlen mit hellem Saum, groesseres Auge; Rahmen dafuer neu gemessen (NUR_KOPF). Dackel: Schnauze
+um 0,18 laenger (Nase, Maul, Fell mitgezogen), Kurzhaar etwas laenger und kontrastreicher — bleibt glattes Kurzhaar (Runde 141).
+Alle drei Ausdruecke dieser sieben neu gerendert. **Offen:** „muede" liest sich bei den Voegeln schwach — ihre Lider sind auf
+Avatargroesse zu duenn, die Augen wirken eher wach; froh (zugekniffen) traegt bei allen.
+
+**Nachthimmel:** Sternenbild = Grosser Wagen als SVG auf Indigo; Mondnacht = Mond ueber dunklen Huegeln auf Petrol; Sternschnuppe =
+violetter Abendhimmel mit warmem Horizont, Schweif und Kopf als EINE SVG-Zeichnung (als zwei Verlaeufe sassen sie versetzt — am
+Bild gesehen).
+
+**Gruppen (Entscheidung des Inhabers):** Farbe (Nebel, Wueste, Morgentau, Daemmerung, Lagune, Wald, Tiefsee, Kohle) — Hell (Papier,
+Wolken, Kirschbluete, Lavendel, Gletscher, Prisma, Sonnenstrahl) — Dunkel (Sternenbild, Mondnacht, Sternschnuppe, Galaxie,
+Nordlicht, Welle, Glut, Neon, Art deco). „Farbe & Licht" heisst jetzt „Farbe" (8 Sprachen). Freie Hintergruende unveraendert.
 
 ## Runde 188 — Ausfuehrlicher Test fuehlt sich an wie der normale
 

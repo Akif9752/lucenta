@@ -1341,7 +1341,7 @@
       'hg_artdeco': 'Art déco',
       'hg_gruppe_hell': 'Claros',
       'hg_gruppe_dunkel': 'Oscuros',
-      'hg_gruppe_farbe': 'Color y luz',
+      'hg_gruppe_farbe': 'Color',
       'figur_delfin': 'Delfín',
       'figur_seeotter': 'Nutria marina',
       'figur_pinguin': 'Pingüino',

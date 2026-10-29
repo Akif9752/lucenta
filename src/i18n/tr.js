@@ -1345,7 +1345,7 @@
       'hg_artdeco': 'Art déco',
       'hg_gruppe_hell': 'Açık',
       'hg_gruppe_dunkel': 'Koyu',
-      'hg_gruppe_farbe': 'Renk ve ışık',
+      'hg_gruppe_farbe': 'Renk',
       'figur_delfin': 'Yunus',
       'figur_seeotter': 'Deniz samuru',
       'figur_pinguin': 'Penguen',

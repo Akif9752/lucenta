@@ -1341,7 +1341,7 @@
       'hg_artdeco': 'Art déco',
       'hg_gruppe_hell': 'Claros',
       'hg_gruppe_dunkel': 'Escuros',
-      'hg_gruppe_farbe': 'Cor e luz',
+      'hg_gruppe_farbe': 'Cor',
       'figur_delfin': 'Golfinho',
       'figur_seeotter': 'Lontra-marinha',
       'figur_pinguin': 'Pinguim',

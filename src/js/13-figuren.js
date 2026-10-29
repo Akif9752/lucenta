@@ -80,8 +80,9 @@
                        'lavendel','wolken','sternschnuppe','artdeco'];
   // Angezeigt in Gruppen; frei sind nur die schlichten Flaechen, der Rest ist Lucenta+ (Entscheidung des
   // Inhabers). Ein schon gewaehlter gesperrter Hintergrund bleibt.
-  var HG_GRUPPEN = [['hell', ['papier','nebel','wueste','morgentau','kirschbluete','gletscher','lavendel','wolken']],
-                    ['dunkel', ['kohle','sternenbild','tiefsee','galaxie','mondnacht','neon','sternschnuppe','artdeco']],
-                    ['farbe', ['nordlicht','daemmerung','welle','wald','glut','lagune','prisma','sonnenstrahl']]];
+  // Reihenfolge und Zuordnung: Entscheidung des Inhabers — zuerst die schlichten Flaechen ohne Motiv, dann hell, dann dunkel.
+  var HG_GRUPPEN = [['farbe', ['nebel','wueste','morgentau','daemmerung','lagune','wald','tiefsee','kohle']],
+                    ['hell', ['papier','wolken','kirschbluete','lavendel','gletscher','prisma','sonnenstrahl']],
+                    ['dunkel', ['sternenbild','mondnacht','sternschnuppe','galaxie','nordlicht','welle','glut','neon','artdeco']]];
   var HG_FREI = ['papier','kohle','wolken','sternenbild','daemmerung'];
   function hgFrei(id){ return !id || HG_FREI.indexOf(id) >= 0 || istPlus(); }
