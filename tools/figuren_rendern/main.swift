@@ -18,6 +18,6 @@ for t in TIERE where gewuenscht.isEmpty || gewuenscht.contains(t.name) {
     knoten.enumerateHierarchy { n, _ in
         if n.name == "auge" { n.look(at: scnVektor(kamera), up: SCNVector3(0, 1, 0), localFront: SCNVector3(0, 0, 1)) }
     }
-    rendern(szene, groesse: 1024, leinwand: 2, kameraAbstand: abstand, ziel: blick, nach: "\(ziel)/\(t.name).png")
+    rendern(szene, groesse: 1024, leinwand: 2, kameraAbstand: abstand, ziel: blick, nach: "\(ziel)/\(t.name)\(STIMMUNG == .ruhig ? "" : "-" + STIMMUNG.rawValue).png")
     print(String(format: "%-13@ %.1f s", t.name as NSString, Date().timeIntervalSince(start)))
 }

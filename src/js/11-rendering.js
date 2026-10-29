@@ -392,6 +392,31 @@
     box.style.display='block';
   }
 
+  // ---------- Bericht ueber zwei Freunde (Lucenta+, Entscheidung des Inhabers) ----------
+  // Fasst ueber alle fuenf Werte zusammen, statt die Karten je Dimension zu wiederholen. Grenzen wie dort:
+  // unter 15 Punkten aehnlich, ab 35 ein grosser Unterschied. Namen stehen nie im Satz (Beugung in 8 Sprachen).
+  function paarBerichtHTML(me, other, name){
+    var ich = tx('pb_du'), du = name || tx('pb_gegenueber');
+    var gleich = [], mittel = [], gross = [], groessterAbstand = -1, groesste = null;
+    ORDER.forEach(function(f){
+      var d = Math.abs(me[f] - other[f]);
+      if (d > groessterAbstand){ groessterAbstand = d; groesste = f; }
+      if (d < 15){ gleich.push(tx('pb_gleich_' + f + '_' + ((me[f] + other[f]) / 2 >= 50 ? 'high' : 'low'))); return; }
+      var paar = tx('pb_paar_' + f).split('{hoch}').join(me[f] > other[f] ? ich : du).split('{tief}').join(me[f] > other[f] ? du : ich);
+      if (d < 35) mittel.push(paar);
+      else gross.push(tx('pb_reibung_' + f) + '<span class="pb-paar">' + paar + '</span>');
+    });
+    var liste = function(l, leer){ return l.length ? '<ul class="pb-liste">' + l.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>'
+                                                  : '<p class="pb-leer">' + tx(leer) + '</p>'; };
+    var abschnitt = function(titel, inhalt){ return '<div class="pb-abschnitt"><h3>' + tx(titel) + '</h3>' + inhalt + '</div>'; };
+    return '<section class="pb-bericht"><h2 class="section-title section-title-sub">' + tx('pb_titel') + '</h2>' +
+      abschnitt('pb_verbindet', liste(gleich, 'pb_verbindet_leer')) +
+      abschnitt('pb_ergaenzt', liste(mittel, 'pb_ergaenzt_leer')) +
+      abschnitt('pb_reibt', liste(gross, 'pb_reibt_leer')) +
+      abschnitt('pb_reden', '<p>' + tx(groessterAbstand < 15 ? 'pb_rat_aehnlich' : 'pb_rat_' + groesste) + '</p>') +
+    '</section>';
+  }
+
   function renderCompat(){
     var me = fromCode($('cmpMe').value.trim());
     var other = fromCode($('cmpOther').value.trim());
@@ -491,7 +516,8 @@
       schloesserVerdrahten(box);
       return;
     }
-    box.innerHTML = scoreBlock + radarBlock + summary + lines.join('') + note;
+    var bericht = paarBerichtHTML(me, other, andererName);
+    box.innerHTML = scoreBlock + radarBlock + summary + (cmpPlus ? bericht : vorschauHTML(bericht, tx('pb_plus'))) + lines.join('') + note;
     startCompatBars(box);
     schloesserVerdrahten(box);
     lastCompatSnapshot = { myCode: $('cmpMe').value.trim(), otherCode: $('cmpOther').value.trim(), match: match };

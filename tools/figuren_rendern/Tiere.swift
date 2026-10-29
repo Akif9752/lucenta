@@ -55,7 +55,31 @@ struct Ausdruck {
     var funke: CGFloat = 1.3
     var wange: Float = 0
     var zwinkern = false
+    var laecheln = false            // beide Augen zum Laecheln zugekniffen (Ausdruck „froh“)
     var groesse: CGFloat = 0.9      // etwas groesser als beim echten Tier (Entscheidung des Inhabers)
+}
+// Drei Ausdruecke nach der Tagesform (Entscheidung des Inhabers): AUSDRUCK=muede|froh, sonst ruhig.
+// muede: Oberlid sinkt, kleinerer Lichtpunkt. froh: Unterlid steigt (laechelndes Auge), groesserer Lichtpunkt.
+enum Stimmung: String { case ruhig, muede, froh }
+let STIMMUNG = Stimmung(rawValue: ProcessInfo.processInfo.environment["AUSDRUCK"] ?? "") ?? .ruhig
+extension Stimmung {
+    func angewandt(_ a: Ausdruck) -> Ausdruck {
+        var b = a
+        switch self {
+        case .ruhig: break
+        case .muede: b.oben = min(0.5, a.oben + 0.24); b.unten = max(0, a.unten - 0.04); b.schraeg = a.schraeg + 0.08
+                     b.funke = a.funke * 0.6; b.zwinkern = false
+        case .froh:  b.laecheln = true
+        }
+        return b
+    }
+    /// Mundwinkel: Seitliche Maullinien (|x| > 0,04) heben (froh) bzw. senken (muede) sich zum Ende hin.
+    /// Das Unterlid allein traegt nicht — bei tief sitzenden Augen liegt es hinter dem Fell.
+    func maulPunkt(_ q: V, t: Float) -> V {
+        guard abs(q.x) > 0.04 else { return q }
+        let hub: Float = self == .froh ? 0.075 : (self == .muede ? -0.03 : 0)
+        return V(q.x, q.y + hub * t * t, q.z)
+    }
 }
 // Die Augen sehen erst in main.swift auf die Kamera, wenn sie feststeht (Augen heissen "auge").
 // Entscheidung des Inhabers: Jedes Tier sieht den Betrachter an, egal wohin der Kopf gedreht ist.
@@ -169,7 +193,8 @@ struct Maul {
 func mitMaul(_ k: Koerper, _ m: Maul) -> Koerper {
     var falten: [Form] = []
     for kurve in m.kurven {
-        let p = kurve.punkte.map { aufFlaeche(k, $0) }, n = Float(p.count - 1)
+        let n = Float(kurve.punkte.count - 1)
+        let p = kurve.punkte.enumerated().map { aufFlaeche(k, STIMMUNG.maulPunkt($0.element, t: Float($0.offset) / max(n, 1))) }
         func breite(_ t: Float) -> Float {
             let vorn = kurve.spitzVorn ? glatt(0, 0.45, t) : 1, hinten = kurve.spitzHinten ? glatt(1, 0.55, t) : 1
             return m.r * (0.25 + 0.75 * min(vorn, hinten))
@@ -195,20 +220,23 @@ func mitMaul(_ k: Koerper, _ m: Maul) -> Koerper {
 
 // Augen an der Kopfseite (Wal, Goldfisch, Schildkroete): gleiche Lider, Lid-Achse an der Seitenflaeche.
 func seitenAuge(_ w: SCNNode, _ k: Koerper, x: Float, y: Float, tiefe: Float, sz: Float, r: CGFloat, iris: NSColor,
-                pupille: CGFloat, _ a: Ausdruck) {
+                pupille: CGFloat, _ roh: Ausdruck) {
+    let a = STIMMUNG.angewandt(roh)
     let r = r * a.groesse
     let zf = vorderflaeche(k, x, y)
     let flaeche = V(x, y, zf * sz), mitte = V(x, y, (zf - tiefe) * sz)
     let au = auge(radius: r, iris: iris, pupille: pupille, funke: a.funke)
     au.position = scnVektor(mitte); au.name = "auge"
-    w.addChildNode(au)
+    if !a.laecheln { w.addChildNode(au) }
     let ueber = V(x, y + Float(r) * 1.3, vorderflaeche(k, x, y + Float(r) * 1.3) * sz)
-    lider(an: w, mitte: mitte, r: Float(r), vorn: gradient(k, flaeche), s: sz, farbe: k.farbe(ueber, gradient(k, ueber)) * 0.92, a)
+    lider(an: w, mitte: mitte, r: Float(r), vorn: gradient(k, flaeche), s: sz, farbe: k.farbe(ueber, gradient(k, ueber)) * 0.92, a,
+          geschlossen: a.laecheln)
 }
 
 func augenEinsetzen(_ wurzel: SCNNode, _ kopf: Koerper, x: Float, y: Float, r: CGFloat, tiefe: Float = 0.42,
                     iris: NSColor, pupille: CGFloat = 0.5, schlitz: Bool = false, quer: Bool = false, schlitzBreite: CGFloat = 0.32,
-                    blick: V = V(0, 0, 6), aussen: Float = 0.25, ausdruck a: Ausdruck = Ausdruck()) {
+                    blick: V = V(0, 0, 6), aussen: Float = 0.25, ausdruck roh: Ausdruck = Ausdruck()) {
+    let a = STIMMUNG.angewandt(roh)
     let r = r * a.groesse
     for s: Float in [-1, 1] {
         let zf = vorderflaeche(kopf, x * s, y)
@@ -218,7 +246,7 @@ func augenEinsetzen(_ wurzel: SCNNode, _ kopf: Koerper, x: Float, y: Float, r: C
         au.look(at: scnVektor(V(blick.x + x * s * aussen * 4, blick.y, blick.z)), up: SCNVector3(0, 1, 0), localFront: SCNVector3(0, 0, 1))
         // Runde 137, am Bild gesehen: Unter dem geschlossenen Lid schimmerten Hornhaut und Lichtpunkte
         // durch — das zwinkernde Auge las sich als glaenzende Kugel. Geschlossen gibt es keinen Augapfel.
-        let zu = a.zwinkern && s < 0
+        let zu = (a.zwinkern && s < 0) || a.laecheln
         if !zu { wurzel.addChildNode(au) }
         // Lidfarbe: das Fell knapp ueber dem Auge.
         let ueber = V(x * s, y + Float(r) * 1.25, vorderflaeche(kopf, x * s, y + Float(r) * 1.25))

@@ -261,3 +261,12 @@
   .tf-rb-zeilen{ list-style:none; margin:0 0 14px; padding:0; display:flex; flex-direction:column; gap:6px;
     color:var(--muted); font-size:calc(14px * var(--dt, 1)); line-height:1.45; }
   .tf-rb-tage{ gap:4px; max-width:260px; }
+
+  /* Begleiter: das eigene Tier mit einer Sprechblase. */
+  .tf-begleiter{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .tf-begleiter[hidden]{ display:none; }
+  .tf-begleiter-tier{ width:56px; height:56px; flex-shrink:0; }
+  .tf-begleiter-satz{ position:relative; margin:0; padding:10px 14px; border-radius:16px; background:var(--surface-2);
+    color:var(--ink); font-size:calc(15px * var(--dt, 1)); line-height:1.35; }
+  .tf-begleiter-satz::before{ content:""; position:absolute; left:-6px; top:50%; width:12px; height:12px; margin-top:-6px;
+    background:var(--surface-2); transform:rotate(45deg); border-radius:2px; }

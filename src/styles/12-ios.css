@@ -992,3 +992,12 @@
     font-family:var(--code); font-size:calc(11px * var(--dt, 1)); line-height:1.5; color:var(--muted); }
   #rechtLizenzGruppe[hidden]{ display:none; }
   #view-settings .daten-knoepfe .btn[hidden]{ display:none; }
+
+  /* Bericht ueber zwei Freunde (Vergleich) */
+  .pb-bericht{ margin:22px 0 8px; }
+  .pb-abschnitt{ background:var(--surface); border-radius:var(--radius-m); padding:16px 18px; margin-top:12px; }
+  .pb-abschnitt h3{ margin:0 0 8px; font-size:calc(15px * var(--dt, 1)); font-weight:600; color:var(--accent-strong); }
+  .pb-abschnitt p, .pb-liste{ margin:0; color:var(--ink); font-size:calc(15px * var(--dt, 1)); line-height:1.5; }
+  .pb-liste{ padding-left:1.1em; display:flex; flex-direction:column; gap:8px; }
+  .pb-paar{ display:block; margin-top:4px; color:var(--muted); font-size:calc(13.5px * var(--dt, 1)); }
+  .pb-leer{ color:var(--muted) !important; }

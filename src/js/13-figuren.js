@@ -50,8 +50,9 @@
   }
   // Das Bild ist Schmuck — der Name steht am Knopf (aria-label). Ohne Quelle bleibt der Kreis leer
   // statt ein zerbrochenes Bild zu zeigen.
-  function figurHTML(f){
-    var quelle = FIGUR_BILDER[f.id];
+  // `ausdruck` ('muede'|'froh', Tagesform-Begleiter): faellt auf das Grundbild zurueck, wenn es fehlt.
+  function figurHTML(f, ausdruck){
+    var quelle = (ausdruck && FIGUR_BILDER[f.id + '-' + ausdruck]) || FIGUR_BILDER[f.id];
     if (!quelle) return '';
     return '<img class="figur-bild" src="'+quelle+'" alt="" aria-hidden="true" draggable="false" decoding="async">';
   }

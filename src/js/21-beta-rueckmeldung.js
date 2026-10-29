@@ -59,6 +59,7 @@
         tfErfassungZuruecksetzen();
         renderStateView();
         tfAbschnitteRendern(abschnitt);
+        tfBegleiterFreuen();
       });
       refreshDrawerState();
       renderLandingStateTeaser();

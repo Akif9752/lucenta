@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 185)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 186)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 185 | (dieser) | Siri und Kurzbefehle: Tagesform eintragen (ohne App) und oeffnen, 8 Sprachen |
+| 186 | (dieser) | Tier als Begleiter der Tagesform mit drei Ausdruecken (60 Renderings), Bericht ueber zwei Freunde (Lucenta+) |
+| 185 | `54a3dfc` | Siri und Kurzbefehle: Tagesform eintragen (ohne App) und oeffnen, 8 Sprachen |
 | 184 | `5d68b60` | Jahr auf einen Blick (Kalender), Monatsrueckblick (Kalender + Karte auf Heute), Notiz am Eintrag; teilbar als Bild |
 | 183 | `635e588` | App-Sperre mit Face ID/Touch ID/Code, frei, Sofort/1/15 Min. (`LucentaSperre.swift`, Plugin `Lock`) |
 | 182 | `c1ab038` | Version ohne Big-Five-Zusatz, Freunde-Hinweis weg, Rollenkarten mit Aufklapp-Fusszeile, Freunde im Rollenatlas mit Namen, OCEAN-Text 10,5 px |
@@ -240,7 +241,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–185 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–186 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -334,6 +335,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 186: ALLE 9 BESTANDEN**: `pruef-nativ` 132, `fehlersuche` ohne Fund.
 
 **Nach Runde 185: ALLE 9 BESTANDEN**: `pruef-nativ` 132.
 
@@ -499,6 +502,31 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 186 — Das Tier begleitet die Tagesform; Bericht ueber zwei Freunde
+
+**Auftrag:** Punkte 4 und 5 der Vergleichsliste. Inhaber: Begleiter mit Satz UND drei Ausdruecke je Tier; Bericht ganz Lucenta+.
+
+**Ausdruecke (60 Bilder):** `tools/figuren_rendern` kennt `AUSDRUCK=muede|froh` (`Stimmung.angewandt`, Ausgabe `<tier>-muede.png`),
+`figuren_holen.py --ausdruck muede` schneidet mit demselben Rahmen zu, der Bau legt `<id>-muede/-froh` dazu (`FIGUR_AUSDRUECKE`),
+`figurHTML(f, ausdruck)` faellt aufs Grundbild zurueck. **Am Bild gelernt:** Das „laechelnde“ Unterlid aus `Ausdruck.unten` ist
+bei tief sitzenden Augen unsichtbar (liegt hinter dem Fell) — zweimal verstaerkt, kein Unterschied. Auch angehobene Mundwinkel
+(`maulPunkt`) lesen sich auf Avatargroesse kaum. Getragen hat erst das Zukneifen beider Augen (`laecheln`, dieselben Lider wie
+beim Zwinkern der Eule). Muede = Oberlid tiefer, kleinerer Lichtpunkt. Uebersicht aller 20 x 3 angesehen. Bilder +860 KB
+(dist/figuren 1,29 MB; lucenta.html wird entsprechend groesser, die App laedt nur, was sie zeigt).
+
+**Begleiter:** `#tfBegleiter` oben in der Erfassung, nur mit gewaehlter Figur (nicht mit eigenem Foto). Ausdruck nach dem
+heutigen Mittel der Stimmung (<= 2,3 muede, >= 3,7 froh). Satz nach Tageszeit, nach dem Eintrag Dank je nach Stimmung,
+Meilensteine bei 7/30/100/365 Eintragstagen INSGESAMT (keine Serie, nichts geht verloren). Nach dem Speichern wippt das Tier und
+funkelt. 7 Saetze in acht Sprachen.
+
+**Bericht ueber zwei Freunde:** `paarBerichtHTML` (11-rendering) unter der Zusammenfassung im Vergleich; Lucenta+, frei
+verschwommen. Vier Abschnitte aus allen fuenf Werten (aehnlich < 15, ergaenzen 15–34, reiben >= 35 — dieselben Grenzen wie die
+Karten), Rat fuer den groessten Unterschied. Namen nur in „Du: mehr Plan · Mia: mehr Spielraum", nie im Satz — Beugung in acht
+Sprachen. 37 Texte je Sprache, selbst uebersetzt (muttersprachliche Durchsicht noetig).
+
+**Gemessen:** WebKit mit Beispieldaten: Begleiter fragt ohne Eintrag, nach Stimmung 5 laechelt der Fuchs und dankt; Bericht mit
+Mia (in allen fuenf aehnlich) zeigt ehrlich „keine Unterschiede". `pruef-schnell` gruen.
 
 ## Runde 185 — Siri und Kurzbefehle
 

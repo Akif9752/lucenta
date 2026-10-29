@@ -250,6 +250,11 @@
     </div>
 
     <div class="state-check-card" data-tf-teil="heute">
+      <!-- Das eigene Tier als Begleiter, mit Ausdruck nach der heutigen Stimmung (Entscheidung des Inhabers). -->
+      <div class="tf-begleiter" id="tfBegleiter" hidden>
+        <span class="avatar tf-begleiter-tier" id="tfBegleiterTier" aria-hidden="true"></span>
+        <p class="tf-begleiter-satz" id="tfBegleiterSatz" aria-live="polite"></p>
+      </div>
       <div class="tf-abschnitte" id="stateTfAbschnitte"></div>
       <p class="state-today-note" id="stateTodayNote"></p>
       <!-- Ist die laufende Tageszeit eingetragen, steht hier die Bestaetigung (zuklappen() in

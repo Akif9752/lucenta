@@ -10,7 +10,7 @@
   var AVATAR_COLORS = ['accent','ink','quiet'];
   // Rangfolge: eigenes Foto, dann Figur, dann Buchstabe. Alle drei Kreise (Profil, Schublade,
   // Einstellungen) laufen durch diese eine Funktion.
-  function renderAvatarInto(el, profile){
+  function renderAvatarInto(el, profile, ausdruck){
     if (!el || !el.classList) return;
     AVATAR_COLORS.forEach(function(c){ el.classList.remove('avatar-color-'+c); });
     el.classList.remove('hat-figur');
@@ -32,7 +32,7 @@
         el.style.setProperty('--figur-feld', fig.feld);
         el.style.setProperty('--figur-feld-dunkel', figFeldDunkel(fig.feld));
       }catch(e){}
-      el.innerHTML = figurHTML(fig);
+      el.innerHTML = figurHTML(fig, ausdruck);
       return;
     }
     el.textContent = avatarInitials(profile.name);

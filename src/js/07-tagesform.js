@@ -298,6 +298,41 @@
   }
   function resetWochentagFmt(){ WOCHENTAG_FMT = null; }
 
+  // ---------- Begleiter ----------
+  // Nur mit gewaehlter Figur. Ausdruck nach dem heutigen Mittel der Stimmung; Meilensteine zaehlen
+  // Eintragstage insgesamt, nicht in Folge — nichts geht verloren (Entscheidung des Inhabers).
+  var TF_MEILENSTEINE = [7, 30, 100, 365];
+  function tfBegleiterAusdruck(heute){
+    var w = TF_ABSCHNITTE.map(function(s){ return heute[s]; }).filter(Boolean);
+    if (!w.length) return '';
+    var m = w.reduce(function(a, e){ return a + e.valence; }, 0) / w.length;
+    return m <= 2.3 ? 'muede' : m >= 3.7 ? 'froh' : '';
+  }
+  function tfBegleiterRendern(){
+    var wrap = $('tfBegleiter'), profil = loadProfile ? loadProfile() : null;
+    if (!wrap) return;
+    if (!profil || !profil.figur || profil.avatarImg){ wrap.hidden = true; return; }
+    var heute = heuteEingetragen(), abschnitt = aktuellerAbschnitt(), eintrag = heute[abschnitt];
+    var ausdruck = tfBegleiterAusdruck(heute);
+    renderAvatarInto($('tfBegleiterTier'), profil, ausdruck);
+    var satz;
+    if (!eintrag) satz = tx('tf_bg_' + abschnitt);
+    else {
+      var tage = stateTage(loadStateHistory()).length;
+      satz = TF_MEILENSTEINE.indexOf(tage) >= 0 ? tx('tf_bg_meilenstein').split('{n}').join(String(tage))
+           : tx(ausdruck === 'froh' ? 'tf_bg_danke_gut' : ausdruck === 'muede' ? 'tf_bg_danke_schwer' : 'tf_bg_danke');
+    }
+    $('tfBegleiterSatz').textContent = decodeEntities(satz);
+    wrap.hidden = false;
+  }
+  // Nach dem Speichern: wippen und funkeln (beides an prefersReducedMotion).
+  function tfBegleiterFreuen(){
+    var tier = $('tfBegleiterTier');
+    if (!tier || $('tfBegleiter').hidden) return;
+    tierWippen(tier);
+    setTimeout(function(){ funkenAn(tier); }, 250);
+  }
+
   function renderStateView(){
     // Runde 129: Die Zeile nennt den laufenden Abschnitt und sagt, ob Speichern ihn neu anlegt oder
     // ersetzt. Die Skalen stehen leer — vorbelegt saehe ein Ersetzen wie ein Bestaetigen aus.
@@ -317,6 +352,7 @@
     renderStateTrend();
     tfAuswertungenRendern();
     tfRueckblickHeuteRendern();
+    tfBegleiterRendern();
   }
   // Ist die laufende Tageszeit eingetragen, steht statt der Skalen die Bestaetigung mit "Aendern".
   // `neu` = direkt nach dem Speichern (sichtbar zuklappen).

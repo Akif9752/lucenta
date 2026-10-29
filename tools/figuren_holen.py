@@ -191,9 +191,14 @@ def main():
         print('Rahmen gemessen:', RAHMEN)
         return
     with open(RAHMEN) as f: rahmen = json.load(f)
+    # --ausdruck muede|froh: die Varianten aus AUSDRUCK=… bauen.sh, gleicher Rahmen wie das Grundbild.
+    zusatz = ''
+    if '--ausdruck' in sys.argv:
+        zusatz = '-' + sys.argv[sys.argv.index('--ausdruck') + 1]
+        nur = [a for a in nur if '-' + a != zusatz]
     for kennung in TIERE:
         if nur and kennung not in nur: continue
-        quelle = os.path.join(ROH, kennung + '.png')
+        quelle = os.path.join(ROH, kennung + zusatz + '.png')
         if not os.path.exists(quelle):
             sys.exit('Fehlt: %s — erst tools/figuren_rendern/bauen.sh laufen lassen.' % quelle)
         with open(quelle, 'rb') as f: b, h, pixel = png_lesen(f.read())
@@ -208,7 +213,7 @@ def main():
             with open(kl, 'rb') as f: b, h, pixel = png_lesen(f.read())
         palette = palette_bilden(pixel)
         aus = png_palette_schreiben(b, h, palette, abbilden(b, h, pixel, palette))
-        with open(os.path.join(ZIEL, kennung + '.png'), 'wb') as f:
+        with open(os.path.join(ZIEL, kennung + zusatz + '.png'), 'wb') as f:
             f.write(aus)
         summe += len(aus)
         print('%-13s %3d x %3d  %3d KB' % (kennung, b, h, len(aus) // 1024))

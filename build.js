@@ -46,9 +46,17 @@ if (!read('js', '13-figuren.js').includes(FIGUR_STELLE) || !figurKennungen.lengt
                                         : '`' + FIGUR_STELLE + '` oder FIGUREN fehlt in src/js/13-figuren.js.\n'));
   process.exit(1);
 }
+// Runde 186: je Tier optional die Ausdruecke der Tagesform (`<id>-muede.png`, `<id>-froh.png`).
+const FIGUR_AUSDRUECKE = ['muede', 'froh'];
 function figurenEinsetzen(quelltext, wert) {
   const bilder = {};
-  for (const k of figurKennungen) bilder[k] = wert(k, fs.readFileSync(path.join(SRC, FIGUR_ORDNER, k + '.png')));
+  for (const k of figurKennungen) {
+    bilder[k] = wert(k, fs.readFileSync(path.join(SRC, FIGUR_ORDNER, k + '.png')));
+    for (const a of FIGUR_AUSDRUECKE) {
+      const datei = k + '-' + a + '.png';
+      if (figurDateien.includes(datei)) bilder[k + '-' + a] = wert(k + '-' + a, fs.readFileSync(path.join(SRC, FIGUR_ORDNER, datei)));
+    }
+  }
   return quelltext.replace(FIGUR_STELLE, 'var FIGUR_BILDER = ' + JSON.stringify(bilder) + ';');
 }
 
