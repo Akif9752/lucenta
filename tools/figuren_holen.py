@@ -102,7 +102,8 @@ def sichtbar(b, pixel):
 # naeher heran und zum Kopf hin verschoben; Schwanz und Hinterflossen schneidet der Kreis an.
 # (Faktor, Verschiebung x, y als Anteil des Ausschnitts; negativ = nach links/oben)
 NAEHER = {'wal': (1.55, -0.13, 0.02), 'schildkroete': (1.7, -0.02, -0.12), 'delfin': (1.55, -0.12, 0.0),
-          'flamingo': (1.03, 0.20, -0.20), 'rotkehlchen': (1.12, 0.0, 0.0)}
+          'flamingo': (1.03, 0.20, -0.20), 'rotkehlchen': (1.12, 0.0, 0.0),
+          'pinguin': (0.80, -0.04, 0.04)}   # Runde 191: Brustbild mit langem Schnabel, weiter gefasst
 
 
 def zuschneiden(b, h, pixel, rahmen, kennung=''):

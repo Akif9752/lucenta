@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 190)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 191)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 190 | (dieser) | Mehr Fotorealismus: Gefieder als Fellschalen, Hase/Dackel/Hunde natuerlicher |
+| 191 | (dieser) | Pinguin als neues Modell: Koenigspinguin-Brustbild, Ausdruck ueber die Haltung |
+| 190 | `20721e9` | Mehr Fotorealismus: Gefieder als Fellschalen, Hase/Dackel/Hunde natuerlicher |
 | 189 | `6b4a1a9` | Goldfisch, fuenf Voegel, Dackel nachgearbeitet; drei Nachthimmel getrennt; Hintergruende Farbe/Hell/Dunkel |
 | 188 | `9994138` | Ausfuehrlicher Test mit denselben Bausteinen wie der normale (Balken, Antwortwort, Meilensteine, Funkeln); Quellenhinweis weg |
 | 187 | `bd1f7bb` | Ausfuehrlicher Test: 116 Aussagen (IPIP-NEO-120 ohne O6), 29 Facetten, Lucenta+ |
@@ -245,7 +246,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–190 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–191 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -339,6 +340,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 191: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
 
 **Nach Runde 190: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
 
@@ -516,6 +519,27 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 191 — Pinguin als neues Modell (Koenigspinguin), Beispiel fuer weitere Tiere
+
+**Auftrag:** „mach neues Modell, egal was es braucht", beispielhaft mit dem Pinguin. **Art von mir gewaehlt** (Auftrag liess es offen):
+Koenigspinguin — bekannteste Art, Merkmale (Ohrfleck, goldene Kehle, langer Schnabel mit orangem Streifen) lesen sich auch auf
+Avatargroesse als echt. Auf Wunsch leicht auf eine andere Art umzustellen.
+
+**Gebaut** (`pinguin()` in `tools/figuren_rendern/Tiere.swift` ganz neu): Brustbild wie bei den Saeugern statt Kegelfigur mit Fuessen —
+gestreckter, flacher Kopf mit abfallender Stirn, Hals und nach vorn gewoelbte Brust, Flossenansatz. Schnabel lang, leicht abwaerts,
+geschlossen, unten schwarz mit orangem Plaettchen; Ohrfleck als Komma zum Hals; Kehle golden in Weiss verlaufend, silbergrauer Ruecken,
+dunkle Trennlinie. Gefieder als sehr kurze Fellschalen. `figuren_holen.py`: `NAEHER['pinguin'] = (0.80, -0.04, 0.04)` (weiter
+gefasst, sonst Schnabel abgeschnitten), Rahmen am Kopf allein neu gemessen. `nase(…, n:)` neu: Der schlanke Schnabel zackte im
+Raster von 170 Punkten (~0,026 je Zelle) — mit 360 glatt.
+
+**Am Bild gefundene Fehler, der Reihe nach behoben:** Ohrfleck zu weit hinten (nur ein Punkt sichtbar); Schnabel offen wie ein
+gesperrter Schnabel, Plaettchen als Klecks am Ansatz, dann auf dem OBERschnabel; Kopf als Kuppel; Schnabel steckte im Gesicht (zu
+kurz); Gold im Gesicht statt an der Kehle; hinteres Auge ragte aus dem Umriss. **Ausdruecke:** schwarze Lider auf schwarzem Kopf
+tragen nichts — beim Pinguin zeigt die HALTUNG die Stimmung (muede gesenkt, froh angehoben und schraeg), die Lider bleiben dazu.
+
+**Offen:** feine Naht zwischen den zwei Stuecken des Oberschnabels; froh: Schnabelspitze nah am Kreisrand. Dasselbe Vorgehen
+(neues Brustbild statt Ganzkoerper, Merkmale der Art, Rahmen neu) waere der Weg fuer die uebrigen Tiere.
 
 ## Runde 190 — Mehr Fotorealismus bei sieben Tieren
 
