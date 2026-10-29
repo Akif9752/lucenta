@@ -11,12 +11,12 @@
   /* ---------- 2. Die Antwortkreise kommen einzeln ----------
      34 ms Versatz je Kreis. Die Klasse setzt animateQuestionIn() und nimmt sie beim Antworten wieder
      weg. */
-  #scaleRow.row-in .scale-btn{ animation:kreis-ein .3s cubic-bezier(.34,1.56,.64,1) both; }
-  #scaleRow.row-in .scale-btn:nth-child(1){ animation-delay:.04s; }
-  #scaleRow.row-in .scale-btn:nth-child(2){ animation-delay:.074s; }
-  #scaleRow.row-in .scale-btn:nth-child(3){ animation-delay:.108s; }
-  #scaleRow.row-in .scale-btn:nth-child(4){ animation-delay:.142s; }
-  #scaleRow.row-in .scale-btn:nth-child(5){ animation-delay:.176s; }
+  #scaleRow.row-in .scale-btn, #ftRow.row-in .scale-btn{ animation:kreis-ein .3s cubic-bezier(.34,1.56,.64,1) both; }
+  #scaleRow.row-in .scale-btn:nth-child(1), #ftRow.row-in .scale-btn:nth-child(1){ animation-delay:.04s; }
+  #scaleRow.row-in .scale-btn:nth-child(2), #ftRow.row-in .scale-btn:nth-child(2){ animation-delay:.074s; }
+  #scaleRow.row-in .scale-btn:nth-child(3), #ftRow.row-in .scale-btn:nth-child(3){ animation-delay:.108s; }
+  #scaleRow.row-in .scale-btn:nth-child(4), #ftRow.row-in .scale-btn:nth-child(4){ animation-delay:.142s; }
+  #scaleRow.row-in .scale-btn:nth-child(5), #ftRow.row-in .scale-btn:nth-child(5){ animation-delay:.176s; }
   @keyframes kreis-ein{
     from{ opacity:0; transform:translateY(9px) scale(.78); }
     to  { opacity:1; transform:none; }
@@ -171,7 +171,7 @@
   }
   @media (prefers-reduced-motion: reduce){
     .qcard.q-in{ animation:none; }
-    #scaleRow.row-in .scale-btn{ animation:none; }
+    #scaleRow.row-in .scale-btn, #ftRow.row-in .scale-btn{ animation:none; }
     .scale-btn.picked{ animation:none; }
     .funkeln{ display:none; }
     .stat-tile{ animation:none; opacity:1; }

@@ -643,17 +643,19 @@
   <!-- AUSFUEHRLICHER TEST (Unterseiten des Ergebnisses, 16b-facetten.js): Fragebogen und 29 Facetten. -->
   <section class="view" id="view-ft-test" tabindex="-1">
     <div class="quiz-head">
-      <button class="btn btn-ghost btn-sm" id="btnBackFromFacettenTest" data-i18n="ft_zurueck">← Ergebnis</button>
+      <button class="btn btn-ghost btn-sm" id="btnBackFromFacettenTest" data-i18n="abbrechen_2">← Abbrechen</button>
       <div class="qcount mono"><span id="ftNow">1</span> / 116</div>
     </div>
     <div class="quiz-body">
       <div class="qcard" id="ftCard"><p class="qtext" id="ftText" aria-live="polite">&mdash;</p></div>
       <div class="scale">
+        <div class="skala-wahl" id="ftWahl" aria-hidden="true"></div>
         <div class="scale-row" id="ftRow" role="group" aria-label="Antwort von 1 (trifft gar nicht zu) bis 5 (trifft voll zu)" data-i18n-aria="aria_antwort_von_1_trifft_gar_nic"></div>
         <div class="scale-labels" aria-hidden="true"><span data-i18n="skala_min">trifft gar nicht zu</span><span data-i18n="skala_max">trifft voll zu</span></div>
       </div>
       <div class="quiz-nav">
         <button class="btn btn-ghost btn-sm" id="ftPrev" data-i18n="zurück">← Zurück</button>
+        <span class="tagline" id="ftHint">Tippe eine Antwort an</span>
       </div>
     </div>
   </section>
@@ -666,7 +668,6 @@
       <h1 data-i18n="ft_titel">Deine 29 Facetten</h1>
     </div>
     <div id="ftErgebnis"></div>
-    <p class="radar-note" data-i18n="ft_quelle">Aussagen aus dem IPIP-NEO-120 (Johnson, 2014, gemeinfrei), ohne die Facette zu politischen Einstellungen. Jede Facette beruht auf vier Aussagen – ein Bild, kein Befund.</p>
   </section>
 
   <section class="view" id="view-hilfe" tabindex="-1">

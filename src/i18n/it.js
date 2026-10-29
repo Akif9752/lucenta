@@ -623,7 +623,6 @@
       'ft_zurueck': '← Risultato',
       'ft_eyebrow': 'Test dettagliato',
       'ft_titel': 'Le tue 29 sfaccettature',
-      'ft_quelle': 'Affermazioni dall’IPIP-NEO-120 (Johnson, 2014, di pubblico dominio), senza la sfaccettatura sugli orientamenti politici. Ogni sfaccettatura si basa su quattro affermazioni: un’immagine, non una diagnosi.',
       'ft_fertig': 'Fatto: le tue 29 sfaccettature sono pronte.',
       'plus_v_facetten_titel': '29 sfaccettature',
       'plus_v_facetten_text': 'Il test dettagliato mostra di cosa è fatta ogni dimensione.',

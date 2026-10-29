@@ -324,7 +324,6 @@ CONTENT.de = {
       'ft_zurueck': '← Ergebnis',
       'ft_eyebrow': 'Ausführlicher Test',
       'ft_titel': 'Deine 29 Facetten',
-      'ft_quelle': 'Aussagen aus dem IPIP-NEO-120 (Johnson, 2014, gemeinfrei), ohne die Facette zu politischen Einstellungen. Jede Facette beruht auf vier Aussagen – ein Bild, kein Befund.',
       'ft_fertig': 'Fertig – deine 29 Facetten sind da.',
       'plus_v_facetten_titel': '29 Facetten',
       'plus_v_facetten_text': 'Der ausführliche Test zeigt, woraus sich jede Dimension zusammensetzt.',

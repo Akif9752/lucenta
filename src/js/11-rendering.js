@@ -1,7 +1,8 @@
 // ---------- Darstellung ----------
 // Fortschritts-Semantik des Fokus-Strichs; null entfernt Rolle und Werte ganz (ausserhalb des
 // Fragebogens kein eingefrorener Fortschritt).
-  function setFocuslineProgress(index){
+  function setFocuslineProgress(index, gesamt){
+    gesamt = gesamt || 50;
     var el = $('focusline');
     if (!el) return;
     if (index === null){
@@ -16,7 +17,7 @@
     el.setAttribute('role','progressbar');
     el.setAttribute('aria-label',tx('js_fortschritt_im_test'));
     el.setAttribute('aria-valuemin','0');
-    el.setAttribute('aria-valuemax','50');
+    el.setAttribute('aria-valuemax', String(gesamt));
     el.setAttribute('aria-valuenow', String(index));
     el.setAttribute('aria-valuetext', index + tx('js_von__fragen_beantwortet'));
   }
@@ -27,8 +28,8 @@
     return teile[v-1] ? decodeEntities(teile[v-1].replace(/<\/?span>/g, '')) : '';
   }
   var skalaWahlUhr = null;
-  function skalaWahlZeigen(v){
-    var el = $('skalaWahl');
+  function skalaWahlZeigen(v, wahlId, reiheId){
+    var el = $(wahlId || 'skalaWahl');
     if (!el || !el.classList) return;
     // Ueber dem getippten Kreis, am Rand der Skala abgefangen.
     el.innerHTML = '<span class="skala-wahl-text"></span>';
@@ -36,7 +37,7 @@
     if (!t) return;
     t.textContent = skalaBedeutung(v);
     try{
-      var k = $('scaleRow').children[v - 1], r = el.getBoundingClientRect(), kr = k.getBoundingClientRect();
+      var k = $(reiheId || 'scaleRow').children[v - 1], r = el.getBoundingClientRect(), kr = k.getBoundingClientRect();
       var halb = t.getBoundingClientRect().width / 2, mitte = kr.left + kr.width / 2 - r.left;
       t.style.left = Math.max(halb, Math.min(r.width - halb, mitte)) + 'px';
     }catch(e){}
@@ -107,15 +108,15 @@
   var quizAdvanceTimeout = null;
   // Klasse entfernen, offsetWidth lesen, neu setzen — sonst erkennt der Browser die Animation nicht
   // als neu.
-  function animateQuestionIn(){
-    var c = $('qCard');
+  function animateQuestionIn(karteId, reiheId){
+    var c = $(karteId || 'qCard');
     if (!c || !c.classList) return;
     c.classList.remove('q-in');
     try{ void c.offsetWidth; }catch(e){}
     c.classList.add('q-in');
     // Die Antwortkreise laufen der Frage hinterher; die Klasse muss beim Antworten wieder weg
     // (selectAnswer).
-    var row = $('scaleRow');
+    var row = $(reiheId || 'scaleRow');
     if (row && row.classList){
       row.classList.remove('row-in');
       try{ void row.offsetWidth; }catch(e){}

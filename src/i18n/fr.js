@@ -623,7 +623,6 @@
       'ft_zurueck': '← Résultat',
       'ft_eyebrow': 'Test détaillé',
       'ft_titel': 'Tes 29 facettes',
-      'ft_quelle': 'Affirmations issues de l’IPIP-NEO-120 (Johnson, 2014, domaine public), sans la facette sur les opinions politiques. Chaque facette repose sur quatre affirmations – une image, pas un constat.',
       'ft_fertig': 'Terminé – tes 29 facettes sont là.',
       'plus_v_facetten_titel': '29 facettes',
       'plus_v_facetten_text': 'Le test détaillé montre de quoi se compose chaque dimension.',

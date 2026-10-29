@@ -624,7 +624,6 @@
       'ft_zurueck': '← Result',
       'ft_eyebrow': 'Detailed test',
       'ft_titel': 'Your 29 facets',
-      'ft_quelle': 'Statements from the IPIP-NEO-120 (Johnson, 2014, public domain), without the facet on political attitudes. Each facet rests on four statements – a picture, not a finding.',
       'ft_fertig': 'Done – your 29 facets are ready.',
       'plus_v_facetten_titel': '29 facets',
       'plus_v_facetten_text': 'The detailed test shows what each dimension is made of.',

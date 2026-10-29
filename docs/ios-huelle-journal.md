@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 187)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 188)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 187 | (dieser) | Ausfuehrlicher Test: 116 Aussagen (IPIP-NEO-120 ohne O6), 29 Facetten, Lucenta+ |
+| 188 | (dieser) | Ausfuehrlicher Test mit denselben Bausteinen wie der normale (Balken, Antwortwort, Meilensteine, Funkeln); Quellenhinweis weg |
+| 187 | `bd1f7bb` | Ausfuehrlicher Test: 116 Aussagen (IPIP-NEO-120 ohne O6), 29 Facetten, Lucenta+ |
 | 186 | `f131d52` | Tier als Begleiter der Tagesform mit drei Ausdruecken (60 Renderings), Bericht ueber zwei Freunde (Lucenta+) |
 | 185 | `54a3dfc` | Siri und Kurzbefehle: Tagesform eintragen (ohne App) und oeffnen, 8 Sprachen |
 | 184 | `5d68b60` | Jahr auf einen Blick (Kalender), Monatsrueckblick (Kalender + Karte auf Heute), Notiz am Eintrag; teilbar als Bild |
@@ -242,7 +243,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–187 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–188 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -336,6 +337,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 188: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
 
 **Nach Runde 187: 9 von 9**: `pruef-nativ` 137; `fehlersuche` meldete im vollen Lauf 4x „6 statt 5 Vorteile" (die Pruefung zaehlte fest
 fuenf, der sechste ist die Facetten-Zeile) — Erwartung auf 6 gesetzt, die betroffene Konfiguration auf WebKit und Chromium
@@ -507,6 +510,26 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 188 — Ausfuehrlicher Test fuehlt sich an wie der normale
+
+**Auftrag:** Quellenhinweis unter den Facetten weg; der ausfuehrliche Test soll sich genauso anfuehlen wie der normale
+(Ladebalken, einblendendes Antwortwort, Funkeln an Meilensteinen usw.).
+
+**Der Fehler:** Mein eigener Fragebogen (Runde 187) benutzte nur die Stile, nicht die Bausteine. Die Effekte hingen an festen IDs
+(`#scaleRow`, `#skalaWahl`, `qCard`) und der Fortschrittsbalken an `currentView === 'quiz'` — im ausfuehrlichen Test lief nichts davon.
+
+**Die Aenderung:** Die gemeinsamen Bausteine nehmen Element bzw. Gesamtzahl als Parameter, Vorgabe ist der normale Test (der
+damit unveraendert bleibt): `setFocuslineProgress(i, gesamt)`, `skalaWahlZeigen(v, wahlId, reiheId)`,
+`animateQuestionIn(karteId, reiheId)`. `showView` blendet den Balken auch fuer `ft-test` ein, die Kopfleiste zeigt dort wie im
+Fragebogen „Abbrechen" ohne Pfeil (`ft-test` ist keine Unterseite mehr). `ftAntworten` folgt `selectAnswer` Schritt fuer Schritt:
+Haptik, Antwortwort, sofort markiert, nach 220 ms weiter mit einfliegender Frage und nachrueckenden Kreisen, Doppeltipp verworfen,
+Hinweise unten rechts (`QUIZ_HINTS` in Fuenfteln), Meilensteine nach jedem Viertel (29/58/87, Texte des 50er-Tests) mit Impuls
+und Funkeln, am Ende Balken voll + Funkeln. Quellenhinweis (`ft_quelle`) aus Markup und acht Sprachen entfernt.
+
+**Gemessen:** WebKit, beide Fragebogen nach dem ersten Meilenstein nebeneinander fotografiert — gleich (Funkeln am Balken, „Ein
+Viertel geschafft.", Antwortwort, Hinweis). Dabei zwei eigene Fehler gefunden: Meilenstein aus 13/50 hochgerechnet lag bei 30
+statt beim Viertel 29; Kopfleiste zeigte noch den Zurueck-Pfeil. `pruef-nativ` 137 -> 139 (Balken auf 116, Antwortwort).
 
 ## Runde 187 — Ausfuehrlicher Test: 29 Facetten
 

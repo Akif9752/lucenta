@@ -796,8 +796,15 @@ await seite.waitForTimeout(900);
 ok(await seite.evaluate(() => !!document.querySelector('#ftKarte [data-ft="start"]')), 'Ergebnis: Karte „Tiefer gehen“ mit Start');
 await seite.evaluate(() => document.querySelector('#ftKarte [data-ft="start"]').click()); await seite.waitForTimeout(400);
 ok((await seite.evaluate(() => document.querySelector('.view.active')?.id)) === 'view-ft-test', 'Start oeffnet den Fragebogen');
-for (let i = 0; i < 116; i++){ await seite.evaluate(() => document.querySelector('#ftRow button:nth-child(5)').click()); await seite.waitForTimeout(200); }
-await seite.waitForTimeout(600);
+ok(await seite.evaluate(() => document.documentElement.classList.contains('fortschritt-sichtbar') && document.getElementById('focusline').getAttribute('aria-valuemax') === '116'),
+  'wie der normale Fragebogen: Fortschrittsbalken sichtbar, auf 116 gezaehlt');
+await seite.evaluate(() => document.querySelector('#ftRow button:nth-child(4)').click()); await seite.waitForTimeout(60);
+ok(await seite.evaluate(() => document.getElementById('ftWahl').classList.contains('zeigen') && !!document.getElementById('ftWahl').textContent),
+  'das Antwortwort erscheint ueber der Skala');
+await seite.waitForTimeout(400);
+await seite.evaluate(() => document.getElementById('ftPrev').click()); await seite.waitForTimeout(300);
+for (let i = 0; i < 116; i++){ await seite.evaluate(() => document.querySelector('#ftRow button:nth-child(5)').click()); await seite.waitForTimeout(280); }
+await seite.waitForTimeout(1200);
 const ft = await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_facetten') || 'null'));
 ok(ft && Object.keys(ft.f).length === 29 && !('O6' in ft.f), 'gespeichert: 29 Facetten, ohne O6');
 ok(ft && ft.f.N1 === 0 && ft.f.N5 === 75 && ft.f.E5 === 100 && ft.f.A2 === 0 && ft.f.C2 === 25 && ft.f.O1 === 100,

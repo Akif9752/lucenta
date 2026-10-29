@@ -627,7 +627,6 @@
       'ft_zurueck': '← Sonuç',
       'ft_eyebrow': 'Ayrıntılı test',
       'ft_titel': '29 alt boyutun',
-      'ft_quelle': 'İfadeler IPIP-NEO-120’den (Johnson, 2014, kamu malı), siyasi tutumlarla ilgili alt boyut hariç. Her alt boyut dört ifadeye dayanır – bir tablo, bir tanı değil.',
       'ft_fertig': 'Bitti – 29 alt boyutun hazır.',
       'plus_v_facetten_titel': '29 alt boyut',
       'plus_v_facetten_text': 'Ayrıntılı test, her boyutun nelerden oluştuğunu gösterir.',

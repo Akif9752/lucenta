@@ -45,11 +45,17 @@
     return f;
   }
 
-  var ftLauf = null;
+  // Ablauf wie im normalen Fragebogen (Auftrag des Inhabers): Fortschrittsbalken mit Vierteln, Antwortwort
+  // ueber der Skala, einfliegende Frage, Hinweise, Meilensteine mit Impuls und Funkeln — dieselben Bausteine.
+  var ftLauf = null, ftUhr = null;
+  // Nach jedem Viertel, mit den Texten des 50er-Tests (dort nach 13, 25, 38).
+  var FT_MEILENSTEINE = {29: 13, 58: 25, 87: 38};
   function ftFrageZeigen(){
     var pos = ftLauf.pos, it = FT_ITEMS[FT_FOLGE[pos]];
     $('ftNow').textContent = pos + 1;
     $('ftText').textContent = decodeEntities(tx('ft_i_' + it.i));
+    $('focusline-fill').style.width = Math.round(pos / FT_ANZAHL * 100) + '%';
+    setFocuslineProgress(pos, FT_ANZAHL);
     var row = $('ftRow'); row.innerHTML = '';
     for (var v = 1; v <= 5; v++){
       var b = document.createElement('button'), gewaehlt = ftLauf.a[it.i] === v;
@@ -61,29 +67,54 @@
       row.appendChild(b);
     }
     $('ftPrev').style.visibility = pos === 0 ? 'hidden' : 'visible';
+    $('ftHint').textContent = QUIZ_HINTS[Math.min(4, Math.floor(pos / (FT_ANZAHL / 5)))];
   }
+  function ftSpeichern(){ try{ localStorage.setItem(FT_LAUF, JSON.stringify(ftLauf)); }catch(e){} }
   function ftAntworten(v){
-    var it = FT_ITEMS[FT_FOLGE[ftLauf.pos]];
-    ftLauf.a[it.i] = v;
+    if (!ftLauf) return;
+    ftLauf.a[FT_ITEMS[FT_FOLGE[ftLauf.pos]].i] = v;
     tapFeedback();
-    if (ftLauf.pos + 1 < FT_ANZAHL){
-      ftLauf.pos++;
-      try{ localStorage.setItem(FT_LAUF, JSON.stringify(ftLauf)); }catch(e){}
-      setTimeout(ftFrageZeigen, 180);
-      return;
-    }
+    skalaWahlZeigen(v, 'ftWahl', 'ftRow');
+    ftSpeichern();
+    var row = $('ftRow');
+    if (row && row.classList) row.classList.remove('row-in');
+    ftFrageZeigen();
+    // Ein Doppeltipp darf keine Frage ueberspringen.
+    clearTimeout(ftUhr);
+    ftUhr = setTimeout(function(){
+      ftUhr = null;
+      var ansicht = $('view-ft-test');
+      if (!ftLauf || !ansicht || !ansicht.classList.contains('active')) return;
+      if (ftLauf.pos + 1 < FT_ANZAHL){
+        ftLauf.pos++;
+        ftFrageZeigen();
+        animateQuestionIn('ftCard', 'ftRow');
+        ftSpeichern();
+        var m = FT_MEILENSTEINE[ftLauf.pos];
+        if (m){ toast(QUIZ_MILESTONES[m]); pulseFocusline(); funkelnAmFortschritt(); }
+        return;
+      }
+      ftAbschliessen();
+    }, 220);
+  }
+  function ftAbschliessen(){
     var ergebnis = {ts: Date.now(), f: ftAuswerten(ftLauf.a)};
     try{ localStorage.setItem(FT_ERGEBNIS, JSON.stringify(ergebnis)); localStorage.removeItem(FT_LAUF); }catch(e){}
     ftLauf = null;
-    ftErgebnisRendern();
-    showView('ft');
-    toast(tx('ft_fertig'));
+    $('focusline-fill').style.width = '100%';
+    pulseFocusline(); funkelnAmFortschritt();
+    setTimeout(function(){
+      ftErgebnisRendern();
+      showView('ft');
+      toast(tx('ft_fertig'));
+    }, 600);
   }
   function ftStarten(neu){
     if (!istPlus()){ openPlusModal(); return; }
     ftLauf = (!neu && ftLaufLesen()) || {pos: 0, a: {}};
-    ftFrageZeigen();
     showView('ft-test');
+    ftFrageZeigen();
+    animateQuestionIn('ftCard', 'ftRow');
   }
 
   // Karte unter den fuenf Dimensionen der Ergebnisseite.
@@ -135,7 +166,7 @@
       else ftStarten(was === 'neu');
     });
     if ($('ftPrev')) $('ftPrev').addEventListener('click', function(){
-      if (ftLauf && ftLauf.pos > 0){ ftLauf.pos--; ftFrageZeigen(); }
+      if (ftLauf && ftLauf.pos > 0){ clearTimeout(ftUhr); ftLauf.pos--; ftFrageZeigen(); animateQuestionIn('ftCard', 'ftRow'); ftSpeichern(); }
     });
     ['btnBackFromFacettenTest', 'btnBackFromFacetten'].forEach(function(id){
       if ($(id)) $(id).addEventListener('click', function(){ ftKarteRendern(); showView('result'); });

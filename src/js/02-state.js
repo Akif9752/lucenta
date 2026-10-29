@@ -44,7 +44,7 @@
 
   // Unterseiten und die Seite, aus der sie kommen (Runde 136).
   var UNTERSEITE_VON = {hilfe:'settings', sprache:'settings', verlauf:'profile', compare:'freunde', look:'profile',
-                       ft:'result', 'ft-test':'result'};
+                       ft:'result'};
   var navWegTimer = null;
   function navWegAufraeumen(){
     if (navWegTimer){ clearTimeout(navWegTimer); navWegTimer = null; }
@@ -106,8 +106,9 @@
     syncHeaderScrollState();
     // Der Fortschrittsbalken nur im Fragebogen; --fokuslinie-hoehe geht sonst auf 0, die Kopfleiste
     // rueckt nach. Abgesichert, weil das Ersatz-DOM der Testreihen classList.toggle nicht kennt.
-    try{ document.documentElement.classList.toggle('fortschritt-sichtbar', name === 'quiz'); }catch(e){}
-    if (name!=='quiz'){ $('focusline-fill').style.width = name==='result' ? '100%':'0%'; disarmQuizAdvance(); setFocuslineProgress(null); }
+    var fragebogen = name === 'quiz' || name === 'ft-test';
+    try{ document.documentElement.classList.toggle('fortschritt-sichtbar', fragebogen); }catch(e){}
+    if (!fragebogen){ $('focusline-fill').style.width = name==='result' ? '100%':'0%'; disarmQuizAdvance(); setFocuslineProgress(null); }
     if (name!=='settings'){ disarmResetButton(); }
     // Die Startseite wird bei jedem Wechsel dorthin aktualisiert, nicht nur beim ersten Laden.
     if (name==='landing'){ syncHeroState(); renderLandingStateTeaser(); renderLandingUnderstandTeaser(); renderPreviewCard(); landingPlusKarteAnwenden(); ordneStartseite(); }
@@ -144,7 +145,7 @@
       navGrossTitel = section ? section.querySelector('h1, .profile-head') : null;
       $('btnNavZurueck').hidden = !navPille;
       kopf.classList.toggle('unterseite', !!navPille);
-      kopf.classList.toggle('nav-ohne-pfeil', currentView === 'quiz');
+      kopf.classList.toggle('nav-ohne-pfeil', currentView === 'quiz' || currentView === 'ft-test');
       $('navZurueckText').textContent = navPille ? navPille.textContent.replace(/^\s*←\s*/, '').trim() : '';
       var titel = VIEW_TITLES[currentView] || (navGrossTitel && navGrossTitel.tagName === 'H1' ? navGrossTitel.textContent.trim() : '');
       $('navTitel').textContent = navPille ? titel : '';

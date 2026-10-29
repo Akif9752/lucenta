@@ -1,7 +1,7 @@
 /* ---------- Quiz ---------- */
   /* Der Fragebogen fuellt die Hoehe; der Fragenblock wird im freien Platz ausgerichtet (siehe
      .quiz-body). */
-  #view-quiz.active{display:flex;flex-direction:column;min-height:calc(100vh - 150px);}
+  #view-quiz.active, #view-ft-test.active{display:flex;flex-direction:column;min-height:calc(100vh - 150px);}
   /* Zwei leere Flexglieder nehmen den freien Platz im Verhaeltnis 1:2,4 auf — der Block sitzt bei ~30
      % statt 50 %. Keine Polsterung, die bliebe auch ohne freien Platz stehen. */
   .quiz-body{flex:1;display:flex;flex-direction:column;}
