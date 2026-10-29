@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 192)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 193)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 192 | (dieser) | Neue Modelle: Rotkehlchen, Waldkauz (ohne Federohren), Hellroter Ara, Flamingo |
+| 193 | (dieser) | Neue Modelle: Wal laenger, Delfin mit Schnabel, Seeotter dunkler Koerper, kleinere Augen |
+| 192 | `4bd9578` | Neue Modelle: Rotkehlchen, Waldkauz (ohne Federohren), Hellroter Ara, Flamingo |
 | 191 | `e6b51a5` | Pinguin als neues Modell: Koenigspinguin-Brustbild, Ausdruck ueber die Haltung |
 | 190 | `20721e9` | Mehr Fotorealismus: Gefieder als Fellschalen, Hase/Dackel/Hunde natuerlicher |
 | 189 | `6b4a1a9` | Goldfisch, fuenf Voegel, Dackel nachgearbeitet; drei Nachthimmel getrennt; Hintergruende Farbe/Hell/Dunkel |
@@ -247,7 +248,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–192 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–193 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -341,6 +342,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 193: ALLE 9 BESTANDEN**.
 
 **Nach Runde 192: ALLE 9 BESTANDEN**.
 
@@ -522,6 +525,14 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 193 — Neue Modelle Gruppe 2: Wal, Delfin, Seeotter, Schildkroete, Goldfisch
+
+**Wal (Buckelwal):** Koerper rund ein Drittel laenger, Kopf flacher, Rueckenfinne und Fluke nach hinten mitgezogen, Brustflossen
+laenger, Auge kleiner (bleibt vorn sitzend — Entscheidung des Inhabers, „alle sehen einen an"), mehr ins Profil gedreht.
+**Delfin:** Schnabel laenger (Maullinie mitgezogen), mehr Profil. **Seeotter:** las sich als Robbenbaby — nur noch der Kopf hell,
+ab Hals und Nacken dunkelbraun; Augen kleiner und seitlicher, Schnurrhaarpolster und Nase breiter. **Schildkroete, Goldfisch:**
+Augen kleiner. Alle drei Ausdruecke, Rahmen neu gemessen. pruef-alles 9/9.
 
 ## Runde 192 — Neue Modelle Gruppe 1: Rotkehlchen, Eule, Papagei, Flamingo
 
