@@ -261,6 +261,7 @@
   widgetEinrichten();
   healthEinrichten();
   sperreEinrichten();
+  ftEinrichten();
   plusStandPruefen();
   plusPreiseHolen();
   archivUebernehmen();

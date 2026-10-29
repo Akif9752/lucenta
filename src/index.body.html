@@ -213,6 +213,7 @@
 
     <h2 class="section-title" data-i18n-html="deine_fünf_dimensionen_volle">Deine fünf Dimensionen <span class="n">im Detail</span></h2>
     <div class="traits" id="traitsList"></div>
+    <div id="ftKarte"></div>
 
   </section>
 
@@ -639,6 +640,35 @@
   <!-- Rechtliches als eigene Ansicht: aus jeder Ansicht in zwei Schritten erreichbar (Gesetz und
        App-Store-Pruefung). -->
   <!-- Runde 131: die haeufigen Fragen als eigene Seite, geoeffnet aus den Einstellungen. -->
+  <!-- AUSFUEHRLICHER TEST (Unterseiten des Ergebnisses, 16b-facetten.js): Fragebogen und 29 Facetten. -->
+  <section class="view" id="view-ft-test" tabindex="-1">
+    <div class="quiz-head">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromFacettenTest" data-i18n="ft_zurueck">← Ergebnis</button>
+      <div class="qcount mono"><span id="ftNow">1</span> / 116</div>
+    </div>
+    <div class="quiz-body">
+      <div class="qcard" id="ftCard"><p class="qtext" id="ftText" aria-live="polite">&mdash;</p></div>
+      <div class="scale">
+        <div class="scale-row" id="ftRow" role="group" aria-label="Antwort von 1 (trifft gar nicht zu) bis 5 (trifft voll zu)" data-i18n-aria="aria_antwort_von_1_trifft_gar_nic"></div>
+        <div class="scale-labels" aria-hidden="true"><span data-i18n="skala_min">trifft gar nicht zu</span><span data-i18n="skala_max">trifft voll zu</span></div>
+      </div>
+      <div class="quiz-nav">
+        <button class="btn btn-ghost btn-sm" id="ftPrev" data-i18n="zurück">← Zurück</button>
+      </div>
+    </div>
+  </section>
+  <section class="view" id="view-ft" tabindex="-1">
+    <div class="quiz-head nur-zurueck">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromFacetten" data-i18n="ft_zurueck">← Ergebnis</button>
+    </div>
+    <div class="archetypes-head">
+      <div class="eyebrow" data-i18n="ft_eyebrow">Ausführlicher Test</div>
+      <h1 data-i18n="ft_titel">Deine 29 Facetten</h1>
+    </div>
+    <div id="ftErgebnis"></div>
+    <p class="radar-note" data-i18n="ft_quelle">Aussagen aus dem IPIP-NEO-120 (Johnson, 2014, gemeinfrei), ohne die Facette zu politischen Einstellungen. Jede Facette beruht auf vier Aussagen – ein Bild, kein Befund.</p>
+  </section>
+
   <section class="view" id="view-hilfe" tabindex="-1">
     <div class="quiz-head nur-zurueck">
       <button class="btn btn-ghost btn-sm" id="btnBackFromHilfe" data-i18n="hilfe_zurueck">← Einstellungen</button>

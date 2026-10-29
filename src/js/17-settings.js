@@ -100,7 +100,7 @@
   // Der Code traegt nur das Ergebnis; das hier nimmt alles mit. Erst als Datei, sonst (eingebettet,
   // Downloads unterbunden) in die Zwischenablage.
   var DATEN_SCHLUESSEL = ['lucenta_result','lucenta_history','lucenta_state','lucenta_profile',
-                          'lucenta_compat_archive','lucenta_freunde','lucenta_progress'];
+                          'lucenta_compat_archive','lucenta_freunde','lucenta_progress','lucenta_facetten'];
 
   function datenSammeln(){
     var d = {app:'lucenta', fassung:1, ts:Date.now(), daten:{}};

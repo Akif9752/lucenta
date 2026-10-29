@@ -1001,3 +1001,15 @@
   .pb-liste{ padding-left:1.1em; display:flex; flex-direction:column; gap:8px; }
   .pb-paar{ display:block; margin-top:4px; color:var(--muted); font-size:calc(13.5px * var(--dt, 1)); }
   .pb-leer{ color:var(--muted) !important; }
+
+  /* Ausfuehrlicher Test: Karte auf dem Ergebnis, 29 Facetten */
+  .ft-karte{ background:var(--surface); border-radius:var(--radius-m); padding:18px; margin-top:22px; }
+  .ft-karte-titel{ font-family:var(--serif); font-size:calc(20px * min(var(--dt, 1), 1.3)); margin-bottom:6px; }
+  .ft-karte p{ margin:0 0 14px; color:var(--muted); line-height:1.5; }
+  .ft-dim{ margin-top:22px; }
+  .ft-dim-titel{ font-size:calc(18px * var(--dt, 1)); margin:0 0 8px; display:flex; justify-content:space-between; }
+  .ft-zeile{ background:var(--surface); border-radius:var(--radius-m); padding:12px 16px; margin-top:8px; }
+  .ft-kopf{ display:flex; justify-content:space-between; font-weight:600; font-size:calc(15px * var(--dt, 1)); }
+  .ft-balken{ height:6px; border-radius:3px; background:var(--line); margin:8px 0; overflow:hidden; }
+  .ft-balken span{ display:block; height:100%; background:var(--accent); border-radius:3px; }
+  .ft-zeile p{ margin:0; color:var(--muted); font-size:calc(13.5px * var(--dt, 1)); line-height:1.45; }

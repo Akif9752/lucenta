@@ -787,6 +787,24 @@ const rbk = await seite.evaluate(() => ({ansicht: !!document.querySelector('.tf-
 ok(rbk.ansicht && /4,0|4\.0/.test(rbk.rb), 'Tipp auf einen Monat oeffnet ihn, darunter der Rueckblick mit echten Zahlen (' + JSON.stringify(rbk).slice(0, 160) + ')');
 await seite.evaluate(() => { localStorage.removeItem('lucenta_plus'); localStorage.removeItem('__pruef_abo'); localStorage.removeItem('lucenta_state'); });
 
+console.log('\n=== Ausfuehrlicher Test: 116 Aussagen, 29 Facetten ===');
+await seite.evaluate(() => { localStorage.setItem('lucenta_plus', '1'); localStorage.setItem('__pruef_abo', '1');
+  localStorage.setItem('lucenta_result', JSON.stringify({O:60,E:50,C:55,A:65,S:45})); localStorage.removeItem('lucenta_facetten'); localStorage.removeItem('lucenta_facetten_lauf'); });
+await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(500);
+await seite.evaluate(() => { const b = [...document.querySelectorAll('button')].find(x => /Ergebnis ansehen/.test(x.textContent)); b && b.click(); });
+await seite.waitForTimeout(900);
+ok(await seite.evaluate(() => !!document.querySelector('#ftKarte [data-ft="start"]')), 'Ergebnis: Karte „Tiefer gehen“ mit Start');
+await seite.evaluate(() => document.querySelector('#ftKarte [data-ft="start"]').click()); await seite.waitForTimeout(400);
+ok((await seite.evaluate(() => document.querySelector('.view.active')?.id)) === 'view-ft-test', 'Start oeffnet den Fragebogen');
+for (let i = 0; i < 116; i++){ await seite.evaluate(() => document.querySelector('#ftRow button:nth-child(5)').click()); await seite.waitForTimeout(200); }
+await seite.waitForTimeout(600);
+const ft = await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_facetten') || 'null'));
+ok(ft && Object.keys(ft.f).length === 29 && !('O6' in ft.f), 'gespeichert: 29 Facetten, ohne O6');
+ok(ft && ft.f.N1 === 0 && ft.f.N5 === 75 && ft.f.E5 === 100 && ft.f.A2 === 0 && ft.f.C2 === 25 && ft.f.O1 === 100,
+  'Auswertung nach Polung (alle 5): Gelassenheit 0, Mass halten 75, Erlebnishunger 100, Aufrichtigkeit 0, Ordnung 25 (' + JSON.stringify(ft && ft.f).slice(0, 80) + ')');
+ok((await seite.evaluate(() => document.querySelectorAll('#ftErgebnis .ft-zeile').length)) === 29, 'Ergebnisseite zeigt 29 Facetten');
+await seite.evaluate(() => { ['lucenta_plus','__pruef_abo','lucenta_result','lucenta_facetten'].forEach(k => localStorage.removeItem(k)); });
+
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 
 await browser.close();

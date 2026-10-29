@@ -342,6 +342,7 @@
     startGauges($('view-result'));
 
     renderDelta(previous);
+    ftKarteRendern();
   }
 
   // Kurzportraet vollstaendig (Entscheidung des Inhabers, loest „Mehr" aus Feedback B12 ab): frei und zum Teilen gedacht.

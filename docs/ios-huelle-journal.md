@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 186)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 187)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 186 | (dieser) | Tier als Begleiter der Tagesform mit drei Ausdruecken (60 Renderings), Bericht ueber zwei Freunde (Lucenta+) |
+| 187 | (dieser) | Ausfuehrlicher Test: 116 Aussagen (IPIP-NEO-120 ohne O6), 29 Facetten, Lucenta+ |
+| 186 | `f131d52` | Tier als Begleiter der Tagesform mit drei Ausdruecken (60 Renderings), Bericht ueber zwei Freunde (Lucenta+) |
 | 185 | `54a3dfc` | Siri und Kurzbefehle: Tagesform eintragen (ohne App) und oeffnen, 8 Sprachen |
 | 184 | `5d68b60` | Jahr auf einen Blick (Kalender), Monatsrueckblick (Kalender + Karte auf Heute), Notiz am Eintrag; teilbar als Bild |
 | 183 | `635e588` | App-Sperre mit Face ID/Touch ID/Code, frei, Sofort/1/15 Min. (`LucentaSperre.swift`, Plugin `Lock`) |
@@ -241,7 +242,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–186 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–187 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -335,6 +336,10 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 187: 9 von 9**: `pruef-nativ` 137; `fehlersuche` meldete im vollen Lauf 4x „6 statt 5 Vorteile" (die Pruefung zaehlte fest
+fuenf, der sechste ist die Facetten-Zeile) — Erwartung auf 6 gesetzt, die betroffene Konfiguration auf WebKit und Chromium
+nachgefahren: ohne Fund.
 
 **Nach Runde 186: ALLE 9 BESTANDEN**: `pruef-nativ` 132, `fehlersuche` ohne Fund.
 
@@ -502,6 +507,36 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 187 — Ausfuehrlicher Test: 29 Facetten
+
+**Auftrag:** Punkt 3 der Vergleichsliste. Inhaber: Lucenta+, acht Sprachen; O6 weglassen; Start auf der Ergebnisseite, Ergebnis
+als Unterseite.
+
+**Quelle:** Wortlaut aller Aussagen einmalig von ipip.ori.org (`30FacetNEO-PI-RItems.htm`, Johnson 2014, gemeinfrei) geholt —
+nicht aus dem Gedaechtnis. Zur Laufzeit wird nichts geladen. **O6 „Liberalism" entfaellt** (zwei Aussagen fragen nach der
+Wahlneigung, eine nach „tough on crime" — fuer eine Lifestyle-App in acht Laendern ungeeignet, politische Meinung ist nach DSGVO
+eine besondere Kategorie): 116 Aussagen, 29 Facetten, jede fuer sich ausgewertet und damit validiert wie im Original.
+
+**Gebaut:** `src/js/16b-facetten.js` — eigener schlanker Fragebogen (`view-ft-test`), weil der bisherige an vielen Stellen fest
+an 50 Aussagen haengt; dieselben Bausteine und Stile. Darbietung reihum wie im Original (N1, E1, O1, A1, C1, N2 …), Fortschritt
+in `lucenta_facetten_lauf`, Ergebnis in `lucenta_facetten` (in `DATEN_SCHLUESSEL`, also in Sicherung und iCloud). Je Facette
+0–100 aus vier Antworten; die sechs N-Facetten zaehlen wie die Dimension zur Stabilitaet (umgekehrt) und heissen als positive
+Pole (Gelassenheit, Ausgeglichenheit, Zuversicht, Sicherheit unter Menschen, Mass halten, Belastbarkeit) — Richtlinie 1.4.1.
+Ergebnis `view-ft`: je Dimension die Facetten mit Balken und einem Satz, daneben der Wert aus dem 50er-Test, Quellenhinweis
+„ein Bild, kein Befund". Karte „Tiefer gehen: 29 Facetten" unter den fuenf Dimensionen (ohne Abo: Lucenta+-Knopf), Vorteil auf
+der Lucenta+-Seite.
+
+**Texte:** 14 Aussagen stehen wortgleich im IPIP-50 — deren vorhandene Uebersetzungen uebernommen, damit dieselbe Aussage nicht
+zweimal verschieden klingt. 102 Aussagen x 7 Sprachen, 29 Namen und Saetze x 8 selbst uebersetzt — **muttersprachliche
+Durchsicht noetig**, vor dem Store dringend. Dabei gefunden (nicht behoben, gehoert dem Inhaber): Die vorhandenen es/fr/it/pt-
+Aussagen benutzen bei Adjektiven die WEIBLICHE Form („Siempre estoy preparada", „Je suis toujours prête") — Maenner lesen sie so.
+Die neuen Texte sind ohne geschlechtsgebundene Form formuliert.
+
+**Gemessen:** WebKit: Karte, alle 116 Fragen durchgeklickt, 29 Facetten im Ergebnis, ohne Fehler in der Konsole. `pruef-nativ`
+132 -> 137, darunter die Auswertung nachgerechnet (alle 5: Gelassenheit 0, Mass halten 75, Erlebnishunger 100, Aufrichtigkeit
+0, Ordnung 25 — meine erste Erwartung 50 fuer Mass halten war falsch, nicht die App). Wieder `audit_i18n`: Seitenname
+„facetten" ist deutscher Wortschatz -> `ft` / `ft-test`.
 
 ## Runde 186 — Das Tier begleitet die Tagesform; Bericht ueber zwei Freunde
 

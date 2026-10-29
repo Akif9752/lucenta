@@ -603,9 +603,8 @@ const NACHBEREITUNG = {
     }
     await p.waitForTimeout(600);
     const zahl = await p.evaluate(() => document.querySelectorAll('#plusVorteile .plus-vorteil').length);
-    // Runde 128: fuenf statt vier — "Dein vollstaendiger Bericht" ist seit der strengeren
-    // Bezahlgrenze der erste Vorteil (PLUS_VORTEILE in 18-ergebnisbild-dialog.js).
-    if (zahl !== 5) throw new Error('Lucenta+-Fenster zeigt ' + zahl + ' statt 5 Vorteile');
+    // Sechs Vorteile (PLUS_VORTEILE in 18-ergebnisbild-dialog.js; seit Runde 187 mit den 29 Facetten).
+    if (zahl !== 6) throw new Error('Lucenta+-Fenster zeigt ' + zahl + ' statt 6 Vorteile');
   }}
 };
 

@@ -51,6 +51,7 @@
     {titel:'plus_v_tagesform_titel',  text:'plus_v_tagesform_text'},
     {titel:'plus_v_vergleich_titel',  text:'plus_v_vergleich_text'},
     {titel:'plus_v_verstehen_titel',  text:'plus_v_verstehen_text'},
+    {titel:'plus_v_facetten_titel',   text:'plus_v_facetten_text'},
     {titel:'plus_v_verlauf_titel',    text:'plus_v_verlauf_text'}
   ];
   function plusHaken(){
