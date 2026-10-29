@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 191)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 192)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 191 | (dieser) | Pinguin als neues Modell: Koenigspinguin-Brustbild, Ausdruck ueber die Haltung |
+| 192 | (dieser) | Neue Modelle: Rotkehlchen, Waldkauz (ohne Federohren), Hellroter Ara, Flamingo |
+| 191 | `e6b51a5` | Pinguin als neues Modell: Koenigspinguin-Brustbild, Ausdruck ueber die Haltung |
 | 190 | `20721e9` | Mehr Fotorealismus: Gefieder als Fellschalen, Hase/Dackel/Hunde natuerlicher |
 | 189 | `6b4a1a9` | Goldfisch, fuenf Voegel, Dackel nachgearbeitet; drei Nachthimmel getrennt; Hintergruende Farbe/Hell/Dunkel |
 | 188 | `9994138` | Ausfuehrlicher Test mit denselben Bausteinen wie der normale (Balken, Antwortwort, Meilensteine, Funkeln); Quellenhinweis weg |
@@ -246,7 +247,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–191 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–192 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -340,6 +341,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 192: ALLE 9 BESTANDEN**.
 
 **Nach Runde 191: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
 
@@ -519,6 +522,24 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 192 — Neue Modelle Gruppe 1: Rotkehlchen, Eule, Papagei, Flamingo
+
+**Auftrag:** „ja die anderen Tiere jetzt … gerne noch mehr Arbeit". Vorgehen wie beim Pinguin (Runde 191), in drei Gruppen mit je
+einem Commit. Hilfsskript fuer jede Runde am Bild: Kopf allein rendern, Rahmen messen, ganzes Bild, Vorschau.
+
+**Rotkehlchen:** Brustbild statt Ganzkoerper; seitliche, kleinere Augen (vorn sitzend wirkten sie wie Comic), feiner Schnabel in
+Dreiviertelansicht, rundes Brustfeld das nach unten schmaler wird, blaugrauer Saum folgt dem Bogen (zuerst ein senkrechter Balken,
+dann zu schmal — zweimal nachgebessert). **Eule (Waldkauz):** Brustbild, OHNE Federohren (die hat der Waldkauz nicht — bewusste
+Abweichung vom alten Modell, im Ergebnis genannt), EINE Gesichtsscheibe mit dunklem Rand und feinen Ringen (zwei Scheiben lasen sich
+als Brille), grosse dunkle Augen, kleiner heller Hakenschnabel, Brust dicht und fein gestrichelt mit Querbaendern (Zellmuster gingen
+unter den Haarspitzen verloren, Sinusbaender tragen). Zwinkern bleibt; Wangenroete 0. **Papagei (Hellroter Ara):** Brustbild, grosser
+elfenbeinfarbener Hakenschnabel im Profil, schwarzer Unterschnabel, grosse nackte Gesichtshaut vom Auge bis zum Schnabel mit
+angedeuteten Federlinien (zuerst ein Kreis hinter dem Auge), gelbe Deckfedern ueber blauen Schwingen. **Flamingo:** ganz neu —
+kleiner Kopf, kleines gelbes Auge, kraeftiger geknickter Schnabel (heller Ansatz, rosa Mitte, schwarze Spitze), langer S-Hals;
+Zuschnitt weiter (`NAEHER` 0,58). Nach dem Neumessen des Rahmens hatte das alte Modell den Kreis mit dem Kopf gefuellt.
+
+Alle vier in drei Ausdruecken. `NAEHER` neu fuer rotkehlchen, eule, papagei, flamingo. pruef-alles 9/9.
 
 ## Runde 191 — Pinguin als neues Modell (Koenigspinguin), Beispiel fuer weitere Tiere
 
