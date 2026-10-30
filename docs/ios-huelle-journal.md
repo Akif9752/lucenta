@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-30, nach Runde 195)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-30, nach Runde 196)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 195 | (dieser) | Neubau Reh (Lauscher, Schnauze), Katze und Retriever erwachsen |
+| 196 | (dieser) | Neubau Mops und Panda, alle drei Ausdruecke |
+| 195 | `1136727` | Neubau Reh (Lauscher, Schnauze), Katze und Retriever erwachsen |
 | 194 | `5aed21b` | Katze, Siamkatze, Fuchs, Reh: kleinere Augen, feinere Tigerung, kraeftigere Siam-Maske, Reh-Fell |
 | 193 | `4f77b6a` | Neue Modelle: Wal laenger, Delfin mit Schnabel, Seeotter dunkler Koerper, kleinere Augen |
 | 192 | `4bd9578` | Neue Modelle: Rotkehlchen, Waldkauz (ohne Federohren), Hellroter Ara, Flamingo |
@@ -250,7 +251,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–195 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–196 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -344,6 +345,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 196: ALLE 9 BESTANDEN**.
 
 **Nach Runde 195: ALLE 9 BESTANDEN**.
 
@@ -531,6 +534,18 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 196 — Neubau Mops und Panda
+
+**Auftrag:** „Mops und Panda richtig fotorealistisch von a bis z". Beide in `Tiere.swift` von Grund auf neu.
+**Mops:** ganz flaches Gesicht mit Nasenfalte im Bogen ueber der Nase, drei Stirnwuelste mit senkrechter Rinne, breiter Unterkiefer
+mit Lefzen, Rosenohren, Kehlfalten am Hals, kurzes dichtes Falbfell (Dichte 150). Erster Wurf: Die Stirnwuelste standen 0,13 vor
+der Schaedelflaeche und sahen aus wie gestapelte Scheiben — Mitten knapp unter die Flaeche gelegt, weicher verschmolzen, die
+Faltentiefe heller; die Maske hat jetzt eine klarere Kante (weich 0,18 statt 0,30). **Panda:** breiter runder Kopf mit vollen Backen,
+kurze Schnauze, ovale schraeg gestellte Augenflecken, langes dichtes Fell mit leichter Tonung im Weiss. Schwarze Lider auf schwarzem
+Fleck tragen keinen Ausdruck — die Stimmung kommt beim Panda aus der Kopfhaltung (muede gesenkt, froh gehoben), wie beim Pinguin.
+**Unsicher:** Die Nasenfalte des Mopses verschwindet auf Avatargroesse weitgehend in der Maske; der Panda-Ausdruck „muede" liest sich
+schwaecher als bei Tieren mit hellen Lidern. Alle drei Ausdruecke (60 Bilder bleiben 60).
 
 ## Runde 195 — Neubau Reh, Katze, Retriever
 
