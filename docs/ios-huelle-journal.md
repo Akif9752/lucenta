@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-30, nach Runde 197)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-30, nach Runde 198)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 197 | (dieser) | Neubau Eule, Retriever, Rotkehlchen, Delfin |
+| 198 | (dieser) | Eule zweiter Neubau; Ara und Flamingo mit echten Schnaebeln (`bogen`) |
+| 197 | `d1fb6d4` | Neubau Eule, Retriever, Rotkehlchen, Delfin |
 | 196 | `4825771` | Neubau Mops und Panda, alle drei Ausdruecke |
 | 195 | `1136727` | Neubau Reh (Lauscher, Schnauze), Katze und Retriever erwachsen |
 | 194 | `5aed21b` | Katze, Siamkatze, Fuchs, Reh: kleinere Augen, feinere Tigerung, kraeftigere Siam-Maske, Reh-Fell |
@@ -252,7 +253,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–197 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–198 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -346,6 +347,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 198: ALLE 9 BESTANDEN**.
 
 **Nach Runde 197: ALLE 9 BESTANDEN**.
 
@@ -537,6 +540,23 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 198 — Eule, Ara, Flamingo: Schnaebel und Gefieder
+
+**Gemeldet (Inhaber):** Eule, Papagei und Flamingo „sehr unrealistisch", besonders die Schnaebel.
+**Ursache Schnaebel:** Sie waren aus zwei, drei dicken Kegelstuecken in EINER Farbe — ein Knubbel. Neu in `Tiere.swift`: `bogen()`
+legt Kreisquerschnitte entlang einer Catmull-Rom-Kurve, seitlich gestaucht (Horn ist schmal), und liefert je Ort die Stelle entlang der
+Kurve; `schnabel()` faerbt danach (Grund → Spitze). Dazu `federn()`/`federZelle()` als gemeinsamer Baustein (vorher nur im Rotkehlchen).
+**Ara:** hoher, schmaler Hornbogen bis in den Haken, elfenbein mit dunkler Spitze und schwarzem Fleck am Grund der Schneide; schwarzer
+Unterschnabel im Haken (stand erst als Kugel vor — kleiner und zurueckgesetzt); Gefieder mit Federschuppen, gelbe Deckfedern mit
+gruenen Spitzen in Reihen ueber blauen Schwingen. **Flamingo:** Schnabel gerade bis zum Knick, dann steil hinab, Unterschnabel als tiefer
+Kiel, hell fleischfarben → rosa → schwarze Spitze; Hals schlank (0,12 statt 0,13–0,23), Kopf rosa statt weiss, Ausschnitt auf Kopf und
+Hals (`NAEHER` 0,74), damit der Leib nicht mehr als Badetier im Bild liegt. **Eule:** Kopf und Leib als ein eifoermiger Umriss;
+der Schleier war schmaler als der Kopf und der dunkle Rand lief ueber die ganze Kopfseite — das ergab den „Helm"; jetzt fast kopfbreit
+mit schmalem, unterbrochenem Saum. Federreihen lasen sich auf dem gewoelbten Kopf als Cord — die Eule nimmt stattdessen eine
+Marmorierung aus unregelmaessigen Zellen (dunkle Federmitten, zarte helle Raender); Hakenschnabel aus `bogen`.
+**Unsicher:** Das zwinkernde Lid der Eule bleibt eine helle Kappe (Farbe des Schleiers); der Flamingohals ist noch glatter als echtes
+Gefieder.
 
 ## Runde 197 — Neubau Eule, Retriever, Rotkehlchen, Delfin
 
