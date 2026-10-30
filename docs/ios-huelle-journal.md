@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-30, nach Runde 196)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-30, nach Runde 197)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 196 | (dieser) | Neubau Mops und Panda, alle drei Ausdruecke |
+| 197 | (dieser) | Neubau Eule, Retriever, Rotkehlchen, Delfin |
+| 196 | `4825771` | Neubau Mops und Panda, alle drei Ausdruecke |
 | 195 | `1136727` | Neubau Reh (Lauscher, Schnauze), Katze und Retriever erwachsen |
 | 194 | `5aed21b` | Katze, Siamkatze, Fuchs, Reh: kleinere Augen, feinere Tigerung, kraeftigere Siam-Maske, Reh-Fell |
 | 193 | `4f77b6a` | Neue Modelle: Wal laenger, Delfin mit Schnabel, Seeotter dunkler Koerper, kleinere Augen |
@@ -251,7 +252,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–196 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–197 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -345,6 +346,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 197: ALLE 9 BESTANDEN**.
 
 **Nach Runde 196: ALLE 9 BESTANDEN**.
 
@@ -534,6 +537,23 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 197 — Neubau Eule, Retriever, Rotkehlchen, Delfin
+
+**Auftrag:** „so fotorealistisch wie moeglich, eine riesen Menge Arbeit". Alle vier in `Tiere.swift` neu, je mehrere Durchgaenge am Bild.
+**Delfin:** Spindelrumpf statt Kugel, Melone mit Falz zum kraeftigen kurzen Schnabel, Unterkiefer etwas laenger, kleines Auge (0,068
+statt 0,105) knapp hinter dem Mundwinkel, Sichelfinne aus drei Stuecken, Blasloch, dunkler Rueckenmantel mit welliger Grenze, Kratzer,
+Glanz weniger plastikhaft (Lack 0,35). **Rotkehlchen:** Augen sassen im grauen Saum — jetzt an der Oberkante des Orange; Schnabel
+zweiteilig und kraeftiger; Federreihen als unregelmaessiges Schuppenmuster (regelmaessig las es sich als Strickware); quer ueber die
+Kehle lief ein grauer Streifen (Falte zwischen Kopf und Leib, dort kippte `vorn` auf 0) — das Orange geht jetzt ohne Saum in die Brust;
+Ausschnitt weiter (`NAEHER` 0,62). **Eule:** Schleier mit Strahlen um jedes Auge, flache Mulden um die Augen, Grat zum Schnabel, helle
+Tropfen am Scheitel, Brust mit dichten Schaftstrichen statt weniger Schmisse, gebaenderte Schwingen, groesserer Hakenschnabel. Eigener
+Fehler unterwegs: Das zwinkernde Lid nahm die Farbe des hellen Brauenbands direkt darueber und wurde zur weissen Kugel — Braue nach
+innen gelegt, Hof um das Auge dunkler, Mulde flacher. **Retriever:** Kopf neu gebaut — breiter Schaedel mit Stopp, langer sich
+verjuengender Fang mit eigenem Unterkiefer und Lefzen, Ohren mit eigener dunkler Farbe (ueber ihren Abstand, nicht ueber x), kurzes
+Gesichtsfell (0,030 statt 0,055), Fahnen an Ohren und Hals, ruhigere Brauen, Rumpf schmaler.
+**Unsicher:** Der Falz zwischen Melone und Schnabel des Delfins ist auf Avatargroesse kaum zu sehen; beim Retriever bleibt hinten links
+eine runde Schulter sichtbar. Das Zwinkern der Eule bleibt (Entscheidung des Inhabers, Runde 137).
 
 ## Runde 196 — Neubau Mops und Panda
 
