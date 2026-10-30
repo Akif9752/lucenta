@@ -7,7 +7,7 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-29, nach Runde 194)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-30, nach Runde 195)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
@@ -54,7 +54,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 194 | (dieser) | Katze, Siamkatze, Fuchs, Reh: kleinere Augen, feinere Tigerung, kraeftigere Siam-Maske, Reh-Fell |
+| 195 | (dieser) | Neubau Reh (Lauscher, Schnauze), Katze und Retriever erwachsen |
+| 194 | `5aed21b` | Katze, Siamkatze, Fuchs, Reh: kleinere Augen, feinere Tigerung, kraeftigere Siam-Maske, Reh-Fell |
 | 193 | `4f77b6a` | Neue Modelle: Wal laenger, Delfin mit Schnabel, Seeotter dunkler Koerper, kleinere Augen |
 | 192 | `4bd9578` | Neue Modelle: Rotkehlchen, Waldkauz (ohne Federohren), Hellroter Ara, Flamingo |
 | 191 | `e6b51a5` | Pinguin als neues Modell: Koenigspinguin-Brustbild, Ausdruck ueber die Haltung |
@@ -249,7 +250,7 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–194 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–195 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
@@ -343,6 +344,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   (ausser `#myCode`); Teilbild 1080×1350; keine Striche mit runden Enden auf Avatargroesse.
 
 ### Stand der Pruefungen
+
+**Nach Runde 195: ALLE 9 BESTANDEN**.
 
 **Nach Runde 194: ALLE 9 BESTANDEN**.
 
@@ -528,6 +531,16 @@ Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absic
 Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
 
 ---
+
+## Runde 195 — Neubau Reh, Katze, Retriever
+
+**Reh:** Lauscher standen waagerecht ab (Zeichentrick) — jetzt gross, oval, schraeg nach oben; Brauenwulst weg (Rehe haben keinen),
+Lidbeulen kleiner (sie trugen den grimmigen Blick, nicht die Braue); Schaedel schmaler, Schnauze laenger und schlanker (Nase, Maul,
+Flecken mitgezogen); grosser schwarzer Nasenspiegel mit hellen Flecken daneben, kraeftigeres Rotbraun. **Katze:** erwachsene
+Proportionen — Kopf schmaler und flacher, Backen kleiner, Schnauze nach vorn, Ohren kleiner, helle Braue zurueckgenommen. Dabei
+eigener Fehler: Der schmalere Kopf liess die gleich grossen Augen relativ GROESSER wirken — Augen mitgezogen (0,145), Polster kleiner.
+**Retriever:** Schaedel flacher, Backen schmaler, Schnauze laenger (Nase, Maul, Kiefer, Zunge um 0,12 mitgezogen), Augen kleiner,
+Brauen dezenter; frontal wirkte die Schnauze wie eine Knolle — in Dreiviertelansicht gedreht. Alle drei Ausdruecke.
 
 ## Runde 194 — Neue Modelle Gruppe 3: Katze, Siamkatze, Fuchs, Reh
 
