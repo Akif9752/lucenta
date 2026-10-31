@@ -259,7 +259,7 @@
       <div class="tf-abschnitte" id="stateTfAbschnitte"></div>
       <p class="state-today-note" id="stateTodayNote"></p>
       <!-- Ist die laufende Tageszeit eingetragen, steht hier die Bestaetigung (zuklappen() in
-           19-feier.js); "Aendern" klappt die Skalen wieder auf. -->
+           22-feier.js); "Aendern" klappt die Skalen wieder auf. -->
       <div class="state-done tf-erledigt" id="tfErledigt" style="display:none;" role="status">
         <span class="state-done-check" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
         <div class="state-done-text">
@@ -328,7 +328,7 @@
 
   <!-- COMPAT ARCHIVE -->
 
-  <!-- LUCENTA+ als Seite (18b-plus-seite.js) -->
+  <!-- LUCENTA+ als Seite (23-plus-seite.js) -->
   <section class="view" id="view-plus" tabindex="-1">
     <div class="quiz-head nur-zurueck">
       <button class="btn btn-ghost btn-sm" id="btnBackFromPlus" data-i18n="start_4">← Start</button>
@@ -486,7 +486,7 @@
         </div>
         <button type="button" class="btn btn-ghost btn-sm" id="btnSettingsEditProfile" data-i18n="profil_bearbeiten">Profil bearbeiten</button>
       </div>
-      <!-- Mit Apple anmelden + iCloud, nur in der App (19d-konto.js). -->
+      <!-- Mit Apple anmelden + iCloud, nur in der App (26-konto.js). -->
       <div id="kontoIcloud" class="konto-icloud" hidden></div>
       <!-- Lucenta+ fuehrt auf seine Seite; Wiederherstellen bleibt hier erreichbar (Richtlinie 3.1.2). -->
       <div class="daten-knoepfe einst-plus">
@@ -524,7 +524,7 @@
         </div>
         <button type="button" class="schalter" id="bewegungSchalter" role="switch" aria-checked="true" aria-label="Bewegung" data-i18n-aria="aria_bewegung"><span class="schalter-knopf"></span></button>
       </div>
-      <!-- Nur in der App ab iOS 18 sichtbar (19b-native.js, healthEinrichten). -->
+      <!-- Nur in der App ab iOS 18 sichtbar (24-native.js, healthEinrichten). -->
       <div class="settings-zeile" id="healthZeile" hidden>
         <div class="settings-zeile-text">
           <strong data-i18n="health_titel">Stimmung in Health</strong>
@@ -570,7 +570,7 @@
     <div class="settings-group">
       <h2 data-i18n="daten_amp_datenschutz">Daten &amp; Datenschutz</h2>
       <p class="settings-group-desc" data-i18n="lucenta_läuft_vollständig_au">Alles unten liegt auf diesem Gerät, bis du es löschst &mdash; mit Apple-Anmeldung zusätzlich verschlüsselt in deiner iCloud.</p>
-      <!-- Nur in der App mit Face ID, Touch ID oder Code (19b-native.js, sperreEinrichten). Frei (Entscheidung des Inhabers). -->
+      <!-- Nur in der App mit Face ID, Touch ID oder Code (24-native.js, sperreEinrichten). Frei (Entscheidung des Inhabers). -->
       <div class="settings-zeile" id="sperreZeile" hidden>
         <div class="settings-zeile-text">
           <strong id="sperreTitel" data-i18n="sperre_titel_faceid">Mit Face ID sperren</strong>
@@ -640,7 +640,7 @@
   <!-- Rechtliches als eigene Ansicht: aus jeder Ansicht in zwei Schritten erreichbar (Gesetz und
        App-Store-Pruefung). -->
   <!-- Runde 131: die haeufigen Fragen als eigene Seite, geoeffnet aus den Einstellungen. -->
-  <!-- AUSFUEHRLICHER TEST (Unterseiten des Ergebnisses, 16b-facetten.js): Fragebogen und 29 Facetten. -->
+  <!-- AUSFUEHRLICHER TEST (Unterseiten des Ergebnisses, 19-facetten.js): Fragebogen und 29 Facetten. -->
   <section class="view" id="view-ft-test" tabindex="-1">
     <div class="quiz-head">
       <button class="btn btn-ghost btn-sm" id="btnBackFromFacettenTest" data-i18n="abbrechen_2">← Abbrechen</button>
@@ -1066,7 +1066,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre></details>
   </main>
 </div>
 
-<!-- ONBOARDING beim ersten Oeffnen (19c-onboarding.js). Ausserhalb von #shell, das waehrenddessen inert ist. -->
+<!-- ONBOARDING beim ersten Oeffnen (25-onboarding.js). Ausserhalb von #shell, das waehrenddessen inert ist. -->
 <div id="onboarding" role="dialog" aria-modal="true" aria-label="Willkommen bei Lucenta" data-i18n-aria="ob_aria" aria-hidden="true" hidden>
   <div class="ob-kopf">
     <button type="button" class="ob-leise" id="btnObZurueck" hidden data-i18n="ob_zurueck">Zurück</button>

@@ -174,7 +174,7 @@
     return 'abend';
   }
   // Je Tageszeit EIN Eintrag (Entscheidung des Inhabers); ein zweiter ersetzt den ersten.
-  // TF_ABSCHNITT_BEGINN muss zu zeitabschnitt() passen; die Erinnerungen (19b-native.js) liegen
+  // TF_ABSCHNITT_BEGINN muss zu zeitabschnitt() passen; die Erinnerungen (24-native.js) liegen
   // innerhalb der Abschnitte.
   var TF_ABSCHNITTE = ['morgen', 'mittag', 'abend'];
   var TF_ABSCHNITT_BEGINN = {morgen:0, mittag:12, abend:18};

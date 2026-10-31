@@ -86,7 +86,7 @@
     font-variant-numeric:tabular-nums;
   }
   /* Marken absolut auf ihrem Prozentwert, alle mittig (dieselbe Rechnung wie die Punkte,
-     verlaufAchseHTML in 08-code.js). */
+     verlaufAchseHTML in 10-code-und-grafiken.js). */
   .vl-achse-marke{position:absolute; top:0; transform:translateX(-50%); white-space:nowrap;}
 
   /* Ablesehilfe: Die Trefferfläche ist die ganze Diagrammfläche, nicht die 2px-Linie. */
@@ -96,7 +96,7 @@
   .verlauf-svg .vl-kreuz, .verlauf-svg .vl-lese{transition:opacity .12s ease;}
 
   /* Einzeichnen bei jedem Oeffnen und Zeitraumwechsel. --vl-laenge ist die Laenge des laengeren
-     Polygonzugs (08-code.js); Ruhezustand Versatz 0 (die Linie steht ganz da, wenn die Animation
+     Polygonzugs (10-code-und-grafiken.js); Ruhezustand Versatz 0 (die Linie steht ganz da, wenn die Animation
      ausbleibt). Endpunkte nach der Linie, nur ueber opacity. */
   /* Das Strichmuster NUR unter .vl-zeichnet — ohne Animation gar kein Muster (keine
      Haarstrich-Luecke). */

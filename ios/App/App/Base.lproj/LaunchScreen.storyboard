@@ -13,7 +13,7 @@
             ist die bekannte Ursache fuer genau dieses Schwarz.
 
          Ein neues, kleineres Bild haette beides behoben. Es haette aber den Namen gezeigt, der eine
-         halbe Sekunde spaeter in der Startbewegung (startBewegung() in 21-beta-rueckmeldung.js)
+         halbe Sekunde spaeter in der Startbewegung (startBewegung() in 28-verdrahtung-und-start.js)
          noch einmal erscheint und sich dort erst ZEICHNET — ein fertiges Logo, das verschwindet und
          sich dann neu aufbaut. Apple sieht fuer das Startbild ohnehin keine Marke vor, sondern die
          leere erste Ansicht. Also: nur "Papier", seit Runde 149 in beiden Modi #000000 (Vorgabe dunkel).

@@ -28,7 +28,7 @@
 
   /* ---------- 4. Funkeln statt Konfetti ----------
      An Meilensteinen, bei der Ergebnis-Enthuellung und beim Speichern der Tagesform (funkelStoss in
-     19-feier.js). Vierzackiger Stern als clip-path; das Leuchten (drop-shadow) sitzt am BEHAELTER, an
+     22-feier.js). Vierzackiger Stern als clip-path; das Leuchten (drop-shadow) sitzt am BEHAELTER, an
      den Sternen schnitte der Zuschnitt es ab. */
   .funkeln{
     position:fixed; z-index:60; width:0; height:0; pointer-events:none;

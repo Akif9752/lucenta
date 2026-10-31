@@ -2,7 +2,7 @@
 //
 // Der Grund fuer dieses Werkzeug: Der native Weg laesst sich hier nicht laufen lassen — es gibt
 // kein iPhone und keinen Mac in dieser Umgebung. Damit waere der gesamte Code in
-// src/js/19b-native.js ungeprueft, bis ihn zum ersten Mal jemand auf einem Geraet oeffnet, und
+// src/js/24-native.js ungeprueft, bis ihn zum ersten Mal jemand auf einem Geraet oeffnet, und
 // ein Tippfehler im Aufruf faellt dann im schlechtesten Fall erst der Pruefung bei Apple auf.
 //
 // Also wird die Bruecke nachgebaut: window.Capacitor mit denselben Modulnamen und Methoden, die

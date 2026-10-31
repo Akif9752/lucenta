@@ -4,7 +4,7 @@
   .state-today-note{margin:0;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);}
   /* Runde 131: die Erfassung als eigener Block, damit sie als Ganzes zuklappen kann. */
   .tf-erfassung{display:flex;flex-direction:column;gap:22px;transform-origin:top center;}
-  /* Das Zuklappen (zuklappen()/aufklappen() in 19-feier.js): Die Hoehe laeuft auf null, der Inhalt
+  /* Das Zuklappen (zuklappen()/aufklappen() in 22-feier.js): Die Hoehe laeuft auf null, der Inhalt
      schrumpft dabei leicht nach oben weg. Die Bestaetigung springt danach mit haken-feder auf. */
   .klappt-zu{overflow:hidden;opacity:0;transform:scale(.94) translateY(-10px);
     transition:height .48s cubic-bezier(.6,0,.25,1), opacity .32s ease, transform .48s cubic-bezier(.6,0,.25,1);}
@@ -46,7 +46,7 @@
   @keyframes punkt-fuellen{0%{transform:scale(.3);}55%{transform:scale(1.7);}80%{transform:scale(.9);}100%{transform:scale(1);}}
   @keyframes punkt-ring{from{transform:scale(1);opacity:.9;}to{transform:scale(3.2);opacity:0;}}
   /* Runde 129, "groessere Animationen": Der Haken springt gross auf und schwingt aus, statt nur
-     einzublenden; der Text gleitet mit Schwung nach. Funken dazu aus funkenAn() (19-feier.js). */
+     einzublenden; der Text gleitet mit Schwung nach. Funken dazu aus funkenAn() (22-feier.js). */
   .state-done.just-saved .state-done-check{animation:haken-feder .72s cubic-bezier(.34,1.56,.64,1) both;}
   .state-done.just-saved .state-done-check path{stroke-dasharray:24;stroke-dashoffset:24;animation:check-draw .38s ease .12s forwards;}
   .state-done.just-saved .state-done-text{animation:done-gleiten .5s cubic-bezier(.22,1.2,.36,1) .14s both;}

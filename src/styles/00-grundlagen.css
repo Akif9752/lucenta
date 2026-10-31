@@ -43,7 +43,7 @@
     --dim-a-text:#076A64;
     --dim-s-text:#9D396B;
     /* Farben des bewegten Hintergrunds (Dunkelmodus: Sternenhimmel). */
-    /* Hellmodus: Staub in einem Lichtstrahl statt Sternenhimmel (22-sternenhimmel.js liest
+    /* Hellmodus: Staub in einem Lichtstrahl statt Sternenhimmel (29-sternenhimmel.js liest
        --atmosphaere). */
     --atmosphaere:'staub';
     --stern:rgba(150,132,104,.30);
@@ -105,7 +105,7 @@
        1 unterscheidbar sind. */
     --marke: 'Fraunces', ui-serif, Georgia, var(--cjk);
     /* Runde 131: --marke ist verbindlich die Schrift des NAMENS "Lucenta" — Kopfzeile, Startbild,
-       Teilbild (SHARE_SERIF in 10-ergebnisbild.js). Wo der Name als Marke steht, steht er so. */
+       Teilbild (SHARE_SERIF in 12-ergebnisbild.js). Wo der Name als Marke steht, steht er so. */
     --sans: -apple-system, system-ui, 'SF Pro Text', ui-sans-serif, var(--cjk-sans);
     --serif: var(--sans);
     --mono: var(--sans);

@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import figuren_holen as fh
 
 KREIS = int(os.environ.get('KREIS', 160))
-FIGUREN_JS = os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'js', '13-figuren.js')
+FIGUREN_JS = os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'js', '15-figuren.js')
 FELD = dict(re.findall(r"\{id:'([a-z]+)',\s*feld:'(#[0-9A-Fa-f]{6})'", open(FIGUREN_JS).read()))
 
 

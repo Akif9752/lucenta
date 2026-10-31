@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 198)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 199)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 198 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 199 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -24,7 +24,8 @@ lassen. Die Richtungen:
 - **Lucenta+ soll sich verkaufen** — ehrlich (keine Countdowns, keine erfundenen Zahlen), aber deutlich.
 - **Verspielter, mehr Bewegung** (Runde 130–132) — grosse Gesten an Ereignissen, Licht statt Papier.
 - **Avatare** plastisch und suess (eigene 3D-Renderings seit Runde 125, Koerper und Blick seit 133–135).
-- **Schneller arbeiten** (Runde 138): Kommentare kurz halten, Pruefungen buendeln.
+- **Schneller arbeiten** (Runde 138, 199): Kommentare kurz, Pruefungen buendeln; seit 199 waehlt `pruef-alles` nach
+  Aenderung (leicht ~1,5 Min. / voll ~12 Min.), `npm run installieren` bringt Simulator und iPhone in einem Befehl.
 - **Tiere so echt wie moeglich** (Runde 141–146), Wahl: „echt, aber liebenswert" (Augen etwas groesser als
   echt, keine Wangenroete). Grenze des Werkzeugs ausgesprochen: sehr gute 3D-Figur, kein Foto; Blender
   wurde angeboten und NICHT gewaehlt.
@@ -63,6 +64,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
+| 199 | (dieser) | Aufgeraeumt: src/js fortlaufend und deutsch benannt (00–29), Pruefrunde nach Aenderung + teilweise parallel, `npm run installieren`, Uebergabe gekuerzt (`docs/runden-archiv.md`), `tools/renderer` entfernt |
 | 198 | `dcf5868` | Eule zweiter Neubau; Ara und Flamingo mit echten Schnaebeln (`bogen`) |
 | 197 | `d1fb6d4` | Neubau Eule, Retriever, Rotkehlchen, Delfin |
 | 196 | `4825771` | Neubau Mops und Panda, alle drei Ausdruecke |
@@ -77,72 +79,11 @@ Regeln, die er gesetzt hat:
 | 187 | `bd1f7bb` | Ausfuehrlicher Test: 116 Aussagen (IPIP-NEO-120 ohne O6), 29 Facetten, Lucenta+ |
 | 186 | `f131d52` | Tier als Begleiter der Tagesform mit drei Ausdruecken (60 Renderings), Bericht ueber zwei Freunde (Lucenta+) |
 | 185 | `54a3dfc` | Siri und Kurzbefehle: Tagesform eintragen (ohne App) und oeffnen, 8 Sprachen |
-| 184 | `5d68b60` | Jahr auf einen Blick (Kalender), Monatsrueckblick (Kalender + Karte auf Heute), Notiz am Eintrag; teilbar als Bild |
-| 183 | `635e588` | App-Sperre mit Face ID/Touch ID/Code, frei, Sofort/1/15 Min. (`LucentaSperre.swift`, Plugin `Lock`) |
-| 182 | `c1ab038` | Version ohne Big-Five-Zusatz, Freunde-Hinweis weg, Rollenkarten mit Aufklapp-Fusszeile, Freunde im Rollenatlas mit Namen, OCEAN-Text 10,5 px |
-| 181 | `9f82b17` | Tagesform-Widget (klein, mittel mit Eintragen, Sperrbildschirm; App Group) und Apple Health (Stimmung als Gemuetszustand, nur schreiben, Vorgabe aus) |
-| 180 | `82ab3dd` | Bestand als Datei gespiegelt (`LucentaBestand.swift`), vor dem Start zurueckgeholt, wenn WebKit ihn geleert hat; Uebergabe berichtigt |
-| 179 | (dieser) | Kaufquote: Probezeit an jeder Sperre, Angebot unter dem ersten Muster mit echter Zahl, Rueckgewinnung (Kaeufe ausserhalb des Fensters schalten sofort frei) |
-| 178 | (dieser) | Nutzungszahlen (Beta) entfernt; „Abo verwalten" nur mit Abo; Version aus der App; Anmeldeschritt geprueft; verwaiste Texte; Store-Bilder neu |
-| 177 | (dieser) | Fusszeile unter dem Ergebnis entfernt (IPIP gemeinfrei, keine Nennungspflicht); Abschnitt „Lizenzen" mit Fraunces (OFL), Capacitor (MIT), Apache Cordova (Apache 2.0), IPIP |
-| 176 | (dieser) | Impressum nur noch in den Einstellungen; aus dem Kaufablauf nur die Datenschutzerklaerung |
-| 175 | (dieser) | Verstehen: Karten zeigen, dass sie aufklappbar sind (Fusszeile „Mehr lesen" + Pfeil wie die Ergebniskarten) |
-| 174 | (dieser) | Simulation mit 1000 Personen; Einstellungen wie iOS neu gegliedert; Erinnerungszeit waehlbar |
-| 173 | (dieser) | Zweite Simulation umgesetzt: Muster-Versprechen ehrlich, Bewertungsbitte, Kaufangebot nach dem Scrollen, 5 freie Hintergruende, Kurzportraet ganz |
-| 172 | (dieser) | Tiere artgerechter (Brauen nur angedeutet, kleinere Lichtpunkte, Fuchs-Ohrspitzen, Hasen-Augenring); 4 Hintergruende: Lavendel, Wolken, Sternschnuppe, Art déco |
-| 171 | (dieser) | Figur & Hintergrund als je eine Karte mit Gruppenzeilen; 6 neue Hintergruende (Lucenta+); Licht fuer alle Tiere, Fuchs/Dackel/Schildkroete/Wal nachgearbeitet |
-| 170 | (dieser) | Flackern beim Seitenwechsel (zwei Ursachen, im Simulator gemessen, `tools/flackern/`); Typ-Text unter die Werte; „Im Alltag" ganz Lucenta+ |
-| 169 | (dieser) | pruef-alles 9/9 nachgefahren; Datenschutz-Seite als Werkzeug (`npm run datenschutz-seite` -> `web/datenschutz/`), App auf dem iPhone 15 Pro |
-| 168 | (dieser) | 7 Tage Probezeit am Jahresabo (nur wenn der Store sie meldet), erstes Tagesform-Muster frei ab Tag 7, Altersgrenze 16+ |
-| 167 | (dieser) | Aus der Test-Simulation: Erinnerung einmal am Tag (Dreierregel als Zusatzschalter), Tagesform vor Verlauf auf der Kaufseite, Halbzeit-Vorgeschmack, Store-Bilder mit Ueberschrift |
-| 166 | (dieser) | Vergleich: Ring mit %, Name statt „Andere Person“; Freundescode im Wiederherstellungsfeld abgefangen; Flamingo neu (Brustbild), Rotkehlchen, Pinguin; Store-Bilder neu |
-| 165 | (dieser) | Warntexte gekuerzt: „kein klinisches Instrument" nur noch in der Hilfe, Datenschutz-Beteuerungen aus Ergebnis, Lucenta+, Freunde, Onboarding, Ueber |
-| 164 | `a43aa52` | Mops, Siamkatze; Tagesform und Verstehen mit Reitern; Fehlersuche je Reiter |
-| 163 | `0e70ed7` | Figur & Hintergrund als Unterseite, Abstaende (tools/abstaende.mjs), Wort ueber dem Kreis, Vogelfuesse |
-| 162 | `8b50639` | Verstehen nach Lebensbereichen: 40 neue Karten in acht Sprachen, Inhaltsuebersicht |
-| 161 | `a48a012` | Archetypen als persoenlicher Rollenatlas; Kalender mit Tagesdetails und Monatsueberblick; Muster nach Tageszeit und beste/schwere Tage |
-| 160 | `642e7bb` | Hintergruende in Gruppen + Lucenta+, vier neue; Delfin, Seeotter, Pinguin, Papagei, Flamingo, Rotkehlchen; Tiere in Gruppen |
-| 159 | `33bfc86` | Anmeldeschritt im Onboarding (ueberspringbar), Freundescode <id>-XXXX-XXXX mit eigener Benutzer-ID |
-| 158 | `1db786c` | Richtlinien-Pruefung + EULA-Links, Lucenta+ vor Einstellungen, Funken einfarbig leuchtend, Zeilenabstand |
-| 157 | `e530d99` | Feedback B10–B12, C13, C15–C18: Ich-Form, Skala mit Enden, Ergebnisseite Radar zuerst, Texte, Exportangabe |
-| 156 | `d25ad40` | Ueberpruefung: Rundgang im Simulator, veraltete Archiv-Texte, Hinweis-Texte, Toast fuer VoiceOver |
-| 155 | `4e63250` | Fehler „‹ Start" (Klassenname-Kollision); Freunde als einziger Ort (ein Feld, Vergleich `view-compare`, Archiv uebernommen); WebKit-Absturz im Balkenpuls behoben |
-| 154 | `cf6466c` | Feedback B9: Navigation wie iOS (Chevron mit Ziel, kleiner Titel beim Scrollen, Pillen verborgen) |
-| 153 | `fe25cbe` | Feedback B8: Dynamic Type bis 200 % (`--dt` aus der Huelle, `data-text="gross"`, Fehlersuche `320px@200%`) |
-| 152 | `f1ff0e0` | Feedback A1 (Sperre nach Antwort 50), A3 (`PrivacyInfo.xcprivacy`), A4 (Konto loeschen), A5 (ehrliche Versprechen, 8 Sprachen + Store), B6 (nur noch Freundescode; Wiederherstellungscode in Einstellungen), B7 (Einladung als Universal Link, scharf erst mit Domain) |
-| 151 | `41c2e29` | Feedbackrunde A bis Z: 19 Befunde in `docs/feedbackrunde-151.md` (5 kritisch: Doppelspeichern auf Frage 50, Impressum leer, Privacy Manifest, Konto loeschen, widerspruechliche Versprechen) |
-| 150 | `428acb7` | Freundescode (`L1.<code>.<figur>.<name>`): Name und Figur kommen von der Person selbst; Beispiel-Freunde; Lucenta+ als eigene Seite (`view-plus`); „Abo verwalten“ als StoreKit-Blatt |
-| 149 | `1728f4c` | Dunkel als Vorgabe; Hellmodus gedaempft (#E6E5E0/#F3F2EE, Schrift nachgedunkelt); Mit Apple anmelden + private iCloud (`LucentaKontoPlugin.swift`, `19d-konto.js`) |
-| 148 | `a09baf0` | Freunde: „Als Freund speichern“ im Vergleich, Rangliste nach Naehe, Gruppen-Radar (Lucenta+); Onboarding im Simulator geprueft; Start ueberlebt Fehler im Onboarding |
-| 147 | `de12cb7` | Freunde (`06b-freunde.js`, `view-freunde`), Lucenta+ in der Seitenleiste, Verlauf im Profil kurz + Unterseite `view-verlauf`, Onboarding beim ersten Oeffnen (`19c-onboarding.js`) |
-| 146 | `fbba58a` | Nach dem echten Tier: Waldkauz dunkle Augen, Reh ohne weisse Brauen, gewoehnlicher (laenglicher) Goldfisch, Buckelwal schiefergrau, Retriever erwachsen, Fuchs schmaler, Dackel seidig, Katze flacheres Unterlid |
-| 145 | `b92ea2b` | Panda und Hase echt proportioniert; Ohren und Flossen durchscheinend (`duenne`, Shader `durchschein…`); feinere Iris; nasse Haut (`Koerper.lack`); Goldfisch mit Dachziegel-Schuppen |
-| 144 | `571179b` | Echte Kopfproportionen bei Fuchs, Reh, Baer (lange Schnauzen, kleinere Hirnschale); weisses Fell bleibt weiss |
-| 143 | `153affe` | Fotorealistisch, aber liebenswert: keine Wangenroete, kleinere Augen mit dunklem Lidrand, echte Pupillenformen, Nasen mit Nasenloechern, weicheres Licht, Rendern in 2048 px; Retriever mit Schlappohren, Katze fein getigert. Kaltstart gemessen (siehe Eintrag) |
-| 142 | `9b90074` | Wal und Schildkroete: zum Betrachter gedreht, Augen weiter vorn, naeher zugeschnitten (`NAEHER` in `figuren_holen.py`) |
-| 141 | `f73cced` | Alle Tiere sehen in die Kamera (kein Blickversatz mehr); Wal als Buckelwal, Schildkroete als Suppenschildkroete, Dackel glattes Kurzhaar ohne Zunge |
-| 140 | `d24b541` | Schalenfell je Tier (`Fell`, `FellKarte`, Shader in `Szene.swift`) und Brauen als Wulst + Fellzeichnung (`mitBrauen`) |
-| 139 | `09693fa` | Tiere: je eigene Kopfhaltung (7 links, 5 rechts, teils geneigt), artgerechte Muender als Hautfalten (`mitMaul`), Zaehne/Zungen als `perle` |
-| 138 | `a07e240` | Schneller arbeiten: audit-i18n 4 Min. -> 1 s; Kommentare in src/ um ~30 % gekuerzt (gebaute App unveraendert) |
-| 137 | `ae62acb` | Preise aus StoreKit (`preise()`), Zurueck-Wischgeste vom linken Rand, Eulen-Zwinkern lesbar, Panda weicher, keine Trennung in der Angebotskarte |
-| 136 | `4d8552f` | Verstehen ganz Lucenta+; Vergleiche frei mit 2 Personen, Archiv frei bis 2; Sprache als Unterseite (`view-sprache`); Unterseiten schieben sich wie iOS (Push/Pop) |
-| 135 | `e755c72` | Suesser Blick: Lider, Blick zum Betrachter, groessere Augen und Lichtpunkte, Wangenroete; je Tier ein eigener `Ausdruck` |
-| 134 | `ef36e7a` | Tierkoerper statt Menschenoberkoerper: `vierbeiner(Bau(...))` — schmale tiefe Brust, Vorderbeine, Ruecken nach hinten; je Art eigene Masse und Zeichnung |
-| 133 | `9bad4bd` | Tiere mit Oberkoerper: fester Zuschnittrahmen (`rahmen.json`), Bild randlos im Kreis, Kopf deckungsgleich mit Runde 132 |
-| 132 | `7457d8f` | Funkeln statt Konfetti: vierzackige Sterne + Lichtpunkte, schweben statt zu fallen (`funkelStoss`, `.funkeln`) |
-| 131 | `f2938a4` | Startseiten-Titel wieder Fraunces; Name im Startbild in `--marke`; Symbol #5CB4AD; Hilfe als eigene Seite (`view-hilfe`); Beispieldaten 14/30/90/120; Verlauf „Gesamt"; Erinnerungen 9/14/20 + Nacherinnerung 11/16/22, Tageszeiten bis 12/18; Erfassung klappt nach dem Eintrag zu |
-| 130 | `370d20c` | Tagesform: drei Tageszeiten, je ein Eintrag (ersetzen); Erinnerungen einzeln geplant; groessere Animationen (Ergebnis-Enthuellung, Haken, Startkarten, Fragebogen, Tier wippt); weiche Vorschau-Raender; Legende des Graphen mit fester Hoehe |
-| 129 | `9af69cb` | Plex Mono aus dem Bau; Fusszeilen-Link = Einstellungszeile; „12‑mal"; Datumsachse gleichmaessig (`VERLAUF_RAND`) |
-| 128 | `8363244` | Strengere Bezahlgrenze, verschwommene Vorschauen (`vorschauHTML`), Angebot nach dem Test, Startseiten-Karte, Strahlenkranz am Ergebnistyp |
-| 127 | `0abb566` | Tagesform-Liste aufklappbar; Lucenta+ als Kaufseite mit Preiskarten |
-| 126 | `4e69bcb` | Kein Zoom in der App, Haptik bei jedem Tipp, SF ueberall, Rechtliches als leise Zeile |
-| 125 | `5645f4a` | Eigene 3D-Tiere (SceneKit, `tools/figuren_rendern/`) |
-| 124 | `7f29388` | Tagesform neu: fuenf Big-Five-Fragen, Stichworte, Bandbreite, Kalender, Muster |
-| 121–123 | … | Liquid Glass, Startbewegung, Verlaufskurve nach Apple Health, Avatare als Bilder |
+| ≤ 184 | … | siehe `docs/runden-archiv.md` |
 
 ### Wo was steht
 
-- **Jahr/Rueckblick/Notiz (Runde 184):** `07c-rueckblick.js` (`tfJahrHTML`, `tfRueckblickDaten/HTML/Bild`, `tfJahrBild`,
+- **Jahr/Rueckblick/Notiz (Runde 184):** `09-rueckblick.js` (`tfJahrHTML`, `tfRueckblickDaten/HTML/Bild`, `tfJahrBild`,
   `tfRueckblickHeuteRendern`), Umschalter `tfKalenderAnsicht` in `tfKalenderRendern` (07b), Notiz `#tfNotiz`/`tfNotizBereinigen`.
   Bildfenster: `openImgModal(bild)`.
 - **Sperre (Runde 183):** `LucentaSperre.swift` (`AppSperre`, Plugin `Lock`), JS `sperreEinrichten`/`sperreNachziehen` (19b),
@@ -161,9 +102,9 @@ Regeln, die er gesetzt hat:
 - **Neu seit Runde 165:** Einstellungen `#view-settings` (Gruppen: Konto+Lucenta+-Karte `#btnEinstPlus`, Allgemein,
   Erinnerung mit `#erinnerungZeit`, `#einstTestGruppe`, Daten mit `#einstWiederherstellen`, Hilfe & Ueber mit
   `#einstVersion`); Rechtliches `view-recht` mit `renderRecht(nurDatenschutz)` und `#rechtLizenzGruppe`; Erinnerung
-  `19b-native.js` (`erinnerungZeit`, `erinnerungAlle`); Kaufpfade `plusKnopfText` (05), `probeTage`/`plusStandUebernehmen`/
+  `24-native.js` (`erinnerungZeit`, `erinnerungAlle`); Kaufpfade `plusKnopfText` (05), `probeTage`/`plusStandUebernehmen`/
   `bewertungErbitten` (19b), `aboGeaendert` + `bewerten` in `LucentaKaeufePlugin.swift`; erstes Muster frei +
-  `musterAngebotText` (07b); Hintergruende `HINTERGRUENDE`/`HG_GRUPPEN`/`HG_FREI` (13-figuren.js) + `.hg-*` (09-archetypen.css).
+  `musterAngebotText` (07b); Hintergruende `HINTERGRUENDE`/`HG_GRUPPEN`/`HG_FREI` (15-figuren.js) + `.hg-*` (09-archetypen.css).
   Werkzeuge: `tools/flackern/`, `tools/datenschutz_seite.mjs` (→ `web/datenschutz/`), `tools/store_bilder.mjs` (mit Ueberschriften).
 - **Stil:** `src/styles/12-ios.css` (letzte Datei, schlaegt alle) fuer iOS-Form, Glas, Kaufseite,
   Vorschauen, Hilfe-Knopf. Farbmarken in `00-grundlagen.css` — **je drei Bloecke**. Bewegung und
@@ -175,17 +116,17 @@ Regeln, die er gesetzt hat:
   < 18 mittags; `TF_ABSCHNITTE`, `TF_ABSCHNITT_BEGINN`, `heuteEingetragen()`, `addStateEntry`
   ersetzt im selben Abschnitt). Oberflaeche in `07-tagesform.js` (Startkarte, `tfAbschnitteRendern`,
   `tfErledigtAnwenden`, Zeitraumwaehler `FENSTER = [14, 30, 90, 0]` — 0 = Gesamt) und
-  `07b-tagesform-alltag.js` (Fragen, Stichworte, Bandbreite, Kalender, Muster).
-- **Erinnerungen:** `19b-native.js` — `erinnerungListe(jetzt)` plant 10 Tage einzeln: Vorgabe 1 × 20 Uhr,
+  `08-tagesform-alltag.js` (Fragen, Stichworte, Bandbreite, Kalender, Muster).
+- **Erinnerungen:** `24-native.js` — `erinnerungListe(jetzt)` plant 10 Tage einzeln: Vorgabe 1 × 20 Uhr,
   mit `erinnerungAlle()` 6 am Tag
   (`ERINNERUNG_STUNDE`, `ERINNERUNG_NACH_STUNDEN`), `erinnerungNachziehen()` bei jedem Eintrag und
   jedem Oeffnen (`visibilitychange`).
-- **Bewegung:** `19-feier.js` — `funkelStoss`, `funkenAn`, `ergebnisEnthuellen`,
+- **Bewegung:** `22-feier.js` — `funkelStoss`, `funkenAn`, `ergebnisEnthuellen`,
   `startkartenEinfliegen`, `tierWippen`, `zuklappen`/`aufklappen`. Alles an `prefersReducedMotion()`.
 - **Bezahlgrenze:** `istPlus()`, `FREI_TAGE = 7` (`03-speicherung.js`); `vorschauHTML()` (`05-verlauf.js`);
-  `plusAngebotNachTest()` (`11-rendering.js`); Kaufseite `18-ergebnisbild-dialog.js`.
-- **Beispieldaten:** `14-demo.js` (`demoDaten(tage)`, `DEMO_LAENGEN`), Knoepfe im Profil
-  (`renderDemoBlock` in `15-profile.js`; `#btnDemo` = 120 Tage, die Fehlersuche klickt ihn).
+  `plusAngebotNachTest()` (`13-darstellung.js`); Kaufseite `21-bild-und-kauffenster.js`.
+- **Beispieldaten:** `16-demo.js` (`demoDaten(tage)`, `DEMO_LAENGEN`), Knoepfe im Profil
+  (`renderDemoBlock` in `17-profil.js`; `#btnDemo` = 120 Tage, die Fehlersuche klickt ihn).
 - **Symbol:** `tools/symbol_rendern.swift` (Anleitung im Kopf der Datei) → `assets/icon/`, Asset-
   Katalog, apple-touch-icon in `src/index.head.html`.
 - **Tiere:** `tools/figuren_rendern/Tiere.swift` → `bauen.sh <tier>` → ansehen →
@@ -197,19 +138,19 @@ Regeln, die er gesetzt hat:
   kein Fell (Wal, Fisch, Schildkroete). Brauen: `mitBrauen(kopf, …)` vor `mitMaul`.
   Alle zwoelf im Kreis: `python3 tools/figuren_rendern/uebersicht.py` (`KREIS=230` fuer gross);
   Vergleich alt/neu: `python3 tools/figuren_rendern/vorschau.py <alter-ordner> <tier>`.
-- **Onboarding:** `19c-onboarding.js`, Markup `#onboarding` vor `#drawerScrim`. Merker `lucenta_onboarding`.
+- **Onboarding:** `25-onboarding.js`, Markup `#onboarding` vor `#drawerScrim`. Merker `lucenta_onboarding`.
   Unter Automatisierung (`navigator.webdriver`) AUS — sonst blockierte es alle Pruefungen; gezielt mit
   `index.html?onboarding=1`. Bestandsnutzer mit Daten bekommen es nie.
 - **Freunde (Runde 155 neu geordnet):** einziger Ort fuer Codes und Vergleiche. `renderFreunde`
   (Karte `freundIchHTML`, Feld `freundSpeichern`, Liste `freundZeileHTML` nach Naehe), Vergleich
   `freundVergleichen` -> `view-compare`, `archivUebernehmen` (einmalig). Kein Vergleichsarchiv mehr.
-- **Freunde:** `06b-freunde.js` (`lucenta_freunde`, max. 30).
+- **Freunde:** `06-freunde.js` (`lucenta_freunde`, max. 30).
   **Freundescode (Runde 159)** `<benutzer-id>-XXXX-XXXX` (Crockford-Base32, Werte Basis 101, Figurindex,
   2-Bit-Pruefsumme; `kurzcodeTeil`/`kurzcodeLesen`, `eigeneBenutzerId`/`benutzerIdSetzen`). Alte `L1.`- und
   10-stellige Codes werden weiter gelesen. **`FIGUREN` nur hinten erweitern** — der Index steht im Code
   (`CODE_FIGUREN = 24`, heute 20 belegt). Name/Figur kommen von der Person. Rangliste `freundeNachNaehe`, Gruppenbild `gruppenRadarSVG` (Lucenta+), Formel
   `uebereinstimmung()` gemeinsam mit `renderCompat`. Im Vergleichsfeld merkt `data-freund` Name/Figur.
-- **Lucenta+-Seite:** `18b-plus-seite.js`, `view-plus` (aus der Seitenleiste); gekauft wird weiter im
+- **Lucenta+-Seite:** `23-plus-seite.js`, `view-plus` (aus der Seitenleiste); gekauft wird weiter im
   Kauffenster `#plusModal`. „Abo verwalten": `aboVerwalten()` -> `StoreKit.verwalten`
   (`AppStore.showManageSubscriptions`), Link nur als Rueckfall.
 - **Codes (Runde 152):** Geteilt wird NUR der Freundescode — Ergebnisseite `#einladenBox` ->
@@ -218,46 +159,46 @@ Regeln, die er gesetzt hat:
   `renderSettings`). Ausnahme Gastdurchlauf: `#gastCodeBox` mit `#myCode` (nicht gespeichert, der
   Freundescode kennt ihn nicht). `#cmpMe` ist verborgen (immer das eigene Ergebnis) — Werkzeuge setzen
   es per `evaluate`, nicht per `fill`.
-- **Einladungslink (Runde 152):** `EINLADUNG_DOMAIN` in `06b-freunde.js` (leer = kein Link, nur Code).
+- **Einladungslink (Runde 152):** `EINLADUNG_DOMAIN` in `06-freunde.js` (leer = kein Link, nur Code).
   Empfang: `einladungenHoeren()`/`freundAusLink()`; Hülle: `SceneDelegate.weiterreichen` ->
   `ApplicationDelegateProxy` -> `getLaunchUrl`/`appUrlOpen`. Statische Seite + AASA in `einladung/`
   (Anleitung `einladung/LIESMICH.md`). Entitlement `applinks:` erst mit Domain eintragen.
 - **Anmeldung:** `ios/App/App/LucentaKontoPlugin.swift` (jsName **`Account`** — „Konto" haelt die
-  Sprachpruefung fuer unuebersetzt), `src/js/19d-konto.js` (Bereich `#kontoIcloud` in Einstellungen ->
+  Sprachpruefung fuer unuebersetzt), `src/js/26-konto.js` (Bereich `#kontoIcloud` in Einstellungen ->
   Konto, `#btnObAnmelden` im Onboarding). Format = `datenSammeln()`; Berechtigungen in `App.entitlements`.
   Loeschen (Runde 152): `loeschen()` loescht den Datensatz, dann die Kennung; scheitert es (offline),
   bleibt die Anmeldung. Kein Token-Widerruf (nie ein Token; Prüfnotiz in `docs/app-store-start.md`).
 - **Farbschema:** `loadThemeMode()` Vorgabe `dark`; „System" wird ausdruecklich gespeichert.
   Hellfarben im ersten Block von `00-grundlagen.css`; `SHARE_COLORS` (Bau erzwingt Gleichheit),
   `syncThemeColor`, `theme-color`, `papierfarbe` (Swift) muessen mitziehen.
-- **Kopfzeile (Runde 154):** `navLeisteAnwenden()`/`navZurueck()` in `02-state.js`; eine NEUE Unterseite
+- **Kopfzeile (Runde 154):** `navLeisteAnwenden()`/`navZurueck()` in `02-zustand-navigation.js`; eine NEUE Unterseite
   braucht nur ihre Pille `id="btnBack…"` in `.quiz-head` (bei nur der Pille `.nur-zurueck`) — der Chevron
   findet sie selbst. Werkzeuge klicken `#btnNavZurueck`, nie die Pillen (verborgen).
-- **Navigation:** `showView()` in `02-state.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings; verlauf, look -> profile;
+- **Navigation:** `showView()` in `02-zustand-navigation.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings; verlauf, look -> profile;
   compare -> freunde}` steuert den
   iOS-Push/Pop (`.nav-push`/`.nav-pop`, die verlassene Seite als `.nav-weg` fixiert; CSS am Ende von
-  `12-ios.css`). Die Zurueck-Wischgeste vom linken Rand steht am Ende von `20-wiring.js` (`randGeste`).
+  `12-ios.css`). Die Zurueck-Wischgeste vom linken Rand steht am Ende von `27-verdrahtung.js` (`randGeste`).
   Eine neue Unterseite = Eintrag in `UNTERSEITE_VON` + `view-…` + Knopf mit `.hilfe-knopf` (Pfeil).
 - **Sprache:** eigene Seite `view-sprache` (Liste `.wahl-zeile[data-lang]`), in den Einstellungen nur die
   Zeile `#btnSpracheOeffnen` mit `#spracheAktuell` (gesetzt in `syncLangButtons`, `01-sprachpakete.js`).
 - **Vergleiche:** `FREI_VERGLEICHE`/`FREI_ARCHIV` und `freieVergleichePersonen()` (`03-speicherung.js`,
   Liste unter `lucenta_vergleich_frei`, alter Einzel-Code wird uebernommen); Grenze in `renderCompat`
-  (`11-rendering.js`), Archiv in `06-vergleichsarchiv.js`. Verstehen gesperrt in `16-verstehen.js`.
+  (`13-darstellung.js`), Archiv in `06-vergleichsarchiv.js`. Verstehen gesperrt in `18-verstehen.js`.
 - **Textgroesse (Runde 153):** jede `font-size` ist `calc(Npx * var(--dt, 1))` — eine NEUE Schriftgroesse
   ebenso schreiben, sonst waechst sie nicht mit. Grafik-Text bleibt fest, Titel `min(var(--dt,1),1.3)`.
   Layout fuer grosse Schrift unter `:root[data-text="gross"]` am Ende von `12-ios.css`.
 - **Figur & Hintergrund (Runde 163):** Unterseite `view-look` (Profilzeile `#btnAussehenOeffnen` mit
-  `#aussehenMini`), Vorschau `aussehenVorschau()` in `15-profile.js`. Tiere/Gruppen `FIGUREN`,
-  `FIGUR_GRUPPEN`, Hintergruende `HINTERGRUENDE`, `HG_GRUPPEN`, frei nur `HG_FREI` (`13-figuren.js`).
+  `#aussehenMini`), Vorschau `aussehenVorschau()` in `17-profil.js`. Tiere/Gruppen `FIGUREN`,
+  `FIGUR_GRUPPEN`, Hintergruende `HINTERGRUENDE`, `HG_GRUPPEN`, frei nur `HG_FREI` (`15-figuren.js`).
 - **Reiter (Runde 164):** Tagesform `#view-state[data-reiter]` + `data-tf-teil` an den Bloecken, Klick in
-  `21-beta-rueckmeldung.js`, Regeln in `07-tagesform.css`. Verstehen `vsReiter`, `.vs-teil[data-vs-teil]`,
-  `.vs-sprung[data-vs-ziel]` (`16-verstehen.js`). Ein neuer Block braucht sein `data-tf-teil`, sonst steht
+  `28-verdrahtung-und-start.js`, Regeln in `07-tagesform.css`. Verstehen `vsReiter`, `.vs-teil[data-vs-teil]`,
+  `.vs-sprung[data-vs-ziel]` (`18-verstehen.js`). Ein neuer Block braucht sein `data-tf-teil`, sonst steht
   er auf jedem Reiter; die Fehlersuche hat je Reiter einen Weg (`tf_*`, `vs_*`).
 - **Messwerkzeuge (Runde 158/163):** `tools/abstaende.mjs` (Schrift-Unterkante bis Folgeelement),
   `tools/zeilenabstand.mjs`. Nicht in `pruef-alles` — nach Layout-Aenderungen von Hand.
 - **Huelle:** `MainViewController.swift` (Bildlauf, Zoomsperre, Farbschema, Transparenz, Textgroesse,
   Kauf-Bruecke), `LucentaKaeufePlugin.swift` (StoreKit 2: `stand`, `kaufen`, `restorePurchases`,
-  seit Runde 137 `preise` — `displayPrice`, in `19b-native.js` per `plusPreiseHolen/-Anwenden` in die
+  seit Runde 137 `preise` — `displayPrice`, in `24-native.js` per `plusPreiseHolen/-Anwenden` in die
   Kaufseite gesetzt; ohne Antwort bleiben die festen Texte).
 
 ### Was offen ist
@@ -357,85 +298,9 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
 
 ### Stand der Pruefungen
 
-**Nach Runde 198: ALLE 9 BESTANDEN**.
-
-**Nach Runde 197: ALLE 9 BESTANDEN**.
-
-**Nach Runde 196: ALLE 9 BESTANDEN**.
-
-**Nach Runde 195: ALLE 9 BESTANDEN**.
-
-**Nach Runde 194: ALLE 9 BESTANDEN**.
-
-**Nach Runde 193: ALLE 9 BESTANDEN**.
-
-**Nach Runde 192: ALLE 9 BESTANDEN**.
-
-**Nach Runde 191: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
-
-**Nach Runde 190: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
-
-**Nach Runde 189: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
-
-**Nach Runde 188: ALLE 9 BESTANDEN**: `pruef-nativ` 139, `fehlersuche` ohne Fund.
-
-**Nach Runde 187: 9 von 9**: `pruef-nativ` 137; `fehlersuche` meldete im vollen Lauf 4x „6 statt 5 Vorteile" (die Pruefung zaehlte fest
-fuenf, der sechste ist die Facetten-Zeile) — Erwartung auf 6 gesetzt, die betroffene Konfiguration auf WebKit und Chromium
-nachgefahren: ohne Fund.
-
-**Nach Runde 186: ALLE 9 BESTANDEN**: `pruef-nativ` 132, `fehlersuche` ohne Fund.
-
-**Nach Runde 185: ALLE 9 BESTANDEN**: `pruef-nativ` 132.
-
-**Nach Runde 184: ALLE 9 BESTANDEN**: `pruef-nativ` 131, `fehlersuche` ohne Fund.
-
-**Nach Runde 183: ALLE 9 BESTANDEN**: `pruef-nativ` 126, `fehlersuche` ohne Fund.
-
-**Nach Runde 182: 9 von 9** (pruef-nativ nach Anpassung der Versionspruefung einzeln nachgefahren, 120).
-
-**Nach Runde 181: ALLE 9 BESTANDEN**: `pruef-nativ` 120, `fehlersuche` ohne Fund, sonst wie nach 178.
-
-**Nach Runde 180: ALLE 9 BESTANDEN**: `pruef-nativ` 106, sonst wie nach 178.
-
-**Nach Runde 179: ALLE 9 BESTANDEN**: `pruef-nativ` 102, sonst wie nach 178.
-
-**Nach Runde 178: ALLE 9 BESTANDEN**: `tests` 10 Reihen, `pruef-nativ` 99, sonst wie nach 174.
-
-**Nach Runde 177: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
-
-**Nach Runde 176: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
-
-**Nach Runde 175: ALLE 9 BESTANDEN**, Zahlen wie nach 174.
-
-**Nach Runde 174: ALLE 9 BESTANDEN** (fehlersuche nach Korrektur der Pruefung erneut, 28 ohne Fund), `pruef-nativ` 96.
-
-**Nach Runde 173: ALLE 9 BESTANDEN**, `pruef-nativ` 93, sonst wie nach 169.
-
-**Nach Runde 172: ALLE 9 BESTANDEN**, Zahlen wie nach 169.
-
-**Nach Runde 171: ALLE 9 BESTANDEN**, Zahlen wie nach 169 (20 Tierbilder, 431,5 KB).
-
-**Nach Runde 170: ALLE 9 BESTANDEN** (14 Min.), Zahlen wie nach 169; `tools/flackern/messen.sh` zweimal 0.
-
-**Nach Runde 169: ALLE 9 BESTANDEN** (nachgefahren fuer den Stand von Runde 168): `pruef-nativ` 89, `fehlersuche` ohne Fund.
-
-**Nach Runde 167: ALLE 9 BESTANDEN** (14,2 Min.), `pruef-nativ` jetzt 83, sonst wie nach 164.
-
-**Nach Runde 166: ALLE 9 BESTANDEN** (14,2 Min.), Zahlen wie nach 164.
-
-**Nach Runde 165: ALLE 9 BESTANDEN** (14,2 Min.), Zahlen wie nach 164, `fehlersuche` 28 Durchlaeufe ohne Fund.
-
-**Nach Runde 164: ALLE 9 BESTANDEN** (14,3 Min.): `tests` 11 Reihen, `pruef-store` 32, `pruef-app` 36
-(erwartet 20 Tierbilder), `pruef-nativ` 77, `pruef-bewegung` (klickt den Reiter „Verlauf"), `diff-sprachen`
-107 (Bericht), `fehlersuche` 28 Durchlaeufe WebKit + Chromium ohne Fund.
-
-Aeltere Staende — `npm run pruef-alles` nach Runde 152: siehe Eintrag Runde 152 (pruef-app 32 mit „vier Nachtipps auf
-Frage 50 = EIN Ergebnis", pruef-nativ 74 mit Einladungslink und Konto loeschen).
-Nach Runde 150: **ALLE 9 BESTANDEN** (~9–11 Minuten). `tests` 11 Reihen
-(`share_test` erwartet jetzt #E6E5E0), `pruef-store` 32, `pruef-app` 31, `pruef-nativ` 65 (erwartet
-die dunkle Vorgabe), `pruef-bewegung` bestanden (laeuft seit Runde 149 ausdruecklich HELL — die
-Flaechenpruefung des stehenden Hintergrunds setzt den Lichtstrahl voraus), `diff-sprachen` 92 (Bericht),
-`fehlersuche` 26 Durchlaeufe ohne Fund. Runde 151 hat nichts an `src/` geaendert.
+**Nach Runde 199: ALLE 9 BESTANDEN** (volle Runde, ~11 Min.). Seit Runde 199 waehlt `pruef-alles` selbst:
+leichte Runde, wenn seit dem letzten vollen bestandenen Lauf nur Tierbilder/Doku/Swift/Hilfswerkzeuge geaendert
+wurden (Merker `.pruef-log/letzte-volle.json`). Fruehere Staende: `docs/runden-archiv.md`.
 
 Was immer wieder durchfaellt, und warum:
 - **i18n-Audit:** Klassennamen, die wie deutsche Woerter aussehen (`' voll'`, `'funkel-punkt'`), als
@@ -453,7 +318,7 @@ Was immer wieder durchfaellt, und warum:
 ### Was nur der Inhaber kann
 
 Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
-1. **Impressum** (`IMPRESSUM` in `17-settings.js`: Name, Strasse, Ort, E-Mail, ggf. USt-ID) — Pflicht, heute leer.
+1. **Impressum** (`IMPRESSUM` in `20-einstellungen.js`: Name, Strasse, Ort, E-Mail, ggf. USt-ID) — Pflicht, heute leer.
    Steht NUR in den Einstellungen (Entscheidung Runde 176).
 2. **Datenschutz-URL:** Seite liegt fertig in `web/datenschutz/` (`npm run datenschutz-seite`, aus den App-Texten erzeugt,
    warnt bei leerem Impressum). Ort offen — GitHub Pages aus diesem oeffentlichen Repo vorgeschlagen; erst nach Impressum.
@@ -469,15 +334,14 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Arbeitsweise, die sich bewaehrt hat
 
 - **Neu seit Runde 165 (zuerst lesen):**
-  - `pruef-alles` IMMER als eigener Aufruf starten: `(nohup npm run pruef-alles > /tmp/pruef.log 2>&1 &)` — steht es im
-    selben Befehl wie ein langes `sleep` und wird der Befehl abgeschnitten, stirbt die Pruefung mit (Runde 168).
-    Danach ein `sleep 560` und ein `sleep 400` reichen fuer die ~14 Minuten.
+  - **Eine Runde = drei Befehle:** `npm run pruef-schnell` (Zwischenstand), `(nohup npm run pruef-alles >
+    /tmp/pruef.log 2>&1 &)` als EIGENER Aufruf (waehlt leicht ~1 Min. / voll ~11 Min.; danach einmal `tail`),
+    `npm run installieren` (ios:sync, Simulator UND iPhone in einem; `-- sim`, `-- iphone`, `-- --ohne-sync`).
   - **Flackern/Zeichnen misst nur der Simulator:** `sh tools/flackern/messen.sh <sim-id>` (Video + Helligkeit je Bild).
     Headless-WebKit sah das Flackern nicht. Veraendert die installierte Kopie — danach neu installieren.
-  - **Aufs iPhone 15 Pro** (`00008130-001E79CC0178001C`): Personal Team kann iCloud/Anmeldung/Push nicht signieren →
-    `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-geraet.entitlements` (leeres plist) beim `xcodebuild`, dann
-    `xcrun devicectl device install app …` und `… process launch …`. Signatur 7 Tage. Startet es mit „Security"/
-    „not trusted" nicht: Geraet gesperrt oder Entwickler unter VPN & Geraeteverwaltung nicht vertraut.
+  - **iPhone 15 Pro** (`00008130-001E79CC0178001C`): `npm run installieren` signiert mit
+    `/tmp/lucenta-health.entitlements` (Personal Team kann iCloud/App Group nicht). Signatur 7 Tage. Startet es nicht:
+    Telefon gesperrt oder Entwickler unter VPN & Geraeteverwaltung nicht vertraut.
   - **Testdaten mit Kalendertagen** saeen (`new Date(y, m, d − i, 12)`), nie `jetzt − i·24 h` (Zeitumstellung, Runde 176).
   - **fehlersuche** ueberspringt Elemente in zugeklappten `<details>`; wer Wichtiges einklappt, klappt es in
     `NACHBEREITUNG` auf (Muster: `settings`).
@@ -507,18 +371,9 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
   ausfuehren. Die Bash-Umgebung behaelt keine `export`s zwischen Aufrufen.
 - **Neue Swift-Dateien** ueber `XcodeWrite` (traegt sie ins Projekt ein), Berechtigungen ueber
   `AddEntitlement`; danach `BuildProject` zum Uebersetzen, `xcodebuild` + `simctl` zum Starten.
-- **Bauen und in den Simulator:** `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 npm run ios:sync` — immer
-  das, nie nackt `npx cap sync ios` (sonst fehlt `ios:schlank`, und 1,9 MB `lucenta.html` liegen im
-  Bundle). Danach **nicht** `BuildProject`/`RunProject` vertrauen: Sie melden „erfolgreich" in < 1 s
-  und kopieren `public/` oft nicht. Verlaesslich:
-
-      cd ios/App && touch App/public App/public/index.html && LANG=en_US.UTF-8 xcodebuild \
-        -workspace App.xcworkspace -scheme App -configuration Debug \
-        -destination 'id=B55215E2-9318-4732-9132-F2D7FFFC18EC' -derivedDataPath /tmp/lucenta-dd build -quiet
-      xcrun simctl install B55215E2-9318-4732-9132-F2D7FFFC18EC /tmp/lucenta-dd/Build/Products/Debug-iphonesimulator/App.app
-      xcrun simctl launch B55215E2-9318-4732-9132-F2D7FFFC18EC app.lucenta.ios
-
-  Mit `grep -c <neues-Merkmal> …/App.app/public/index.html` nachsehen, ob der Stand drin ist.
+- **Bauen und Installieren:** nur `npm run installieren` (`tools/installieren.sh`). Nie nackt `npx cap sync ios`
+  (sonst fehlt `ios:schlank`), und `BuildProject`/`RunProject` nicht trauen (kopieren `public/` oft nicht). Ob der
+  Stand drin ist: `grep -c <Merkmal> /tmp/lucenta-dd/Build/Products/Debug-iphonesimulator/App.app/public/index.html`.
 - **Bilder:** `xcrun simctl io <id> screenshot /tmp/sim.png` + `sips -Z 560` bzw. `sips -c` — ohne
   Geraete-Sitzung (die Xcode-Sitzung verlangt einen Unteragenten). Fuer Bewegung und Zustaende,
   die man antippen muesste: Playwright-**WebKit** gegen `dist/` (`python3 -m http.server 8019` in
@@ -532,16 +387,14 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 - **Eine Testreihe einzeln** mit Meldungen: das Muster aus `tests/run.js` (Harness + Kern bis
   `// ---------- wiring ----------` + Testdatei) in eine Datei unter `/tmp` schreiben und mit node
   ausfuehren — `run.js` selbst zeigt nur die Summenzeile.
-- **pruef-alles** losgeloest: `nohup npm run pruef-alles > /tmp/pruef.log 2>&1 &`, dann EIN Befehl,
-  der bis „Minuten. Vollstaendige" im Log wartet (≤ 10 Minuten, notfalls ein zweiter). Waehrenddessen
-  `src/` nicht aendern; nach einer Korrektur in `src/` die ganze Runde erneut.
+- Waehrend `pruef-alles` laeuft `src/` nicht aendern; nach einer Korrektur in `src/` die Runde erneut.
 - **Texte fuer acht Sprachen** per kurzem Python: neuen Schluessel hinter einem Anker-Schluessel je
   Paket einsetzen; Saetze mit Platzhaltern (`{abschnitt}`, `tfText`). Entfallene Schluessel in allen
   acht entfernen. Keine ASCII-Apostrophe in Werten (Franzoesisch/Italienisch: ’).
 - Der PreToolUse-Hook antwortet gelegentlich nicht („did not respond before its timeout") — dann
   wurde der Befehl NICHT ausgefuehrt; einfach erneut absetzen, vorher pruefen, ob etwas halb lief.
 - **Kommentare** (Regel seit Runde 138, steht auch in beiden CLAUDE.md): kurz, das Warum, keine
-  Rundengeschichte. Marke `// ---------- wiring ----------` in `20-wiring.js` nie aendern (`tests/run.js`
+  Rundengeschichte. Marke `// ---------- wiring ----------` in `27-verdrahtung.js` nie aendern (`tests/run.js`
   schneidet dort). `tests/run.js` liest `dist/lucenta.html` — nach Aenderungen in `src/` erst `node build.js`.
   `src/styles/00-schriften.css` ist erzeugt.
 - **Journal:** Eintrag vor `## Runde <vorige>` einsetzen, Tabelle und diesen Block nachziehen;
@@ -550,19 +403,54 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 198** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 199** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 198 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 199 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
-Pruefstand: `pruef-alles` 9/9 (~16 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
+Pruefstand: `pruef-alles` 9/9 (voll ~12,5 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 199 — Aufgeraeumt und schneller
+
+**Auftrag:** Aufgaben dauern zu lange; Code aufraeumen und ordentlich sortieren, die Arbeit zeitlich deutlich
+beschleunigen. Gewaehlt (je Empfehlung): Pruefrunde nach Aenderung; Ordnen bei byte-gleicher App.
+
+**Wo die Zeit lag (gemessen):** volle Pruefrunde ~16 Min. vor jedem Commit, auch bei reinen Tierbild-Runden
+(`fehlersuche` allein ~9 Min., alles strikt nacheinander); Installieren auf Simulator + iPhone 6–8 Einzelbefehle;
+Uebergabeblock 563 Zeilen und `ios/App/CLAUDE.md` 15 KB, die jede Sitzung bzw. jede Antwort mitliest.
+
+**Geaendert:**
+- `src/js`: 25 Dateien umbenannt, fortlaufend 00–29 und deutsch (`02-zustand-navigation`, `13-darstellung`,
+  `21-bild-und-kauffenster`, `27-verdrahtung`, `28-verdrahtung-und-start` …), keine b/c/d-Nummern mehr; Name =
+  Reihenfolge im Bau. CSS `05-vergleichsring`, `06-verlauf`. Alle Bezuege (Bau, Werkzeuge, Tests, Doku, Kommentare)
+  in einem Durchgang ersetzt. Nachweis: `dist/lucenta.html` und `dist/index.html` sind nach Abgleich der Dateinamen
+  in Kommentaren gleich mit dem Stand vorher. Karte der Teile im README.
+- `tools/pruef_alles.mjs`: waehlt selbst. Grundlage ist der Arbeitsbaum beim letzten vollen, bestandenen Lauf
+  (`git stash create`, Merker `.pruef-log/letzte-volle.json`). Beruehrt nichts `src/` (ausser `src/figuren/`),
+  `build.js`, `package-lock.json`, `tests/` oder die Pruefwerkzeuge -> leichte Runde (Bau, Tests, Audit, Store,
+  App-Fassung). `npm run pruef-voll` erzwingt alle. Stufen: tests/audit/store gleichzeitig, dann pruef-app/nativ/
+  diff-sprachen gleichzeitig, `pruef-bewegung` und `fehlersuche` allein (sie messen Zeitverlaeufe).
+- `tools/installieren.sh` (`npm run installieren`): ios:sync, Simulator bauen/installieren/starten, iPhone mit
+  HealthKit-Entitlements bauen/installieren/starten; fehlt das iPhone, wird es uebersprungen.
+- Uebergabe 563 -> ~415 Zeilen: Runden-Tabelle bis 184 und alle „Nach Runde X"-Pruefstaende nach
+  `docs/runden-archiv.md`; Installationsbefehle durch `npm run installieren` ersetzt. `tools/xcode-CLAUDE.md`
+  15 -> 6 KB (Regeln behalten, Geschichte weg). `tools/renderer/` (Python-Renderer aus der Zeit ohne Browser) entfernt.
+
+**Gemessen:** volle Runde 9/9 in 12,5 Min. (Stufe pruef-app/nativ/diff-sprachen 2,3 statt ~6 Min.); leichte Runde
+5/5 in 1,5 Min.; Gegenprobe: eine geaenderte JS-Datei loest die volle Runde aus. `npm run installieren` 1:52 fuer
+beide Geraete.
+
+**Unsicher:** Die gleichzeitige Stufe 2 belastet die festen Wartezeiten in pruef-app/nativ staerker; einmal ohne
+Fund, aber wer dort einen sporadischen Fund sieht, faehrt die Pruefung einzeln nach. Der Merker haengt an einem
+unreferenzierten Stash-Commit; raeumt `git gc` ihn ab, faellt die Auswahl sicher auf die volle Runde. Das iPhone war
+beim Test gesperrt (installiert, nicht gestartet).
 
 ## Runde 198 — Eule, Ara, Flamingo: Schnaebel und Gefieder
 
@@ -748,7 +636,7 @@ nicht aus dem Gedaechtnis. Zur Laufzeit wird nichts geladen. **O6 „Liberalism"
 Wahlneigung, eine nach „tough on crime" — fuer eine Lifestyle-App in acht Laendern ungeeignet, politische Meinung ist nach DSGVO
 eine besondere Kategorie): 116 Aussagen, 29 Facetten, jede fuer sich ausgewertet und damit validiert wie im Original.
 
-**Gebaut:** `src/js/16b-facetten.js` — eigener schlanker Fragebogen (`view-ft-test`), weil der bisherige an vielen Stellen fest
+**Gebaut:** `src/js/19-facetten.js` — eigener schlanker Fragebogen (`view-ft-test`), weil der bisherige an vielen Stellen fest
 an 50 Aussagen haengt; dieselben Bausteine und Stile. Darbietung reihum wie im Original (N1, E1, O1, A1, C1, N2 …), Fortschritt
 in `lucenta_facetten_lauf`, Ergebnis in `lucenta_facetten` (in `DATEN_SCHLUESSEL`, also in Sicherung und iCloud). Je Facette
 0–100 aus vier Antworten; die sechs N-Facetten zaehlen wie die Dimension zur Stabilitaet (umgekehrt) und heissen als positive
@@ -785,7 +673,7 @@ heutigen Mittel der Stimmung (<= 2,3 muede, >= 3,7 froh). Satz nach Tageszeit, n
 Meilensteine bei 7/30/100/365 Eintragstagen INSGESAMT (keine Serie, nichts geht verloren). Nach dem Speichern wippt das Tier und
 funkelt. 7 Saetze in acht Sprachen.
 
-**Bericht ueber zwei Freunde:** `paarBerichtHTML` (11-rendering) unter der Zusammenfassung im Vergleich; Lucenta+, frei
+**Bericht ueber zwei Freunde:** `paarBerichtHTML` (13-darstellung) unter der Zusammenfassung im Vergleich; Lucenta+, frei
 verschwommen. Vier Abschnitte aus allen fuenf Werten (aehnlich < 15, ergaenzen 15–34, reiben >= 35 — dieselben Grenzen wie die
 Karten), Rat fuer den groessten Unterschied. Namen nur in „Du: mehr Plan · Mia: mehr Spielraum", nie im Satz — Beugung in acht
 Sprachen. 37 Texte je Sprache, selbst uebersetzt (muttersprachliche Durchsicht noetig).
@@ -823,7 +711,7 @@ kuerzt — auch beim Lesen. Steht als `notiz` am Eintrag, erscheint in den Tages
 Health, nicht in den Freundescode, nicht ans Widget; wohl in Spiegel und eigene iCloud (Teil von `lucenta_state`).
 
 **Jahr (Lucenta+ wie der Kalender):** Umschalter „Monat | Jahr" oben im Kalender (`tfKalenderAnsicht`); zwoelf Monatsblaetter
-wie in Apples Kalender (`tfJahrHTML`, neue Datei `src/js/07c-rueckblick.js`), Farbe nach Stimmung/Energie wie im Monat, Tipp auf
+wie in Apples Kalender (`tfJahrHTML`, neue Datei `src/js/09-rueckblick.js`), Farbe nach Stimmung/Energie wie im Monat, Tipp auf
 einen Monat oeffnet ihn. Jahre zurueck bis zum ersten Eintrag. „Als Bild teilen" -> `tfJahrBild` (1080x1350).
 
 **Monatsrueckblick (Lucenta+, frei verschwommen):** unter jedem vergangenen Monat im Kalender und in den ersten 7 Tagen eines
@@ -949,7 +837,7 @@ diesen Speicher leeren (Speicherdruck), und dann stand jemand nach Wochen Tagesf
 nur das Farbschema (UserDefaults).
 
 **Die Aenderung:** `ios/App/App/LucentaBestand.swift` + Empfaenger `lucentaBestand` (angemeldet in
-`MainViewController.bestandSpiegeln`). Die Seite (`bestandSpiegelnEinrichten`, 19b-native.js) meldet alle `lucenta_*`-
+`MainViewController.bestandSpiegeln`). Die Seite (`bestandSpiegelnEinrichten`, 24-native.js) meldet alle `lucenta_*`-
 Eintraege beim Start, 1 s nach jedem Schreiben (gesammelt; `Storage.prototype.setItem/removeItem` werden dafuer nur in
 der App umwickelt) und sofort beim Verlassen. Die Huelle schreibt `Application Support/lucenta-bestand.json` (atomar).
 Zurueckgeholt wird per `WKUserScript` bei `atDocumentStart` — also vor jedem Skript der Seite, ohne Neuladen —, und nur,
@@ -994,7 +882,7 @@ Damit ein solcher Kauf (ebenso Kauf im App Store, Familienfreigabe, Ablauf, Erst
 **Auftrag:** „setze alle um" — fuenf Befunde aus der Durchsicht nach Runde 177.
 
 1. **Nutzungszahlen entfernt.** Beta-Ueberbleibsel: Schalter + Teilen-Fenster („Danke, das hilft wirklich"), ohne Empfaenger
-   und ohne Erwaehnung in der Datenschutzerklaerung. Weg: Markup, `21-beta-rueckmeldung.js` (Kopf), Zaehlung in
+   und ohne Erwaehnung in der Datenschutzerklaerung. Weg: Markup, `28-verdrahtung-und-start.js` (Kopf), Zaehlung in
    `03-speicherung.js` (`nutzungLesen/-TagVermerken/-Kennzahlen`; die Datumshelfer `istTagesschluessel`, `tagAlsZahl`
    bleiben — die Tagesform braucht sie), `lucenta_nutzung` aus der Datensicherung, Stile, 16 Texte, `tests/nutzung_test.js`
    (`tests` jetzt **10 Reihen**, `tools/xcode-CLAUDE.md` angepasst). Beim Start einmal `lucenta_nutzung(_teilen)` geloescht.
@@ -1197,7 +1085,7 @@ Produkte. Signatur 7 Tage.
 
 **Datenschutz-Seite.** App Store Connect verlangt eine Datenschutz-URL. `tools/datenschutz_seite.mjs` erzeugt
 `web/datenschutz/<sprache>.html` (8 Sprachen, `index.html` = Deutsch) aus `CONTENT.<sprache>.RECHT.datenschutz` und
-`IMPRESSUM` aus `17-settings.js` — eine Quelle mit der App, damit nichts auseinanderdriftet. Fehlen Impressumsangaben,
+`IMPRESSUM` aus `20-einstellungen.js` — eine Quelle mit der App, damit nichts auseinanderdriftet. Fehlen Impressumsangaben,
 stehen sichtbare Platzhalter da und das Werkzeug warnt: so NICHT veroeffentlichen (Art. 13 DSGVO verlangt den
 Verantwortlichen). **Nicht veroeffentlicht** — Ort (GitHub Pages aus diesem oeffentlichen Repository o. ae.) entscheidet
 der Inhaber; vorher muss das Impressum gefuellt sein.
@@ -1272,7 +1160,7 @@ erst ein echter Test (TestFlight) — die Simulation ist eine Begruendung, kein 
 
 **Auftrag:** „erst die Sachen, die du alleine machen kannst" — aus der Liste nach Runde 165.
 
-**Vergleich.** Der Ring zeigte die Zahl ohne „%" (`ringGaugeSVG`, `08-code.js`): jetzt `<tspan class="ring-zahl">` +
+**Vergleich.** Der Ring zeigte die Zahl ohne „%" (`ringGaugeSVG`, `10-code-und-grafiken.js`): jetzt `<tspan class="ring-zahl">` +
 kleineres, gedaempftes `%`. Die Zahl im Ring waechst nur bis 125 % Textgroesse mit — der Ring waechst nicht, und
 bei 200 % lief „100%" ueber den Rand (am Bild geprueft). Dabei gefunden: VoiceOver las am Ring IMMER
 „Übereinstimmung: 0 Prozent" — der Ring wird fuer die Bewegung bei 0 eingesetzt und das `aria-label` danach
@@ -1406,7 +1294,7 @@ Uebersetzungen — beides vor dem Store-Start sinnvoll.
 entsteht (Hauptwort aus der deutlichsten Dimension, Eigenschaft aus der zweitdeutlichsten, mit Werten); jede
 der zehn Rollen mit „Naehe" (Wert in Richtung ihres Pols) und den Figuren der Freunde, die sie haben;
 aufgeklappt die acht Titel der Rolle mit Satz, der eigene mit „Du", Freunde mit Figur. Ohne Ergebnis der
-Katalog mit Hinweis. Weiter frei. (`renderArchetypeGroups`, `rolleVon` in `04-scoring.js`.)
+Katalog mit Hinweis. Weiter frei. (`renderArchetypeGroups`, `rolleVon` in `04-auswertung.js`.)
 
 **Kalender** (Wahl: Tagesdetails und Monatsueberblick): Tage sind Knoepfe; ein Tipp zeigt darunter die
 Eintraege (Tageszeit, Werte, Stichworte), ein zweiter schliesst. Ueber dem Raster Durchschnitt, Zahl der Tage
@@ -1426,7 +1314,7 @@ deutlich haeufiger sind als sonst; Hinweis „Zusammenhaenge, keine Ursachen". B
 **Hintergruende** (Wahl des Inhabers: frei nur „Keiner", Papier, Kohle): Gruppen Hell (Papier, Nebel, Wueste,
 Morgentau), Dunkel (Kohle, Sternenbild, Tiefsee, Galaxie), Farbe & Licht (Nordlicht, Daemmerung, Welle,
 Wald, Glut, Lagune). Gesperrte tragen ein Schloss und oeffnen beim Antippen das Lucenta+-Fenster; ein schon
-gewaehlter gesperrter Hintergrund bleibt (`hgFrei`, `HG_GRUPPEN` in `13-figuren.js`). Vier neue Verlaeufe:
+gewaehlter gesperrter Hintergrund bleibt (`hgFrei`, `HG_GRUPPEN` in `15-figuren.js`). Vier neue Verlaeufe:
 Galaxie, Glut, Lagune, Morgentau — am Bild in der Profilzeile der Seitenleiste geprueft, Schrift auf allen lesbar.
 
 **Tiere** (Wahl: Delfin und Seeotter; Voegel Pinguin, Papagei, Flamingo, Rotkehlchen): in `Tiere.swift`
@@ -1632,7 +1520,7 @@ Einstellungen — Chevron mit Ziel links oben, Titel einmal gross, klein in der 
 Name nur auf der Startseite, im Fragebogen „Abbrechen".
 
 **Der Weg:** Die 13 Zurueck-Pillen bleiben im Dokument, nur unsichtbar. `navLeisteAnwenden()`
-(`02-state.js`, aus `showView` und beim Sprachwechsel) sucht die Pille der aktiven Seite, setzt deren Text
+(`02-zustand-navigation.js`, aus `showView` und beim Sprachwechsel) sucht die Pille der aktiven Seite, setzt deren Text
 ohne „←" in den Chevron `#btnNavZurueck`, und ein Tipp darauf ruft `pille.click()`. Damit bleiben alle
 Rueckwege, die Rueckfrage beim Abbrechen des Tests und die Wischgeste unveraendert — nichts davon musste
 umziehen. Der kleine Titel `#navTitel` kommt aus `VIEW_TITLES` (sonst der h1), sichtbar sobald der grosse
@@ -1679,7 +1567,7 @@ bei 200 % trennte die Kopfzeile den Namen („Lu-centa") und die Startseiten-Ueb
 Der Name traegt jetzt `hyphens:none`. Eingabefelder `max(16px, …)` (nie unter 16 pt). Die
 Antwortbeschriftungen der Skala wachsen voll (sie sind Bedienung, kein Titel).
 
-**Grosse Schrift = anderes Layout:** Ab `--dt >= 1.4` setzt `textGroesseBeobachten()` (`06b-freunde.js`,
+**Grosse Schrift = anderes Layout:** Ab `--dt >= 1.4` setzt `textGroesseBeobachten()` (`06-freunde.js`,
 MutationObserver auf `:root`) `data-text="gross"`; die Schwelle steht nur dort. Dann: Name/Wert-Zeilen
 brechen um (`.trait-top`, `.tf-band-kopf`, `.history-row`), Wahlschalter zweispaltig, Kennzahlen dreispaltig,
 Eingabefelder auf Kastenbreite, Silbentrennung fuer die ganze Seite (deutsche Komposita sind bei 200 %
@@ -1702,7 +1590,7 @@ B8 und B9 sind noch offen.
 
 **A1 — Doppelte Ergebnisse auf Frage 50.** Zwischen der 50. Antwort und dem Ergebnis vergehen gut
 1,4 s (220 ms Weiterschalten, 260 + 900 ms Ueberlagerung). Die Skala blieb in dieser Zeit bedienbar, jeder
-Tipp rief `finishQuiz()` erneut. Jetzt sperrt `quizSchliesst` (`11-rendering.js`) `selectAnswer` und
+Tipp rief `finishQuiz()` erneut. Jetzt sperrt `quizSchliesst` (`13-darstellung.js`) `selectAnswer` und
 `finishQuiz`, bis `reveal()` laeuft. Auf WebKit nachgestellt (49 Antworten, dann vier Tipps im Abstand von
 450 ms) und **geeicht**: ohne die Sperre 2 Eintraege im Verlauf plus Delta-Karte, mit Sperre 1 und keine.
 Die Pruefung steht jetzt fest in `pruef-app` (32.).
@@ -1770,7 +1658,7 @@ im Bundle nachgezaehlt.
 was die Person fuer sich selbst angegeben hat. (2) Dem Beispielprofil ein paar Freunde geben. (3) Lucenta+
 in der Seitenleiste: mit Abo passiert nichts; ohne Abo kommt nur das alte Fenster statt einer Seite.
 
-**Freundescode (`06b-freunde.js`):** Ohne Server kann der selbst gewaehlte Name nur mit dem Code
+**Freundescode (`06-freunde.js`):** Ohne Server kann der selbst gewaehlte Name nur mit dem Code
 mitreisen. Format `L1.<Ergebnis-Code>.<Figur>.<Name als base64url>` (UTF-8 — „Zoë" und „健二" geprueft).
 Gesucht wird im ganzen eingefuegten Text, man kann die Einladung als Ganzes einfuegen. Das Formular hat
 nur noch dieses eine Feld; Name und Figur sind nicht mehr waehlbar. Ein reiner Ergebnis-Code wird mit
@@ -1780,11 +1668,11 @@ direkt an (ohne Formular). **Grenze:** Ein eigenes Foto passt nicht in einen Tex
 Aendert jemand spaeter Name oder Figur, sieht man das erst mit einem neuen Code (kein Server).
 Das Vergleichsfeld hatte `maxlength="12"` und haette den Code abgeschnitten — entfernt.
 
-**Beispiel-Freunde (`14-demo.js`):** die vier aus dem Archiv (Mia/Katze, Jonas/Baer, Elif/Eule,
+**Beispiel-Freunde (`16-demo.js`):** die vier aus dem Archiv (Mia/Katze, Jonas/Baer, Elif/Eule,
 Ben/Dackel, mit Vergleichen), dazu Sara/Hase und Noah ohne Figur (Initialen) ohne Vergleich. Sie laufen
 ueber `DATEN_SCHLUESSEL` mit — „Beispieldaten entfernen" stellt die eigenen Freunde wieder her.
 
-**Lucenta+ als Seite (`18b-plus-seite.js`, `view-plus`):** Die Seitenleiste oeffnet jetzt eine Seite.
+**Lucenta+ als Seite (`23-plus-seite.js`, `view-plus`):** Die Seitenleiste oeffnet jetzt eine Seite.
 Mit Abo: „Lucenta+ ist aktiv", Laufzeit (Jahr/Monat aus `lucenta_plus_produkt`), was freigeschaltet ist,
 „Abo verwalten", „Kaeufe wiederherstellen". Ohne Abo: Stand, was enthalten ist, Preise, „Lucenta+
 aktivieren" oeffnet das Kauffenster (eine Stelle fuer Laufzeitwahl und Kauf). „Mit Abo passiert nichts"
@@ -1827,7 +1715,7 @@ die Teilbild-Testreihe (erwartete #F2F2F7).
   Antworten, keine Fehler. Angemeldet wie die Kauf-Bruecke (`registerPluginInstance`).
 - Berechtigungen ueber Xcode: `com.apple.developer.applesignin`, iCloud-Dienst CloudKit, Container
   `iCloud.app.lucenta.ios` (`App.entitlements`).
-- `src/js/19d-konto.js`: Bereich in Einstellungen -> Konto (nur in der App), Apple-Knopf nach Apples
+- `src/js/26-konto.js`: Bereich in Einstellungen -> Konto (nur in der App), Apple-Knopf nach Apples
   Vorgaben (schwarz auf Hell, weiss auf Dunkel). Gesichert wird dasselbe Format wie „Daten sichern"
   (`datenSammeln`), still beim Verlassen der App, nur wenn sich etwas geaendert hat. Nach der Anmeldung:
   leere iCloud -> sichern; iCloud-Stand und leeres Geraet -> uebernehmen (`datenEinspielen`, laedt neu);
@@ -1873,7 +1761,7 @@ Gruppen-Radar als Lucenta+. Nicht gewaehlt: Freund bearbeiten.
   Fehler dort haette das Startbild sonst stehen lassen, bei genau dem Menschen, der die App zum ersten
   Mal oeffnet.
 
-**Freunde (`06b-freunde.js`):**
+**Freunde (`06-freunde.js`):**
 - **„Als Freund speichern"** unter jedem Vergleich (`renderCompat`): fuehrt zur Freunde-Seite mit
   vorausgefuelltem Code und — falls im Archivfeld getippt — Namen. Verschwindet, wenn die Person schon
   Freund ist. Nicht im gesperrten Vergleich.
@@ -1896,7 +1784,7 @@ marktpsychologisch wirksames Onboarding beim ersten Oeffnen. Je gefragt (Optione
 gewaehlt jeweils die Empfehlung.
 
 **Geaendert:**
-- **Freunde** (`06b-freunde.js`, Seite `view-freunde`): Personen mit Name, Figur und Code, lokal
+- **Freunde** (`06-freunde.js`, Seite `view-freunde`): Personen mit Name, Figur und Code, lokal
   (`lucenta_freunde`, hoechstens 30). Je Person: Zahl und letzter Wert der Vergleiche (aus dem Archiv,
   ueber den Code — nichts doppelt gespeichert), „Vergleichen" rechnet direkt, mehrere Vergleiche
   aufklappbar. Gleicher Code = dieselbe Person (aktualisiert, nicht verdoppelt); eigener Code wird
@@ -1912,7 +1800,7 @@ gewaehlt jeweils die Empfehlung.
 - **Verlauf im Profil**: die letzten drei, darunter „Alle ansehen (n)" -> Unterseite `view-verlauf`
   (Push/Pop, Wischen zurueck). Die Sperre der freien Fassung (nur zwei Durchlaeufe) bleibt; „Alle
   ansehen" erscheint daher nur mit mehr als drei sichtbaren Eintraegen.
-- **Onboarding** (`19c-onboarding.js`): 1) was man erfaehrt, mit der echten Beispielkarte der
+- **Onboarding** (`25-onboarding.js`): 1) was man erfaehrt, mit der echten Beispielkarte der
   Startseite, 2) eigenes Ziel waehlen (mehrfach; Weiter erst nach einer Wahl — Bindung durch eigene
   Entscheidung), 3) Vertrauen mit nachpruefbaren Fakten (Big Five, 50 IPIP-Aussagen, 5–10 Minuten,
   Daten bleiben auf dem Geraet) und „Fuer dich dabei" passend zur Wahl aus Schritt 2, 4) Name und Figur
@@ -2205,14 +2093,14 @@ Offen bleibt, was nur er kann (echtes Geraet, App Store Connect, sein Urteil) �
 
 1. **Preise aus StoreKit.** `LucentaKaeufePlugin.preise()` liefert `displayPrice` beider Produkte und drei
    daraus gerechnete Betraege in derselben Formatierung (Jahr je Monat, Monat × 12, Ersparnis — diese
-   ABGERUNDET, sie soll nie mehr versprechen, als es ist). `19b-native.js` holt sie beim Start und setzt
+   ABGERUNDET, sie soll nie mehr versprechen, als es ist). `24-native.js` holt sie beim Start und setzt
    sie in die Kaufseite; in die Saetze ("nur 2,50 € im Monat") wird nur der Betrag getauscht, also keine
    neuen Schluessel. Ohne Antwort (Browser, Produkte noch nicht angelegt, Stoerung) bleiben die festen
    Texte. `pruef-nativ` **65** (vier neu: leere Antwort laesst die festen Betraege stehen, eine
    Schweizer Antwort ersetzt alle fuenf Stellen). Gebaut mit xcodebuild, im Simulator gestartet, laeuft.
    **Nicht gesehen:** die echten Store-Preise — die Testkonfiguration (`Lucenta.storekit`, Storefront
    DEU) liefert genau 4,99/29,99 €, ein Bild davon haette nichts belegt.
-2. **Zurueck-Wischgeste** (`20-wiring.js`, Ende von `12-ios.css`): auf Unterseiten aus einem 24-pt-Streifen
+2. **Zurueck-Wischgeste** (`27-verdrahtung.js`, Ende von `12-ios.css`): auf Unterseiten aus einem 24-pt-Streifen
    am linken Rand nach rechts ziehen; die Seite folgt dem Finger, die Einstellungen liegen darunter und
    ruecken mit. Loslassen nach 35 % der Breite oder mit Schwung (> 0,6 pt/ms) geht zurueck, sonst rastet
    sie wieder ein. Erst eine eindeutig waagerechte Bewegung gehoert der Geste, sonst bleibt es Bildlauf.
@@ -2248,11 +2136,11 @@ zwei Archivplaetze waeren damit nur fuer dieselbe Person nutzbar gewesen. Gewaeh
 frei, zwei Plaetze frei**, ab der dritten Person bzw. dem dritten Speichern Lucenta+.
 
 **Was geaendert ist:**
-1. **Verstehen** (`16-verstehen.js`): frei nur noch die verschwommene Vorschau der echten ersten Gruppe
+1. **Verstehen** (`18-verstehen.js`): frei nur noch die verschwommene Vorschau der echten ersten Gruppe
    mit dem Angebot (Regel aus Runde 128: Vorschau des wirklichen Inhalts). Nur die erste Gruppe, weil
    die Angebotskarte mittig sitzt — auf der ganzen Seite laege sie unter dem Bildschirm. Texte
    `plus_verstehen` und `plus_v_verstehen_text` in acht Sprachen angepasst.
-2. **Vergleiche** (`11-rendering.js`, `03-speicherung.js`): `lucenta_vergleich_frei` ist jetzt eine Liste
+2. **Vergleiche** (`13-darstellung.js`, `03-speicherung.js`): `lucenta_vergleich_frei` ist jetzt eine Liste
    (`freieVergleichePersonen()`); ein alter Eintrag mit EINEM Code wird als Liste mit diesem Code
    gelesen — sonst bekaeme, wer schon verglichen hat, zwei neue Personen statt einer. Speichern frei bis
    2; ist das Archiv voll, steht an Stelle des Formulars ein Lucenta+-Schloss (auch sofort nach dem
@@ -2264,7 +2152,7 @@ frei, zwei Plaetze frei**, ab der dritten Person bzw. dem dritten Speichern Luce
    eigenen Schreibweise und einem Pfeil; die Liste mit Haken steht auf der eigenen Seite. Die
    iOS-Listenform galt nur unter `#view-settings` — fuer `#view-sprache` mitgezogen (sonst haette die
    Liste dort ihre Flaeche verloren). Ansichtsname in acht Sprachen. Neuer Weg in der Fehlersuche.
-4. **Push/Pop** (`showView()` in `02-state.js`, Ende von `12-ios.css`): `UNTERSEITE_VON` haelt fest,
+4. **Push/Pop** (`showView()` in `02-zustand-navigation.js`, Ende von `12-ios.css`): `UNTERSEITE_VON` haelt fest,
    welche Seite Unterseite welcher ist (Hilfe, Sprache -> Einstellungen). Hinein: die neue Seite kommt
    ueber die volle Breite von rechts mit Schatten, die alte rueckt um 30 % nach links und dunkelt
    leicht ab; zurueck umgekehrt, und die Einstellungen kehren an die verlassene Stelle zurueck. Beide
@@ -2415,7 +2303,7 @@ Auftrag des Inhabers: „statt Konfetti … Sparkles oder Aehnliches", passend z
 
 - **Vorher:** Papierschnipsel (Rechtecke und Kreise), die nach aussen geworfen wurden und mit
   Schwerkraft fielen — ein Partybild in einer App mit Sternenhimmel und Strahlenkranz.
-- **Jetzt** (`funkelStoss` in `19-feier.js`, `.funkeln` in `11-feier.css`): vierzackige, nach innen
+- **Jetzt** (`funkelStoss` in `22-feier.js`, `.funkeln` in `11-feier.css`): vierzackige, nach innen
   gewoelbte Sterne (clip-path) in 9 bis 18 px, dazwischen jeder vierte ein kleiner runder Lichtpunkt.
   Sie schweben auseinander, blitzen einmal auf (Massstab 1,25 → 0,7 → 1,1), steigen leicht nach und
   verloeschen; kein Fall. Leuchten per `drop-shadow` am Behaelter — an den Sternen selbst schnitte
@@ -2466,7 +2354,7 @@ Acht Auftraege in einer Nachricht. Zwei Rueckfragen, woertlich uebernommen.
    Tageszeiten wandern mit (bis 12, bis 18), sonst laege die Morgen-Nacherinnerung um 11 schon im
    Mittag. Sechs am Tag — Apples Grenze sind 64 ausstehende Mitteilungen, also **10 statt 14 Tage**
    voraus (60). Eigene Titel fuer die Nacherinnerungen in acht Sprachen. `pruef-nativ` 61.
-8. **Erfassung klappt nach dem Eintrag zu** (`zuklappen()`/`aufklappen()` in `19-feier.js`): Die
+8. **Erfassung klappt nach dem Eintrag zu** (`zuklappen()`/`aufklappen()` in `22-feier.js`): Die
    Hoehe laeuft auf null, der Inhalt schrumpft nach oben weg, dann springt die Bestaetigung mit
    Haken und Funken auf; „Aendern" klappt wieder auf. Auf der Startkarte und neu in der
    Tagesform-Ansicht. **Fund beim Ansehen:** Die Karte wird um gut 1200 px kuerzer, die Bestaetigung
@@ -2511,7 +2399,7 @@ Gefragt, gewaehlt: **ersetzen erlaubt** (statt sperren); **ein Schalter, feste Z
   „Morgens eingetragen · Energie 3 · Stimmung 4 · Naechster Eintrag ab 11:00". „Erledigt" gilt
   jetzt fuer den LAUFENDEN Abschnitt; mittags stehen die Skalen wieder da. Uhrzeiten ueber `Intl`.
   Gezeigt wird der Wert des Abschnitts, nicht mehr das Tagesmittel.
-- **Erinnerung (`19b-native.js`), der eigentliche Aufwand:** Eine taeglich wiederholte Mitteilung
+- **Erinnerung (`24-native.js`), der eigentliche Aufwand:** Eine taeglich wiederholte Mitteilung
   kann iOS nicht fuer einen Tag aussetzen. Deshalb werden die naechsten **14 Tage einzeln** geplant
   (3 × 14 = 42, unter Apples Grenze von 64), bei jedem Eintrag und jedem Oeffnen neu
   (`erinnerungNachziehen`, auch auf `visibilitychange`). Erst alle alten Kennungen absagen
@@ -2589,7 +2477,7 @@ Auftrag des Inhabers: Punkt 4 und 5 der offenen Liste.
 ### 1. IBM Plex Mono aus dem Bau
 
 Seit Runde 126 setzt die Oberflaeche ueberall SF (`--mono` zeigt auf `--sans`, die Codes stehen in
-SF Mono). Die Schrift reiste trotzdem mit, weil das **Teilbild** (`10-ergebnisbild.js`, Canvas) sie
+SF Mono). Die Schrift reiste trotzdem mit, weil das **Teilbild** (`12-ergebnisbild.js`, Canvas) sie
 an vier Stellen noch anforderte: Achsenbeschriftung des Radars, Untertitel, Werte der Liste,
 Fusszeile. Ein Canvas steht in keinem Stilblatt, deshalb hat `pruef-app` (prueft die *geladenen*
 Familien der Oberflaeche) das nicht gesehen.
@@ -2631,7 +2519,7 @@ Leerzeichen — gleiche Falle, jetzt `&nbsp;`. Im Deutschen ebenso vor dem Proze
   dadurch immer um eine halbe Marke breiter, auch bei glatten 7 Tagen. Zusammen bei 320 pt und
   14 Tagen: Luecken von 18, 51, 18 px.
 
-Gefragt (drei Optionen), gewaehlt: **„Kurve einruecken“.** Umsetzung in `08-code.js`:
+Gefragt (drei Optionen), gewaehlt: **„Kurve einruecken“.** Umsetzung in `10-code-und-grafiken.js`:
 
 - `VERLAUF_RAND = 24` statt 4 an allen drei Stellen, die x(i) rechnen (Diagramm, Achse, Ablesen).
   24 Einheiten = 17 px bei der schmalsten Flaeche, eine halbe Marke „07.10.“. Die Rasterlinien
@@ -2759,7 +2647,7 @@ neu liest). Die **Quelle** bleibt unverändert: `lucenta.html` im Browser ist we
 Systemfunktionen (Zoom, Textgröße). Am Simulator: Fokus ins Codefeld → kein Zoom; Aufziehen → kein Zoom.
 
 ### 2. Haptik bei jedem Antippen
-Ein zentraler Zuhörer (Fang-Phase, `21-beta-rueckmeldung.js`) ruft `tapFeedback()` für jedes
+Ein zentraler Zuhörer (Fang-Phase, `28-verdrahtung-und-start.js`) ruft `tapFeedback()` für jedes
 Bedienelement (Knopf, Link, Aufklapper, Schalter, Auswahl …); deaktivierte schweigen.
 `tapFeedback()` ist auf 90 ms entprellt, damit die bisherigen Einzelaufrufe nicht doppelt vibrieren.
 Der Haptik-Schalter in den Einstellungen und „weniger Bewegung" gelten weiter. **Am Simulator nicht
@@ -2886,7 +2774,7 @@ die genaue Zahl" steht darunter). Keine Diagnosesprache, keine Serien, kein Druc
   beim Lesen bereinigt; Einträge von vor Runde 124 bleiben gültig. `stateTage()` mittelt jede
   Dimension nur über die Einträge, die sie tragen. Deckel 150 → 800 Einträge (der Kalender blättert
   zurück; 150 wären bei zwei Einträgen am Tag zweieinhalb Monate gewesen).
-- **Neue Datei `07b-tagesform-alltag.js`**: Fragen und Stichworte in der Erfassung, **Bandbreite**
+- **Neue Datei `08-tagesform-alltag.js`**: Fragen und Stichworte in der Erfassung, **Bandbreite**
   (ab 3 Tagen je Dimension: ganzes Band, mittlere Hälfte, Mittel als Ring, Testergebnis als Strich —
   verschiedene Formen, nicht nur Farben), **Monatskalender** (Montag vorn, Stimmung/Energie
   umschaltbar, fünf Stufen einer Farbe — bewusst kein Rot für niedrige Tage; jedes Feld trägt
@@ -2957,7 +2845,7 @@ mit Licht und Material, verspielt statt naturgetreu.
   von **`tools/figuren_holen.py`** (einmal von Hand, nie beim Bau; nur Standardbibliothek):
   holen, auf den Inhalt zuschneiden und mittig ins Quadrat setzen, auf eine Palette mit 256
   Eintraegen (je eigene Deckkraft) bringen. 452 KB -> 164 KB.
-- **`13-figuren.js`**: ~750 Zeilen Vektorzeichnung entfallen (Tierfunktionen, Licht, Fell,
+- **`15-figuren.js`**: ~750 Zeilen Vektorzeichnung entfallen (Tierfunktionen, Licht, Fell,
   Tieraugen). Geblieben: `FIGUREN` (Kennung + Feldfarbe), `figFeldDunkel`, `figurFinden`, und
   `figurHTML()` statt `figurSVG()` — ein `<img>`. `FIGUR_BILDER` ist im Quelltext leer.
 - **`build.js`** fuellt `FIGUR_BILDER`: in `lucenta.html` als eingebettete Daten, in der
@@ -3110,7 +2998,7 @@ ist am Simulator.
 `blur(20px)`, die Staerke von damals. Die Tuer tat genau, was sie soll (Glas -> none -> Glas). Die
 Pruefung fragt jetzt, OB Glas da ist, weggeht und unveraendert wiederkommt — nicht wie stark.
 
-### 2. Startbewegung (`#startOverlay`, `startBewegung()` in `21-beta-rueckmeldung.js`)
+### 2. Startbewegung (`#startOverlay`, `startBewegung()` in `28-verdrahtung-und-start.js`)
 
 Beim Start zeichnet sich das Fuenfeck und fuellt sich — mit denselben Keyframes wie die
 Auswertungs-Ueberlagerung nach dem Test, also wirklich dieselbe Bewegung —, darunter blendet
@@ -3123,7 +3011,7 @@ Startbildschirm in HELL, obwohl die App auf "Dunkel" steht. Der Startbildschirm 
 nicht der App-Einstellung, und kann deren Wahl nicht kennen. Ob das im Release-Bau auf dem Geraet
 stoert, ist ein Urteil am Telefon.
 
-### 3. Die Verlaufskurve im Profil (`trendKurveSVG()` in `05-verlauf.js`, `06-trend-history.css`)
+### 3. Die Verlaufskurve im Profil (`trendKurveSVG()` in `05-verlauf.js`, `06-verlauf.css`)
 
 Vorher fuenf gleichfarbige Linien von 140x32 neben Kuerzeln ("GEWISS."), ohne Punkte und ohne
 Zeitangabe. Jetzt nach Apple Health: voller Name mit dem Farbpunkt der Dimension (dieselbe Farbe
@@ -3278,7 +3166,7 @@ zu Kruemeln.
 
 **Die Schablone ist entfernt**, mit allem, was nur sie benutzte (Ohren, Nase, Schnurrhaare,
 Kopf- und Schnauzenformen, Maul, Lichtsaum, Kernschatten) und zwei aelteren Lichtfunktionen ohne
-Aufruf: `13-figuren.js` 1045 -> 740 Zeilen. Gezaehlt wurden dabei Bezuege OHNE Kommentare — die
+Aufruf: `15-figuren.js` 1045 -> 740 Zeilen. Gezaehlt wurden dabei Bezuege OHNE Kommentare — die
 reine Trefferzahl hatte `figTier` noch dreimal gemeldet, zweimal davon in Begruendungen.
 
 ### Was offen bleibt
@@ -3364,7 +3252,7 @@ an der Seite, die Schildkroete mit einer Schnabelkante statt eines Laechelns. De
 des Wals bleibt; Wale haben ihn.
 
 **Aufgeraeumt, gezaehlt statt vermutet:** `figAuge`, `figAugen`, `figMund`, `figTierbrauen`,
-`mieneAnwenden` und die Tabelle `MIENEN` hatten danach keinen Aufruf mehr — `13-figuren.js`
+`mieneAnwenden` und die Tabelle `MIENEN` hatten danach keinen Aufruf mehr — `15-figuren.js`
 980 -> 659 Zeilen. Die Angaben `miene:` in der Tiertabelle sind mit entfernt; sie hatten keine
 Wirkung mehr.
 
@@ -3441,7 +3329,7 @@ fehlte genau das, und es liess sich benennen: das Kugellicht hob den Ton nur um 
 ihn um 16 %; die Schnauzen waren ein verwischter Schein; die Augen klein und matt; die Nasen ohne
 Glanz; der Koerper flach gefuellt.
 
-Geaendert, alles in `13-figuren.js`:
+Geaendert, alles in `15-figuren.js`:
 - `figKugelPlastisch`: Licht +38 / Schatten -30 statt +17 / -16, Brennpunkt weiter nach aussen.
 - Stirnglanz: weiche weisse Flaeche, in die Kopfform geschnitten.
 - Schnauze mit eigenem Licht, Farbe haelt bis 86 statt 72 Prozent, Ellipse 4 statt 12 Prozent
@@ -3503,7 +3391,7 @@ Inhaber hat den iOS-Weg gewaehlt: **Das realistischste Bild ist ein eigenes Foto
 Lucenta schon), sonst ein **Monogramm im Verlaufskreis wie in iOS-Kontakten**. Die gezeichneten
 Menschen sind entfallen, die zwoelf Tiere bleiben.
 
-- `13-figuren.js` 1086 -> 783 Zeilen: `figMensch` und sechs Helfer, die nur er benutzte
+- `15-figuren.js` 1086 -> 783 Zeilen: `figMensch` und sechs Helfer, die nur er benutzte
   (`figSchultern`, `figHaarVerlauf`, `figStraehnen`, `FIG_GLATT`, `figBrauen`, `FIG_LACHT`) —
   gezaehlt, nicht vermutet: Jeder kam nach dem Entfernen nur noch in seiner eigenen Definition vor.
 - 80 Zeilen Beschriftung (`figur_m1` bis `figur_m10`) aus den acht Paketen.
@@ -3574,7 +3462,7 @@ setzen muss, ist eine, die man vergisst, und dieses Vergessen kostet hier Geld."
 
 Das gilt fuer `#if DEBUG` in Swift nicht, denn die setzt der Compiler, nicht ein Mensch.
 `MainViewController.swift` spielt nur im Debug-Bau `window.__lucentaEntwicklungsbau = true` ein;
-`15-profile.js` zeigt den Schalter, wenn keine Bruecke da ist ODER diese Marke. **Run** ist Debug,
+`17-profil.js` zeigt den Schalter, wenn keine Bruecke da ist ODER diese Marke. **Run** ist Debug,
 **Archive** ist Release (Runde 110 ausgelesen) — im Store-Bau ist der ganze Block nicht im Programm.
 
 **Am gebauten Programm nachgeprueft, nicht an der Quelle:** Debug-Programm enthaelt die Marke 1x,
@@ -3612,7 +3500,7 @@ unsichtbar — gemessen wurde dort bei Dichte 1. Die Zeichenflaeche hatte 780x16
 Und er verteuerte das Glas: Eine Unschaerfe ueber einem BEWEGTEN Grund muss WebKit in jedem Bild
 neu rechnen, ueber einem stehenden kann es sie zwischenspeichern.
 
-Vier Hebel in `22-sternenhimmel.js`, keiner aendert das Aussehen nennenswert:
+Vier Hebel in `29-sternenhimmel.js`, keiner aendert das Aussehen nennenswert:
 
 1. Pixeldichte hoechstens **1,5** statt 2 (0,74 statt 1,3 Mio. Bildpunkte).
 2. Gemalt wird **jedes zweite Bild**, bewegt wird jedes — die Geschwindigkeit bleibt, nur die
@@ -3675,11 +3563,11 @@ Drei davon haben eine Aufgabe, und die steht jeweils am Code: Die Kacheln sind �
 (die erste Zahl frueh, statt erst im Bericht), das Netzdiagramm ist ohne Beschriftung nicht
 ablesbar, die Karten sind der Bericht. **Die Chips hatten keine.** Sie machten die Ergebniskarte
 zum groessten Block der oberen Haelfte, obwohl deren Aufgabe Teilen und Code ist — und das
-geteilte Bild zeichnet seine Werte ohnehin selbst (`10-ergebnisbild.js`).
+geteilte Bild zeichnet seine Werte ohnehin selbst (`12-ergebnisbild.js`).
 
 ### Was geaendert wurde
 
-Die Chips sind heraus — Markup, das Befuellen in `11-rendering.js`, `.share-scores` und `.chip` im
+Die Chips sind heraus — Markup, das Befuellen in `13-darstellung.js`, `.share-scores` und `.chip` im
 Stilblatt (beides wurde nur dort benutzt; keine Testreihe und keine Pruefung haengt daran).
 
 | | vorher | nachher |
@@ -4005,12 +3893,12 @@ ihres Zielorts verhalten:
 Die Ziele der zweiten Art sind die haeufigeren — die Teilen-Leiste von iOS fuehrt zuerst dorthin.
 Ein Format, das ueberall ordentlich aussieht, ist mehr wert als eines, das an einer Stelle exakt
 passt und an den uebrigen auffaellt. **Sollte der Inhaber es anders sehen, ist es eine Zahl**
-(`SHARE_FORMAT.h` in `src/js/10-ergebnisbild.js`) plus die Zentrierung, die dann wieder gebraucht
+(`SHARE_FORMAT.h` in `src/js/12-ergebnisbild.js`) plus die Zentrierung, die dann wieder gebraucht
 wird — die Testreihe sagt dann genau das.
 
 Mitgegangen sind: der Segmentwaehler im Markup, seine zwei CSS-Regeln, die Verdrahtung in
-`21-beta-rueckmeldung.js`, das Nachziehen der `aria-checked`-Zustaende in
-`18-ergebnisbild-dialog.js`, **drei i18n-Schluessel in allen acht Paketen** (`beitrag`,
+`28-verdrahtung-und-start.js`, das Nachziehen der `aria-checked`-Zustaende in
+`21-bild-und-kauffenster.js`, **drei i18n-Schluessel in allen acht Paketen** (`beitrag`,
 `story_amp_reel`, `aria_bildformat_wählen` — 24 Zeilen) und die vertikale Zentrierung im Canvas,
 die jetzt immer 0 waere.
 
@@ -4081,7 +3969,7 @@ Und eine Zahl, die ich zuerst falsch zugeordnet haette: Der Fragebogen **scrollt
 ### 2. Der Hintergrund des Fragebogens war leer
 
 Er war nicht nur leer, sondern ein **Bruch**: Mit dem Antippen von „Test starten" verschwand die
-Atmosphaere fuer fuenfzig Fragen. `22-sternenhimmel.js` haengt seit Runde 71 ausschliesslich an
+Atmosphaere fuer fuenfzig Fragen. `29-sternenhimmel.js` haengt seit Runde 71 ausschliesslich an
 `#view-landing`.
 
 **Es liegt jetzt dieselbe Flaeche dort — als Standbild.** Ein einziges gezeichnetes Bild, danach
@@ -4104,7 +3992,7 @@ Fragebogen wird gelesen.
    Flaeche nach dem Antippen noch weiter. Der Ansichtswechsel meldet sich jetzt selbst, ueber einen
    `MutationObserver` auf dem `class`-Attribut der beiden Ansichten — dieselbe Loesung wie beim
    Farbmodus in Runde 86 und aus demselben Grund. Dass beide Klassenwechsel (`remove` von allen,
-   `add` beim Ziel) in `02-state.js` in **einer** synchronen Aufgabe liegen, ist die Voraussetzung:
+   `add` beim Ziel) in `02-zustand-navigation.js` in **einer** synchronen Aufgabe liegen, ist die Voraussetzung:
    Der Beobachter sieht damit den Endzustand und nicht den Moment, in dem keine Ansicht aktiv ist.
 2. **„still" und „gedaempft" waren erst EINE Groesse, und das war falsch.** In der Gegenprobe
    gemessen: Bei `prefers-reduced-motion` bekam die **Startseite** die gedaempfte Deckkraft mit.
@@ -4384,7 +4272,7 @@ CSS-Marken mit zwei Strichen benennt, sofort zuschlaegt.
 
 ### 4. Das geteilte Bild trug eine fremde Schrift
 
-**Fehler:** `src/js/10-ergebnisbild.js` setzte an vier Stellen `'Georgia, serif'` — auf dem einen
+**Fehler:** `src/js/12-ergebnisbild.js` setzte an vier Stellen `'Georgia, serif'` — auf dem einen
 Bild, das weitergegeben wird und damit das Einzige ist, was Fremde von Lucenta sehen. Zahlen und
 Fusszeile liefen richtig in „IBM Plex Mono" und „Work Sans"; nur Wortmarke, Titel und Motto kamen
 in einer Systemschrift heraus, die in der App nirgends vorkommt.
@@ -4474,7 +4362,7 @@ Luecke am jüngsten Punkt riskiert.
 Angaben, „vor 29 Tagen" und „heute", links- und rechtsbuendig. Relativ heisst, dass man rechnen
 muss, um einen Punkt einem Tag zuzuordnen, und in der Mitte stand ohnehin nichts.
 
-**Aenderung:** Vier echte Datumsangaben an echten Stellen (`verlaufAchseHTML()` in `08-code.js`,
+**Aenderung:** Vier echte Datumsangaben an echten Stellen (`verlaufAchseHTML()` in `10-code-und-grafiken.js`,
 direkt neben `verlaufDiagrammSVG()`, damit die Geometriekonstanten nicht doppelt stehen und
 auseinanderdriften). Die Position kommt aus derselben Rechnung wie die Punkte im Diagramm.
 
@@ -4760,7 +4648,7 @@ vergleicht Sterne. Die Media-Query direkt zu fragen ist der richtige Weg.
 
 Aus allen acht Paketen gleichzeitig entfernt (eine halbe Loeschung laesst Pruefung 1 des
 i18n-Audits anschlagen, die die Schluesselmengen vergleicht). Der Kommentar in
-`18-ergebnisbild-dialog.js` behauptete danach das Gegenteil („bleibt in den Paketen stehen") und
+`21-bild-und-kauffenster.js` behauptete danach das Gegenteil („bleibt in den Paketen stehen") und
 ist nachgezogen — ein Kommentar, der die Vergangenheit beschreibt, ist schlimmer als keiner.
 
 ---
@@ -5069,7 +4957,7 @@ nur dieses Journal. `pruef-alles` haette denselben Stand gemessen wie in Runde 1
 
 ## 2026-09-16 (Runde 103) — Die StoreKit-Bruecke, und zwei Stellen, die das Abo verschenkten
 
-**Auftrag:** der eigentliche Einreichungs-Blocker. `src/js/19b-native.js` rief seit Runde 99 ein
+**Auftrag:** der eigentliche Einreichungs-Blocker. `src/js/24-native.js` rief seit Runde 99 ein
 Capacitor-Modul namens `StoreKit` auf — **das es nicht gibt**, weder von Apple noch von Ionic. Der
 Name war ein ehrlich vermerkter Platzhalter. Und zwei Stellen schalteten Lucenta+ ohne Zahlung
 frei.
@@ -5725,7 +5613,7 @@ Zugleich damit **verifiziert**: Splashscreen und Liquid-Glass-Kopfleiste funktio
     Fraunces-Schrift, zentriert auf Papierfarbe (hell/dunkel). Gerendert mit Playwright-WebKit aus
     der geladenen Seite, damit die Schrift exakt zur App passt. Das verbessert zugleich die
     System-LaunchScreen (nutzt dasselbe „Splash") -> nahtloser Uebergang, kein weisses Standardbild.
-  - `src/js/21-beta-rueckmeldung.js`: am Ende von `init()` `SplashScreen.hide({fadeOutDuration:250})`
+  - `src/js/28-verdrahtung-und-start.js`: am Ende von `init()` `SplashScreen.hide({fadeOutDuration:250})`
     nach zwei requestAnimationFrame (also nach dem ersten Bild), plus `setTimeout(…,4000)` als
     Sicherung, falls beim Kaltstart Bilder ausbleiben (sonst bliebe der Splash bei
     launchAutoHide:false stehen). Nur nativ; im Browser passiert nichts.
@@ -5741,7 +5629,7 @@ Zugleich damit **verifiziert**: Splashscreen und Liquid-Glass-Kopfleiste funktio
   das erste Zeichnen nicht. Die mehrsekuendige Startzeit kommt aus WKWebView-Kaltstart + Parsen der
   1,5-MB-Datei + Debug-Build, nicht aus JS. Dem Inhaber offen gesagt; er wollte den sauberen
   Micro-Fix trotzdem.
-- **Aenderung (`src/js/22-sternenhimmel.js`):** Der initiale `farbenLesen()/aufbauen()/pruefen()` +
+- **Aenderung (`src/js/29-sternenhimmel.js`):** Der initiale `farbenLesen()/aufbauen()/pruefen()` +
   der 1-Sekunden-Takt laufen jetzt erst nach zwei `requestAnimationFrame` (also nach dem ersten
   Bild). `aufbauen()` baut mehrere Offscreen-Canvases (Wolken/Strahlen) — das konkurrierte bisher
   beim Parsen mit dem ersten Zeichnen der Startseite.
@@ -5758,7 +5646,7 @@ Zugleich damit **verifiziert**: Splashscreen und Liquid-Glass-Kopfleiste funktio
 - **Entfernt (10 nachweislich ungenutzte CSS-Klassen + 1 tote JS-Funktion):** `.theme-btn`,
   `.feedback-opt`/`.feedback-opts` (in Runde 97 entfernte Features), `.compat-legend`, `.compat-note`,
   `.code-note`, `.delta-head`, `.befund-grenze`, `.preview-tag`, `.ring-label`; JS-Funktion
-  `figVerlauf` (nur definiert, nie aufgerufen). Verteilt ueber 7 CSS-Dateien + `13-figuren.js`.
+  `figVerlauf` (nur definiert, nie aufgerufen). Verteilt ueber 7 CSS-Dateien + `15-figuren.js`.
 - **Sicherheitsnachweis:** Jede Klasse gegen HTML **und** JS geprueft, inkl. dynamischer
   Zusammensetzung (`'hg-'+id`, `'role-tag-'+pole`, `'dot-'+…`). Was dynamisch gebaut wird, blieb
   unangetastet. Da die entfernten Selektoren auf **kein** Element passten, aendert das Entfernen
@@ -5837,8 +5725,8 @@ Zugleich damit **verifiziert**: Splashscreen und Liquid-Glass-Kopfleiste funktio
   PWA-/Browser-Hinweis und in einer App-Store-App sinnlos (sie IST bereits installiert). Er wurde
   gezeigt, weil `isStandalone()` in der Capacitor-WKWebView false liefert.
 - **Aenderung:** Das a2hs-Feature komplett entfernt — Markup `#a2hsHint` (index.body.html), die
-  Logik `syncA2hsHint()/isStandalone()/isFramed()/a2hsDismissed()` samt Aufruf (02-state.js), der
-  Dismiss-Handler und der Reset-Eintrag `lucenta_a2hs_hidden` (21-beta-rueckmeldung.js), die CSS
+  Logik `syncA2hsHint()/isStandalone()/isFramed()/a2hsDismissed()` samt Aufruf (02-zustand-navigation.js), der
+  Dismiss-Handler und der Reset-Eintrag `lucenta_a2hs_hidden` (28-verdrahtung-und-start.js), die CSS
   `.a2hs-hint/.a2hs-dismiss` (08-formulare + Sammelselektoren in 10-druckzustaende), die zugehoerige
   Testreihe (tests/guest_test.js) und die zwei i18n-Keys `lucenta_lässt_sich_zum_homeb` +
   `aria_hinweis_ausblenden` in allen acht Sprachen.
@@ -5863,7 +5751,7 @@ Zugleich damit **verifiziert**: Splashscreen und Liquid-Glass-Kopfleiste funktio
   keine Hoster-Protokolle). (2) Loeschanweisung → „… oder indem du Lucenta vom Gerät löschst".
   (3) `erinnerung_nur_app` in allen acht Sprachen ohne Browser-Bezug neu („Tägliche Erinnerungen
   sind auf diesem Gerät nicht verfügbar." + Uebersetzungen). (4) `hoster` aus den Impressum-
-  Pflichtfeldern und aus `IMPRESSUM` in `src/js/17-settings.js` entfernt — ohne Server gibt es
+  Pflichtfeldern und aus `IMPRESSUM` in `src/js/20-einstellungen.js` entfernt — ohne Server gibt es
   keinen Hoster, sonst haette die Einstellungen-Ansicht das Impressum faelschlich als „unvollstaendig"
   gemeldet. `datenschutz` ist real nur in de/en/tr uebersetzt; es/fr/it/ja/pt tragen denselben
   englischen Text — die englische Aenderung deckt sie mit ab.
@@ -5875,7 +5763,7 @@ Zugleich damit **verifiziert**: Splashscreen und Liquid-Glass-Kopfleiste funktio
 
 ### Haptik auf dem iPhone (native Taptic Engine statt navigator.vibrate)
 - **Fehler:** Auf dem echten iPhone kam beim Antippen im Fragebogen keine haptische Rueckmeldung.
-- **Ursache:** `tapFeedback()` in `src/js/11-rendering.js` rief nur `navigator.vibrate(8)`. iOS-
+- **Ursache:** `tapFeedback()` in `src/js/13-darstellung.js` rief nur `navigator.vibrate(8)`. iOS-
   WKWebView/Safari kennt `navigator.vibrate` nicht — der Aufruf laeuft ins Leere. (Der Kommentar an
   der Stelle sagte genau das voraus: wirkungslos „bis die App als Capacitor-Huelle laeuft".)
 - **Aenderung:** `@capacitor/haptics` installiert (Pod `CapacitorHaptics`, jetzt 5 iOS-Plugins).
@@ -5937,7 +5825,7 @@ Zugleich damit **verifiziert**: Splashscreen und Liquid-Glass-Kopfleiste funktio
   der zum Datenschutzversprechen passt („Es wird nichts gelesen und nichts gesendet.").
 - **Warum es behebt:** Der `PHPhotoLibrary`-Add-Zugriff findet die verlangte Beschreibung, der
   System-Dialog erscheint statt eines Absturzes. Verifiziert: Build SUCCEEDED. Unsicher: der echte
-  Sichern-Ablauf haengt an der `Filesystem`/Foto-Bruecke in `src/js/19b-native.js` und wurde noch
+  Sichern-Ablauf haengt an der `Filesystem`/Foto-Bruecke in `src/js/24-native.js` und wurde noch
   nicht end-to-end im Simulator ausgeloest.
 
 ## 2026-09-09 — iOS-Huelle startbar gemacht + Scroll-/Safe-Area-Darstellung korrigiert

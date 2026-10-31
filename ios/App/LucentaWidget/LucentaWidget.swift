@@ -25,7 +25,7 @@ struct WertSetzenIntent: AppIntent {
         return .result()
     }
 
-    /// Wie `erinnerungListe()` in 19b-native.js: Mit einem Eintrag entfaellt die heutige Erinnerung
+    /// Wie `erinnerungListe()` in 24-native.js: Mit einem Eintrag entfaellt die heutige Erinnerung
     /// (bei "zu jeder Tageszeit" nur die der laufenden Tageszeit). Die App plant beim Oeffnen ohnehin neu.
     private func erinnerungenHeuteAbsagen() async {
         let zentrale = UNUserNotificationCenter.current()

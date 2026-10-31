@@ -15,7 +15,7 @@ uebersetzungsluecken im sichtbaren Text; Kontraste halten auch im gedaempften He
    ~0,5 s speichern drei Ergebnisse binnen einer Sekunde. Folge: Verlauf voller Dubletten, „Verglichen mit
    deinem letzten Ergebnis" mit lauter gleichen Werten, „Dein Verlauf umfasst bereits 3 Durchlaeufe" nach
    einem einzigen Test. *Vorschlag:* nach Antwort 50 die Skala sperren, bis das Ergebnis steht.
-2. **Impressum leer** (`IMPRESSUM` in `17-settings.js`: Name, Strasse, Ort, E-Mail). In Deutschland
+2. **Impressum leer** (`IMPRESSUM` in `20-einstellungen.js`: Name, Strasse, Ort, E-Mail). In Deutschland
    Pflicht; auch die Datenschutzerklaerung nennt keinen Verantwortlichen. *Nur vom Inhaber.*
 3. **Privacy Manifest der App fehlt.** Der eigene Swift-Code nutzt `UserDefaults` (Farbschema,
    Apple-Kennung) — eine „Required Reason API". Ohne `PrivacyInfo.xcprivacy` (Grund CA92.1) weist App Store

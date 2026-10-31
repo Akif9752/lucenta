@@ -126,7 +126,7 @@
   .settings-zeile-text strong{font-family:var(--serif); font-weight:500; font-size:calc(15.5px * var(--dt, 1));}
   .settings-zeile .theme-toggle{flex-shrink:0;}
   /* Runde 129: Hier stand das Uhrzeitfeld der Erinnerung (Runde 99). Die Erinnerung kommt jetzt zu
-     drei festen Zeiten (19b-native.js), das Feld ist entfallen. */
+     drei festen Zeiten (24-native.js), das Feld ist entfallen. */
 
   .settings-sub{margin-top:20px; padding-top:18px; border-top:1px solid var(--line);}
   .settings-sub h3{font-family:var(--serif); font-weight:500; font-size:calc(15.5px * var(--dt, 1)); margin-bottom:4px;}

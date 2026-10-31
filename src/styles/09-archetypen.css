@@ -275,7 +275,7 @@
 
   /* ---------- Farbmodus ----------
      Die Figur behaelt ihre Farben, die Flaeche darunter folgt dem Modus (figFeldDunkel() in
-     13-figuren.js). Im Dunkeln 6 % gedaempft, damit sie liegt statt zu leuchten. */
+     15-figuren.js). Im Dunkeln 6 % gedaempft, damit sie liegt statt zu leuchten. */
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]) .avatar.hat-figur,
     :root:not([data-theme="light"]) .drawer-profile-avatar.hat-figur,

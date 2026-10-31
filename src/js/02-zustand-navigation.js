@@ -75,7 +75,7 @@
     if (currentView && UNTERSEITE_VON[name] === currentView) art = 'push';
     else if (currentView && UNTERSEITE_VON[currentView] === name) art = 'pop';
     if (art){ richtung = art === 'push' ? 'nav-push' : 'nav-pop'; if (art === 'pop') opts.restoreScroll = true; }
-    // Die Wischgeste (20-wiring.js) hat den Uebergang schon selbst gezeigt — hier nur noch umschalten.
+    // Die Wischgeste (27-verdrahtung.js) hat den Uebergang schon selbst gezeigt — hier nur noch umschalten.
     if (opts.geste){ art = null; opts.restoreScroll = true; }
     navWegAufraeumen();
     var alt = currentView ? $('view-'+currentView) : null;

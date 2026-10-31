@@ -30,7 +30,7 @@ nicht gibt. Drei, die zu Lucenta passen und die Ablehnung praktisch ausschließe
 | **Sperre per Face ID** | Ein Persönlichkeitsprofil auf einem geteilten Gerät. Es gibt bereits einen Gastdurchlauf — das ist die konsequente Fortsetzung. | mittel |
 | **Widget mit der Tagesform-Kurve** | Sichtbar nativ, aber ein eigenes Stück SwiftUI außerhalb der Weboberfläche. | groß |
 
-**Stand Runde 99: die ersten beiden sind gebaut.** Sie liegen in `src/js/19b-native.js` und
+**Stand Runde 99: die ersten beiden sind gebaut.** Sie liegen in `src/js/24-native.js` und
 sind über eine nachgestellte Capacitor-Umgebung geprüft (`npm run pruef-nativ`, 23 Prüfungen):
 
 - **Tägliche Erinnerung** — Einstellungen → Bedienung. Genau eine Mitteilung am Tag zur
@@ -42,7 +42,7 @@ sind über eine nachgestellte Capacitor-Umgebung geprüft (`npm run pruef-nativ`
 
 Im Browser stehen beide abgeschaltet da und sagen warum. Das ist Absicht: Ein Knopf, der nichts
 tun kann, gehört nicht in die Oberfläche, und ein Knopf, der Erfolg meldet ohne etwas zu tun,
-ist schlimmer als keiner (der Grund steht in `17-settings.js` beim blockierten Download).
+ist schlimmer als keiner (der Grund steht in `20-einstellungen.js` beim blockierten Download).
 
 **Bleibt für den Mac:** die Plugins tatsächlich installieren und `npx cap sync ios`. Der Code
 dafür steht, die Abhängigkeiten sind in `package.json` eingetragen.
@@ -172,7 +172,7 @@ blockiert.
    nicht der Bericht — der ist frei und bleibt es. **CloudKit gehört ausdrücklich NICHT
    hierher**: Es synchronisiert Daten, nicht Berechtigungen; ob jemand zahlt, weiß StoreKit.
 2. **Die sechs Angaben im Impressum.** Sie stehen an genau einer Stelle im Code:
-   `IMPRESSUM` in `src/js/17-settings.js` — Name, Straße, Ort, E-Mail, Hoster, und die
+   `IMPRESSUM` in `src/js/20-einstellungen.js` — Name, Straße, Ort, E-Mail, Hoster, und die
    Umsatzsteuer-ID, falls vorhanden. Solange eine fehlt, sagt die App das selbst in aller
    Deutlichkeit. Das ist Absicht: Ein Impressum mit Platzhaltern ist schlimmer als keines.
 3. **Eine öffentlich erreichbare Datenschutz-Adresse.** App Store Connect verlangt eine
@@ -184,7 +184,7 @@ blockiert.
    Store-Eintrag unter diesem Namen gehört eine echte Recherche in DPMA und EUIPO dazu.
 6. **Die Abo-Produkte in App Store Connect anlegen** — `lucenta.plus.monat` (4,99 €) und
    `lucenta.plus.jahr` (29,99 €), **in derselben Abo-Gruppe**, mit Beschreibung, Preis und
-   Prüfhinweis. Genau diese zwei Kennungen stehen im Code (`src/js/19b-native.js` und
+   Prüfhinweis. Genau diese zwei Kennungen stehen im Code (`src/js/24-native.js` und
    `ios/App/App/LucentaKaeufePlugin.swift`); eine dritte Kennung im Store bleibt unerreichbar,
    eine abweichende Schreibweise lässt den Kauf ins Leere laufen. Das kann nur der Inhaber.
 

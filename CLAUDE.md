@@ -25,8 +25,8 @@ setzt die Datei aus `src/` zusammen, in der Reihenfolge aus `src/manifest.json`.
 Zwei Regeln, die der Bau erzwingt und die sonst leise Schaden anrichten:
 
 - **Alle JS-Teile teilen sich eine IIFE.** Sie wird in `00-start.js` geöffnet und in
-  `21-beta-rueckmeldung.js` geschlossen. Ein neuer Teil muss im Manifest **davor** stehen,
-  sonst sieht er nichts. (`22-sternenhimmel.js` ist bewusst eine eigene IIFE.)
+  `28-verdrahtung-und-start.js` geschlossen. Ein neuer Teil muss im Manifest **davor** stehen,
+  sonst sieht er nichts. (`29-sternenhimmel.js` ist bewusst eine eigene IIFE.)
 - **Jedes Farb-Token braucht drei Blöcke:** `:root`, dann
   `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])`, dann
   `:root[data-theme="dark"]`. Fehlt einer, bricht der Bau ab (`pruefeDunkelbloecke`).
@@ -42,12 +42,14 @@ geschriebene Werte driften auseinander, wenn niemand sie zusammenhält.
 
 ## Prüfen — vollständig, vor jedem Commit
 
-    npm run pruef-alles       # alle neun, ~8 Minuten, bringt den Server auf 8017 selbst mit
+    npm run pruef-alles       # wählt nach Änderung: leicht (~1 Min.) oder alle neun
+    npm run pruef-voll        # immer alle neun, bringt den Server auf 8017 selbst mit
     npm run pruef-schnell     # Bau, Testreihen, i18n-Audit, App-Fassung — unter einer Minute
 
-Seit Runde 103 ein Befehl statt neun (`tools/pruef_alles.mjs`): Der Server wird selbst gestartet
-(oder ein laufender mitbenutzt), die Prüfungen laufen billig vor teuer, jede bekommt eine Zeile,
-die vollständige Ausgabe liegt in `.pruef-log/<name>.log`. Bricht der Bau ab, hört es auf.
+`tools/pruef_alles.mjs`: Hat sich seit dem letzten vollen, bestandenen Lauf nur außerhalb der
+Oberfläche etwas geändert (Tierbilder, Doku, Swift, Hilfswerkzeuge), genügt die leichte Runde —
+Entscheidung des Inhabers. Unabhängige Prüfungen laufen gleichzeitig, die messenden allein; die
+vollständige Ausgabe liegt in `.pruef-log/<name>.log`. Bricht der Bau ab, hört es auf.
 
 **In dieser Umgebung fehlt WebKit**, und zwei der neun brauchen es:
 
@@ -84,7 +86,7 @@ Die Geschichte dahin (welche Runde, was gemeldet wurde, was vorher falsch war, w
 gehoert ins Journal und in die Commit-Nachricht, nicht in den Code. Faustregel: hoechstens drei Zeilen.
 
 Eine Kommentarzeile ist eine MARKE und darf nicht umformuliert werden: `// ---------- wiring ----------`
-in `src/js/20-wiring.js` — `tests/run.js` schneidet den Code dort ab. `src/styles/00-schriften.css`
+in `src/js/27-verdrahtung.js` — `tests/run.js` schneidet den Code dort ab. `src/styles/00-schriften.css`
 ist erzeugt (`tools/schriften_holen.mjs`), nicht von Hand aendern.
 
 ## Zwei Lehren, die je dreimal bezahlt wurden

@@ -10,10 +10,10 @@ const ZIEL = path.join(wurzel, 'web', 'datenschutz');
 const SPRACHEN = ['de', 'en', 'es', 'fr', 'it', 'pt', 'tr', 'ja'];
 const NAMEN = {de:'Deutsch', en:'English', es:'Español', fr:'Français', it:'Italiano', pt:'Português', tr:'Türkçe', ja:'日本語'};
 
-// IMPRESSUM aus 17-settings.js lesen — eine Quelle fuer App und Seite.
-const settings = fs.readFileSync(path.join(wurzel, 'src/js/17-settings.js'), 'utf8');
+// IMPRESSUM aus 20-einstellungen.js lesen — eine Quelle fuer App und Seite.
+const settings = fs.readFileSync(path.join(wurzel, 'src/js/20-einstellungen.js'), 'utf8');
 const block = settings.match(/var IMPRESSUM = (\{[\s\S]*?\});/);
-if (!block) { console.error('IMPRESSUM in src/js/17-settings.js nicht gefunden'); process.exit(1); }
+if (!block) { console.error('IMPRESSUM in src/js/20-einstellungen.js nicht gefunden'); process.exit(1); }
 const IMPRESSUM = vm.runInNewContext('(' + block[1] + ')');
 
 const kontext = {CONTENT: {}};
@@ -42,6 +42,6 @@ for (const s of SPRACHEN) {
 }
 console.log(SPRACHEN.length + ' Sprachen nach web/datenschutz/ geschrieben.');
 if (fehlt.length) {
-  console.log('\nACHTUNG: Im Impressum fehlen ' + fehlt.join(', ') + ' (src/js/17-settings.js).');
+  console.log('\nACHTUNG: Im Impressum fehlen ' + fehlt.join(', ') + ' (src/js/20-einstellungen.js).');
   console.log('Die Seite nennt dann keinen Verantwortlichen (Art. 13 DSGVO) — so NICHT veroeffentlichen.');
 }

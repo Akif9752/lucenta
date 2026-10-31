@@ -603,7 +603,7 @@ const NACHBEREITUNG = {
     }
     await p.waitForTimeout(600);
     const zahl = await p.evaluate(() => document.querySelectorAll('#plusVorteile .plus-vorteil').length);
-    // Sechs Vorteile (PLUS_VORTEILE in 18-ergebnisbild-dialog.js; seit Runde 187 mit den 29 Facetten).
+    // Sechs Vorteile (PLUS_VORTEILE in 21-bild-und-kauffenster.js; seit Runde 187 mit den 29 Facetten).
     if (zahl !== 6) throw new Error('Lucenta+-Fenster zeigt ' + zahl + ' statt 6 Vorteile');
   }}
 };

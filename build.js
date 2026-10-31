@@ -30,7 +30,7 @@ const i18nDateien = fs.readdirSync(path.join(SRC, 'i18n'))
 const i18n = i18nDateien.map(f => read('i18n', f)).join('');
 // ---------- Runde 123: Die Tier-Avatare sind Bilder (src/figuren/*.png) ----------
 //
-// 13-figuren.js traegt `var FIGUR_BILDER = {};`, und hier wird es gefuellt — fuer die zwei
+// 15-figuren.js traegt `var FIGUR_BILDER = {};`, und hier wird es gefuellt — fuer die zwei
 // Fassungen verschieden, aus demselben Grund wie bei Schriften und Sprachen: lucenta.html muss
 // allein funktionieren (eingebettet), die App-Fassung soll beim Start nichts dekodieren, was sie
 // nicht zeigt (Dateien in dist/figuren/, Name aus dem Inhalt). Fehlt die Stelle oder ein Bild,
@@ -38,12 +38,12 @@ const i18n = i18nDateien.map(f => read('i18n', f)).join('');
 const FIGUR_ORDNER = 'figuren';
 const FIGUR_STELLE = 'var FIGUR_BILDER = {};';
 const figurDateien = fs.readdirSync(path.join(SRC, FIGUR_ORDNER)).filter(f => f.endsWith('.png')).sort();
-const figurKennungen = [...read('js', '13-figuren.js').matchAll(/\{id:'([a-z]+)',\s*feld:/g)].map(m => m[1]);
+const figurKennungen = [...read('js', '15-figuren.js').matchAll(/\{id:'([a-z]+)',\s*feld:/g)].map(m => m[1]);
 const fehlendeFiguren = figurKennungen.filter(k => !figurDateien.includes(k + '.png'));
-if (!read('js', '13-figuren.js').includes(FIGUR_STELLE) || !figurKennungen.length || fehlendeFiguren.length) {
+if (!read('js', '15-figuren.js').includes(FIGUR_STELLE) || !figurKennungen.length || fehlendeFiguren.length) {
   console.error('\nBau abgebrochen: Die Tierbilder lassen sich nicht einsetzen.\n' +
                 (fehlendeFiguren.length ? 'Ohne Bild in src/figuren/: ' + fehlendeFiguren.join(', ') + '\n'
-                                        : '`' + FIGUR_STELLE + '` oder FIGUREN fehlt in src/js/13-figuren.js.\n'));
+                                        : '`' + FIGUR_STELLE + '` oder FIGUREN fehlt in src/js/15-figuren.js.\n'));
   process.exit(1);
 }
 // Runde 186: je Tier optional die Ausdruecke der Tagesform (`<id>-muede.png`, `<id>-froh.png`).
@@ -66,7 +66,7 @@ const js = figurenEinsetzen(jsRoh, (_k, d) => 'data:image/png;base64,' + d.toStr
 
 // ---------- Der Bau prueft, ob das Ergebnis ueberhaupt laeuft (Runde 90) ----------
 //
-// Anlass: Eine fehlende schliessende Klammer in 22-sternenhimmel.js kam durch ALLE sechs
+// Anlass: Eine fehlende schliessende Klammer in 29-sternenhimmel.js kam durch ALLE sechs
 // Pruefschichten. Der Bau haengt nur Text aneinander und merkt nichts; die Testreihen laden
 // den gemeinsamen Bereich bis zu einer Marke und sahen die Datei gar nicht; der i18n-Pruefer
 // liest den Quelltext als Text. Gruen gemeldet, und im Browser startete die App nicht — kein
@@ -146,7 +146,7 @@ if (waisen.length){
   process.exit(1);
 }
 
-// Die Farben des Ergebnisbildes stehen in 10-ergebnisbild.js fest verdrahtet — auf einer
+// Die Farben des Ergebnisbildes stehen in 12-ergebnisbild.js fest verdrahtet — auf einer
 // Leinwand gibt es keine CSS-Marken. Sie MUESSEN denen der App entsprechen, sonst verschickt
 // jemand eine Karte in einer Farbe, die es in der App nicht gibt. Genau das ist in Runde 90
 // passiert: Die Palette wurde dunkler, die Karte blieb auf dem alten Wert stehen, und
@@ -201,7 +201,7 @@ function pruefeBildfarben(css, js){
   if (abweichungen.length){
     console.error('\nBAU ABGEBROCHEN — das Ergebnisbild benutzt andere Farben als die App:\n' +
                   abweichungen.join('\n') +
-                  '\n\nBeides muss uebereinstimmen: SHARE_COLORS in src/js/10-ergebnisbild.js\n' +
+                  '\n\nBeides muss uebereinstimmen: SHARE_COLORS in src/js/12-ergebnisbild.js\n' +
                   'und die Marken in src/styles/00-grundlagen.css.\n');
     process.exit(1);
   }

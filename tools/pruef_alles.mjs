@@ -1,31 +1,16 @@
-// Faehrt die Pflichtrunde in EINEM Befehl.  `npm run pruef-alles` / `npm run pruef-schnell`
-//
-// Runde 103. Vorher stand in der CLAUDE.md eine Liste von neun Befehlen, und fuenf davon
-// brauchten einen Server auf Port 8017, den man vorher von Hand starten musste. Wer ihn vergass,
-// bekam fuenf Fehlschlaege, die nichts mit dem Code zu tun hatten — und wer sie einzeln startete,
-// brauchte neun Durchgaenge fuer eine Antwort, die auf eine Seite passt.
-//
-// Dieses Werkzeug macht daraus einen Aufruf:
-//   - es bringt den Server selbst mit (und faellt auf einen bereits laufenden zurueck),
-//   - es fuehrt die Pruefungen in der Reihenfolge billig -> teuer aus, damit ein Fehler frueh
-//     auffaellt und nicht nach zehn Minuten,
-//   - es schreibt die vollstaendige Ausgabe jeder Pruefung nach .pruef-log/<name>.log und zeigt
-//     nur eine Zeile je Pruefung; bei einem Fehlschlag zusaetzlich das Ende der Ausgabe,
-//   - und es endet mit einem Exit-Code, der zum Ergebnis passt.
-//
-// Zwei Stufen, weil nicht jede Frage die ganze Runde braucht:
-//   npm run pruef-schnell   Bau, Testreihen, i18n-Audit, App-Fassung — unter einer Minute,
-//                           gedacht fuer den Zwischenstand waehrend der Arbeit.
-//   npm run pruef-alles     alle neun. Das ist die Pflichtrunde vor jedem Commit, der src/
-//                           beruehrt, und nur sie darf einen Commit rechtfertigen.
-//
-// Bewusst NICHT parallel: `pruef-bewegung` misst Zeitverlaeufe von Animationen, und `fehlersuche`
-// faehrt intern schon vier Browser gleichzeitig. Mehrere messende Prozesse nebeneinander wuerden
-// sich die Rechenzeit wegnehmen und Zahlen erzeugen, die von der Last abhaengen statt vom Code.
+// Faehrt die Pflichtrunde in EINEM Befehl.
+//   npm run pruef-alles    waehlt nach Aenderung (Entscheidung des Inhabers): Hat sich seit dem
+//                          letzten vollen, bestandenen Lauf nur ausserhalb der Oberflaeche etwas
+//                          geaendert (Tierbilder, Doku, Swift, Werkzeuge), genuegt die leichte Stufe.
+//   npm run pruef-voll     immer alle neun.
+//   npm run pruef-schnell  Bau, Testreihen, i18n-Audit, App-Fassung — fuer den Zwischenstand.
+// Gleichzeitig laufen nur Pruefungen derselben `stufe`; `pruef-bewegung` und `fehlersuche` messen
+// Zeitverlaeufe und laufen deshalb allein.
 
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
-import { createReadStream, existsSync, mkdirSync, statSync, writeFileSync } from 'node:fs';
+import { createReadStream, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, extname, normalize } from 'node:path';
 
 const WURZEL = new URL('..', import.meta.url).pathname;
@@ -33,7 +18,10 @@ const DIST = join(WURZEL, 'dist');
 const PORT = Number(process.env.LUCENTA_PORT || 8017);
 const BASIS = `http://127.0.0.1:${PORT}`;
 const LOGS = join(WURZEL, '.pruef-log');
-const SCHNELL = process.argv.slice(2).some(a => /^--?schnell$/.test(a));
+const ARGS = process.argv.slice(2);
+const SCHNELL = ARGS.some(a => /^--?schnell$/.test(a));
+const VOLL = ARGS.some(a => /^--?voll$/.test(a));
+const MERKER = join(LOGS, 'letzte-volle.json');
 
 // ---------- die Pruefungen ----------
 //
@@ -43,17 +31,43 @@ const SCHNELL = process.argv.slice(2).some(a => /^--?schnell$/.test(a));
 // davon sind richtig so (Eigennamen, Kuerzel). Angezeigt wird darum die Summe (Feld `merke`);
 // durchfallen kann es trotzdem, naemlich wenn es abstuerzt.
 const PRUEFUNGEN = [
-  { name: 'build',          befehl: 'node',    args: ['build.js'],                  schnell: true },
-  { name: 'tests',          befehl: 'node',    args: ['tests/run.js'],              schnell: true },
-  { name: 'audit-i18n',     befehl: 'python3', args: ['tools/audit_i18n.py'],       schnell: true },
-  { name: 'pruef-store',    befehl: 'python3', args: ['tools/pruef_store_texte.py'] },
-  { name: 'pruef-app',      befehl: 'node',    args: ['tools/pruef_appfassung.mjs'], server: true, schnell: true },
-  { name: 'pruef-nativ',    befehl: 'node',    args: ['tools/pruef_nativ.mjs'],      server: true },
-  { name: 'pruef-bewegung', befehl: 'node',    args: ['tools/pruef_bewegung.mjs'],   server: true },
-  { name: 'diff-sprachen',  befehl: 'node',    args: ['tools/diff_sprachen.mjs'],    server: true, bericht: true,
+  { name: 'build',          stufe: 0, befehl: 'node',    args: ['build.js'],                   schnell: true, leicht: true },
+  { name: 'tests',          stufe: 1, befehl: 'node',    args: ['tests/run.js'],               schnell: true, leicht: true },
+  { name: 'audit-i18n',     stufe: 1, befehl: 'python3', args: ['tools/audit_i18n.py'],        schnell: true, leicht: true },
+  { name: 'pruef-store',    stufe: 1, befehl: 'python3', args: ['tools/pruef_store_texte.py'], leicht: true },
+  { name: 'pruef-app',      stufe: 2, befehl: 'node',    args: ['tools/pruef_appfassung.mjs'], server: true, schnell: true, leicht: true },
+  { name: 'pruef-nativ',    stufe: 2, befehl: 'node',    args: ['tools/pruef_nativ.mjs'],      server: true },
+  { name: 'diff-sprachen',  stufe: 2, befehl: 'node',    args: ['tools/diff_sprachen.mjs'],    server: true, bericht: true,
     merke: /^Summe verdaechtiger Zeilen.*/m },
-  { name: 'fehlersuche',    befehl: 'node',    args: ['tools/fehlersuche.mjs'],      server: true }
+  { name: 'pruef-bewegung', stufe: 3, befehl: 'node',    args: ['tools/pruef_bewegung.mjs'],   server: true },
+  { name: 'fehlersuche',    stufe: 4, befehl: 'node',    args: ['tools/fehlersuche.mjs'],      server: true }
 ];
+
+// ---------- Auswahl nach Aenderung ----------
+//
+// Grundlage ist der Arbeitsbaum beim letzten vollen, bestandenen Lauf (`git stash create` haelt
+// auch Uncommittetes fest). Alles, was die Oberflaeche oder ihre Pruefungen beruehrt, verlangt die
+// volle Runde; Tierbilder pruefen Bau und `pruef-app` (zaehlt und laedt sie).
+const OBERFLAECHE = [/^src\/(?!figuren\/)/, /^build\.js$/, /^package-lock\.json$/,
+  /^tools\/(pruef_(?!alles)|fehlersuche|diff_sprachen|ios_public)/, /^tests\//];
+
+function git(...a){ return execFileSync('git', a, { cwd: WURZEL, encoding: 'utf8' }).trim(); }
+function baumStand(){ return git('stash', 'create') || git('rev-parse', 'HEAD'); }
+
+function waehleStufe(){
+  if (VOLL || SCHNELL) return { voll: VOLL, grund: '' };
+  let basis;
+  try { basis = JSON.parse(readFileSync(MERKER, 'utf8')).stand; } catch { return { voll: true, grund: 'noch kein voller Lauf vermerkt' }; }
+  let geaendert;
+  try {
+    geaendert = [...git('diff', '--name-only', basis).split('\n'),
+                 ...git('ls-files', '--others', '--exclude-standard').split('\n')].filter(Boolean);
+  } catch { return { voll: true, grund: 'Vergleichsstand nicht lesbar' }; }
+  const treffer = geaendert.filter(d => OBERFLAECHE.some(m => m.test(d)));
+  return treffer.length
+    ? { voll: true, grund: `Oberflaeche geaendert: ${treffer.slice(0, 3).join(', ')}${treffer.length > 3 ? ' …' : ''}` }
+    : { voll: false, grund: `seit dem letzten vollen Lauf nur ausserhalb der Oberflaeche geaendert (${geaendert.length} Dateien)` };
+}
 
 // ---------- Server ----------
 //
@@ -124,10 +138,17 @@ function zusammenfassung(aus, merke){
   return zeilen.length ? zeilen[zeilen.length - 1].slice(0, 78) : '(keine Ausgabe)';
 }
 
-const dran = PRUEFUNGEN.filter(p => !SCHNELL || p.schnell);
+const BEGINN = Date.now();
+const wahl = waehleStufe();
+const LEICHT = !SCHNELL && !wahl.voll;
+const dran = PRUEFUNGEN.filter(p => SCHNELL ? p.schnell : LEICHT ? p.leicht : true);
 const brauchtServer = dran.some(p => p.server);
+const standBeimStart = baumStand();
 
-console.log(`\n=== Lucenta: ${SCHNELL ? 'Schnellpruefung' : 'Pflichtrunde'} — ${dran.length} Pruefungen ===\n`);
+const titel = SCHNELL ? 'Schnellpruefung' : LEICHT ? 'leichte Runde' : 'Pflichtrunde';
+console.log(`\n=== Lucenta: ${titel} — ${dran.length} Pruefungen ===`);
+if (wahl.grund) console.log(`  Auswahl: ${wahl.grund}`);
+console.log('');
 
 let server = null;
 if (brauchtServer){
@@ -147,40 +168,43 @@ if (brauchtServer){
 
 mkdirSync(LOGS, { recursive: true });
 const ergebnisse = [];
-for (const p of dran){
-  // Die laufende Pruefung anzeigen und die Zeile danach ueberschreiben — aber nur im Terminal.
-  // Umgeleitet in eine Datei (und so laeuft dieser Befehl meistens) bleibt das \r stehen und
-  // jede Zeile truege ihren Namen zweimal.
-  const amTerminal = process.stdout.isTTY;
-  if (amTerminal) process.stdout.write(`  …    ${p.name.padEnd(14)}`);
-  const { code, aus, dauer } = await fuehreAus(p);
-  writeFileSync(join(LOGS, p.name + '.log'), aus);
-  // Auch ein Bericht muss durchlaufen: `diff-sprachen` faellt nicht wegen seiner Zahlen durch,
-  // sehr wohl aber, wenn es abstuerzt (etwa "Fragebogen nicht durchgelaufen"). Der erste Entwurf
-  // hat hier `bericht ? true : ...` gesetzt und damit genau diesen Absturz verschluckt.
-  const gut = code === 0;
-  ergebnisse.push({ ...p, code, gut, dauer, zeile: zusammenfassung(aus, p.merke) });
-  const s = (dauer / 1000).toFixed(0).padStart(3) + 's';
-  console.log(`${amTerminal ? '\r' : ''}  ${gut ? 'ok  ' : 'FEHL'} ${p.name.padEnd(14)} ${s}  ${ergebnisse.at(-1).zeile}`);
-  // Die Ausgabe eines Fehlschlags gleich hier, nicht erst am Ende: Wer den Lauf beobachtet, soll
-  // nicht warten muessen, um zu sehen, WAS schiefgeht.
-  if (!gut){
-    const ende = aus.trimEnd().split('\n').slice(-25);
-    console.log('\n' + ende.map(z => '      ' + z).join('\n') + '\n');
-    // Bricht der Bau ab, messen alle folgenden Pruefungen einen Stand, den es nicht gibt.
-    if (p.name === 'build'){ console.log('      Bau fehlgeschlagen — abgebrochen.\n'); break; }
-  }
+const amTerminal = process.stdout.isTTY;
+const stufen = [...new Set(dran.map(p => p.stufe))].sort((a, b) => a - b);
+for (const s of stufen){
+  const gruppe = dran.filter(p => p.stufe === s);
+  if (amTerminal) process.stdout.write(`  …    ${gruppe.map(p => p.name).join(', ')}`);
+  const laeufe = await Promise.all(gruppe.map(fuehreAus));
+  if (amTerminal) process.stdout.write('\r\x1b[K');
+  let bauKaputt = false;
+  gruppe.forEach((p, i) => {
+    const { code, aus, dauer } = laeufe[i];
+    writeFileSync(join(LOGS, p.name + '.log'), aus);
+    // Auch ein Bericht muss durchlaufen: abstuerzen darf `diff-sprachen` nicht.
+    const gut = code === 0;
+    ergebnisse.push({ ...p, code, gut, dauer, zeile: zusammenfassung(aus, p.merke) });
+    const sek = (dauer / 1000).toFixed(0).padStart(3) + 's';
+    console.log(`  ${gut ? 'ok  ' : 'FEHL'} ${p.name.padEnd(14)} ${sek}  ${ergebnisse.at(-1).zeile}`);
+    if (!gut){
+      console.log('\n' + aus.trimEnd().split('\n').slice(-25).map(z => '      ' + z).join('\n') + '\n');
+      if (p.name === 'build') bauKaputt = true;
+    }
+  });
+  // Bricht der Bau ab, messen alle folgenden Pruefungen einen Stand, den es nicht gibt.
+  if (bauKaputt){ console.log('      Bau fehlgeschlagen — abgebrochen.\n'); break; }
 }
-
 if (server) server.close();
 
 const durchgefallen = ergebnisse.filter(e => !e.gut);
-const gesamt = (ergebnisse.reduce((s, e) => s + e.dauer, 0) / 1000 / 60).toFixed(1);
+const gesamt = ((Date.now() - BEGINN) / 1000 / 60).toFixed(1);
+const vollGelaufen = !SCHNELL && !LEICHT && ergebnisse.length === PRUEFUNGEN.length;
+if (vollGelaufen && !durchgefallen.length){
+  writeFileSync(MERKER, JSON.stringify({ stand: standBeimStart, zeit: new Date().toISOString() }) + '\n');
+}
 console.log('\n======================================================');
 console.log(durchgefallen.length
   ? `${durchgefallen.length} von ${ergebnisse.length} FEHLGESCHLAGEN: ${durchgefallen.map(e => e.name).join(', ')}`
   : `ALLE ${ergebnisse.length} BESTANDEN` +
-    (SCHNELL ? '  (Schnellpruefung — vor dem Commit die ganze Runde)' : ''));
+    (SCHNELL ? '  (Schnellpruefung — vor dem Commit `npm run pruef-alles`)' : LEICHT ? '  (leichte Runde, Oberflaeche unveraendert)' : ''));
 console.log(`${gesamt} Minuten. Vollstaendige Ausgaben: .pruef-log/`);
 console.log('======================================================\n');
 process.exit(durchgefallen.length ? 1 : 0);

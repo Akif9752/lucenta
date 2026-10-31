@@ -18,7 +18,7 @@ ROH = '/tmp/lucenta-figuren-roh'
 ZIEL = os.path.join(os.path.dirname(__file__), '..', 'src', 'figuren')
 GROESSE = 288     # Runde 133: fuellt jetzt den ganzen Kreis; 96 pt bei 3x = 288 Punkte
 
-# Die Kennungen in FIGUREN (13-figuren.js). Sie stehen in gespeicherten Profilen und bleiben, auch
+# Die Kennungen in FIGUREN (15-figuren.js). Sie stehen in gespeicherten Profilen und bleiben, auch
 # wo das Tier zwischenzeitlich gewechselt hat (Runde 123: Pudel/Hund statt Dackel/Retriever).
 TIERE = ['fuchs', 'katze', 'baer', 'panda', 'hase', 'reh', 'dackel', 'retriever',
          'eule', 'wal', 'goldfisch', 'schildkroete',

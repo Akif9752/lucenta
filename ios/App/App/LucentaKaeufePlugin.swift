@@ -4,7 +4,7 @@ import StoreKit
 
 /// Die Kauf-Bruecke (Runde 103).
 ///
-/// **Warum es diese Datei ueberhaupt gibt.** `src/js/19b-native.js` ruft seit Runde 99 ein
+/// **Warum es diese Datei ueberhaupt gibt.** `src/js/24-native.js` ruft seit Runde 99 ein
 /// Capacitor-Modul namens `StoreKit` auf. Fuer `LocalNotifications`, `Filesystem` und `App` gibt
 /// es offizielle Module, die genau so heissen — fuer Kaeufe gibt es **keins**, weder von Apple
 /// noch von Ionic. Der Name war also ein ehrlich vermerkter Platzhalter, und das hier ist das
@@ -45,7 +45,7 @@ public class LucentaKaeufePlugin: CAPInstancePlugin, CAPBridgedPlugin {
     ]
 
     /// Die beiden Abo-Produkte, in derselben Abo-Gruppe. Die Liste steht hier UND in
-    /// `src/js/19b-native.js`; sie ist die Grenze zwischen beiden Seiten, und ein Kauf einer
+    /// `src/js/24-native.js`; sie ist die Grenze zwischen beiden Seiten, und ein Kauf einer
     /// Kennung, die hier nicht steht, wird abgewiesen statt an den Store gegeben.
     private static let produkte: Set<String> = ["lucenta.plus.monat", "lucenta.plus.jahr"]
 

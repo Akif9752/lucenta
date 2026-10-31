@@ -114,7 +114,7 @@ async function durchlauf(reduziert){
   // Bis Runde 108 lief die Flaeche ausschliesslich auf der Startseite und der Fragebogen war
   // leer. Jetzt liegt dieselbe Atmosphaere dort, aber als STANDBILD: Ein Fragebogen mit fuenfzig
   // Fragen soll nicht nebenher ein Canvas zeichnen lassen (die Begruendung steht im Kopf von
-  // 22-sternenhimmel.js und ist aelter als diese Aenderung).
+  // 29-sternenhimmel.js und ist aelter als diese Aenderung).
   // Gemessen werden BEIDE Haelften, weil jede fuer sich lautlos brechen kann: Faellt der
   // Takt-Wechsel aus, zeichnet die Flaeche fuenfzig Fragen lang weiter und niemand sieht es —
   // ausser am Akku. Faellt der Klassen-Wechsel aus, ist der gemeldete leere Hintergrund zurueck.
@@ -409,7 +409,7 @@ async function durchlauf(reduziert){
   // live von links nach rechts einzeichnen."
   //
   // Warum das hier gemessen wird und nicht im Quelltext: Die Bewegung haengt an einem
-  // Strichmuster in LINIENLAENGE, und diese Laenge wird in 08-code.js gerechnet und als
+  // Strichmuster in LINIENLAENGE, und diese Laenge wird in 10-code-und-grafiken.js gerechnet und als
   // --vl-laenge an das <svg> gehaengt. Steht dort eine 0 oder ein leerer Wert — weil der
   // Polygonzug nur einen Punkt hat, weil die Marke anders heisst, weil das Stilblatt sie nicht
   // findet —, dann ist die Regel gueltig, die Syntax stimmt, und es bewegt sich nichts. Genau

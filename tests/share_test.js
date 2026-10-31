@@ -30,7 +30,7 @@
   // Runde 109: Hier standen drei Abschnitte zum Story-Format (1080x1920) — seine Groesse, der
   // Nachweis, dass es exakt dieselbe Komposition um 285px nach unten versetzt ist, und die
   // Sicherheitszonen der Plattformen. Auf ausdrueckliche Ansage des Inhabers gibt es nur noch
-  // EIN Format; warum 4:5, steht bei SHARE_FORMAT in src/js/10-ergebnisbild.js.
+  // EIN Format; warum 4:5, steht bei SHARE_FORMAT in src/js/12-ergebnisbild.js.
   //
   // Die Pruefung ist deshalb nicht kleiner geworden, sondern schaerfer: Was vorher eine Aussage
   // ueber das Verhaeltnis ZWEIER Formate war, ist jetzt eine Aussage ueber das eine — und die

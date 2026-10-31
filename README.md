@@ -22,10 +22,19 @@ Keine Abhängigkeiten. Node und Python 3 genügen.
 src/
   index.head.html     Kopf: Dokumenttyp, Zeichensatz, Meta-Angaben, App-Symbol, Anti-Flacker-Skript
   index.body.html     gesamtes Markup (zehn Ansichten, seit Runde 79 mit view-recht)
-  styles/             13 CSS-Teile — die REIHENFOLGE ist bedeutsam
+  styles/             14 CSS-Teile — die REIHENFOLGE ist bedeutsam
                       (00-schriften.css ist erzeugt, siehe tools/schriften_holen.mjs)
-  js/                 23 JavaScript-Teile — die REIHENFOLGE ist bedeutsam
-  i18n/*.js           7 Sprachpakete (Items, Texte, Oberfläche) — build.js liest alle
+  js/                 30 JavaScript-Teile, fortlaufend nummeriert = Reihenfolge im Bau:
+                        00–05 Start, Sprachen, Navigation, Speicherung, Auswertung, Verlauf
+                        06    Freunde
+                        07–09 Tagesform, Tagesform im Alltag, Jahr/Rueckblick
+                        10–14 Code und Grafiken, Radar, Ergebnisbild, Darstellung, Schublade
+                        15–20 Figuren, Beispieldaten, Profil, Verstehen, Facetten, Einstellungen
+                        21–23 Bild- und Kauffenster, Feiern, Lucenta+-Seite
+                        24–26 native Bruecken, Onboarding, Konto (iCloud)
+                        27–28 Verdrahtung (Marke fuer tests/run.js) und Start, schliesst die IIFE
+                        29    Sternenhimmel (eigene IIFE)
+  i18n/*.js           8 Sprachpakete (Items, Texte, Oberfläche) — build.js liest alle
                       Dateien des Ordners, ein neues Paket wird durch Hinzulegen wirksam
   manifest.json       legt die Reihenfolge fest
 build.js              setzt alles zu dist/lucenta.html zusammen
@@ -33,7 +42,6 @@ tests/                Testreihen und Ersatz-DOM
 tools/audit_i18n.py   statische Prüfung der Mehrsprachigkeit
 tools/fehlersuche.mjs Fehlersuche im echten Browser über alle Ansichten
 tools/schriften_holen.mjs  holt die Schriften und legt sie als Daten ins Stilblatt
-tools/renderer/       eigener HTML/CSS-Renderer (Python), siehe unten
 docs/                 Produktplan, Markenrecherche, App-Store-Arbeitsliste
 LIZENZEN.md           Urheberrechtsvermerke der drei eingebetteten Schriften (OFL 1.1)
 assets/icon/          App-Symbol in elf Größen
@@ -227,20 +235,6 @@ unberührt: Die Farbe sagt *welche* Dimension, nicht *wie gut*.
 Diagramm auf einer Achse. Zwei y-Achsen wären hier der naheliegende Fehler: Sie erzeugen
 Kreuzungen und Abstände, die in den Daten nicht existieren.
 
-## Der eigene Renderer
-
-`tools/renderer/` ist ein von Grund auf gebauter HTML/CSS/SVG-Renderer in Python. Er existiert,
-weil in der bisherigen Arbeitsumgebung kein Browser verfügbar war und Gestaltungsfragen sonst nur
-hätten geschätzt werden können. Er beherrscht Kaskade, CSS-Variablen, `color-mix`, Flexbox samt
-Umbruch, Grid, absolute Positionierung, weiche Trennstriche, `overflow-wrap`, `min-width:auto`
-und SVG.
-
-**Seit Runde 58 ist ein echter Browser verfügbar** (Chromium über Playwright); der erste
-Durchlauf damit hat sofort sechs Fehler gefunden, die keine Testreihe sehen konnte. Der Renderer
-bleibt als Nachschlagewerk und für Vergleichsbilder liegen, ist für Gestaltungsfragen aber nicht
-mehr die maßgebliche Instanz. Seine Schriften sind Ersatz (DejaVu statt Fraunces/Work Sans/IBM
-Plex Mono) — exakte Zeilenumbrüche waren damit nie beurteilbar.
-
 ## Mehrsprachigkeit
 
 Texte stehen in `src/i18n/`. Drei Arten von Marken im Markup:
@@ -330,7 +324,7 @@ App mit diesem Anspruch schlimmer als keine.
 - **Impressum und Datenschutzerklärung stehen, sechs Angaben fehlen.** Der Text ist fertig und
   liegt unter Einstellungen → Rechtliches. Was nur die betreibende Person liefern kann — Name,
   Straße, Ort, E-Mail, Hoster, ggf. USt-ID —, steht an genau einer Stelle: `IMPRESSUM` in
-  `src/js/17-settings.js`. Solange eine davon fehlt, sagt die Ansicht das in aller Deutlichkeit;
+  `src/js/20-einstellungen.js`. Solange eine davon fehlt, sagt die Ansicht das in aller Deutlichkeit;
   ein Impressum mit Platzhaltern ist schlimmer als keines.
 - **Markenrecherche:** Registerteil erledigt (`docs/lucenta-markenrecherche.md`), die anwaltliche
   Ähnlichkeitsprüfung zu LUCENTIS und LUCENT steht aus.

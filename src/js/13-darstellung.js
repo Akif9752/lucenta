@@ -89,7 +89,7 @@
   // navigator.vibrate nicht), im Browser navigator.vibrate als Rueckfall. Ein leichter Tick; aus bei
   // reduzierter Bewegung.
   // Jedes Bedienelement gibt einen Impuls (Entscheidung des Inhabers; zentraler Zuhoerer
-  // hapticsUeberall in 21-beta-rueckmeldung.js). Die Entprellung hier verhindert doppeltes Vibrieren.
+  // hapticsUeberall in 28-verdrahtung-und-start.js). Die Entprellung hier verhindert doppeltes Vibrieren.
   var letzteHaptik = 0;
   function tapFeedback(){
     if (haptikAbgeschaltet() || prefersReducedMotion()) return;

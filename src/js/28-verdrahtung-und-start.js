@@ -1,5 +1,5 @@
   // Runde 109: Hier wurde der Formatwaehler des Ergebnisbildes verdrahtet. Es gibt nur noch ein
-  // Format — die Begruendung steht bei SHARE_FORMAT in 10-ergebnisbild.js.
+  // Format — die Begruendung steht bei SHARE_FORMAT in 12-ergebnisbild.js.
 
   document.querySelectorAll('[data-lang]').forEach(function(b){
     b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });

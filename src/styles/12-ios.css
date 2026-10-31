@@ -695,7 +695,7 @@
     .view.active.nav-push, .view.active.nav-pop, .view.nav-weg-push, .view.nav-weg-pop{ animation:none; }
   }
 
-  /* Die Zurueck-Geste vom linken Rand (20-wiring.js): Die Seite folgt dem Finger, die darunter rueckt
+  /* Die Zurueck-Geste vom linken Rand (27-verdrahtung.js): Die Seite folgt dem Finger, die darunter rueckt
      mit; beim Loslassen dieselbe Kurve. */
   /* animation:none, weil eine Einblendung mit fill:both (rise, seite-rein) jede Verschiebung von
      Hand ueberschreibt — am Bild gesehen: Die Seite blieb unter dem Finger stehen. */
@@ -796,7 +796,7 @@
 
   /* Navigation wie iOS (Feedback B9, Entscheidung des Inhabers): Chevron mit Ziel links, kleiner Titel
      mittig erst nach dem Hochscrollen des grossen. Die Zurueck-Pillen bleiben unsichtbar im Dokument —
-     der Chevron loest sie aus (navLeisteAnwenden in 02-state.js). */
+     der Chevron loest sie aus (navLeisteAnwenden in 02-zustand-navigation.js). */
   .kopf-zurueck{
     display:flex; align-items:center; gap:6px; min-height:44px; max-width:42%; margin:0 0 0 -8px; padding:0 8px;
     background:none; border:none; color:var(--accent-strong); cursor:pointer;

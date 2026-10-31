@@ -77,7 +77,7 @@ class MainViewController: CAPBridgeViewController {
     /// Fassung, damit sich die bezahlte Version am Geraet ansehen laesst.
     ///
     /// Den Umschalter gab es schon — er war in der App absichtlich unsichtbar, weil er dort im
-    /// App Store das Abo verschenken wuerde (Runde 103). `src/js/15-profile.js` lehnte dafuer eine
+    /// App Store das Abo verschenken wuerde (Runde 103). `src/js/17-profil.js` lehnte dafuer eine
     /// Debug-Marke ab: "Eine Marke, die man setzen muss, ist eine, die man vergisst." Diese hier
     /// setzt niemand. Sie steht hinter `#if DEBUG`, und das setzt der Compiler — beim Start aus
     /// Xcode (Run = Debug) ist sie da, im Archiv fuer den Store (Archive = Release) ist dieser
