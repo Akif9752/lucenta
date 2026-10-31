@@ -170,7 +170,8 @@ func fellSchalen(_ g: SCNGeometry, _ k: Koerper) -> [SCNNode] {
 // Scheibe hinter der Hornhaut; der Lichtpunkt entsteht vom Licht selbst auf der Hornhaut und wird von
 // einem kleinen leuchtenden Punkt verstaerkt — der "Funke", der eine Figur lebendig macht.
 
-func irisBild(_ farbe: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, quer: Bool = false, schlitzBreite: CGFloat = 0.32) -> NSImage {
+func irisBild(_ farbe: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, quer: Bool = false, schlitzBreite: CGFloat = 0.32,
+             fasern: Int = 900) -> NSImage {
     let g: CGFloat = 1024
     let bild = NSImage(size: NSSize(width: g, height: g))
     bild.lockFocus()
@@ -185,7 +186,7 @@ func irisBild(_ farbe: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, 
     ctx.addEllipse(in: CGRect(x: 0, y: 0, width: g, height: g)); ctx.clip()
     ctx.drawRadialGradient(verlauf, startCenter: mitte, startRadius: 0, endCenter: mitte, endRadius: g / 2, options: [])
     // Fasern: viele feine, unterschiedlich lange Strahlen, leicht geschwungen — wie im Foto einer Iris.
-    for _ in 0..<900 {
+    for _ in 0..<fasern {
         let w = z() * .pi * 2, r1 = g * (0.14 + 0.10 * z()), r2 = g * (0.30 + 0.17 * z())
         ctx.setLineWidth(0.8 + 1.6 * z())
         ctx.setStrokeColor((z() < 0.5 ? hell : dunkel).copy(alpha: 0.18 + 0.25 * z())!)
@@ -259,15 +260,30 @@ func augapfel(_ r: CGFloat, _ bild: NSImage) -> SCNGeometry {
 func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bool = false, quer: Bool = false,
           schlitzBreite: CGFloat = 0.32, irisAnteil: CGFloat = 0.86, funke f0: CGFloat = 1) -> SCNNode {
     let knoten = SCNNode()
-    // Realistischer (Entscheidung des Inhabers): kleinere Lichtpunkte; die Spiegelung der Hornhaut traegt den Rest.
-    let f = f0 * 0.7
-    // Das Bild traegt aussen die dunkle Randfarbe, innen die Iris (Anteil irisAnteil).
+    // Trickfilm-Stil (Entscheidung des Inhabers): weisser Augapfel, kleinere Iris, grosse Lichtpunkte.
+    let f = TRICK ? f0 * 1.25 : f0 * 0.7
+    let irisAnteil = TRICK ? min(irisAnteil, 0.60) : irisAnteil
     let g: CGFloat = 1024
     let voll = NSImage(size: NSSize(width: g, height: g))
     voll.lockFocus()
-    iris.blended(withFraction: 0.82, of: .black)!.setFill(); NSRect(x: 0, y: 0, width: g, height: g).fill()
+    if TRICK {
+        // Augenweiss, zum Rand hin leicht abgedunkelt: sonst wirkt der Augapfel flach aufgeklebt.
+        let ctx = NSGraphicsContext.current!.cgContext, raum = CGColorSpace(name: CGColorSpace.sRGB)!
+        let weiss = CGGradient(colorsSpace: raum, colors: [NSColor(calibratedRed: 0.99, green: 0.98, blue: 0.96, alpha: 1).cgColor,
+                                                           NSColor(calibratedRed: 0.93, green: 0.90, blue: 0.87, alpha: 1).cgColor,
+                                                           NSColor(calibratedRed: 0.74, green: 0.70, blue: 0.68, alpha: 1).cgColor] as CFArray,
+                               locations: [0, 0.6, 1])!
+        ctx.drawRadialGradient(weiss, startCenter: CGPoint(x: g / 2, y: g / 2), startRadius: 0,
+                               endCenter: CGPoint(x: g / 2, y: g / 2), endRadius: g * 0.72, options: [.drawsAfterEndLocation])
+        // dunkler Ring um die Iris
+        let ir = g * irisAnteil * 1.06
+        NSColor(white: 0.05, alpha: 0.9).setFill()
+        NSBezierPath(ovalIn: NSRect(x: (g - ir) / 2, y: (g - ir) / 2, width: ir, height: ir)).fill()
+    } else {
+        iris.blended(withFraction: 0.82, of: .black)!.setFill(); NSRect(x: 0, y: 0, width: g, height: g).fill()
+    }
     let ir = g * irisAnteil
-    irisBild(iris, pupille: pupille, schlitz: schlitz, quer: quer, schlitzBreite: schlitzBreite)
+    irisBild(iris, pupille: pupille, schlitz: schlitz, quer: quer, schlitzBreite: schlitzBreite, fasern: TRICK ? 160 : 900)
         .draw(in: NSRect(x: (g - ir) / 2, y: (g - ir) / 2, width: ir, height: ir))
     voll.unlockFocus()
     knoten.addChildNode(SCNNode(geometry: augapfel(r, voll)))
@@ -285,7 +301,7 @@ func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bo
     // Blick weich, ein kleiner laesst ihn starren; und unter einem halb gesenkten Oberlid waere der
     // alte, hoch sitzende Punkt verschwunden.
     let mf = SCNMaterial(); mf.lightingModel = .constant; mf.diffuse.contents = NSColor(white: 1, alpha: 0.95)
-    let funke = SCNSphere(radius: r * 0.075 * f); funke.materials = [mf]
+    let funke = SCNSphere(radius: r * (TRICK ? 0.085 : 0.075) * f); funke.materials = [mf]
     let fk = SCNNode(geometry: funke); fk.position = SCNVector3(-r * 0.30, r * 0.18, r * 0.94)
     knoten.addChildNode(fk)
     let funke2 = SCNSphere(radius: r * 0.03 * f); funke2.materials = [mf]
@@ -357,7 +373,7 @@ func rendern(_ szene: SCNScene, groesse: Int, leinwand: Float = 1, kameraAbstand
     kam.fieldOfView = CGFloat(2 * atanf(tanf(12 * .pi / 180) * leinwand) * 180 / .pi); kam.zNear = 0.1; kam.zFar = 100
     kam.wantsHDR = true; kam.wantsExposureAdaptation = false; kam.exposureOffset = -0.35
     // Etwas mehr Kontrast und Farbe: Auf Avatargroesse wirkten die Tiere sonst blass und weich.
-    kam.contrast = 0.08; kam.saturation = 1.06
+    kam.contrast = 0.08; kam.saturation = TRICK ? 1.14 : 1.06
     kam.screenSpaceAmbientOcclusionIntensity = 1.1
     kam.screenSpaceAmbientOcclusionRadius = 0.25
     kam.screenSpaceAmbientOcclusionNormalThreshold = 0.3

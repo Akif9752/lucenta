@@ -101,7 +101,7 @@ def sichtbar(b, pixel):
 # Lange Tiere (Wal, Schildkroete) wirkten nach der laengeren Seite zugeschnitten "zu weit weg" (Inhaber):
 # naeher heran und zum Kopf hin verschoben; Schwanz und Hinterflossen schneidet der Kreis an.
 # (Faktor, Verschiebung x, y als Anteil des Ausschnitts; negativ = nach links/oben)
-NAEHER = {'wal': (1.55, -0.13, 0.02), 'schildkroete': (1.7, -0.02, -0.12), 'delfin': (1.55, -0.12, 0.0),
+NAEHER = {'baer': (0.80, 0.0, 0.05), 'panda': (0.80, 0.0, 0.05), 'hase': (0.92, 0.02, -0.02), 'wal': (1.55, -0.13, 0.02), 'schildkroete': (1.7, -0.02, -0.12), 'delfin': (1.55, -0.12, 0.0),
           'flamingo': (0.74, -0.04, 0.20), 'rotkehlchen': (0.62, 0.0, 0.12),
           'pinguin': (0.80, -0.04, 0.04), 'eule': (0.72, 0.0, 0.14), 'papagei': (0.74, 0.0, 0.08)}   # Runde 191: Brustbild mit langem Schnabel, weiter gefasst
 

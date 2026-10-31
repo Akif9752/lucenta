@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 200)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 201)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 200 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 201 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -64,7 +64,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 200 | (dieser) | Noch schneller: Fehlersuche Chromium als Stichprobe (voll 10,1 Min.), `npm run runde`, Tiere gleichzeitig (26 s je Tier) |
+| 201 | (dieser) | Trickfilm-Stil nach Vorlagen, Teil 1: Baer, Panda, Hase; Bausteine Augen/Brauen/D-Lachen |
+| 200 | `9ce9131` | Noch schneller: Fehlersuche Chromium als Stichprobe (voll 10,1 Min.), `npm run runde`, Tiere gleichzeitig (26 s je Tier) |
 | 199 | `28b9c86` | Aufgeraeumt: src/js fortlaufend und deutsch benannt (00–29), Pruefrunde nach Aenderung + teilweise parallel, `npm run installieren`, Uebergabe gekuerzt (`docs/runden-archiv.md`), `tools/renderer` entfernt |
 | 198 | `dcf5868` | Eule zweiter Neubau; Ara und Flamingo mit echten Schnaebeln (`bogen`) |
 | 197 | `d1fb6d4` | Neubau Eule, Retriever, Rotkehlchen, Delfin |
@@ -407,19 +408,39 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 200** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 201** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 200 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 201 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 201 — Tiere im Trickfilm-Stil nach Vorlagen (Teil 1: Baer, Panda, Hase)
+
+**Auftrag:** Der Inhaber hat 15 Vorlagenbilder geschickt (Animationsfilm-Stil) — die Tiere sollen so aussehen.
+Gewaehlt: Stil wie die Vorlagen (loest „echt, aber liebenswert" ab), Ausschnitt Kopf + Oberkoerper wie bisher, dazu
+Goldfisch -> Clownfisch, Koenigspinguin -> kleiner Pinguin, Reh mit Geweih. Die Vorlagen liegen in `vorlagen/`
+(in `.gitignore`, fremde Bilder, nie veroeffentlichen). Konkrete Filmfiguren (Dug, Squirt, Nemo, „Zoey") werden
+nicht nachgebaut, nur der Stil.
+
+**Bausteine (`TRICK` in Tiere.swift/Szene.swift):** Augapfel weiss mit dunklem Irisring, Iris 60 %, wenige Fasern,
+grosse Lichtpunkte; Brauen in voller Staerke; `mundHoehle` (D-Form: Kapsel als gerade Oberkante + runder Grund,
+`kopf:` setzt die Kapsel auf die Flaeche), `zunge`, `trickNase` (glatt, glaenzend); froh = offene Augen mit
+gehobenem Unterlid + weiterer Mund (zugekniffene Augen wirkten geschwollen); Unterlid ohne dunklen Rand;
+Saettigung 1,14. `baerenFigur(BaerenArt)` fuer Baer und Panda (pummelig, Arme mit Tatzen vor dem Bauch).
+`NAEHER` fuer baer/panda/hase: ganzer Kopf mit Ohren im Kreis. Neues Werkzeug `streifen.swift` (Vorlage/alt/neu
+im Kreis nebeneinander). Bilder als JPEG ansehen — grosse PNGs liessen die Bildvorschau mehrfach haengen.
+
+**Inhaber zum Baeren:** Mund nicht wie die Vorlage -> D-Lachen mit Oberlippe, rotes Mundinneres, flache Zunge im Mund.
+
+**Unsicher:** Hasenohren innen etwas zu rosa auch aussen. Uebrige 17 Tiere folgen.
 
 ## Runde 200 — Noch schneller: Chromium-Stichprobe, Rundenende, Tiere
 

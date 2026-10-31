@@ -22,3 +22,6 @@ ios/App/App/capacitor.config.json
 # Die vollstaendigen Ausgaben von `npm run pruef-alles` (Runde 103). Sie sind der Nachschlagort
 # beim Fehlschlag einer Pruefung und bei jedem Lauf neu — nichts zum Einchecken.
 .pruef-log/
+
+# Fremde Vorlagenbilder fuer die Tiere: nur zum Ansehen, nie veroeffentlichen.
+vorlagen/
