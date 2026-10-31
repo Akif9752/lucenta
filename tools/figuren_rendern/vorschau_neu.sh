@@ -1,13 +1,13 @@
 #!/bin/sh
-# Ein Tier nach einer Aenderung in Tiere.swift ansehen: Kopf allein rendern, Rahmen messen, ganzes Bild rendern,
-# zuschneiden wie im App-Bau. Ergebnis: /tmp/fig-p/<tier>-v.png (300 px). Schreibt NICHT nach src/figuren.
+# Ein Tier nach einer Aenderung in Tiere.swift ansehen: rendern, Rahmen an der GANZEN Figur messen (seit Runde 206
+# zeigt der Avatar das ganze Tier, Entscheidung des Inhabers), zuschneiden wie im App-Bau.
+# Ergebnis: /tmp/fig-p/<tier>-v.png (300 px). Schreibt NICHT nach src/figuren.
 # Aufruf: sh tools/figuren_rendern/vorschau_neu.sh <tier>
 set -e
 T=$1
 WURZEL="$(cd "$(dirname "$0")/../.." && pwd)"
-cd "$WURZEL/tools/figuren_rendern" && NUR_KOPF=1 sh bauen.sh $T >/dev/null
-cd "$WURZEL" && python3 tools/figuren_holen.py --rahmen-messen $T >/dev/null
 cd "$WURZEL/tools/figuren_rendern" && sh bauen.sh $T | tail -1
+cd "$WURZEL" && python3 tools/figuren_holen.py --rahmen-messen $T >/dev/null
 mkdir -p /tmp/fig-p
 cd "$WURZEL" && python3 - "$T" <<'PY'
 import sys, importlib.util

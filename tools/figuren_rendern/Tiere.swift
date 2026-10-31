@@ -476,6 +476,8 @@ func brustbild(_ kopf: Koerper, _ formen: [Form], farbe: @escaping (V, V) -> V) 
 }
 // Der Rumpf reicht nach hinten bis z = -3 (Dackel); die Rasterweite bleibt die des Kopfes.
 func brustKnoten(_ k: Koerper) -> SCNNode { kopfKnoten(k, grenze: 3.1, n: 282) }
+// Ganze Figuren reichen bis zu den Fuessen; das Raster waechst mit, die Feinheit bleibt etwa gleich.
+func ganzKnoten(_ k: Koerper) -> SCNNode { kopfKnoten(k, grenze: 3.9, n: 350) }
 
 // ---------- Fuchs ----------
 
@@ -512,18 +514,24 @@ func fuchs() -> (SCNNode, Float, V) {
     let maul = mitMaul(mitB, Maul(kurven: [Kurve(punkte: [V(0, -0.25, 1.36), V(0, -0.30, 1.30)], spitzHinten: false)]
         + paar(Kurve(punkte: [V(0, -0.30, 1.30), V(0.07, -0.33, 1.20), V(0.14, -0.31, 1.06), V(0.21, -0.24, 0.92)], spitzVorn: false)),
         r: 0.024, farbe: dunkel, staerke: zu ? 0.9 : 0.6, hoehlen: hoehle, innen: hex("#93323A")))
-    let bau = Bau(brust: 1.1, tiefe: 1.3, hals: 0.42, bein: 0.17, beinAbstand: 0.24)
-    let koerper = brustbild(maul, vierbeiner(bau), farbe: { p, _ in
-        let c = mische(farbeMitRauschen(rot, p, 0.05), weiss, latz(p, breite: 0.32, hoehe: 0.1))
-        return mische(c, dunkel, beinUnten(p, bau, ab: 0.35) * 0.9)
+    // Sitzend wie in der Vorlage, schlank, dunkle Vorderbeine, grosser buschiger Schwanz seitlich hoch mit weisser Spitze.
+    let sitz = sitzLeib(Sitz(breite: 0.85, bein: 0.15, keule: 0.9,
+        schwanz: [V(-0.50, -2.40, -0.80), V(-1.30, -2.25, -0.35), V(-1.75, -1.60, -0.05), V(-1.75, -0.85, 0.05), V(-1.50, -0.45, 0.0)],
+        schwanzR: [0.20, 0.36, 0.42, 0.36, 0.14]))
+    let koerper = brustbild(maul, sitz.formen, farbe: { p, _ in
+        var c = mische(farbeMitRauschen(rot, p, 0.05), weiss, latz(p, breite: 0.30, hoehe: 0.1))
+        c = mische(c, dunkel, max(nahe(p, sitz.beine) * glatt(-1.7, -2.1, p.y), nahe(p, sitz.pfoten)) * 0.9)
+        // Schwanz: rot, zur Spitze weiss
+        let sch = nahe(p, sitz.schwanz)
+        return mische(c, mische(farbeMitRauschen(rot, p, 0.05), weiss, glatt(-0.75, -0.45, p.y)), sch)
     })
-    let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
+    let w = SCNNode(); w.addChildNode(ganzKnoten(koerper))
     trickNase(w, mitte: V(0, -0.19, 1.40), r: V(0.11, 0.075, 0.075), farbe: hex("#141011"))
     zunge(w, mitte: V(0, -0.32, 1.18), breite: 0.12, hoehe: 0.12, offen: 0.0)
     augenEinsetzen(w, kopf, x: 0.25, y: 0.33, r: 0.15, tiefe: 0.24, iris: NSColor(calibratedRed: 0.24, green: 0.14, blue: 0.08, alpha: 1),
                    pupille: 0.66, ausdruck: Ausdruck(oben: 0.30, unten: 0.04, schraeg: 0.14, funke: 1.4, groesse: 1.45))
-    w.eulerAngles = SCNVector3(0.10, -0.42, -0.08)
-    return (w, 7.6, V(0, 0.30, 0.1))
+    w.eulerAngles = SCNVector3(0.10, -0.42, -0.06)
+    return (w, 9.5, V(0, -1.0, 0))
 }
 
 // ---------- Katze (rot getigert) ----------
@@ -581,6 +589,40 @@ func katze() -> (SCNNode, Float, V) {
 
 // ---------- Baer ----------
 
+// ---------- Ganzer Koerper (Runde 206) ----------
+// Seit Runde 206 zeigt der Avatar das ganze Tier wie die Vorlage (Entscheidung des Inhabers). Glieder und Schwaenze
+// sind weiche Rohre entlang einer Kurve (`bogen`, rund statt seitlich schmal).
+func glied(_ punkte: [V], _ radien: [Float], weich: Float = 0.06) -> [Form] { bogen(punkte, radien, schmal: 1, schritte: 6, weich: weich).formen }
+
+// Sitzender Vierbeiner (Fuchs, Mops, Retriever, Katzen, Hase): Hals, Brust, Hinterkeulen, gerade Vorderbeine,
+// Pfoten, Schwanz als weiches Rohr. Kopf im Ursprung; der Boden liegt bei etwa y = -2,7.
+struct Sitz {
+    var breite: Float = 1          // Brust und Keulen in die Breite
+    var bein: Float = 0.17         // Radius der Vorderbeine
+    var keule: Float = 1           // Groesse der Hinterkeulen
+    var schwanz: [V] = []
+    var schwanzR: [Float] = []
+}
+struct SitzTeile { var formen: [Form]; var beine: [Form]; var pfoten: [Form]; var schwanz: [Form] }
+func sitzLeib(_ s: Sitz) -> SitzTeile {
+    let b = s.breite
+    var f: [Form] = [
+        Form(art: .ellipsoid(V(0.42 * b, 0.45, 0.42)), mitte: V(0, -0.72, -0.08), weich: 0.30),
+        Form(art: .ellipsoid(V(0.55 * b, 0.75, 0.55)), mitte: V(0, -1.35, 0.08), weich: 0.30),
+        Form(art: .ellipsoid(V(0.72 * b, 0.62, 0.80)), mitte: V(0, -2.05, -0.40), weich: 0.35),
+    ]
+    var beine: [Form] = [], pfoten: [Form] = []
+    for x: Float in [-1, 1] {
+        f.append(Form(art: .ellipsoid(V(0.36, 0.48, 0.55) * s.keule), mitte: V(0.55 * b * x, -2.12, -0.30), weich: 0.18))
+        pfoten.append(Form(art: .ellipsoid(V(0.17, 0.10, 0.26)), mitte: V(0.58 * b * x, -2.62, 0.28), weich: 0.08))
+        beine += glied([V(0.26 * b * x, -1.50, 0.32), V(0.28 * b * x, -2.10, 0.40), V(0.29 * b * x, -2.55, 0.44)], [s.bein, s.bein * 0.92, s.bein * 0.88])
+        pfoten.append(Form(art: .ellipsoid(V(s.bein * 1.05, 0.10, s.bein * 1.5)), mitte: V(0.29 * b * x, -2.62, 0.56), weich: 0.08))
+    }
+    let schwanz = s.schwanz.count > 1 ? glied(s.schwanz, s.schwanzR) : []
+    return SitzTeile(formen: f + beine + pfoten + schwanz, beine: beine, pfoten: pfoten, schwanz: schwanz)
+}
+func nahe(_ p: V, _ formen: [Form], _ r: Float = 0.16) -> Float { glatt(r, 0.02, formen.map { $0.abstand(p) }.min() ?? 1) }
+
 // Trickfilm-Baerenkoerper nach den Vorlagen (Baer, Panda): kleiner Oberkopf, unten breit mit dicken Wangenpolstern,
 // kleine runde Ohren, vorstehende Schnauze mit grosser Nase, offenes D-Lachen, Augen hoch und dicht. Pummelig mit
 // Armen und Tatzen vor dem Bauch — erst sie machen aus der Rundung einen Koerper.
@@ -620,23 +662,36 @@ func baerenFigur(_ art: BaerenArt) -> (SCNNode, Float, V) {
         + (zu ? paar(Kurve(punkte: [V(0, -0.22, 1.15), V(0.14, -0.25, 1.11), V(0.27, -0.20, 1.03), V(0.34, -0.12, 0.95)], spitzVorn: false))
               : paar(Kurve(punkte: [V(0.31, -0.22, 1.02), V(0.37, -0.15, 0.94), V(0.40, -0.07, 0.86)]))),
         r: 0.026, farbe: art.lippe, staerke: 0.85, hoehlen: hoehle, innen: hex("#93323A")))
-    let bau = Bau(brust: 2.7, tiefe: 1.7, hals: 0.62, halsLaenge: 1.3, bein: 0.36, beinAbstand: 0.62, beinOben: -1.60, ruecken: 1.30, rueckenHoehe: -1.15)
-    var rumpf = vierbeiner(bau)
+    // Aufrecht auf den Hinterbeinen wie in der Vorlage: kurze dicke Beine im breiten Stand, ein Arm quer vor der
+    // Brust, die andere Tatze erhoben.
+    var rumpf: [Form] = [
+        Form(art: .ellipsoid(V(0.80, 0.55, 0.70)), mitte: V(0, -0.72, -0.02), weich: 0.35),
+        Form(art: .ellipsoid(V(1.10, 1.15, 0.95)), mitte: V(0, -1.65, 0.08), weich: 0.40),
+    ]
     for s: Float in [-1, 1] {
-        rumpf.append(Form(art: .rundkegel(V(-s * 0.40, -0.10, 0.85), 0.30, 0.25), mitte: V(s * 1.00, -1.05, 0.30), weich: 0.10))
-        rumpf.append(Form(art: .ellipsoid(V(0.26, 0.22, 0.22)), mitte: V(s * 0.58, -1.16, 1.18), weich: 0.08))
+        rumpf += glied([V(0.50 * s, -2.35, 0.05), V(0.64 * s, -2.80, 0.12), V(0.72 * s, -3.05, 0.15)], [0.42, 0.38, 0.34])
+        rumpf.append(Form(art: .ellipsoid(V(0.34, 0.17, 0.46)), mitte: V(0.74 * s, -3.18, 0.36), weich: 0.10))
     }
-    let arme = Array(rumpf.suffix(4))
+    let armL = glied([V(-1.00, -1.10, 0.15), V(-0.95, -1.65, 0.65), V(-0.35, -1.55, 1.05)], [0.33, 0.30, 0.26])
+    let armR = glied([V(1.00, -1.10, 0.15), V(1.35, -1.40, 0.45), V(1.30, -0.85, 0.75)], [0.33, 0.30, 0.27])
+    rumpf += armL + armR
+    rumpf.append(Form(art: .ellipsoid(V(0.27, 0.24, 0.22)), mitte: V(-0.25, -1.52, 1.12), weich: 0.08))
+    rumpf.append(Form(art: .ellipsoid(V(0.27, 0.27, 0.20)), mitte: V(1.28, -0.70, 0.82), weich: 0.08))
+    let arme = armL + armR + Array(rumpf.suffix(2))
     let koerper = brustbild(maul, rumpf, farbe: { p, n in
         art.rumpfFarbe(p, n, glatt(0.18, 0.02, arme.map { $0.abstand(p) }.min() ?? 1))   // weit genug fuer die Fellspitzen
     })
-    let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
+    let w = SCNNode(); w.addChildNode(ganzKnoten(koerper))
+    // helle Krallen vorn an den Fuessen
+    for s: Float in [-1, 1] { for k: Float in [-1, 0, 1] {
+        w.addChildNode(perle(V(0.74 * s + 0.11 * k, -3.22, 0.80), V(0.035, 0.03, 0.05), farbe: NSColor(white: 0.93, alpha: 1)))
+    }}
     trickNase(w, mitte: V(0, 0.03, 1.16), r: V(0.21, 0.14, 0.13), farbe: hex("#141011"))
     zunge(w, mitte: V(0, -0.25, 1.06), breite: 0.27, hoehe: 0.24, offen: 0.8)
     augenEinsetzen(w, kopf, x: 0.27, y: 0.46, r: 0.15, tiefe: 0.24, iris: art.iris,
                    pupille: 0.62, ausdruck: Ausdruck(oben: 0.06, unten: 0.0, schraeg: 0.0, funke: 1.4, groesse: 1.6))
-    w.eulerAngles = SCNVector3(0.04, -0.18, 0.03)
-    return (w, 7.3, V(0, 0.15, 0))
+    w.eulerAngles = SCNVector3(0.04, -0.25, 0.03)
+    return (w, 9.5, V(0, -1.15, 0))
 }
 
 func baer() -> (SCNNode, Float, V) {
@@ -647,7 +702,7 @@ func baer() -> (SCNNode, Float, V) {
             c = mische(c, farbeMitRauschen(hell, p, 0.03), region(p, V(0, -0.24, 0.92), V(0.52, 0.42, 0.40), 0.22))
             return mische(c, hell, glatt(0.76, 0.86, p.y) * glatt(0.48, 0.58, abs(p.x)) * glatt(0.2, 0.6, n.z) * 0.8)   // Ohrmuschel
         },
-        rumpfFarbe: { p, _, arm in mische(farbeMitRauschen(braun, p, 0.05), hell, region(p, V(0, -1.85, 1.05), V(0.70, 0.72, 0.50), 0.30) * (1 - arm)) },
+        rumpfFarbe: { p, _, arm in mische(farbeMitRauschen(braun, p, 0.05), hell, region(p, V(0, -1.95, 1.0), V(0.66, 0.80, 0.40), 0.25) * (1 - arm)) },
         brauen: hex("#4E2413"), iris: NSColor(calibratedRed: 0.38, green: 0.22, blue: 0.10, alpha: 1), lippe: hex("#4E2413")))
 }
 
@@ -685,27 +740,39 @@ func panda() -> (SCNNode, Float, V) {
         + (zu ? paar(Kurve(punkte: [V(0, -0.29, 0.97), V(0.10, -0.32, 0.94), V(0.19, -0.28, 0.88), V(0.24, -0.21, 0.82)], spitzVorn: false))
               : paar(Kurve(punkte: [V(0.19, -0.29, 0.89), V(0.24, -0.23, 0.83), V(0.27, -0.16, 0.77)]))),
         r: 0.022, farbe: schwarz, staerke: 0.85, hoehlen: hoehle, innen: hex("#93323A")))
-    let bau = Bau(brust: 2.6, tiefe: 1.8, hals: 0.62, halsLaenge: 1.3, bein: 0.36, beinAbstand: 0.62, beinOben: -1.60, ruecken: 1.30, rueckenHoehe: -1.15)
-    var rumpf = vierbeiner(bau)
-    // Bauch kugelig; ein Arm liegt vor dem Bauch, der andere an der Seite (wie in der Vorlage)
-    rumpf.append(Form(art: .ellipsoid(V(1.20, 1.15, 1.00)), mitte: V(0, -1.80, 0.35), weich: 0.35))
-    rumpf.append(Form(art: .rundkegel(V(0.55, -0.20, 0.80), 0.30, 0.25), mitte: V(-1.00, -1.10, 0.25), weich: 0.10))
-    rumpf.append(Form(art: .ellipsoid(V(0.26, 0.22, 0.22)), mitte: V(-0.42, -1.30, 1.10), weich: 0.08))
-    rumpf.append(Form(art: .rundkegel(V(0.10, -0.75, 0.30), 0.30, 0.25), mitte: V(1.05, -1.00, 0.10), weich: 0.10))
-    let arme = Array(rumpf.suffix(3))
+    // Sitzend wie in der Vorlage: kugeliger Bauch, Hinterbeine nach vorn mit Sohlen zum Betrachter, ein Arm ueber
+    // dem Bauch, der andere seitlich herab.
+    var rumpf: [Form] = [
+        Form(art: .ellipsoid(V(0.78, 0.55, 0.70)), mitte: V(0, -0.72, -0.02), weich: 0.35),
+        Form(art: .ellipsoid(V(1.05, 1.05, 0.92)), mitte: V(0, -1.70, 0.10), weich: 0.40),
+    ]
+    var schwarzTeile: [Form] = []
+    for s: Float in [-1, 1] {
+        schwarzTeile += glied([V(0.70 * s, -2.30, 0.20), V(0.82 * s, -2.55, 0.75), V(0.88 * s, -2.58, 1.15)], [0.44, 0.40, 0.36])
+        schwarzTeile.append(Form(art: .ellipsoid(V(0.36, 0.38, 0.16)), mitte: V(0.90 * s, -2.52, 1.30), weich: 0.10))
+    }
+    schwarzTeile += glied([V(-0.98, -1.00, 0.20), V(-0.90, -1.55, 0.95), V(-0.25, -1.55, 1.30)], [0.34, 0.31, 0.27])
+    schwarzTeile.append(Form(art: .ellipsoid(V(0.27, 0.24, 0.22)), mitte: V(-0.20, -1.52, 1.36), weich: 0.08))
+    schwarzTeile += glied([V(1.00, -1.00, 0.15), V(1.28, -1.55, 0.40), V(1.20, -2.05, 0.62)], [0.34, 0.31, 0.28])
+    rumpf += schwarzTeile
     let koerper = brustbild(maul, rumpf, farbe: { p, _ in
-        // Schultern und Arme schwarz, nur der runde Bauch vorn weiss
-        let arm = glatt(0.18, 0.02, arme.map { $0.abstand(p) }.min() ?? 1)
-        let bauch = region(p, V(0, -1.80, 1.0), V(0.78, 0.85, 0.60), 0.25) * (1 - arm)
-        return mische(farbeMitRauschen(schwarz, p, 0.04), farbeMitRauschen(weiss, p, 0.03), bauch)
+        let schw = glatt(0.18, 0.02, schwarzTeile.map { $0.abstand(p) }.min() ?? 1)
+        // Schulterband nur ueber Schultern und Ruecken, vorn bleibt die Brust weiss
+        let schulter = glatt(-0.70, -0.90, p.y) * glatt(-1.45, -1.20, p.y) * max(glatt(0.35, 0.0, p.z), glatt(0.70, 0.90, abs(p.x)))
+        return mische(farbeMitRauschen(weiss, p, 0.03), farbeMitRauschen(schwarz, p, 0.04), max(schw, schulter))
     })
-    let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
+    let w = SCNNode(); w.addChildNode(ganzKnoten(koerper))
+    // graue Ballen und Zehen auf den Sohlen
+    for s: Float in [-1, 1] {
+        w.addChildNode(perle(V(0.90 * s, -2.58, 1.45), V(0.17, 0.15, 0.05), farbe: NSColor(white: 0.55, alpha: 1), rauheit: 0.6))
+        for k: Float in [-1, 0, 1] { w.addChildNode(perle(V(0.90 * s + 0.12 * k, -2.30 + 0.03 * abs(k), 1.42), V(0.055, 0.05, 0.04), farbe: NSColor(white: 0.55, alpha: 1), rauheit: 0.6)) }
+    }
     trickNase(w, mitte: V(0, -0.08, 1.00), r: V(0.13, 0.085, 0.08), farbe: hex("#141011"))
     zunge(w, mitte: V(0, -0.30, 0.93), breite: 0.17, hoehe: 0.15, offen: 0.8)
     augenEinsetzen(w, kopf, x: 0.30, y: 0.32, r: 0.14, tiefe: 0.24, iris: NSColor(calibratedRed: 0.40, green: 0.50, blue: 0.22, alpha: 1),
                    pupille: 0.6, ausdruck: Ausdruck(oben: 0.06, unten: 0.0, schraeg: 0.08, funke: 1.5, groesse: 1.55))
-    w.eulerAngles = SCNVector3(0.04, -0.22, 0.05)
-    return (w, 7.6, V(0, 0.10, 0))
+    w.eulerAngles = SCNVector3(0.10, -0.30, 0.05)
+    return (w, 9.5, V(0, -1.0, 0))
 }
 
 // ---------- Hase (Wildkaninchen) ----------

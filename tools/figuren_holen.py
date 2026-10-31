@@ -101,15 +101,16 @@ def sichtbar(b, pixel):
 # Lange Tiere (Wal, Schildkroete) wirkten nach der laengeren Seite zugeschnitten "zu weit weg" (Inhaber):
 # naeher heran und zum Kopf hin verschoben; Schwanz und Hinterflossen schneidet der Kreis an.
 # (Faktor, Verschiebung x, y als Anteil des Ausschnitts; negativ = nach links/oben)
-NAEHER = {'seeotter': (0.80, 0.0, 0.05), 'katze': (0.82, 0.0, 0.02), 'siamkatze': (0.82, 0.0, 0.02), 'goldfisch': (0.92, 0.0, 0.0), 'baer': (0.80, 0.0, 0.05), 'panda': (0.64, 0.0, 0.10), 'hase': (0.92, 0.02, -0.02), 'fuchs': (0.80, 0.0, -0.02), 'reh': (0.86, 0.0, 0.0), 'dackel': (0.74, 0.0, -0.02), 'mops': (0.74, 0.0, 0.04), 'retriever': (0.80, 0.0, 0.02), 'wal': (1.10, 0.0, 0.0), 'schildkroete': (0.95, 0.0, 0.0), 'delfin': (0.95, 0.0, 0.0),
-          'flamingo': (0.56, 0.0, 0.10), 'rotkehlchen': (0.64, 0.0, 0.07),
-          'pinguin': (0.78, 0.0, 0.06), 'eule': (0.80, 0.0, 0.04), 'papagei': (0.62, 0.0, 0.08)}   # Runde 191: Brustbild mit langem Schnabel, weiter gefasst
+# Seit Runde 206 zeigt der Avatar das GANZE Tier (Entscheidung des Inhabers); der Rahmen wird an der ganzen Figur
+# gemessen. GANZ fasst sie mit etwas Rand in den Kreis. Je Tier: (Faktor, Verschiebung x, y als Anteil des Ausschnitts).
+GANZ = (1.22, 0.0, 0.0)
+NAEHER = {}
 
 
 def zuschneiden(b, h, pixel, rahmen, kennung=''):
     # Der Rahmen ist an der 1024er-Leinwand gemessen; seit Runde 143 wird doppelt so fein gerendert.
     x0, x1, y0, y1 = [round(v * b / 1024) for v in rahmen]
-    faktor, vx, vy = NAEHER.get(kennung, (1, 0, 0))
+    faktor, vx, vy = NAEHER.get(kennung, GANZ)
     seite = round(max(x1 - x0, y1 - y0) / ALTER_ANTEIL / faktor)
     mx, my = (x0 + x1) // 2 + round(vx * seite), (y0 + y1) // 2 + round(vy * seite)
     ax, ay = mx - seite // 2, my - seite // 2
@@ -180,7 +181,7 @@ def main():
     summe = 0
     nur = [a for a in sys.argv[1:] if not a.startswith('--')]
     if '--rahmen-messen' in sys.argv:
-        # Nur auf Koepfen OHNE Koerper aufrufen (NUR_KOPF=1 bauen.sh) — sonst misst es den Koerper mit.
+        # Misst die ganze Figur (seit Runde 206).
         # Mit Tiernamen: nur diese neu messen, die uebrigen Rahmen bleiben.
         with open(RAHMEN) as f: rahmen = json.load(f)
         for kennung in TIERE:

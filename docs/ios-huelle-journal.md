@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 205)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 206)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 205 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 206 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -67,7 +67,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 205 | (dieser) | Nachgebessert: Muender nach Vorlagen, eigener Panda, Eule, Papagei (Fluegel offen), Flamingo, Rotkehlchen, Mops, Seeotter, Siamkatze |
+| 206 | (dieser) | Ganze Figuren nach Vorlage, Teil 1: Baer, Panda, Fuchs; Rahmen an der ganzen Figur |
+| 205 | `e2aca74` | Nachgebessert: Muender nach Vorlagen, eigener Panda, Eule, Papagei (Fluegel offen), Flamingo, Rotkehlchen, Mops, Seeotter, Siamkatze |
 | 204 | `4376b7f` | Trickfilm-Stil, Teil 4: Pinguin (klein), Delfin, Wal, Schildkroete, Clownfisch (8 Sprachen), Katze, Siamkatze, Seeotter, Flamingo, Rotkehlchen |
 | 203 | `c6a84c3` | Trickfilm-Stil, Teil 3: Retriever, Eule, Papagei |
 | 202 | `1263b42` | Trickfilm-Stil, Teil 2: Fuchs, Reh (Geweih), Dackel, Mops |
@@ -418,19 +419,37 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 205** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 206** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 205 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 206 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 206 — Ganze Figuren nach Vorlage (Teil 1: Baer, Panda, Fuchs)
+
+**Auftrag des Inhabers:** alle Tiere eins zu eins nach der jeweiligen Vorlage (Mund, Gesicht, Koerper). Gewaehlt:
+**ganze Figur** im Avatar wie im Vorlagenbild (loest „Kopf + Oberkoerper" ab); die vier Filmfiguren-Vorlagen
+(Retriever/Dug, Schildkroete, Clownfisch/Nemo, Dackel/Zoey) nah an Pose und Ausdruck, aber mit eigenen Merkmalen —
+Eins-zu-eins-Kopien von Disney/Pixar-Figuren wuerden Urheber- und Markenrecht verletzen (Richtlinie 5.2).
+
+**Werkzeug:** `vorschau_neu.sh` misst den Rahmen jetzt an der ganzen Figur (nicht mehr am Kopf), `figuren_holen.py`
+fasst sie mit `GANZ = (1.22, 0, 0)` in den Kreis; `NAEHER` ist leer. `glied()` (weiches Rohr entlang einer Kurve) fuer
+Beine, Arme, Schwaenze; `sitzLeib(Sitz)` fuer sitzende Vierbeiner (Hals, Brust, Keulen, Vorderbeine, Pfoten, Schwanz)
+mit Masken (`beine`, `pfoten`, `schwanz`, `nahe()`); `ganzKnoten` mit groesserem Raster (Grenze 3,9 statt 3,1 —
+darunter wurden die Fuesse abgeschnitten und die Krallen schwebten).
+
+**Baer:** aufrecht im breiten Stand, ein Arm vor der Brust, Tatze erhoben, Krallen (gilt auch fuer den Seeotter).
+**Panda:** sitzend, Beine nach vorn mit grauen Ballen, ein Arm ueber dem Bauch; Schulterband nur ueber Schultern und
+Ruecken (vorn lief es als schwarzer Querbalken ueber die Brust). **Fuchs:** sitzend, dunkle Beine, buschiger Schwanz
+mit weisser Spitze links heraus wie in der Vorlage.
 
 ## Runde 205 — Tiere nachgebessert: Muender, Panda, Eule, Voegel, Mops
 
