@@ -480,56 +480,50 @@ func brustKnoten(_ k: Koerper) -> SCNNode { kopfKnoten(k, grenze: 3.1, n: 282) }
 // ---------- Fuchs ----------
 
 func fuchs() -> (SCNNode, Float, V) {
-    let rot = hex("#C9581B"), weiss = hex("#F1E6DA"), dunkel = hex("#2E1C14"), creme = hex("#EED6BC")
+    // Trickfilm-Fuchs nach der Vorlage: grosser runder Oberkopf, kurze spitze Schnauze, hohe spitze Ohren mit dunklen
+    // Spitzen und weissem Innenfell, grosse dunkle Augen unter kraeftigen, schraegen Brauen, weisse Wangen und Brust.
+    let rot = hex("#E0601C"), weiss = hex("#F6EEE6"), dunkel = hex("#2A1A14"), braue = hex("#5A2210")
     var formen: [Form] = [
-        // Keilfoermig wie beim echten Rotfuchs: kleinere, flachere Hirnschale, lange schmale Schnauze.
-        Form(art: .ellipsoid(V(0.84, 0.66, 0.78)), mitte: V(0, 0.16, -0.10)),
-        Form(art: .ellipsoid(V(0.46, 0.32, 0.38)), mitte: V(-0.62, -0.20, 0.08), weich: 0.28),
-        Form(art: .ellipsoid(V(0.46, 0.32, 0.38)), mitte: V(0.62, -0.20, 0.08), weich: 0.28),
-        Form(art: .rundkegel(V(0, -0.26, 1.34), 0.27, 0.085), mitte: V(0, -0.04, 0.38), weich: 0.24),
-        Form(art: .rundkegel(V(0, -0.06, 0.98), 0.21, 0.07), mitte: V(0, -0.30, 0.40), weich: 0.16),
-        Form(art: .ellipsoid(V(0.50, 0.20, 0.28)), mitte: V(0, 0.35, 0.48), weich: 0.25),
+        Form(art: .ellipsoid(V(0.80, 0.72, 0.74)), mitte: V(0, 0.22, -0.04)),
+        Form(art: .ellipsoid(V(0.44, 0.32, 0.38)), mitte: V(-0.50, -0.12, 0.06), weich: 0.32),
+        Form(art: .ellipsoid(V(0.44, 0.32, 0.38)), mitte: V(0.50, -0.12, 0.06), weich: 0.32),
+        Form(art: .rundkegel(V(0, -0.10, 0.82), 0.28, 0.08), mitte: V(0, -0.10, 0.50), weich: 0.22),
     ]
-    formen += ohrPaar(0.44, 0.60, -0.12, laenge: V(0.26, 0.86, -0.10), r1: 0.36, r2: 0.035, flach: 0.40)
-    formen += lider(0.34, 0.18, 0.62, 0.16)
+    formen += ohrPaar(0.42, 0.72, -0.10, laenge: V(0.22, 0.78, -0.06), r1: 0.33, r2: 0.04, flach: 0.42)
+    let muscheln = formen.filter { $0.abziehen }     // weisser Flaum innen in der Ohrmuschel
     let kopf = Koerper(formen: formen, farbe: { p, n in
-        var c = farbeMitRauschen(rot, p, 0.08)
-        let linie = -0.16 - 0.08 * abs(p.x) + 0.10 * max(0, p.z - 0.7)
-        let w = glatt(linie + 0.05, linie - 0.05, p.y) * glatt(-0.3, 0.2, p.z + 0.5 * abs(p.x) - 0.2)
-        c = mische(c, farbeMitRauschen(weiss, p, 0.04), w)
-        // Ohren: Rueckseite und Rand dunkel, Innenseite creme.
-        // Ohrfarben erst oberhalb des Schaedels — darunter lief das Creme der Innenseite auf die Stirn.
-        let ohr = glatt(0.86, 1.00, p.y) * glatt(0.20, 0.34, abs(p.x))
-        let innen = glatt(-0.1, 0.3, n.z) * glatt(1.42, 1.15, p.y)
-        c = mische(c, mische(mische(c, dunkel, 0.65), creme, innen), ohr)
-        c = mische(c, dunkel, glatt(1.16, 1.32, p.y))
-        c *= 1 - 0.25 * glatt(1.1, 1.6, p.z) * glatt(-0.30, -0.05, p.y)
-        return c
-    }, rauheit: 0.72, fell: 0.07)
-    // Fuchs: Braue etwas dunkler rostrot ueber dem inneren Augenwinkel; dichtes, langes Fell mit weisser
-    // Wangenkrause und Brust, kurz auf Schnauze und Ohren.
-    var (braue, braueM) = mitBrauen(kopf, x: 0.30, y: 0.39, laenge: 0.14, dicke: 0.055, winkel: 0.25, farbe: mische(rot, dunkel, 0.45), staerke: 0.8)
-    braue.haar = haarKarte(kopf, FellKarte(kopf: 0.07, rumpf: 0.11, nase: V(0, -0.290, 1.740), schnauze: 0.9,
-        augen: augenStellen(kopf, x: 0.34, y: 0.18), augenR: 0.17,
-        zonen: beide(V(0.62, -0.22, 0.10), V(0.45, 0.35, 0.45), 1.5) + [(V(0, 0.95, -0.1), V(0.9, 0.35, 0.5), 0.35), (V(0, -1.0, 0.6), V(0.5, 0.6, 0.5), 1.5)]), braue: braueM)
-    braue.fellArt = Fell(dichte: 75, ursprung: V(0, -0.290, 1.740), spitze: 1.04, straehnen: 0.55)
-    // Fuchs: schwarze Lefzen, die unter der Nase beginnen und an den Seiten der Schnauze zum Mundwinkel
-    // ansteigen — das "Fuchslaecheln".
-    let maul = mitMaul(braue, Maul(kurven: [Kurve(punkte: [V(0, -0.350, 1.720), V(0, -0.420, 1.640)], spitzHinten: false)]
-        + paar(Kurve(punkte: [V(0, -0.420, 1.640), V(0.07, -0.440, 1.500), V(0.13, -0.440, 1.280), V(0.19, -0.38, 0.96), V(0.23, -0.31, 0.84)], spitzVorn: false)),
-        r: 0.032, farbe: dunkel, staerke: 0.9))
-    let bau = Bau(tiefe: 1.45)
+        var c = farbeMitRauschen(rot, p, 0.05)
+        // Weiss: Wangen, Schnauze, Kinn
+        let linie = -0.16 - 0.06 * abs(p.x) + 0.10 * max(0, p.z - 0.9)
+        c = mische(c, farbeMitRauschen(weiss, p, 0.03), glatt(linie + 0.06, linie - 0.06, p.y) * glatt(-0.2, 0.3, p.z + 0.4 * abs(p.x)))
+        // Ohren: innen weiss, Spitzen und Rueckseite dunkel
+        let innen = glatt(0.05, -0.01, muscheln.map { $0.abstand(p) }.min() ?? 1) * glatt(1.40, 1.15, p.y)
+        c = mische(c, weiss, innen * glatt(0.9, 1.0, p.y))
+        return mische(c, dunkel, glatt(1.30, 1.50, p.y))
+    }, rauheit: 0.72, fell: 0.05)
+    var (mitB, braueM) = mitBrauen(kopf, x: 0.27, y: 0.55, laenge: 0.18, dicke: 0.08, winkel: 0.30, farbe: braue, staerke: 1)
+    mitB.haar = haarKarte(kopf, FellKarte(kopf: 0.07, rumpf: 0.10, nase: V(0, -0.19, 1.40), schnauze: 0.6,
+        augen: augenStellen(kopf, x: 0.25, y: 0.33), augenR: 0.27, braue: 0.3,
+        zonen: beide(V(0.60, -0.22, 0.12), V(0.45, 0.35, 0.45), 1.7) + [(V(0, 1.2, -0.1), V(0.8, 0.5, 0.4), 0.5)]), braue: braueM)
+    mitB.fellArt = Fell(dichte: 80, ursprung: V(0, -0.19, 1.40), spitze: 1.04, straehnen: 0.45)
+    // Verschmitztes, geschlossenes Laecheln; froh oeffnet es leicht.
+    let zu = mundOeffnung(0.0) < 0.02
+    let hoehle = mundHoehle(mitte: V(0, -0.32, 1.22), breite: 0.15, hoehe: 0.12, tiefe: 0.12, offen: 0.0, kopf: kopf)
+    let maul = mitMaul(mitB, Maul(kurven: [Kurve(punkte: [V(0, -0.25, 1.36), V(0, -0.30, 1.30)], spitzHinten: false)]
+        + paar(Kurve(punkte: [V(0, -0.30, 1.30), V(0.07, -0.33, 1.20), V(0.14, -0.31, 1.06), V(0.21, -0.24, 0.92)], spitzVorn: false)),
+        r: 0.024, farbe: dunkel, staerke: zu ? 0.9 : 0.6, hoehlen: hoehle, innen: hex("#93323A")))
+    let bau = Bau(brust: 1.1, tiefe: 1.3, hals: 0.42, bein: 0.17, beinAbstand: 0.24)
     let koerper = brustbild(maul, vierbeiner(bau), farbe: { p, _ in
-        // Weisse Kehle und Brust, dunkle "Struempfe" an den Vorderbeinen.
-        let c = mische(farbeMitRauschen(rot, p, 0.08), farbeMitRauschen(weiss, p, 0.04), latz(p, breite: 0.28))
-        return mische(c, dunkel, beinUnten(p, bau, ab: 0.30) * 0.85)
+        let c = mische(farbeMitRauschen(rot, p, 0.05), weiss, latz(p, breite: 0.32, hoehe: 0.1))
+        return mische(c, dunkel, beinUnten(p, bau, ab: 0.35) * 0.9)
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
-    tierNase(w, mitte: V(0, -0.290, 1.740), r: V(0.115, 0.08, 0.10), farbe: hex("#161112"))
-    augenEinsetzen(w, kopf, x: 0.34, y: 0.18, r: 0.17, iris: NSColor(calibratedRed: 0.93, green: 0.63, blue: 0.16, alpha: 1), pupille: 0.62, schlitz: true, schlitzBreite: 0.52, ausdruck: Ausdruck(oben: 0.03, unten: 0.10, schraeg: 0.04, funke: 1.6, wange: 0.30))
-    // Kopfhaltung je Tier verschieden (Auftrag des Inhabers: nicht alle in dieselbe Richtung).
-    w.eulerAngles = SCNVector3(0.08, -0.48, -0.06)
-    return (w, 7.6, V(0, 0.22, 0.2))
+    trickNase(w, mitte: V(0, -0.19, 1.40), r: V(0.11, 0.075, 0.075), farbe: hex("#141011"))
+    zunge(w, mitte: V(0, -0.32, 1.18), breite: 0.12, hoehe: 0.12, offen: 0.0)
+    augenEinsetzen(w, kopf, x: 0.25, y: 0.33, r: 0.15, tiefe: 0.24, iris: NSColor(calibratedRed: 0.24, green: 0.14, blue: 0.08, alpha: 1),
+                   pupille: 0.66, ausdruck: Ausdruck(oben: 0.30, unten: 0.04, schraeg: 0.14, funke: 1.4, groesse: 1.45))
+    w.eulerAngles = SCNVector3(0.10, -0.42, -0.08)
+    return (w, 7.6, V(0, 0.30, 0.1))
 }
 
 // ---------- Katze (rot getigert) ----------
@@ -735,107 +729,98 @@ func hase() -> (SCNNode, Float, V) {
 // ---------- Reh ----------
 
 func reh() -> (SCNNode, Float, V) {
-    let braun = hex("#A9643A"), weiss = hex("#F2E8DC"), dunkel = hex("#3A2418")
+    // Trickfilm-Rehbock nach der Vorlage: runder Kopf, schlanke helle Schnauze mit grosser schwarzer Nase, grosse
+    // blattfoermige Ohren (innen rosa), kleines Geweih mit je einer Sprosse, grosse Augen, offenes Laecheln, langer Hals,
+    // helle Kehle, Tupfen am Ruecken.
+    let fell = hex("#C4773E"), creme = hex("#F3E2CB"), rosa = hex("#E59A9A"), dunkel = hex("#3A2216")
     var formen: [Form] = [
-        // Wie beim echten Reh: schmale Hirnschale, langer, sich verjuengender Nasenruecken.
-        Form(art: .ellipsoid(V(0.58, 0.58, 0.80)), mitte: V(0, 0.17, -0.10)),
-        // lange, schmale Schnauze
-        Form(art: .rundkegel(V(0, -0.40, 1.02), 0.34, 0.19), mitte: V(0, -0.02, 0.28), weich: 0.28),
+        Form(art: .ellipsoid(V(0.68, 0.64, 0.66)), mitte: V(0, 0.28, -0.02)),
+        Form(art: .rundkegel(V(0, -0.14, 0.74), 0.34, 0.21), mitte: V(0, 0.02, 0.28), weich: 0.26),
     ]
-    // Lauscher: gross und oval, SCHRAEG NACH OBEN (waagerecht abstehend wirkten sie wie Zeichentrick), leicht nach vorn offen.
-    for sx: Float in [-1, 1] {
-        let dreh = simd_quatf(angle: -0.55 * sx, axis: V(0, 0, 1)) * simd_quatf(angle: 0.30 * sx, axis: V(0, 1, 0))
-        formen.append(Form(art: .ellipsoid(V(0.22, 0.46, 0.09)), mitte: V(0.60 * sx, 0.86, -0.22), drehung: dreh, weich: 0.12))
-        formen.append(Form(art: .ellipsoid(V(0.15, 0.36, 0.07)), mitte: V(0.62 * sx, 0.88, -0.15), drehung: dreh, weich: 0.05, abziehen: true))
-    }
-    formen += lider(0.36, 0.22, 0.52, 0.10)
+    formen += ohrPaar(0.58, 0.58, -0.12, laenge: V(0.58, 0.22, -0.10), r1: 0.27, r2: 0.07, flach: 0.36)
+    let muscheln = formen.filter { $0.abziehen }
     let kopf = Koerper(formen: formen, farbe: { p, n in
-        var c = farbeMitRauschen(braun, p, 0.08)
-        // Weisser Ring um die Schnauze, Kinn hell, Nasenruecken dunkler.
-        c = mische(c, weiss, region(p, V(0, -0.440, 1.200), V(0.30, 0.22, 0.32), 0.35))
-        c = mische(c, weiss, glatt(-0.30, -0.45, p.y) * glatt(0.3, 0.6, p.z))
-        c *= 1 - 0.20 * region(p, V(0, -0.080, 1.260), V(0.14, 0.3, 0.45), 0.5)
-        // Ohren innen hell, Rand dunkel.
-        let ohr = glatt(0.58, 0.72, p.y) * glatt(0.30, 0.42, abs(p.x))
-        c = mische(c, mische(mische(c, dunkel, 0.25), weiss, glatt(0.0, 0.6, n.z) * 0.8), ohr)
-        c = mische(c, dunkel, glatt(1.12, 1.28, p.y) * ohr * 0.9)                 // dunkle Spitzen
-        // Helle Flecken seitlich am schwarzen Nasenspiegel.
-        for sx: Float in [-1, 1] { c = mische(c, weiss, region(p, V(0.14 * sx, -0.40, 1.42), V(0.09, 0.08, 0.12), 0.3) * 0.85) }
-        return c
-    }, rauheit: 0.75, fell: 0.06)
-    // Reh: nur ein Hauch heller ueber dem Auge (weisse Brauen hat es nicht); kurzes, anliegendes Fell.
-    var (braue, braueM) = mitBrauen(kopf, x: 0.34, y: 0.41, laenge: 0.11, dicke: 0.045, winkel: 0.2, farbe: mische(braun, weiss, 0.30), staerke: 0.30, wulst: 0.12)
-    braue.haar = haarKarte(kopf, FellKarte(kopf: 0.045, rumpf: 0.055, nase: V(0, -0.400, 1.500), schnauze: 0.6,
-        augen: augenStellen(kopf, x: 0.36, y: 0.22), augenR: 0.17, braue: 0.3,
-        zonen: beide(V(0.60, 0.86, -0.22), V(0.30, 0.50, 0.25), 0.6)), braue: braueM)
-    braue.fellArt = Fell(dichte: 120, aufrecht: 0.28, neigung: 1.6, ursprung: V(0, -0.400, 1.500), wurzel: 0.58, spitze: 1.18, straehnen: 0.2, streuung: 0.16)
-    // Reh: geschlossenes, schmales Maul tief an der Schnauzenspitze, mit kaum angehobenem Winkel — sanft.
-    let maul = mitMaul(braue, Maul(kurven: [Kurve(punkte: [V(0, -0.510, 1.560), V(0, -0.565, 1.540)], spitzHinten: false)]
-        + paar(Kurve(punkte: [V(0, -0.565, 1.540), V(0.08, -0.590, 1.460), V(0.14, -0.575, 1.330), V(0.19, -0.530, 1.200)], spitzVorn: false)),
-        r: 0.030, farbe: dunkel, staerke: 0.85))
-    let bau = Bau(brust: 0.9, hals: 0.30, halsLaenge: 1.5, bein: 0.12, beinAbstand: 0.20, beinOben: -1.55, ruecken: 0.62, rueckenHoehe: -1.10)
+        var c = farbeMitRauschen(fell, p, 0.04)
+        // helle Schnauze und Kinn
+        c = mische(c, creme, glatt(0.85, 1.10, p.z) * glatt(0.0, -0.10, p.y))
+        c = mische(c, creme, region(p, V(0, -0.36, 0.55), V(0.28, 0.18, 0.40), 0.4))
+        return mische(c, rosa, glatt(0.035, -0.01, muscheln.map { $0.abstand(p) }.min() ?? 1) * glatt(0.0, 0.4, n.z) * 0.9)
+    }, rauheit: 0.72, fell: 0.04)
+    var (mitB, braueM) = mitBrauen(kopf, x: 0.27, y: 0.62, laenge: 0.15, dicke: 0.05, winkel: 0.18, farbe: dunkel, staerke: 0.9)
+    mitB.haar = haarKarte(kopf, FellKarte(kopf: 0.045, rumpf: 0.06, nase: V(0, -0.11, 1.22), schnauze: 0.5,
+        augen: augenStellen(kopf, x: 0.26, y: 0.34), augenR: 0.26, braue: 0.2), braue: braueM)
+    mitB.fellArt = Fell(dichte: 120, ursprung: V(0, -0.11, 1.22), straehnen: 0.25)
+    let hoehle = mundHoehle(mitte: V(0, -0.30, 1.08), breite: 0.17, hoehe: 0.12, tiefe: 0.12, offen: 0.7, kopf: kopf)
+    let zu = mundOeffnung(0.7) < 0.02
+    let maul = mitMaul(mitB, Maul(kurven: [Kurve(punkte: [V(0, -0.18, 1.20), V(0, -0.25, 1.16)], spitzHinten: !zu)]
+        + (zu ? paar(Kurve(punkte: [V(0, -0.25, 1.16), V(0.08, -0.28, 1.10), V(0.16, -0.24, 1.00)], spitzVorn: false))
+              : paar(Kurve(punkte: [V(0.15, -0.28, 1.02), V(0.19, -0.23, 0.95), V(0.21, -0.17, 0.88)]))),
+        r: 0.02, farbe: dunkel, staerke: 0.85, hoehlen: hoehle, innen: hex("#93323A")))
+    let bau = Bau(brust: 0.95, tiefe: 1.1, hals: 0.30, halsLaenge: 1.55, bein: 0.14, beinAbstand: 0.20, ruecken: 0.60, rueckenLaenge: 1.6)
     let koerper = brustbild(maul, vierbeiner(bau), farbe: { p, _ in
-        // Rehe tragen einen hellen Kehlfleck gleich unter dem Kinn, die Brust bleibt braun.
-        let kehle = region(p, V(0, -0.60, 0.50), V(0.26, 0.20, 0.45), 0.4)
-        return mische(farbeMitRauschen(braun, p, 0.08), farbeMitRauschen(weiss, p, 0.04), kehle * 0.9)
+        var c = mische(farbeMitRauschen(fell, p, 0.04), creme, latz(p, breite: 0.22, hoehe: 0.30))
+        // Tupfen nur am Ruecken
+        let z = zellen(p, 5.5)
+        c = mische(c, creme, glatt(0.10, 0.14, z.rand) * (z.wert > 0.45 ? 1 : 0) * glatt(-0.4, -0.7, p.z) * glatt(-1.7, -1.2, p.y))
+        return c
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
-    tierNase(w, mitte: V(0, -0.400, 1.500), r: V(0.21, 0.14, 0.11), farbe: hex("#141011"))
-    augenEinsetzen(w, kopf, x: 0.36, y: 0.22, r: 0.155, iris: NSColor(calibratedRed: 0.26, green: 0.14, blue: 0.08, alpha: 1), pupille: 0.55, aussen: 0.45, ausdruck: Ausdruck(oben: 0.14, unten: 0.05, schraeg: 0.26, funke: 1.5, wange: 0.40))
-    w.eulerAngles = SCNVector3(0.10, 0.48, 0.04)
-    return (w, 8.0, V(0, 0.15, 0.2))
+    trickNase(w, mitte: V(0, -0.11, 1.22), r: V(0.13, 0.085, 0.08), farbe: hex("#141011"))
+    zunge(w, mitte: V(0, -0.30, 1.04), breite: 0.14, hoehe: 0.12, offen: 0.7)
+    // Geweih: je Seite eine Stange nach oben aussen und eine kurze Sprosse nach vorn.
+    var geweih: [Form] = []
+    for s: Float in [-1, 1] {
+        let fuss = V(0.24 * s, 0.82, -0.05)
+        geweih.append(Form(art: .rundkegel(V(0.14 * s, 0.62, -0.06), 0.075, 0.045), mitte: fuss, weich: 0.03))
+        geweih.append(Form(art: .rundkegel(V(0.12 * s, 0.26, 0.14), 0.05, 0.03), mitte: fuss + V(0.05 * s, 0.24, -0.02), weich: 0.03))
+        geweih.append(Form(art: .rundkegel(V(-0.08 * s, 0.24, -0.02), 0.045, 0.028), mitte: fuss + V(0.14 * s, 0.62, -0.06), weich: 0.03))
+    }
+    nase(w, geweih, farbe: hex("#6E5444"), lack: 0.2, rauheit: 0.6, n: 300)
+    augenEinsetzen(w, kopf, x: 0.26, y: 0.34, r: 0.15, tiefe: 0.24, iris: NSColor(calibratedRed: 0.26, green: 0.15, blue: 0.09, alpha: 1),
+                   pupille: 0.64, ausdruck: Ausdruck(oben: 0.08, unten: 0.0, schraeg: 0.06, funke: 1.5, groesse: 1.55))
+    w.eulerAngles = SCNVector3(0.05, -0.30, 0.04)
+    return (w, 8.0, V(0, 0.30, 0))
 }
 
 // ---------- Dackel (Kurzhaar, rot) ----------
 
 func dackel() -> (SCNNode, Float, V) {
-    let rot = hex("#9E4E22"), dunkel = hex("#5E2C12"), hell = hex("#C47A45")
+    // Trickfilm-Dackel nach der Vorlage: rotbraun, gewoelbte Stirn, lange schmale Schnauze mit grosser Nase, lange
+    // weiche Schlappohren, sehr grosse treuherzige Augen unter weichen Brauen, schmale Brust.
+    let rot = hex("#A4512A"), hell = hex("#C77446"), dunkel = hex("#3E1C10")
     var formen: [Form] = [
-        Form(art: .ellipsoid(V(0.78, 0.72, 0.80)), mitte: V(0, 0.14, -0.10)),
-        // die lange Dackelschnauze, oben fast gerade
-        Form(art: .rundkegel(V(0, -0.16, 1.18), 0.30, 0.14), mitte: V(0, -0.04, 0.32), weich: 0.22),
-        // Unterkiefer und Lefzen: geben der Schnauze unten Masse und machen sie zum Hundemaul
-        Form(art: .rundkegel(V(0, -0.03, 0.98), 0.20, 0.11), mitte: V(0, -0.28, 0.35), weich: 0.16),
-        Form(art: .ellipsoid(V(0.42, 0.30, 0.34)), mitte: V(-0.42, -0.18, 0.30), weich: 0.28),
-        Form(art: .ellipsoid(V(0.42, 0.30, 0.34)), mitte: V(0.42, -0.18, 0.30), weich: 0.28),
-        Form(art: .ellipsoid(V(0.50, 0.22, 0.30)), mitte: V(0, 0.36, 0.42), weich: 0.25),
+        Form(art: .ellipsoid(V(0.62, 0.62, 0.64)), mitte: V(0, 0.30, -0.04)),
+        Form(art: .rundkegel(V(0, -0.30, 0.78), 0.32, 0.16), mitte: V(0, 0.04, 0.26), weich: 0.26),
     ]
-    // lange, weiche Haengeohren
-    for sx: Float in [-1, 1] {
-        // Ansatz oben am Schaedel weich, der Lappen selbst haengt frei: zwei Formen.
-        formen.append(Form(art: .ellipsoid(V(0.22, 0.20, 0.14)), mitte: V(0.66 * sx, 0.42, -0.10), weich: 0.16))
-        formen.append(Form(art: .ellipsoid(V(0.27, 0.58, 0.10)), mitte: V(0.84 * sx, 0.0, 0.0),
-                           drehung: simd_quatf(angle: -0.16 * sx, axis: V(0, 0, 1)) * simd_quatf(angle: 0.25 * sx, axis: V(0, 1, 0)), weich: 0.05))
+    // Schlappohren: haengen breit seitlich am Kopf herab.
+    for s: Float in [-1, 1] {
+        let dreh = simd_quatf(angle: s * 0.30, axis: V(0, 0, 1)) * simd_quatf(angle: s * 0.35, axis: V(0, 1, 0))
+        formen.append(Form(art: .ellipsoid(V(0.25, 0.60, 0.08)), mitte: V(0.70 * s, -0.05, 0.02), drehung: dreh, weich: 0.06))
     }
-    formen += lider(0.30, 0.20, 0.60, 0.14)
     let kopf = Koerper(formen: formen, farbe: { p, _ in
-        var c = farbeMitRauschen(rot, p, 0.07)
-        c = mische(c, dunkel, glatt(0.70, 0.82, abs(p.x)) * 0.75)               // Ohren dunkler
-        c = mische(c, hell, region(p, V(0, -0.30, 1.05), V(0.30, 0.18, 0.46), 0.4) * 0.5)
-        c *= 1 - 0.20 * glatt(1.26, 1.62, p.z)
-        c = mische(c, dunkel, glatt(0.30, 0.80, p.y) * 0.28)                       // Ruecken und Scheitel dunkler                                    // Schnauzenspitze dunkler
-        return c
-    }, rauheit: 0.52, fell: 0.05)
-    // Dackel: deutlicher Brauenwulst, dunkler schattiert — der treuherzige Dackelblick; Kurzhaar,
-    // glatt und anliegend.
-    var (braue, braueM) = mitBrauen(kopf, x: 0.27, y: 0.38, laenge: 0.11, dicke: 0.065, winkel: 0.38, farbe: dunkel, staerke: 0.75)
-    braue.haar = haarKarte(kopf, FellKarte(kopf: 0.064, rumpf: 0.07, nase: V(0, -0.19, 1.62), schnauze: 0.7,
-        augen: augenStellen(kopf, x: 0.30, y: 0.20), augenR: 0.15, braue: 0.3), braue: braueM)
-    // Glattes Kurzhaar glaenzt: wenig Abstand, kaum Helligkeitsunterschied, glatte Haut darunter.
-    braue.fellArt = Fell(dichte: 145, dicke: 0.5, aufrecht: 0.34, neigung: 1.6, ursprung: V(0, -0.19, 1.62), wurzel: 0.62, spitze: 1.20, straehnen: 0.18, streuung: 0.15)
-    // Dackel: lange Lefzen zwischen Schnauze und Unterkiefer, geschlossen.
-    let maul = mitMaul(braue, Maul(kurven: [Kurve(punkte: [V(0, -0.28, 1.61), V(0, -0.34, 1.55)], spitzHinten: false)]
-        + paar(Kurve(punkte: [V(0, -0.34, 1.55), V(0.09, -0.38, 1.40), V(0.16, -0.40, 1.16), V(0.21, -0.38, 0.90), V(0.24, -0.32, 0.70)], spitzVorn: false)),
-        r: 0.032, farbe: hex("#2A120A"), staerke: 0.85))
-    let bau = Bau(brust: 1.05, tiefe: 1.25, bein: 0.17, beinAbstand: 0.22, beinOben: -1.45, ruecken: 0.56, rueckenLaenge: 1.25, rueckenHoehe: -1.0)
+        var c = farbeMitRauschen(rot, p, 0.04)
+        c = mische(c, hell, region(p, V(0, -0.02, 0.85), V(0.24, 0.20, 0.30), 0.4) * 0.6)
+        return mische(c, mische(rot, dunkel, 0.45), glatt(0.56, 0.66, abs(p.x)) * glatt(0.35, 0.15, p.y))   // Ohren dunkler
+    }, rauheit: 0.66, fell: 0.03)
+    var (mitB, braueM) = mitBrauen(kopf, x: 0.25, y: 0.64, laenge: 0.15, dicke: 0.055, winkel: 0.35, farbe: dunkel, staerke: 0.8)
+    mitB.haar = haarKarte(kopf, FellKarte(kopf: 0.03, rumpf: 0.04, nase: V(0, -0.25, 1.17), schnauze: 0.5,
+        augen: augenStellen(kopf, x: 0.24, y: 0.36), augenR: 0.26, braue: 0.2), braue: braueM)
+    mitB.fellArt = Fell(dichte: 160, ursprung: V(0, -0.25, 1.17), straehnen: 0.15)
+    let hoehle = mundHoehle(mitte: V(0, -0.40, 0.98), breite: 0.14, hoehe: 0.10, tiefe: 0.10, offen: 0.0, kopf: kopf)
+    let maul = mitMaul(mitB, Maul(kurven: [Kurve(punkte: [V(0, -0.32, 1.15), V(0, -0.38, 1.10)], spitzHinten: false)]
+        + paar(Kurve(punkte: [V(0, -0.38, 1.10), V(0.07, -0.41, 1.03), V(0.14, -0.39, 0.93), V(0.19, -0.33, 0.84)], spitzVorn: false)),
+        r: 0.02, farbe: dunkel, staerke: 0.8, hoehlen: hoehle, innen: hex("#93323A")))
+    let bau = Bau(brust: 0.95, tiefe: 1.25, hals: 0.34, halsLaenge: 1.2, bein: 0.15, beinAbstand: 0.19, ruecken: 0.55, rueckenLaenge: 2.2)
     let koerper = brustbild(maul, vierbeiner(bau), farbe: { p, _ in
-        mische(farbeMitRauschen(rot, p, 0.07), hell, latz(p, breite: 0.30) * 0.25)
+        mische(farbeMitRauschen(rot, p, 0.04), hell, latz(p, breite: 0.22, hoehe: 0.15) * 0.4)
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
-    tierNase(w, mitte: V(0, -0.19, 1.62), r: V(0.14, 0.10, 0.10), farbe: hex("#161010"))
-    augenEinsetzen(w, kopf, x: 0.30, y: 0.20, r: 0.16, iris: NSColor(calibratedRed: 0.40, green: 0.22, blue: 0.10, alpha: 1), pupille: 0.58, ausdruck: Ausdruck(oben: 0.08, unten: 0.00, schraeg: 0.38, funke: 1.7, wange: 0))
-    w.eulerAngles = SCNVector3(0.06, -0.50, 0)
-    return (w, 8.0, V(0, 0.10, 0.25))
+    trickNase(w, mitte: V(0, -0.25, 1.17), r: V(0.12, 0.085, 0.08), farbe: hex("#141011"))
+    zunge(w, mitte: V(0, -0.40, 0.94), breite: 0.12, hoehe: 0.10, offen: 0.0)
+    augenEinsetzen(w, kopf, x: 0.24, y: 0.36, r: 0.15, tiefe: 0.24, iris: NSColor(calibratedRed: 0.32, green: 0.17, blue: 0.08, alpha: 1),
+                   pupille: 0.66, ausdruck: Ausdruck(oben: 0.10, unten: 0.0, schraeg: 0.20, funke: 1.6, groesse: 1.6))
+    w.eulerAngles = SCNVector3(0.08, -0.32, 0.04)
+    return (w, 8.0, V(0, 0.25, 0))
 }
 
 // ---------- Golden Retriever ----------
@@ -1620,69 +1605,46 @@ func rotkehlchen() -> (SCNNode, Float, V) {
 // ---------- Runde 163: Mops und Siamkatze (Auftrag des Inhabers) ----------
 
 func mops() -> (SCNNode, Float, V) {
-    // Runde 196, Neubau (Auftrag: „richtig fotorealistisch von a bis z"): ganz flaches Gesicht, dicke Nasenfalte im
-    // Bogen ueber der Nase, tiefe Stirnfalten, breiter Unterkiefer mit Lefzen, grosse runde leicht vorstehende Augen,
-    // schwarze Maske und Rosenohren, kurzes glaenzendes Falbfell. Falten sind Formen mit dunklerer Tiefe, keine Striche.
-    let falb = hex("#D3B07E"), maske = hex("#231C19"), hell = hex("#E6CFA3")
-    var falten: [Form] = []
-    // Nasenfalte: ein dicker Wulst im Bogen ueber der Nase.
-    let bogen: [V] = [V(-0.30, -0.04, 0.80), V(-0.16, 0.04, 0.90), V(0, 0.07, 0.93), V(0.16, 0.04, 0.90), V(0.30, -0.04, 0.80)]
-    for i in 0..<(bogen.count - 1) {
-        falten.append(Form(art: .rundkegel(bogen[i + 1] - bogen[i], 0.075, 0.075), mitte: bogen[i], weich: 0.06))
-    }
-    // Stirnfalten: drei flache, leicht gebogene Wuelste; dazwischen eine senkrechte Rinne.
-    // Mitten knapp unter der Schaedelflaeche: die Wuelste wolben sich nur leicht vor, wie Haut, nicht wie Leisten.
-    for (y, b, z) in [(0.30 as Float, 0.30 as Float, 0.72 as Float), (0.42, 0.25, 0.67), (0.53, 0.19, 0.61)] {
-        falten.append(Form(art: .ellipsoid(V(b, 0.05, 0.06)), mitte: V(0, y, z), weich: 0.09))
-    }
+    // Trickfilm-Mops nach der Vorlage: runder Kopf, flaches Gesicht mit kurzer, breiter schwarzer Maske, weiche
+    // Stirnfalten (Mulden, keine Striche), kleine schwarze Klappohren, sehr grosse runde Augen weit auseinander.
+    let beige = hex("#E3C08D"), schwarz = hex("#231C1A"), hell = hex("#EFD3A6")
     var formen: [Form] = [
-        Form(art: .ellipsoid(V(0.92, 0.78, 0.80)), mitte: V(0, 0.12, -0.04)),
-        // breiter Unterkiefer und haengende Lefzen
-        Form(art: .ellipsoid(V(0.46, 0.34, 0.40)), mitte: V(-0.44, -0.30, 0.32), weich: 0.28),
-        Form(art: .ellipsoid(V(0.46, 0.34, 0.40)), mitte: V(0.44, -0.30, 0.32), weich: 0.28),
-        Form(art: .ellipsoid(V(0.42, 0.24, 0.22)), mitte: V(0, -0.24, 0.78), weich: 0.20),
-        Form(art: .ellipsoid(V(0.30, 0.14, 0.24)), mitte: V(0, -0.44, 0.62), weich: 0.18),
-        Form(art: .ellipsoid(V(0.03, 0.14, 0.05)), mitte: V(0, 0.42, 0.80), weich: 0.03, abziehen: true),
-    ] + falten
-    for sx: Float in [-1, 1] {
-        // Rosenohr: klein, nach vorn umgeklappt, schwarz.
-        formen.append(Form(art: .ellipsoid(V(0.25, 0.19, 0.06)), mitte: V(0.72 * sx, 0.56, 0.10),
-                           drehung: simd_quatf(angle: -0.55 * sx, axis: V(0, 0, 1)) * simd_quatf(angle: 0.45 * sx, axis: V(0, 1, 0)), weich: 0.08))
+        Form(art: .ellipsoid(V(0.80, 0.74, 0.72)), mitte: V(0, 0.16, 0)),
+        Form(art: .ellipsoid(V(0.42, 0.30, 0.30)), mitte: V(0, -0.22, 0.64), weich: 0.25),   // kurze breite Schnauze
+    ]
+    // Stirnfalten als flache Mulden
+    for (i, y) in [Float(0.66), 0.56].enumerated() {
+        formen.append(Form(art: .rundkegel(V(0.36, 0.04 * Float(i), 0), 0.035, 0.035), mitte: V(-0.18, y, 0.70), weich: 0.05, abziehen: true))
     }
-    formen += lider(0.34, 0.14, 0.70, 0.12)
-    let kopf = Koerper(formen: formen, farbe: { p, n in
-        var c = farbeMitRauschen(falb, p, 0.07)
-        c = mische(c, hell, glatt(0.0, 0.5, p.y) * 0.20)
-        // Maske: Schnauze, Kinn, um die Augen, nach oben weich auslaufend
-        let schnauze = region(p, V(0, -0.20, 0.92), V(0.56, 0.42, 0.42), 0.18)
-        let augen = max(region(p, V(-0.34, 0.14, 0.72), V(0.22, 0.20, 0.30), 0.22), region(p, V(0.34, 0.14, 0.72), V(0.22, 0.20, 0.30), 0.22))
-        c = mische(c, maske, max(schnauze, augen * 0.75))
-        // Faltentiefen dunkler: knapp ausserhalb jedes Wulstes
-        let d = falten.map { $0.abstand(p) }.min() ?? 1
-        c = mische(c, mische(c, maske, 0.6), glatt(0.07, 0.025, d) * glatt(-0.01, 0.025, d) * 0.6)
-        c = mische(c, maske, glatt(0.60, 0.72, abs(p.x)) * glatt(0.40, 0.52, p.y) * 0.95)     // Ohren
-        return c
-    }, rauheit: 0.60, fell: 0.05)
-    var (braue, braueM) = mitBrauen(kopf, x: 0.30, y: 0.34, laenge: 0.12, dicke: 0.045, winkel: 0.28, farbe: mische(falb, maske, 0.45), staerke: 0.55, wulst: 0.5)
-    braue.haar = haarKarte(kopf, FellKarte(kopf: 0.034, rumpf: 0.05, nase: V(0, -0.08, 0.98), schnauze: 0.3,
-        augen: augenStellen(kopf, x: 0.34, y: 0.14), augenR: 0.17,
-        zonen: beide(V(0.44, -0.30, 0.32), V(0.40, 0.32, 0.36), 0.8)), braue: braueM)
-    braue.fellArt = Fell(dichte: 150, dicke: 0.5, aufrecht: 0.30, neigung: 1.6, ursprung: V(0, -0.08, 1.02), wurzel: 0.60, spitze: 1.18, straehnen: 0.16, streuung: 0.15)
-    // Geschlossenes Maul mit tiefen Mundwinkeln unter den Lefzen.
-    let maul = mitMaul(braue, Maul(kurven: [Kurve(punkte: [V(0, -0.15, 0.99), V(0, -0.28, 0.98), V(0, -0.36, 0.94)], spitzHinten: false)]
-        + paar(Kurve(punkte: [V(0, -0.36, 0.94), V(0.12, -0.43, 0.91), V(0.26, -0.44, 0.82), V(0.36, -0.40, 0.68)], spitzVorn: false)),
-        r: 0.032, farbe: hex("#120D0C"), staerke: 0.9))
-    let bau = Bau(brust: 1.30, tiefe: 1.05, hals: 0.60, bein: 0.19, beinAbstand: 0.30, ruecken: 0.68)
+    for s: Float in [-1, 1] {
+        let dreh = simd_quatf(angle: s * -1.25, axis: V(0, 0, 1)) * simd_quatf(angle: -0.6, axis: V(1, 0, 0))
+        formen.append(Form(art: .ellipsoid(V(0.32, 0.28, 0.06)), mitte: V(0.80 * s, 0.50, 0.10), drehung: dreh, weich: 0.07))
+    }
+    let kopf = Koerper(formen: formen, farbe: { p, _ in
+        var c = farbeMitRauschen(beige, p, 0.04)
+        c = mische(c, schwarz, region(p, V(0, -0.16, 0.80), V(0.48, 0.38, 0.32), 0.25))           // Maske
+        for s: Float in [-1, 1] { c = mische(c, schwarz, region(p, V(0.32 * s, 0.27, 0.66), V(0.30, 0.26, 0.34), 0.45) * 0.85) }
+        return mische(c, schwarz, glatt(0.56, 0.66, abs(p.x)) * glatt(0.50, 0.60, p.y))          // Ohren
+    }, rauheit: 0.68, fell: 0.03)
+    var (mitB, braueM) = mitBrauen(kopf, x: 0.30, y: 0.60, laenge: 0.13, dicke: 0.05, winkel: 0.30, farbe: mische(beige, schwarz, 0.4), staerke: 0.7)
+    mitB.haar = haarKarte(kopf, FellKarte(kopf: 0.035, rumpf: 0.045, nase: V(0, -0.06, 0.94), schnauze: 0.5,
+        augen: augenStellen(kopf, x: 0.32, y: 0.28), augenR: 0.30, braue: 0.2), braue: braueM)
+    mitB.fellArt = Fell(dichte: 150, ursprung: V(0, -0.06, 0.94), straehnen: 0.15)
+    let hoehle = mundHoehle(mitte: V(0, -0.36, 0.88), breite: 0.16, hoehe: 0.10, tiefe: 0.10, offen: 0.0, kopf: kopf)
+    let maul = mitMaul(mitB, Maul(kurven: [Kurve(punkte: [V(0, -0.14, 0.94), V(0, -0.28, 0.90)], spitzHinten: false)]
+        + paar(Kurve(punkte: [V(0, -0.28, 0.90), V(0.10, -0.33, 0.86), V(0.22, -0.30, 0.78), V(0.30, -0.22, 0.68)], spitzVorn: false)),
+        r: 0.024, farbe: hex("#0E0A0A"), staerke: 0.9, hoehlen: hoehle, innen: hex("#93323A")))
+    let bau = Bau(brust: 1.5, tiefe: 1.35, hals: 0.55, bein: 0.22, beinAbstand: 0.32, ruecken: 0.85, rueckenLaenge: 1.3)
     let koerper = brustbild(maul, vierbeiner(bau), farbe: { p, _ in
-        // Kehlfalten: weiche dunklere Baender am Hals.
-        let kehle = glatt(0.55, 0.85, sinf(p.y * 14) * 0.5 + 0.5) * glatt(-0.40, -0.70, p.y) * glatt(-1.10, -0.85, p.y) * glatt(0.2, 0.5, p.z)
-        return mische(farbeMitRauschen(falb, p, 0.07), mische(falb, maske, 0.35), kehle * 0.5)
+        mische(farbeMitRauschen(beige, p, 0.04), hell, latz(p, breite: 0.35) * 0.5)
     })
     let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
-    tierNase(w, mitte: V(0, -0.08, 0.98), r: V(0.15, 0.10, 0.09), farbe: hex("#120E0E"))
-    augenEinsetzen(w, kopf, x: 0.34, y: 0.14, r: 0.17, tiefe: 0.36, iris: NSColor(calibratedRed: 0.18, green: 0.11, blue: 0.07, alpha: 1), pupille: 0.66, aussen: 0.30, ausdruck: Ausdruck(oben: 0.08, unten: 0.06, schraeg: 0.10, funke: 1.6, wange: 0))
-    w.eulerAngles = SCNVector3(0.05, -0.30, -0.05)
-    return (w, 7.4, V(0, 0.12, 0.05))
+    trickNase(w, mitte: V(0, -0.04, 0.95), r: V(0.14, 0.09, 0.08), farbe: hex("#100C0C"))
+    zunge(w, mitte: V(0, -0.36, 0.84), breite: 0.13, hoehe: 0.10, offen: 0.0)
+    augenEinsetzen(w, kopf, x: 0.32, y: 0.28, r: 0.16, tiefe: 0.24, iris: NSColor(calibratedRed: 0.34, green: 0.18, blue: 0.08, alpha: 1),
+                   pupille: 0.62, ausdruck: Ausdruck(oben: 0.04, unten: 0.0, schraeg: 0.12, funke: 1.6, groesse: 1.65))
+    w.eulerAngles = SCNVector3(0.04, -0.15, 0.03)
+    return (w, 7.6, V(0, 0.18, 0))
 }
 
 func siamkatze() -> (SCNNode, Float, V) {
