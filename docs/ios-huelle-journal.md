@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-30, nach Runde 198)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 198)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 179 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 198 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -38,7 +38,16 @@ lassen. Die Richtungen:
 - **Grosse Liste** (Runde 158–162) und **Feinschliff** (Runde 163–164) erledigt: Richtlinien, Verstehen
   nach Lebensbereichen, Rollenatlas, Anmeldeschritt, Kalender/Muster, Hintergruende in Gruppen,
   20 Tiere in vier Gruppen, kurze Codes mit eigener Benutzer-ID, Figur & Hintergrund als Unterseite,
-  Reiter in Tagesform und Verstehen. Es gibt **keinen offenen Auftrag** — der naechste kommt im Gespraech.
+  Reiter in Tagesform und Verstehen.
+- **Runde 180–190:** Bestand nativ gespiegelt, Tagesform-Widget, Apple Health (nur schreiben), Face-ID-Sperre, Jahr auf
+  einen Blick, Monatsrueckblick, Notiz am Eintrag, Siri-Kurzbefehle, Tier mit drei Ausdruecken nach der Tagesform,
+  Freundespaar-Bericht, ausfuehrlicher Test mit 29 Facetten (Lucenta+). Der Inhaber fragt gern „was haben erfolgreiche
+  Apps dieser Sparte?" und waehlt dann Nummern aus der Liste.
+- **Runde 191–198: Tiere fotorealistisch**, Tier fuer Tier neu gebaut („egal was es braucht", „riesen Menge Arbeit").
+  Er urteilt am Geraet und meldet knapp, welche Tiere noch kuenstlich wirken (zuletzt: Eule, Papagei, Flamingo,
+  „besonders die Schnaebel" → Runde 198). **Das ist der wahrscheinlichste naechste Auftrag.** Stand je Tier: von a bis z
+  neu in 196–198 Mops, Panda, Eule (zweimal), Retriever, Rotkehlchen, Delfin, Ara/Flamingo-Schnaebel; in 191–195 Pinguin,
+  Wal, Seeotter, Schildkroete, Goldfisch, Reh, Katze, Siamkatze, Fuchs; nur ueberarbeitet (Runde 190): Baer, Hase, Dackel.
 
 Regeln, die er gesetzt hat:
 - **Bei Gestaltungs-, Abo- oder Rechtsfragen mit Optionen fragen** (AskUserQuestion, Empfehlung
@@ -54,7 +63,7 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 198 | (dieser) | Eule zweiter Neubau; Ara und Flamingo mit echten Schnaebeln (`bogen`) |
+| 198 | `dcf5868` | Eule zweiter Neubau; Ara und Flamingo mit echten Schnaebeln (`bogen`) |
 | 197 | `d1fb6d4` | Neubau Eule, Retriever, Rotkehlchen, Delfin |
 | 196 | `4825771` | Neubau Mops und Panda, alle drei Ausdruecke |
 | 195 | `1136727` | Neubau Reh (Lauscher, Schnauze), Katze und Retriever erwachsen |
@@ -472,9 +481,19 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
   - **Testdaten mit Kalendertagen** saeen (`new Date(y, m, d − i, 12)`), nie `jetzt − i·24 h` (Zeitumstellung, Runde 176).
   - **fehlersuche** ueberspringt Elemente in zugeklappten `<details>`; wer Wichtiges einklappt, klappt es in
     `NACHBEREITUNG` auf (Muster: `settings`).
-  - **Tiere:** Vor Aenderungen `cp -R src/figuren /tmp/fig-alt`, dann `bauen.sh <tier>` → `figuren_holen.py <tier>` →
-    `vorschau.py /tmp/fig-alt <tier>` (links alt in alter Vorschaugroesse, rechts neu); Ausschnitt ueber `NAEHER` in
-    `figuren_holen.py`. Zentrale Regler: `mitBrauen` (Farbe ×0,4, Wulst ×0,55), `auge` Lichtpunkt ×0,7, Licht in `Szene.swift`.
+  - **Tiere (Ablauf seit Runde 191):** `cp -R src/figuren /tmp/fig-alt` → Tier in `tools/figuren_rendern/Tiere.swift`
+    aendern → `sh tools/figuren_rendern/vorschau_neu.sh <tier>` (misst Rahmen, Bild nach `/tmp/fig-p/<tier>-v.png`,
+    ~1 Min.) → Bild ansehen → wiederholen → `sh tools/figuren_rendern/alle_ausdruecke.sh <tier> …` (ruhig/muede/froh nach
+    `src/figuren`). Vergleich alt/neu: kleine HTML-Seite + Playwright-WebKit-Bildschirmfoto (Skript im Repo, danach loeschen).
+    Ausschnitt ueber `NAEHER` in `figuren_holen.py`. Zentrale Regler: `mitBrauen` (Farbe ×0,4, Wulst ×0,55), Licht in `Szene.swift`.
+  - **Bausteine in `Tiere.swift`:** `bogen()`+`schnabel()` (Schnaebel als Hornquerschnitte entlang einer Kurve, Farbe Grund→Spitze),
+    `federn()`/`federZelle()` (Federreihen), `zellen()` (Marmorierung), `haarKarte`/`FellKarte`/`Fell` (Fellschalen; der
+    `fell:`-Parameter am Koerper aendert NUR Normalen), `brustbild`, `vierbeiner(Bau)`, `augenEinsetzen`/`seitenAuge`, `tierNase`,
+    `mitMaul`, `Stimmung` (`AUSDRUCK=muede|froh`, `maulPunkt`, `laecheln` = geschlossene Lachaugen).
+  - **Lehren aus 191–198:** Federreihen lesen sich auf gewoelbten Koepfen als Cord → dort Zellen. Augen sitzen beim Vogel an
+    der Farbgrenze, nicht im Saum. Lidfarbe kommt vom Fell DIREKT ueber dem Auge (helle Braue dort = weisse Kugel als Lid).
+    Schmalerer Kopf → Augen wirken groesser, mitziehen. Schwarzes Lid auf schwarzem Fell (Panda, Pinguin): Stimmung ueber
+    die Kopfhaltung. Falz zwischen zwei Formen kippt `n.z` → Farbe nach `vorn` faellt dort aus (graue Streifen).
   - **Simulationen** („stell dir 100/1000/10.000 Menschen vor"): immer als Schaetzung kennzeichnen, Befunde VORHER im
     Code nachpruefen, Empfehlungen in „kann ich bauen" / „braucht deine Entscheidung" / „nur du" teilen.
 
@@ -531,13 +550,17 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 179** installiert. Bundle-ID `app.lucenta.ios`.
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 198** installiert (iPhone-Bau mit
+`CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
+ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 179 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 198 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
-Pruefstand: `pruef-alles` 9/9 — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 102, `fehlersuche` 28 ohne Fund.
+Pruefstand: `pruef-alles` 9/9 (~16 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
+`fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
+einmal `tail`, als Schleifen.
 
 ---
 
