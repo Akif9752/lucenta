@@ -197,6 +197,9 @@ if (server) server.close();
 const durchgefallen = ergebnisse.filter(e => !e.gut);
 const gesamt = ((Date.now() - BEGINN) / 1000 / 60).toFixed(1);
 const vollGelaufen = !SCHNELL && !LEICHT && ergebnisse.length === PRUEFUNGEN.length;
+// `letzte.json` liest tools/runde_abschliessen.sh: Ohne bestandene Runde auf diesem Stand kein Commit.
+if (!SCHNELL) writeFileSync(join(LOGS, 'letzte.json'), JSON.stringify({ stand: standBeimStart,
+  gut: !durchgefallen.length, art: LEICHT ? 'leicht' : 'voll', zeit: new Date().toISOString() }) + '\n');
 if (vollGelaufen && !durchgefallen.length){
   writeFileSync(MERKER, JSON.stringify({ stand: standBeimStart, zeit: new Date().toISOString() }) + '\n');
 }

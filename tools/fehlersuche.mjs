@@ -21,8 +21,8 @@
 //    hatte keine Wahl (der Download von WebKit ist dort gesperrt), aber auf dem Mac ist er da —
 //    und zwei der teuersten Fehler des Projekts (die Silbentrennung, die beiden
 //    Scroll-/Safe-Area-Fehler) waren 99 Runden lang genau deshalb unentdeckt. Jetzt laufen
-//    standardmaessig BEIDE: WebKit als Schiedsrichter, Chromium weiterhin mit, weil es in
-//    hundert Runden reale Funde geliefert hat. Der Motor steht in der Kennung jedes Fundes.
+//    standardmaessig BEIDE: WebKit als Schiedsrichter, Chromium als Stichprobe von vier
+//    Durchlaeufen (alle: LUCENTA_CHROMIUM_VOLL=1). Der Motor steht in der Kennung jedes Fundes.
 //    Einschraenken mit LUCENTA_MOTOREN=webkit (oder =chromium).
 //
 // 2. Jeder Durchlauf startete einen EIGENEN Browser, und alle liefen nacheinander — 13 Starts,
@@ -765,12 +765,12 @@ async function durchlauf(lauf, motor, browser){
 
 const laeufe = [
   {thema:'hell',   demo:false, sprache:'de'},
-  {thema:'dunkel', demo:false, sprache:'de'},
+  {thema:'dunkel', demo:false, sprache:'de', chromium:true},
   {thema:'hell',   demo:true,  plus:true,  sprache:'de'},
   {thema:'dunkel', demo:true,  plus:true,  sprache:'de'},
   // Daten vorhanden, aber nicht gekauft — der Zustand, in dem die meisten Menschen die App
   // benutzen, und der einzige, in dem die fuenf Schloesser und das Lucenta+-Fenster stehen.
-  {thema:'hell',   demo:true,  plus:false, sprache:'de'},
+  {thema:'hell',   demo:true,  plus:false, sprache:'de', chromium:true},
   {thema:'dunkel', demo:true,  plus:false, sprache:'de'},
   {thema:'hell',   demo:true,  plus:true,  sprache:'ja'},
   {thema:'hell',   demo:true,  plus:true,  sprache:'fr'},
@@ -785,17 +785,21 @@ const laeufe = [
   // wie das Deutsche mit seinen Komposita.
   {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320},
   {thema:'hell',   demo:true,  plus:true,  sprache:'fr', breite:320},
-  {thema:'hell',   demo:true,  plus:true,  sprache:'tr', breite:320},
+  {thema:'hell',   demo:true,  plus:true,  sprache:'tr', breite:320, chromium:true},
   // Feedback B8: groesste unterstuetzte Textgroesse (200 %, Entscheidung des Inhabers) auf dem
   // schmalsten Bildschirm.
-  {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320, text:2},
+  {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320, text:2, chromium:true},
 ];
 // ---------- Runde 103: je Motor ein Browser, vier Durchlaeufe gleichzeitig ----------
 
 const NUR = process.env.LUCENTA_NUR || '';
 const aufgaben = [];
+// Chromium nur als Stichprobe (`chromium:true`), Entscheidung des Inhabers: Das iPhone ist WebKit.
+// Alle Chromium-Durchlaeufe mit LUCENTA_CHROMIUM_VOLL=1 oder gezielt ueber LUCENTA_NUR.
+const CHROMIUM_VOLL = !!process.env.LUCENTA_CHROMIUM_VOLL || !!NUR;
 for (const motor of MOTOREN) for (const l of laeufe){
   if (NUR && !kennungVon(l, motor).includes(NUR)) continue;
+  if (motor === 'chromium' && !l.chromium && !CHROMIUM_VOLL) continue;
   aufgaben.push({ motor, lauf: l });
 }
 if (!aufgaben.length){ console.error('LUCENTA_NUR="' + NUR + '" passt auf keinen Durchlauf.'); process.exit(2); }

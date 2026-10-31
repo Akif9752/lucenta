@@ -18,15 +18,22 @@ Uebergabeblock oben in `docs/ios-huelle-journal.md`.
 Diese Sitzung fuehrt und darf alles aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`) — Entscheidung
 des Inhabers. Die Browsersitzung arbeitet nur auf Anfrage. Mit der Fuehrung liegt hier die Pruefpflicht.
 
-## Die drei Befehle einer Runde
+## Die Befehle einer Runde
 
     npm run pruef-schnell     # Zwischenstand, < 1 Min.
     npm run pruef-alles       # vor jedem Commit; waehlt selbst (s. u.)
     npm run installieren      # ios:sync + Simulator + iPhone; `-- sim` / `-- iphone` / `-- --ohne-sync`
+    npm run runde -- <nr> "<Tabellenzeile>" /tmp/commit.txt
+                              # nach Journal-Eintrag: Tabelle + Stand-Marken, Commit, Push, Installation;
+                              # bricht ab, wenn seit der letzten bestandenen Pruefung mehr als Doku geaendert ist
+
+Tiere: `sh tools/figuren_rendern/vorschau_neu.sh <tier>`, am Ende `alle_ausdruecke.sh <tier> …` (drei Ausdruecke
+gleichzeitig, ~26 s je Tier). `bauen.sh` uebersetzt nur, wenn eine `.swift`-Datei neuer ist als das Programm.
 
 `pruef-alles` waehlt nach Aenderung (Entscheidung des Inhabers): Seit dem letzten vollen, bestandenen
 Lauf nur Tierbilder, Doku, Swift oder Hilfswerkzeuge geaendert -> leichte Runde (Bau, Testreihen, Audit,
-Store-Texte, App-Fassung, ~1 Min.). Sonst alle neun. `npm run pruef-voll` erzwingt alle.
+Store-Texte, App-Fassung, ~1 Min.). Sonst alle neun; die Fehlersuche faehrt WebKit voll und Chromium als Stichprobe (4 von 14, alle mit
+`LUCENTA_CHROMIUM_VOLL=1`, Entscheidung des Inhabers). `npm run pruef-voll` erzwingt alle neun.
 Die volle Runde losgeloest starten und EINMAL am Ende nachsehen, nicht pollen:
 
     (nohup npm run pruef-alles > /tmp/pruef.log 2>&1 &)

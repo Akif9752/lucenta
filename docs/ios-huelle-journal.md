@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 199)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 200)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 199 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 200 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -25,7 +25,7 @@ lassen. Die Richtungen:
 - **Verspielter, mehr Bewegung** (Runde 130–132) — grosse Gesten an Ereignissen, Licht statt Papier.
 - **Avatare** plastisch und suess (eigene 3D-Renderings seit Runde 125, Koerper und Blick seit 133–135).
 - **Schneller arbeiten** (Runde 138, 199): Kommentare kurz, Pruefungen buendeln; seit 199 waehlt `pruef-alles` nach
-  Aenderung (leicht ~1,5 Min. / voll ~12 Min.), `npm run installieren` bringt Simulator und iPhone in einem Befehl.
+  Aenderung (leicht ~1,5 Min. / voll ~10 Min.), `npm run installieren` bringt Simulator und iPhone in einem Befehl.
 - **Tiere so echt wie moeglich** (Runde 141–146), Wahl: „echt, aber liebenswert" (Augen etwas groesser als
   echt, keine Wangenroete). Grenze des Werkzeugs ausgesprochen: sehr gute 3D-Figur, kein Foto; Blender
   wurde angeboten und NICHT gewaehlt.
@@ -64,7 +64,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 199 | (dieser) | Aufgeraeumt: src/js fortlaufend und deutsch benannt (00–29), Pruefrunde nach Aenderung + teilweise parallel, `npm run installieren`, Uebergabe gekuerzt (`docs/runden-archiv.md`), `tools/renderer` entfernt |
+| 200 | (dieser) | Noch schneller: Fehlersuche Chromium als Stichprobe (voll 10,1 Min.), `npm run runde`, Tiere gleichzeitig (26 s je Tier) |
+| 199 | `28b9c86` | Aufgeraeumt: src/js fortlaufend und deutsch benannt (00–29), Pruefrunde nach Aenderung + teilweise parallel, `npm run installieren`, Uebergabe gekuerzt (`docs/runden-archiv.md`), `tools/renderer` entfernt |
 | 198 | `dcf5868` | Eule zweiter Neubau; Ara und Flamingo mit echten Schnaebeln (`bogen`) |
 | 197 | `d1fb6d4` | Neubau Eule, Retriever, Rotkehlchen, Delfin |
 | 196 | `4825771` | Neubau Mops und Panda, alle drei Ausdruecke |
@@ -298,7 +299,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
 
 ### Stand der Pruefungen
 
-**Nach Runde 199: ALLE 9 BESTANDEN** (volle Runde, ~11 Min.). Seit Runde 199 waehlt `pruef-alles` selbst:
+**Nach Runde 200: ALLE 9 BESTANDEN** (volle Runde 10,1 Min., Fehlersuche 18 Durchlaeufe), danach leicht 5/5.
+**Nach Runde 199: ALLE 9 BESTANDEN** (volle Runde, 12,5 Min.). Seit Runde 199 waehlt `pruef-alles` selbst:
 leichte Runde, wenn seit dem letzten vollen bestandenen Lauf nur Tierbilder/Doku/Swift/Hilfswerkzeuge geaendert
 wurden (Merker `.pruef-log/letzte-volle.json`). Fruehere Staende: `docs/runden-archiv.md`.
 
@@ -337,6 +339,8 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
   - **Eine Runde = drei Befehle:** `npm run pruef-schnell` (Zwischenstand), `(nohup npm run pruef-alles >
     /tmp/pruef.log 2>&1 &)` als EIGENER Aufruf (waehlt leicht ~1 Min. / voll ~11 Min.; danach einmal `tail`),
     `npm run installieren` (ios:sync, Simulator UND iPhone in einem; `-- sim`, `-- iphone`, `-- --ohne-sync`).
+    Zum Schluss Journal-Eintrag schreiben, Commit-Nachricht nach `/tmp/commit.txt`, dann
+    `npm run runde -- <nr> "<Tabellenzeile>" /tmp/commit.txt` (Tabelle, Stand-Marken, Commit, Push, Installation).
   - **Flackern/Zeichnen misst nur der Simulator:** `sh tools/flackern/messen.sh <sim-id>` (Video + Helligkeit je Bild).
     Headless-WebKit sah das Flackern nicht. Veraendert die installierte Kopie — danach neu installieren.
   - **iPhone 15 Pro** (`00008130-001E79CC0178001C`): `npm run installieren` signiert mit
@@ -345,7 +349,7 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
   - **Testdaten mit Kalendertagen** saeen (`new Date(y, m, d − i, 12)`), nie `jetzt − i·24 h` (Zeitumstellung, Runde 176).
   - **fehlersuche** ueberspringt Elemente in zugeklappten `<details>`; wer Wichtiges einklappt, klappt es in
     `NACHBEREITUNG` auf (Muster: `settings`).
-  - **Tiere (Ablauf seit Runde 191):** `cp -R src/figuren /tmp/fig-alt` → Tier in `tools/figuren_rendern/Tiere.swift`
+  - **Tiere (Ablauf seit Runde 191; seit 200 `alle_ausdruecke.sh` ~26 s je Tier, gleichzeitig):** `cp -R src/figuren /tmp/fig-alt` → Tier in `tools/figuren_rendern/Tiere.swift`
     aendern → `sh tools/figuren_rendern/vorschau_neu.sh <tier>` (misst Rahmen, Bild nach `/tmp/fig-p/<tier>-v.png`,
     ~1 Min.) → Bild ansehen → wiederholen → `sh tools/figuren_rendern/alle_ausdruecke.sh <tier> …` (ruhig/muede/froh nach
     `src/figuren`). Vergleich alt/neu: kleine HTML-Seite + Playwright-WebKit-Bildschirmfoto (Skript im Repo, danach loeschen).
@@ -403,19 +407,43 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 199** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 200** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 199 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 200 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
-Pruefstand: `pruef-alles` 9/9 (voll ~12,5 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
+Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 200 — Noch schneller: Chromium-Stichprobe, Rundenende, Tiere
+
+**Auftrag:** Punkte 1, 2, 3 aus meiner Liste weiterer Beschleunigungen.
+
+**1. Fehlersuche:** WebKit faehrt alle 14 Konfigurationen, Chromium nur noch vier (`chromium:true`: leer/dunkel,
+gesperrte Inhalte, 320 px Tuerkisch, 200 % Schrift) — das iPhone ist WebKit (Entscheidung des Inhabers). Alle mit
+`LUCENTA_CHROMIUM_VOLL=1`; mit `LUCENTA_NUR` gezielt jede. Gemessen: 18 statt 28 Durchlaeufe, 385 statt 528 s; volle
+Runde 10,1 statt 12,5 Min. Weniger als geschaetzt (7–8), weil die WebKit-Durchlaeufe die langsamen sind.
+
+**2. Rundenende:** `npm run runde -- <nr> "<Tabellenzeile>" /tmp/commit.txt` (`tools/runde_abschliessen.mjs`) traegt
+die Tabellenzeile ein (die vorige `(dieser)` bekommt ihren Commit), zieht die Stand-Marken nach, committet mit der
+Co-Authored-By-Zeile, pusht und installiert, wenn `src/` oder `ios/` beruehrt sind. Es bricht ab, wenn die letzte
+Pruefrunde durchfiel oder danach mehr als Doku geaendert wurde (`pruef-alles` schreibt dazu `.pruef-log/letzte.json`).
+Diese Runde ist mit dem Befehl abgeschlossen.
+
+**3. Tiere:** `bauen.sh` uebersetzte bei jedem Aufruf neu (23 s, in `alle_ausdruecke.sh` dreimal); jetzt nur, wenn
+eine `.swift`-Datei neuer ist. Die drei Ausdruecke rendern und schneiden gleichzeitig zu (getrennte Dateien und
+Zwischenordner). Gemessen am Hasen: Rendern nacheinander 23 s, gleichzeitig 14 s; `alle_ausdruecke.sh` gesamt 26 s
+(vorher geschaetzt ~2 Min.). Die Testbilder sind zurueckgenommen.
+
+**Unsicher:** Der Renderer liefert schon nacheinander nie byte-gleiche Bilder (GPU), ein Vergleich parallel/einzeln
+auf Bytes ist deshalb nicht moeglich; gesehen habe ich die parallel erzeugten Bilder nicht einzeln. Chromium-Funde
+ausserhalb der vier Konfigurationen fallen erst mit `LUCENTA_CHROMIUM_VOLL=1` auf.
 
 ## Runde 199 — Aufgeraeumt und schneller
 
