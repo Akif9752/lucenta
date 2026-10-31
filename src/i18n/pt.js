@@ -1003,7 +1003,7 @@
       'demo_laden': 'Carregar utilizadora de exemplo',
       'figur_dackel': 'Dachshund',
       'figur_retriever': 'Golden retriever',
-      'figur_goldfisch': 'Peixe-dourado',
+      'figur_goldfisch': 'Peixe-palhaço',
       'figur_schildkroete': 'Tartaruga',
       'figur_fuchs': 'Raposa',
       'figur_katze': 'Gato',

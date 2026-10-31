@@ -704,7 +704,7 @@ CONTENT.de = {
       'demo_laden': 'Beispielnutzerin laden',
       'figur_dackel': 'Dackel',
       'figur_retriever': 'Golden Retriever',
-      'figur_goldfisch': 'Goldfisch',
+      'figur_goldfisch': 'Clownfisch',
       'figur_schildkroete': 'Schildkröte',
       'figur_fuchs': 'Fuchs',
       'figur_katze': 'Katze',

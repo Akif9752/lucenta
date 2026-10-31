@@ -1007,7 +1007,7 @@
       'demo_laden': '例のユーザーを読み込む',
       'figur_dackel': 'ダックスフント',
       'figur_retriever': 'ゴールデンレトリバー',
-      'figur_goldfisch': '金魚',
+      'figur_goldfisch': 'クマノミ',
       'figur_schildkroete': 'カメ',
       'figur_fuchs': 'キツネ',
       'figur_katze': 'ネコ',

@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 203)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-10-31, nach Runde 204)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 203 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 204 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -44,7 +44,10 @@ lassen. Die Richtungen:
   einen Blick, Monatsrueckblick, Notiz am Eintrag, Siri-Kurzbefehle, Tier mit drei Ausdruecken nach der Tagesform,
   Freundespaar-Bericht, ausfuehrlicher Test mit 29 Facetten (Lucenta+). Der Inhaber fragt gern „was haben erfolgreiche
   Apps dieser Sparte?" und waehlt dann Nummern aus der Liste.
-- **Runde 191–198: Tiere fotorealistisch**, Tier fuer Tier neu gebaut („egal was es braucht", „riesen Menge Arbeit").
+- **Runde 201–204: Tiere im Trickfilm-Stil nach 15 Vorlagenbildern des Inhabers** (loest „echt, aber liebenswert" ab;
+  Vorlagen in `vorlagen/`, nicht im Repo). Werkzeug: `streifen.swift` (Vorlage/alt/neu im Kreis), Bausteine `TRICK`,
+  `mundHoehle`/`zunge`/`trickNase`, `baerenFigur`, `katzenFigur`. Bilder als JPEG ansehen (grosse PNGs liessen die Vorschau haengen).
+- **Runde 191–198: Tiere fotorealistisch** (abgeloest), Tier fuer Tier neu gebaut („egal was es braucht", „riesen Menge Arbeit").
   Er urteilt am Geraet und meldet knapp, welche Tiere noch kuenstlich wirken (zuletzt: Eule, Papagei, Flamingo,
   „besonders die Schnaebel" → Runde 198). **Das ist der wahrscheinlichste naechste Auftrag.** Stand je Tier: von a bis z
   neu in 196–198 Mops, Panda, Eule (zweimal), Retriever, Rotkehlchen, Delfin, Ara/Flamingo-Schnaebel; in 191–195 Pinguin,
@@ -64,7 +67,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 203 | (dieser) | Trickfilm-Stil, Teil 3: Retriever, Eule, Papagei |
+| 204 | (dieser) | Trickfilm-Stil, Teil 4: Pinguin (klein), Delfin, Wal, Schildkroete, Clownfisch (8 Sprachen), Katze, Siamkatze, Seeotter, Flamingo, Rotkehlchen |
+| 203 | `c6a84c3` | Trickfilm-Stil, Teil 3: Retriever, Eule, Papagei |
 | 202 | `1263b42` | Trickfilm-Stil, Teil 2: Fuchs, Reh (Geweih), Dackel, Mops |
 | 201 | `61417f4` | Trickfilm-Stil nach Vorlagen, Teil 1: Baer, Panda, Hase; Bausteine Augen/Brauen/D-Lachen |
 | 200 | `9ce9131` | Noch schneller: Fehlersuche Chromium als Stichprobe (voll 10,1 Min.), `npm run runde`, Tiere gleichzeitig (26 s je Tier) |
@@ -242,7 +246,10 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   Kaufangebot nach dem Test erst, wenn `#traitsList` in den Blick kommt (+1,5 s), nicht nach 4 s.
   Bewertungsbitte (`StoreKit.bewerten`) einmal, 4,5 s nach dem Hinweis „erstes Muster" (`lucenta_bewertung`).
 
-- **Tiere realistischer (Runde 172, Inhaber):** `mitBrauen` setzt Farbe ×0,4 und Wulst ×0,55 (aufgemalte Brauen hat
+- **Tiere im Trickfilm-Stil (Runde 201, Inhaber, loest Runde 143/172 ab):** wie die Vorlagenbilder — grosse Augen mit Weiss,
+  Brauen, offenes Lachen, Ausschnitt mit ganzem Kopf; keine Nachbildung konkreter Filmfiguren. Clownfisch statt Goldfisch,
+  kleiner Pinguin, Rehbock mit Geweih.
+- *(abgeloest)* **Tiere realistischer (Runde 172, Inhaber):** `mitBrauen` setzt Farbe ×0,4 und Wulst ×0,55 (aufgemalte Brauen hat
   keine dieser Arten), `auge` Lichtpunkt ×0,7. „echt, aber liebenswert" gilt weiter (Augen etwas groesser als echt).
 
 - **Seitenwechsel ohne Deckkraft (Runde 170):** `rise`, `view-vor`, `view-zurueck` nur noch Lage, keine Deckkraft
@@ -410,19 +417,36 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 203** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 204** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 203 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 204 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 204 — Trickfilm-Stil, Teil 4: alle uebrigen Tiere; Clownfisch
+
+**Mit Vorlage:** Pinguin (kleiner runder Pinguin statt Koenigspinguin, Entscheidung des Inhabers: schwarze Kappe,
+herzfoermiges weisses Gesicht, zarte Wangenroete wie in der Vorlage), Delfin (Dreiviertelansicht, Kopf leicht
+gehoben — frontal hing der Schnabel wie ein Ruessel), Wal (Kopf = Leib, weisse Kehle mit Furchen, breites Laecheln,
+blaue Flossen), Schildkroete (Stil der Vorlage, keine Filmfigur: grosse Augen, Panzer mit Plattenmuster),
+Clownfisch statt Goldfisch (Kennung `goldfisch` bleibt — sie steht in Profilen und Freundescodes; Name in 8 Sprachen:
+Clownfisch, Clownfish, Pez payaso, Poisson-clown, Pesce pagliaccio, Peixe-palhaço, Palyaço balığı, クマノミ).
+**Ohne Vorlage, im selben Stil:** Katze und Siamkatze (`katzenFigur`, ohne Schnurrhaare — Striche auf Avatargroesse),
+Seeotter (Baerenbauplan mit hellem Gesicht), Flamingo, Rotkehlchen.
+
+Uebersicht aller 20: `vorlagen/uebersicht-alle.png` (nicht im Repo).
+
+**Unsicher / naechste Kandidaten fuer Feinschliff:** Flamingo (Schnabel sitzt tief, wirkt wie eine Hakennase),
+Seeotter (Ohren fuer einen Otter zu gross), Siamkatze (Maske reicht nicht bis um die Augen), Mops (dunkle
+Augenpartie verschwindet hinter den Augen). Das Eulen-Zwinkern ist entfallen (Vorlage) — zurueck auf Wunsch.
 
 ## Runde 203 — Trickfilm-Stil, Teil 3: Retriever, Eule, Papagei
 

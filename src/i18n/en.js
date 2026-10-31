@@ -1004,7 +1004,7 @@
       'demo_laden': 'Load example user',
       'figur_dackel': 'Dachshund',
       'figur_retriever': 'Golden retriever',
-      'figur_goldfisch': 'Goldfish',
+      'figur_goldfisch': 'Clownfish',
       'figur_schildkroete': 'Turtle',
       'figur_fuchs': 'Fox',
       'figur_katze': 'Cat',

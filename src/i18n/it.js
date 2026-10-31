@@ -1003,7 +1003,7 @@
       'demo_laden': 'Carica utente di esempio',
       'figur_dackel': 'Bassotto',
       'figur_retriever': 'Golden retriever',
-      'figur_goldfisch': 'Pesce rosso',
+      'figur_goldfisch': 'Pesce pagliaccio',
       'figur_schildkroete': 'Tartaruga',
       'figur_fuchs': 'Volpe',
       'figur_katze': 'Gatto',

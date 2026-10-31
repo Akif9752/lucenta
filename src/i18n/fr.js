@@ -1003,7 +1003,7 @@
       'demo_laden': 'Charger l’utilisatrice d’exemple',
       'figur_dackel': 'Teckel',
       'figur_retriever': 'Golden retriever',
-      'figur_goldfisch': 'Poisson rouge',
+      'figur_goldfisch': 'Poisson-clown',
       'figur_schildkroete': 'Tortue',
       'figur_fuchs': 'Renard',
       'figur_katze': 'Chat',

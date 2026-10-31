@@ -1007,7 +1007,7 @@
       'demo_laden': 'Örnek kullanıcıyı yükle',
       'figur_dackel': 'Dachshund',
       'figur_retriever': 'Golden retriever',
-      'figur_goldfisch': 'Japon balığı',
+      'figur_goldfisch': 'Palyaço balığı',
       'figur_schildkroete': 'Kaplumbağa',
       'figur_fuchs': 'Tilki',
       'figur_katze': 'Kedi',
