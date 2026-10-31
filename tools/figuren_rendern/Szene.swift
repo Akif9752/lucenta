@@ -262,7 +262,8 @@ func auge(radius r: CGFloat, iris: NSColor, pupille: CGFloat = 0.42, schlitz: Bo
     let knoten = SCNNode()
     // Trickfilm-Stil (Entscheidung des Inhabers): weisser Augapfel, kleinere Iris, grosse Lichtpunkte.
     let f = TRICK ? f0 * 1.25 : f0 * 0.7
-    let irisAnteil = TRICK ? min(irisAnteil, 0.60) : irisAnteil
+    // Ohne Angabe (0,86) gilt im Trickfilm-Stil 0,60; ein Tier kann eine groessere Iris verlangen (Mops).
+    let irisAnteil = TRICK && irisAnteil == 0.86 ? 0.60 : irisAnteil
     let g: CGFloat = 1024
     let voll = NSImage(size: NSSize(width: g, height: g))
     voll.lockFocus()
