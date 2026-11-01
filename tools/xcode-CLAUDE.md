@@ -27,7 +27,8 @@ des Inhabers. Die Browsersitzung arbeitet nur auf Anfrage. Mit der Fuehrung lieg
                               # nach Journal-Eintrag: Tabelle + Stand-Marken, Commit, Push, Installation;
                               # bricht ab, wenn seit der letzten bestandenen Pruefung mehr als Doku geaendert ist
 
-Tiere: `sh tools/figuren_rendern/vorschau_neu.sh <tier>`, am Ende `alle_ausdruecke.sh <tier> …` (drei Ausdruecke
+Tierbilder aus dem Generator des Inhabers (seit Runde 212): `vorlagen/generiert/<kennung>-{ruhig,muede,froh}.png` →
+`python3 tools/figuren_bilder_holen.py` (Prompts: `docs/tierbilder-prompts.md`). Eigene 3D-Tiere: `sh tools/figuren_rendern/vorschau_neu.sh <tier>`, am Ende `alle_ausdruecke.sh <tier> …` (drei Ausdruecke
 gleichzeitig, ~26 s je Tier). `bauen.sh` uebersetzt nur, wenn eine `.swift`-Datei neuer ist als das Programm.
 
 `pruef-alles` waehlt nach Aenderung (Entscheidung des Inhabers): Seit dem letzten vollen, bestandenen

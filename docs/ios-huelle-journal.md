@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-01, nach Runde 211)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-01, nach Runde 212)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 211 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 212 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -44,6 +44,8 @@ lassen. Die Richtungen:
   einen Blick, Monatsrueckblick, Notiz am Eintrag, Siri-Kurzbefehle, Tier mit drei Ausdruecken nach der Tagesform,
   Freundespaar-Bericht, ausfuehrlicher Test mit 29 Facetten (Lucenta+). Der Inhaber fragt gern „was haben erfolgreiche
   Apps dieser Sparte?" und waehlt dann Nummern aus der Liste.
+- **Runde 212: Tierbilder kommen kuenftig aus einem Bildgenerator mit kommerzieller Lizenz** (Inhaber erzeugt nach
+  `docs/tierbilder-prompts.md`, Einbau `python3 tools/figuren_bilder_holen.py`). Fremde Vorlagen nie selbst verwenden.
 - **Runde 206–209: Tiere als GANZE Figur in der Pose der Vorlage** (Entscheidung des Inhabers; Bausteine `glied`, `sitzLeib`,
   `stehLeib`, `ganzKnoten`, `teilKnoten`; Rahmen an der ganzen Figur, `GANZ` in figuren_holen.py). Fuenf ganze Figuren
   rendern laenger als zehn Minuten — losgeloest starten.
@@ -70,7 +72,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 211 | (dieser) | Muender sauber fuer alle; Reh seitlich mit Kopf zum Betrachter, Baer/Panda kleinerer Leib, Otter eigener Bau |
+| 212 | (dieser) | Tierbilder kuenftig aus lizenziertem Generator: Prompts, Freistellen (Vision), figuren_bilder_holen.py |
+| 211 | `ac7ebe2` | Muender sauber fuer alle; Reh seitlich mit Kopf zum Betrachter, Baer/Panda kleinerer Leib, Otter eigener Bau |
 | 210 | `800f054` | Delfin, Wal, Schildkroete neu; Reh zierlicher, Pinguin kompakter — naeher an die Vorlagen |
 | 209 | `bebdaf1` | Ganze Figuren, Teil 4: Voegel (Beine, Fuesse, Schwaenze) und Wassertiere (Schwanzflossen) — alle 20 fertig |
 | 208 | `bb8cad1` | Ganze Figuren, Teil 3: Reh und Dackel stehend, glatte Glieder (alle Vierbeiner neu) |
@@ -427,19 +430,39 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 211** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 212** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 211 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 212 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 212 — Tierbilder kuenftig aus einem lizenzierten Bildgenerator
+
+**Inhaber:** „Kannst du nicht einfach eins zu eins die Figuren aus den Bildern uebernehmen und minimal abaendern?"
+Nein: Die Vorlagen sind Stockbilder mit Wasserzeichen und vier Disney/Pixar-Figuren; eine leicht veraenderte Kopie
+bleibt eine Bearbeitung fremder Werke (Urheberrecht, Richtlinie 5.2), und aus einem Bild entstehen keine drei
+Ausdruecke. Angeboten: Generator mit kommerzieller Lizenz (Empfehlung), Illustrator, Stocklizenz, eigene 3D-Figuren.
+**Gewaehlt: Bildgenerator mit kommerzieller Lizenz** (z. B. Adobe Firefly); der Inhaber erzeugt, die Sitzung baut ein.
+
+**Neu:**
+- `docs/tierbilder-prompts.md`: Regeln (keine fremden Bilder als Vorlage hochladen, keine Studio-/Figurennamen,
+  Lizenz pruefen), Einstellungen, Grundbaustein, drei Ausdrucks-Saetze, je Tier eine Beschreibung nach der Vorlage
+  mit eigenen Merkmalen bei den Filmfiguren; Weg zu einheitlichen Ausdruecken (ruhig als eigene Strukturvorlage).
+- `tools/figuren_rendern/freistellen.swift`: stellt lokal per Vision frei (nichts verlaesst den Mac), quadratisch mit Rand.
+- `tools/figuren_bilder_holen.py`: liest `vorlagen/generiert/<kennung>-{ruhig,muede,froh}.*`, stellt frei, verkleinert,
+  Palette wie `figuren_holen.py`, schreibt nach `src/figuren/`; fehlende Ausdruecke behalten das alte Bild.
+
+Probelauf mit einer Vorlage als Platzhalter: sauber freigestellt; danach zurueckgesetzt, nichts davon committet.
+
+**Bis die Bilder da sind**, bleiben die eigenen 3D-Figuren (Runde 211) in der App.
 
 ## Runde 211 — Muender sauber; Reh, Baer, Panda, Otter
 
