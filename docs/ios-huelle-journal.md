@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-01, nach Runde 209)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-01, nach Runde 210)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 209 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 210 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -70,7 +70,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 209 | (dieser) | Ganze Figuren, Teil 4: Voegel (Beine, Fuesse, Schwaenze) und Wassertiere (Schwanzflossen) — alle 20 fertig |
+| 210 | (dieser) | Delfin, Wal, Schildkroete neu; Reh zierlicher, Pinguin kompakter — naeher an die Vorlagen |
+| 209 | `bebdaf1` | Ganze Figuren, Teil 4: Voegel (Beine, Fuesse, Schwaenze) und Wassertiere (Schwanzflossen) — alle 20 fertig |
 | 208 | `bb8cad1` | Ganze Figuren, Teil 3: Reh und Dackel stehend, glatte Glieder (alle Vierbeiner neu) |
 | 207 | `3931c33` | Ganze Figuren, Teil 2: Mops, Retriever, Katze, Siamkatze, Hase (sitzend) |
 | 206 | `4281fd0` | Ganze Figuren nach Vorlage, Teil 1: Baer, Panda, Fuchs; Rahmen an der ganzen Figur |
@@ -425,19 +426,32 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 209** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 210** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 209 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 210 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 210 — Delfin, Wal, Schildkroete, Reh, Pinguin naeher an die Vorlagen
+
+**Inhaber:** diese fuenf sehen noch nicht wie ihre Vorlage aus.
+
+- **Delfin** neu: fast frontal, Brustflossen wie Arme ausgebreitet, Leib biegt zur Seite in die Schwanzflosse, Weiss nur
+  als Bauchstreifen vorn (vorher eine weisse Saeule), Zunge flach im Mund (ragte heraus).
+- **Wal** neu: lang gestreckter Leib in Dreiviertel-Seitenansicht statt Kugel, Schwanzstiel mit Fluke nach hinten oben,
+  weisse Kehle mit Furchen, schmales breites Laecheln mit dunklem (nicht braunrotem) Inneren.
+- **Schildkroete** neu: grosser Kopf vorn, Panzer von oben sichtbar, grosse gefleckte Vorderflossen an der Schulter
+  angesetzt und flach in der Bildebene — hochkant und lose lasen sie sich als schwebende Scheiben.
+- **Reh:** zierlicher Rumpf, laengerer schlanker Hals, duennere Beine — Kopf und Ohren wirken gross wie in der Vorlage.
+- **Pinguin:** kompakter Leib, kurze Flossen (die langen wirkten wie Arme).
 
 ## Runde 209 — Ganze Figuren, Teil 4: Voegel und Wassertiere — alle 20 fertig
 
