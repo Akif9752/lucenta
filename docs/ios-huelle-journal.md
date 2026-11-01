@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-01, nach Runde 208)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-01, nach Runde 209)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 208 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 209 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -44,6 +44,9 @@ lassen. Die Richtungen:
   einen Blick, Monatsrueckblick, Notiz am Eintrag, Siri-Kurzbefehle, Tier mit drei Ausdruecken nach der Tagesform,
   Freundespaar-Bericht, ausfuehrlicher Test mit 29 Facetten (Lucenta+). Der Inhaber fragt gern „was haben erfolgreiche
   Apps dieser Sparte?" und waehlt dann Nummern aus der Liste.
+- **Runde 206–209: Tiere als GANZE Figur in der Pose der Vorlage** (Entscheidung des Inhabers; Bausteine `glied`, `sitzLeib`,
+  `stehLeib`, `ganzKnoten`, `teilKnoten`; Rahmen an der ganzen Figur, `GANZ` in figuren_holen.py). Fuenf ganze Figuren
+  rendern laenger als zehn Minuten — losgeloest starten.
 - **Runde 201–204: Tiere im Trickfilm-Stil nach 15 Vorlagenbildern des Inhabers** (loest „echt, aber liebenswert" ab;
   Vorlagen in `vorlagen/`, nicht im Repo). Werkzeug: `streifen.swift` (Vorlage/alt/neu im Kreis), Bausteine `TRICK`,
   `mundHoehle`/`zunge`/`trickNase`, `baerenFigur`, `katzenFigur`. Bilder als JPEG ansehen (grosse PNGs liessen die Vorschau haengen).
@@ -67,7 +70,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 208 | (dieser) | Ganze Figuren, Teil 3: Reh und Dackel stehend, glatte Glieder (alle Vierbeiner neu) |
+| 209 | (dieser) | Ganze Figuren, Teil 4: Voegel (Beine, Fuesse, Schwaenze) und Wassertiere (Schwanzflossen) — alle 20 fertig |
+| 208 | `bb8cad1` | Ganze Figuren, Teil 3: Reh und Dackel stehend, glatte Glieder (alle Vierbeiner neu) |
 | 207 | `3931c33` | Ganze Figuren, Teil 2: Mops, Retriever, Katze, Siamkatze, Hase (sitzend) |
 | 206 | `4281fd0` | Ganze Figuren nach Vorlage, Teil 1: Baer, Panda, Fuchs; Rahmen an der ganzen Figur |
 | 205 | `e2aca74` | Nachgebessert: Muender nach Vorlagen, eigener Panda, Eule, Papagei (Fluegel offen), Flamingo, Rotkehlchen, Mops, Seeotter, Siamkatze |
@@ -421,19 +425,34 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 208** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 209** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 208 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 209 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 209 — Ganze Figuren, Teil 4: Voegel und Wassertiere — alle 20 fertig
+
+**Voegel:** Eule mit Krallen und gestreiftem Schwanz, Papagei mit Fuessen und langen roten Schwanzfedern, Pinguin mit
+breiten orangefarbenen Fuessen und erhobener Winkeflosse (wie die Vorlage), Flamingo mit langen rosa Beinen,
+Rotkehlchen mit duennen Beinchen. **Wassertiere:** Delfin laeuft in einem Bogen in die Schwanzflosse aus, Wal mit
+hochgestellter Fluke, Schildkroete mit olivgruenem Panzer und goldenen Platten (eigenes Merkmal — die Filmfigur traegt
+einen roten), Clownfisch unveraendert ganz.
+
+**Fehler und Ursache:** Beine und Schwanzfedern fehlten. Kleine Teile (`nase`, `schnabel`) wurden in einem festen Raster
+um den Ursprung (Grenze 2,2) berechnet — alles weiter unten fiel weg. Neu `teilKnoten`: eigenes Raster um die Mitte der
+Teile, gleiche Zellgroesse. Beim Papagei riss der Schopf an der Leinwand ab (Kamera weiter weg).
+
+Lokal ausgenommen (`.git/info/exclude`): ein von Xcode neu angelegtes Widget-Schema, das `npm run runde` sonst als
+Aenderung nach der Pruefung meldet.
 
 ## Runde 208 — Ganze Figuren, Teil 3: Reh, Dackel; glatte Glieder
 

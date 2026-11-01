@@ -300,9 +300,24 @@ func lider(_ x: Float, _ y: Float, _ z: Float, _ r: Float, weich: Float = 0.10) 
     [-1, 1].map { s in Form(art: .ellipsoid(V(r * 1.15, r * 0.45, r * 0.6)), mitte: V(x * s, y + r * 0.78, z), weich: weich) }
 }
 // `n` = Rasterpunkte; schlanke Teile (Pinguinschnabel) brauchen ein feineres Raster, sonst zackt die Kante.
+// Kleine Teile bekommen ein eigenes Raster um ihre Mitte: ein festes Raster um den Ursprung (Grenze 2,2) schnitt alles
+// weiter unten ab (Vogelbeine, Schwanzfedern der ganzen Figuren). Die Zellgroesse bleibt die des alten Rasters.
+func teilKnoten(_ formen: [Form], farbe: @escaping (V, V) -> V, n: Int, rauheit: Float, lack: Float) -> SCNNode {
+    var lo = V(repeating: 1e9), hi = V(repeating: -1e9)
+    for f in formen {
+        var ende = f.mitte
+        if case .rundkegel(let b, _, _) = f.art { ende = f.mitte + f.drehung.act(b * f.stauchung) }
+        lo = simd_min(lo, simd_min(f.mitte, ende)); hi = simd_max(hi, simd_max(f.mitte, ende))
+    }
+    let mitte = (lo + hi) / 2, grenze = max(0.4, simd_reduce_max(hi - lo) / 2 + 0.45)
+    let verschoben = formen.map { var g = $0; g.mitte -= mitte; return g }
+    let k = Koerper(formen: verschoben, farbe: { p, nn in farbe(p + mitte, nn) })
+    let knoten = glanzKoerper(k, grenze: grenze, n: max(40, Int(Float(n) * grenze / 2.2)), rauheit: rauheit, lack: lack)
+    knoten.position = scnVektor(mitte)
+    return knoten
+}
 func nase(_ wurzel: SCNNode, _ formen: [Form], farbe: V, lack: Float = 0.9, rauheit: Float = 0.25, n: Int = 170) {
-    let k = Koerper(formen: formen, farbe: { _, _ in farbe })
-    wurzel.addChildNode(glanzKoerper(k, grenze: 2.2, n: n, rauheit: rauheit, lack: lack))
+    wurzel.addChildNode(teilKnoten(formen, farbe: { _, _ in farbe }, n: n, rauheit: rauheit, lack: lack))
 }
 // Kleine glatte Teile (Zaehne, Zungen), fuer die das Raster der Abstandsfelder zu grob ist.
 func perle(_ mitte: V, _ radien: V, farbe: NSColor, rauheit: CGFloat = 0.3) -> SCNNode {
@@ -594,7 +609,8 @@ func katze() -> (SCNNode, Float, V) {
 // ---------- Ganzer Koerper (Runde 206) ----------
 // Seit Runde 206 zeigt der Avatar das ganze Tier wie die Vorlage (Entscheidung des Inhabers). Glieder und Schwaenze
 // sind weiche Rohre entlang einer Kurve (`bogen`, rund statt seitlich schmal).
-func glied(_ punkte: [V], _ radien: [Float], weich: Float = 0.06) -> [Form] { bogen(punkte, radien, schmal: 1, schritte: 6, weich: weich).formen }
+// Feine Schritte und kaum Verschmelzung: groessere `weich` liess an jedem Uebergang einen Wulst stehen (Ringe im Licht).
+func glied(_ punkte: [V], _ radien: [Float], weich: Float = 0.015) -> [Form] { bogen(punkte, radien, schmal: 1, schritte: 10, weich: weich).formen }
 
 // Sitzender Vierbeiner (Fuchs, Mops, Retriever, Katzen, Hase): Hals, Brust, Hinterkeulen, gerade Vorderbeine,
 // Pfoten, Schwanz als weiches Rohr. Kopf im Ursprung; der Boden liegt bei etwa y = -2,7.
@@ -631,6 +647,46 @@ func sitzLeib(_ s: Sitz) -> SitzTeile {
     return SitzTeile(formen: fk + bk + pk + sk, beine: bk, pfoten: pk, schwanz: sk)
 }
 func nahe(_ p: V, _ formen: [Form], _ r: Float = 0.16) -> Float { glatt(r, 0.02, formen.map { $0.abstand(p) }.min() ?? 1) }
+
+// Stehender Vierbeiner (Reh, Dackel): waagerechter Rumpf nach hinten, Hals vom Kopf hinab, vier Beine bis zum Boden,
+// Hufe bzw. Pfoten, Schwanz. Kopf im Ursprung.
+struct Steh {
+    var rumpf = V(0.55, 0.55, 1.10)   // Radien
+    var rumpfY: Float = -1.55
+    var laenge: Float = 1             // wie weit der Rumpf nach hinten reicht
+    var beinLaenge: Float = 1.6       // von der Rumpfunterkante bis zum Boden
+    var bein: Float = 0.13
+    var abstand: Float = 0.28         // halber Abstand der Beine
+    var huf = false
+    var schwanz: [V] = []
+    var schwanzR: [Float] = []
+}
+struct StehTeile { var formen: [Form]; var beine: [Form]; var fuesse: [Form]; var schwanz: [Form]; var boden: Float }
+func stehLeib(_ s: Steh) -> StehTeile {
+    let zMitte = -0.20 - s.rumpf.z * s.laenge * 0.85
+    let vorn = zMitte + s.rumpf.z * 0.62, hinten = zMitte - s.rumpf.z * 0.62
+    let unten = s.rumpfY - s.rumpf.y * 0.5, boden = unten - s.beinLaenge
+    var f: [Form] = [
+        Form(art: .rundkegel(V(0, s.rumpfY + 0.25 + 0.45, vorn + 0.15) - V(0, -0.35, -0.05), 0.34, s.rumpf.x * 0.95), mitte: V(0, -0.35, -0.05), weich: 0.30),
+        Form(art: .ellipsoid(s.rumpf), mitte: V(0, s.rumpfY, zMitte), weich: 0.30),
+    ]
+    var beine: [Form] = [], fuesse: [Form] = []
+    for x: Float in [-1, 1] {
+        for (z, hinterbein) in [(vorn, false), (hinten, true)] {
+            let oben = V(s.abstand * x, unten + 0.15, z)
+            // Hinterbeine mit Keule und leichtem Knick wie beim echten Tier
+            let punkte = hinterbein
+                ? [oben + V(0, 0.20, 0), V(s.abstand * x, unten - s.beinLaenge * 0.45, z - 0.12), V(s.abstand * x, boden + 0.08, z + 0.02)]
+                : [oben, V(s.abstand * x, unten - s.beinLaenge * 0.5, z + 0.02), V(s.abstand * x, boden + 0.08, z)]
+            let radien: [Float] = hinterbein ? [s.bein * 1.9, s.bein * 1.05, s.bein * 0.9] : [s.bein * 1.3, s.bein, s.bein * 0.9]
+            beine += glied(punkte, radien)
+            fuesse.append(Form(art: .ellipsoid(s.huf ? V(s.bein * 1.0, 0.09, s.bein * 1.15) : V(s.bein * 1.15, 0.09, s.bein * 1.6)),
+                               mitte: V(s.abstand * x, boden + 0.05, z + (s.huf ? 0.02 : 0.08)), weich: 0.05))
+        }
+    }
+    let schwanz = s.schwanz.count > 1 ? glied(s.schwanz, s.schwanzR) : []
+    return StehTeile(formen: f + beine + fuesse + schwanz, beine: beine, fuesse: fuesse, schwanz: schwanz, boden: boden)
+}
 
 // Trickfilm-Baerenkoerper nach den Vorlagen (Baer, Panda): kleiner Oberkopf, unten breit mit dicken Wangenpolstern,
 // kleine runde Ohren, vorstehende Schnauze mit grosser Nase, offenes D-Lachen, Augen hoch und dicht. Pummelig mit
@@ -865,15 +921,20 @@ func reh() -> (SCNNode, Float, V) {
         + (zu ? paar(Kurve(punkte: [V(0, -0.25, 1.16), V(0.08, -0.28, 1.10), V(0.16, -0.24, 1.00)], spitzVorn: false))
               : paar(Kurve(punkte: [V(0.21, -0.22, 1.06), V(0.25, -0.15, 0.98), V(0.27, -0.08, 0.90)]))),
         r: 0.02, farbe: dunkel, staerke: 0.85, hoehlen: hoehle, innen: hex("#93323A")))
-    let bau = Bau(brust: 0.95, tiefe: 1.1, hals: 0.30, halsLaenge: 1.55, bein: 0.14, beinAbstand: 0.20, ruecken: 0.60, rueckenLaenge: 1.6)
-    let koerper = brustbild(maul, vierbeiner(bau), farbe: { p, _ in
+    // Stehend wie in der Vorlage: lange duenne Beine mit schwarzen Hufen, Tupfen am Ruecken, helle Kehle und Bauch,
+    // kurzer hochgestellter Schwanz.
+    let steh = stehLeib(Steh(rumpf: V(0.72, 0.70, 1.18), rumpfY: -1.50, laenge: 1, beinLaenge: 1.65, bein: 0.11, abstand: 0.28, huf: true,
+        schwanz: [V(0, -1.20, -2.05), V(0, -0.95, -2.20)], schwanzR: [0.14, 0.10]))
+    let koerper = brustbild(maul, steh.formen, farbe: { p, n in
         var c = mische(farbeMitRauschen(fell, p, 0.04), creme, latz(p, breite: 0.22, hoehe: 0.30))
-        // Tupfen nur am Ruecken
+        let amBein = nahe(p, steh.beine, 0.12)
+        c = mische(c, creme, glatt(0.1, -0.5, n.y) * glatt(-1.6, -1.9, p.y) * (1 - amBein) * 0.8)            // heller Bauch
         let z = zellen(p, 5.5)
-        c = mische(c, creme, glatt(0.10, 0.14, z.rand) * (z.wert > 0.45 ? 1 : 0) * glatt(-0.4, -0.7, p.z) * glatt(-1.7, -1.2, p.y))
+        c = mische(c, creme, glatt(0.10, 0.14, z.rand) * (z.wert > 0.45 ? 1 : 0) * glatt(0.0, 0.5, n.y) * glatt(-0.7, -1.0, p.z) * (1 - amBein))
+        c = mische(c, hex("#1A1412"), nahe(p, steh.fuesse, 0.06))
         return c
     })
-    let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
+    let w = SCNNode(); w.addChildNode(ganzKnoten(koerper))
     trickNase(w, mitte: V(0, -0.11, 1.22), r: V(0.13, 0.085, 0.08), farbe: hex("#141011"))
     zunge(w, mitte: V(0, -0.22, 1.12), breite: 0.20, hoehe: 0.19, offen: 0.9)
     // Geweih: je Seite eine Stange nach oben aussen und eine kurze Sprosse nach vorn.
@@ -887,8 +948,8 @@ func reh() -> (SCNNode, Float, V) {
     nase(w, geweih, farbe: hex("#6E5444"), lack: 0.2, rauheit: 0.6, n: 300)
     augenEinsetzen(w, kopf, x: 0.26, y: 0.34, r: 0.15, tiefe: 0.24, iris: NSColor(calibratedRed: 0.26, green: 0.15, blue: 0.09, alpha: 1),
                    pupille: 0.64, ausdruck: Ausdruck(oben: 0.08, unten: 0.0, schraeg: 0.06, funke: 1.5, groesse: 1.55))
-    w.eulerAngles = SCNVector3(0.05, -0.30, 0.04)
-    return (w, 8.0, V(0, 0.30, 0))
+    w.eulerAngles = SCNVector3(0.05, -0.75, 0.04)
+    return (w, 11.0, V(0, -1.2, -0.6))
 }
 
 // ---------- Dackel (Kurzhaar, rot) ----------
@@ -919,17 +980,20 @@ func dackel() -> (SCNNode, Float, V) {
     let maul = mitMaul(mitB, Maul(kurven: [Kurve(punkte: [V(0, -0.32, 1.15), V(0, -0.38, 1.10)], spitzHinten: false)]
         + paar(Kurve(punkte: [V(0, -0.38, 1.10), V(0.07, -0.41, 1.03), V(0.14, -0.39, 0.93), V(0.19, -0.33, 0.84)], spitzVorn: false)),
         r: 0.02, farbe: dunkel, staerke: 0.8, hoehlen: hoehle, innen: hex("#93323A")))
-    let bau = Bau(brust: 0.95, tiefe: 1.25, hals: 0.34, halsLaenge: 1.2, bein: 0.15, beinAbstand: 0.19, ruecken: 0.55, rueckenLaenge: 2.2)
-    let koerper = brustbild(maul, vierbeiner(bau), farbe: { p, _ in
-        mische(farbeMitRauschen(rot, p, 0.04), hell, latz(p, breite: 0.22, hoehe: 0.15) * 0.4)
+    // Stehend von vorn wie in der Vorlage: kurze Beine, langer Rumpf nach hinten; eigene Merkmale statt der
+    // Plakatfigur: keine Muetze, hellere Brust.
+    let steh = stehLeib(Steh(rumpf: V(0.50, 0.48, 1.35), rumpfY: -1.30, laenge: 1, beinLaenge: 0.85, bein: 0.15, abstand: 0.24,
+        schwanz: [V(0, -1.15, -2.55), V(0.1, -0.85, -2.85), V(0.15, -0.65, -2.95)], schwanzR: [0.12, 0.09, 0.05]))
+    let koerper = brustbild(maul, steh.formen, farbe: { p, _ in
+        mische(farbeMitRauschen(rot, p, 0.04), hex("#D9925E"), latz(p, breite: 0.30, hoehe: 0.25))
     })
-    let w = SCNNode(); w.addChildNode(brustKnoten(koerper))
+    let w = SCNNode(); w.addChildNode(ganzKnoten(koerper))
     trickNase(w, mitte: V(0, -0.25, 1.17), r: V(0.12, 0.085, 0.08), farbe: hex("#141011"))
     zunge(w, mitte: V(0, -0.40, 0.94), breite: 0.12, hoehe: 0.10, offen: 0.0)
     augenEinsetzen(w, kopf, x: 0.24, y: 0.36, r: 0.15, tiefe: 0.24, iris: NSColor(calibratedRed: 0.32, green: 0.17, blue: 0.08, alpha: 1),
                    pupille: 0.66, ausdruck: Ausdruck(oben: 0.10, unten: 0.0, schraeg: 0.20, funke: 1.6, groesse: 1.6))
-    w.eulerAngles = SCNVector3(0.08, -0.32, 0.04)
-    return (w, 8.0, V(0, 0.25, 0))
+    w.eulerAngles = SCNVector3(0.10, -0.80, 0.03)
+    return (w, 10.0, V(0, -0.9, -0.8))
 }
 
 // ---------- Golden Retriever ----------
@@ -1039,14 +1103,19 @@ func eule() -> (SCNNode, Float, V) {
         c = mische(c, mische(farbeMitRauschen(fluegel, p, 0.06), creme, tupfen), amFluegel)
         return c
     })
-    let w = SCNNode(); w.addChildNode(brustKnoten(k))
+    let w = SCNNode(); w.addChildNode(ganzKnoten(k))
+    // Fuesse mit dunklen Krallen und gestreifter Schwanz wie in der Vorlage
+    vogelFuesse(w, unten: -2.02, abstand: 0.32, vorn: 0.30, farbe: hex("#E7B58A"), dicke: 0.10, bein: 0.14, zehe: 0.26, kralle: hex("#2A2422"))
+    schnabel(w, glied([V(0.20, -1.75, -0.50), V(0.55, -2.15, -0.85), V(0.80, -2.35, -1.05)], [0.20, 0.17, 0.10]).map { var f = $0; f.stauchung = V(1, 1, 0.45); return f },
+             farbe: { p in mische(hex("#3C3836"), hex("#F2EEE8"), glatt(0.35, 0.65, sinf(p.y * 26) * 0.5 + 0.5)) }, lack: 0.1, rauheit: 0.8)
+
     let ober = bogen([V(0, 0.24, 0.72), V(0, 0.20, 0.84), V(0, 0.09, 0.88), V(0, -0.01, 0.83)],
                      [0.09, 0.075, 0.045, 0.014], schmal: 0.85)
     schnabel(w, ober.formen, farbe: { p in mische(hex("#F4A24E"), hex("#E07A2A"), glatt(0.3, 1.0, ober.t(p))) }, lack: 0.6, rauheit: 0.3)
     augenEinsetzen(w, kopf, x: augeX, y: augeY, r: 0.16, tiefe: 0.08, iris: NSColor(calibratedRed: 0.46, green: 0.24, blue: 0.08, alpha: 1),
                    pupille: 0.62, aussen: 0.1, ausdruck: Ausdruck(oben: 0.02, unten: 0.0, schraeg: 0.0, funke: 1.5, groesse: 2.2))
     w.eulerAngles = SCNVector3(0.04, 0.22, 0.05)
-    return (w, 8.2, V(0, -0.20, 0.10))
+    return (w, 9.5, V(0, -0.9, 0.1))
 }
 
 // ---------- Wal ----------
@@ -1058,7 +1127,9 @@ func wal() -> (SCNNode, Float, V) {
     var formen: [Form] = [
         Form(art: .ellipsoid(V(1.05, 0.88, 1.00)), mitte: V(0, 0.05, 0)),
         Form(art: .rundkegel(V(0, 0.35, -1.30), 0.70, 0.22), mitte: V(0, -0.05, -0.40), weich: 0.40),
-        Form(art: .ellipsoid(V(0.55, 0.10, 0.28)), mitte: V(0, 0.55, -1.75), drehung: simd_quatf(angle: 0.5, axis: V(1, 0, 0)), weich: 0.10),
+        Form(art: .rundkegel(V(0, 0.55, -0.55), 0.26, 0.14), mitte: V(0, 0.25, -1.55), weich: 0.15),
+        Form(art: .ellipsoid(V(0.50, 0.08, 0.26)), mitte: V(-0.32, 0.95, -2.15), drehung: simd_quatf(angle: 0.6, axis: V(1, 0, 0)) * simd_quatf(angle: 0.4, axis: V(0, 1, 0)), weich: 0.08),
+        Form(art: .ellipsoid(V(0.50, 0.08, 0.26)), mitte: V(0.32, 0.95, -2.15), drehung: simd_quatf(angle: 0.6, axis: V(1, 0, 0)) * simd_quatf(angle: -0.4, axis: V(0, 1, 0)), weich: 0.08),
     ]
     for s: Float in [-1, 1] {
         formen.append(Form(art: .ellipsoid(V(0.42, 0.08, 0.20)), mitte: V(1.02 * s, -0.45, 0.20),
@@ -1078,7 +1149,7 @@ func wal() -> (SCNNode, Float, V) {
     let hoehle = mundHoehle(mitte: V(0, -0.21, 0.97), breite: 0.62, hoehe: 0.17, tiefe: 0.24, offen: 0.75, kopf: kopf)
     let maul = mitMaul(k, Maul(kurven: paar(Kurve(punkte: [V(0, -0.22, 0.98), V(0.25, -0.18, 0.92), V(0.48, -0.10, 0.80), V(0.66, 0.02, 0.62)], spitzVorn: false)),
         r: 0.026, farbe: dunkel, staerke: 0.9, hoehlen: hoehle, innen: hex("#7A2A36")))
-    let w = SCNNode(); w.addChildNode(glanzKoerper(maul, grenze: 2.4, n: 230, rauheit: 0.35, lack: 0.6))
+    let w = SCNNode(); w.addChildNode(glanzKoerper(maul, grenze: 3.0, n: 290, rauheit: 0.35, lack: 0.6))
     augenEinsetzen(w, kopf, x: 0.50, y: 0.14, r: 0.13, tiefe: 0.24, iris: NSColor(calibratedRed: 0.15, green: 0.30, blue: 0.55, alpha: 1),
                    pupille: 0.62, aussen: 0.4, ausdruck: Ausdruck(oben: 0.06, unten: 0.0, schraeg: 0.0, funke: 1.5, groesse: 1.45))
     w.eulerAngles = SCNVector3(0.10, -0.35, 0.03)
@@ -1131,7 +1202,7 @@ func goldfisch() -> (SCNNode, Float, V) {
 func schildkroete() -> (SCNNode, Float, V) {
     // Trickfilm-Meeresschildkroete (Stil der Vorlage, keine Filmfigur): grosser runder Kopf mit sehr grossen Augen,
     // hell graugruene Haut mit braunen Flecken, gewoelbter warmbrauner Panzer mit Plattenmuster, gefleckte Flossen.
-    let haut = hex("#B9C29A"), fleck = hex("#8A5A3A"), panzer = hex("#9C4A2E"), platte = hex("#C9773E")
+    let haut = hex("#B9C29A"), fleck = hex("#8A5A3A"), panzer = hex("#5E6E2E"), platte = hex("#C9A24A")
     var formen: [Form] = [
         Form(art: .ellipsoid(V(0.66, 0.58, 0.64)), mitte: V(0, 0.30, 0.25)),
         Form(art: .rundkegel(V(0, -0.30, -0.45), 0.34, 0.40), mitte: V(0, 0.05, 0.10), weich: 0.25),
@@ -1149,7 +1220,7 @@ func schildkroete() -> (SCNNode, Float, V) {
         // Panzer mit Platten (Zellen), Raender dunkler
         let amPanzer = glatt(0.06, 0.0, panzerForm.abstand(p))
         let pz = zellen(V(p.x, p.y * 1.4, p.z), 2.2)
-        let pc = mische(mische(panzer, platte, glatt(0.0, 0.25, pz.rand) * (0.5 + 0.5 * pz.wert)), hex("#5A2A1A"), glatt(0.05, 0.0, pz.rand))
+        let pc = mische(mische(panzer, platte, glatt(0.0, 0.25, pz.rand) * (0.5 + 0.5 * pz.wert)), hex("#33401A"), glatt(0.05, 0.0, pz.rand))
         return mische(c, pc, amPanzer)
     }, rauheit: 0.55, fell: 0)
     var k = kopf; k.lack = 0.3
@@ -1172,6 +1243,11 @@ func delfin() -> (SCNNode, Float, V) {
         Form(art: .ellipsoid(V(0.72, 0.70, 0.72)), mitte: V(0, 0.28, 0)),
         Form(art: .rundkegel(V(0, 0.04, 0.48), 0.24, 0.17), mitte: V(0, -0.10, 0.52), weich: 0.20),
         Form(art: .rundkegel(V(0, -0.55, -1.30), 0.64, 0.35), mitte: V(0, -0.15, -0.20), weich: 0.40),
+        Form(art: .rundkegel(V(0, -0.35, -0.85), 0.35, 0.16), mitte: V(0, -0.70, -1.50), weich: 0.20),
+        Form(art: .rundkegel(V(0, 0.30, -0.45), 0.16, 0.10), mitte: V(0, -1.05, -2.35), weich: 0.12),
+        // Schwanzflosse quer, zwei Lappen
+        Form(art: .ellipsoid(V(0.42, 0.06, 0.20)), mitte: V(-0.30, -0.75, -2.85), drehung: simd_quatf(angle: 0.35, axis: V(0, 1, 0)), weich: 0.08),
+        Form(art: .ellipsoid(V(0.42, 0.06, 0.20)), mitte: V(0.30, -0.75, -2.85), drehung: simd_quatf(angle: -0.35, axis: V(0, 1, 0)), weich: 0.08),
         Form(art: .rundkegel(V(0, 0.42, -0.30), 0.16, 0.03), mitte: V(0, 0.55, -0.85), weich: 0.12),
     ]
     for s: Float in [-1, 1] {
@@ -1188,12 +1264,12 @@ func delfin() -> (SCNNode, Float, V) {
     let maul = mitMaul(k, Maul(kurven: zu ? paar(Kurve(punkte: [V(0, -0.24, 1.0), V(0.14, -0.22, 0.93), V(0.27, -0.14, 0.80), V(0.34, -0.04, 0.68)], spitzVorn: false))
                                           : paar(Kurve(punkte: [V(0.32, -0.20, 0.82), V(0.38, -0.10, 0.70), V(0.41, 0.0, 0.60)])),
         r: 0.022, farbe: dunkel, staerke: 0.9, hoehlen: hoehle, innen: hex("#8A2F3A")))
-    let w = SCNNode(); w.addChildNode(glanzKoerper(maul, grenze: 2.4, n: 230, rauheit: 0.35, lack: 0.6))
+    let w = SCNNode(); w.addChildNode(glanzKoerper(maul, grenze: 3.4, n: 320, rauheit: 0.35, lack: 0.6))
     zunge(w, mitte: V(0, -0.15, 0.92), breite: 0.27, hoehe: 0.21, offen: 0.9)
     augenEinsetzen(w, kopf, x: 0.32, y: 0.42, r: 0.14, tiefe: 0.24, iris: NSColor(calibratedRed: 0.18, green: 0.14, blue: 0.12, alpha: 1),
                    pupille: 0.66, ausdruck: Ausdruck(oben: 0.04, unten: 0.0, schraeg: 0.0, funke: 1.6, groesse: 1.6))
     w.eulerAngles = SCNVector3(-0.22, -0.62, 0.10)
-    return (w, 8.2, V(0, 0.05, 0))
+    return (w, 10.5, V(0, -0.4, -0.8))
 }
 
 func seeotter() -> (SCNNode, Float, V) {
@@ -1251,8 +1327,7 @@ func bogen(_ punkte: [V], _ radien: [Float], schmal: Float, schritte: Int = 10, 
     return b
 }
 func schnabel(_ w: SCNNode, _ formen: [Form], farbe: @escaping (V) -> V, lack: Float = 0.45, rauheit: Float = 0.35, n: Int = 380) {
-    let k = Koerper(formen: formen, farbe: { p, _ in farbe(p) * (0.94 + 0.10 * fbm(p * 24)) })
-    w.addChildNode(glanzKoerper(k, grenze: 2.2, n: n, rauheit: rauheit, lack: lack))
+    w.addChildNode(teilKnoten(formen, farbe: { p, _ in farbe(p) * (0.94 + 0.10 * fbm(p * 24)) }, n: n, rauheit: rauheit, lack: lack))
 }
 
 func vogelFuesse(_ w: SCNNode, unten: Float, abstand: Float, vorn: Float, farbe: V, dicke: Float = 0.08,
@@ -1309,19 +1384,23 @@ func pinguin() -> (SCNNode, Float, V) {
     let leib: [Form] = [
         Form(art: .ellipsoid(V(0.92, 1.10, 0.82)), mitte: V(0, -0.90, -0.04), weich: 0.45),
         Form(art: .ellipsoid(V(0.18, 0.72, 0.36)), mitte: V(-0.96, -0.85, 0.0), drehung: simd_quatf(angle: 0.35, axis: V(0, 0, 1)), weich: 0.10),
-        Form(art: .ellipsoid(V(0.18, 0.72, 0.36)), mitte: V(0.96, -0.85, 0.0), drehung: simd_quatf(angle: -0.35, axis: V(0, 0, 1)), weich: 0.10),
+        // rechte Flosse zum Winken erhoben wie in der Vorlage
+        Form(art: .ellipsoid(V(0.18, 0.72, 0.36)), mitte: V(1.12, -0.30, 0.05), drehung: simd_quatf(angle: -0.65, axis: V(0, 0, 1)), weich: 0.10),
     ]
     let k = brustbild(k0, leib, farbe: { p, n in
         let bauch = region(p, V(0, -0.95, 0.55), V(0.66, 0.95, 0.55), 0.25) * glatt(0.0, 0.3, n.z)
         return mische(farbeMitRauschen(schwarz, p, 0.04), weiss, bauch)
     })
-    let w = SCNNode(); w.addChildNode(brustKnoten(k))
+    let w = SCNNode(); w.addChildNode(ganzKnoten(k))
+    // breite orangefarbene Fuesse
+    vogelFuesse(w, unten: -1.95, abstand: 0.40, vorn: 0.35, farbe: hex("#F2913A"), dicke: 0.10, bein: 0.06, zehe: 0.36, breit: true)
+
     let ober = bogen([V(0, 0.16, 0.70), V(0, 0.13, 0.82), V(0, 0.09, 0.88)], [0.08, 0.055, 0.015], schmal: 1.2)
     schnabel(w, ober.formen, farbe: { p in mische(hex("#F79A3A"), hex("#E9762A"), glatt(0.3, 1.0, ober.t(p))) }, lack: 0.6, rauheit: 0.3)
     augenEinsetzen(w, kopf, x: 0.24, y: 0.30, r: 0.14, tiefe: 0.26, iris: NSColor(calibratedRed: 0.22, green: 0.14, blue: 0.10, alpha: 1),
                    pupille: 0.66, ausdruck: Ausdruck(oben: 0.04, unten: 0.0, schraeg: 0.04, funke: 1.6, groesse: 1.6))
     w.eulerAngles = SCNVector3(0.04, -0.18, 0.05)
-    return (w, 8.0, V(0, -0.10, 0))
+    return (w, 9.2, V(0, -0.8, 0))
 }
 
 func papagei() -> (SCNNode, Float, V) {
@@ -1375,7 +1454,15 @@ func papagei() -> (SCNNode, Float, V) {
                 let fc = mische(mische(farbeMitRauschen(rot, p, 0.05) * (0.85 + 0.25 * fz.wert), orange, glatt(1.2, 1.6, abs(p.x)) * 0.7), gelb, glatt(1.55, 1.9, abs(p.x)) * 0.6)
         return mische(farbeMitRauschen(c, p, 0.04), fc, fl)
     })
-    let w = SCNNode(); w.addChildNode(brustKnoten(k))
+    let w = SCNNode(); w.addChildNode(ganzKnoten(k))
+    // Fuesse und lange rote Schwanzfedern wie in der Vorlage
+    vogelFuesse(w, unten: -2.35, abstand: 0.30, vorn: 0.25, farbe: hex("#3A3B40"), dicke: 0.09, bein: 0.16, zehe: 0.26, kralle: hex("#1A1A1C"))
+    var schwanzFedern: [Form] = []
+    for dx: Float in [-0.12, 0, 0.12] {
+        schwanzFedern += glied([V(dx, -1.95, -0.55), V(dx * 1.6, -2.55, -0.95), V(dx * 2.2, -3.05, -1.25)], [0.13, 0.10, 0.04]).map { var f = $0; f.stauchung = V(1, 1, 0.5); return f }
+    }
+    schnabel(w, schwanzFedern, farbe: { p in mische(hex("#E0301E"), hex("#F4741E"), glatt(-2.4, -3.0, p.y)) }, lack: 0.1, rauheit: 0.8)
+
     let ober = bogen([V(0, 0.36, 0.56), V(0, 0.38, 0.76), V(0, 0.26, 0.92), V(0, 0.06, 0.96), V(0, -0.10, 0.88), V(0, -0.15, 0.80)],
                      [0.24, 0.21, 0.16, 0.10, 0.05, 0.016], schmal: 0.70)
     schnabel(w, ober.formen, farbe: { p in mische(hex("#8E9096"), hex("#4A4C52"), glatt(0.4, 0.95, ober.t(p))) }, lack: 0.5, rauheit: 0.3)
@@ -1394,7 +1481,7 @@ func papagei() -> (SCNNode, Float, V) {
     augenEinsetzen(w, kopf, x: 0.30, y: 0.42, r: 0.14, tiefe: 0.10, iris: NSColor(calibratedRed: 0.42, green: 0.66, blue: 0.20, alpha: 1),
                    pupille: 0.58, aussen: 0.3, ausdruck: Ausdruck(oben: 0.06, unten: 0.0, schraeg: 0.0, funke: 1.5, groesse: 1.55))
     w.eulerAngles = SCNVector3(0.04, -0.58, 0.08)
-    return (w, 8.4, V(0, -0.25, 0.15))
+    return (w, 11.5, V(0, -0.9, 0.1))
 }
 
 // ---------- Runde 163: Mops und Siamkatze (Auftrag des Inhabers) ----------
@@ -1424,7 +1511,10 @@ func flamingo() -> (SCNNode, Float, V) {
         let fz = federZelle(p, 5)
         return mische(farbeMitRauschen(rosa, p, 0.04), tief * (0.88 + 0.2 * fz.wert), max(fl, glatt(-1.6, -2.1, p.y) * 0.5))
     })
-    let w = SCNNode(); w.addChildNode(brustKnoten(k))
+    let w = SCNNode(); w.addChildNode(ganzKnoten(k))
+    // lange rosa Beine mit Schwimmfuessen
+    vogelFuesse(w, unten: -2.20, abstand: 0.22, vorn: -0.30, farbe: hex("#EE8AA4"), dicke: 0.055, bein: 1.55, zehe: 0.28, breit: true)
+
     let ober = bogen([V(0, 0.30, 0.52), V(0, 0.26, 0.74), V(0, 0.18, 0.88), V(0, 0.02, 0.94), V(0, -0.12, 0.90)],
                      [0.15, 0.14, 0.11, 0.07, 0.025], schmal: 0.85)
     schnabel(w, ober.formen, farbe: { p in
@@ -1434,7 +1524,7 @@ func flamingo() -> (SCNNode, Float, V) {
     augenEinsetzen(w, kopf, x: 0.25, y: 0.40, r: 0.13, tiefe: 0.20, iris: NSColor(calibratedRed: 0.90, green: 0.66, blue: 0.22, alpha: 1),
                    pupille: 0.58, ausdruck: Ausdruck(oben: 0.08, unten: 0.0, schraeg: 0.04, funke: 1.6, groesse: 1.75))
     w.eulerAngles = SCNVector3(0.06, -0.50, 0.08)
-    return (w, 8.2, V(0, -0.30, 0))
+    return (w, 11.0, V(0, -1.6, 0))
 }
 
 func rotkehlchen() -> (SCNNode, Float, V) {
@@ -1465,13 +1555,16 @@ func rotkehlchen() -> (SCNNode, Float, V) {
         let stufe = glatt(0.75, 0.95, sinf(p.y * 13) * 0.5 + 0.5) * glatt(-0.8, -1.2, p.y)
         return mische(c, mische(farbeMitRauschen(braun, p, 0.05), hex("#D9C3A0"), stufe * 0.7), fl)
     })
-    let w = SCNNode(); w.addChildNode(brustKnoten(k))
+    let w = SCNNode(); w.addChildNode(ganzKnoten(k))
+    // duenne Beine mit kleinen Krallen
+    vogelFuesse(w, unten: -1.78, abstand: 0.28, vorn: 0.20, farbe: hex("#5A4A42"), dicke: 0.05, bein: 0.30, zehe: 0.22, kralle: hex("#2A2420"))
+
     let ober = bogen([V(0, 0.26, 0.66), V(0, 0.24, 0.80), V(0, 0.20, 0.90)], [0.08, 0.05, 0.012], schmal: 1.0)
     schnabel(w, ober.formen, farbe: { _ in hex("#2E2622") }, lack: 0.5, rauheit: 0.35)
     augenEinsetzen(w, kopf, x: 0.27, y: 0.44, r: 0.14, tiefe: 0.20, iris: NSColor(calibratedRed: 0.24, green: 0.14, blue: 0.08, alpha: 1),
                    pupille: 0.64, ausdruck: Ausdruck(oben: 0.04, unten: 0.0, schraeg: 0.06, funke: 1.6, groesse: 1.75))
     w.eulerAngles = SCNVector3(0.04, -0.30, 0.10)
-    return (w, 8.0, V(0, -0.10, 0))
+    return (w, 9.2, V(0, -0.8, 0))
 }
 
 // ---------- Runde 163: Mops und Siamkatze (Auftrag des Inhabers) ----------
