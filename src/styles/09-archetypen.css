@@ -631,3 +631,17 @@
   .arch-kombi .arch-freunde{ margin-top:2px; grid-column:1 / -1; }
   .arch-kombi-ich .arch-kombi-titel{ color:var(--accent-strong); }
   .arch-du{ font-size:calc(12px * var(--dt, 1)); font-weight:600; color:var(--accent-ink); background:var(--accent-strong); border-radius:999px; padding:2px 8px; }
+
+  /* ---------- Zubehoer fuer den Begleiter ---------- */
+  .hat-figur{ position:relative; }
+  .figur-zubehoer{ position:absolute; height:auto; transform:translateY(-50%); pointer-events:none;
+    -webkit-user-select:none; user-select:none; filter:drop-shadow(0 1px 1px rgba(0,0,0,.18)); }
+  .zub-raster{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-top:10px; }
+  .zub-wahl{ min-height:96px; border-radius:var(--radius-s); cursor:pointer; padding:8px 4px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:4px; background:var(--surface-2); color:var(--ink);
+    border:2px solid transparent; box-shadow:0 0 0 1px var(--line) inset; }
+  .zub-wahl[aria-pressed="true"]{ border-color:var(--ink); }
+  .zub-wahl:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
+  .zub-wahl img{ width:44px; height:44px; object-fit:contain; }
+  .zub-name{ font-size:calc(13px * var(--dt, 1)); font-weight:600; }
+  .zub-schwelle{ display:flex; align-items:center; gap:3px; font-size:calc(11px * var(--dt, 1)); color:var(--muted); text-align:center; }

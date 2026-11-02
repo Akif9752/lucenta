@@ -353,6 +353,12 @@
     try{ gefeiert = JSON.parse(localStorage.getItem(MS_SCHLUESSEL) || 'null'); }catch(e){}
     var erreicht = m.liste.filter(function(a){ return a.erreicht; }).map(function(a){ return a.id; });
     var neu = Array.isArray(gefeiert) ? erreicht.filter(function(id){ return gefeiert.indexOf(id) < 0; }) : [];
+    // Zubehoer, das mit diesem Eintrag frei wurde (nur mit gewaehlter Figur sichtbar)
+    var zFrei = ZUBEHOER.filter(zubehoerFrei).map(function(z){ return z.id; }), zAlt = null;
+    try{ zAlt = JSON.parse(localStorage.getItem('lucenta_zubehoer_gemeldet') || 'null'); }catch(e){}
+    try{ localStorage.setItem('lucenta_zubehoer_gemeldet', JSON.stringify(zFrei)); }catch(e){}
+    var zNeu = Array.isArray(zAlt) ? zFrei.filter(function(id){ return zAlt.indexOf(id) < 0; }) : [];
+    if (zNeu.length) setTimeout(function(){ toast(tx('zub_neu').split('{name}').join(tx('zub_' + zNeu[0]))); }, neu.length ? 3200 : 900);
     try{ localStorage.setItem(MS_SCHLUESSEL, JSON.stringify(erreicht)); }catch(e){}
     if (!neu.length) return;
     var a = m.liste.filter(function(x){ return x.id === neu[neu.length - 1]; })[0];

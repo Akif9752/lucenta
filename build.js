@@ -57,6 +57,11 @@ function figurenEinsetzen(quelltext, wert) {
       if (figurDateien.includes(datei)) bilder[k + '-' + a] = wert(k + '-' + a, fs.readFileSync(path.join(SRC, FIGUR_ORDNER, datei)));
     }
   }
+  // Zubehoer fuer den Begleiter (Runde 215): src/figuren/zubehoer-<name>.png, Schluessel wie der Dateiname.
+  for (const datei of figurDateien.filter(f => f.startsWith('zubehoer-'))) {
+    const k = datei.replace(/\.png$/, '');
+    bilder[k] = wert(k, fs.readFileSync(path.join(SRC, FIGUR_ORDNER, datei)));
+  }
   // Kopf-Ausschnitt der kleinen Avatare (Runde 213): Mitte x, y und Radius als Anteil des Bildes, aus dem Rendering.
   const koepfePfad = path.join(SRC, FIGUR_ORDNER, 'koepfe.json');
   const koepfe = fs.existsSync(koepfePfad) ? JSON.parse(fs.readFileSync(koepfePfad, 'utf8')) : {};

@@ -33,7 +33,7 @@
         el.style.setProperty('--figur-feld-dunkel', figFeldDunkel(fig.feld));
       }catch(e){}
       var gross = el.id === 'profileAvatar' || el.classList.contains('aussehen-avatar');
-      el.innerHTML = figurHTML(fig, ausdruck, !gross);
+      el.innerHTML = figurHTML(fig, ausdruck, !gross) + (profile.zubehoer ? zubehoerHTML(fig, profile.zubehoer, !gross) : '');
       return;
     }
     el.textContent = avatarInitials(profile.name);
@@ -58,6 +58,36 @@
         var pr = loadProfile();
         pr.figur = b.getAttribute('data-figur') || null;
         if (saveProfile(pr)){ renderAvatar(pr); refreshDrawerState(); renderSettings(); }
+        else toast(tx('js_konnte_nicht_gespeichert_w'));
+      });
+    });
+  }
+  // Zubehoer: "keins" und die drei Teile. Gesperrt mit Schloss und der Schwelle; fehlen nur Lucenta+, oeffnet der Knopf
+  // das Kauffenster, fehlen Tage, sagt ein Hinweis ehrlich, wie viele noch.
+  function renderZubehoerRaster(profile){
+    var wrap = $('zubRaster');
+    if (!wrap || !wrap.querySelectorAll) return;
+    var aktiv = profile.zubehoer || '', tage = eintragsTage();
+    var knopf = function(z){
+      var frei = zubehoerFrei(z), quelle = FIGUR_BILDER['zubehoer-' + z.id];
+      var schwelle = tx('zub_ab_tagen').split('{n}').join(String(z.tage)) + (z.plus ? ' · Lucenta+' : '');
+      return '<button type="button" class="zub-wahl" data-zub="' + z.id + '" aria-pressed="' + (aktiv === z.id ? 'true' : 'false') + '" aria-label="' +
+        tx('zub_' + z.id) + (frei ? '' : ', ' + schwelle) + '">' + (quelle ? '<img src="' + quelle + '" alt="" aria-hidden="true" draggable="false">' : '') +
+        '<span class="zub-name">' + tx('zub_' + z.id) + '</span>' + (frei ? '' : '<span class="zub-schwelle">' + SCHLOSS_KLEIN + schwelle + '</span>') + '</button>';
+    };
+    wrap.innerHTML = '<div class="zub-raster"><button type="button" class="zub-wahl" data-zub="" aria-pressed="' + (aktiv ? 'false' : 'true') + '">' +
+      '<span class="zub-name">' + tx('zub_keins') + '</span></button>' + ZUBEHOER.map(knopf).join('') + '</div>';
+    wrap.querySelectorAll('[data-zub]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var id = b.getAttribute('data-zub') || '', z = zubehoerFinden(id);
+        if (z && !zubehoerFrei(z)){
+          if (tage >= z.tage) openPlusModal();
+          else toast(tx('zub_noch').split('{n}').join(String(z.tage - tage)).split('{name}').join(tx('zub_' + z.id)));
+          return;
+        }
+        var pr = loadProfile();
+        pr.zubehoer = id || null;
+        if (saveProfile(pr)){ renderZubehoerRaster(pr); renderAvatar(pr); refreshDrawerState(); aussehenVorschau(); }
         else toast(tx('js_konnte_nicht_gespeichert_w'));
       });
     });
@@ -119,6 +149,7 @@
       $('avatarColor'+c.charAt(0).toUpperCase()+c.slice(1)).setAttribute('aria-pressed', pressed?'true':'false');
     });
     renderFigurRaster(profile);
+    renderZubehoerRaster(profile);
     renderHintergrundRaster(profile);
     aussehenVorschau();
   }

@@ -68,6 +68,28 @@
     return '<img class="figur-bild" src="'+quelle+'" alt="" aria-hidden="true" draggable="false" decoding="async">';
   }
 
+  // ---------- Zubehoer fuer den Begleiter ----------
+  // Freigeschaltet ueber Eintragstage der Tagesform; das erste frei, die weiteren nur mit Lucenta+ (Entscheidung des
+  // Inhabers). Platziert ueber die Kopfstelle (FIGUR_KOEPFE), damit es auf jedes Tierbild passt.
+  var ZUBEHOER = [{id:'schal', tage:7, plus:false}, {id:'muetze', tage:30, plus:true}, {id:'blume', tage:100, plus:true}];
+  // Lage je Teil aus Kopfmitte und -radius: Mitte x, Mitte y, Breite (Anteile des Bildes).
+  var ZUB_LAGE = {
+    schal:  function(k){ return [k[0], k[1] + k[2] * 1.50, k[2] * 2.1]; },
+    muetze: function(k){ return [k[0], k[1] - k[2] * 0.92, k[2] * 1.38]; },
+    blume:  function(k){ return [k[0] + k[2] * 0.80, k[1] - k[2] * 0.78, k[2] * 0.6]; }
+  };
+  function zubehoerFinden(id){ return ZUBEHOER.filter(function(z){ return z.id === id; })[0] || null; }
+  function eintragsTage(){ try{ return stateTage(loadStateHistory()).length; }catch(e){ return 0; } }
+  function zubehoerFrei(z){ return !!z && eintragsTage() >= z.tage && (!z.plus || istPlus()); }
+  function zubehoerHTML(f, zid, kopf){
+    var z = zubehoerFinden(zid), k = FIGUR_KOEPFE[f.id], quelle = z && FIGUR_BILDER['zubehoer-' + zid];
+    if (!z || !k || !quelle || !zubehoerFrei(z)) return '';
+    var p = ZUB_LAGE[zid](k), s = kopf ? Math.max(1.01, Math.min(3.2, 0.40 / k[2])) : 1;
+    var x = kopf ? 0.5 + (p[0] - k[0]) * s : p[0], y = kopf ? 0.5 + (p[1] - k[1]) * s : p[1], b = p[2] * s;
+    return '<img class="figur-zubehoer" src="' + quelle + '" alt="" aria-hidden="true" draggable="false" style="left:' +
+      ((x - b / 2) * 100).toFixed(1) + '%;top:' + (y * 100).toFixed(1) + '%;width:' + (b * 100).toFixed(1) + '%">';
+  }
+
   // ---------- Hintergruende der Profilzeile ----------
   // CSS-Verlaeufe statt Bilder; jede Vorlage bestimmt Flaeche UND Schriftfarbe.
   // Angezeigt in Gruppen (Auftrag des Inhabers); die Reihenfolge in FIGUREN bleibt dafuer unberuehrt.
