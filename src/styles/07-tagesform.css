@@ -270,3 +270,21 @@
     color:var(--ink); font-size:calc(15px * var(--dt, 1)); line-height:1.35; }
   .tf-begleiter-satz::before{ content:""; position:absolute; left:-6px; top:50%; width:12px; height:12px; margin-top:-6px;
     background:var(--surface-2); transform:rotate(45deg); border-radius:2px; }
+
+  /* ---------- Serie und Meilensteine ---------- */
+  .tf-serie-karte{ display:flex; align-items:center; gap:12px; margin:16px 0 10px; }
+  .tf-serie-zahl{ min-width:44px; height:44px; padding:0 8px; box-sizing:border-box; border-radius:22px; display:flex; align-items:center;
+    justify-content:center; background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:calc(18px * var(--dt, 1));
+    font-variant-numeric:tabular-nums; }
+  .tf-serie-satz{ font-weight:600; font-size:calc(15px * var(--dt, 1)); color:var(--ink); }
+  .tf-serie-unter{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); margin-top:2px; }
+  .tf-abzeichen-titel{ font-size:calc(13px * var(--dt, 1)); font-weight:600; color:var(--muted); margin:4px 0 8px; }
+  .tf-abzeichen{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:6px; }
+  .tf-abzeichen-stk{ display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .tf-abzeichen-marke{ width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    border:2px dashed var(--line); color:var(--muted); font-weight:700; font-size:calc(14px * var(--dt, 1)); }
+  .tf-abzeichen-stk[data-erreicht="1"] .tf-abzeichen-marke{ border:2px solid var(--accent); background:var(--accent); color:var(--accent-ink); }
+  .tf-abzeichen-name{ font-size:calc(12px * var(--dt, 1)); color:var(--muted); text-align:center; }
+  .tf-abzeichen-stk[data-erreicht="1"] .tf-abzeichen-name{ color:var(--ink); }
+  /* nur fuer Bildschirmleser */
+  .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; }

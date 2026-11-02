@@ -60,6 +60,7 @@
         renderStateView();
         tfAbschnitteRendern(abschnitt);
         tfBegleiterFreuen();
+        tfMeilensteinFeiern();
       });
       refreshDrawerState();
       renderLandingStateTeaser();

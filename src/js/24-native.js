@@ -290,7 +290,7 @@
     erinnerungAnwenden();
   }
   function istErinnerungsId(id){
-    return id === ERINNERUNG_ID ||
+    return id === ERINNERUNG_ID || id === WOCHE_ERINNERUNG_ID ||
       (id >= ERINNERUNG_ID_BASIS && id < ERINNERUNG_ID_BASIS + Math.max(ERINNERUNG_TAGE * ERINNERUNG_JE_TAG, ERINNERUNG_ALT_ANZAHL));
   }
   // Runde 124: Ein Tipp auf die Mitteilung oeffnet die Tagesform, nicht die Startseite. Sie ist der
@@ -307,7 +307,24 @@
   }
   // Die Liste, die geplant wird — getrennt vom Planen, damit pruef-nativ sie ohne Bruecke nachrechnen
   // kann. `jetzt` als Parameter aus demselben Grund.
+  // Wochenrueckblick: eine Mitteilung am naechsten Sonntag um 18 Uhr, wenn in dieser Woche schon zwei Tage eingetragen
+  // sind (die Karte braucht drei). Laeuft mit den Erinnerungen und wird mit ihnen nachgezogen.
+  var WOCHE_ERINNERUNG_ID = ERINNERUNG_ID_BASIS + 990;
+  function wochenErinnerung(jetzt){
+    var wt = (jetzt.getDay() + 6) % 7, montag = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() - wt, 12);
+    var diese = tfWocheTage(montag, 0);
+    var n = stateTage(loadStateHistory()).filter(function(t){ return diese[t.day]; }).length;
+    var um = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() + (6 - wt), 18, 0, 0);
+    if (n < 2 || um.getTime() <= jetzt.getTime()) return null;
+    return {id: WOCHE_ERINNERUNG_ID, title: decodeEntities(tx('erinnerung_woche_titel')),
+            body: decodeEntities(tx('erinnerung_woche_text')), schedule: {at: um, allowWhileIdle: true}};
+  }
   function erinnerungListe(jetzt){
+    var liste = erinnerungListeTage(jetzt), woche = wochenErinnerung(jetzt);
+    if (woche) liste.push(woche);
+    return liste;
+  }
+  function erinnerungListeTage(jetzt){
     var heute = heuteEingetragen(), liste = [];
     if (!erinnerungAlle()){
       var heuteLeer = !TF_ABSCHNITTE.some(function(s){ return heute[s]; });
@@ -340,7 +357,7 @@
     return liste;
   }
   function erinnerungAlleIds(){
-    var ids = [{id: ERINNERUNG_ID}];
+    var ids = [{id: ERINNERUNG_ID}, {id: WOCHE_ERINNERUNG_ID}];
     var n = Math.max(ERINNERUNG_TAGE * ERINNERUNG_JE_TAG, ERINNERUNG_ALT_ANZAHL);
     for (var i = 0; i < n; i++) ids.push({id: ERINNERUNG_ID_BASIS + i});
     return ids;

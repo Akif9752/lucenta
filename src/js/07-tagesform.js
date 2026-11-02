@@ -301,7 +301,67 @@
   // ---------- Begleiter ----------
   // Nur mit gewaehlter Figur. Ausdruck nach dem heutigen Mittel der Stimmung; Meilensteine zaehlen
   // Eintragstage insgesamt, nicht in Folge — nichts geht verloren (Entscheidung des Inhabers).
-  var TF_MEILENSTEINE = [7, 30, 100, 365];
+  var TF_MEILENSTEINE = [10, 30, 100];
+
+  // ---------- Serie und Meilensteine (frei, Entscheidung des Inhabers) ----------
+  // Serie: Tage in Folge bis heute (oder bis gestern, solange heute offen ist). Ein verpasster Tag je
+  // Kalenderwoche wird verziehen, damit nichts auf null faellt. Meilensteine bleiben Eintragstage insgesamt.
+  function tfTagNr(schluessel){
+    var t = schluessel.split('-');
+    return Math.round(new Date(+t[0], t[1] - 1, +t[2], 12).getTime() / 864e5);
+  }
+  function tfSerie(){
+    var tage = {};
+    loadStateHistory().forEach(function(e){ tage[tfTagNr(e.day)] = true; });
+    var heute = tfTagNr(todayKey()), d = tage[heute] ? heute : heute - 1, n = 0, verziehen = 0, wochen = {};
+    for (;;){
+      if (tage[d]){ n++; d--; continue; }
+      var woche = Math.floor((d + 3) / 7);              // Tag 0 (1.1.1970) war ein Donnerstag: so beginnt die Woche montags
+      if (n > 0 && !wochen[woche] && tage[d - 1]){ wochen[woche] = 1; verziehen++; d--; continue; }
+      break;
+    }
+    return {n: n, verziehen: verziehen, heuteOffen: !tage[heute]};
+  }
+  function tfMeilensteine(){
+    var tage = stateTage(loadStateHistory());
+    var erster = tage.length ? tfTagNr(tage[0].day) : null;
+    var liste = TF_MEILENSTEINE.map(function(m){ return {id: 't' + m, n: m, erreicht: tage.length >= m}; });
+    liste.push({id: 'jahr', erreicht: erster !== null && tfTagNr(todayKey()) - erster >= 365});
+    return {tage: tage.length, liste: liste};
+  }
+  function tfMsName(a){ return a.id === 'jahr' ? tx('tf_ms_jahr') : tx('tf_ms_tage').split('{n}').join(String(a.n)); }
+  function tfSerieRendern(){
+    var wrap = $('tfSerie');
+    if (!wrap) return;
+    var s = tfSerie(), m = tfMeilensteine();
+    if (!m.tage){ wrap.innerHTML = ''; return; }
+    var satz = s.heuteOffen ? (s.n ? tx('tf_serie_heute').split('{n}').join(String(s.n + 1)) : tx('tf_serie_start'))
+             : (s.n >= 2 ? tx('tf_serie_n').split('{n}').join(String(s.n)) : tx('tf_serie_eins'));
+    wrap.innerHTML = '<div class="tf-serie-karte"><div class="tf-serie-zahl" aria-hidden="true">' + s.n + '</div>' +
+      '<div class="tf-serie-text"><div class="tf-serie-satz">' + satz + '</div>' +
+      (s.verziehen ? '<div class="tf-serie-unter">' + tx('tf_serie_verziehen') + '</div>' : '') + '</div></div>' +
+      '<div class="tf-abzeichen-titel">' + tx('tf_ms_titel') + '</div><div class="tf-abzeichen">' + m.liste.map(function(a){
+        return '<div class="tf-abzeichen-stk" data-ms="' + a.id + '" data-erreicht="' + (a.erreicht ? 1 : 0) + '">' +
+          '<span class="tf-abzeichen-marke" aria-hidden="true">' + (a.id === 'jahr' ? '\u2605' : a.n) + '</span>' +
+          '<span class="tf-abzeichen-name">' + tfMsName(a) + (a.erreicht ? '' : '<span class="sr-only"> \u2013 ' + tx('tf_ms_offen') + '</span>') + '</span></div>';
+      }).join('') + '</div>';
+  }
+  // Nach dem Speichern: ein neu erreichter Meilenstein wird einmal gefeiert. Beim ersten Mal (Bestand) still merken.
+  var MS_SCHLUESSEL = 'lucenta_meilensteine';
+  function tfMeilensteinFeiern(){
+    var m = tfMeilensteine(), gefeiert = null;
+    try{ gefeiert = JSON.parse(localStorage.getItem(MS_SCHLUESSEL) || 'null'); }catch(e){}
+    var erreicht = m.liste.filter(function(a){ return a.erreicht; }).map(function(a){ return a.id; });
+    var neu = Array.isArray(gefeiert) ? erreicht.filter(function(id){ return gefeiert.indexOf(id) < 0; }) : [];
+    try{ localStorage.setItem(MS_SCHLUESSEL, JSON.stringify(erreicht)); }catch(e){}
+    if (!neu.length) return;
+    var a = m.liste.filter(function(x){ return x.id === neu[neu.length - 1]; })[0];
+    setTimeout(function(){
+      toast(tx('tf_ms_neu').split('{name}').join(tfMsName(a)));
+      var el = document.querySelector('[data-ms="' + a.id + '"] .tf-abzeichen-marke');
+      if (el) funkenAn(el);
+    }, 900);
+  }
   function tfBegleiterAusdruck(heute){
     var w = TF_ABSCHNITTE.map(function(s){ return heute[s]; }).filter(Boolean);
     if (!w.length) return '';
@@ -351,6 +411,8 @@
     erinnerungAnwenden();
     renderStateTrend();
     tfAuswertungenRendern();
+    tfSerieRendern();
+    tfWocheHeuteRendern();
     tfRueckblickHeuteRendern();
     tfBegleiterRendern();
   }

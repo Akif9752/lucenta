@@ -119,6 +119,43 @@
     tfTeilenVerdrahten(wrap);
   }
 
+  // ---------- Wochenrueckblick ----------
+  // Sonntag die laufende, Montag die vergangene Woche (Mo–So). Durchschnitt frei; bester Tag und Vergleich zur
+  // Vorwoche Lucenta+ (Entscheidung des Inhabers).
+  function tfWocheTage(montag, versatz){
+    var s = {};
+    for (var i = 0; i < 7; i++) s[tfTagSchluessel(new Date(montag.getFullYear(), montag.getMonth(), montag.getDate() + versatz + i, 12))] = 1;
+    return s;
+  }
+  function tfWocheDaten(jetzt){
+    var d = jetzt || new Date(), wt = (d.getDay() + 6) % 7;          // 0 = Montag
+    if (wt !== 6 && wt !== 0) return null;
+    var montag = new Date(d.getFullYear(), d.getMonth(), d.getDate() - wt - (wt === 0 ? 7 : 0), 12);
+    var diese = tfWocheTage(montag, 0), vorige = tfWocheTage(montag, -7);
+    var tage = stateTage(loadStateHistory());
+    var w = tage.filter(function(t){ return diese[t.day]; }), v = tage.filter(function(t){ return vorige[t.day]; });
+    if (w.length < TF_RB_MIN_TAGE) return null;
+    var mittel = function(l, g){ return l.reduce(function(a, t){ return a + t[g]; }, 0) / l.length; };
+    var r = {n: w.length, e: mittel(w, 'energy'), s: mittel(w, 'valence')};
+    if (v.length >= TF_RB_MIN_TAGE){ r.de = r.e - mittel(v, 'energy'); r.ds = r.s - mittel(v, 'valence'); }
+    var beste = w.slice().sort(function(a, b){ return b.valence - a.valence || b.energy - a.energy; })[0];
+    r.beste = wochentagName(new Date(beste.ts).getDay());
+    return r;
+  }
+  function tfWocheHeuteRendern(){
+    var wrap = $('tfWocheHeute');
+    if (!wrap) return;
+    var r = tfWocheDaten();
+    if (!r){ wrap.innerHTML = ''; return; }
+    var frei = tx('tf_kal_schnitt').split('{e}').join(tfZahl(r.e)).split('{s}').join(tfZahl(r.s)).split('{n}').join(String(r.n));
+    var mehr = [tx('tf_woche_beste').split('{tag}').join(r.beste)];
+    if (typeof r.de === 'number') mehr.push(tx('tf_woche_vgl').split('{e}').join(tfDiff(r.de)).split('{s}').join(tfDiff(r.ds)));
+    var mehrHTML = '<ul class="tf-rb-zeilen">' + mehr.map(function(z){ return '<li>' + z + '</li>'; }).join('') + '</ul>';
+    wrap.innerHTML = '<div class="tf-rb"><div class="tf-rb-titel">' + tx('tf_woche_titel') + '</div>' +
+      '<ul class="tf-rb-zeilen"><li>' + frei + '</li></ul>' + (istPlus() ? mehrHTML : vorschauHTML(mehrHTML, tx('tf_woche_plus'))) + '</div>';
+    schloesserVerdrahten(wrap);
+  }
+
   // ---------- Bilder ----------
   function tfFarbe(hex){ var h = hex.replace('#', ''); return [0, 2, 4].map(function(i){ return parseInt(h.substr(i, 2), 16); }); }
   function tfMischen(a, b, t){
