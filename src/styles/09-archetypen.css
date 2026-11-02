@@ -254,6 +254,9 @@
   .settings-account-avatar.hat-figur{ background:var(--figur-feld, var(--surface-2)); padding:0; }
   /* Das Tierbild liegt randlos im Kreis, der den Rumpf abschneidet; der Rand steckt im Bild selbst
      (tools/figuren_holen.py, fester Rahmen), der Kopf sitzt wie vor Runde 133. */
+  /* Kopf-Ausschnitt (kleine Avatare): herangezoomter Hintergrund, vom Kreis beschnitten. */
+  .hat-figur, .figur-wahl{ overflow:hidden; }
+  .figur-bild.figur-kopf{ background-repeat:no-repeat; }
   .figur-bild{
     display:block; width:100%; height:100%; margin:0; object-fit:contain;
     filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.16));

@@ -3,7 +3,7 @@
 // Vorher: Journal-Eintrag "## Runde <nr> — …" geschrieben und `npm run pruef-alles` bestanden.
 // Dann: Tabellenzeile + Stand-Marken im Uebergabeblock, Commit, Push, Installation (nur wenn src/ oder ios/ geaendert).
 import { execFileSync, spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const WURZEL = new URL('..', import.meta.url).pathname;
@@ -31,7 +31,12 @@ if (!seitHead.every(nurDoku)){
   try { letzte = JSON.parse(readFileSync(join(WURZEL, '.pruef-log/letzte.json'), 'utf8')); }
   catch { stopp('keine Pruefrunde vermerkt — erst npm run pruef-alles'); }
   if (!letzte.gut) stopp('die letzte Pruefrunde ist durchgefallen (.pruef-log/)');
-  const danach = geaendertSeit(letzte.stand).filter(d => !nurDoku(d));
+  // Unversionierte Dateien erfasst der Stand (`git stash create`) nicht: sie zaehlen nur, wenn sie nach dem Start
+  // der Pruefung geaendert wurden.
+  const unversioniert = new Set(git('ls-files', '--others', '--exclude-standard').split('\n').filter(Boolean));
+  const beginn = letzte.beginn ? Date.parse(letzte.beginn) : Date.parse(letzte.zeit);
+  const danach = geaendertSeit(letzte.stand).filter(d => !nurDoku(d))
+    .filter(d => !unversioniert.has(d) || statSync(join(WURZEL, d)).mtimeMs > beginn);
   if (danach.length) stopp('nach der letzten Pruefrunde geaendert: ' + danach.slice(0, 5).join(', ') + ' — erst npm run pruef-alles');
   console.log(`Pruefrunde passt (${letzte.art}, ${letzte.zeit.slice(0, 16).replace('T', ' ')})`);
 }

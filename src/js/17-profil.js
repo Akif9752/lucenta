@@ -32,7 +32,8 @@
         el.style.setProperty('--figur-feld', fig.feld);
         el.style.setProperty('--figur-feld-dunkel', figFeldDunkel(fig.feld));
       }catch(e){}
-      el.innerHTML = figurHTML(fig, ausdruck);
+      var gross = el.id === 'profileAvatar' || el.classList.contains('aussehen-avatar');
+      el.innerHTML = figurHTML(fig, ausdruck, !gross);
       return;
     }
     el.textContent = avatarInitials(profile.name);
@@ -50,7 +51,7 @@
       return '<button type="button" class="figur-wahl" data-figur="'+f.id+'" '+
         'style="--figur-feld:'+f.feld+';--figur-feld-dunkel:'+figFeldDunkel(f.feld)+'" '+
         'aria-pressed="'+(aktiv===f.id?'true':'false')+'" '+
-        'aria-label="'+tx('figur_'+f.id)+'">'+figurHTML(f)+'</button>';
+        'aria-label="'+tx('figur_'+f.id)+'">'+figurHTML(f, null, true)+'</button>';
     }, keine, tx('figur_keine'));
     wrap.querySelectorAll('[data-figur]').forEach(function(b){
       b.addEventListener('click', function(){

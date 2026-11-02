@@ -76,7 +76,8 @@ wenn nur eine geaendert wird.
   Nachpruefen am gebauten Bundle (`plutil -extract … <App.app>/Info.plist`).
 - Symbol `AppIcon-512@2x.png` ohne Alphakanal; `assets/icon/lucenta-icon-1024-gerundet.png` hat einen und
   darf nicht in den Asset-Katalog.
-- Deployment Target 15.0; in Xcode „Update to recommended settings" NICHT annehmen.
+- Deployment Target 16.4 (seit Runde 213, Entscheidung des Inhabers: color-mix und @property brauchen 16.2/16.4); das Widget 17.0.
+  In Xcode „Update to recommended settings" NICHT annehmen.
 
 ## Die Kauf-Bruecke
 

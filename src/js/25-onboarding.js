@@ -53,7 +53,7 @@
     wrap.innerHTML = figurenGruppiertHTML(function(f){
       return '<button type="button" class="figur-wahl" data-ob-figur="'+f.id+'" '+
         'style="--figur-feld:'+f.feld+';--figur-feld-dunkel:'+figFeldDunkel(f.feld)+'" '+
-        'aria-pressed="false" aria-label="'+tx('figur_'+f.id)+'">'+figurHTML(f)+'</button>';
+        'aria-pressed="false" aria-label="'+tx('figur_'+f.id)+'">'+figurHTML(f, null, true)+'</button>';
     });
     wrap.querySelectorAll('[data-ob-figur]').forEach(function(b){
       b.addEventListener('click', function(){

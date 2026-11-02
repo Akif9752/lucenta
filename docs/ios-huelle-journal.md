@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-01, nach Runde 212)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-02, nach Runde 213)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 212 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 213 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -72,7 +72,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 212 | (dieser) | Tierbilder kuenftig aus lizenziertem Generator: Prompts, Freistellen (Vision), figuren_bilder_holen.py |
+| 213 | (dieser) | Kleine Avatare zeigen den Kopf (aus dem Rendering berechnet), Mindestversion iOS 16.4, Store-Liste |
+| 212 | `3cf9dbd` | Tierbilder kuenftig aus lizenziertem Generator: Prompts, Freistellen (Vision), figuren_bilder_holen.py |
 | 211 | `ac7ebe2` | Muender sauber fuer alle; Reh seitlich mit Kopf zum Betrachter, Baer/Panda kleinerer Leib, Otter eigener Bau |
 | 210 | `800f054` | Delfin, Wal, Schildkroete neu; Reh zierlicher, Pinguin kompakter — naeher an die Vorlagen |
 | 209 | `bebdaf1` | Ganze Figuren, Teil 4: Voegel (Beine, Fuesse, Schwaenze) und Wassertiere (Schwanzflossen) — alle 20 fertig |
@@ -227,8 +228,6 @@ Regeln, die er gesetzt hat:
 **Kein laufender Auftrag.** Runden 165–198 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
-- **Mindestversion iOS 16.4** statt 15.0 (Empfehlung). Grund: 62× `color-mix()` (erst ab 16.2) ohne Ersatz, Strahlenkranz
-  `@property` erst ab 16.4 — auf iOS 15–16.1 fehlen Farben. Alternative: Ersatzfarben fuer alle 62 Stellen.
 - **Kontaktzeile** unter „Hilfe & Ueber" (`mailto:`) — braucht die E-Mail-Adresse des Inhabers.
 - **Einmalkauf** „Lucenta+ für immer" (~59,99 €) neben den Abos.
 - **Bericht teilweise oeffnen** (Mittelweg: „Im Alltag" der staerksten Dimension frei).
@@ -430,19 +429,42 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 212** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 213** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 212 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 213 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 213 — Kleine Avatare zeigen den Kopf; Mindestversion iOS 16.4; Store-Liste
+
+**1. Avatare (Befund):** Kein Avatar ist groesser als 96 px, die meisten 42–56 px (Schublade, Einstellungen,
+Freundesliste, Rangliste, Vergleich, Tagesform-Begleiter, Auswahl). Mit der ganzen Figur war das Gesicht dort nur
+wenige Punkte gross. **Gewaehlt (Inhaber):** klein Kopf und Schultern, gross (Profil 96 px, Vorschau „Figur &
+Hintergrund") die ganze Figur. **Umsetzung:** `main.swift` projiziert beim Rendern die Kopfmitte (je Tier in `KOPF`,
+z. B. Hase mit Ohren, Wal vorn) mit derselben Kamera ins Bild; `figuren_holen.py` rechnet sie in den Ausschnitt um und
+schreibt `src/figuren/koepfe.json`; `build.js` setzt sie als `FIGUR_KOEPFE` ein; `figurHTML(f, ausdruck, kopf)` zoomt
+aus demselben Bild (keine zusaetzlichen Dateien) — als Hintergrund des Kreises (`background-size/-position`); ein
+uebergrosses `img` meldete die Fehlersuche 15-mal als „ragt seitlich heraus“ (Begleiter der Tagesform), obwohl der Kreis
+es abschnitt. Der i18n-Audit hielt ein nacktes `' figur-kopf'` fuer Deutsch → vollstaendige `class="…"`. `renderAvatarInto` waehlt nach Element (`#profileAvatar`,
+`.aussehen-avatar` = ganz). `.hat-figur, .figur-wahl` beschneiden. Geprueft in 42 px (`streifen.swift` mit
+`bild@kx,ky,kr`): alle Gesichter lesbar. `figuren_bilder_holen.py` schaetzt die Kopfstelle der Generator-Bilder aus
+dem oberen Drittel der Figur (liegende Tiere ggf. von Hand nachziehen).
+
+**2. Mindestversion iOS 16.4** (seit Runde 179 offen, Inhaber: angenommen): App-Target und Projekt 16.4, Podfile 16.4,
+Widget bleibt 17.0. Darunter fehlten `color-mix()` und `@property`.
+
+**3. Store-Liste** (`docs/app-store-start.md`): Mindestversion, Zugriffsbegruendungen (Health nur schreiben, Face ID,
+Fotos), Tierbilder aus dem Generator als Inhaberpunkt mit dem Hinweis, danach die Store-Bilder neu zu erzeugen.
+
+**4. Funktionsliste** dem Inhaber vorgelegt (Auswahl steht aus).
 
 ## Runde 212 — Tierbilder kuenftig aus einem lizenzierten Bildgenerator
 

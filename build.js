@@ -57,7 +57,11 @@ function figurenEinsetzen(quelltext, wert) {
       if (figurDateien.includes(datei)) bilder[k + '-' + a] = wert(k + '-' + a, fs.readFileSync(path.join(SRC, FIGUR_ORDNER, datei)));
     }
   }
-  return quelltext.replace(FIGUR_STELLE, 'var FIGUR_BILDER = ' + JSON.stringify(bilder) + ';');
+  // Kopf-Ausschnitt der kleinen Avatare (Runde 213): Mitte x, y und Radius als Anteil des Bildes, aus dem Rendering.
+  const koepfePfad = path.join(SRC, FIGUR_ORDNER, 'koepfe.json');
+  const koepfe = fs.existsSync(koepfePfad) ? JSON.parse(fs.readFileSync(koepfePfad, 'utf8')) : {};
+  return quelltext.replace(FIGUR_STELLE, 'var FIGUR_BILDER = ' + JSON.stringify(bilder) + ';')
+                  .replace('var FIGUR_KOEPFE = {};', 'var FIGUR_KOEPFE = ' + JSON.stringify(koepfe) + ';');
 }
 
 const jsRoh = man.js.map(f => read('js', f)).join('');

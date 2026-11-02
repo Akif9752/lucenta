@@ -77,6 +77,10 @@ die Store-Beschreibung muss es genauso halten.
       there is no server. Account deletion is in Settings → Account → "Delete sign-in and iCloud
       data": it deletes the user's record from their private CloudKit database and forgets the
       local identifier.
+- **Mindestversion iOS 16.4** (Runde 213, Entscheidung des Inhabers; das Widget 17.0). Darunter fehlten Farben
+  (`color-mix()` ab 16.2) und der Strahlenkranz (`@property` ab 16.4). Im Store steht damit „Erfordert iOS 16.4 oder neuer".
+- **Zugriffsbegruendungen** in `Info.plist`: Health nur schreiben (`NSHealthUpdateUsageDescription`), Face ID fuer die
+  App-Sperre, Fotos nur hinzufuegen. Kein Lese-Zugriff auf Health, darum kein `NSHealthShareUsageDescription`.
 - **Privacy Manifest** (`ios/App/App/PrivacyInfo.xcprivacy`, Feedback A3): kein Tracking, keine
   gesammelten Daten, `UserDefaults` mit Grund `CA92.1` (nur die App selbst liest, was sie schreibt).
 - **Acht Sprachen** (de, en, es, fr, it, pt, tr, ja), item-für-item durch die Testreihe
@@ -222,6 +226,10 @@ blockiert.
    Produkte, und das Schema `App` verweist darauf. Im Simulator laufen Kauf, Abbruch und
    Wiederherstellen damit ohne Konto. Für die Einreichung ersetzt der echte Store diese Datei;
    sie gehört **nicht** ins App-Bundle.
+6a. **Die Tierbilder erzeugen** (Runde 212, Entscheidung des Inhabers): mit einem Bildgenerator, dessen Bilder kommerziell
+   genutzt werden duerfen, nach `docs/tierbilder-prompts.md`; Nachweis der Lizenz aufheben. Einbau macht die Sitzung
+   (`tools/figuren_bilder_holen.py`). Bis dahin zeigt die App die eigenen 3D-Figuren. **Vor dem Einreichen** danach die
+   Store-Bilder neu erzeugen (`npm run store-bilder`), damit sie die endgueltigen Tiere zeigen.
 7. **Die Bildschirmfotos hochladen.** Erzeugt sind sie (zuletzt Runde 166, `assets/store/`, beide
    Größen, deutsch und englisch) — hochladen kann sie nur, wer in App Store Connect angemeldet
    ist. Sie stammen aus dem Browser, nicht vom Gerät: für die Einreichung reicht das, Apple

@@ -5,7 +5,7 @@ import AppKit
 let args = Array(CommandLine.arguments.dropFirst())
 guard args.count >= 2 else { print("Aufruf: streifen.swift <ausgabe.png> <bild> …  (\"-\" = neue Zeile)"); exit(2) }
 let zeilen = args.dropFirst().split(separator: "-").map(Array.init)
-let k: CGFloat = 180, rand: CGFloat = 10
+let k = CGFloat(Double(ProcessInfo.processInfo.environment["K"] ?? "") ?? 180), rand: CGFloat = 10
 let breite = CGFloat(zeilen.map(\.count).max() ?? 1) * (k + rand) + rand
 let hoehe = CGFloat(zeilen.count) * (k + rand) + rand
 let bild = NSImage(size: NSSize(width: breite, height: hoehe))
@@ -18,11 +18,21 @@ for (zi, zeile) in zeilen.enumerated() {
         let kreis = NSBezierPath(ovalIn: r)
         NSColor(calibratedRed: 0.36, green: 0.55, blue: 0.60, alpha: 1).setFill(); kreis.fill()   // Hintergrund wie in der App
         kreis.addClip()
-        if let b = NSImage(contentsOfFile: pfad) {
-            // Vorlagen (nicht quadratisch) mittig auf die kurze Seite zugeschnitten.
-            let s = min(b.size.width, b.size.height)
-            let quelle = NSRect(x: (b.size.width - s) / 2, y: (b.size.height - s) / 2, width: s, height: s)
-            b.draw(in: r, from: quelle, operation: .sourceOver, fraction: 1)
+        // "bild.png@kx,ky,kr": Kopf-Ausschnitt wie in der App (figurHTML), sonst das ganze Bild.
+        let teile = pfad.split(separator: "@").map(String.init)
+        if let b = NSImage(contentsOfFile: teile[0]) {
+            if teile.count == 2 {
+                let k = teile[1].split(separator: ",").compactMap { Double($0) }.map { CGFloat($0) }
+                let z = max(1, min(3.2, 0.40 / k[2]))
+                let g = r.width * z
+                b.draw(in: NSRect(x: r.midX - k[0] * g, y: r.midY - (1 - k[1]) * g, width: g, height: g),
+                       from: .zero, operation: .sourceOver, fraction: 1)
+            } else {
+                // Vorlagen (nicht quadratisch) mittig auf die kurze Seite zugeschnitten.
+                let s = min(b.size.width, b.size.height)
+                let quelle = NSRect(x: (b.size.width - s) / 2, y: (b.size.height - s) / 2, width: s, height: s)
+                b.draw(in: r, from: quelle, operation: .sourceOver, fraction: 1)
+            }
         }
         NSGraphicsContext.restoreGraphicsState()
     }

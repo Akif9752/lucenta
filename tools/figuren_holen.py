@@ -117,6 +117,8 @@ def zuschneiden(b, h, pixel, rahmen, kennung=''):
     if ax < 0 or ay < 0 or ax + seite > b or ay + seite > h:
         sys.exit('Ausschnitt %r ragt ueber die Leinwand %dx%d — Leinwand in main.swift vergroessern.' % ((ax, ay, seite), b, h))
     aus = [pixel[(ay + y) * b + ax + x] for y in range(seite) for x in range(seite)]
+    global LETZTER_AUSSCHNITT
+    LETZTER_AUSSCHNITT = (ax, ay, seite, b, h)
     return seite, seite, aus
 
 
@@ -205,6 +207,15 @@ def main():
             sys.exit('Fehlt: %s — erst tools/figuren_rendern/bauen.sh laufen lassen.' % quelle)
         with open(quelle, 'rb') as f: b, h, pixel = png_lesen(f.read())
         b, h, pixel = zuschneiden(b, h, pixel, rahmen[kennung], kennung)
+        kopf_datei = os.path.join(ROH, kennung + '.kopf.json')
+        if not zusatz and os.path.exists(kopf_datei):
+            # Kopfmitte und -radius als Anteil des fertigen (quadratischen) Bildes; die kleinen Avatare zoomen dorthin.
+            k = json.load(open(kopf_datei)); ax, ay, s, cb, ch = LETZTER_AUSSCHNITT
+            koepfe_pfad = os.path.join(ZIEL, 'koepfe.json')
+            koepfe = json.load(open(koepfe_pfad)) if os.path.exists(koepfe_pfad) else {}
+            koepfe[kennung] = [round((k['x'] * cb - ax) / s, 3), round((k['y'] * ch - ay) / s, 3), round(k['r'] * cb / s, 3)]
+            with open(koepfe_pfad, 'w') as f:
+                f.write('{\n' + ',\n'.join('  "%s": %s' % (n, v) for n, v in sorted(koepfe.items())) + '\n}\n')
         # Verkleinern ueber sips (Apples Bildwerkzeug, gute Filterung) — auf dem zugeschnittenen Bild,
         # damit jedes Tier dieselbe Groesse im Kreis bekommt.
         with tempfile.TemporaryDirectory() as tmp:

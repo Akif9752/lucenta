@@ -5,6 +5,7 @@
 // Die Kennungen stehen in gespeicherten Profilen und aendern sich nie.
 
   var FIGUR_BILDER = {};
+  var FIGUR_KOEPFE = {};
 
   var FIGUREN = [
     {id:'fuchs', feld:'#F6E6D8'},
@@ -51,9 +52,19 @@
   // Das Bild ist Schmuck — der Name steht am Knopf (aria-label). Ohne Quelle bleibt der Kreis leer
   // statt ein zerbrochenes Bild zu zeigen.
   // `ausdruck` ('muede'|'froh', Tagesform-Begleiter): faellt auf das Grundbild zurueck, wenn es fehlt.
-  function figurHTML(f, ausdruck){
+  // `kopf`: kleine Avatare zoomen auf Kopf und Schultern (die ganze Figur ist dort zu klein, Entscheidung des Inhabers).
+  function figurHTML(f, ausdruck, kopf){
     var quelle = (ausdruck && FIGUR_BILDER[f.id + '-' + ausdruck]) || FIGUR_BILDER[f.id];
     if (!quelle) return '';
+    var k = kopf && FIGUR_KOEPFE[f.id];
+    if (k){
+      // Als Hintergrund des Kreises statt als uebergrosses Bild: so ragt nichts ueber den Kreis hinaus.
+      // Hintergrund-Prozent: Anteil P legt P des Bildes auf P des Kreises -> P = (0,5 - k*s) / (1 - s).
+      var s = Math.max(1.01, Math.min(3.2, 0.40 / k[2]));
+      var px = (0.5 - k[0]*s) / (1 - s) * 100, py = (0.5 - k[1]*s) / (1 - s) * 100;
+      return '<span class="figur-bild figur-kopf" aria-hidden="true" style="background-image:url(\''+quelle+'\');background-size:'+
+             (s*100).toFixed(1)+'%;background-position:'+px.toFixed(1)+'% '+py.toFixed(1)+'%"></span>';
+    }
     return '<img class="figur-bild" src="'+quelle+'" alt="" aria-hidden="true" draggable="false" decoding="async">';
   }
 
