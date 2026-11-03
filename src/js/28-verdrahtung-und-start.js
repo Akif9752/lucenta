@@ -262,6 +262,7 @@
   widgetEinrichten();
   healthEinrichten();
   sperreEinrichten();
+  symbolEinrichten();
   ftEinrichten();
   plusStandPruefen();
   plusPreiseHolen();

@@ -20,6 +20,7 @@
 		147A1DA43092B6AA00659458 /* LucentaKurzbefehle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1DA33092B6AA00659458 /* LucentaKurzbefehle.swift */; };
 		147A1DA63092B6FC00659458 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 147A1DA53092B6FC00659458 /* Localizable.xcstrings */; };
 		147A1DB83092B72D00659458 /* AppShortcuts.strings in Resources */ = {isa = PBXBuildFile; fileRef = 147A1DB63092B72D00659458 /* AppShortcuts.strings */; };
+		147A1F46309A00B100659458 /* LucentaSymbolPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147A1F45309A00B100659458 /* LucentaSymbolPlugin.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -79,6 +80,7 @@
 		147A1DC43092B72D00659458 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
 		147A1DC53092B72D00659458 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
 		147A1DC63092B72D00659458 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		147A1F45309A00B100659458 /* LucentaSymbolPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LucentaSymbolPlugin.swift; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -185,6 +187,7 @@
 				147A1DA33092B6AA00659458 /* LucentaKurzbefehle.swift */,
 				147A1DA53092B6FC00659458 /* Localizable.xcstrings */,
 				147A1DB63092B72D00659458 /* AppShortcuts.strings */,
+				147A1F45309A00B100659458 /* LucentaSymbolPlugin.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -381,6 +384,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				147A1F46309A00B100659458 /* LucentaSymbolPlugin.swift in Sources */,
 				147A1D3D30891CD200659458 /* LucentaKontoPlugin.swift in Sources */,
 				140DCA5C305A229100C3A9BC /* LucentaKaeufePlugin.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
@@ -661,6 +665,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-2 AppIcon-3 AppIcon-4 AppIcon-5 AppIcon-6";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -688,6 +693,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-2 AppIcon-3 AppIcon-4 AppIcon-5 AppIcon-6";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;

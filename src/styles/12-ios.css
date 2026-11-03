@@ -1013,3 +1013,13 @@
   .ft-balken{ height:6px; border-radius:3px; background:var(--line); margin:8px 0; overflow:hidden; }
   .ft-balken span{ display:block; height:100%; background:var(--accent); border-radius:3px; }
   .ft-zeile p{ margin:0; color:var(--muted); font-size:calc(13.5px * var(--dt, 1)); line-height:1.45; }
+
+  /* ---------- Alternative App-Symbole ---------- */
+  .symbol-zeile{ flex-wrap:wrap; }
+  .symbol-raster{ display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; width:100%; margin-top:10px; }
+  .symbol-wahl{ position:relative; min-height:44px; aspect-ratio:1; padding:0; border-radius:12px; cursor:pointer;
+    background:none; border:2px solid transparent; }
+  .symbol-wahl[aria-pressed="true"]{ border-color:var(--ink); }
+  .symbol-wahl:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
+  .symbol-wahl img{ width:100%; height:100%; display:block; }
+  .symbol-wahl .hg-schloss{ position:absolute; right:3px; bottom:3px; color:#fff; filter:drop-shadow(0 1px 1px rgba(0,0,0,.5)); }

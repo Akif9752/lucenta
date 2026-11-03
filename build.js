@@ -58,7 +58,7 @@ function figurenEinsetzen(quelltext, wert) {
     }
   }
   // Zubehoer fuer den Begleiter (Runde 215): src/figuren/zubehoer-<name>.png, Schluessel wie der Dateiname.
-  for (const datei of figurDateien.filter(f => f.startsWith('zubehoer-'))) {
+  for (const datei of figurDateien.filter(f => f.startsWith('zubehoer-') || f.startsWith('appicon-'))) {
     const k = datei.replace(/\.png$/, '');
     bilder[k] = wert(k, fs.readFileSync(path.join(SRC, FIGUR_ORDNER, datei)));
   }

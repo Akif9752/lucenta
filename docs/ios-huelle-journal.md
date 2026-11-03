@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-03, nach Runde 216)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-03, nach Runde 217)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 216 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 217 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -72,7 +72,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 216 | (dieser) | Froh ohne Flecken unter den Augen (alle 20), Katzenmund offen, Uebergabe nachgezogen |
+| 217 | (dieser) | Alternative App-Symbole (Nacht, Papier, Abendrot, Ozean, Lavendel) mit Lucenta+, Plugin AppSymbol |
+| 216 | `bb0d644` | Froh ohne Flecken unter den Augen (alle 20), Katzenmund offen, Uebergabe nachgezogen |
 | 215 | `d2127fe` | Zubehoer fuer den Begleiter: Schal ab 7 Tagen frei, Muetze/Blume mit Lucenta+, Lage ueber die Kopfstelle |
 | 214 | `a9b012a` | Serie mit Schutztag, Meilensteine 10/30/100/Jahr, Wochenrueckblick mit Mitteilung (frei/teils Lucenta+) |
 | 213 | `6d86ff2` | Kleine Avatare zeigen den Kopf (aus dem Rendering berechnet), Mindestversion iOS 16.4, Store-Liste |
@@ -442,19 +443,38 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 216** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 217** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 216 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 217 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 217 — Alternative App-Symbole (Lucenta+)
+
+**Auftrag:** alternative App-Symbole. **Gewaehlt (Inhaber):** Nacht, Papier, Abendrot, Ozean, Lavendel (Gold nicht);
+**alle nur mit Lucenta+**.
+
+- `tools/symbol_rendern.swift` nimmt `GRUND`, `GRUND2` (Verlauf) und `FORM` aus der Umgebung. Je Symbol ein Satz
+  `AppIcon-2` … `AppIcon-6` im Asset-Katalog (1024 px, ohne Alphakanal), `ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES`
+  im App-Target; am gebauten Bundle nachgesehen: alle fuenf stehen unter `CFBundleAlternateIcons`.
+- `LucentaSymbolPlugin.swift` (`AppSymbol`: `stand`, `setzen`), angemeldet in `capacitorDidLoad`; weist unbekannte
+  Namen ab. Liste steht absichtlich auch in `24-native.js`.
+- Einstellungen: Zeile „App-Symbol" (`#symbolZeile`, nur mit nativer Bruecke) mit sechs Vorschauen
+  (`src/figuren/appicon-1…6.png`); ohne Lucenta+ Schloss und Kauffenster. Ohne Lucenta+ (beim Start und nach jeder
+  Abo-Aenderung) zurueck aufs Standardsymbol.
+- **Nummern statt Namen:** Der i18n-Audit las `AppIcon-Nacht` und den Praefix `symbol-` als unuebersetzte deutsche Woerter
+  im Code; darum `AppIcon-2…6`, `appicon-N.png`, Texte `appicon_1…6`.
+
+**Ungeprueft:** der Wechsel selbst auf dem Geraet (iOS zeigt danach einen eigenen Hinweis). Waehlen kann man nur mit
+Lucenta+ — im Simulator ueber die StoreKit-Datei beim Start aus Xcode, auf dem iPhone erst mit den Abo-Produkten.
 
 ## Runde 216 — „froh" ohne Flecken unter den Augen; Katzenmund; Uebergabe nachgezogen
 

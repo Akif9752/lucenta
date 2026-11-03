@@ -181,6 +181,55 @@
     sperreNachziehen();
   }
 
+  // ---------- Alternative App-Symbole (Lucenta+, Entscheidung des Inhabers) ----------
+  // LucentaSymbolPlugin.swift (`AppSymbol`). Die Namen stehen auch dort und im Asset-Katalog.
+  // Nummern statt Namen (der i18n-Audit liest deutsche Woerter im Code als unuebersetzt): 1 Standard, 2 Nacht, 3 Papier,
+  // 4 Abendrot, 5 Ozean, 6 Lavendel.
+  var SYMBOLE = ['', 'AppIcon-2', 'AppIcon-3', 'AppIcon-4', 'AppIcon-5', 'AppIcon-6'];
+  var symbolStand = null;
+  function symbolModul(){
+    var m = nativVorhanden() && nativModul('AppSymbol');
+    return (m && m.stand) ? m : null;
+  }
+  function symbolKurz(name){ return name ? name.replace('AppIcon-', '') : '1'; }
+  function symbolAnwenden(stand){
+    symbolStand = stand || symbolStand;
+    var zeile = $('symbolZeile'), raster = $('symbolRaster');
+    if (!zeile || !raster || !symbolStand || !symbolStand.verfuegbar){ if (zeile) zeile.hidden = true; return; }
+    zeile.hidden = false;
+    var plus = istPlus();
+    $('symbolHinweis').hidden = plus;
+    raster.innerHTML = SYMBOLE.map(function(n){
+      var k = symbolKurz(n), quelle = FIGUR_BILDER['appicon-' + k], zu = n && !plus;
+      return '<button type="button" class="symbol-wahl" data-symbol="' + n + '" aria-pressed="' + ((symbolStand.name || '') === n ? 'true' : 'false') +
+        '" aria-label="' + tx('appicon_' + k) + (zu ? ', Lucenta+' : '') + '">' +
+        (quelle ? '<img src="' + quelle + '" alt="" aria-hidden="true" draggable="false">' : '') + (zu ? SCHLOSS_KLEIN : '') + '</button>';
+    }).join('');
+  }
+  function symbolEinrichten(){
+    var m = symbolModul(), raster = $('symbolRaster');
+    if (!m || !raster) return;
+    raster.addEventListener('click', function(e){
+      var b = e.target.closest ? e.target.closest('[data-symbol]') : null;
+      if (!b) return;
+      var n = b.getAttribute('data-symbol') || '';
+      if (n && !istPlus()){ openPlusModal(); return; }
+      m.setzen({name: n}).then(function(r){ symbolAnwenden({verfuegbar: true, name: (r && r.name) || ''}); }).catch(function(){});
+    });
+    symbolNachziehen();
+  }
+  // Beim Start und nach Aenderungen am Abo: ohne Lucenta+ zurueck aufs Standardsymbol.
+  function symbolNachziehen(){
+    var m = symbolModul();
+    if (!m) return;
+    Promise.resolve(m.stand()).then(function(s){
+      if (s && s.verfuegbar && s.name && !istPlus()){
+        return Promise.resolve(m.setzen({name: ''})).then(function(){ symbolAnwenden({verfuegbar: true, name: ''}); });
+      }
+      symbolAnwenden(s);
+    }).catch(function(){});
+  }
+
   // ---------- Apple Health: Stimmung als Gemuetszustand ----------
   // Nur schreiben, nie lesen; Vorgabe aus (Entscheidung des Inhabers). LucentaGesundheitPlugin.swift,
   // ab iOS 18. Die Kennung des Health-Eintrags steht als `hk` am Eintrag, damit Ersetzen ihn mitnimmt.
@@ -470,6 +519,8 @@
   // Weggenommen wird NUR bei einer klaren Antwort: Keine Bruecke, Fehler oder Unerwartetes aendern
   // nichts.
   function plusStandUebernehmen(r){
+    // Abo-Stand geaendert: das App-Symbol zieht nach (ohne Lucenta+ zurueck aufs Standardsymbol).
+    setTimeout(function(){ try{ symbolNachziehen(); }catch(e){} }, 0);
     if (!r || typeof r.aktiv !== 'boolean') return;
     if (r.aktiv && r.produkt) schalterSetzen(PLUS_PRODUKT, r.produkt, null);
     if (r.aktiv === istPlus()) return;
