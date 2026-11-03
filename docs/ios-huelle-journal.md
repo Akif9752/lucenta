@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-03, nach Runde 218)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-03, nach Runde 219)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 218 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 219 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -72,7 +72,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 218 | (dieser) | Einstellungen: App-Symbol-Zeile unter Allgemein, Karten unten wieder rund |
+| 219 | (dieser) | Einstellungen: Sperren nach Sofort/1/15 Min., Datenhinweis an der Datenkarte, App-Symbol als Unterseite |
+| 218 | `4e75209` | Einstellungen: App-Symbol-Zeile unter Allgemein, Karten unten wieder rund |
 | 217 | `95045e4` | Alternative App-Symbole (Nacht, Papier, Abendrot, Ozean, Lavendel) mit Lucenta+, Plugin AppSymbol |
 | 216 | `bb0d644` | Froh ohne Flecken unter den Augen (alle 20), Katzenmund offen, Uebergabe nachgezogen |
 | 215 | `d2127fe` | Zubehoer fuer den Begleiter: Schal ab 7 Tagen frei, Muetze/Blume mit Lucenta+, Lage ueber die Kopfstelle |
@@ -444,19 +445,34 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 218** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 219** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 218 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 219 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 219 — Einstellungen: Face-ID-Bereich, App-Symbol als Unterseite
+
+**Inhaber:** „immer noch verbuggt, unter Face ID die Flaeche zB, und App-Symbol soll eigene Seite werden".
+
+- **Unter Face ID** (nur mit eingeschalteter Sperre sichtbar — darum in Runde 218 uebersehen): Die Leiste „Sperren"
+  war gequetscht, „Nach 15 Min." brach um; darunter hing „Aktuell ist nichts gespeichert …" wie eine Erklaerung zur Sperre,
+  gehoert aber zur Datensicherung. Jetzt „Sperren nach" mit „Sofort / 1 Min. / 15 Min." (8 Sprachen), der Hinweis unter
+  „Daten sichern / einspielen".
+- **App-Symbol als Unterseite** `view-appicon` (wie `view-sprache`, Push/Pop ueber `UNTERSEITE_VON`): in den
+  Einstellungen nur die Zeile `#btnSymbolOeffnen` mit dem aktuellen Symbol und Pfeil; auf der Unterseite sechs grosse
+  Symbole mit Namen, gesperrte mit Schloss. Der Seitenname heisst `appicon`, weil der i18n-Audit `'symbol'` als
+  deutsches Wort liest.
+
+Mit nachgebauter Bruecke und eingeschalteter Sperre im WebKit angesehen (390 px).
 
 ## Runde 218 — Einstellungsseite: App-Symbol-Zeile und eckige Karten
 

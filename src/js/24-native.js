@@ -194,16 +194,19 @@
   function symbolKurz(name){ return name ? name.replace('AppIcon-', '') : '1'; }
   function symbolAnwenden(stand){
     symbolStand = stand || symbolStand;
-    var zeile = $('symbolZeile'), raster = $('symbolRaster');
+    var zeile = $('btnSymbolOeffnen'), raster = $('symbolRaster');
     if (!zeile || !raster || !symbolStand || !symbolStand.verfuegbar){ if (zeile) zeile.hidden = true; return; }
     zeile.hidden = false;
-    var plus = istPlus();
+    var plus = istPlus(), aktiv = symbolStand.name || '';
+    var mini = $('symbolAktuell');
+    if (mini) mini.src = FIGUR_BILDER['appicon-' + symbolKurz(aktiv)] || '';
     $('symbolHinweis').hidden = plus;
     raster.innerHTML = SYMBOLE.map(function(n){
       var k = symbolKurz(n), quelle = FIGUR_BILDER['appicon-' + k], zu = n && !plus;
-      return '<button type="button" class="symbol-wahl" data-symbol="' + n + '" aria-pressed="' + ((symbolStand.name || '') === n ? 'true' : 'false') +
-        '" aria-label="' + tx('appicon_' + k) + (zu ? ', Lucenta+' : '') + '">' +
-        (quelle ? '<img src="' + quelle + '" alt="" aria-hidden="true" draggable="false">' : '') + (zu ? SCHLOSS_KLEIN : '') + '</button>';
+      return '<button type="button" class="symbol-wahl" data-symbol="' + n + '" aria-pressed="' + (aktiv === n ? 'true' : 'false') +
+        '" aria-label="' + tx('appicon_' + k) + (zu ? ', Lucenta+' : '') + '"><span class="symbol-bild">' +
+        (quelle ? '<img src="' + quelle + '" alt="" aria-hidden="true" draggable="false">' : '') + (zu ? SCHLOSS_KLEIN : '') + '</span>' +
+        '<span class="symbol-name">' + tx('appicon_' + k) + '</span></button>';
     }).join('');
   }
   function symbolEinrichten(){

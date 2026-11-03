@@ -537,13 +537,7 @@
         </div>
         <button type="button" class="schalter" id="healthSchalter" role="switch" aria-checked="false" aria-label="Stimmung in Health ein- oder ausschalten" data-i18n-aria="aria_health"><span class="schalter-knopf"></span></button>
       </div>
-      <div class="settings-zeile symbol-zeile" id="symbolZeile" hidden>
-        <div class="settings-zeile-text">
-          <strong data-i18n="symbol_titel">App-Symbol</strong>
-          <span class="settings-hint" id="symbolHinweis" data-i18n="symbol_hinweis">Alternative Symbole mit Lucenta+</span>
-        </div>
-        <div class="symbol-raster" id="symbolRaster" role="group" aria-label="App-Symbol wählen" data-i18n-aria="aria_symbol_waehlen"></div>
-      </div>
+      <button type="button" class="settings-zeile einst-knopf" id="btnSymbolOeffnen" hidden><span class="settings-zeile-text"><strong data-i18n="symbol_titel">App-Symbol</strong></span><span class="einst-wert"><img class="symbol-mini" id="symbolAktuell" alt="" aria-hidden="true" draggable="false"><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span></button>
       <p class="settings-hint" data-i18n="systemldquo_übernimmt_automa">„System&ldquo; übernimmt automatisch die Einstellung deines Geräts.</p>
     </div>
 
@@ -591,19 +585,19 @@
         <button type="button" class="schalter" id="sperreSchalter" role="switch" aria-checked="false" aria-label="App-Sperre ein- oder ausschalten" data-i18n-aria="aria_sperre"><span class="schalter-knopf"></span></button>
       </div>
       <div class="settings-zeile einst-darstellung" id="sperreNachZeile" hidden>
-        <div class="settings-zeile-text"><strong data-i18n="sperre_wann">Sperren</strong></div>
+        <div class="settings-zeile-text"><strong data-i18n="sperre_wann">Sperren nach</strong></div>
         <div class="segment" id="sperreNach" role="radiogroup" aria-label="Wann Lucenta sich sperrt" data-i18n-aria="aria_sperre_wann">
           <button type="button" class="segment-opt" role="radio" data-nach="0" aria-checked="true"><span class="segment-preis" data-i18n="sperre_sofort">Sofort</span></button>
-          <button type="button" class="segment-opt" role="radio" data-nach="60" aria-checked="false"><span class="segment-preis" data-i18n="sperre_1">Nach 1 Min.</span></button>
-          <button type="button" class="segment-opt" role="radio" data-nach="900" aria-checked="false"><span class="segment-preis" data-i18n="sperre_15">Nach 15 Min.</span></button>
+          <button type="button" class="segment-opt" role="radio" data-nach="60" aria-checked="false"><span class="segment-preis" data-i18n="sperre_1">1 Min.</span></button>
+          <button type="button" class="segment-opt" role="radio" data-nach="900" aria-checked="false"><span class="segment-preis" data-i18n="sperre_15">15 Min.</span></button>
         </div>
       </div>
       <ul class="settings-datalist" id="settingsDataList"></ul>
-      <p class="settings-empty" id="settingsEmptyNote" data-i18n="aktuell_ist_nichts_gespeiche">Aktuell ist nichts gespeichert außer deiner Darstellung.</p>
       <div class="daten-knoepfe einst-daten">
         <button type="button" class="btn btn-ghost btn-sm" id="btnExport" data-i18n="daten_sichern">Daten sichern</button>
         <button type="button" class="btn btn-ghost btn-sm" id="btnImport" data-i18n="daten_einspielen">Daten einspielen</button>
       </div>
+      <p class="settings-empty" id="settingsEmptyNote" data-i18n="aktuell_ist_nichts_gespeiche">Aktuell ist nichts gespeichert außer deiner Darstellung.</p>
         <textarea id="importFeld" rows="3" style="display:none;" placeholder="Gesicherte Daten hier einfügen" data-i18n-placeholder="ph_gesicherte_daten_hier_ein"></textarea>
       <details class="settings-restore einst-aufklapp" id="einstWiederherstellen">
         <summary class="settings-restore-label"><span data-i18n="ergebnis_wiederherstellen">Ergebnis wiederherstellen</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></summary>
@@ -629,6 +623,17 @@
   </section>
 
   <!-- Runde 136: die Sprachwahl als eigene Seite, geoeffnet aus den Einstellungen. -->
+  <section class="view" id="view-appicon" tabindex="-1">
+    <div class="quiz-head nur-zurueck">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromSymbol" data-i18n="hilfe_zurueck">← Einstellungen</button>
+    </div>
+    <div class="archetypes-head">
+      <h1 data-i18n="symbol_titel">App-Symbol</h1>
+    </div>
+    <p class="section-lead" id="symbolHinweis" data-i18n="symbol_hinweis">Alternative Symbole mit Lucenta+</p>
+    <div class="symbol-raster" id="symbolRaster" role="group" aria-label="App-Symbol wählen" data-i18n-aria="aria_symbol_waehlen"></div>
+  </section>
+
   <section class="view" id="view-sprache" tabindex="-1">
     <div class="quiz-head nur-zurueck">
       <button class="btn btn-ghost btn-sm" id="btnBackFromSprache" data-i18n="hilfe_zurueck">← Einstellungen</button>
