@@ -42,18 +42,19 @@
   #view-sprache .wahlliste{ margin-top:22px; }
 
   /* Schieberzeilen als Geschwister: erste traegt die oberen Ecken, letzte die unteren, alle ausser der
-     ersten eine Trennlinie. :nth-child(n of S) zaehlt nur die Zeilen. */
+     ersten eine Trennlinie. :nth-child(n of S) zaehlt nur die SICHTBAREN Zeilen — mit ausgeblendeten
+     (Erinnerungszeit, Sperre nach …) blieb die letzte sichtbare unten eckig. */
   #view-settings .settings-zeile{
     position:relative; margin:0; padding:11px 16px; gap:14px;
     background:var(--surface); align-items:center; flex-wrap:nowrap;
   }
-  #view-settings .settings-zeile:nth-child(1 of .settings-zeile){
+  #view-settings .settings-zeile:nth-child(1 of .settings-zeile:not([hidden]):not([style*="display: none"]):not([style*="display:none"])){
     border-top-left-radius:var(--radius-m); border-top-right-radius:var(--radius-m);
   }
-  #view-settings .settings-zeile:nth-last-child(1 of .settings-zeile){
+  #view-settings .settings-zeile:nth-last-child(1 of .settings-zeile:not([hidden]):not([style*="display: none"]):not([style*="display:none"])){
     border-bottom-left-radius:var(--radius-m); border-bottom-right-radius:var(--radius-m);
   }
-  #view-settings .settings-zeile:not(:nth-child(1 of .settings-zeile))::before{
+  #view-settings .settings-zeile:not(:nth-child(1 of .settings-zeile:not([hidden]):not([style*="display: none"]):not([style*="display:none"])))::before{
     content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
   }
   #view-settings .settings-zeile-text{ min-width:0; gap:2px; }
@@ -1015,10 +1016,11 @@
   .ft-zeile p{ margin:0; color:var(--muted); font-size:calc(13.5px * var(--dt, 1)); line-height:1.45; }
 
   /* ---------- Alternative App-Symbole ---------- */
-  .symbol-zeile{ flex-wrap:wrap; }
-  .symbol-raster{ display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; width:100%; margin-top:10px; }
-  .symbol-wahl{ position:relative; min-height:44px; aspect-ratio:1; padding:0; border-radius:12px; cursor:pointer;
-    background:none; border:2px solid transparent; }
+  /* Text oben ueber die ganze Breite, darunter die Reihe — nebeneinander zerdrueckte sie den Text, bei 320 px ragte sie heraus. */
+  .settings-zeile.symbol-zeile{ display:block; }
+  .symbol-raster{ display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:6px; width:100%; margin-top:10px; }
+  .symbol-wahl{ position:relative; min-height:44px; aspect-ratio:1; max-width:56px; padding:0; border-radius:12px; cursor:pointer;
+    background:none; border:2px solid transparent; justify-self:center; width:100%; }
   .symbol-wahl[aria-pressed="true"]{ border-color:var(--ink); }
   .symbol-wahl:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
   .symbol-wahl img{ width:100%; height:100%; display:block; }

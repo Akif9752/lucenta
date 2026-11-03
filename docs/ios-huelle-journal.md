@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-03, nach Runde 217)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-03, nach Runde 218)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 217 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 218 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -72,7 +72,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 217 | (dieser) | Alternative App-Symbole (Nacht, Papier, Abendrot, Ozean, Lavendel) mit Lucenta+, Plugin AppSymbol |
+| 218 | (dieser) | Einstellungen: App-Symbol-Zeile unter Allgemein, Karten unten wieder rund |
+| 217 | `95045e4` | Alternative App-Symbole (Nacht, Papier, Abendrot, Ozean, Lavendel) mit Lucenta+, Plugin AppSymbol |
 | 216 | `bb0d644` | Froh ohne Flecken unter den Augen (alle 20), Katzenmund offen, Uebergabe nachgezogen |
 | 215 | `d2127fe` | Zubehoer fuer den Begleiter: Schal ab 7 Tagen frei, Muetze/Blume mit Lucenta+, Lage ueber die Kopfstelle |
 | 214 | `a9b012a` | Serie mit Schutztag, Meilensteine 10/30/100/Jahr, Wochenrueckblick mit Mitteilung (frei/teils Lucenta+) |
@@ -443,19 +444,36 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 217** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 218** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 217 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 218 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 218 — Einstellungsseite: App-Symbol-Zeile und eckige Karten
+
+**Inhaber:** „die Einstellungen-Seite ist sehr verbuggt". Angesehen mit nachgebauter App-Bruecke (WebKit, 390/320 px,
+alle nativen Zeilen sichtbar), weil die Fehlersuche die Seite nur ohne Bruecke sieht.
+
+**Gefunden und behoben:**
+- **App-Symbol** (Runde 217, mein Fehler): stand unter „Daten & Datenschutz", der Titel brach in „App-/Symbol" um, der
+  Hinweis wurde hinter den Symbolen zerdrueckt, bei 320 px ragte die Reihe rechts aus der Karte. Jetzt unter „Allgemein"
+  nach „Stimmung in Health", Text oben, Reihe darunter mit `minmax(0, 1fr)`.
+- **Eckige Karten:** „Taegliche Erinnerung" und „Mit Face ID sperren" waren unten eckig. Die Rundung hing an
+  `:nth-last-child(1 of .settings-zeile)`, und das zaehlte die ausgeblendeten Folgezeilen (Erinnerungszeit, „Sperren
+  nach") mit. Jetzt zaehlen erste/letzte/Trennlinie nur sichtbare Zeilen (`:not([hidden])`, ohne `display:none`).
+
+**Unsicher:** Weitere Fehler, die nur auf dem Geraet auftreten (Antippen, Dialoge), habe ich so nicht gesehen. Die
+Fehlersuche prueft die Einstellungen weiterhin OHNE native Zeilen — eine Konfiguration mit nachgebauter Bruecke waere
+der naechste Schritt, damit so etwas nicht wieder durchrutscht.
 
 ## Runde 217 — Alternative App-Symbole (Lucenta+)
 
