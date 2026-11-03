@@ -98,13 +98,18 @@ async function durchlauf(reduziert){
   const hinein = await p.evaluate(() => getComputedStyle(document.getElementById('view-settings')).animationName);
   await p.click('#btnNavZurueck'); await p.waitForTimeout(40);   // seit Feedback B9 der Chevron in der Kopfzeile
   const zurueck = await p.evaluate(() => getComputedStyle(document.getElementById('view-landing')).animationName);
-  if (reduziert){
-    pruefe(hinein === 'none' && zurueck === 'none', 'Ansichtswechsel ohne Bewegung', `(${hinein}/${zurueck})`);
-  } else {
-    pruefe(hinein === 'view-vor' && zurueck === 'view-zurueck',
-           'Ansichtswechsel trägt eine Richtung', `(${hinein}/${zurueck})`);
-  }
+  // Hauptseiten wechseln ohne Bewegung (Auftrag des Inhabers, kein Zucken) — mit und ohne reduzierte Bewegung.
+  pruefe(hinein === 'none' && zurueck === 'none', 'Hauptseiten wechseln ohne Nachrutschen', `(${hinein}/${zurueck})`);
   await p.waitForTimeout(600);
+  // Unterseiten schieben sich dagegen wie in iOS herein
+  await p.click('#btnDrawerToggle'); await p.waitForTimeout(400);
+  await p.click('#btnDrawerSettings'); await p.waitForTimeout(300);
+  await p.click('#btnSpracheOeffnen'); await p.waitForTimeout(40);
+  const push = await p.evaluate(() => getComputedStyle(document.getElementById('view-sprache')).animationName);
+  pruefe(reduziert ? push === 'none' : push === 'seite-rein', reduziert ? 'Unterseite ohne Schieben' : 'Unterseite schiebt sich herein', `(${push})`);
+  await p.waitForTimeout(600);
+  await p.click('#btnNavZurueck'); await p.waitForTimeout(600);
+  await p.click('#btnNavZurueck'); await p.waitForTimeout(600);
 
   // --- Fragebogen
   await p.click('#btnStart'); await p.waitForTimeout(500);

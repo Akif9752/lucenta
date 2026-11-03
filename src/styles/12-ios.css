@@ -312,6 +312,8 @@
   /* Runde 133: Das Tierbild fuellt den Kreis randlos, der Rumpf reicht bis an die Bildkante —
      ohne diesen Schnitt stand er unten als gerade Kante aus dem Kreis heraus (am Bild gesehen). */
   .figur-wahl > .figur-bild{ clip-path:circle(50% at 50% 50%); }
+  /* Der Kopf-Ausschnitt ist ein Hintergrund: Rundung genuegt und ist billiger als clip-path. */
+  .figur-wahl > .figur-bild.figur-kopf{ clip-path:none; border-radius:50%; }
   .hg-wahl{ position:relative; }
 
   .figur-wahl[aria-pressed="true"]::after,
@@ -368,21 +370,9 @@
     to  { transform:rotate(-45deg) translate(1px,-2px) scale(1); }
   }
 
-  /* 4. Gestaffelter Aufbau beim Wechsel der Ansicht — nur Lage, keine Deckkraft. */
-  .view.active.nav-vor > *, .view.active.nav-zurueck > *{
-    animation:glied-ein .55s cubic-bezier(.2,.8,.2,1) both;
-  }
-  .view.active.nav-vor > *:nth-child(2), .view.active.nav-zurueck > *:nth-child(2){ animation-delay:.04s; }
-  .view.active.nav-vor > *:nth-child(3), .view.active.nav-zurueck > *:nth-child(3){ animation-delay:.08s; }
-  .view.active.nav-vor > *:nth-child(4), .view.active.nav-zurueck > *:nth-child(4){ animation-delay:.12s; }
-  .view.active.nav-vor > *:nth-child(5), .view.active.nav-zurueck > *:nth-child(5){ animation-delay:.16s; }
-  .view.active.nav-vor > *:nth-child(n+6), .view.active.nav-zurueck > *:nth-child(n+6){ animation-delay:.20s; }
-  @keyframes glied-ein{ from{ transform:translateY(14px); } to{ transform:none; } }
-
   @media (prefers-reduced-motion: reduce){
     .btn, .scale-btn, .figur-wahl, .hg-wahl, .avatar-color-swatch{ transition-duration:0s; }
     .wahl-zeile[aria-checked="true"]::after{ animation:none; }
-    .view.active.nav-vor > *, .view.active.nav-zurueck > *{ animation:none; }
   }
 
   /* Segmentwaehler und Kacheln auf --surface-2 (nicht -3), damit der Nebentext 4,5:1 erreicht. */

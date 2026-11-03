@@ -65,8 +65,8 @@
     opts = opts || {};
     // Scrollposition der verlassenen Ansicht merken, fuer die Rueckkehr.
     if (currentView && currentView !== name) viewScroll[currentView] = window.scrollY;
-    // Richtung des Wechsels: Zurueck-Geste und Startseite sind zurueck, alles andere hinein.
-    var richtung = (opts.fromHistory || name === 'landing') ? 'nav-zurueck' : 'nav-vor';
+    // Hauptseiten wechseln ohne Bewegung; nur Unterseiten bekommen eine Richtung.
+    var richtung = null;
     // Unterseiten (UNTERSEITE_VON) schieben sich wie ein iOS-Push von rechts herein, zurueck umgekehrt
     // (Auftrag des Inhabers). Die verlassene Seite bleibt waehrend des Uebergangs mit position:fixed
     // an ihrem Platz (.nav-weg). Die Richtung haengt am Seitenpaar, nicht am Knopf; zurueck kehrt an
@@ -87,15 +87,15 @@
       }catch(e){}
     }
     document.querySelectorAll('.view').forEach(function(v){
-      v.classList.remove('active','nav-vor','nav-zurueck','nav-push','nav-pop');
+      v.classList.remove('active','nav-push','nav-pop');
     });
     var section = $('view-'+name);
-    if (!prefersReducedMotion() && currentView && currentView !== name && !opts.geste){
+    if (art && !prefersReducedMotion() && currentView && currentView !== name){
       // Erzwungenes Auslesen, damit der Browser die Animation als neu erkennt — dasselbe
       // Muster wie bei animateQuestionIn() und markLangShift().
       void section.offsetWidth;
       section.classList.add(richtung);
-      if (art) navWegTimer = setTimeout(navWegAufraeumen, 520);
+      navWegTimer = setTimeout(navWegAufraeumen, 520);
     }
     section.classList.add('active');
     currentView = name;

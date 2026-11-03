@@ -662,11 +662,9 @@
   .drawer-profile-row .chev{color:var(--muted);flex-shrink:0;}
 
   .view{display:none;}
-  /* Uebergang zwischen Ansichten: nur Lage, keine Deckkraft — aus Deckkraft 0 stand auf dem Geraet fuer
-     ein Bild nur der Hintergrund da (Flackern). Dauer .45s — darauf sind die Wartezeiten der Pruefungen abgestimmt. */
-  .view.active{display:block; animation:rise .45s cubic-bezier(.2,.8,.2,1) both;}
-  @keyframes rise{from{transform:translateY(10px);}to{transform:none;}}
-  @media (prefers-reduced-motion: reduce){ .view.active{animation:none;} }
+  /* Hauptseiten wechseln ohne Bewegung wie Tabs in iOS; nur Unterseiten schieben sich herein (12-ios.css).
+     Auftrag des Inhabers: Das Nachrutschen beim Ankommen las sich auf dem Geraet als Zucken. */
+  .view.active{display:block;}
 
   
   /* ---------- Bewegter Hintergrund ----------

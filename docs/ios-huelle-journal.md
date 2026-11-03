@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-03, nach Runde 219)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-03, nach Runde 220)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 219 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 220 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -72,7 +72,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 219 | (dieser) | Einstellungen: Sperren nach Sofort/1/15 Min., Datenhinweis an der Datenkarte, App-Symbol als Unterseite |
+| 220 | (dieser) | Seitenwechsel ohne Zucken (Hauptseiten ohne Nachrutschen, Tierbilder vorgeladen, Kopf-Ausschnitt ohne Filter) |
+| 219 | `0e6f1dc` | Einstellungen: Sperren nach Sofort/1/15 Min., Datenhinweis an der Datenkarte, App-Symbol als Unterseite |
 | 218 | `4e75209` | Einstellungen: App-Symbol-Zeile unter Allgemein, Karten unten wieder rund |
 | 217 | `95045e4` | Alternative App-Symbole (Nacht, Papier, Abendrot, Ozean, Lavendel) mit Lucenta+, Plugin AppSymbol |
 | 216 | `bb0d644` | Froh ohne Flecken unter den Augen (alle 20), Katzenmund offen, Uebergabe nachgezogen |
@@ -280,9 +281,11 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
 - *(abgeloest)* **Tiere realistischer (Runde 172, Inhaber):** `mitBrauen` setzt Farbe ×0,4 und Wulst ×0,55 (aufgemalte Brauen hat
   keine dieser Arten), `auge` Lichtpunkt ×0,7. „echt, aber liebenswert" gilt weiter (Augen etwas groesser als echt).
 
-- **Seitenwechsel ohne Deckkraft (Runde 170):** `rise`, `view-vor`, `view-zurueck` nur noch Lage, keine Deckkraft
-  und kein `scale`. Aus Deckkraft 0 stand auf dem Geraet fuer ein Bild nur der Hintergrund da (Flackern).
-  Fokus-Rueckgaben immer mit `{preventScroll:true}`. Nachmessen: `sh tools/flackern/messen.sh <sim-id>`.
+- **Seitenwechsel (Runde 170, 220):** Hauptseiten wechseln ohne Bewegung wie Tabs; nur Unterseiten (`UNTERSEITE_VON`)
+  schieben sich herein. `rise`, `view-vor`, `view-zurueck` und die Staffelung `glied-ein` sind entfallen (Runde 220,
+  „ruckelt/zuckt"). Nie ueber Deckkraft (Flackern, Runde 170). Fokus-Rueckgaben mit `{preventScroll:true}`.
+  Nachmessen: `sh tools/flackern/wege.sh` (Bewegungsphasen je Klick), `sh tools/flackern/messen.sh <sim-id>` (Flackern),
+  `node tools/ruckeln.mjs` (WebKit, spaetes Springen).
 
 - **Probezeit (Runde 168, Inhaber):** 7 Tage kostenlos am Jahresabo. Angezeigt NUR, wenn `preise()` ein
   `jahrProbeTage > 0` meldet (Swift: `introductoryOffer.paymentMode == .freeTrial` und
@@ -445,19 +448,44 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 219** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 220** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 219 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 220 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 220 — Seitenwechsel ohne Zucken
+
+**Inhaber:** „die App ruckelt/zuckt immer noch, wenn man auf bestimmte Seiten geht".
+
+**Gemessen, nicht geraten:** Headless-WebKit (`tools/ruckeln.mjs`, alle Wege, nachgebaute Bruecke) fand nichts — kein
+spaetes Springen, Wechsel unter 35 ms. Erst die Aufnahme im Simulator (`tools/flackern/wege.sh`: 18 Klicks, je Bild die
+Aenderung zum Vorbild, `bewegung.swift`) zeigte es: Viele Wechsel bewegten sich in **zwei Phasen** — die Seite kam an,
+stand ~100 ms still und setzte sich dann noch einmal bis zu 1,4 s nach dem Antippen. Das waren drei uebereinander
+liegende Bewegungen: `rise` (10 px hoch an jeder aktiven Seite, lief auch nach der Wischgeste zurueck), `view-vor`
+(16 px seitlich) und die Staffelung `glied-ein` (jedes Kind 14 px, verzoegert bis 0,2 s, Ende bei 0,75 s).
+
+**Geaendert:**
+- Hauptseiten wechseln ohne Bewegung (wie Tabs in iOS); nur Unterseiten schieben sich als Push/Pop herein (abgenommen).
+  `showView` setzt nur noch `nav-push`/`nav-pop`. Danach in der Aufnahme: jeder Wechsel **eine** Phase, Ende nach 440 ms.
+- „Aussehen" begann seinen Push 150–220 ms zu spaet (Simulator). Zwei Ursachen: die 20 Tierbilder kamen beim ersten
+  Oeffnen erst waehrend der Animation an (jetzt `figurenVorladen()` 2,5 s nach dem Start), und jeder Kopf im Raster trug
+  `filter: drop-shadow …` (+ `brightness/saturate` im Dunkeln) und `clip-path` — am Kopf-Ausschnitt unsichtbar, weil
+  der Kreis den Schatten abschneidet. Filter jetzt nur an der ganzen Figur, der Ausschnitt rundet per `border-radius`.
+  Headless: Bild nach dem Antippen 96 → 80 ms (Median), ohne Raster waeren es 44.
+- `pruef-bewegung` prueft jetzt: Hauptseite ohne Animation, Unterseite mit `seite-rein`.
+
+**Unsicher:** Der Simulator rechnet auf der Mac-GPU; die Zahlen sind Verhaeltnisse, keine iPhone-Werte. Ob „Aussehen"
+auf dem Geraet noch spaet anlaeuft, zeigt nur das Geraet. Im Dunkeln sind die kleinen Koepfe jetzt 6 % heller als
+vorher (die Daempfung hing am entfernten Filter).
 
 ## Runde 219 — Einstellungen: Face-ID-Bereich, App-Symbol als Unterseite
 

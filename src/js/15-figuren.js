@@ -68,6 +68,15 @@
     return '<img class="figur-bild" src="'+quelle+'" alt="" aria-hidden="true" draggable="false" decoding="async">';
   }
 
+  // Nach dem Start alle Tierbilder einmal laden und entschluesseln: Beim ersten Oeffnen von „Aussehen" kamen sonst
+  // 20 Dateien mitten in der Schiebe-Animation an, und die Seite ruckelte.
+  function figurenVorladen(){
+    Object.keys(FIGUR_BILDER).forEach(function(k, i){
+      if (/-(froh|muede)$/.test(k)) return;
+      setTimeout(function(){ try{ var b = new Image(); b.src = FIGUR_BILDER[k]; if (b.decode) b.decode().catch(function(){}); }catch(e){} }, i * 15);
+    });
+  }
+
   // ---------- Zubehoer fuer den Begleiter ----------
   // Freigeschaltet ueber Eintragstage der Tagesform; das erste frei, die weiteren nur mit Lucenta+ (Entscheidung des
   // Inhabers). Platziert ueber die Kopfstelle (FIGUR_KOEPFE), damit es auf jedes Tierbild passt.

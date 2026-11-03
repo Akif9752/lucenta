@@ -404,5 +404,6 @@
         setTimeout(splashAusblenden, 4000);
       }
     }catch(e){}
+    setTimeout(figurenVorladen, 2500);
   })();
 })();

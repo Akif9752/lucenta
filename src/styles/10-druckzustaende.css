@@ -125,13 +125,6 @@
 
 /* ================= Richtung, Sichtbarkeit, Atmosphaere ================= */
 
-  /* 1. Richtung im Ansichtswechsel: 16px, in den Rand hinein, nicht darueber. Dieselbe Kurve und Dauer
-     wie rise. */
-  .view.active.nav-vor{ animation:view-vor .45s cubic-bezier(.2,.8,.2,1) both; }
-  .view.active.nav-zurueck{ animation:view-zurueck .45s cubic-bezier(.2,.8,.2,1) both; }
-  @keyframes view-vor{ from{transform:translateX(16px);} to{transform:none;} }
-  @keyframes view-zurueck{ from{transform:translateX(-16px);} to{transform:none;} }
-
   /* 2. Ergebniskarten blenden ein, wenn sie in den Blick kommen (Klasse defer setzt nur das JS). */
   .trait-card.defer{ animation:none; opacity:0; }
   .trait-card.defer.reveal-in{ animation:card-in .5s cubic-bezier(.2,.8,.2,1) both; }
@@ -153,7 +146,6 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    .view.active.nav-vor, .view.active.nav-zurueck{ animation:none; }
     .trait-card.defer{ animation:none; opacity:1; }
     .trait-card.defer.reveal-in{ animation:none; }
     /* Der Schein bleibt als ruhige Fläche stehen, statt zu verschwinden — er ist Teil des
