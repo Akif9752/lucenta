@@ -74,7 +74,8 @@ extension Stimmung {
         case .muede: b.oben = min(0.5, a.oben + 0.24); b.unten = max(0, a.unten - 0.04); b.schraeg = a.schraeg + 0.08
                      b.funke = a.funke * 0.6; b.zwinkern = false
         // Trickfilm: Freude mit offenen Augen (Unterlid hebt sich leicht) und breitem Lachen, wie in den Vorlagen.
-        case .froh:  if TRICK { b.oben = max(0, a.oben - 0.06); b.unten = a.unten + 0.10; b.funke = a.funke * 1.15 } else { b.laecheln = true }
+        // Trickfilm: Freude mit offenen Augen und weiterem Mund; ein gehobenes Unterlid warf einen dunklen Fleck unters Auge.
+        case .froh:  if TRICK { b.oben = max(0, a.oben - 0.06); b.funke = a.funke * 1.15 } else { b.laecheln = true }
         }
         return b
     }
@@ -132,7 +133,7 @@ func lid(_ r: Float, grenze: Float, achse d: V, farbe: V, rand: Float = 0.9) -> 
 
 // Beide Lider eines Auges. `vorn` = wohin das Auge im Kopf schaut (Flaechennormale), `s` = Seite
 // (+1 rechts vom Tier aus gesehen links im Bild … das Vorzeichen von x), fuer den schraegen Winkel.
-func lider(an wurzel: SCNNode, mitte: V, r: Float, vorn: V, s: Float, farbe: V, _ a: Ausdruck, geschlossen: Bool = false) {
+func lider(an wurzel: SCNNode, mitte: V, r: Float, vorn: V, s: Float, farbe: V, _ a: Ausdruck, geschlossen: Bool = false, farbeUnten: V? = nil) {
     let F = simd_normalize(vorn)
     let U = simd_normalize(V(0, 1, 0) - F * simd_dot(V(0, 1, 0), F))
     let X = simd_cross(U, F)                       // zeigt zur Seite
@@ -153,7 +154,8 @@ func lider(an wurzel: SCNNode, mitte: V, r: Float, vorn: V, s: Float, farbe: V, 
     }
     for (anteil, d, seite) in [(oben, dO, Float(1)), (unten, dU, Float(-1))] where anteil > 0.02 {
         // Trickfilm: nur das Oberlid traegt den dunklen Rand; unten las er sich als Strich unter dem Auge.
-        if let k = lid(r, grenze: simd_dot(d, kante(anteil, seite)), achse: d, farbe: farbe, rand: TRICK && seite < 0 ? 0.1 : 0.9) {
+        // Unterlid in der Farbe UNTER dem Auge: mit der Farbe darueber sass bei hellem Fell ein dunkler Fleck (froh).
+        if let k = lid(r, grenze: simd_dot(d, kante(anteil, seite)), achse: d, farbe: seite < 0 ? (farbeUnten ?? farbe) : farbe, rand: TRICK && seite < 0 ? 0.1 : 0.9) {
             k.position = scnVektor(mitte); wurzel.addChildNode(k)
         }
     }
@@ -308,8 +310,9 @@ func augenEinsetzen(_ wurzel: SCNNode, _ kopf: Koerper, x: Float, y: Float, r: C
         // Lidfarbe: das Fell knapp ueber dem Auge.
         let ueber = V(x * s, y + Float(r) * 1.25, vorderflaeche(kopf, x * s, y + Float(r) * 1.25))
         let farbe = kopf.farbe(ueber, gradient(kopf, ueber)) * 0.92
+        let unter = V(x * s, y - Float(r) * 1.10, vorderflaeche(kopf, x * s, y - Float(r) * 1.10))
         lider(an: wurzel, mitte: mitte, r: Float(r), vorn: gradient(kopf, V(x * s, y, zf)), s: s, farbe: farbe, a,
-              geschlossen: zu)
+              geschlossen: zu, farbeUnten: kopf.farbe(unter, gradient(kopf, unter)))
     }
 }
 // Ein Lidwulst ueber jedem Auge: verschmilzt mit dem Kopf und wirft den weichen Schatten aufs Auge.
@@ -591,7 +594,7 @@ func katzenFigur(_ art: KatzenArt) -> (SCNNode, Float, V) {
         augen: augenStellen(kopf, x: 0.27, y: 0.30), augenR: 0.27, braue: 0.3,
         zonen: beide(V(0.55, -0.15, 0.2), V(0.4, 0.35, 0.4), 1.6)), braue: braueM)
     mitB.fellArt = Fell(dichte: 90, ursprung: V(0, -0.05, 0.82), straehnen: 0.4)
-    let hoehle = mundHoehle(mitte: V(0, -0.24, 0.80), breite: 0.12, hoehe: 0.08, tiefe: 0.08, offen: 0.0, kopf: kopf)
+    let hoehle = mundHoehle(mitte: V(0, -0.23, 0.80), breite: 0.15, hoehe: 0.32, tiefe: 0.10, offen: 0.0, kopf: kopf)
     let maul = mitMaul(mitB, Maul(kurven: [Kurve(punkte: [V(0, -0.08, 0.84), V(0, -0.15, 0.84)], spitzHinten: false)]
         + paar(Kurve(punkte: [V(0, -0.15, 0.84), V(0.06, -0.20, 0.83), V(0.12, -0.19, 0.80), V(0.17, -0.14, 0.76)], spitzVorn: false)),
         r: 0.018, farbe: art.braue, staerke: 0.8, hoehlen: hoehle, innen: hex("#93323A")))
@@ -601,7 +604,7 @@ func katzenFigur(_ art: KatzenArt) -> (SCNNode, Float, V) {
     let koerper = brustbild(maul, sitz.formen, farbe: { p, _ in art.rumpf(p) })
     let w = SCNNode(); w.addChildNode(ganzKnoten(koerper))
     trickNase(w, mitte: V(0, -0.03, 0.85), r: V(0.07, 0.045, 0.045), farbe: art.nase)
-    zunge(w, mitte: V(0, -0.24, 0.76), breite: 0.10, hoehe: 0.08, offen: 0.0)
+    zunge(w, mitte: V(0, -0.23, 0.77), breite: 0.13, hoehe: 0.32, offen: 0.0)
     augenEinsetzen(w, kopf, x: 0.27, y: 0.30, r: 0.15, tiefe: 0.24, iris: art.iris,
                    pupille: 0.55, ausdruck: Ausdruck(oben: 0.06, unten: 0.0, schraeg: 0.04, funke: 1.6, groesse: 1.65))
     w.eulerAngles = SCNVector3(0.05, -0.22, 0.06)

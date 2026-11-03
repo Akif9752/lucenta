@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-02, nach Runde 215)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-03, nach Runde 216)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 215 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 216 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -72,7 +72,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 215 | (dieser) | Zubehoer fuer den Begleiter: Schal ab 7 Tagen frei, Muetze/Blume mit Lucenta+, Lage ueber die Kopfstelle |
+| 216 | (dieser) | Froh ohne Flecken unter den Augen (alle 20), Katzenmund offen, Uebergabe nachgezogen |
+| 215 | `d2127fe` | Zubehoer fuer den Begleiter: Schal ab 7 Tagen frei, Muetze/Blume mit Lucenta+, Lage ueber die Kopfstelle |
 | 214 | `a9b012a` | Serie mit Schutztag, Meilensteine 10/30/100/Jahr, Wochenrueckblick mit Mitteilung (frei/teils Lucenta+) |
 | 213 | `6d86ff2` | Kleine Avatare zeigen den Kopf (aus dem Rendering berechnet), Mindestversion iOS 16.4, Store-Liste |
 | 212 | `3cf9dbd` | Tierbilder kuenftig aus lizenziertem Generator: Prompts, Freistellen (Vision), figuren_bilder_holen.py |
@@ -153,15 +154,21 @@ Regeln, die er gesetzt hat:
   (`renderDemoBlock` in `17-profil.js`; `#btnDemo` = 120 Tage, die Fehlersuche klickt ihn).
 - **Symbol:** `tools/symbol_rendern.swift` (Anleitung im Kopf der Datei) → `assets/icon/`, Asset-
   Katalog, apple-touch-icon in `src/index.head.html`.
-- **Tiere:** `tools/figuren_rendern/Tiere.swift` → `bauen.sh <tier>` → ansehen →
-  `python3 tools/figuren_holen.py <tier>`. Seit Runde 133/134 mit Koerper (`vierbeiner(Bau(...))`/`brustbild()`) und
-  **festem** Rahmen (`figuren_rendern/rahmen.json`). Neu messen NUR am Kopf allein und nur fuer das
-  geaenderte Tier: `NUR_KOPF=1 bauen.sh <tier>` → `figuren_holen.py --rahmen-messen <tier>` → `bauen.sh <tier>`
-  (ohne Tiernamen misst es alle, an Bildern MIT Koerper waere das falsch). Muender: `Maul(kurven:…)`.
-  Fell: `braue.haar = haarKarte(kopf, FellKarte(...))` + `braue.fellArt = Fell(...)` je Tier; ohne `haar`
-  kein Fell (Wal, Fisch, Schildkroete). Brauen: `mitBrauen(kopf, …)` vor `mitMaul`.
-  Alle zwoelf im Kreis: `python3 tools/figuren_rendern/uebersicht.py` (`KREIS=230` fuer gross);
-  Vergleich alt/neu: `python3 tools/figuren_rendern/vorschau.py <alter-ordner> <tier>`.
+- **Tiere (Stand Runde 215):** ganze Figuren im Trickfilm-Stil, `tools/figuren_rendern/Tiere.swift`. Ablauf: Tier aendern →
+  `sh tools/figuren_rendern/vorschau_neu.sh <tier>` (misst den Rahmen an der GANZEN Figur, `/tmp/fig-p/<tier>-v.png`) →
+  `sh tools/figuren_rendern/alle_ausdruecke.sh <tier> …` (ruhig/muede/froh gleichzeitig nach `src/figuren`). Fuenf und mehr
+  ganze Figuren dauern ueber zehn Minuten: losgeloest starten. Vergleich: `swift tools/figuren_rendern/streifen.swift aus.png
+  bild … [- naechste Zeile]` (`K=42` echte Avatargroesse, `bild@kx,ky,kr` = Kopf-Ausschnitt), Bilder als JPEG ansehen.
+  Bausteine: `TRICK` (Augen mit Weiss, Brauen), `mundHoehle`/`zunge`/`trickNase`, `mitMaul` (kein Fell im Mund, Lippenkante),
+  `glied`, `sitzLeib(Sitz)` (sitzende Vierbeiner, `kurz`), `stehLeib(Steh)`, `baerenFigur`, `katzenFigur`, `umgeformt`
+  (nur den Leib drehen/skalieren), `ganzKnoten`, `teilKnoten` (kleine Teile im eigenen Raster). Zuschnitt `GANZ` in
+  `figuren_holen.py`. **Kopfstelle** je Tier aus dem Rendering (`KOPF` in main.swift) → `src/figuren/koepfe.json` →
+  `FIGUR_KOEPFE`; kleine Avatare zoomen als Hintergrund des Kreises auf den Kopf (`figurHTML(f, ausdruck, kopf)`).
+  **Zubehoer:** `zubehoer.sh` → `src/figuren/zubehoer-*.png`, Lage `ZUB_LAGE` (15-figuren.js).
+  **Kuenftig aus dem Generator des Inhabers:** `docs/tierbilder-prompts.md`, Einbau `python3 tools/figuren_bilder_holen.py`
+  (stellt per Vision frei, schaetzt die Kopfstelle). Fremde Vorlagen (`vorlagen/`) nie selbst verwenden.
+- **Serie, Meilensteine, Wochenrueckblick (Runde 214):** `tfSerie`, `tfMeilensteine`, `tfMeilensteinFeiern` (07-tagesform.js,
+  `#tfSerie`), `tfWocheDaten`/`tfWocheHeuteRendern` (09-rueckblick.js, `#tfWocheHeute`), Mitteilung `wochenErinnerung` (24-native.js).
 - **Onboarding:** `25-onboarding.js`, Markup `#onboarding` vor `#drawerScrim`. Merker `lucenta_onboarding`.
   Unter Automatisierung (`navigator.webdriver`) AUS — sonst blockierte es alle Pruefungen; gezielt mit
   `index.html?onboarding=1`. Bestandsnutzer mit Daten bekommen es nie.
@@ -227,7 +234,11 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–198 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–216 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+
+*Wartet auf den Inhaber:* die Tierbilder aus dem Generator (Runde 212); danach je Tier Kopfstelle und Zubehoer-Lage
+ansehen und die Store-Bilder neu erzeugen. Aus der Funktionsliste (Runde 213) nicht gewaehlt: Reflexionsfrage, kurze Uebung,
+Export, Health lesen, App-Symbole, Apple Watch.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Kontaktzeile** unter „Hilfe & Ueber" (`mailto:`) — braucht die E-Mail-Adresse des Inhabers.
@@ -431,19 +442,30 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 215** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 216** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 215 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 216 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 216 — „froh" ohne Flecken unter den Augen; Katzenmund; Uebergabe nachgezogen
+
+**Gefunden** an der vergroesserten Katze: (1) im Ausdruck „froh" dunkle Flecken unter beiden Augen — das gehobene
+Unterlid bekam die Farbe des Fells UEBER dem Auge und warf zudem selbst einen Schatten; betraf alle Tiere; (2) der
+fröhliche Katzenmund war nur ein Schlitz (Hoehle bei `offen: 0` zu flach). **Geaendert:** im Trickfilm-Stil hebt sich das
+Unterlid bei „froh" nicht mehr (Freude tragen Mund und Lichtpunkte); `lider(..., farbeUnten:)` nimmt fuer das Unterlid
+die Farbe unter dem Auge (fuer muede/ruhig); `katzenFigur` mit tieferer Hoehle und Zunge. Alle 20 „froh" neu gerendert.
+
+Uebergabeblock: „Wo was steht" fuer Tiere (ganze Figuren, Bausteine, Kopfstelle, Zubehoer, Generator-Weg) und
+Serie/Meilensteine/Wochenrueckblick; „Was offen ist" auf Runde 216.
 
 ## Runde 215 — Zubehoer fuer den Begleiter
 
