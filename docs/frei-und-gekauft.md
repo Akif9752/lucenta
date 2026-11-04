@@ -52,7 +52,7 @@ zu verschließen kostet mehr, als er einbringt.
 | Tagesform eintragen, so oft man mag | ✓ | ✓ |
 | Vergleich: Prozentwert, Fünfeck, ein Satz je Dimension | ✓ | ✓ |
 | **Verlauf über mehr als zwei Durchläufe** | – | ✓ |
-| **Tagesform über 14 Tage hinaus** | – | ✓ |
+| **Tagesform über 7 Tage hinaus** | – | ✓ |
 | **Die drei Tagesform-Befunde** (Schwankung, Wochentage, Tageszeit) | – | ✓ |
 | **Vergleich in der Tiefe** (Alltag · Gespräch · Gemeinsam) | – | ✓ |
 | **Vergleiche speichern (Archiv)** | – | ✓ |
@@ -75,13 +75,13 @@ Vergleichen und wird mit jedem weiteren genauer. Das ist fortlaufender Wert im S
 Richtlinie 3.1.2 und nicht ein fester Inhalt, den ein Schalter freigibt.
 
 Damit stehen fünf Grenzen, und **alle fünf sind von derselben Art**: Verlauf über zwei
-Durchläufe hinaus, Tagesform über vierzehn Tage hinaus, die Vergleichskarte in der Tiefe,
+Durchläufe hinaus, Tagesform über sieben Tage hinaus, die Vergleichskarte in der Tiefe,
 „Verstehen", die Archiv-Auswertung. Keine davon schaltet einen fertigen Text frei; jede
 öffnet etwas, das mit der Zeit wächst.
 
 **Frei ist damit ein vollständiges Produkt**, nicht eine Kostprobe: der ganze Test, das
 Porträt, der vollständige Bericht über alle fünf Dimensionen, das Ergebnisbild, der
-Vergleich mit einer anderen Person, das Archiv als Liste, Tagesform eintragen und vierzehn
+Vergleich mit einer anderen Person, das Archiv als Liste, Tagesform eintragen und sieben
 Tage sehen, die letzten zwei Durchläufe mit der Delta-Karte. Wer nie zahlt, hat kein
 beschnittenes Lucenta, sondern ein anderes: eines, das die Gegenwart zeigt statt den Verlauf.
 
@@ -91,8 +91,10 @@ beschnittenes Lucenta, sondern ein anderes: eines, das die Gegenwart zeigt statt
 der Ergebnisseite zeigt den Vergleich zum letzten Mal weiterhin. Zu wenig, um zu sehen *wie*.
 Wer zum zweiten Mal testet, hat gerade den Beweis gesehen, dass die Kurve etwas erzählt.
 
-**Vierzehn Tage Tagesform frei.** Der erste Befund braucht sieben Tage, der zweite vierzehn.
-Wer die Grenze erreicht, hat also gerade den Punkt erreicht, an dem es etwas zu holen gäbe.
+**Sieben Tage Tagesform frei** (Entscheidung des Inhabers, `FREI_TAGE` in `src/js/03-speicherung.js`;
+ursprünglich vierzehn). Nach einer Woche ist das Eintragen zur Gewohnheit geworden, und der erste Befund
+braucht genau sieben Tage — wer die Grenze erreicht, hat also gerade den Punkt erreicht, an dem es etwas
+zu holen gäbe.
 Das ist der ehrlichste Moment für einen Hinweis: nicht am Anfang, wo er nur stört, sondern
 dort, wo die Person selbst die Arbeit hineingesteckt hat.
 
