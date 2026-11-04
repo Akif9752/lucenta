@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-03, nach Runde 220)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 221)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 220 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 221 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -72,7 +72,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 220 | (dieser) | Seitenwechsel ohne Zucken (Hauptseiten ohne Nachrutschen, Tierbilder vorgeladen, Kopf-Ausschnitt ohne Filter) |
+| 221 | (dieser) | Clownfisch im kleinen Avatar wieder ganz im Kreis |
+| 220 | `e4ef083` | Seitenwechsel ohne Zucken (Hauptseiten ohne Nachrutschen, Tierbilder vorgeladen, Kopf-Ausschnitt ohne Filter) |
 | 219 | `0e6f1dc` | Einstellungen: Sperren nach Sofort/1/15 Min., Datenhinweis an der Datenkarte, App-Symbol als Unterseite |
 | 218 | `4e75209` | Einstellungen: App-Symbol-Zeile unter Allgemein, Karten unten wieder rund |
 | 217 | `95045e4` | Alternative App-Symbole (Nacht, Papier, Abendrot, Ozean, Lavendel) mit Lucenta+, Plugin AppSymbol |
@@ -448,19 +449,26 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 220** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 221** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 220 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 221 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 221 — Clownfisch im kleinen Kreis
+
+Beim Ansehen des Rasters (Runde 220) gefunden: Der Clownfisch stand in allen kleinen Avataren nur als Ecke unten rechts
+im Kreis. Sein „Kopf" ist der ganze Fisch (Radius 0,438), der Zoom `0,40 / r` lag damit unter 1 und wurde auf 1,01
+geklemmt — und die Lageformel `(0,5 − k·s) / (1 − s)` teilte durch −0,01 (−879 %). Jetzt: Zoom unter 1,05 → ganzes
+Bild, mittig. Betrifft nur den Fisch (alle anderen Tiere zoomen ab 1,3). Im WebKit am Raster angesehen.
 
 ## Runde 220 — Seitenwechsel ohne Zucken
 

@@ -60,8 +60,10 @@
     if (k){
       // Als Hintergrund des Kreises statt als uebergrosses Bild: so ragt nichts ueber den Kreis hinaus.
       // Hintergrund-Prozent: Anteil P legt P des Bildes auf P des Kreises -> P = (0,5 - k*s) / (1 - s).
-      var s = Math.max(1.01, Math.min(3.2, 0.40 / k[2]));
-      var px = (0.5 - k[0]*s) / (1 - s) * 100, py = (0.5 - k[1]*s) / (1 - s) * 100;
+      var s = Math.min(3.2, 0.40 / k[2]);
+      // Kopf so gross wie das Bild (Fisch): Die Formel teilt dann durch fast 0 und schob das Bild aus dem Kreis.
+      if (s < 1.05) s = 1;
+      var px = s === 1 ? 50 : (0.5 - k[0]*s) / (1 - s) * 100, py = s === 1 ? 50 : (0.5 - k[1]*s) / (1 - s) * 100;
       return '<span class="figur-bild figur-kopf" aria-hidden="true" style="background-image:url(\''+quelle+'\');background-size:'+
              (s*100).toFixed(1)+'%;background-position:'+px.toFixed(1)+'% '+py.toFixed(1)+'%"></span>';
     }
