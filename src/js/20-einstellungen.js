@@ -22,10 +22,6 @@
     $('wiederCodeBox').hidden = !result;
     $('wiederCode').textContent = result ? toCode(result) : '';
 
-    renderAvatarInto($('settingsAvatar'), profile);
-    $('settingsAccountName').textContent = profile.name ? profile.name : tx('js_profil');
-    $('settingsAccountSub').textContent = profile.name ? tx('js_name_gesetzt') : (profile.avatarImg ? tx('js_bild_gesetzt_noch_kein_nam') : tx('js_noch_kein_name_gesetzt'));
-
     $('einstTestGruppe').hidden = !progress;
     if (progress){
       $('settingsTestStatus').textContent = tx('js_unterbrochen_bei_frage') + (progress.qi+1) + tx('js_von_2');
@@ -107,19 +103,19 @@
 
   function datenEinspielen(text){
     if (demoSperrt()) return;
-    if (!text || !text.trim()){ toast(tx('js_import_leer')); schuetteln($('importFeld')); return; }
+    if (!text || !text.trim()){ toast(tx('js_import_leer')); schuetteln($('btnImport')); return; }
     var d = null;
     try{ d = JSON.parse(text); }catch(e){}
     // Bewusst streng: Wer hier irgendetwas einspielt, ueberschreibt seinen eigenen Bestand.
     if (!d || d.app !== 'lucenta' || !d.daten || typeof d.daten !== 'object'){
-      toast(tx('js_import_fehler')); schuetteln($('importFeld')); return;
+      toast(tx('js_import_fehler')); schuetteln($('btnImport')); return;
     }
     var geschrieben = 0;
     DATEN_SCHLUESSEL.forEach(function(k){
       if (typeof d.daten[k] !== 'string') return;
       try{ localStorage.setItem(k, d.daten[k]); geschrieben++; }catch(e){}
     });
-    if (!geschrieben){ toast(tx('js_import_fehler')); schuetteln($('importFeld')); return; }
+    if (!geschrieben){ toast(tx('js_import_fehler')); schuetteln($('btnImport')); return; }
     toast(tx('js_import_ok'));
     // Neu laden statt jede Ansicht einzeln nachzuziehen: Nach einem Austausch des gesamten
     // Bestands ist das der einzige Weg, der sicher keinen alten Zustand stehen laesst.

@@ -1,5 +1,5 @@
   // ---------- Lucenta+ als eigene Seite ----------
-  // Aus der Seitenleiste oeffnet sich eine Seite, nicht das Kauffenster (Auftrag des Inhabers): mit Abo
+  // Aus Profil und Einstellungen oeffnet sich eine Seite, nicht das Kauffenster (Auftrag des Inhabers): mit Abo
   // Stand, Laufzeit, was freigeschaltet ist, Verwalten und Wiederherstellen; ohne Abo dasselbe Angebot
   // wie im Fenster, gekauft wird weiter dort (eine Stelle fuer Preise und Laufzeitwahl).
   function plusVorteileHTML(){

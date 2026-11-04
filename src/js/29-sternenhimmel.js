@@ -1,7 +1,7 @@
 /* Bewegter Hintergrund der Startseite. Eigene IIFE: liest Zustand aus dem DOM und Farben aus den
    CSS-Marken (hell/dunkel ohne Farbwerte hier).
    Sparsam: laeuft nur auf der Startseite, pausiert im Hintergrund, Pixeldichte max. 1,5, malt jedes
-   zweite Bild, steht unter Schublade/Fenstern und bei reduzierter Bewegung still. */
+   zweite Bild, steht unter Fenstern und bei reduzierter Bewegung still. */
 (function(){
   var canvas = document.getElementById('sternenhimmel');
   if (!canvas || !canvas.getContext) return;
@@ -616,7 +616,7 @@
     // Vor dem ersten Bild die Farben lesen, nicht erst nach 60 Bildern: Sonst zeigt das erste
     // gezeichnete Bild nach der Rueckkehr die Atmosphaere des vorigen Farbmodus.
     farbenLesen();
-    // Auch im bewegten Takt sofort ein Bild malen — sonst lag hinter der Schublade leeres Papier.
+    // Auch im bewegten Takt sofort ein Bild malen — sonst lag hinter einem Fenster leeres Papier.
     zeichnen();
     if (!still){ rafId = window.requestAnimationFrame(schritt); }
   }

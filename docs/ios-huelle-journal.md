@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 226)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 227)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 226 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 227 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -76,7 +76,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 226 | (dieser) | Nur noch die App: Browser-Fassung, CSS-Leiste und Browser-Rueckfaelle entfernt; Pruefungen auf App-Fassung in WebKit |
+| 227 | (dieser) | App an die Tab-Leiste angepasst (Hintergrund im Profilkopf und bei Freunde, Konto-Zeile weg), Daten per Datei einspielen |
+| 226 | `bcae32f` | Nur noch die App: Browser-Fassung, CSS-Leiste und Browser-Rueckfaelle entfernt; Pruefungen auf App-Fassung in WebKit |
 | 225 | `8012a38` | Tab-Leiste in der App als Apples UITabBar (echtes Liquid Glass) |
 | 224 | `89990e5` | Tab-Leiste statt Schublade (5 Reiter, Glas-Kapsel), Einstellungen/Lucenta+ im Profil, Archetypen unter Verstehen |
 | 223 | `1858f76` | Einstellungen: Datenliste unter Face ID als eigene Karte (klebte an „Sperren nach“) |
@@ -492,17 +493,38 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 226** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 227** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 226 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 227 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 227 — App an die Tab-Leiste angepasst; Daten per Datei einspielen
+
+**Inhaber:** „ja mach [Einspielen per Datei], und passe die ganze App an die Tab-Leiste an — z. B. die Hintergruende und den
+Text darueber, der noch die Seitenleiste erwaehnt". **Gewaehlt (Inhaber):** Hintergrund im Profilkopf und auf der eigenen Karte
+bei Freunde; die Konto-Zeile in den Einstellungen faellt weg (sie fuehrte seit der Tab-Leiste im Kreis ins Profil).
+
+- **Hintergrund:** Er lag nur auf der Profilzeile der Schublade und war seitdem nirgends mehr zu sehen (bei Lucenta+ ein
+  Kaufgrund). Jetzt `#profilPoster` (Figur und Name als Karte, wie das Kontaktposter in iOS) und `#freundIchKopf`;
+  eine Stelle `hintergrundOrteAnwenden()` (17-profil.js). Hinweistext in 8 Sprachen neu.
+- **Beispieldaten:** Die Markierung „Beispieldaten — nicht deine" stand nur in der Schublade — jetzt im Profilkopf.
+- **Konto-Zeile** samt Stil und Verdrahtung entfernt; fuenf nur dafuer gebrauchte Texte (8 Sprachen) geloescht.
+- **Einspielen:** statt Text einfuegen die Dateiauswahl von iOS (`#importDatei`, .json) — die Datei, die „Daten sichern"
+  ueber das Teilen-Blatt ablegt. Meldung bei leerer Datei angepasst.
+- **Kommentare** in JS, CSS und Swift ohne Schublade/Seitenleiste.
+
+**Gemessen:** im WebKit (390 pt, dunkel, Nordlicht) Profilkopf und Freunde-Karte angesehen.
+
+**Unsicher:** Die Dateiauswahl selbst (iOS-Blatt „Dateien") laesst sich nur am Geraet pruefen.
 
 ---
 

@@ -20,7 +20,7 @@ import Capacitor
 ///    reicht der dunkle Seitenhintergrund bis unter die Statusleiste, und env() liefert die echten
 ///    Insets.
 ///
-/// Innere Bildlaufbereiche (Schublade, Dialoge) scrollen ueber CSS-overflow in eigenen
+/// Innere Bildlaufbereiche (Dialoge) scrollen ueber CSS-overflow in eigenen
 /// DOM-Elementen, nicht ueber diesen ScrollView — sie bleiben von beidem unberuehrt.
 ///
 /// 3. **Themengerechte Hintergrundfarbe fuer die Ladeluecke.** Vom Geraet gemeldet: Beim Start ein

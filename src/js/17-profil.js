@@ -8,8 +8,8 @@
   }
   // Drei ruhige Farbtoene fuer den Initialen-Kreis.
   var AVATAR_COLORS = ['accent','ink','quiet'];
-  // Rangfolge: eigenes Foto, dann Figur, dann Buchstabe. Alle drei Kreise (Profil, Schublade,
-  // Einstellungen) laufen durch diese eine Funktion.
+  // Rangfolge: eigenes Foto, dann Figur, dann Buchstabe. Alle Kreise (Profil, Freunde,
+  // Vergleich) laufen durch diese eine Funktion.
   function renderAvatarInto(el, profile, ausdruck){
     if (!el || !el.classList) return;
     AVATAR_COLORS.forEach(function(c){ el.classList.remove('avatar-color-'+c); });
@@ -92,7 +92,7 @@
       });
     });
   }
-  // Hintergruende fuer die Profilzeile der Schublade, in Gruppen; gesperrte oeffnen das Lucenta+-Fenster.
+  // Hintergruende fuer Profilkopf und Freunde-Karte, in Gruppen; gesperrte oeffnen das Lucenta+-Fenster.
   var SCHLOSS_KLEIN = '<svg class="hg-schloss" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>';
   function renderHintergrundRaster(profile){
     var wrap = $('hgRaster');
@@ -121,15 +121,29 @@
       });
     });
   }
+  // Der gewaehlte Hintergrund an einem Element: Klasse traegt Flaeche UND Schriftfarben (--hg-ink, --hg-muted).
+  function hintergrundSetzen(el, pr){
+    if (!el || !el.classList) return;
+    var hg = (pr.hintergrund && HINTERGRUENDE.indexOf(pr.hintergrund) >= 0) ? pr.hintergrund : '';
+    HINTERGRUENDE.forEach(function(id){ el.classList.remove('hg-'+id); });
+    if (hg){ el.classList.add('hg-'+hg); el.setAttribute('data-hg', hg); } else el.removeAttribute('data-hg');
+  }
+  // Wo man den Hintergrund sieht (Entscheidung des Inhabers): Profilkopf und die eigene Karte bei Freunde.
+  function hintergrundOrteAnwenden(){
+    var pr = loadProfile();
+    hintergrundSetzen($('profilPoster'), pr);
+    var name = $('profilPosterName');
+    if (name) name.textContent = pr.name || tx('js_profil');
+    var demo = $('profilPosterDemo');
+    if (demo){ demo.hidden = !demoAktiv(); demo.textContent = tx('demo_marke'); }
+    hintergrundSetzen($('freundIchKopf'), pr);
+  }
   // Vorschau von Figur und Hintergrund: gross auf der Unterseite, klein in der Profilzeile.
   function aussehenVorschau(){
-    var pr = loadProfile(), hg = (pr.hintergrund && HINTERGRUENDE.indexOf(pr.hintergrund) >= 0) ? pr.hintergrund : '';
+    var pr = loadProfile();
     var buehne = $('aussehenBuehne'), mini = $('aussehenMini');
-    [buehne, mini].forEach(function(el){
-      if (!el || !el.classList) return;
-      HINTERGRUENDE.forEach(function(id){ el.classList.remove('hg-'+id); });
-      if (hg){ el.classList.add('hg-'+hg); el.setAttribute('data-hg', hg); } else el.removeAttribute('data-hg');
-    });
+    hintergrundSetzen(buehne, pr); hintergrundSetzen(mini, pr);
+    hintergrundOrteAnwenden();
     if (buehne && buehne.querySelector){
       buehne.innerHTML = '<span class="avatar aussehen-avatar"></span><span class="aussehen-name"></span>';
       renderAvatarInto(buehne.querySelector('.aussehen-avatar'), pr);

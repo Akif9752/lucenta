@@ -401,12 +401,17 @@
       <button class="btn btn-ghost btn-sm" id="btnBackFromProfile" data-i18n="start_6">← Start</button>
     </div>
     <div class="profile-head">
+      <!-- Figur und Name auf dem gewaehlten Hintergrund, wie das Kontaktposter in iOS (Entscheidung des Inhabers). -->
+      <div class="profil-poster" id="profilPoster">
       <div class="avatar-wrap">
         <div class="avatar" id="profileAvatar" aria-hidden="true"></div>
         <button type="button" class="avatar-edit" id="btnAvatarEdit" aria-label="Profilbild ändern" data-i18n-aria="aria_profilbild_ändern">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
         </button>
         <input type="file" accept="image/*" id="avatarFileInput" style="display:none;">
+      </div>
+      <div class="profil-poster-name" id="profilPosterName"></div>
+      <div class="profil-poster-demo" id="profilPosterDemo" hidden></div>
       </div>
       <button type="button" class="profile-remove-photo" id="btnAvatarRemove" style="display:none;" data-i18n="bild_entfernen">Bild entfernen</button>
       <!-- Figur und Hintergrund auf eigener Seite (Entscheidung des Inhabers); hier nur der Weg mit Vorschau. -->
@@ -472,7 +477,7 @@
     <p class="section-lead" data-i18n="zub_lead">Mit regelmäßigen Einträgen in der Tagesform schaltest du Zubehör für deine Figur frei.</p>
     <div class="zub-gruppen" id="zubRaster" role="group" aria-label="Zubehör wählen" data-i18n-aria="aria_zub_waehlen"></div>
     <h2 class="section-title" data-i18n="hintergrund">Hintergrund</h2>
-    <p class="section-lead" data-i18n="der_hintergrund_liegt_hinter">Liegt hinter deinem Namen in der Seitenleiste. Jede Vorlage bringt ihre eigenen Schriftfarben mit, damit der Name auf ihr lesbar bleibt.</p>
+    <p class="section-lead" data-i18n="der_hintergrund_liegt_hinter">Liegt hinter deiner Figur und deinem Namen — oben im Profil und auf deiner Karte bei Freunde. Jede Vorlage bringt ihre eigenen Schriftfarben mit, damit der Name auf ihr lesbar bleibt.</p>
     <div class="hg-gruppen" id="hgRaster" role="group" aria-label="Hintergrund wählen" data-i18n-aria="aria_hintergrund_waehlen"></div>
   </section>
 
@@ -487,14 +492,6 @@
     </div>
 
     <div class="settings-group">
-      <div class="settings-account-row">
-        <div class="settings-account-avatar" id="settingsAvatar" aria-hidden="true"></div>
-        <div class="settings-account-info">
-          <strong id="settingsAccountName">Profil</strong>
-          <div class="l" id="settingsAccountSub">Noch kein Name gesetzt</div>
-        </div>
-        <button type="button" class="btn btn-ghost btn-sm" id="btnSettingsEditProfile" data-i18n="profil_bearbeiten">Profil bearbeiten</button>
-      </div>
       <!-- Mit Apple anmelden + iCloud, nur in der App (26-konto.js). -->
       <div id="kontoIcloud" class="konto-icloud" hidden></div>
       <!-- Lucenta+ fuehrt auf seine Seite; Wiederherstellen bleibt hier erreichbar (Richtlinie 3.1.2). -->
@@ -602,7 +599,7 @@
         <button type="button" class="btn btn-ghost btn-sm" id="btnImport" data-i18n="daten_einspielen">Daten einspielen</button>
       </div>
       <p class="settings-empty" id="settingsEmptyNote" data-i18n="aktuell_ist_nichts_gespeiche">Aktuell ist nichts gespeichert außer deiner Darstellung.</p>
-        <textarea id="importFeld" rows="3" style="display:none;" placeholder="Gesicherte Daten hier einfügen" data-i18n-placeholder="ph_gesicherte_daten_hier_ein"></textarea>
+        <input type="file" id="importDatei" accept="application/json,.json" hidden>
       <details class="settings-restore einst-aufklapp" id="einstWiederherstellen">
         <summary class="settings-restore-label"><span data-i18n="ergebnis_wiederherstellen">Ergebnis wiederherstellen</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></summary>
         <div class="code-box" id="wiederCodeBox" hidden>

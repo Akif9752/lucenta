@@ -22,7 +22,7 @@
   var viewScroll = {};
 
   // Jeder Ansichtswechsel legt einen Verlaufseintrag an, damit die Zurueck-Geste des Systems in der
-  // App bleibt; Ueberlagerungen (Schublade, Dialoge) schliesst sie zuerst.
+  // App bleibt; Ueberlagerungen (Dialoge) schliesst sie zuerst.
   var historyOK = true, overlayDepth = 0;
   function pushViewState(name){
     if (!historyOK) return;

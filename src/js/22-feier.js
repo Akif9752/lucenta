@@ -132,7 +132,7 @@
     });
     bewegungNeu(v, 'karten-ein', 1800);
   }
-  // Das Tier wippt — beim Antippen des Profilbilds und wenn die Schublade aufgeht.
+  // Das Tier wippt beim Antippen des Profilbilds.
   function tierWippen(el){
     if (!el || !el.classList || !el.classList.contains('hat-figur')) return;
     bewegungNeu(el, 'wippen', 900);

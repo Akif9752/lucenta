@@ -111,6 +111,7 @@
     var profile = loadProfile();
     profile.name = $('profileName').value;
     if (saveProfile(profile) && !profile.avatarImg) renderAvatar(profile);
+    hintergrundOrteAnwenden();
   });
   $('btnEinstPlus').addEventListener('click', function(){ plusSeiteOeffnen('settings'); });
   plusSeiteVerdrahten();
@@ -126,7 +127,6 @@
     profilWegeAnwenden();
     toast(tx('js_unterbrochener_test_verwor'));
   });
-  $('btnSettingsEditProfile').addEventListener('click', function(){ renderProfile(); showView('profile'); });
   $('btnRestoreCode').addEventListener('click', function(){
     var input = $('restoreCodeInput');
     var restored = fromCode(input.value.trim());
@@ -332,11 +332,15 @@
     schalterAnwenden();
     syncWortmarke();
     if ($('btnExport')) $('btnExport').addEventListener('click', datenSichern);
-    if ($('btnImport')) $('btnImport').addEventListener('click', function(){
-      var feld = $('importFeld');
-      if (!feld) return;
-      if (feld.style.display === 'none'){ feld.style.display = ''; feld.focus(); return; }
-      datenEinspielen(feld.value);
+    // Einspielen ueber die Dateiauswahl von iOS (Dateien, iCloud Drive): die Datei, die „Daten sichern" ablegt.
+    if ($('btnImport')) $('btnImport').addEventListener('click', function(){ var d = $('importDatei'); if (d){ d.value = ''; d.click(); } });
+    if ($('importDatei')) $('importDatei').addEventListener('change', function(){
+      var f = this.files && this.files[0];
+      if (!f) return;
+      var leser = new FileReader();
+      leser.onload = function(){ datenEinspielen(String(leser.result || '')); };
+      leser.onerror = function(){ toast(tx('js_import_fehler')); schuetteln($('btnImport')); };
+      leser.readAsText(f);
     });
     [['haptikSchalter','lucenta_haptik'], ['bewegungSchalter','lucenta_bewegung']].forEach(function(z){
       var el = $(z[0]);

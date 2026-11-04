@@ -64,27 +64,24 @@
   .avatar-color-swatch.avatar-color-quiet{background:var(--surface-2);}
   /* Doppelklassen-Selektor, damit die Spezifitaet unabhaengig von der Reihenfolge ueber der Basisregel
      liegt. */
-  .avatar.avatar-color-ink, .settings-account-avatar.avatar-color-ink{background:var(--ink);color:var(--paper);}
-  .avatar.avatar-color-quiet, .settings-account-avatar.avatar-color-quiet{background:var(--surface-2);color:var(--ink);}
+  .avatar.avatar-color-ink{background:var(--ink);color:var(--paper);}
+  .avatar.avatar-color-quiet{background:var(--surface-2);color:var(--ink);}
 
   /* ---------- Das Monogramm wie in iOS ----------
      Zwei Buchstaben in SF in einem Kreis mit Verlauf (oben heller). background-image statt background:
      Das eigene Foto kommt als Inline-background-image und darf die Farbe nicht ueberschreiben. Keine
      neuen Farbmarken. */
-  .avatar:not(.hat-figur), .settings-account-avatar:not(.hat-figur){
+  .avatar:not(.hat-figur){
     font-family:var(--sans); font-weight:500; letter-spacing:.01em;
   }
-  .avatar.avatar-color-accent:not(.hat-figur),
-  .settings-account-avatar.avatar-color-accent:not(.hat-figur){
+  .avatar.avatar-color-accent:not(.hat-figur){
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, #FFFFFF), var(--accent));
   }
-  .avatar.avatar-color-ink:not(.hat-figur),
-  .settings-account-avatar.avatar-color-ink:not(.hat-figur){
+  .avatar.avatar-color-ink:not(.hat-figur){
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--ink) 74%, var(--paper)), var(--ink));
   }
   /* "Ruhig" ist das Grau der iOS-Kontakte (helle Buchstaben auf gedecktem Verlauf). */
-  .avatar.avatar-color-quiet:not(.hat-figur),
-  .settings-account-avatar.avatar-color-quiet:not(.hat-figur){
+  .avatar.avatar-color-quiet:not(.hat-figur){
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));
     color:var(--paper);
   }
@@ -155,16 +152,6 @@
   .archetypes-head + .settings-group{margin-top:26px;}
   .settings-group h2{font-family:var(--serif);font-size:calc(17px * var(--dt, 1));font-weight:500;margin:0;}
   .settings-group-desc{margin-top:5px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);line-height:1.55;}
-
-  .settings-account-row{margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-  .settings-account-avatar{
-    width:48px;height:48px;border-radius:50%;flex-shrink:0;background:var(--accent);color:var(--accent-ink);
-    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:calc(17px * var(--dt, 1));
-    background-size:cover;background-position:center;overflow:hidden;border:1px solid var(--line);
-  }
-  .settings-account-info{flex:1;min-width:120px;}
-  .settings-account-info strong{font-family:var(--serif);font-weight:500;font-size:calc(16px * var(--dt, 1));display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .settings-account-info .l{font-size:calc(12.5px * var(--dt, 1));color:var(--muted);margin-top:2px;}
 
   .faq-item{border-top:1px solid var(--line);}
   .faq-item:first-child{border-top:none;}
@@ -247,8 +234,7 @@
 
   /* ---------- Figur im Initialen-Kreis ----------
      Die Feldfarbe steht als Eigenschaft am Element; der Buchstabe weicht der Figur. */
-  .avatar.hat-figur,
-  .settings-account-avatar.hat-figur{ background:var(--figur-feld, var(--surface-2)); padding:0; }
+  .avatar.hat-figur{ background:var(--figur-feld, var(--surface-2)); padding:0; }
   /* Das Tierbild liegt randlos im Kreis, der den Rumpf abschneidet; der Rand steckt im Bild selbst
      (tools/figuren_holen.py, fester Rahmen), der Kopf sitzt wie vor Runde 133. */
   /* Kopf-Ausschnitt (kleine Avatare): herangezoomter Hintergrund, vom Kreis beschnitten. */
@@ -280,14 +266,12 @@
      15-figuren.js). Im Dunkeln 6 % gedaempft, damit sie liegt statt zu leuchten. */
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]) .avatar.hat-figur,
-    :root:not([data-theme="light"]) .settings-account-avatar.hat-figur,
     :root:not([data-theme="light"]) .figur-wahl{
       background:var(--figur-feld-dunkel, var(--surface-2));
     }
     :root:not([data-theme="light"]) .figur-bild:not(.figur-kopf){ filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.3)) brightness(.94) saturate(.94); }
   }
   :root[data-theme="dark"] .avatar.hat-figur,
-  :root[data-theme="dark"] .settings-account-avatar.hat-figur,
   :root[data-theme="dark"] .figur-wahl{
     background:var(--figur-feld-dunkel, var(--surface-2));
   }

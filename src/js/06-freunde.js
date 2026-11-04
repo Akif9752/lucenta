@@ -273,7 +273,7 @@
     if (!code) return '<div class="freund-ich-karte"><p class="settings-hint">'+tx('freunde_erst_test')+'</p>'+
       '<button type="button" class="btn btn-primary btn-sm" data-ich="test">'+tx('test_starten')+'</button></div>';
     return '<div class="freund-ich-karte">'+
-      '<div class="freund-ich-kopf"><span class="avatar freund-avatar" id="freundIchAvatar" aria-hidden="true"></span>'+
+      '<div class="freund-ich-kopf" id="freundIchKopf"><span class="avatar freund-avatar" id="freundIchAvatar" aria-hidden="true"></span>'+
         '<span class="freund-text"><span class="history-title">'+escapeHTML(p.name || tx('freunde_du'))+' <span class="mono freund-ich-id">@'+escapeHTML(eigeneBenutzerId())+'</span></span>'+
         '<span class="history-date">'+tx('freunde_ich_unter')+'</span></span></div>'+
       '<div class="freund-ich-knoepfe">'+
@@ -315,6 +315,7 @@
     if (ich){
       ich.innerHTML = freundIchHTML();
       if ($('freundIchAvatar')) renderAvatarInto($('freundIchAvatar'), loadProfile());
+      hintergrundOrteAnwenden();
     }
     var oben = $('freundeUebersicht');
     if (oben){ oben.innerHTML = freundeUebersichtHTML(); schloesserVerdrahten(oben); }

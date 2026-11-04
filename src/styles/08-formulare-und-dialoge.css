@@ -79,7 +79,7 @@
   .storage-warning b, .uniform-note b{color:var(--accent-2-text);}
   .uniform-note{margin:22px auto 0;max-width:46ch;text-align:left;}
 
-  /* Wahl eigener Durchlauf / Gast im Zeilenmuster der Schublade. */
+  /* Wahl eigener Durchlauf / Gast im Zeilenmuster der Listen. */
   .run-choice{
     margin-top:18px;display:flex;flex-direction:column;gap:10px;text-align:left;
     background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);padding:16px;
@@ -131,7 +131,6 @@
   .settings-sub{margin-top:20px; padding-top:18px; border-top:1px solid var(--line);}
   .settings-sub h3{font-family:var(--serif); font-weight:500; font-size:calc(15.5px * var(--dt, 1)); margin-bottom:4px;}
   .daten-knoepfe{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
-  #importFeld{width:100%; margin-top:10px; font-family:var(--mono); font-size:calc(12px * var(--dt, 1));}
 
   /* Auswahlliste (iOS-Form fuer mehr als drei Moeglichkeiten); der Haken im ::after gehoert zum
      Zustand. */

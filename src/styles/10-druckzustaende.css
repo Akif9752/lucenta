@@ -48,7 +48,7 @@
     background:none; border:none; pointer-events:auto;
   }
   /* Das Wortzeichen ist breit genug; hier fehlt allein die Höhe. Eine über die Textbreite
-     hinaus verbreiterte Fläche würde in den Bereich des Schubladen-Knopfs reichen. */
+     hinaus verbreiterte Fläche würde in den Bereich des Nachbarknopfs reichen. */
   .wordmark::after{ width:100%; }
 
   /* Die Fehlersuche tastet (trifft ein Tipp 21 pt ueber/unter der Mitte noch dasselbe Element?). Je
@@ -189,7 +189,7 @@
 
 /* ================= Erscheinungsbild: Kante statt Schatten =================
    Bedienbare Flaechen: kraeftiger Rand (2px), harte Unterkante, grosse Radien. Lesetext ohne Rahmen.
-   Schatten nur noch zwischen Ebenen (Schublade, Dialoge). */
+   Schatten nur noch zwischen Ebenen (Dialoge). */
 
   /* 1. Flaechen, die man ansieht: kraeftiger Rand, grosser Radius, kein Schatten. */
   .trend-list, .state-check-card, .understand-card, .preview-card, .delta-card, .compat-line-total{
