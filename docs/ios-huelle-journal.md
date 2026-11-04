@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 230)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 231)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 230 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 231 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -76,7 +76,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 230 | (dieser) | frei-und-gekauft.md ganz auf den Stand des Codes (nur Doku) |
+| 231 | (dieser) | Grundsatz nach dem Kuendigen bleibt lesbar aus frei-und-gekauft.md gestrichen (nur Doku) |
+| 230 | `ccf38f2` | frei-und-gekauft.md ganz auf den Stand des Codes (nur Doku) |
 | 229 | `47d59e0` | frei-und-gekauft.md auf sieben freie Tage korrigiert (nur Doku) |
 | 228 | `68af911` | Rueckblick: Woche, Monat und Jahr auf einer Unterseite der Tagesform, Kalender wieder nur Monat |
 | 227 | `8697fce` | App an die Tab-Leiste angepasst (Hintergrund im Profilkopf und bei Freunde, Konto-Zeile weg), Daten per Datei einspielen |
@@ -498,17 +499,24 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 230** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 231** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 230 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 231 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 231 — Grundsatz „nach dem Kuendigen bleibt lesbar" gestrichen
+
+**Inhaber:** „das soll aus dem Dokument raus". Der Grundsatz aus Runde 95 ist aus `docs/frei-und-gekauft.md` entfernt; dort
+steht jetzt, was gebaut ist: nach dem Kuendigen wieder die freie Fassung, gespeichert bleibt alles. Nur Doku.
 
 ---
 

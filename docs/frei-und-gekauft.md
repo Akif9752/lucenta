@@ -94,11 +94,9 @@ In der App stehen die Preise des Stores (Land, Währung); ohne Antwort die feste
   Lucenta+-Seite), „Abo verwalten" öffnet Apples Blatt, der Hinweis zur Kündigung in den iPhone-Einstellungen,
   Nutzungsbedingungen (Apples EULA) und Datenschutz am Kauffenster.
 
-**Abweichung vom früheren Grundsatz, offen beim Inhaber:** Runde 95 versprach „Was während der Laufzeit
-entstanden ist, bleibt nach dem Kündigen lesbar; verschlossen wird das Neue, nie das Gewesene." So ist es
-**nicht** gebaut: Nach dem Kündigen zeigt die App wieder die freie Fassung (z. B. nur die letzten 7 Tage
-Tagesform). Weggenommen wird nichts — alles bleibt gespeichert, kommt mit Lucenta+ zurück und lässt sich
-jederzeit über „Daten sichern" mitnehmen.
+**Nach dem Kündigen** zeigt die App wieder die freie Fassung (Entscheidung des Inhabers, Runde 231).
+Weggenommen wird nichts — alles bleibt gespeichert, kommt mit Lucenta+ zurück und lässt sich jederzeit über
+„Daten sichern" mitnehmen.
 
 ## Wie es im Code aussieht
 
