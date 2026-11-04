@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 225)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 226)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 225 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 226 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -76,7 +76,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 225 | (dieser) | Tab-Leiste in der App als Apples UITabBar (echtes Liquid Glass), Browser behaelt CSS-Fassung |
+| 226 | (dieser) | Nur noch die App: Browser-Fassung, CSS-Leiste und Browser-Rueckfaelle entfernt; Pruefungen auf App-Fassung in WebKit |
+| 225 | `8012a38` | Tab-Leiste in der App als Apples UITabBar (echtes Liquid Glass) |
 | 224 | `89990e5` | Tab-Leiste statt Schublade (5 Reiter, Glas-Kapsel), Einstellungen/Lucenta+ im Profil, Archetypen unter Verstehen |
 | 223 | `1858f76` | Einstellungen: Datenliste unter Face ID als eigene Karte (klebte an „Sperren nach“) |
 | 222 | `5bd1b13` | Fehlersuche mit App-Bruecke; Rechtslinks im Plus-Fenster bei 320 pt; kein Einmalkauf, Im Alltag bleibt Plus |
@@ -215,7 +216,7 @@ Regeln, die er gesetzt hat:
   bleibt die Anmeldung. Kein Token-Widerruf (nie ein Token; Prüfnotiz in `docs/app-store-start.md`).
 - **Farbschema:** `loadThemeMode()` Vorgabe `dark`; „System" wird ausdruecklich gespeichert.
   Hellfarben im ersten Block von `00-grundlagen.css`; `SHARE_COLORS` (Bau erzwingt Gleichheit),
-  `syncThemeColor`, `theme-color`, `papierfarbe` (Swift) muessen mitziehen.
+  `papierfarbe` (Swift) muessen mitziehen.
 - **Kopfzeile (Runde 154):** `navLeisteAnwenden()`/`navZurueck()` in `02-zustand-navigation.js`; eine NEUE Unterseite
   braucht nur ihre Pille `id="btnBack…"` in `.quiz-head` (bei nur der Pille `.nur-zurueck`) — der Chevron
   findet sie selbst. Werkzeuge klicken `#btnNavZurueck`, nie die Pillen (verborgen).
@@ -224,12 +225,11 @@ Regeln, die er gesetzt hat:
   ueber `UIScrollEdgeElementContainerInteraction` (ab iOS 26). JS: `tabNativEinrichten`/`tabNativTitel` (14-tab-leiste.js); die
   Leiste verschwindet, solange `#shell` inert ist (Plus-, Bildfenster, Onboarding — sonst laege sie darueber). Kennungen stehen in
   Swift UND JS. Geprueft in `pruef-nativ` („Apples Tab-Leiste").
-- **Tab-Leiste (Runde 224, ersetzt die Schublade; im Browser weiter die CSS-Fassung):** `#tabLeiste` in `#shell` (fuenf Reiter `#tabStart`, `#tabTagesform`,
-  `#tabVerstehen`, `#tabFreunde`, `#tabProfil`), Logik `14-tab-leiste.js` (`TAB_VON` = welcher Reiter leuchtet, `TAB_OHNE` = ohne
-  Leiste: Fragebogen; `tabWaehlen`, `tabLeisteAnwenden`, `profilWegeAnwenden`), Stil am Ende von `12-ios.css`. Hauptseiten
-  (`TAB_WURZELN`) zeigen keinen Zurueck-Pfeil. Einstellungen und Lucenta+ sind Zeilen oben im Profil, Archetypen am Ende von
-  Verstehen (`#btnVsArchetypen`). Werkzeuge gehen ueber die Reiter (`'#tabProfil', '#btnProfilEinstellungen'`).
-  Headless WebKit malt die Unschaerfe der Leiste nicht ins Bild — das Glas im Simulator ansehen.
+- **Reiter (Runde 224, ersetzt die Schublade):** Logik `14-tab-leiste.js` (`TAB_VON` = welcher Reiter leuchtet, `TAB_OHNE` =
+  ohne Leiste: Fragebogen; `tabWaehlen`, `tabLeisteAnwenden`, `profilWegeAnwenden`). Hauptseiten (`TAB_WURZELN`) ohne
+  Zurueck-Pfeil. Einstellungen und Lucenta+ sind Zeilen oben im Profil, Archetypen am Ende von Verstehen (`#btnVsArchetypen`).
+  Platz am Seitenende `html.mit-tabs` (12-ios.css). Werkzeuge klicken die nachgebauten Reiter (`'#tabProfil', '#btnProfilEinstellungen'`,
+  `tools/app_bruecke.mjs`); im Entwicklungsbau waehlt `window.__lucentaTab(ziel)` einen Reiter (tools/flackern).
 - **Navigation:** `showView()` in `02-zustand-navigation.js`. `UNTERSEITE_VON = {hilfe, sprache, appicon -> settings; verlauf, look,
   settings, plus -> profile; archetypes -> understand; compare -> freunde; ft -> result}` steuert den iOS-Push/Pop. **Hauptseiten wechseln ohne jede Bewegung** (Runde 220,
   kein `rise`/`view-vor`/Staffelung mehr — nicht wieder einbauen, das war das „Zucken"). Den Push/Pop (`.nav-push`/`.nav-pop`, die verlassene Seite als `.nav-weg` fixiert; CSS am Ende von
@@ -291,6 +291,9 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
+- **Nur die App, keine Browser-Fassung (Runde 226, Inhaber):** kein `dist/lucenta.html`, keine Rueckfaelle „ohne Bruecke"
+  fuer den Browser, keine zweite (Browser-)Sitzung. Pruefungen laden `dist/index.html` in WebKit mit nachgestellter Bruecke.
+  Bleiben bewusst: `web/datenschutz/` (Apples Pflicht-URL) und `einladung/` (fuer spaetere Links).
 - **Kein Einmalkauf, „Im Alltag" bleibt Lucenta+ (Runde 222, Inhaber).** Nur die zwei Abos; der Bericht wird nicht
   teilweise geoeffnet. Nicht erneut vorschlagen.
 
@@ -421,8 +424,8 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
   - **Ruckeln/Zucken beim Seitenwechsel (Runde 220):** `sh tools/flackern/wege.sh` nimmt 18 Klicks im Simulator auf und
     zeigt je Klick die Bewegungsphasen (zwei Phasen = Zucken, spaeter Beginn = Ruckeln). `node tools/ruckeln.mjs` (WebKit,
     Server 8017) misst spaetes Springen und Rechenzeit je Weg — sah das Zucken NICHT, nur der Simulator.
-  - **Zustand wie auf dem iPhone im Browser:** `appBruecke()` in `tools/fehlersuche.mjs` stellt alle sieben Plugins nach
-    (Sperre an, AppSymbol, Health, Konto, StoreKit gekauft/frei). Fuer eigene Probeskripte von dort uebernehmen.
+  - **Zustand wie auf dem iPhone:** `tools/app_bruecke.mjs` (`APP_URL`, `alsApp(ctx)`) stellt alle Plugins nach (Sperre an,
+    AppSymbol, Health, Konto, StoreKit, Tabs) und baut die Reiter nach. Jedes eigene Probeskript damit beginnen.
   - **Flackern/Zeichnen misst nur der Simulator:** `sh tools/flackern/messen.sh <sim-id>` (Video + Helligkeit je Bild).
     Headless-WebKit sah das Flackern nicht. Veraendert die installierte Kopie — danach neu installieren.
   - **iPhone 15 Pro** (`00008130-001E79CC0178001C`): `npm run installieren` signiert mit
@@ -458,7 +461,7 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 - **Neue Swift-Dateien** ueber `XcodeWrite` (traegt sie ins Projekt ein), Berechtigungen ueber
   `AddEntitlement`; danach `BuildProject` zum Uebersetzen, `xcodebuild` + `simctl` zum Starten.
 - **Bauen und Installieren:** nur `npm run installieren` (`tools/installieren.sh`). Nie nackt `npx cap sync ios`
-  (sonst fehlt `ios:schlank`), und `BuildProject`/`RunProject` nicht trauen (kopieren `public/` oft nicht). Ob der
+  (sonst fehlt die CLAUDE.md neben der `.xcodeproj`), und `BuildProject`/`RunProject` nicht trauen (kopieren `public/` oft nicht). Ob der
   Stand drin ist: `grep -c <Merkmal> /tmp/lucenta-dd/Build/Products/Debug-iphonesimulator/App.app/public/index.html`.
 - **Bilder:** `xcrun simctl io <id> screenshot /tmp/sim.png` + `sips -Z 560` bzw. `sips -c` — ohne
   Geraete-Sitzung (die Xcode-Sitzung verlangt einen Unteragenten). Fuer Bewegung und Zustaende,
@@ -481,7 +484,7 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
   wurde der Befehl NICHT ausgefuehrt; einfach erneut absetzen, vorher pruefen, ob etwas halb lief.
 - **Kommentare** (Regel seit Runde 138, steht auch in beiden CLAUDE.md): kurz, das Warum, keine
   Rundengeschichte. Marke `// ---------- wiring ----------` in `27-verdrahtung.js` nie aendern (`tests/run.js`
-  schneidet dort). `tests/run.js` liest `dist/lucenta.html` — nach Aenderungen in `src/` erst `node build.js`.
+  schneidet dort). `tests/run.js` und das Audit lesen den Quelltext aus `src/`.
   `src/styles/00-schriften.css` ist erzeugt.
 - **Journal:** Eintrag vor `## Runde <vorige>` einsetzen, Tabelle und diesen Block nachziehen;
   Commit-Nachrichten deutsch, mit der Co-Authored-By-Zeile.
@@ -489,17 +492,46 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 225** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 226** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 225 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 226 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 226 — Nur noch die App: Browser-Fassung entfernt
+
+**Inhaber:** „warum gibt es eine Browser-Fassung, wir machen eine App und keine Internetseite — entferne alles mit
+Browserbezug". **Gewaehlt (Inhaber):** Datenschutzseite bleibt als Apples Pflicht-URL; Einladungsseite bleibt fuer spaeter;
+Pruefungen nur noch auf der App-Fassung in WebKit; die Browsersitzung entfaellt.
+
+- **Bau:** nur noch `dist/index.html` + Dateien; `dist/lucenta.html` entfaellt (eine alte wird geloescht), damit auch
+  `npm run ios:schlank`/`tools/ios_public_entschlacken.mjs`. Testreihen und Audit setzen den Quelltext aus `src/` zusammen.
+- **Code:** CSS-Tab-Leiste entfernt (die Leiste ist nur noch Apples UITabBar); Plus-Umschalter nur im Entwicklungsbau;
+  „Das geht nur in der App"-Hinweise weg (bei fehlender Bruecke die normale Fehlermeldung); Vibrations-Ersatz, EULA per
+  `window.open`, Home-Bildschirm-/Social-Metadaten, `apple-touch-icon` und `theme-color` samt `syncThemeColor` entfernt.
+- **Zwei echte App-Fehler nebenbei:** „Daten sichern" startete einen Browser-Download, den die WebView nicht kennt, und meldete
+  trotzdem „gespeichert" — jetzt ueber das Teilen-Blatt („In Dateien sichern"), sonst Zwischenablage. „Als Text teilen" haengte
+  die Seitenadresse an (in der App `capacitor://localhost/…`) — weg.
+- **Pruefungen:** `tools/app_bruecke.mjs` (App-Fassung, nachgestellte Plugins, fuenf nachgebaute Reiter) fuer alle Werkzeuge;
+  Chromium entfernt (Fehlersuche, Bewegung, Nativ, Sprachvergleich, Store-Bilder, Kranz). `tools/mess_sim` entfernt (lief
+  in Safari). Im Entwicklungsbau `window.__lucentaTab(ziel)` fuer `tools/flackern`.
+- **Doku:** beide CLAUDE.md, README und Uebergabe ohne Ein-Datei-Fassung, Artefakt, Chromium und Browsersitzung.
+
+**Gemessen:** `pruef-nativ` 143 (fuenf theme-color-Pruefungen entfallen), `pruef-app` 34 (Glasprobe der CSS-Leiste entfaellt),
+Fehlersuche-Stichprobe ohne Fund, Bewegung bestanden. Sprachvergleich jetzt in iPhone-Breite: 111 statt 84 verdaechtige Zeilen —
+er sieht jetzt Profil und Einstellungen der App (z. B. „Lucenta+"), keine neuen Uebersetzungsfehler.
+
+**Unsicher:** Die Store-Bilder (`tools/store_bilder.mjs`) zeigen ohne native Leiste keinen Reiter — fuer die Einreichung
+besser im Simulator aufnehmen. Importieren bleibt Einfuegen von Text; eine gesicherte Datei laesst sich noch nicht direkt
+waehlen.
 
 ---
 

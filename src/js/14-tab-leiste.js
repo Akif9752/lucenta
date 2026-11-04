@@ -11,28 +11,19 @@
   };
   var TAB_OHNE = {quiz:1, 'ft-test':1};
 
-  // In der App zeichnet die Huelle Apples UITabBar (LucentaTabLeistePlugin.swift); die CSS-Leiste bleibt fuer den Browser.
+  // Die Leiste zeichnet die Huelle als Apples UITabBar (LucentaTabLeistePlugin.swift); hier nur Stand und Titel.
   var TAB_REITER = [['landing','tab_start'], ['state','tab_tagesform'], ['understand','tab_verstehen'], ['freunde','tab_freunde'], ['profile','tab_profil']];
   var tabNativ = null, tabNativStand = '';
 
   function tabLeisteAnwenden(){
-    var leiste = $('tabLeiste');
-    if (!leiste) return;
     var ohne = !!TAB_OHNE[currentView];
-    leiste.hidden = ohne || !!tabNativ;
     try{ document.documentElement.classList.toggle('mit-tabs', !ohne); }catch(e){}
+    if (!tabNativ) return;
+    // Web-Fenster (Plus, Bild, Onboarding) legen #shell still; die native Leiste laege sonst darueber.
+    var shell = $('shell'), sichtbar = !ohne && !(shell && shell.hasAttribute && shell.hasAttribute('inert'));
     var aktiv = TAB_VON[currentView] || '';
-    if (tabNativ){
-      // Web-Fenster (Plus, Bild, Onboarding) legen #shell still; die native Leiste laege sonst darueber.
-      var shell = $('shell'), sichtbar = !ohne && !(shell && shell.hasAttribute && shell.hasAttribute('inert'));
-      var stand = aktiv + '|' + sichtbar;
-      if (stand !== tabNativStand){ tabNativStand = stand; try{ tabNativ.setzen({aktiv: aktiv, sichtbar: sichtbar}); }catch(e){} }
-    }
-    Array.prototype.forEach.call(leiste.querySelectorAll('.tab'), function(t){
-      var an = t.getAttribute('data-tab') === aktiv;
-      t.classList.toggle('aktiv', an);
-      if (an) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
-    });
+    var stand = aktiv + '|' + sichtbar;
+    if (stand !== tabNativStand){ tabNativStand = stand; try{ tabNativ.setzen({aktiv: aktiv, sichtbar: sichtbar}); }catch(e){} }
   }
 
   // Ein Tipp auf den aktiven Reiter fuehrt wie in iOS zurueck an seinen Anfang bzw. nach oben.
@@ -52,6 +43,8 @@
   }
 
   function tabNativEinrichten(){
+    // Nur im Entwicklungsbau: Messwerkzeuge im Simulator (tools/flackern) waehlen Reiter wie ein Tipp.
+    if (entwicklungsBau()) window.__lucentaTab = tabWaehlen;
     var m = nativModul('Tabs');
     if (!m || !m.einrichten) return;
     tabNativ = m;

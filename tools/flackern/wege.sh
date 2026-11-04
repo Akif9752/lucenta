@@ -7,7 +7,7 @@ swiftc -O -o /tmp/lucenta-bewegung "$(dirname "$0")/bewegung.swift" 2>/dev/null
 P=$(xcrun simctl get_app_container $SIM app.lucenta.ios app)
 cp "$P/public/index.html" /tmp/index-sicher.html
 cat >> "$P/public/index.html" <<'SKRIPT'
-<script>(function(){var s=['tabProfil','btnProfilEinstellungen','btnSpracheOeffnen','btnNavZurueck','btnSymbolOeffnen','btnNavZurueck','btnHome','tabProfil','btnAussehenOeffnen','btnNavZurueck','btnHome','tabTagesform','btnHome','tabVerstehen','btnVsArchetypen','btnHome'],i=0;setTimeout(function l(){if(i>=s.length)return;var e=document.getElementById(s[i]);console.log('KLICK '+s[i]+' '+Date.now());if(e)e.click();i++;setTimeout(l,1600)},4000)})();</script>
+<script>(function(){var T={tabStart:'landing',tabTagesform:'state',tabVerstehen:'understand',tabFreunde:'freunde',tabProfil:'profile'};var s=['tabProfil','btnProfilEinstellungen','btnSpracheOeffnen','btnNavZurueck','btnSymbolOeffnen','btnNavZurueck','btnHome','tabProfil','btnAussehenOeffnen','btnNavZurueck','btnHome','tabTagesform','btnHome','tabVerstehen','btnVsArchetypen','btnHome'],i=0;setTimeout(function l(){if(i>=s.length)return;var e=document.getElementById(s[i]);console.log('KLICK '+s[i]+' '+Date.now());if(T[s[i]]&&window.__lucentaTab)window.__lucentaTab(T[s[i]]);else if(e)e.click();i++;setTimeout(l,1600)},4000)})();</script>
 SKRIPT
 xcrun simctl terminate $SIM app.lucenta.ios 2>/dev/null
 (xcrun simctl launch --console-pty $SIM app.lucenta.ios > /tmp/bew-konsole.txt 2>&1 &)

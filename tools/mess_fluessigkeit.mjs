@@ -47,9 +47,10 @@
 //   cd dist && python3 -m http.server 8017 --bind 127.0.0.1
 
 import { webkit } from 'playwright';
+import { alsApp } from './app_bruecke.mjs';
 
 const BASIS = process.env.LUCENTA_BASIS || 'http://127.0.0.1:8017';
-const DATEI = process.env.LUCENTA_DATEI || 'lucenta.html';
+const DATEI = process.env.LUCENTA_DATEI || 'index.html';
 const RUNDEN = Number(process.env.LUCENTA_RUNDEN || 5);
 
 // Ein Bild bei 60 Hz dauert 16,7ms. Ein Bild ueber 33ms bedeutet, dass mindestens eines
@@ -162,6 +163,7 @@ const browser = await webkit.launch();
 // sehen in der Ausgabe gleich aus. Genau das ist im ersten Lauf dieser Runde passiert.
 async function probe(vorbereiten, dauer = 1200) {
   const c = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  await alsApp(c);
   const s = await c.newPage();
   await s.goto(`${BASIS}/${DATEI}`, { waitUntil: 'networkidle' });
   await s.evaluate(() => document.fonts.ready);
@@ -210,6 +212,7 @@ async function szeneMessen(szene, ohneVerdaechtigen) {
   const alle = [];
   for (let i = 0; i < RUNDEN; i++) {
     const c = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    await alsApp(c);
     const s = await c.newPage();
     await s.goto(`${BASIS}/${DATEI}`, { waitUntil: 'networkidle' });
     await s.evaluate(() => document.fonts.ready);

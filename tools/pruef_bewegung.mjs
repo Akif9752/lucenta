@@ -33,9 +33,8 @@ if (!pkg) {
     process.exit(2);
   }
 }
-const { chromium } = pkg;
-const URL = process.env.LUCENTA_URL || 'http://127.0.0.1:8017/lucenta.html';
-const START = process.env.CHROMIUM_PFAD ? {executablePath: process.env.CHROMIUM_PFAD} : {};
+const { webkit } = pkg;
+import { APP_URL as URL, alsApp } from './app_bruecke.mjs';
 
 const fehler = [];
 function pruefe(bedingung, text, zusatz){
@@ -59,9 +58,10 @@ const bewegtSich = w => new Set(w.map(String)).size > 1;
 const MEILENSTEINE = 3;
 
 async function durchlauf(reduziert){
-  const b = await chromium.launch(START);
+  const b = await webkit.launch();
   const ctx = await b.newContext({viewport:{width:390,height:844}, isMobile:true, hasTouch:true,
     reducedMotion: reduziert ? 'reduce' : 'no-preference'});
+  await alsApp(ctx);
   // Gemessen wird der Hellmodus (Lichtstrahl, die Flaechenpruefung unten setzt ihn voraus). Seit
   // Runde 149 startet die App dunkel; vorher lief diese Pruefung in "System" = hell.
   await ctx.addInitScript(() => { try{ if (!localStorage.getItem('lucenta_theme')) localStorage.setItem('lucenta_theme', 'light'); }catch(e){} });
@@ -302,7 +302,7 @@ async function durchlauf(reduziert){
   // Warum hier: In Runde 105 blieb am Simulator jeder Druckzustand stumm — die Glasbahn aus
   // Runde 104 ebenso wie der `transform:scale`-Druck eines gewoehnlichen Knopfs, der seit vielen
   // Runden im Code steht. Ursache war die synthetische Beruehrung, nicht das Stilblatt; belegt
-  // ueber einen gehaltenen Mausdruck auf WebKit UND Chromium, der alle drei Regeln greifen liess.
+  // ueber einen gehaltenen Mausdruck auf WebKit, der alle drei Regeln greifen liess.
   // Das ist genau die Fehlerart, fuer die diese Datei gebaut wurde (gueltige Regel, nie zu sehen)
   // — nur umgekehrt: Die Regel ist gesund, und damit sie es bleibt, wird sie jetzt gemessen.
   // Gemessen wird der gehaltene MAUSDRUCK, weil das der einzige echte Eingabeweg ist, den
@@ -362,7 +362,7 @@ async function durchlauf(reduziert){
   //
   // Auf dem Geraet ist diese Tuer die EINZIGE, die wirkt: WebKit auf iOS kennt
   // `prefers-reduced-transparency` nicht (Runde 105), die Huelle setzt das Attribut
-  // (`MainViewController.swift`). Hier laeuft Chromium, also wird das Attribut von Hand
+  // (`MainViewController.swift`). Hier gibt es keine Huelle, also wird das Attribut von Hand
   // gesetzt — genau so, wie die Huelle es tut. Am Simulator ist derselbe Weg in Runde 106 mit
   // dem echten Schalter nachgemessen worden, auf WebKit.
   const tuer = await p.evaluate(() => {
@@ -372,7 +372,7 @@ async function durchlauf(reduziert){
       const s = getComputedStyle(el);
       return s.webkitBackdropFilter || s.backdropFilter;
     };
-    const lies = () => ({ kopf: glas('header.top'), leiste: glas('#tabLeiste'), bild: glas('#imgModal') });
+    const lies = () => ({ kopf: glas('header.top'), bild: glas('#imgModal') });
     const vorher = lies();
     document.documentElement.setAttribute('data-transparenz', 'reduziert');
     const reduziert = lies();
@@ -384,7 +384,7 @@ async function durchlauf(reduziert){
   // was sie soll. Gefragt ist, OB Glas da ist, weggeht und wiederkommt, nicht wie stark es ist;
   // die gleiche Staerke vorher und nachher haelt die zweite Bedingung fest.
   const glasDa = w => /blur\([1-9][\d.]*px\)/.test(w || '');
-  for (const flaeche of ['kopf', 'leiste', 'bild']){
+  for (const flaeche of ['kopf', 'bild']){
     pruefe(glasDa(tuer.vorher[flaeche]) && tuer.reduziert[flaeche] === 'none'
            && tuer.zurueck[flaeche] === tuer.vorher[flaeche],
            `data-transparenz nimmt das Glas von "${flaeche}" und gibt es zurueck`,

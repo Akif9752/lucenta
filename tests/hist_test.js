@@ -26,18 +26,23 @@
   ok(window.scrollY===1840,'Scrollposition nicht wiederhergestellt');
 
   console.log("\n=== Tab-Leiste: Unterseiten und Fragebogen ===");
+  // Apples Leiste zeichnet die Huelle; hier steht das Plugin nach, das den Stand entgegennimmt.
+  global.window.Capacitor = {Plugins: {Tabs: {einrichten: function(){ return Promise.resolve({}); },
+    setzen: function(o){ global.__tabs = o; return Promise.resolve(); }, addListener: function(){}}}};
+  tabNativEinrichten();
+  function leiste(){ return !!(global.__tabs && global.__tabs.sichtbar); }
   showView('landing'); showView('profile'); showView('settings');
-  console.log('  Profil -> Einstellungen      -> '+view()+', Leiste sichtbar: '+!$('tabLeiste').hidden);
-  ok(!$('tabLeiste').hidden,'Leiste fehlt auf einer Unterseite');
+  console.log('  Profil -> Einstellungen      -> '+view()+', Leiste sichtbar: '+leiste()+', Reiter: '+(global.__tabs||{}).aktiv);
+  ok(leiste() && global.__tabs.aktiv==='profile','Leiste fehlt auf einer Unterseite oder markiert den falschen Reiter');
   back(); console.log('  zurück                      -> '+view());
   ok(view()==='profile','Zurück aus den Einstellungen muss ins Profil führen');
   back(); console.log('  zurück                      -> '+view());
   ok(view()==='landing','Ein weiteres Zurück muss zur Startseite führen');
   showView('quiz');
-  console.log('  Fragebogen                  -> Leiste sichtbar: '+!$('tabLeiste').hidden);
-  ok($('tabLeiste').hidden,'Im Fragebogen darf die Leiste nicht stehen');
+  console.log('  Fragebogen                  -> Leiste sichtbar: '+leiste());
+  ok(!leiste(),'Im Fragebogen darf die Leiste nicht stehen');
   showView('landing');
-  ok(!$('tabLeiste').hidden,'Nach dem Fragebogen muss die Leiste zurückkommen');
+  ok(leiste(),'Nach dem Fragebogen muss die Leiste zurückkommen');
 
   console.log("\n=== Fenstertitel und Fokus folgen der Ansicht ===");
   showView('profile');

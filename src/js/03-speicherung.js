@@ -357,31 +357,6 @@
     }catch(e){ return false; }
   }
 
-  // Die vorhandenen theme-color-Eintraege werden umgeschrieben statt einen weiteren anzuhaengen: Es
-  // gilt der ERSTE passende Eintrag, ein angehaengter kam nie zum Zug. Ausgangswerte werden gesichert,
-  // damit "System" sie zurueckbekommt.
-  var themeColorOriginal = null;
-  function themeColorEintraege(){
-    try{ return [].slice.call(document.querySelectorAll('meta[name="theme-color"]')); }
-    catch(e){ return []; }
-  }
-  function syncThemeColor(mode){
-    try{
-      var metas = themeColorEintraege();
-      if (!metas.length) return;
-      if (themeColorOriginal === null){
-        themeColorOriginal = metas.map(function(m){ return m.getAttribute('content'); });
-      }
-      if (mode!=='dark' && mode!=='light'){
-        metas.forEach(function(m, i){
-          if (themeColorOriginal[i] != null) m.setAttribute('content', themeColorOriginal[i]);
-        });
-        return;
-      }
-      var farbe = mode==='dark' ? '#000000' : '#E6E5E0';
-      metas.forEach(function(m){ m.setAttribute('content', farbe); });
-    }catch(e){}
-  }
   var themeShiftTimer = null;
   // Schalter: Wert merken; die Wirkung liegt in tapFeedback() bzw. prefersReducedMotion().
   function schalterLesen(schluessel, standard){
@@ -419,7 +394,6 @@
     }
     if (mode==='dark' || mode==='light') document.documentElement.setAttribute('data-theme', mode);
     else document.documentElement.removeAttribute('data-theme');
-    syncThemeColor(mode);
     saveThemeMode(mode);
     ['System','Light','Dark'].forEach(function(key){
       var btn = $('theme'+key);

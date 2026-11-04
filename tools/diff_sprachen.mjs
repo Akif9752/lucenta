@@ -41,8 +41,8 @@ if (!pkg) {
     process.exit(2);
   }
 }
-const { chromium } = pkg;
-const URL = process.env.LUCENTA_URL || 'http://127.0.0.1:8017/lucenta.html';
+const { webkit } = pkg;
+import { APP_URL as URL, alsApp } from './app_bruecke.mjs';
 // Runde 103: Die acht Rundgaenge liefen nacheinander auf EINER Seite — 6,4 Minuten, und damit
 // der laengste Posten der ganzen Pflichtrunde. Sie sind aber voneinander unabhaengig: Jeder
 // braucht nur denselben Datenbestand, und der liegt vollstaendig im localStorage.
@@ -55,9 +55,10 @@ const URL = process.env.LUCENTA_URL || 'http://127.0.0.1:8017/lucenta.html';
 // 32/19/24/15/14/10/13, Summe 127. Sie muessen gleich bleiben — ein Rundgang, der unter Last
 // eine Ansicht verpasst, faellt genau daran auf.
 const GLEICHZEITIG = Math.max(1, Number(process.env.LUCENTA_PARALLEL || 4));
-const b=await chromium.launch({...(process.env.CHROMIUM_PFAD?{executablePath:process.env.CHROMIUM_PFAD}:{})});
+const b=await webkit.launch();
 const logs=[];
-const FENSTER={viewport:{width:1280,height:1000}};
+// Hoch genug, dass jede Ansicht ohne Rollen ganz da ist; die Breite eines iPhones.
+const FENSTER={viewport:{width:390,height:1000}, isMobile:true, hasTouch:true};
 
 // ---------- die Helfer, seit Runde 103 mit der Seite als Argument ----------
 // Seit der Tab-Leiste: ein Ziel ist ein Reiter, bei Unterseiten gefolgt von der Zeile, die sie oeffnet.
@@ -122,7 +123,7 @@ async function tour(p){
 }
 
 // ---------- den Datenbestand einmal erzeugen und mitnehmen ----------
-const vorlauf=await b.newContext(FENSTER);
+const vorlauf=await b.newContext(FENSTER); await alsApp(vorlauf);
 const p0=await vorlauf.newPage();
 p0.on('pageerror',e=>logs.push('PAGEERROR '+e.message));
 await p0.goto(URL,{waitUntil:'networkidle'});
@@ -161,7 +162,7 @@ const ZIELE=(process.argv.slice(2).length?process.argv.slice(2):VORHANDEN).filte
 
 // ---------- je Sprache ein eigener Kontext ----------
 async function rundgang(code){
-  const ctx=await b.newContext(FENSTER);
+  const ctx=await b.newContext(FENSTER); await alsApp(ctx);
   // Der Bestand muss VOR dem ersten Skript der Seite stehen, sonst laeuft die App einmal leer an.
   await ctx.addInitScript(z=>{try{for(const k in z) localStorage.setItem(k,z[k]);}catch(e){}},ZUSTAND);
   const p=await ctx.newPage();

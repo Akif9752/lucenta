@@ -34,8 +34,8 @@ if (!pkg) {
   try { pkg = require_(execSync('npm root -g', {encoding:'utf8'}).trim() + '/playwright'); }
   catch (e) { console.error('Playwright nicht gefunden.'); process.exit(2); }
 }
-const { chromium } = pkg;
-const URL = process.env.LUCENTA_URL || 'http://127.0.0.1:8017/lucenta.html';
+const { webkit } = pkg;
+import { APP_URL as URL, alsApp } from './app_bruecke.mjs';
 
 const args = process.argv.slice(2);
 const modus = (args[0] === 'hell' || args[0] === 'dunkel') ? args.shift() : 'dunkel';
@@ -123,7 +123,7 @@ async function vergleich(p, a, b){
   }, [a.toString('base64'), b.toString('base64')]);
 }
 
-const browser = await chromium.launch();
+const browser = await webkit.launch();
 console.log('Strahlenkranz, Modus: ' + modus + '\n');
 console.log('  Deckung  Anteil/Grund     Stufen   Flaeche');
 console.log('  ---------------------------------------------');
@@ -134,6 +134,7 @@ for (const r of reihen){
     deviceScaleFactor:2,
     colorScheme: modus === 'hell' ? 'light' : 'dark'
   });
+  await alsApp(p);
   await p.goto(URL, {waitUntil:'networkidle'});
   await p.evaluate(() => { try{ localStorage.setItem('lucenta_plus','1'); }catch(e){} });
   await p.reload({waitUntil:'networkidle'});

@@ -1,7 +1,9 @@
 # Lucenta
 
-Ein Persönlichkeitsporträt nach dem Big-Five-Modell (50 IPIP-Aussagen), als **eine einzige
-HTML-Datei**, ausschließlich fürs iPhone. Kein eigener Server, kein Konto bei uns, keine Werbung,
+Ein Persönlichkeitsporträt nach dem Big-Five-Modell (50 IPIP-Aussagen) als **iPhone-App**: eine
+HTML-Oberfläche in einer Capacitor-Hülle (WKWebView), ausschließlich fürs iPhone. **Es gibt keine
+Browser-Fassung und keine Webseite der App** (Entscheidung des Inhabers) — gebaut, geprüft und
+ausgeliefert wird nur, was im App-Bundle läuft. Kein eigener Server, kein Konto bei uns, keine Werbung,
 kein Tracking, kein Fremdabruf. Die Antworten verlassen das Gerät nicht — das ist keine
 Marketingaussage, sondern eine Eigenschaft, die im Code durchgehalten werden muss. Einzige
 Ausnahme seit Runde 149 (Entscheidung des Inhabers): freiwillig „Mit Apple anmelden“, dann liegt der
@@ -14,13 +16,14 @@ beibehalten; ein englischer Bezeichner mitten in `figSchnurrhaare` liest sich fa
 
 ## Bauen
 
-`dist/lucenta.html` ist **erzeugt**. Niemals dort hineinschreiben — die Änderung ist beim
-nächsten Bau weg.
+`dist/` ist **erzeugt** (`index.html` ohne Kommentare, daneben Schriften, Sprachpakete und
+Tierbilder). Niemals dort hineinschreiben — die Änderung ist beim nächsten Bau weg.
 
     node build.js
 
-setzt die Datei aus `src/` zusammen, in der Reihenfolge aus `src/manifest.json`. Alle
-`src/i18n/*.js` landen an der Stelle `@@I18N@@`.
+setzt die Oberfläche aus `src/` zusammen, in der Reihenfolge aus `src/manifest.json`. Deutsch steht
+an der Stelle `@@I18N@@`, die übrigen Sprachen kommen nach `dist/sprachen/`. Testreihen und
+i18n-Audit lesen den Quelltext direkt aus `src/`.
 
 Zwei Regeln, die der Bau erzwingt und die sonst leise Schaden anrichten:
 
@@ -51,31 +54,22 @@ Oberfläche etwas geändert (Tierbilder, Doku, Swift, Hilfswerkzeuge), genügt d
 Entscheidung des Inhabers. Unabhängige Prüfungen laufen gleichzeitig, die messenden allein; die
 vollständige Ausgabe liegt in `.pruef-log/<name>.log`. Bricht der Bau ab, hört es auf.
 
-**In dieser Umgebung fehlt WebKit**, und zwei der neun brauchen es:
-
-    LUCENTA_MOTOREN=chromium npm run pruef-alles
-
-Ohne das meldet `fehlersuche` die WebKit-Hälfte laut als **ungemessen** (sie bricht nicht ab) und
-`pruef-app` schlägt fehl, weil es nur WebKit kennt — beides gehört dann so ins Protokoll, nicht
-stillschweigend übersprungen. Die einzelnen neun Befehle stehen in `tools/xcode-CLAUDE.md`.
+Alle Prüfungen laden `dist/index.html` — die Datei im App-Bundle — in **WebKit** (headless, die
+Engine des iPhones; kein Chromium), mit nachgestellter App-Brücke aus `tools/app_bruecke.mjs`
+(Entscheidung des Inhabers). Apples Tab-Leiste ist dort als fünf unsichtbare Knöpfe `#tabStart` …
+`#tabProfil` nachgebaut. Die einzelnen neun Befehle stehen in `tools/xcode-CLAUDE.md`.
 
 Acht Sprachen: de, en, es, fr, it, pt, tr, ja. Wer eine neunte ergänzt, ändert **nicht**
 `tools/_addkeys.py` von Hand — es liest `src/i18n` selbst. Die Zahl in `tests/lang_test.js`
 steht dagegen absichtlich ausgeschrieben da: Ein Sprachpaket, das nicht lädt, verschwindet
 sonst lautlos aus `CONTENT`.
 
-## Was diese Umgebung nicht kann — und ein Mac schon
+## Was nur Simulator und Gerät zeigen
 
-Die Prüfungen laufen hier alle auf **Chromium**. Safari auf dem iPhone ist **WebKit**. Im
-Container lässt sich WebKit nicht nachinstallieren (die Netzwerkregeln blockieren den
-Download). Auf einem Mac ist genau das der wertvollste Beitrag:
-
-- `npm run fehlersuche` läuft seit Runde 103 von sich aus auf **beiden** Motoren, WebKit zuerst —
-  auf dem Mac also ohne Zutun. Hier bleibt diese Hälfte ungemessen und wird als solche gemeldet.
-- Xcode-Simulator öffnen und `dist/lucenta.html` in Safari prüfen — braucht **keinen**
-  bezahlten Developer-Account
-- besonders ansehen: `@property` (3×, trägt die Drehung des Strahlenkranzes; Safari ab 16.4),
-  `color-mix()` (24×), `mask-image`, `repeating-conic-gradient`, `aspect-ratio`, `text-wrap`
+Headless WebKit sieht keine GPU-Kosten und malt Unschärfe nicht ins Bildschirmfoto; nativ Gezeichnetes
+(Tab-Leiste, Sperre, Teilen-Blatt) sieht es gar nicht. Am Simulator bzw. iPhone ansehen, besonders:
+`@property` (trägt die Drehung des Strahlenkranzes; ab iOS 16.4), `color-mix()`, `mask-image`,
+`repeating-conic-gradient`, `aspect-ratio`, `text-wrap`.
 
 ## Kommentare: kurz, das Warum, keine Geschichte
 
@@ -110,40 +104,32 @@ braucht, was nur der Inhaber erledigen kann. Kurz die Fallen:
   `packageClassList` in `capacitor.config.json`, die ist erzeugt und wird bei jedem
   `npx cap sync ios` überschrieben. Die zwei Stellen, die das Abo verschenkten
   (`btnPlusAktivieren`, `plusSchalter`), sind zu; der Umschalter im Profil erscheint nur noch
-  ohne native Brücke. Geprüft über `npm run pruef-nativ` (51 Prüfungen, alle vier Ausgänge des
+  im Entwicklungsbau (`#if DEBUG`). Geprüft über `npm run pruef-nativ` (51 Prüfungen, alle vier Ausgänge des
   Kaufs). **Offen und nur vom Inhaber zu erledigen:** die zwei Produkte in App Store Connect
   anlegen — `lucenta.plus.monat` und `lucenta.plus.jahr`, genau so geschrieben, in derselben
   Abo-Gruppe.
 - **Keine Diagnosesprache.** Richtlinie 1.4.1. Lucenta beschreibt, es befundet nicht.
 - **„Data Not Collected"** ist die richtige und einzige Datenschutzangabe — solange nichts
   hinzukommt, das sendet.
+- **Zwei Webseiten bleiben, bewusst und nur außerhalb der App** (Entscheidung des Inhabers):
+  `web/datenschutz/` als die Datenschutz-URL, die Apple in App Store Connect verlangt, und
+  `einladung/` für spätere antippbare Freundes-Links (braucht eine Domain, `EINLADUNG_DOMAIN` ist leer).
 
-## Zwei Sitzungen, eine fuehrend
+## Eine Sitzung: Xcode
 
-Seit Runde 102 auf ausdruecklichen Wunsch des Inhabers: **Die Sitzung in Xcode fuehrt und darf
-alles aendern** — `ios/`, `src/`, `docs/`, `tools/`, `tests/`. Sie hat den Mac, das Geraet und
-WebKit; sie sieht damit Dinge, die im Chromium dieser Umgebung prinzipiell unsichtbar sind.
-
-**Diese Sitzung im Browser arbeitet ab jetzt auf Anfrage.** Sie schaut sich Meilensteine an,
-prueft mit, beantwortet Fragen — und fasst von sich aus nichts an. Wer hier ungefragt in `src/`
-schreibt, waehrend drueben gearbeitet wird, erzeugt Konflikte in einer 1,5-MB-Datei, die
-niemand von Hand aufloest. Vor jeder Aenderung hier deshalb: `git pull`, und im Zweifel fragen.
-
-Was die Xcode-Sitzung getan hat, steht in `docs/ios-huelle-journal.md` — Fehler, Aenderung,
-Begruendung, neueste Eintraege oben. Das ist der erste Ort, den diese Sitzung liest, wenn sie
-nach einer Pause wieder dazukommt.
+Gearbeitet wird nur in der Xcode-Sitzung (Entscheidung des Inhabers; eine zweite Sitzung im Browser
+gibt es nicht mehr). Sie darf alles ändern — `ios/`, `src/`, `docs/`, `tools/`, `tests/` — und trägt
+die Prüfpflicht. Was sie getan hat, steht in `docs/ios-huelle-journal.md` — Fehler, Änderung,
+Begründung, neueste Einträge oben; der Übergabeblock dort ist der Einstieg nach einer Pause.
 
 Ihre Anweisungen stehen in `tools/xcode-CLAUDE.md` und werden von `npm run ios:claude` nach
 `ios/App/CLAUDE.md` kopiert (automatisch bei jedem `npm run ios:sync`) — der Agent in Xcode
-sucht sie **neben der `.xcodeproj`** und findet diese Datei hier nicht. Geaendert wird die
-Vorlage, nie die Kopie.
+sucht sie **neben der `.xcodeproj`**. Geändert wird die Vorlage, nie die Kopie.
 
-Die Falle, die dort zuerst steht und sonst Arbeit kostet: `ios/App/public/` ist eine Kopie von
-`dist/`, das selbst eine Kopie von `src/` ist. Drei Staende derselben Oberflaeche, und nur
-`src/` ist echt.
+Die Falle, die dort zuerst steht und sonst Arbeit kostet: `ios/App/App/public/` ist eine Kopie von
+`dist/`, das selbst aus `src/` gebaut ist. Drei Stände derselben Oberfläche, und nur `src/` ist echt.
 
 ## Git
 
-Entwickelt wird auf `claude/lucenta-setup-browser-test-j6hn7f`. Kein Pull Request ohne
-ausdrückliche Bitte. Der gebaute Stand wird zusätzlich als Artefakt veröffentlicht, damit
-er auf dem Telefon sofort ansehbar ist.
+Entwickelt wird auf `claude/lucenta-setup-browser-test-j6hn7f` (der Name ist historisch). Kein Pull
+Request ohne ausdrückliche Bitte. Aufs Telefon kommt der Stand über `npm run installieren`.

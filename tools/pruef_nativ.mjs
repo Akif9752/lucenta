@@ -21,8 +21,8 @@ if (!pkg) {
   try { pkg = require_(execSync('npm root -g', {encoding:'utf8'}).trim() + '/playwright'); }
   catch (e) { console.error('Playwright nicht gefunden.'); process.exit(2); }
 }
-const { chromium } = pkg;
-const URL = process.env.LUCENTA_URL || 'http://127.0.0.1:8017/lucenta.html';
+const { webkit } = pkg;
+import { APP_URL as URL, tabKnoepfe } from './app_bruecke.mjs';
 
 let fehlschlaege = 0, pruefungen = 0;
 const ok = (bedingung, text) => {
@@ -31,8 +31,9 @@ const ok = (bedingung, text) => {
   if (!bedingung) fehlschlaege++;
 };
 
-const browser = await chromium.launch();
+const browser = await webkit.launch();
 const seite = await browser.newPage({viewport:{width:390, height:844}});
+await seite.addInitScript(tabKnoepfe);
 const ausnahmen = [];
 seite.on('pageerror', e => ausnahmen.push(e.message));
 
@@ -436,40 +437,6 @@ ok(!!schrieb && /\.png$/.test(schrieb.arg.path), 'mit Dateiendung: '+schrieb?.ar
 ok(!!schrieb && schrieb.arg.laenge > 5000, 'und mit echten Bilddaten ('+schrieb?.arg?.laenge+' Zeichen)');
 ok(!!schrieb && !/^data:/.test(String(schrieb.arg.laenge)), 'der Datenkopf ist abgeschnitten');
 
-// ---------------------------------------------------------------------------------------
-// Runde 100: Die Systemleistenfarbe. Gefunden im iOS-Simulator, wo App-Wahl und Systemvorgabe
-// auseinanderliefen — schwarze Leiste ueber heller App. Ursache war die Reihenfolge: Es gilt
-// der ERSTE passende theme-color-Eintrag, der frueher angehaengte Uebersteuerungs-Eintrag kam
-// nie zum Zug. Hier steht der Nachweis, dass jetzt ALLE Eintraege dieselbe Farbe tragen —
-// deshalb ist die Reihenfolge gleichgueltig geworden.
-async function themeFarben(){
-  return await seite.evaluate(() =>
-    [].slice.call(document.querySelectorAll('meta[name="theme-color"]'))
-      .map(m => (m.getAttribute('content') || '').toUpperCase()));
-}
-const farbenVorher = await themeFarben();
-ok(farbenVorher.length >= 2, 'es gibt mehrere theme-color-Eintraege ('+farbenVorher.length+')');
-
-await seite.evaluate(() => document.getElementById('themeLight')?.click());
-await seite.waitForTimeout(200);
-const hell = await themeFarben();
-ok(hell.every(f => f === '#E6E5E0'),
-   'bei Wahl "hell" tragen alle Eintraege die helle Farbe: ' + hell.join(' '));
-
-await seite.evaluate(() => document.getElementById('themeDark')?.click());
-await seite.waitForTimeout(200);
-const dunkel = await themeFarben();
-ok(dunkel.every(f => f === '#000000'),
-   'bei Wahl "dunkel" tragen alle Eintraege die dunkle Farbe: ' + dunkel.join(' '));
-
-await seite.evaluate(() => document.getElementById('themeSystem')?.click());
-await seite.waitForTimeout(200);
-const zurueck = await themeFarben();
-// Seit Runde 149 startet die App dunkel (Vorgabe des Inhabers), nicht in "System" — "System" stellt
-// deshalb die Werte aus dem Kopf der Seite wieder her (hell / dunkel je nach Geraet).
-ok(zurueck.join(' ') === '#E6E5E0 #000000',
-   'bei "System" stehen die Werte aus dem Kopf der Seite wieder da: ' + zurueck.join(' '));
-
 // --- Runde 113: der Entwicklungsbau
 //
 // Der Umschalter darf in der App erscheinen — aber NUR, wenn der Compiler die Marke gesetzt hat
@@ -814,10 +781,10 @@ await seite.evaluate(() => { ['lucenta_plus','__pruef_abo','lucenta_result','luc
 console.log('\n=== Apples Tab-Leiste ueber die Bruecke ===');
 const tabEin = await seite.evaluate(() => {
   const e = window.__nativLog.filter(x => x.was === 'tabs_einrichten').pop();
-  return {titel: e ? e.arg.reiter.map(r => r.titel).join('|') : '', css: document.getElementById('tabLeiste').hidden};
+  return {titel: e ? e.arg.reiter.map(r => r.titel).join('|') : '', css: !!document.getElementById('tabLeiste')};
 });
 ok(tabEin.titel === 'Start|Tagesform|Verstehen|Freunde|Profil', 'die Huelle bekommt fuenf Reiter mit Titeln (' + tabEin.titel + ')');
-ok(tabEin.css, 'die CSS-Leiste bleibt in der App verborgen');
+ok(!tabEin.css, 'es gibt keine zweite, gezeichnete Leiste in der Seite');
 await seite.evaluate(() => window.__tabGewaehlt({id: 'profile'})); await seite.waitForTimeout(400);
 let tabStand = await seite.evaluate(() => ({ansicht: document.querySelector('.view.active').id, tabs: window.__tabs}));
 ok(tabStand.ansicht === 'view-profile' && tabStand.tabs.aktiv === 'profile' && tabStand.tabs.sichtbar === true,

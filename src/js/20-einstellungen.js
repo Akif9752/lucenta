@@ -80,12 +80,6 @@
     return JSON.stringify(d);
   }
 
-  // Ein blockierter Download wirft keinen Fehler; deshalb entscheidet die Lage (Rahmen), nicht ein
-  // Fehler.
-  function imRahmen(){
-    try{ return window.self !== window.top; }catch(e){ return true; }
-  }
-
   function inZwischenablage(text){
     if (navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text).then(function(){ toast(tx('js_export_kopiert')); })
@@ -98,17 +92,17 @@
   function datenSichern(){
     if (demoSperrt()) return;
     var text = datenSammeln();
-    if (imRahmen()){ inZwischenablage(text); return; }
-    var name = 'lucenta-' + new Date().toISOString().slice(0,10) + '.json';
-    try{
-      var blob = new Blob([text], {type:'application/json'});
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url; a.download = name;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-      toast(tx('js_export_geladen'));
-    }catch(e){ inZwischenablage(text); }
+    // Ueber das Teilen-Blatt („In Dateien sichern", AirDrop …); einen Download kennt die WebView der App nicht.
+    var datei = null;
+    try{ datei = new File([text], 'lucenta-' + new Date().toISOString().slice(0,10) + '.json', {type:'application/json'}); }catch(e){}
+    if (datei && navigator.canShare && navigator.canShare({files:[datei]})){
+      navigator.share({files:[datei], title:'Lucenta'}).catch(function(err){
+        if (err && err.name === 'AbortError') return;
+        inZwischenablage(text);
+      });
+      return;
+    }
+    inZwischenablage(text);
   }
 
   function datenEinspielen(text){

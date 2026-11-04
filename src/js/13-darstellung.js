@@ -85,9 +85,7 @@
     focuslineBeatTimer = setTimeout(function(){ fl.classList.remove('beat'); focuslineBeatTimer = null; }, 620);
   }
 
-  // Haptik: in der App ueber das native Haptics-Plugin (Taptic Engine; iOS Safari kennt
-  // navigator.vibrate nicht), im Browser navigator.vibrate als Rueckfall. Ein leichter Tick; aus bei
-  // reduzierter Bewegung.
+  // Haptik ueber das native Haptics-Plugin (Taptic Engine). Ein leichter Tick; aus bei reduzierter Bewegung.
   // Jedes Bedienelement gibt einen Impuls (Entscheidung des Inhabers; zentraler Zuhoerer
   // hapticsUeberall in 28-verdrahtung-und-start.js). Die Entprellung hier verhindert doppeltes Vibrieren.
   var letzteHaptik = 0;
@@ -97,16 +95,13 @@
     if (jetzt - letzteHaptik < 90) return;
     letzteHaptik = jetzt;
     try{
-      if (nativVorhanden()){
-        var h = nativModul('Haptics');
-        if (h && h.impact){ h.impact({ style: 'LIGHT' }); return; }
-      }
+      var h = nativModul('Haptics');
+      if (h && h.impact) h.impact({ style: 'LIGHT' });
     }catch(e){}
-    try{ if (navigator.vibrate) navigator.vibrate(8); }catch(e){}
   }
 
   var quizAdvanceTimeout = null;
-  // Klasse entfernen, offsetWidth lesen, neu setzen — sonst erkennt der Browser die Animation nicht
+  // Klasse entfernen, offsetWidth lesen, neu setzen — sonst erkennt WebKit die Animation nicht
   // als neu.
   function animateQuestionIn(karteId, reiheId){
     var c = $(karteId || 'qCard');

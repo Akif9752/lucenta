@@ -11,9 +11,6 @@
     hideRunChoice();
     try{ $('btnStart').focus(); }catch(e){}
   });
-  document.querySelectorAll('#tabLeiste .tab').forEach(function(t){
-    t.addEventListener('click', function(){ tabWaehlen(t.getAttribute('data-tab')); });
-  });
   // Beim Start laeuft kein showView(); ohne diesen Aufruf stuende kein Reiter markiert.
   tabLeisteAnwenden();
   tabNativEinrichten();
@@ -209,15 +206,14 @@
   });
   $('btnAussehenOeffnen').addEventListener('click', function(){ var pr = loadProfile(); renderAvatar(pr); renderHintergrundRaster(pr); showView('look'); });
   $('btnBackFromLook').addEventListener('click', function(){ renderProfile(); showView('profile'); });
-  // Apples Standard-EULA (Richtlinie 3.1.2) oeffnet im Browser; Datenschutz ist die Rechtsseite der App.
+  // Apples Standard-EULA (Richtlinie 3.1.2) oeffnet das System; Datenschutz ist die Rechtsseite der App.
   var EULA_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
   document.addEventListener('click', function(e){
     var b = e.target.closest ? e.target.closest('[data-recht]') : null;
     if (!b) return;
     if (b.getAttribute('data-recht') === 'eula'){
-      var ap = nativVorhanden() && nativModul('App');
+      var ap = nativModul('App');
       if (ap && ap.openUrl){ try{ ap.openUrl({url: EULA_URL}); }catch(ex){} }
-      else window.open(EULA_URL, '_blank', 'noopener');
       return;
     }
     if ($('plusModal').classList.contains('open')) closePlusModal();
@@ -281,20 +277,19 @@
   // Rueckfall: Wo keine Datei geteilt werden kann, gehen Titel und Code als Text hinaus.
   function teilenAlsText(){
     var arch = archetypeOf(scores);
-    var url = (location.href.split('#')[0]).split('?')[0];
     var titel = tx('js_mein_lucentaporträt')+ (NOUN[arch.top1][scores[arch.top1]>=50?'high':'low']) +' · '+
       (ADJ[arch.top2][scores[arch.top2]>=50?'high':'low']);
     var kern = CORE[arch.top1][scores[arch.top1]>=50?'high':'low'] || '';
     var text = guestRun ? titel + tx('js_mach_den_test_und_verglei') + toCode(scores) : titel + '. ' + kern + ' ' + einladungsText();
     function inAblage(){
       if (navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text+' — '+url)
+        navigator.clipboard.writeText(text)
           .then(function(){ toast(tx('js_zum_teilen_kopiert')); })
           .catch(function(){ toast(text); });
       } else { toast(text); }
     }
     if (navigator.share){
-      navigator.share({title:'Lucenta', text:text, url:url}).catch(function(err){
+      navigator.share({title:'Lucenta', text:text}).catch(function(err){
         if (err && err.name === 'AbortError') return;
         inAblage();
       });

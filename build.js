@@ -1,11 +1,8 @@
 #!/usr/bin/env node
 /**
- * Setzt aus src/ wieder eine einzelne HTML-Datei zusammen.
- *
- * Warum ein Aufbauschritt und nicht mehrere Dateien im Browser: Die Veroeffentlichung als
- * Artefakt braucht genau eine Datei, und die App soll ohne Server lauffaehig bleiben — man kann
- * dist/lucenta.html direkt im Browser oeffnen. Die Aufteilung dient der Entwicklung, nicht der
- * Auslieferung.
+ * Setzt aus src/ die Oberflaeche der App zusammen: dist/index.html mit Schriften, Sprachpaketen
+ * und Tierbildern daneben. Capacitor kopiert dist/ ins App-Bundle. Eine Browser-Fassung gibt es
+ * nicht (Entscheidung des Inhabers) — geprueft wird genau diese Datei.
  *
  * Die Reihenfolge steht in src/manifest.json und ist BEDEUTSAM: Beim CSS entscheidet sie ueber
  * die Kaskade (die Druckzustaende muessen zuletzt stehen, siehe Runde 53), beim JavaScript ueber
@@ -15,7 +12,7 @@ const fs = require('fs');
 const path = require('path');
 
 const SRC = path.join(__dirname, 'src');
-const OUT = path.join(__dirname, 'dist', 'lucenta.html');
+const DIST = path.join(__dirname, 'dist');
 const man = JSON.parse(fs.readFileSync(path.join(SRC, 'manifest.json'), 'utf8'));
 const read = (...p) => fs.readFileSync(path.join(SRC, ...p), 'utf8');
 
@@ -30,10 +27,8 @@ const i18nDateien = fs.readdirSync(path.join(SRC, 'i18n'))
 const i18n = i18nDateien.map(f => read('i18n', f)).join('');
 // ---------- Runde 123: Die Tier-Avatare sind Bilder (src/figuren/*.png) ----------
 //
-// 15-figuren.js traegt `var FIGUR_BILDER = {};`, und hier wird es gefuellt — fuer die zwei
-// Fassungen verschieden, aus demselben Grund wie bei Schriften und Sprachen: lucenta.html muss
-// allein funktionieren (eingebettet), die App-Fassung soll beim Start nichts dekodieren, was sie
-// nicht zeigt (Dateien in dist/figuren/, Name aus dem Inhalt). Fehlt die Stelle oder ein Bild,
+// 15-figuren.js traegt `var FIGUR_BILDER = {};`, und hier wird es gefuellt: Die App soll beim Start
+// nichts dekodieren, was sie nicht zeigt (Dateien in dist/figuren/, Name aus dem Inhalt). Fehlt die Stelle oder ein Bild,
 // bricht der Bau ab — sonst zeigte die App leere Kreise, und keine Pruefung saehe es.
 const FIGUR_ORDNER = 'figuren';
 const FIGUR_STELLE = 'var FIGUR_BILDER = {};';
@@ -403,26 +398,10 @@ function pruefeIphoneOnly(rohtext, was){
   }
 }
 
-const html = read('index.head.html') + '<style>' + css + '</style>' +
-             read('index.body.html') + '<script>' + js + '</script>' + read('index.tail.html');
+fs.mkdirSync(DIST, { recursive: true });
+// Die fruehere Ein-Datei-Fassung darf nicht als veralteter Stand liegen bleiben.
+fs.rmSync(path.join(DIST, 'lucenta.html'), { force: true });
 
-fs.mkdirSync(path.dirname(OUT), { recursive: true });
-fs.writeFileSync(OUT, html);
-
-// Runde 101, gemeldet von der Xcode-Sitzung (docs/ios-huelle-journal.md, Punkt 2):
-// "npx cap sync ios" bricht ab mit "The web assets directory (./dist) must contain an
-// index.html file". Capacitor laedt aus webDir zwingend index.html; hier hiess die Datei nur
-// lucenta.html. Die Huelle musste das bei JEDEM Sync von Hand nachkopieren — ein Schritt, den
-// man einmal vergisst und dann eine leere App im Simulator hat, ohne dass irgendwo ein Fehler
-// steht. Deshalb schreibt der Bau beide Namen.
-//
-// Bewusst dieselbe Datei zweimal statt einer Weiterleitung: Eine Weiterleitung waere ein
-// zweiter Ladevorgang und muesste sich mit limitsNavigationsToAppBoundDomains vertragen. Der
-// doppelte Platz faellt nicht ins Gewicht — dist/ ist erzeugt und nicht versioniert.
-//
-// lucenta.html bleibt der Hauptname: Alle Werkzeuge und der lokale Vorschau-Server zeigen
-// darauf, und die Datei wird auch einzeln verschickt und als Artefakt veroeffentlicht.
-//
 // ---------- Runde 102: Die App-Fassung traegt die Schriften ALS DATEIEN ----------
 //
 // Gemessen auf dem iPhone-18-Pro-Simulator (iOS 27): Startseite sichtbar nach 7,6 s im
@@ -433,18 +412,11 @@ fs.writeFileSync(OUT, html);
 // Als eigene Dateien holt WebKit sie NEBEN dem Aufbau, und `font-display:swap` (steht bereits in
 // 00-schriften.css) laesst den Text sofort in der Rueckfallschrift erscheinen. Die Schriften
 // tauschen sich danach still ein.
-//
-// Warum nur index.html und nicht auch lucenta.html: Das Projekt liefert bewusst EINE Datei —
-// lucenta.html wird einzeln verschickt, als Artefakt veroeffentlicht und direkt im Browser
-// geoeffnet; extern verlinkte Schriften wuerden dort ins Leere zeigen. Die acht Pruefungen und der
-// Vorschau-Server zeigen ebenfalls auf lucenta.html und messen damit weiter die vollstaendige
-// Fassung. Nur die App-Huelle (Capacitor laedt index.html aus dem Bundle, wo die Schriften
-// daneben liegen) bekommt die aufgeteilte Fassung.
 // ---------- Runde 102: Die App-Fassung traegt keine Kommentare ----------
 //
 // Gemessen an der App-Datei (1233 KB): 246 KB sind Kommentare — 42 % des JavaScripts und 52 % des
 // CSS. Das ist kein Ballast, sondern das Projektgedaechtnis ("Runde 74, gemeldet vom iPhone: …"),
-// und es bleibt in `src/` und in `lucenta.html` vollstaendig erhalten. Nur die Fassung, die im
+// und es bleibt in `src/` vollstaendig erhalten. Nur die Fassung, die im
 // App-Bundle liegt und beim Start geparst werden muss, braucht es nicht: Dort liest sie niemand.
 //
 // Bewusst esbuild und kein eigener Regex: Ein Regex ueber `//` und `/* */` zerschneidet Strings mit
@@ -452,9 +424,8 @@ fs.writeFileSync(OUT, html);
 // auffaellt. esbuild parst richtig.
 //
 // Ebenso bewusst NUR Whitespace und Kommentare: `minifyIdentifiers` (Namen kuerzen) und
-// `minifySyntax` (Code umformen) bleiben AUS. Die acht Pruefungen messen `lucenta.html`, also die
-// unminifizierte Fassung — eine umgeformte App-Fassung waere ungeprueft unterwegs. Kommentare zu
-// entfernen kann die Bedeutung des Codes nicht aendern; Namen zu kuerzen kann es.
+// `minifySyntax` (Code umformen) bleiben AUS: Kommentare zu entfernen kann die Bedeutung des Codes
+// nicht aendern; Namen zu kuerzen kann es.
 const esbuild = require('esbuild');
 function fuerAppEntschlacken(quelle, art) {
   try {
@@ -468,14 +439,13 @@ function fuerAppEntschlacken(quelle, art) {
     }).code;
   } catch (e) {
     console.error(`\nBau abgebrochen: esbuild konnte das ${art.toUpperCase()} der App-Fassung nicht\n` +
-                  `verarbeiten: ${e.message}\n` +
-                  `Die Ein-Datei-Fassung (dist/lucenta.html) ist davon unberuehrt.\n`);
+                  `verarbeiten: ${e.message}\n`);
     process.exit(1);
   }
 }
 
 const SCHRIFT_ORDNER = 'schriften';
-const schriftZiel = path.join(path.dirname(OUT), SCHRIFT_ORDNER);
+const schriftZiel = path.join(DIST, SCHRIFT_ORDNER);
 fs.mkdirSync(schriftZiel, { recursive: true });
 for (const alt of fs.existsSync(schriftZiel) ? fs.readdirSync(schriftZiel) : []) {
   if (alt.endsWith('.woff2')) fs.unlinkSync(path.join(schriftZiel, alt));   // Reste vom letzten Bau
@@ -492,12 +462,9 @@ for (const alt of fs.existsSync(schriftZiel) ? fs.readdirSync(schriftZiel) : [])
 // Bedarf holt. Sie laufen im GLOBALEN Bereich — CONTENT liegt in der gemeinsamen IIFE und ist von
 // dort unerreichbar. Deshalb die Huelle unten: eigenes CONTENT, am Ende an die Bruecke uebergeben.
 // So bleibt die Quelldatei in src/i18n unveraendert brauchbar fuer beide Fassungen.
-//
-// Wie bei den Schriften nur die App-Fassung: dist/lucenta.html traegt weiter alle acht Pakete im
-// Quelltext. Sie wird einzeln verschickt und ohne Server geoeffnet; nachgeladene Dateien zeigten
-// dort ins Leere. Alle Pruefungen ausser pruef-app messen genau diese Fassung.
+
 const SPRACH_ORDNER = 'sprachen';
-const sprachZiel = path.join(path.dirname(OUT), SPRACH_ORDNER);
+const sprachZiel = path.join(DIST, SPRACH_ORDNER);
 fs.mkdirSync(sprachZiel, { recursive: true });
 for (const alt of fs.readdirSync(sprachZiel)) {
   if (alt.endsWith('.js')) fs.unlinkSync(path.join(sprachZiel, alt));   // Reste vom letzten Bau
@@ -541,7 +508,7 @@ const i18nApp = read('i18n', 'de.js') +
 // bekommt esbuild das CSS als CSS und das JavaScript als JavaScript. Ueber die fertige Seite
 // koennte es nicht unterscheiden.
 const cssApp = fuerAppEntschlacken(css, 'css');
-const figurZiel = path.join(path.dirname(OUT), FIGUR_ORDNER);
+const figurZiel = path.join(DIST, FIGUR_ORDNER);
 fs.rmSync(figurZiel, { recursive: true, force: true });   // Reste vom letzten Bau
 fs.mkdirSync(figurZiel, { recursive: true });
 let figurBytes = 0;
@@ -578,14 +545,10 @@ if (schriftNr === 0) {
                 'traegt die App-Fassung stillschweigend keine Schriften mehr.\n');
   process.exit(1);
 }
-fs.writeFileSync(path.join(path.dirname(OUT), 'index.html'), htmlApp);
+fs.writeFileSync(path.join(DIST, 'index.html'), htmlApp);
 
-const gz = require('zlib').gzipSync(Buffer.from(html), { level: 9 }).length;
-console.log('dist/lucenta.html  %s KB roh, %s KB gzip  (%d CSS-, %d JS-Teile, %d Sprachen)',
-  (Buffer.byteLength(html) / 1024).toFixed(1), (gz / 1024).toFixed(1), man.css.length, man.js.length,
-  i18nDateien.length);
-console.log('dist/index.html    %s KB (App-Fassung) + %d Schriften als Dateien (%s KB)',
-  (Buffer.byteLength(htmlApp) / 1024).toFixed(1), schriftNr, (schriftBytes / 1024).toFixed(1));
+console.log('dist/index.html    %s KB (%d CSS-, %d JS-Teile) + %d Schriften als Dateien (%s KB)',
+  (Buffer.byteLength(htmlApp) / 1024).toFixed(1), man.css.length, man.js.length, schriftNr, (schriftBytes / 1024).toFixed(1));
 console.log('dist/sprachen/     %d Pakete zum Nachladen (%s KB), Deutsch bleibt eingebettet',
   Object.keys(sprachQuellen).length, (sprachBytes / 1024).toFixed(1));
 console.log('dist/figuren/      %d Tierbilder (%s KB)', figurKennungen.length, (figurBytes / 1024).toFixed(1));

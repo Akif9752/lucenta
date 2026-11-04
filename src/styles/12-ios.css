@@ -401,19 +401,18 @@
 
   /* Die Tueren. */
   @media (prefers-reduced-transparency: reduce){
-    .drawer-close, .quiz-head .btn-ghost, .toast, #plusModal, .tab-leiste{
+    .drawer-close, .quiz-head .btn-ghost, .toast, #plusModal{
       background:var(--surface); -webkit-backdrop-filter:none; backdrop-filter:none;
     }
   }
   :root[data-transparenz="reduziert"] .drawer-close,
   :root[data-transparenz="reduziert"] .quiz-head .btn-ghost,
   :root[data-transparenz="reduziert"] .toast,
-  :root[data-transparenz="reduziert"] #plusModal,
-  :root[data-transparenz="reduziert"] .tab-leiste{
+  :root[data-transparenz="reduziert"] #plusModal{
     background:var(--surface); -webkit-backdrop-filter:none; backdrop-filter:none;
   }
   @media (prefers-contrast: more){
-    .drawer-close, .quiz-head .btn-ghost, .toast, #plusModal, .tab-leiste{
+    .drawer-close, .quiz-head .btn-ghost, .toast, #plusModal{
       background:var(--surface); -webkit-backdrop-filter:none; backdrop-filter:none;
     }
   }
@@ -957,36 +956,7 @@
   .symbol-name{ font-size:calc(13px * var(--dt, 1)); }
   .symbol-wahl:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:4px; border-radius:12px; }
 
-  /* ---------- Tab-Leiste: schwebende Glas-Kapsel wie in iOS 26 (Entscheidung des Inhabers) ---------- */
-  .tab-leiste{
-    --tab-hoehe:62px;
-    position:fixed; z-index:40; left:50%; transform:translateX(-50%);
-    bottom:max(10px, calc(env(safe-area-inset-bottom, 0px) - 6px));
-    width:min(calc(100% - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)), 440px);
-    height:var(--tab-hoehe); padding:4px; box-sizing:border-box;
-    display:flex; align-items:stretch; gap:2px; border-radius:calc(var(--tab-hoehe) / 2);
-    background:linear-gradient(165deg, var(--glas) 0%, var(--glas-tief) 100%), color-mix(in srgb, var(--surface) 55%, transparent);
-    -webkit-backdrop-filter:blur(18px) saturate(200%); backdrop-filter:blur(18px) saturate(200%);
-    border:1px solid var(--glas-rand);
-    box-shadow:inset 0 1px 0 var(--glas-licht), 0 8px 26px -10px rgba(0,0,0,.35);
-  }
-  .tab-leiste[hidden]{ display:none; }
-  .tab{
-    flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
-    border:none; border-radius:calc((var(--tab-hoehe) - 8px) / 2); background:transparent; padding:0 2px; cursor:pointer;
-    color:var(--ink); font:inherit; font-family:var(--sans); -webkit-tap-highlight-color:transparent;
-  }
-  .tab svg{ width:24px; height:24px; flex-shrink:0; }
-  /* Die Beschriftung waechst kaum mit: iOS vergroessert Reiternamen nicht, die Leiste kuerzt statt umzubrechen. */
-  .tab-name{
-    font-size:calc(10.5px * min(var(--dt, 1), 1.1)); font-weight:500; line-height:1.1; letter-spacing:0;
-    max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  }
-  @media (max-width:340px){ .tab{ padding:0; } .tab-name{ font-size:calc(10px * min(var(--dt, 1), 1.1)); letter-spacing:-.015em; } }
-  .tab.aktiv{ color:var(--accent-strong); background:color-mix(in srgb, var(--ink) 11%, transparent); }
-  .tab:active{ background:color-mix(in srgb, var(--ink) 8%, transparent); }
-  .tab:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:-2px; }
-  /* Platz fuer die Kapsel am Seitenende und fuer Mitteilungen darueber. */
+  /* Platz fuer Apples Tab-Leiste (LucentaTabLeistePlugin.swift) am Seitenende und fuer Mitteilungen darueber. */
   html.mit-tabs #shell{ padding-bottom:calc(80px + 62px + env(safe-area-inset-bottom, 0px)); }
   html.mit-tabs .toast{ bottom:calc(62px + 22px + env(safe-area-inset-bottom, 0px)); }
 

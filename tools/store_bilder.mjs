@@ -27,8 +27,8 @@ if (!pkg) {
   try { pkg = require_(execSync('npm root -g', {encoding:'utf8'}).trim() + '/playwright'); }
   catch (e) { console.error('Playwright nicht gefunden.'); process.exit(2); }
 }
-const { chromium } = pkg;
-const URL = process.env.LUCENTA_URL || 'http://127.0.0.1:8017/lucenta.html';
+const { webkit } = pkg;
+import { APP_URL as URL, alsApp } from './app_bruecke.mjs';
 const ZIEL = path.join(process.cwd(), 'assets', 'store');
 
 const GERAETE = [
@@ -73,7 +73,7 @@ async function zuErgebnis(p){
 }
 
 fs.mkdirSync(ZIEL, {recursive:true});
-const browser = await chromium.launch();
+const browser = await webkit.launch();
 let gezaehlt = 0;
 
 for (const sprache of SPRACHEN){
@@ -84,7 +84,8 @@ for (const sprache of SPRACHEN){
         deviceScaleFactor:3,
         colorScheme:'light'
       });
-      await p.goto(URL, {waitUntil:'networkidle'});
+      await alsApp(p);
+  await p.goto(URL, {waitUntil:'networkidle'});
       await p.waitForTimeout(400);
       if (sprache !== 'de'){
         await p.evaluate(s => document.querySelector('[data-lang="'+s+'"]')?.click(), sprache);

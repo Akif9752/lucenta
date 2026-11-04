@@ -93,7 +93,7 @@
     });
     var section = $('view-'+name);
     if (art && !prefersReducedMotion() && currentView && currentView !== name){
-      // Erzwungenes Auslesen, damit der Browser die Animation als neu erkennt — dasselbe
+      // Erzwungenes Auslesen, damit WebKit die Animation als neu erkennt — dasselbe
       // Muster wie bei animateQuestionIn() und markLangShift().
       void section.offsetWidth;
       section.classList.add(richtung);

@@ -1,16 +1,10 @@
 // Prueft dist/index.html — die Fassung, die im App-Bundle liegt.  `npm run pruef-app`
 //
-// Runde 102. Die acht Pruefungen messen alle `dist/lucenta.html`: die Ein-Datei-Fassung mit
-// eingebetteten Schriften und vollstaendigen Kommentaren. Seit dieser Runde ist die Fassung im
-// App-Bundle aber eine ANDERE Datei — `dist/index.html`, mit ausgelagerten Schriften und von
-// esbuild entfernten Kommentaren. Genau die laedt das iPhone, und genau die war damit als einzige
-// ungeprueft unterwegs.
-//
-// Das ist die Luecke, die diese Pruefung schliesst. Sie ist absichtlich klein und fragt nur, was
-// beim Umbau der App-Fassung kaputtgehen KANN:
+// `dist/index.html` ist die einzige Fassung (ausgelagerte Schriften, Sprachen und Tierbilder, ohne
+// Kommentare); alle Pruefungen laden sie. Diese hier fragt, was beim Aufteilen kaputtgehen KANN:
 //   1. Laedt die Seite ueberhaupt, ohne Ausnahme?
 //   2. Sind die fuenf Schriftdateien da und werden sie geladen? (Ausgelagerte Schriften koennen
-//      ins Leere zeigen — im Browser sieht man nur eine Rueckfallschrift, kein Fehler.)
+//      ins Leere zeigen — man sieht nur eine Rueckfallschrift, kein Fehler.)
 //   3. Sind alle acht Sprachen erreichbar? Seit Runde 103 steht nur noch Deutsch in der Datei;
 //      die sieben uebrigen liegen als eigene Dateien daneben und werden beim Umstellen geholt.
 //      Geprueft wird deshalb nicht mehr der Quelltext allein, sondern der Weg: umstellen und
@@ -22,6 +16,7 @@
 
 import { webkit } from 'playwright';
 import { existsSync, readdirSync } from 'node:fs';
+import { alsApp } from './app_bruecke.mjs';
 
 // Runde 103: Der Port kommt von pruef_alles.mjs, wenn es den Server selbst mitbringt.
 const BASIS = process.env.LUCENTA_BASIS || 'http://127.0.0.1:8017';
@@ -42,7 +37,8 @@ const dateien = existsSync(schriftOrdner)
 ok(dateien.length > 0, 'dist/schriften/ enthaelt Schriftdateien', `${dateien.length} Stueck`);
 
 const browser = await webkit.launch();
-const seite = await (await browser.newContext({ viewport: { width: 393, height: 852 } })).newPage();
+const seiteCtx = await browser.newContext({ viewport: { width: 393, height: 852 } }); await alsApp(seiteCtx); await alsApp(seiteCtx);
+const seite = await seiteCtx.newPage();
 
 const ausnahmen = [];
 const schriftAntworten = [];
@@ -148,7 +144,7 @@ ok(ohneDatei.length === 0, 'dist/sprachen/ traegt die sieben uebrigen Pakete',
 const nochEingebettet = NACHLADBAR.filter(s => new RegExp(`CONTENT\\.${s}\\s*=`).test(appQuelle));
 ok(nochEingebettet.length === 0, 'die uebrigen sieben stehen NICHT mehr in der App-Datei',
    nochEingebettet.length ? 'noch drin: ' + nochEingebettet.join(', ')
-                          : `${(Buffer.byteLength(appQuelle) / 1024).toFixed(0)} KB statt 932 KB`);
+                          : `${(Buffer.byteLength(appQuelle) / 1024).toFixed(0)} KB`);
 
 // Beim Start darf KEIN Sprachpaket geholt werden — sonst ist die Ersparnis nur verschoben.
 ok(sprachAntworten.length === 0, 'der Start holt kein einziges Sprachpaket',
@@ -189,7 +185,7 @@ ok(!!titelJa && titelJa !== deutscherTitel, 'mit der Sprache wechselt auch der s
 // Mal neu. Dann ist das Paket beim Anlaufen NICHT da — die App muss auf Deutsch anlaufen und
 // still umstellen, sobald die Datei da ist. Faellt dieser Weg aus, sitzt jemand dauerhaft in
 // einer Sprache, die er nicht gewaehlt hat.
-const zweiterAnlauf = await browser.newContext({ viewport: { width: 393, height: 852 } });
+const zweiterAnlauf = await browser.newContext({ viewport: { width: 393, height: 852 } }); await alsApp(zweiterAnlauf);
 await zweiterAnlauf.addInitScript(() => {
   try { localStorage.setItem('lucenta_lang', 'ja'); } catch (e) {}
 });
@@ -208,31 +204,7 @@ ok(gemerkteSprache, 'die gemerkte Sprache wird beim Start nachgeholt',
 ok(ausnahmen2.length === 0, 'auch der Start mit gemerkter Sprache wirft keine Ausnahme',
    ausnahmen2.join(' | '));
 
-// ---------- Runde 103: Rendert das Glas wirklich? ----------
-//
-// Liquid Glass Schritt 2 hat Schublade und Dialoge durchscheinend gemacht. Die Kontrastmessung in
-// `fehlersuche` liest berechnete FARBEN — ob `backdrop-filter` tatsaechlich eine Unschaerfe malt,
-// sieht sie nicht. Genau das ist auf WebKit die wacklige Stelle: eine verschobene (translateX),
-// scrollende Flaeche mit backdrop-filter. Faellt die Unschaerfe aus, bleibt eine zu 82 %
-// durchscheinende Flaeche ueber einem bewegten Sternenhimmel — unlesbar, und keine Pruefung
-// merkte es.
-//
-// Seit der Tab-Leiste: Headless WebKit malt die Unschaerfe einer festen, kleinen Flaeche nicht ins
-// Bildschirmfoto (auch die der Kopfleiste nicht) — die Bildprobe waere immer gleich. Geprueft wird
-// deshalb, dass die App-Fassung die Regel an der Leiste traegt; ob sie malt, entscheidet der Simulator.
-const glasCtx = await browser.newContext({ viewport: { width: 393, height: 852 } });
-const glasSeite = await glasCtx.newPage();
-await glasSeite.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
-await glasSeite.waitForTimeout(500);
-const leisteGlas = await glasSeite.evaluate(() => {
-  const l = document.getElementById('tabLeiste');
-  if (!l || l.hidden) return null;
-  const s = getComputedStyle(l);
-  return s.webkitBackdropFilter || s.backdropFilter;
-});
-await glasCtx.close();
-ok(!!leisteGlas, 'die Tab-Leiste ist sichtbar', leisteGlas === null ? '(fehlt oder verborgen)' : '');
-ok(/blur\([1-9][\d.]*px\)/.test(leisteGlas || ''), 'die Tab-Leiste traegt ihr Glas in der App-Fassung', leisteGlas || '');
+// Die Tab-Leiste und ihr Glas zeichnet das System (LucentaTabLeistePlugin.swift) — hier nichts zu pruefen.
 
 // --- Anmutung wie eine App, und was dabei NICHT verloren gehen darf (Runde 109)
 //
@@ -242,7 +214,7 @@ ok(/blur\([1-9][\d.]*px\)/.test(leisteGlas || ''), 'die Tab-Leiste traegt ihr Gl
 // beim naechsten Aufraeumen zuerst wegfaellt:
 //
 //   - Ein Eingabefeld, in dem man nicht markieren kann, laesst sich nicht korrigieren. Das
-//     GARANTIERT der Browser (CSS-UI: auf editierbaren Elementen ist user-select immer `text`) —
+//     GARANTIERT WebKit (CSS-UI: auf editierbaren Elementen ist user-select immer `text`) —
 //     im Stilblatt steht dafuer bewusst keine Regel mehr, weil sie gemessen wirkungslos war.
 //     Geprueft wird es hier trotzdem, und genau deshalb: Es ist eine Zusage, auf die sich das
 //     Stilblatt VERLAESST, ohne sie selbst auszusprechen.
@@ -255,7 +227,7 @@ ok(/blur\([1-9][\d.]*px\)/.test(leisteGlas || ''), 'die Tab-Leiste traegt ihr Gl
 //
 // Gefragt wird nach dem Ergebnis, nicht nach der Regel: Beim Fliesstext wird eine echte Auswahl
 // versucht. Vererbung und Spezifitaet koennen dazwischenkommen, das Ergebnis nicht.
-const anmutungCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+const anmutungCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }); await alsApp(anmutungCtx);
 const anmutungSeite = await anmutungCtx.newPage();
 await anmutungSeite.goto(`${BASIS}/index.html`, { waitUntil: 'networkidle' });
 await anmutungSeite.waitForTimeout(400);
@@ -282,7 +254,7 @@ ok(anmutung.touch === 'manipulation',
 ok(anmutung.fliesstext === 0,
    'Fliesstext laesst sich nicht markieren', `${anmutung.fliesstext} Zeichen auswaehlbar`);
 ok(anmutung.feld === 'text',
-   'der Browser haelt sein Versprechen: im Eingabefeld bleibt Markieren moeglich',
+   'WebKit haelt sein Versprechen: im Eingabefeld bleibt Markieren moeglich',
    String(anmutung.feld));
 ok(anmutung.code === 'text',
    'AUSNAHME: der eigene Code bleibt markierbar (sein Verlust ist endgueltig)', String(anmutung.code));
@@ -292,8 +264,7 @@ ok(!/user-scalable\s*=\s*no|maximum-scale/.test(anmutung.viewport),
 
 // Runde 123: Die Tierbilder liegen in der App-Fassung als Dateien in figuren/ (build.js). Ein
 // falscher Pfad, eine fehlende Datei oder ein Bild, das WebKit nicht dekodiert, ergaebe leere
-// Kreise — und nichts sonst wuerde es melden, weil lucenta.html die Bilder eingebettet traegt.
-// Gefragt wird deshalb hier, an der App-Fassung, und nach dem Ergebnis: ob jedes Bild LAEDT.
+// Kreise. Gefragt wird deshalb nach dem Ergebnis: ob jedes Bild LAEDT.
 const figurPfade = await anmutungSeite.evaluate(async () => {
   const quelltext = await (await fetch('index.html')).text();
   const pfade = [...new Set(quelltext.match(/figuren\/[a-z]+-[0-9a-f]{10}\.png/g) || [])];
@@ -315,7 +286,7 @@ ok(figurPfade.anzahl === 20 && figurPfade.kaputt.length === 0,
 await anmutungCtx.close();
 
 // Feedback B9: Unterseiten wie iOS — Chevron mit Ziel links, der Name verborgen, der Weg zurueck stimmt.
-const navCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+const navCtx = await browser.newContext({ viewport: { width: 390, height: 844 } }); await alsApp(navCtx);
 const navSeite = await navCtx.newPage();
 await navSeite.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
 await navSeite.click('#tabProfil'); await navSeite.waitForTimeout(400);
@@ -346,7 +317,7 @@ ok(startBreite.aktiv && startBreite.v === startBreite.m && startBreite.l === 0,
 await navCtx.close();
 
 // Runde 155: Alles mit anderen unter Freunde — ein Feld, Vergleich als Unterseite, Archiv uebernommen.
-const frCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+const frCtx = await browser.newContext({ viewport: { width: 390, height: 844 } }); await alsApp(frCtx);
 await frCtx.addInitScript(() => {
   if (localStorage.getItem('__fr')) return;
   localStorage.setItem('__fr', '1');
@@ -380,7 +351,7 @@ await frCtx.close();
 // Runde 155: Der Puls des Fortschrittsbalkens animierte eine andere Filterliste als der Ruhezustand
 // (blur vs. brightness+saturate); WebKit stuerzte dabei ab (CAPresentationModifier). Nachgestellt: 1 von 3
 // Laeufen mit 300 Pulsen, nach der Behebung 0 von 8. Ein Lauf hier ist ein schwacher, aber billiger Wachposten.
-const pulsSeite = await browser.newPage({ viewport: { width: 390, height: 844 } });
+const pulsSeite = await browser.newPage({ viewport: { width: 390, height: 844 } }); await alsApp(pulsSeite);
 let pulsWeg = false; pulsSeite.on('crash', () => { pulsWeg = true; });
 await pulsSeite.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
 await pulsSeite.click('#btnStart'); await pulsSeite.waitForTimeout(500);
@@ -399,7 +370,7 @@ await pulsSeite.close().catch(() => {});
 
 // Feedback A1: Nachtipps zwischen Antwort 50 und dem Ergebnis speicherten je ein weiteres Ergebnis.
 // Geeicht: ohne die Sperre stehen hier 2 Eintraege und die Delta-Karte.
-const testCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+const testCtx = await browser.newContext({ viewport: { width: 390, height: 844 } }); await alsApp(testCtx);
 const testSeite = await testCtx.newPage();
 await testSeite.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
 await testSeite.click('#btnStart');

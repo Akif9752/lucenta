@@ -16,10 +16,17 @@ Pruefung 6 ist entsprechend verschaerft, 7 und 8 sind neu.
 import re, sys
 import os
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-S=open(os.path.join(ROOT,'dist','lucenta.html'),encoding='utf-8').read()
-A=S.index('</style>'); B=S.rindex('<script>')
-MARKUP=re.sub(r'<!--.*?-->','',S[A:B],flags=re.S)
-JS=S[B:]
+# Der Quelltext kommt aus src/, zusammengesetzt wie im Bau (die App-Fassung in dist/ ist ohne Kommentare
+# und traegt nur Deutsch).
+import json
+SRC=os.path.join(ROOT,'src')
+lies=lambda *p: open(os.path.join(SRC,*p),encoding='utf-8').read()
+MAN=json.load(open(os.path.join(SRC,'manifest.json'),encoding='utf-8'))
+I18N=''.join(lies('i18n',f) for f in sorted((f for f in os.listdir(os.path.join(SRC,'i18n')) if f.endswith('.js')),
+                                           key=lambda f:('' if f=='de.js' else f)))
+JS='<script>'+''.join(lies('js',f) for f in MAN['js']).replace('@@I18N@@\n',I18N,1)+'</script>'+lies('index.tail.html')
+MARKUP=re.sub(r'<!--.*?-->','',lies('index.body.html'),flags=re.S)
+S=MARKUP+JS
 fails=[]
 def check(cond,msg):
     print(("  ok   " if cond else "  FAIL ")+msg)

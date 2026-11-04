@@ -83,7 +83,7 @@ const TYPEN = {
 
 async function antwortetSchon(){
   try {
-    const a = await fetch(`${BASIS}/lucenta.html`, { signal: AbortSignal.timeout(1500) });
+    const a = await fetch(`${BASIS}/index.html`, { signal: AbortSignal.timeout(1500) });
     return a.ok;
   } catch { return false; }
 }
@@ -115,7 +115,7 @@ function fuehreAus(p){
       ...process.env,
       LUCENTA_PORT: String(PORT),
       LUCENTA_BASIS: BASIS,
-      LUCENTA_URL: process.env.LUCENTA_URL || `${BASIS}/lucenta.html`
+      LUCENTA_URL: process.env.LUCENTA_URL || `${BASIS}/index.html`
     } });
     let aus = '';
     kind.stdout.on('data', d => { aus += d; });

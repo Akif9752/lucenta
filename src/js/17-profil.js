@@ -203,10 +203,9 @@
       });
     }
 
-    // Umschalter frei/Lucenta+ fuer die Entwicklung: nur ohne native Bruecke (Browser) oder im
-    // Entwicklungsbau (#if DEBUG in MainViewController.swift). Im Store-Bau gibt es ihn nicht — sonst
-    // verschenkte er das Abo.
-    if (!nativVorhanden() || entwicklungsBau()){
+    // Umschalter frei/Lucenta+ nur im Entwicklungsbau (#if DEBUG in MainViewController.swift). Im
+    // Store-Bau gibt es ihn nicht — sonst verschenkte er das Abo.
+    if (entwicklungsBau()){
       var plusEl = document.createElement('div');
       plusEl.className = 'plus-schalter-zeile';
       plusEl.innerHTML =

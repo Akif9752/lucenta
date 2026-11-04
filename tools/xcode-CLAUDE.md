@@ -9,14 +9,14 @@ Uebergabeblock oben in `docs/ios-huelle-journal.md`.
 
     src/                  <- nur hier aendern
       | node build.js
-    dist/                 index.html (App-Fassung) + lucenta.html (Ein-Datei-Fassung)
+    dist/                 index.html + Schriften, Sprachen, Tierbilder (die einzige Fassung)
       | npx cap sync ios
     ios/App/App/public/   erzeugt, jede Aenderung dort ist beim naechsten Sync weg
 
 ## Umfang
 
 Diese Sitzung fuehrt und darf alles aendern (`ios/`, `src/`, `docs/`, `tools/`, `tests/`) — Entscheidung
-des Inhabers. Die Browsersitzung arbeitet nur auf Anfrage. Mit der Fuehrung liegt hier die Pruefpflicht.
+des Inhabers. Es gibt nur diese Sitzung und keine Browser-Fassung der App. Hier liegt die Pruefpflicht.
 
 ## Die Befehle einer Runde
 
@@ -33,8 +33,8 @@ gleichzeitig, ~26 s je Tier). `bauen.sh` uebersetzt nur, wenn eine `.swift`-Date
 
 `pruef-alles` waehlt nach Aenderung (Entscheidung des Inhabers): Seit dem letzten vollen, bestandenen
 Lauf nur Tierbilder, Doku, Swift oder Hilfswerkzeuge geaendert -> leichte Runde (Bau, Testreihen, Audit,
-Store-Texte, App-Fassung, ~1 Min.). Sonst alle neun; die Fehlersuche faehrt WebKit voll und Chromium als Stichprobe (4 von 16, davon 2 mit nachgestellter App-Bruecke; alle mit
-`LUCENTA_CHROMIUM_VOLL=1`, Entscheidung des Inhabers). `npm run pruef-voll` erzwingt alle neun.
+Store-Texte, App-Fassung, ~1 Min.). Sonst alle neun, alle in WebKit auf `dist/index.html` mit nachgestellter Bruecke
+(`tools/app_bruecke.mjs`, Reiter als `#tabStart` … `#tabProfil`). `npm run pruef-voll` erzwingt alle neun.
 Die volle Runde losgeloest starten und EINMAL am Ende nachsehen, nicht pollen:
 
     (nohup npm run pruef-alles > /tmp/pruef.log 2>&1 &)
@@ -42,19 +42,18 @@ Die volle Runde losgeloest starten und EINMAL am Ende nachsehen, nicht pollen:
 
 Ausgaben je Pruefung in `.pruef-log/<name>.log`. Einzeln nachfahren: Befehle in `tools/pruef_alles.mjs`;
 einen Fund der Fehlersuche mit
-`LUCENTA_MOTOREN=webkit LUCENTA_PARALLEL=1 LUCENTA_NUR="320px/hell/tr" npm run fehlersuche`.
+`LUCENTA_PARALLEL=1 LUCENTA_NUR="320px/hell/tr" npm run fehlersuche`.
 Laesst sich eine Pruefung nicht ausfuehren, gehoert das ins Journal.
 
-`pruef-app` prueft `dist/index.html`, die Fassung im App-Bundle: ohne Kommentare, nur Deutsch
-eingebettet (die uebrigen Sprachen in `dist/sprachen/`). Was in `lucenta.html` steht, muss dort nicht
-stehen — Pruefungen fragen den Weg ab, nicht den Quelltext.
+`dist/index.html` ist ohne Kommentare und traegt nur Deutsch (die uebrigen Sprachen in `dist/sprachen/`):
+Pruefungen fragen den Weg ab, nicht den Quelltext. Testreihen und Audit lesen den Quelltext aus `src/`.
 
 ## Kontingent sparen
 
 Jede Zwischenabfrage verarbeitet den ganzen Verlauf erneut. Deshalb: Pruefungen buendeln, nicht pollen;
 Bildschirmfotos sparsam, beschnitten, verkleinert (`sips -Z 560`). „Laeuft die App?" beantwortet
 `xcrun simctl spawn <id> launchctl list | grep lucenta` ohne Bild. Wo es um Aussehen geht, ist das Geraet
-(WebKit) der Schiedsrichter, nicht Chromium.
+der Schiedsrichter; nativ Gezeichnetes (Tab-Leiste, Sperre) sieht headless WebKit nicht.
 
 ## Kommentare und Journal
 
@@ -70,6 +69,8 @@ setzt `data-transparenz="reduziert"`. Jede Regel dafuer steht zweimal im Stilbla
 wenn nur eine geaendert wird.
 
 ## Stand der Huelle
+
+- Tab-Leiste = Apples UITabBar (`LucentaTabLeistePlugin.swift`, Plugin `Tabs`); die Seite zeichnet keine eigene.
 
 - `Info.plist`: `NSPhotoLibraryAddUsageDescription` (sonst Absturz bei „In Fotos sichern"); nur Hochformat,
   nur iPhone (`TARGETED_DEVICE_FAMILY = 1`, Entscheidung des Inhabers); `UIRequiredDeviceCapabilities` arm64.
@@ -90,7 +91,7 @@ UND in `src/js/24-native.js`.
    `packageClassList` — `capacitor.config.json` ist erzeugt.
 2. Lucenta+ wird nur bei klarer Store-Antwort weggenommen; eine Stoerung nimmt nichts weg.
 3. Kein Beleg-Server, nie — sonst ist „Data Not Collected" falsch.
-4. Plus-Umschalter nur ohne native Bruecke (Entwickeln im Browser).
+4. Plus-Umschalter nur im Entwicklungsbau (`#if DEBUG`, `entwicklungsBau()`).
 
 Ohne Store geprueft durch `pruef-nativ`; lokal echt mit `ios/App/App/Lucenta.storekit` (Schema `App`).
 

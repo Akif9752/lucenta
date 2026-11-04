@@ -2,7 +2,7 @@
 /**
  * Führt alle Testreihen gegen den gebauten Stand aus.
  *
- * Aufbau: Der App-Code wird aus dist/lucenta.html gezogen und bis zur Marke "wiring" verwendet —
+ * Aufbau: Der App-Code wird aus src/ zusammengesetzt und bis zur Marke "wiring" verwendet —
  * das ist der Teil ohne Ereignis-Verdrahtung, der sich ohne Browser ausführen lässt. Davor kommt
  * ein Ersatz-DOM (harness), danach die eigentlichen Prüfungen.
  *
@@ -15,11 +15,13 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const DIST = path.join(ROOT, 'dist', 'lucenta.html');
-if (!fs.existsSync(DIST)) { console.error('dist/lucenta.html fehlt — bitte zuerst: node build.js'); process.exit(1); }
-
-const html = fs.readFileSync(DIST, 'utf8');
-const js = html.slice(html.lastIndexOf('<script>') + 8, html.lastIndexOf('</script>'));
+// Der Quelltext kommt aus src/, zusammengesetzt wie im Bau (die App-Fassung ist ohne Kommentare, die Marke fehlte dort).
+const SRC = path.join(ROOT, 'src');
+const lies = (...p) => fs.readFileSync(path.join(SRC, ...p), 'utf8');
+const man = JSON.parse(lies('manifest.json'));
+const i18n = fs.readdirSync(path.join(SRC, 'i18n')).filter(f => f.endsWith('.js'))
+  .sort((a, b) => (a === 'de.js' ? -1 : b === 'de.js' ? 1 : a.localeCompare(b))).map(f => lies('i18n', f)).join('');
+const js = man.js.map(f => lies('js', f)).join('').replace('@@I18N@@\n', i18n);
 const core = js.slice(0, js.indexOf('// ---------- wiring ----------'));
 
 const SUITES = [

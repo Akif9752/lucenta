@@ -1,4 +1,5 @@
-// Sucht im echten Browser nach Fehlern, die keine der anderen Pruefreihen sehen kann.
+// Sucht in der App-Fassung (WebKit, mit nachgestellter App-Bruecke) nach Fehlern, die keine der anderen
+// Pruefreihen sehen kann.
 //
 // Die Einheitentests laufen gegen eine nachgebaute Seite und kennen kein Layout. Der
 // Sprachvergleich sieht nur Text. Die Bewegungspruefung misst Zeitverlaeufe. Was uebrig
@@ -10,25 +11,12 @@
 // Laeuft ueber alle Ansichten, in beiden Farbschemata, einmal leer und einmal mit der
 // Beispielnutzerin — leere und volle Ansichten sind verschiedene Layouts.
 //
-//   python3 -m http.server 8017 --directory dist &
-//   node tools/fehlersuche.mjs
+//   npm run fehlersuche        (Server auf 8017 bringt pruef-alles mit)
 //
-// ---------- Runde 103: zwei Motoren, und mehrere Durchlaeufe gleichzeitig ----------
+// ---------- Mehrere Durchlaeufe gleichzeitig ----------
 //
-// Zwei Dinge waren hier falsch, beide vom Anfang an:
-//
-// 1. Gemessen wurde ausschliesslich auf CHROMIUM. Das iPhone benutzt WebKit. Die Browsersitzung
-//    hatte keine Wahl (der Download von WebKit ist dort gesperrt), aber auf dem Mac ist er da —
-//    und zwei der teuersten Fehler des Projekts (die Silbentrennung, die beiden
-//    Scroll-/Safe-Area-Fehler) waren 99 Runden lang genau deshalb unentdeckt. Jetzt laufen
-//    standardmaessig BEIDE: WebKit als Schiedsrichter, Chromium als Stichprobe von vier
-//    Durchlaeufen (alle: LUCENTA_CHROMIUM_VOLL=1). Der Motor steht in der Kennung jedes Fundes.
-//    Einschraenken mit LUCENTA_MOTOREN=webkit (oder =chromium).
-//
-// 2. Jeder Durchlauf startete einen EIGENEN Browser, und alle liefen nacheinander — 13 Starts,
-//    ueber zehn Minuten. Jetzt wird je Motor ein Browser gestartet und jeder Durchlauf bekommt
-//    nur einen eigenen Kontext (eigener Speicher, eigenes Farbschema, eigene Breite — daran
-//    aendert sich nichts). Vier laufen gleichzeitig; LUCENTA_PARALLEL setzt die Zahl.
+// Gemessen wird nur WebKit, die Maschine des iPhones (Entscheidung des Inhabers). Ein Browser, jeder
+// Durchlauf ein eigener Kontext (Speicher, Farbschema, Breite); vier gleichzeitig, LUCENTA_PARALLEL setzt die Zahl.
 //
 // Was die Parallelitaet kostet, und warum es vertretbar ist: Die Messungen warten an vielen
 // Stellen feste Zeiten ab (Animationen, das Neuladen der Beispieldaten). Unter Last koennen die
@@ -51,17 +39,11 @@ if (!pkg) {
   try { pkg = require_(execSync('npm root -g', {encoding:'utf8'}).trim() + '/playwright'); }
   catch (e) { console.error('Playwright nicht gefunden.'); process.exit(2); }
 }
-const { chromium, webkit } = pkg;
-const URL = process.env.LUCENTA_URL || 'http://127.0.0.1:8017/lucenta.html';
-const START = process.env.CHROMIUM_PFAD ? {executablePath: process.env.CHROMIUM_PFAD} : {};
-// WebKit zuerst: Ist etwas grundsaetzlich kaputt, steht es im Bericht oben — und zwar in der
-// Maschine, die das iPhone wirklich benutzt.
-const MOTOREN = (process.env.LUCENTA_MOTOREN || 'webkit,chromium').split(',').map(s => s.trim()).filter(Boolean);
+const { webkit } = pkg;
+import { APP_URL as URL, appBruecke, tabKnoepfe } from './app_bruecke.mjs';
+const MOTOREN = ['webkit'];
 const GLEICHZEITIG = Math.max(1, Number(process.env.LUCENTA_PARALLEL || 4));
-const STARTER = { webkit: () => webkit.launch(), chromium: () => chromium.launch(START) };
-for (const m of MOTOREN){
-  if (!STARTER[m]){ console.error('Unbekannter Motor: ' + m + ' (moeglich: webkit, chromium)'); process.exit(2); }
-}
+const STARTER = { webkit: () => webkit.launch() };
 
 // Die kleinste Flaeche, die Apple in den Richtlinien fuer eine Schaltflaeche nennt.
 const MIN_TIPP = 44;
@@ -247,9 +229,9 @@ const suchTippflaechen = (min) => {
     // und meldete jedes Bedienelement am Seitenende. Uebergehen waere der bequeme Ausweg
     // gewesen und haette echte Faelle mit verschwiegen; stattdessen wird das Element in die
     // Mitte gerollt und danach neu vermessen.
-    // Die Tab-Leiste schwebt ueber dem Seitenende: Was darunter liegt, rollt man in den freien Bereich.
-    const leiste = document.getElementById('tabLeiste');
-    const unten = leiste && !leiste.hidden ? leiste.getBoundingClientRect().top : innerHeight;
+    // Apples Tab-Leiste (nativ, hier unsichtbar) deckt rund 83 pt am unteren Rand: Was darunter liegt,
+    // rollt man in den freien Bereich.
+    const unten = innerHeight - (document.documentElement.classList.contains('mit-tabs') ? 83 : 0);
     if (r.top < halb + 2 || r.bottom > unten - halb - 2){
       el.scrollIntoView({block:'center', inline:'center', behavior:'instant'});
       r = el.getBoundingClientRect();
@@ -504,7 +486,7 @@ const WEGE = {
   // Runde 136: die Sprachwahl als eigene Seite. 650 ms nach dem letzten Klick sind mehr als die
   // 0,46 s des Schiebeuebergangs — gemessen wird also die angekommene Seite, nicht der Weg dorthin.
   sprache:    ['#tabProfil', '#btnProfilEinstellungen', '#btnSpracheOeffnen'],
-  // Nur mit App-Bruecke (`nativ`): Die Zeile erscheint erst, wenn AppSymbol antwortet.
+  // Die Zeile erscheint erst, wenn AppSymbol antwortet.
   appicon:    ['#tabProfil', '#btnProfilEinstellungen', '#btnSymbolOeffnen'],
   look:       ['#tabProfil', '#btnAussehenOeffnen'],
   state:      ['#btnHome', '#btnLandingStateHistory'],
@@ -686,27 +668,7 @@ async function pruefeAnsicht(p, ansicht, kennung, breite, melde){
 // gebraucht wird, um mit LUCENTA_NUR einen einzelnen Durchlauf nachzufahren.
 function kennungVon(l, motor){
   return [motor, (l.breite || 390) + 'px' + (l.text ? '@' + Math.round(l.text * 100) + '%' : ''), l.thema, l.sprache,
-          l.demo ? (l.plus ? 'Beispielnutzerin' : 'Beispielnutzerin, frei') : 'leer'].join('/') + (l.nativ ? '/App' : '');
-}
-
-// Die App-Bruecke, wie MainViewController sie anmeldet: Erst damit stehen in den Einstellungen Konto, Face ID mit
-// „Sperren nach", Health und App-Symbol — ohne sie sah die Fehlersuche diese Zeilen nie.
-function appBruecke(plus){
-  const ok = (v) => Promise.resolve(v), weg = () => ok({ remove(){} });
-  const sperre = { verfuegbar:true, art:'faceID', an:true, nach:60 };
-  window.webkit = { messageHandlers: { lucentaBestand:{ postMessage(){} }, lucentaWidget:{ postMessage(){} } } };
-  window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'ios', Plugins: {
-    LocalNotifications: { requestPermissions: () => ok({display:'granted'}), checkPermissions: () => ok({display:'granted'}),
-      schedule: () => ok(), cancel: () => ok(), getPending: () => ok({notifications:[]}), addListener: weg },
-    StoreKit: { stand: () => ok(plus ? {aktiv:true, produkt:'lucenta.plus.jahr'} : {aktiv:false}), preise: () => ok({}),
-      kaufen: () => ok({abgebrochen:true}), restorePurchases: () => ok(plus ? {aktiv:true} : {aktiv:false}), verwalten: () => ok(),
-      bewerten: () => ok(), addListener: weg },
-    App: { getInfo: () => ok({version:'1.0', build:'1'}), getLaunchUrl: () => ok({}), addListener: weg, openUrl: () => ok() },
-    Health: { stand: () => ok({verfuegbar:true, erlaubt:false}), erlauben: () => ok({erlaubt:false}) },
-    Lock: { stand: () => ok(sperre), setzen: () => ok(sperre), texte: () => ok({}) },
-    Account: { stand: () => ok({angemeldet:false, icloud:true}), anmelden: () => ok({angemeldet:false}) },
-    AppSymbol: { stand: () => ok({verfuegbar:true, name:''}), setzen: (o) => ok({name:o.name}) },
-  } };
+          l.demo ? (l.plus ? 'Beispielnutzerin' : 'Beispielnutzerin, frei') : 'leer'].join('/');
 }
 
 async function durchlauf(lauf, motor, browser){
@@ -721,7 +683,8 @@ async function durchlauf(lauf, motor, browser){
     const setzen = () => document.documentElement && document.documentElement.style.setProperty('--dt', String(f));
     setzen(); document.addEventListener('readystatechange', setzen);
   }, lauf.text);
-  if (lauf.nativ) await ctx.addInitScript(appBruecke, !!plus);
+  await ctx.addInitScript(appBruecke, !!plus);
+  await ctx.addInitScript(tabKnoepfe);
   const p = await ctx.newPage();
   const abstuerze = [];
   p.on('pageerror', e => abstuerze.push(e.message));
@@ -770,12 +733,11 @@ async function durchlauf(lauf, motor, browser){
       if (!angekommen){
         // Ohne Bestand gibt es kein Ergebnis und damit richtigerweise keinen Weg dorthin.
         // Runde 103: Der Bilddialog gehoert in diese Liste — er haengt am Ergebnis.
-        if (ansicht === 'appicon' && !lauf.nativ) continue;
         if (!(['result', 'vergleich', 'bilddialog'].includes(ansicht) && !demo)) melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar');
         continue;
       }
       // Geeicht: Fehlen die Zeilen der Bruecke, misst der App-Durchlauf dasselbe wie die anderen und sieht nichts Neues.
-      if (lauf.nativ && ansicht === 'settings'){
+      if (ansicht === 'settings'){
         const fehlt = await p.evaluate(() => ['sperreZeile', 'sperreNachZeile', 'healthZeile', 'btnSymbolOeffnen']
           .filter(id => { const e = document.getElementById(id); return !e || !e.offsetHeight; }));
         if (fehlt.length) melde(kennung + ': Zeilen der App-Bruecke fehlen — ' + fehlt.join(', '));
@@ -797,12 +759,12 @@ async function durchlauf(lauf, motor, browser){
 
 const laeufe = [
   {thema:'hell',   demo:false, sprache:'de'},
-  {thema:'dunkel', demo:false, sprache:'de', chromium:true},
+  {thema:'dunkel', demo:false, sprache:'de'},
   {thema:'hell',   demo:true,  plus:true,  sprache:'de'},
   {thema:'dunkel', demo:true,  plus:true,  sprache:'de'},
   // Daten vorhanden, aber nicht gekauft — der Zustand, in dem die meisten Menschen die App
   // benutzen, und der einzige, in dem die fuenf Schloesser und das Lucenta+-Fenster stehen.
-  {thema:'hell',   demo:true,  plus:false, sprache:'de', chromium:true},
+  {thema:'hell',   demo:true,  plus:false, sprache:'de'},
   {thema:'dunkel', demo:true,  plus:false, sprache:'de'},
   {thema:'hell',   demo:true,  plus:true,  sprache:'ja'},
   {thema:'hell',   demo:true,  plus:true,  sprache:'fr'},
@@ -817,53 +779,28 @@ const laeufe = [
   // wie das Deutsche mit seinen Komposita.
   {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320},
   {thema:'hell',   demo:true,  plus:true,  sprache:'fr', breite:320},
-  {thema:'hell',   demo:true,  plus:true,  sprache:'tr', breite:320, chromium:true},
+  {thema:'hell',   demo:true,  plus:true,  sprache:'tr', breite:320},
   // Feedback B8: groesste unterstuetzte Textgroesse (200 %, Entscheidung des Inhabers) auf dem
   // schmalsten Bildschirm.
-  {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320, text:2, chromium:true},
-  // Mit App-Bruecke: die Einstellungen, wie das iPhone sie zeigt (gekauft hell, frei dunkel und schmal).
-  {thema:'hell',   demo:true,  plus:true,  sprache:'de', nativ:true},
-  {thema:'dunkel', demo:true,  plus:false, sprache:'fr', breite:320, nativ:true},
+  {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320, text:2},
+  {thema:'dunkel', demo:true,  plus:false, sprache:'fr', breite:320},
 ];
-// ---------- Runde 103: je Motor ein Browser, vier Durchlaeufe gleichzeitig ----------
 
 const NUR = process.env.LUCENTA_NUR || '';
 const aufgaben = [];
-// Chromium nur als Stichprobe (`chromium:true`), Entscheidung des Inhabers: Das iPhone ist WebKit.
-// Alle Chromium-Durchlaeufe mit LUCENTA_CHROMIUM_VOLL=1 oder gezielt ueber LUCENTA_NUR.
-const CHROMIUM_VOLL = !!process.env.LUCENTA_CHROMIUM_VOLL || !!NUR;
 for (const motor of MOTOREN) for (const l of laeufe){
   if (NUR && !kennungVon(l, motor).includes(NUR)) continue;
-  if (motor === 'chromium' && !l.chromium && !CHROMIUM_VOLL) continue;
   aufgaben.push({ motor, lauf: l });
 }
 if (!aufgaben.length){ console.error('LUCENTA_NUR="' + NUR + '" passt auf keinen Durchlauf.'); process.exit(2); }
 
-console.log(`\n${aufgaben.length} Durchlaeufe (${MOTOREN.join(' + ')}), ${GLEICHZEITIG} gleichzeitig` +
+console.log(`\n${aufgaben.length} Durchlaeufe (WebKit, App-Fassung), ${GLEICHZEITIG} gleichzeitig` +
             (NUR ? `, gefiltert auf "${NUR}"` : ''));
 console.log(URL + '\n');
 
-// Ein Motor, der sich nicht starten laesst, ist nur dann ein Fehler, wenn er ausdruecklich
-// verlangt wurde. Die Browsersitzung im Container hat KEIN WebKit (der Download ist dort
-// gesperrt) — dieselbe Datei muss dort weiterlaufen und darf nicht mit "Executable doesn't
-// exist" abbrechen. Sie sagt dann laut, was sie NICHT gemessen hat: eine uebersprungene Messung,
-// die man nicht sieht, ist schlimmer als keine.
 const browser = {};
-for (const motor of MOTOREN){
-  try { browser[motor] = await STARTER[motor](); }
-  catch (e){
-    if (process.env.LUCENTA_MOTOREN){
-      console.error(`Motor "${motor}" laesst sich nicht starten: ${(e && e.message) || e}`);
-      process.exit(2);
-    }
-    console.log(`  ACHTUNG: Motor "${motor}" ist auf diesem Rechner nicht installiert — ` +
-                `${aufgaben.filter(a => a.motor === motor).length} Durchlaeufe UNGEMESSEN.`);
-    console.log(`  Nachholen mit: npx playwright install ${motor}\n`);
-  }
-}
-const uebrig = MOTOREN.filter(m => browser[m]);
-if (!uebrig.length){ console.error('Kein Motor verfuegbar. npx playwright install webkit chromium'); process.exit(2); }
-for (let i = aufgaben.length - 1; i >= 0; i--) if (!browser[aufgaben[i].motor]) aufgaben.splice(i, 1);
+try { browser.webkit = await STARTER.webkit(); }
+catch (e){ console.error('WebKit laesst sich nicht starten: ' + ((e && e.message) || e) + '\nNachholen mit: npx playwright install webkit'); process.exit(2); }
 
 const ergebnisse = new Array(aufgaben.length);
 let fertig = 0;
@@ -889,12 +826,10 @@ async function arbeiter(){
   }
 }
 await Promise.all(Array.from({ length: Math.min(GLEICHZEITIG, aufgaben.length) }, arbeiter));
-for (const motor of uebrig) await browser[motor].close();
+await browser.webkit.close();
 
-// Zusammenfassen in der Reihenfolge der Liste, nicht in der des Fertigwerdens. Derselbe Fund in
-// zwei Durchlaeufen ist ein Fund — aber der Motor steht in der Kennung, ein Fund in WebKit und
-// derselbe in Chromium sind also zwei Zeilen. Das ist gewollt: Ob ein Fehler beide Maschinen
-// betrifft oder nur die des iPhones, ist die erste Frage bei der Behebung.
+// Zusammenfassen in der Reihenfolge der Liste, nicht in der des Fertigwerdens; derselbe Fund in zwei
+// Durchlaeufen ist ein Fund.
 const gesehen = new Set();
 const fehler = [];
 for (const e of ergebnisse){

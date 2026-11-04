@@ -1,78 +1,56 @@
 # Lucenta
 
-Wissenschaftlich fundiertes Selbstverständnis- und Beziehungswerkzeug auf Basis des Big-Five-Modells
-(IPIP-50, Goldberg 1992, gemeinfrei). Läuft vollständig im Browser, ohne Server, ohne Konto — alle
-Daten bleiben im Speicher des Geräts.
-
-Deutsch und Englisch, umschaltbar in den Einstellungen.
+iPhone-App für ein wissenschaftlich fundiertes Persönlichkeitsporträt nach dem Big-Five-Modell
+(IPIP-50, Goldberg 1992, gemeinfrei), mit Tagesform, Freunde-Vergleich und Lucenta+. Die Oberfläche ist
+HTML in einer Capacitor-Hülle (WKWebView, `ios/`); es gibt keine Browser-Fassung (Entscheidung des
+Inhabers). Ohne Server, ohne Konto bei uns — alle Daten bleiben auf dem Gerät, wahlweise
+Ende-zu-Ende verschlüsselt in der privaten iCloud. Acht Sprachen.
 
 ## Schnellstart
 
 ```bash
-node build.js     # baut dist/lucenta.html
-npm test          # bauen + 10 Testreihen + statische Prüfung
-open dist/lucenta.html
+node build.js            # baut dist/ (index.html + Schriften, Sprachen, Tierbilder)
+npm test                 # bauen + 10 Testreihen + i18n-Audit
+npm run installieren     # ios:sync, Simulator und iPhone
+npm run pruef-alles      # alle Prüfungen (WebKit, App-Fassung mit nachgestellter Brücke)
 ```
-
-Keine Abhängigkeiten. Node und Python 3 genügen.
 
 ## Aufbau
 
 ```
 src/
-  index.head.html     Kopf: Dokumenttyp, Zeichensatz, Meta-Angaben, App-Symbol, Anti-Flacker-Skript
-  index.body.html     gesamtes Markup (zehn Ansichten, seit Runde 79 mit view-recht)
+  index.head.html     Kopf: Dokumenttyp, Zeichensatz, Viewport
+  index.body.html     gesamtes Markup aller Ansichten
   styles/             14 CSS-Teile — die REIHENFOLGE ist bedeutsam
                       (00-schriften.css ist erzeugt, siehe tools/schriften_holen.mjs)
   js/                 30 JavaScript-Teile, fortlaufend nummeriert = Reihenfolge im Bau:
                         00–05 Start, Sprachen, Navigation, Speicherung, Auswertung, Verlauf
                         06    Freunde
                         07–09 Tagesform, Tagesform im Alltag, Jahr/Rueckblick
-                        10–14 Code und Grafiken, Radar, Ergebnisbild, Darstellung, Schublade
+                        10–14 Code und Grafiken, Radar, Ergebnisbild, Darstellung, Tab-Leiste
                         15–20 Figuren, Beispieldaten, Profil, Verstehen, Facetten, Einstellungen
                         21–23 Bild- und Kauffenster, Feiern, Lucenta+-Seite
                         24–26 native Bruecken, Onboarding, Konto (iCloud)
                         27–28 Verdrahtung (Marke fuer tests/run.js) und Start, schliesst die IIFE
                         29    Sternenhimmel (eigene IIFE)
-  i18n/*.js           8 Sprachpakete (Items, Texte, Oberfläche) — build.js liest alle
-                      Dateien des Ordners, ein neues Paket wird durch Hinzulegen wirksam
+  i18n/*.js           8 Sprachpakete — build.js liest alle Dateien des Ordners
   manifest.json       legt die Reihenfolge fest
-build.js              setzt alles zu dist/lucenta.html zusammen
-tests/                Testreihen und Ersatz-DOM
+build.js              baut dist/ (Capacitor kopiert es ins App-Bundle)
+ios/                  die Hülle: Swift-Plugins (Kauf, Konto, Sperre, Health, Widget, Tab-Leiste …)
+tests/                Testreihen und Ersatz-DOM (lesen den Quelltext aus src/)
+tools/app_bruecke.mjs gemeinsame Grundlage der Prüfwerkzeuge: App-Fassung + nachgestellte Brücke
+tools/fehlersuche.mjs Fehlersuche über alle Ansichten (WebKit)
 tools/audit_i18n.py   statische Prüfung der Mehrsprachigkeit
-tools/fehlersuche.mjs Fehlersuche im echten Browser über alle Ansichten
-tools/schriften_holen.mjs  holt die Schriften und legt sie als Daten ins Stilblatt
-docs/                 Produktplan, Markenrecherche, App-Store-Arbeitsliste
-LIZENZEN.md           Urheberrechtsvermerke der drei eingebetteten Schriften (OFL 1.1)
-assets/icon/          App-Symbol in elf Größen
+web/datenschutz/      nur die Datenschutz-URL für App Store Connect (keine Fassung der App)
+einladung/            Seite für spätere Freundes-Links (braucht eine Domain)
+docs/                 Journal, App-Store-Arbeitsliste, Prompts
+LIZENZEN.md           Urheberrechtsvermerke der eingebetteten Schriften (OFL 1.1)
+assets/icon/          App-Symbol
 ```
 
-**Die Datei ist seit Runde 80 deutlich groesser, und das ist ein Handel, kein Versehen.**
-Vorher: 788 KB roh, 251 KB gzip, dazu drei Schriften, die von Google nachgeladen wurden.
-Jetzt: 1.026 KB roh, 429 KB gzip, und nichts wird nachgeladen. Die 176 KB Schriftdaten
-liegen im Stilblatt und damit im ersten Abruf — bei einem eingebetteten Stilblatt gibt es
-kein Nachreichen, `font-display:swap` laeuft ins Leere.
-
-Fuer eine App aus dem Store ist das gleichgueltig (die Datei liegt auf dem Geraet) und der
-Gewinn eindeutig: keine Verbindung nach aussen, kein Datenschutzproblem, vollstaendiges
-Aussehen ohne Netz. Fuer die Fassung im Browser kostet es rund eine Sekunde auf gedrosseltem
-Mobilfunk. Der Handel ist zugunsten der App entschieden, weil sie das Ziel ist.
-
-Der groesste einzelne Posten ist die **kursive Fraunces mit 41 KB fuer genau eine Stelle** —
-das `<em>` in der Ueberschrift der Startseite. Bewusst behalten: Es ist die erste Zeile, die
-jemand sieht, und eine schraeggestellte Fraunces ist keine kursive Fraunces, weil die echten
-Kursivformen andere Buchstaben sind. Wer die Datei kleiner braucht, streicht diesen einen
-Schnitt in `tools/schriften_holen.mjs`.
-
-**Warum ein Aufbauschritt und keine Module im Browser:** Die App soll ohne Server lauffähig
-bleiben — `dist/lucenta.html` lässt sich direkt öffnen —, und die Veröffentlichung als Artefakt
-verlangt genau eine Datei. Die Aufteilung dient der Entwicklung, nicht der Auslieferung.
-
 **`<!doctype html>` und `<meta charset="utf-8">` stehen in den ersten 40 Byte von
-`index.head.html` und müssen dort bleiben.** Als Artefakt veröffentlicht wäre beides entbehrlich —
-die Veröffentlichung legt selbst einen Rahmen darum. Direkt geöffnet oder von einem Server ohne
-`charset` im Kopf ausgeliefert entschied ihr Fehlen aber darüber, ob „Erledige" als „a€Erledige"
-erscheint (Runde 78, im Browser aufgefallen, im Artefakt unsichtbar).
+`index.head.html` und müssen dort bleiben.** Ihr Fehlen entschied darüber, ob „Erledige" als
+„a€Erledige" erscheint (Runde 78).
 
 **Die Reihenfolge in `manifest.json` ist keine Formsache.** Beim CSS entscheidet sie über die
 Kaskade: Die Druckzustände in `10-druckzust-nde.css` müssen zuletzt stehen, sonst überschreiben
@@ -91,7 +69,7 @@ Sechs Ebenen, die sich ergänzen:
 2. **`node tests/run.js`** — elf Reihen, rund 7.000 Prüfungen. Der App-Code wird bis zur Marke
    `wiring` gegen einen Ersatz-DOM ausgeführt.
 3. **`python3 tools/audit_i18n.py`** — acht statische Eigenschaften der Mehrsprachigkeit.
-4. **`npm run diff-sprachen`** — fährt im echten Browser jede Ansicht auf Deutsch ab und danach
+4. **`npm run diff-sprachen`** — fährt in WebKit (App-Fassung) jede Ansicht auf Deutsch ab und danach
    in **jeder** weiteren Sprache, und meldet jede Zeile, die zeichengleich geblieben ist. Braucht
    Playwright und läuft deshalb **nicht** in `npm test`; ein Durchgang je Sprache dauert rund zwei
    Minuten, deshalb nimmt das Werkzeug Sprachkürzel als Argument
@@ -102,7 +80,7 @@ Sechs Ebenen, die sich ergänzen:
    (en). Runde 80 kamen sechs dazu, alle aus den Namen der neuen Figuren und Vorlagen:
    `Panda` in fünf Sprachen und `Papier` auf Französisch — echte Wortgleichheiten, geprüft.
    Zusammen 127 Zeilen über alle sechs Sprachen; keine einzige unübersetzte.
-5. **`npm run pruef-bewegung`** — misst im echten Browser, ob Bewegung tatsächlich läuft, und ob
+5. **`npm run pruef-bewegung`** — misst in WebKit (App-Fassung), ob Bewegung tatsächlich läuft, und ob
    sie ausbleibt, wenn weniger Bewegung gewünscht ist. Ebenfalls nicht in `npm test`.
 
    **Warum es das braucht:** Dreimal hintereinander (Runde 63 bis 65) stand eine Animation
@@ -117,7 +95,7 @@ Sechs Ebenen, die sich ergänzen:
    misst. Genau dafür ist diese Ebene da — dieselbe Lücke wie zwischen Punkt 2 und Punkt 3, nur
    eine Dimension weiter.
 
-6. **`npm run fehlersuche`** — läuft im echten Browser alle zehn Ansichten ab, in beiden
+6. **`npm run fehlersuche`** — läuft in WebKit (App-Fassung) alle zehn Ansichten ab, in beiden
    Farbschemata, einmal leer und einmal mit der Beispielnutzerin, in drei Sprachen, und sucht
    nach dem, was die fünf Ebenen davor strukturell nicht sehen können: seitlicher Überlauf,
    zu kleine Trefferflächen, Schaltflächen ohne lesbaren Namen, Reste einer Ersetzung im Text
@@ -150,7 +128,7 @@ Sechs Ebenen, die sich ergänzen:
    steht, ragt nichts heraus und ist keine Fläche zu klein — eine Prüfung, die an ihrem eigenen
    Gegenstand vorbeilaufen kann, ist keine.
 
-   Nicht in `npm test`, weil es einen Browser braucht; ein voller Lauf dauert rund zwölf Minuten.
+   Nicht in `npm test`, weil es WebKit braucht; ein voller Lauf dauert rund zwölf Minuten.
 
 **Warum es Punkt 3 gibt, und das ist die wichtigste Zeile in dieser Datei:** Der Ersatz-DOM aus
 Punkt 2 behandelt `textContent` und `innerHTML` gleich. In Runde 56 war die App auf jedem Gerät
@@ -159,7 +137,7 @@ Reihen grün waren. Ein Fehler, der genau in diesem Unterschied liegt, ist in Pu
 unsichtbar. Punkt 3 setzt deshalb an der Datei selbst an. **Keine der beiden Ebenen ersetzt die
 andere.**
 
-**Runde 58 hat dieselbe Lücke an drei weiteren Stellen gefunden**, alle im echten Browser
+**Runde 58 hat dieselbe Lücke an drei weiteren Stellen gefunden**, alle in WebKit
 sichtbar und in allen zehn Reihen grün: nicht übersetzte Attribute, deutsche Anführungszeichen
 im englischen Paket, und deutsche Literale, die über `push()` oder Zeichenkettenverkettung in
 die Oberfläche wandern statt über `textContent`. Prüfung 6 ist entsprechend verschärft,
@@ -367,7 +345,7 @@ Aus 56 Runden, jeder einzelne aus einer konkreten Entscheidung:
   erfundenen Sub-Facetten, keine eigenmächtige Akquieszenz-Korrektur.
 - **Kein Pol ist besser als der andere.**
 
-**Runde 58 hat dieselbe Lücke an drei weiteren Stellen gefunden**, alle im echten Browser
+**Runde 58 hat dieselbe Lücke an drei weiteren Stellen gefunden**, alle in WebKit
 sichtbar und in allen zehn Reihen grün: nicht übersetzte Attribute, deutsche Anführungszeichen
 im englischen Paket, und deutsche Literale, die über `push()` oder Zeichenkettenverkettung in
 die Oberfläche wandern statt über `textContent`. Prüfung 6 ist entsprechend verschärft,

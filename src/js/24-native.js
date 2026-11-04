@@ -1,8 +1,8 @@
 // ---------- Die native Bruecke ----------
 // Funktionen, die es nur in der App gibt (Richtlinie 4.2): Erinnerungen an die Tagesform, Ergebnisbild
 // in die Foto-Mediathek, Kauf und Wiederherstellen (3.1.2).
-// Alles prueft ueber nativVorhanden(), ob eine Bruecke da ist; im Browser stehen die Knoepfe
-// abgeschaltet mit Begruendung, nie halb funktionierend.
+// nativVorhanden() faengt den Fall ab, dass die Bruecke nicht steht: dann abgeschaltet mit Begruendung,
+// nie halb funktionierend.
   function nativVorhanden(){
     try{
       return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
@@ -65,7 +65,7 @@
 
   // ---------- Tagesform-Widget ----------
   // Austausch ueber die App Group (LucentaWidgetBruecke.swift): Die Seite meldet den heutigen Stand,
-  // holt Eintraege aus dem Widget ab und quittiert sie. Im Browser geschieht nichts.
+  // holt Eintraege aus dem Widget ab und quittiert sie.
   function widgetEmpfaenger(){
     try{ return window.webkit.messageHandlers.lucentaWidget || null; }catch(e){ return null; }
   }
@@ -489,7 +489,7 @@
   // Gekaufte — getrennt gehalten.
   function plusKaufen(fertig){
     var sk = nativModul('StoreKit');
-    if (!sk || !sk.kaufen){ toast(tx('plus_wieder_nur_app')); if (fertig) fertig(false); return; }
+    if (!sk || !sk.kaufen){ toast(tx('plus_wieder_fehler')); if (fertig) fertig(false); return; }
     var kennung = produktKennung(laufzeitLesen());
     var antwort = function(r){
       if (r && r.aktiv){
@@ -604,10 +604,9 @@
   }
 
   // ---------- Kaeufe wiederherstellen (Richtlinie 3.1.2) ----------
-  // Ohne Bruecke sagt der Knopf, dass es das nur in der App gibt.
   function kaeufeWiederherstellen(){
     var sk = nativModul('StoreKit');
-    if (!sk || !sk.restorePurchases){ toast(tx('plus_wieder_nur_app')); return; }
+    if (!sk || !sk.restorePurchases){ toast(tx('plus_wieder_fehler')); return; }
     try{
       sk.restorePurchases()
         .then(function(r){

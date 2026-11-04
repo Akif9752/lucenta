@@ -119,7 +119,7 @@
         if (getComputedStyle(views[i]).display === 'none') continue;
         var v = views[i];
         v.classList.remove('lang-shift');
-        // Erzwungenes Auslesen, damit der Browser die Animation als neu erkennt — dasselbe
+        // Erzwungenes Auslesen, damit WebKit die Animation als neu erkennt — dasselbe
         // Muster wie bei animateQuestionIn().
         void v.offsetWidth;
         v.classList.add('lang-shift');

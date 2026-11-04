@@ -4,10 +4,11 @@
 // Aufruf: node tools/abstaende.mjs   (Runde 163: "freigeschaltet" auf der Lucenta+-Seite, "Ergebnis
 // wiederherstellen" ueber dem Code-Kasten — beide klebten am Folgenden.)
 import { webkit } from 'playwright';
+import { APP_URL, alsApp } from './app_bruecke.mjs';
 const b = await webkit.launch(); const p = await b.newPage({viewport:{width:390,height:844}, isMobile:true, hasTouch:true});
-await p.goto('http://127.0.0.1:8017/lucenta.html'); await p.waitForTimeout(600);
+await alsApp(p); await p.goto(APP_URL); await p.waitForTimeout(600);
 await p.evaluate(() => localStorage.setItem('lucenta_plus','1'));
-await p.click('#tabProfil'); await p.waitForTimeout(300); await p.click('#tabProfil'); await p.waitForTimeout(500);
+await p.click('#tabProfil'); await p.waitForTimeout(500);
 await p.click('#btnDemo'); await p.waitForTimeout(1800);
 const messe = () => p.evaluate(() => {
   const out = [];
