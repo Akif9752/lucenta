@@ -44,6 +44,10 @@ lassen. Die Richtungen:
   einen Blick, Monatsrueckblick, Notiz am Eintrag, Siri-Kurzbefehle, Tier mit drei Ausdruecken nach der Tagesform,
   Freundespaar-Bericht, ausfuehrlicher Test mit 29 Facetten (Lucenta+). Der Inhaber fragt gern „was haben erfolgreiche
   Apps dieser Sparte?" und waehlt dann Nummern aus der Liste.
+- **Runde 214–222: App-Feinschliff waehrend er auf die Tierbilder wartet** — Serie/Meilensteine/Wochenrueckblick,
+  Zubehoer, alternative App-Symbole, Einstellungen entbuggt (218/219), Seitenwechsel ohne Zucken (220), Fehlersuche mit
+  App-Bruecke (222). Er meldet Fehler knapp und pauschal („sehr verbuggt", „ruckelt immer noch") — dann **messen, welche
+  Stelle**, nicht raten; er urteilt am iPhone. Auf „was fehlt noch?" erwartet er eine priorisierte Liste mit Empfehlung.
 - **Runde 212: Tierbilder kommen kuenftig aus einem Bildgenerator mit kommerzieller Lizenz** (Inhaber erzeugt nach
   `docs/tierbilder-prompts.md`, Einbau `python3 tools/figuren_bilder_holen.py`). Fremde Vorlagen nie selbst verwenden.
 - **Runde 206–209: Tiere als GANZE Figur in der Pose der Vorlage** (Entscheidung des Inhabers; Bausteine `glied`, `sitzLeib`,
@@ -54,7 +58,7 @@ lassen. Die Richtungen:
   `mundHoehle`/`zunge`/`trickNase`, `baerenFigur`, `katzenFigur`. Bilder als JPEG ansehen (grosse PNGs liessen die Vorschau haengen).
 - **Runde 191–198: Tiere fotorealistisch** (abgeloest), Tier fuer Tier neu gebaut („egal was es braucht", „riesen Menge Arbeit").
   Er urteilt am Geraet und meldet knapp, welche Tiere noch kuenstlich wirken (zuletzt: Eule, Papagei, Flamingo,
-  „besonders die Schnaebel" → Runde 198). **Das ist der wahrscheinlichste naechste Auftrag.** Stand je Tier: von a bis z
+  „besonders die Schnaebel" → Runde 198). (Abgeloest durch Trickfilm-Stil und Generator, s. Runde 201/212.) Stand je Tier: von a bis z
   neu in 196–198 Mops, Panda, Eule (zweimal), Retriever, Rotkehlchen, Delfin, Ara/Flamingo-Schnaebel; in 191–195 Pinguin,
   Wal, Seeotter, Schildkroete, Goldfisch, Reh, Katze, Siamkatze, Fuchs; nur ueberarbeitet (Runde 190): Baer, Hase, Dackel.
 
@@ -211,11 +215,14 @@ Regeln, die er gesetzt hat:
 - **Kopfzeile (Runde 154):** `navLeisteAnwenden()`/`navZurueck()` in `02-zustand-navigation.js`; eine NEUE Unterseite
   braucht nur ihre Pille `id="btnBack…"` in `.quiz-head` (bei nur der Pille `.nur-zurueck`) — der Chevron
   findet sie selbst. Werkzeuge klicken `#btnNavZurueck`, nie die Pillen (verborgen).
-- **Navigation:** `showView()` in `02-zustand-navigation.js`. `UNTERSEITE_VON = {hilfe, sprache -> settings; verlauf, look -> profile;
-  compare -> freunde}` steuert den
-  iOS-Push/Pop (`.nav-push`/`.nav-pop`, die verlassene Seite als `.nav-weg` fixiert; CSS am Ende von
+- **Navigation:** `showView()` in `02-zustand-navigation.js`. `UNTERSEITE_VON = {hilfe, sprache, appicon -> settings; verlauf, look ->
+  profile; compare -> freunde; ft -> result}` steuert den iOS-Push/Pop. **Hauptseiten wechseln ohne jede Bewegung** (Runde 220,
+  kein `rise`/`view-vor`/Staffelung mehr — nicht wieder einbauen, das war das „Zucken"). Den Push/Pop (`.nav-push`/`.nav-pop`, die verlassene Seite als `.nav-weg` fixiert; CSS am Ende von
   `12-ios.css`). Die Zurueck-Wischgeste vom linken Rand steht am Ende von `27-verdrahtung.js` (`randGeste`).
   Eine neue Unterseite = Eintrag in `UNTERSEITE_VON` + `view-…` + Knopf mit `.hilfe-knopf` (Pfeil).
+- **App-Symbol (Runde 217/219):** `LucentaSymbolPlugin.swift` (Plugin `AppSymbol`, `stand`/`setzen`, AppIcon-2..6), JS `SYMBOLE`,
+  `symbolAnwenden`/`symbolNachziehen` (24-native.js), Zeile `#btnSymbolOeffnen`, Unterseite `view-appicon` (`#symbolRaster`).
+  Tierbilder werden 2,5 s nach dem Start vorgeladen (`figurenVorladen`, 15-figuren.js).
 - **Sprache:** eigene Seite `view-sprache` (Liste `.wahl-zeile[data-lang]`), in den Einstellungen nur die
   Zeile `#btnSpracheOeffnen` mit `#spracheAktuell` (gesetzt in `syncLangButtons`, `01-sprachpakete.js`).
 - **Vergleiche:** `FREI_VERGLEICHE`/`FREI_ARCHIV` und `freieVergleichePersonen()` (`03-speicherung.js`,
@@ -240,11 +247,18 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–216 sind erledigt und gepusht. Der naechste Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 165–222 sind erledigt, gepusht und auf Simulator und iPhone installiert. Der naechste
+Auftrag kommt im Gespraech.
 
-*Wartet auf den Inhaber:* die Tierbilder aus dem Generator (Runde 212); danach je Tier Kopfstelle und Zubehoer-Lage
-ansehen und die Store-Bilder neu erzeugen. Aus der Funktionsliste (Runde 213) nicht gewaehlt: Reflexionsfrage, kurze Uebung,
-Export, Health lesen, App-Symbole, Apple Watch.
+*Zuletzt angeboten, noch nicht beauftragt:* Store-Bilder mit dem heutigen Stand neu erzeugen (`node tools/store_bilder.mjs`,
+zuletzt Runde 178 — seitdem Serie, Meilensteine, Wochenrueckblick, Zubehoer, App-Symbole neu).
+
+*Wartet auf den Inhaber:* die Tierbilder aus dem Generator (Runde 212); danach je Tier Kopfstelle (`koepfe.json`, auch den
+Sonderfall „Kopf so gross wie das Bild", Runde 221) und Zubehoer-Lage ansehen und die Store-Bilder neu erzeugen. Aus der
+Funktionsliste (Runde 213) nicht gewaehlt: Reflexionsfrage, kurze Uebung, Export, Health lesen, Apple Watch.
+
+*Nach Runde 220 am Geraet zu bestaetigen:* ob „Aussehen" auf dem iPhone noch spuerbar verzoegert anlaeuft (im Simulator
+gemessen, nicht am Geraet). Meldet er wieder Ruckeln: `sh tools/flackern/wege.sh` und die betroffene Seite messen.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Kontaktzeile** unter „Hilfe & Ueber" (`mailto:`) — braucht die E-Mail-Adresse des Inhabers.
@@ -343,6 +357,8 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
 
 ### Stand der Pruefungen
 
+**Nach Runde 222: ALLE 9 BESTANDEN** (volle Runde 10,7 Min., Fehlersuche 20 Durchlaeufe: 16 WebKit, davon 2 mit
+nachgestellter App-Bruecke `nativ:true`, und 4 Chromium-Stichproben).
 **Nach Runde 200: ALLE 9 BESTANDEN** (volle Runde 10,1 Min., Fehlersuche 18 Durchlaeufe), danach leicht 5/5.
 **Nach Runde 199: ALLE 9 BESTANDEN** (volle Runde, 12,5 Min.). Seit Runde 199 waehlt `pruef-alles` selbst:
 leichte Runde, wenn seit dem letzten vollen bestandenen Lauf nur Tierbilder/Doku/Swift/Hilfswerkzeuge geaendert
@@ -385,6 +401,11 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
     `npm run installieren` (ios:sync, Simulator UND iPhone in einem; `-- sim`, `-- iphone`, `-- --ohne-sync`).
     Zum Schluss Journal-Eintrag schreiben, Commit-Nachricht nach `/tmp/commit.txt`, dann
     `npm run runde -- <nr> "<Tabellenzeile>" /tmp/commit.txt` (Tabelle, Stand-Marken, Commit, Push, Installation).
+  - **Ruckeln/Zucken beim Seitenwechsel (Runde 220):** `sh tools/flackern/wege.sh` nimmt 18 Klicks im Simulator auf und
+    zeigt je Klick die Bewegungsphasen (zwei Phasen = Zucken, spaeter Beginn = Ruckeln). `node tools/ruckeln.mjs` (WebKit,
+    Server 8017) misst spaetes Springen und Rechenzeit je Weg — sah das Zucken NICHT, nur der Simulator.
+  - **Zustand wie auf dem iPhone im Browser:** `appBruecke()` in `tools/fehlersuche.mjs` stellt alle sieben Plugins nach
+    (Sperre an, AppSymbol, Health, Konto, StoreKit gekauft/frei). Fuer eigene Probeskripte von dort uebernehmen.
   - **Flackern/Zeichnen misst nur der Simulator:** `sh tools/flackern/messen.sh <sim-id>` (Video + Helligkeit je Bild).
     Headless-WebKit sah das Flackern nicht. Veraendert die installierte Kopie — danach neu installieren.
   - **iPhone 15 Pro** (`00008130-001E79CC0178001C`): `npm run installieren` signiert mit
@@ -454,7 +475,7 @@ Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), 
 (`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 222** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
-Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
+Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
 Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 222 (`git push` erlaubt); kein Pull Request ohne
