@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 221)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 222)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 221 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 222 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -72,7 +72,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 221 | (dieser) | Clownfisch im kleinen Avatar wieder ganz im Kreis |
+| 222 | (dieser) | Fehlersuche mit App-Bruecke; Rechtslinks im Plus-Fenster bei 320 pt; kein Einmalkauf, Im Alltag bleibt Plus |
+| 221 | `06117f8` | Clownfisch im kleinen Avatar wieder ganz im Kreis |
 | 220 | `e4ef083` | Seitenwechsel ohne Zucken (Hauptseiten ohne Nachrutschen, Tierbilder vorgeladen, Kopf-Ausschnitt ohne Filter) |
 | 219 | `0e6f1dc` | Einstellungen: Sperren nach Sofort/1/15 Min., Datenhinweis an der Datenkarte, App-Symbol als Unterseite |
 | 218 | `4e75209` | Einstellungen: App-Symbol-Zeile unter Allgemein, Karten unten wieder rund |
@@ -247,8 +248,6 @@ Export, Health lesen, App-Symbole, Apple Watch.
 
 *Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
 - **Kontaktzeile** unter „Hilfe & Ueber" (`mailto:`) — braucht die E-Mail-Adresse des Inhabers.
-- **Einmalkauf** „Lucenta+ für immer" (~59,99 €) neben den Abos.
-- **Bericht teilweise oeffnen** (Mittelweg: „Im Alltag" der staerksten Dimension frei).
 
 *Seit laengerem offen:* Fachdurchsicht der 40 Verstehen-Karten (Psychologie) und muttersprachliche Durchsicht aller
 Uebersetzungen (alle neuen Texte seit Runde 165 hat die Sitzung selbst uebersetzt). Store-Bilder kurz vor dem Einreichen
@@ -262,6 +261,9 @@ beim Einladen, Abo-verwalten-Blatt. (Haptik, Wischgesten, Erinnerungen laufen au
 Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht noch einmal suchen**.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
+
+- **Kein Einmalkauf, „Im Alltag" bleibt Lucenta+ (Runde 222, Inhaber).** Nur die zwei Abos; der Bericht wird nicht
+  teilweise geoeffnet. Nicht erneut vorschlagen.
 
 - **Impressum nur in den Einstellungen (Runde 176, Inhaber).** Kein Fusszeilen-Link mehr; die Links „Datenschutz" im
   Kaufablauf (3.1.2, Pflicht) oeffnen `view-recht` mit `renderRecht(true)` — nur die Datenschutzerklaerung. Absicherung
@@ -449,19 +451,36 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 221** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 222** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 15.0 (Anheben liegt beim Inhaber, s. oben) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 221 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 222 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
 
 ---
+
+## Runde 222 — Fehlersuche mit App-Bruecke; zwei Entscheidungen
+
+**Inhaber:** „ja Punkt 3. ‚Im Alltag' soll nicht frei sein. Einmalkauf soll es nicht geben." Beides in die Uebergabe
+(Entscheidungen), aus den offenen Fragen gestrichen.
+
+**Die Luecke:** Die Fehlersuche lief nur im Browser-Zustand — Konto, Face ID mit „Sperren nach", Health und App-Symbol
+erscheinen erst mit nativer Bruecke und waren nie gemessen. Genau dort lagen die Fehler der Runden 218/219.
+**Geaendert:** `tools/fehlersuche.mjs` kennt `nativ:true` (`appBruecke()`: alle sieben Plugins nachgestellt, Sperre an),
+zwei neue Durchlaeufe (hell/de/390 gekauft, dunkel/fr/320 frei), neue Wege `appicon` und `look`. Geeicht: Fehlen im
+App-Durchlauf die vier Zeilen der Bruecke, ist das ein Fund — sonst saehe er unbemerkt dasselbe wie die anderen.
+Jetzt 16 WebKit-Durchlaeufe.
+
+**Gleich ein Fund, der nichts mit der Bruecke zu tun hat:** Im Lucenta+-Fenster brechen „Conditions d'utilisation
+(EULA) · Confidentialité" bei 320 pt um, und die beiden 44-pt-Flaechen stiessen subpixelgenau aneinander — der Rand des
+oberen Links traf den unteren. Bisher unsichtbar, weil die einzige freie Fassung auf 390 pt lief. `.plus-recht` ist
+jetzt Flex mit 4 px Zeilenabstand.
 
 ## Runde 221 — Clownfisch im kleinen Kreis
 

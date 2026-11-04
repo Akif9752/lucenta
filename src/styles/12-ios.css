@@ -851,7 +851,9 @@
   #view-freunde .history-title{ text-align:left; }
   /* Gesperrte Knoepfe sehen gesperrt aus (Befund C17, Onboarding-Schritt 2). */
   .btn:disabled{ opacity:.4; box-shadow:none; cursor:default; transform:none; }
-  .plus-recht{ margin:8px 0 0; text-align:center; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
+  /* Flex statt Zeilenfluss: Brechen die zwei Links um (320 pt, lange Sprachen), ueberlappten sich ihre 44-pt-Flaechen. */
+  .plus-recht{ margin:8px 0 0; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; row-gap:4px;
+    text-align:center; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
   .plus-recht button{ background:none; border:none; padding:0 4px; min-height:44px; cursor:pointer; font:inherit; color:var(--accent-strong); text-decoration:underline; text-underline-offset:2px; }
 
   /* Zeilenabstand (gemessen: mehrzeiliger Text stand bei 1,2 = "normal"): Fliesstext 1,45, Titel enger. */

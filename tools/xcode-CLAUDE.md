@@ -33,7 +33,7 @@ gleichzeitig, ~26 s je Tier). `bauen.sh` uebersetzt nur, wenn eine `.swift`-Date
 
 `pruef-alles` waehlt nach Aenderung (Entscheidung des Inhabers): Seit dem letzten vollen, bestandenen
 Lauf nur Tierbilder, Doku, Swift oder Hilfswerkzeuge geaendert -> leichte Runde (Bau, Testreihen, Audit,
-Store-Texte, App-Fassung, ~1 Min.). Sonst alle neun; die Fehlersuche faehrt WebKit voll und Chromium als Stichprobe (4 von 14, alle mit
+Store-Texte, App-Fassung, ~1 Min.). Sonst alle neun; die Fehlersuche faehrt WebKit voll und Chromium als Stichprobe (4 von 16, davon 2 mit nachgestellter App-Bruecke; alle mit
 `LUCENTA_CHROMIUM_VOLL=1`, Entscheidung des Inhabers). `npm run pruef-voll` erzwingt alle neun.
 Die volle Runde losgeloest starten und EINMAL am Ende nachsehen, nicht pollen:
 

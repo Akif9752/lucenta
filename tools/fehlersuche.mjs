@@ -501,6 +501,9 @@ const WEGE = {
   // Runde 136: die Sprachwahl als eigene Seite. 650 ms nach dem letzten Klick sind mehr als die
   // 0,46 s des Schiebeuebergangs — gemessen wird also die angekommene Seite, nicht der Weg dorthin.
   sprache:    ['#btnDrawerToggle', '#btnDrawerSettings', '#btnSpracheOeffnen'],
+  // Nur mit App-Bruecke (`nativ`): Die Zeile erscheint erst, wenn AppSymbol antwortet.
+  appicon:    ['#btnDrawerToggle', '#btnDrawerSettings', '#btnSymbolOeffnen'],
+  look:       ['#btnDrawerToggle', '#btnDrawerProfileRow', '#btnAussehenOeffnen'],
   state:      ['#btnHome', '#btnLandingStateHistory'],
   // Runde 163: Tagesform und Verstehen haben Reiter; jeder Teil bekommt einen eigenen Weg, sonst bliebe
   // alles ausser dem ersten Reiter ungemessen.
@@ -681,7 +684,27 @@ async function pruefeAnsicht(p, ansicht, kennung, breite, melde){
 // gebraucht wird, um mit LUCENTA_NUR einen einzelnen Durchlauf nachzufahren.
 function kennungVon(l, motor){
   return [motor, (l.breite || 390) + 'px' + (l.text ? '@' + Math.round(l.text * 100) + '%' : ''), l.thema, l.sprache,
-          l.demo ? (l.plus ? 'Beispielnutzerin' : 'Beispielnutzerin, frei') : 'leer'].join('/');
+          l.demo ? (l.plus ? 'Beispielnutzerin' : 'Beispielnutzerin, frei') : 'leer'].join('/') + (l.nativ ? '/App' : '');
+}
+
+// Die App-Bruecke, wie MainViewController sie anmeldet: Erst damit stehen in den Einstellungen Konto, Face ID mit
+// „Sperren nach", Health und App-Symbol — ohne sie sah die Fehlersuche diese Zeilen nie.
+function appBruecke(plus){
+  const ok = (v) => Promise.resolve(v), weg = () => ok({ remove(){} });
+  const sperre = { verfuegbar:true, art:'faceID', an:true, nach:60 };
+  window.webkit = { messageHandlers: { lucentaBestand:{ postMessage(){} }, lucentaWidget:{ postMessage(){} } } };
+  window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'ios', Plugins: {
+    LocalNotifications: { requestPermissions: () => ok({display:'granted'}), checkPermissions: () => ok({display:'granted'}),
+      schedule: () => ok(), cancel: () => ok(), getPending: () => ok({notifications:[]}), addListener: weg },
+    StoreKit: { stand: () => ok(plus ? {aktiv:true, produkt:'lucenta.plus.jahr'} : {aktiv:false}), preise: () => ok({}),
+      kaufen: () => ok({abgebrochen:true}), restorePurchases: () => ok(plus ? {aktiv:true} : {aktiv:false}), verwalten: () => ok(),
+      bewerten: () => ok(), addListener: weg },
+    App: { getInfo: () => ok({version:'1.0', build:'1'}), getLaunchUrl: () => ok({}), addListener: weg, openUrl: () => ok() },
+    Health: { stand: () => ok({verfuegbar:true, erlaubt:false}), erlauben: () => ok({erlaubt:false}) },
+    Lock: { stand: () => ok(sperre), setzen: () => ok(sperre), texte: () => ok({}) },
+    Account: { stand: () => ok({angemeldet:false, icloud:true}), anmelden: () => ok({angemeldet:false}) },
+    AppSymbol: { stand: () => ok({verfuegbar:true, name:''}), setzen: (o) => ok({name:o.name}) },
+  } };
 }
 
 async function durchlauf(lauf, motor, browser){
@@ -696,6 +719,7 @@ async function durchlauf(lauf, motor, browser){
     const setzen = () => document.documentElement && document.documentElement.style.setProperty('--dt', String(f));
     setzen(); document.addEventListener('readystatechange', setzen);
   }, lauf.text);
+  if (lauf.nativ) await ctx.addInitScript(appBruecke, !!plus);
   const p = await ctx.newPage();
   const abstuerze = [];
   p.on('pageerror', e => abstuerze.push(e.message));
@@ -745,8 +769,15 @@ async function durchlauf(lauf, motor, browser){
       if (!angekommen){
         // Ohne Bestand gibt es kein Ergebnis und damit richtigerweise keinen Weg dorthin.
         // Runde 103: Der Bilddialog gehoert in diese Liste — er haengt am Ergebnis.
+        if (ansicht === 'appicon' && !lauf.nativ) continue;
         if (!(['result', 'vergleich', 'bilddialog'].includes(ansicht) && !demo)) melde(kennung + ': Ansicht "' + ansicht + '" ueber die Oberflaeche nicht erreichbar');
         continue;
+      }
+      // Geeicht: Fehlen die Zeilen der Bruecke, misst der App-Durchlauf dasselbe wie die anderen und sieht nichts Neues.
+      if (lauf.nativ && ansicht === 'settings'){
+        const fehlt = await p.evaluate(() => ['sperreZeile', 'sperreNachZeile', 'healthZeile', 'btnSymbolOeffnen']
+          .filter(id => { const e = document.getElementById(id); return !e || !e.offsetHeight; }));
+        if (fehlt.length) melde(kennung + ': Zeilen der App-Bruecke fehlen — ' + fehlt.join(', '));
       }
       await pruefeAnsicht(p, ansicht, kennung, breite, melde);
     } catch (e) {
@@ -789,6 +820,9 @@ const laeufe = [
   // Feedback B8: groesste unterstuetzte Textgroesse (200 %, Entscheidung des Inhabers) auf dem
   // schmalsten Bildschirm.
   {thema:'hell',   demo:true,  plus:true,  sprache:'de', breite:320, text:2, chromium:true},
+  // Mit App-Bruecke: die Einstellungen, wie das iPhone sie zeigt (gekauft hell, frei dunkel und schmal).
+  {thema:'hell',   demo:true,  plus:true,  sprache:'de', nativ:true},
+  {thema:'dunkel', demo:true,  plus:false, sprache:'fr', breite:320, nativ:true},
 ];
 // ---------- Runde 103: je Motor ein Browser, vier Durchlaeufe gleichzeitig ----------
 
