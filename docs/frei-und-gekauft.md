@@ -1,149 +1,112 @@
 ---
 titel: Wo die Grenze zwischen freier und gekaufter Fassung verläuft
-stand: 2026-09
+stand: 2026-11 (nach Runde 229, mit dem Code abgeglichen)
 ---
 
 # Frei und gekauft
 
 ## Die Linie in einem Satz
 
-> **Frei ist das vollständige Bild von heute. Gekauft ist alles, was erst aus mehreren
-> Messungen entsteht.**
+> **Frei ist das Bild von heute. Gekauft ist alles, was erst aus mehreren Messungen entsteht —
+> und die ausführliche Deutung des eigenen Ergebnisses.**
 
-Diese Linie ist nicht gegriffen. Sie ist die Aussage der App selbst, in ein Preismodell
-übersetzt: Lucenta sagt seit Runde 79 auf der Ergebnisseite, dass ein einzelner Durchlauf nur
-auf Wochensicht als stabil gilt und dass sich das Bild über Monate verschiebt. Genau dort
-liegt der Wert, für den zu zahlen sich lohnt — und genau dort, nirgends sonst, verläuft die
-Grenze.
+Die ursprüngliche Linie (Runde 79) hatte nur den ersten Satz. Den zweiten Teil hat der Inhaber
+hinzugesetzt: Seit Runde 170 sind die drei Abschnitte je Dimension („Im Alltag", „In Beziehungen",
+„Wachstumsimpuls") Lucenta+, und Runde 222 hat das bestätigt („Im Alltag" bleibt Lucenta+, kein
+Einmalkauf). Lucenta sagt auf der Ergebnisseite weiter, dass ein einzelner Durchlauf nur auf
+Wochensicht als stabil gilt und sich das Bild über Monate verschiebt — dort liegt der Kern dessen,
+was das Abo fortlaufend leistet.
 
-Der Vorteil dieser Linie ist, dass sie sich in einem Satz erklären lässt und keine Ausnahme
-braucht. Jede andere Aufteilung, die ich geprüft habe, zerfiel in eine Liste willkürlicher
-Einzelentscheidungen, die man auf einer Kaufseite nicht mehr begründen kann.
+## Was nicht verhandelbar ist
 
-## Drei Dinge, die nicht verhandelbar sind
+**1. Das Ergebnis selbst ist frei.** Wer fünfzig Aussagen beantwortet hat, sieht alle fünf Werte,
+das Fünfeck, den Archetyp mit Motto und Kurzfassung und je Dimension den Wert mit Kernsatz. Die
+ausführliche Deutung je Dimension ist Lucenta+ (Entscheidung des Inhabers, s. o.) — sie steht als
+verschwommene Vorschau des echten Textes da, nicht als leere Stelle.
 
-**1. Niemand zahlt für sein Ergebnis.** Wer fünfzig Aussagen beantwortet hat, sieht das
-vollständige Porträt — alle fünf Werte, das Fünfeck, den Archetyp, alle fünf
-Dimensionskarten mit Alltag, Beziehungen und Wachstum. Ein Ergebnis hinter eine Zahlung zu
-stellen, nachdem jemand die Arbeit geleistet hat, ist Erpressung und keine Preisgestaltung.
-Es wäre außerdem das Ende der Glaubwürdigkeit einer App, die mit Seriosität gegen
-Astrologie antritt.
+**2. Es wird nichts gelöscht.** Die freie Fassung *zeigt* weniger. Alles Eingetragene bleibt
+gespeichert und ist vollständig wieder da, sobald Lucenta+ aktiv ist. Daten, die jemand selbst
+erzeugt hat, sind seine: „Daten sichern" nimmt jederzeit alles mit, ohne Abo.
 
-**2. Es wird nichts gelöscht und nichts weggenommen.** Die freie Fassung *zeigt* weniger.
-Alles Eingetragene bleibt liegen und ist vollständig wieder da, sobald jemand kauft. Deshalb
-sagt der Hinweiskasten auch „Du hast 71 weitere Tage erfasst. Sie liegen gespeichert" und
-nicht „Freischalten, um mehr zu sehen". Daten, die jemand selbst erzeugt hat, sind seine.
-
-**3. Der Vergleich bleibt in seiner Grundform frei.** Er ist die einzige Stelle, an der eine
-zweite Person dazukommt — der Produktplan nennt ihn ausdrücklich als Wachstumsmechanik. Ihn
-zu verschließen kostet mehr, als er einbringt.
+**3. Der Vergleich bleibt in seiner Grundform frei** — mit zwei anderen Personen (`FREI_VERGLEICHE`),
+dieselbe Person beliebig oft. Er ist die Stelle, an der eine zweite Person dazukommt; ihn ganz zu
+verschließen kostete mehr, als er einbringt.
 
 ## Was in welcher Fassung steht
 
-| | frei | gekauft |
+| | frei | Lucenta+ |
 |---|---|---|
 | Fragebogen, alle 50 Aussagen | ✓ | ✓ |
-| Vollständiges Ergebnis: fünf Werte, Fünfeck, Archetyp, Kurzporträt | ✓ | ✓ |
-| Alle fünf Dimensionskarten (Alltag · Beziehungen · Wachstum) | ✓ | ✓ |
-| Ergebniscode und Ergebnisbild zum Teilen | ✓ | ✓ |
-| Archetypen-Übersicht | ✓ | ✓ |
-| Profil: Name, alle 22 Figuren, alle 10 Hintergründe | ✓ | ✓ |
-| Acht Sprachen, Darstellung, Datenexport, Rechtliches | ✓ | ✓ |
-| Tagesform eintragen, so oft man mag | ✓ | ✓ |
-| Vergleich: Prozentwert, Fünfeck, ein Satz je Dimension | ✓ | ✓ |
-| **Verlauf über mehr als zwei Durchläufe** | – | ✓ |
-| **Tagesform über 7 Tage hinaus** | – | ✓ |
-| **Die drei Tagesform-Befunde** (Schwankung, Wochentage, Tageszeit) | – | ✓ |
-| **Vergleich in der Tiefe** (Alltag · Gespräch · Gemeinsam) | – | ✓ |
-| **Vergleiche speichern (Archiv)** | – | ✓ |
-| **Verstehen: Zusammenspiel deiner Werte** | – | ✓ |
-| **Verstehen: was in deinen eigenen Daten steht** | – | ✓ |
-| **Das „+" an der Wortmarke in der Kopfzeile** | – | ✓ |
+| Ergebnis: fünf Werte, Fünfeck, Archetyp, Motto, Kurzfassung, je Dimension Wert + Kernsatz | ✓ | ✓ |
+| Ergebnisbild und Freundescode zum Teilen | ✓ | ✓ |
+| Archetypen-Übersicht (unter Verstehen) | ✓ | ✓ |
+| Profil: Name, Benutzer-ID, alle 20 Tiere | ✓ | ✓ |
+| Hintergründe: 5 von 24 (`HG_FREI`) | ✓ | alle 24 |
+| Zubehör: Schal ab 7 Tagen mit Eintrag | ✓ | + Mütze (ab 30 Tagen), Blume (ab 100 Tagen) |
+| Tagesform eintragen (bis zu drei Tageszeiten), Erinnerung, Serie, Meilensteine | ✓ | ✓ |
+| Tagesform sehen: die letzten 7 Tage (`FREI_TAGE`) | ✓ | alle Tage, Zeitraum wählbar |
+| Muster: das erste ab sieben Tagen | ✓ | alle |
+| Rückblick Woche: Schnitt | ✓ | + bester Tag, Vergleich zur Vorwoche, frühere Wochen |
+| Vergleich mit zwei Personen: Prozentwert, Fünfeck, ein Satz je Dimension | ✓ | ✓ |
+| Sprachen, Darstellung, Daten sichern/einspielen, Sperre, Health, Widget, Rechtliches | ✓ | ✓ |
+| **Die ausführliche Deutung je Dimension** (Im Alltag · In Beziehungen · Wachstumsimpuls) | – | ✓ |
+| **Verlauf über mehr als zwei Durchläufe** (`FREI_DURCHLAEUFE`) | – | ✓ |
+| **Bandbreite, Kalender, Rückblick Monat und Jahr** | – | ✓ |
+| **Vergleich mit mehr als zwei Personen, in der Tiefe, Bericht über zwei Freunde, Gruppenbild** | – | ✓ |
+| **Verstehen** (ganz Lucenta+ seit Runde 136; frei die Vorschau des ersten Bereichs) | – | ✓ |
+| **Ausführlicher Test** (116 Aussagen, 29 Facetten) | – | ✓ |
+| **Alternative App-Symbole** (Nacht, Papier, Abendrot, Ozean, Lavendel) | – | ✓ |
+| Das „+" an der Wortmarke in der Kopfzeile | – | ✓ |
 
-Das „+" an der Wortmarke ist die einzige Zeile in dieser Tabelle, die nichts freischaltet.
-Sie steht trotzdem darin: Ohne sie lässt sich die Frage „habe ich das eigentlich noch?"
-nur über Umwege beantworten — den Verlauf öffnen und nachsehen, ob mehr als zwei
-Durchläufe stehen. Ein Kauf, den man suchen muss, fühlt sich nicht wie einer an.
+Das „+" an der Wortmarke schaltet nichts frei. Es steht trotzdem in der Tabelle: Ohne es ließe sich
+die Frage „habe ich das eigentlich noch?" nur über Umwege beantworten.
 
-## Die fünfte Grenze (Runde 97)
+## Gesperrt heißt: verschwommene Vorschau
 
-Das Vergleichsarchiv hatte bis hierher keine Grenze. Die **Liste** bekommt auch keine: Was
-jemand gespeichert hat, gehört ihm, und ein Archiv, dessen Einträge verschwinden, wäre genau
-die Wegnahme, die Punkt 2 oben ausschließt. Verschlossen ist die **Auswertung** — der Satz
-darüber, worin du dich typischerweise von anderen unterscheidest. Der entsteht erst ab drei
-Vergleichen und wird mit jedem weiteren genauer. Das ist fortlaufender Wert im Sinne von
-Richtlinie 3.1.2 und nicht ein fester Inhalt, den ein Schalter freigibt.
-
-Damit stehen fünf Grenzen, und **alle fünf sind von derselben Art**: Verlauf über zwei
-Durchläufe hinaus, Tagesform über sieben Tage hinaus, die Vergleichskarte in der Tiefe,
-„Verstehen", die Archiv-Auswertung. Keine davon schaltet einen fertigen Text frei; jede
-öffnet etwas, das mit der Zeit wächst.
-
-**Frei ist damit ein vollständiges Produkt**, nicht eine Kostprobe: der ganze Test, das
-Porträt, der vollständige Bericht über alle fünf Dimensionen, das Ergebnisbild, der
-Vergleich mit einer anderen Person, das Archiv als Liste, Tagesform eintragen und sieben
-Tage sehen, die letzten zwei Durchläufe mit der Delta-Karte. Wer nie zahlt, hat kein
-beschnittenes Lucenta, sondern ein anderes: eines, das die Gegenwart zeigt statt den Verlauf.
+Was Lucenta+ ist, steht als **verschwommene Vorschau des echten Inhalts** da (`vorschauHTML`), mit
+einem Satz darüber, was es zeigt, und dem Weg zum Kauffenster. Das löste den früheren Kasten „anstelle
+des Inhalts" ab: Man sieht, dass dort wirklich etwas aus den eigenen Daten steht. Kein Countdown, keine
+erfundene Dringlichkeit, keine erfundene Beliebtheit, kein zweiter Hinweis an derselben Stelle.
 
 ## Warum diese Zahlen
 
-**Zwei Durchläufe frei.** Genug, um zu sehen *dass* sich etwas bewegt — die Delta-Karte auf
-der Ergebnisseite zeigt den Vergleich zum letzten Mal weiterhin. Zu wenig, um zu sehen *wie*.
-Wer zum zweiten Mal testet, hat gerade den Beweis gesehen, dass die Kurve etwas erzählt.
+**Zwei Durchläufe frei.** Genug, um zu sehen *dass* sich etwas bewegt — die Delta-Karte zeigt den
+Vergleich zum letzten Mal. Zu wenig, um zu sehen *wie*.
 
 **Sieben Tage Tagesform frei** (Entscheidung des Inhabers, `FREI_TAGE` in `src/js/03-speicherung.js`;
 ursprünglich vierzehn). Nach einer Woche ist das Eintragen zur Gewohnheit geworden, und der erste Befund
 braucht genau sieben Tage — wer die Grenze erreicht, hat also gerade den Punkt erreicht, an dem es etwas
 zu holen gäbe.
-Das ist der ehrlichste Moment für einen Hinweis: nicht am Anfang, wo er nur stört, sondern
-dort, wo die Person selbst die Arbeit hineingesteckt hat.
+
+**Zwei Personen im Vergleich frei.** Der erste Vergleich zeigt, was der Vergleich kann; ab der dritten
+Person ist es ein Werkzeug für den Freundeskreis.
 
 ## Preisform
 
-**Entschieden in Runde 95: Abo, 4,99 € im Monat oder 29,99 € im Jahr.** Das ist eine
-Umkehr — an dieser Stelle stand vorher die Empfehlung eines einmaligen Kaufs zu 6,99 €.
-Der Einwand von damals ist nicht widerlegt, und er bleibt deshalb hier stehen: Alle Daten
-liegen auf dem Gerät, und ein Abo, das nach dem Kündigen den eigenen, lokal gespeicherten
-Verlauf wieder verschließt, ist genau die Art von Geiselnahme, die Punkt 2 oben ausschließt.
+**Abo, 4,99 € im Monat oder 29,99 € im Jahr** (Runde 95), in einer Abo-Gruppe: `lucenta.plus.monat`,
+`lucenta.plus.jahr`. **Kein Einmalkauf** (Runde 222, Entscheidung des Inhabers — nicht erneut vorschlagen).
+In der App stehen die Preise des Stores (Land, Währung); ohne Antwort die festen Beträge.
 
-**Die Auflösung ist eine Regel, keine Ausnahme:** Das Abo schaltet frei, was die App
-*fortlaufend leistet* — neue Durchläufe, laufende Tagesform-Befunde, den weiterlaufenden
-Verlauf. Was während der Laufzeit bereits entstanden ist, bleibt nach dem Kündigen lesbar.
-Verschlossen wird das Neue, nie das Gewesene. Ohne diese Regel wäre der Einwand oben ein
-Grund, das Abo zu lassen; mit ihr ist er es nicht.
+- **Probezeit:** nur wenn das Jahresabo in App Store Connect eine hat — die Länge kommt vom Store,
+  nie aus der App.
+- **Rückgewinnung:** ein Angebot des Stores für Gekündigte, wenn eingerichtet; die App erfindet keines.
+- **Pflichten (Richtlinie 3.1.2):** „Käufe wiederherstellen" immer erreichbar (Einstellungen, Kauffenster,
+  Lucenta+-Seite), „Abo verwalten" öffnet Apples Blatt, der Hinweis zur Kündigung in den iPhone-Einstellungen,
+  Nutzungsbedingungen (Apples EULA) und Datenschutz am Kauffenster.
 
-Dass das Abo überhaupt die bessere Form ist, hat zwei Gründe. Der eine ist wirtschaftlich:
-Ein einmaliger Kauf verkauft einen fertigen Bericht, und danach gibt es keinen Grund mehr
-wiederzukommen — die Einnahmen wachsen mit der Neukundenzahl statt mit der Nutzerzahl. Der
-andere ist der von Apple: Richtlinie 3.1.2 verlangt für ein Abo *fortlaufenden* Wert und
-nicht das Freischalten fester Inhalte. Beide zeigen in dieselbe Richtung, nämlich weg vom
-einmaligen Fließtext und hin zu Tagesform und wiederholtem Assessment als Mittelpunkt des
-bezahlten Bereichs. Das ist keine Anpassung an eine Regel, sondern dieselbe Bewegung, die
-Runde 79 ohnehin begonnen hat.
-
-**Zu den Zahlen:** 4,99 € ist der Betrag, der vorher als Einmalpreis geplant war. Er wird
-bewusst nicht erhöht: Als monatlicher Preis ist es derselbe geprüfte Betrag in anderer
-Taktung, nicht eine Erhöhung, die begründet werden müsste. 29,99 € im Jahr sind die Hälfte
-davon — der Rabatt kauft nicht nur Vorauszahlung, er halbiert auch die Zahl der Momente, in
-denen jemand über eine Kündigung nachdenkt. Was vom Ladenpreis übrig bleibt, steht im
-Produktplan: nach Mehrwertsteuer und Apple-Anteil 3,56 € von 4,99 €.
-
-**Pflicht, sobald verkauft wird:** ein Weg, gekaufte Käufe wiederherzustellen, und ein
-sichtbarer Hinweis darauf, dass die Kündigung in den iOS-Einstellungen läuft und nicht hier.
+**Abweichung vom früheren Grundsatz, offen beim Inhaber:** Runde 95 versprach „Was während der Laufzeit
+entstanden ist, bleibt nach dem Kündigen lesbar; verschlossen wird das Neue, nie das Gewesene." So ist es
+**nicht** gebaut: Nach dem Kündigen zeigt die App wieder die freie Fassung (z. B. nur die letzten 7 Tage
+Tagesform). Weggenommen wird nichts — alles bleibt gespeichert, kommt mit Lucenta+ zurück und lässt sich
+jederzeit über „Daten sichern" mitnehmen.
 
 ## Wie es im Code aussieht
 
-Ein Schalter, eine Marke: `lucenta_plus` im lokalen Speicher, gelesen über `istPlus()`.
-Die fünf verschlossenen Stellen benutzen **einen** Baustein (`schlossHTML`) — fünf
-verschieden formulierte Hinweise fühlten sich wie fünf verschiedene Verkäufe an.
-
-Der Kasten steht **anstelle** des Inhalts, nicht darüber. Ein verwaschener Inhalt dahinter
-wäre die übliche Lösung und die schlechtere: Er zeigt her, was man nicht haben kann, und das
-ist näher an Reklame als an einem Hinweis. Kein Countdown, keine erfundene Dringlichkeit,
-kein zweiter Hinweis an derselben Stelle — dieselbe Grenze, an der in Runde 46 der
-Serien-Zähler verworfen wurde.
-
-Unter Profil steht ein Entwickler-Umschalter zwischen beiden Fassungen, im selben Bereich wie
-die Beispielnutzerin und aus demselben Grund: Beide Zustände wären sonst nur zu sehen, indem
-man den Speicher von Hand ändert. **Vor der Veröffentlichung muss dieser Umschalter raus** —
-er steht auf der Liste in `docs/app-store-start.md`.
+- `istPlus()` liest `lucenta_plus` im lokalen Speicher; gesetzt wird es nur über die Kauf-Brücke
+  (`LucentaKaeufePlugin.swift`, StoreKit 2): beim Kauf, beim Wiederherstellen und beim Start über
+  `StoreKit.stand`. Lucenta+ wird nur bei klarer Antwort des Stores weggenommen, eine Störung nimmt nichts.
+- Die Grenzen stehen als Konstanten in `03-speicherung.js` (`FREI_TAGE`, `FREI_DURCHLAEUFE`,
+  `FREI_VERGLEICHE`) und `15-figuren.js` (`HG_FREI`, `ZUBEHOER`).
+- Gesperrtes nutzt einen Baustein: `vorschauHTML(inhalt, satz)` (`05-verlauf.js`).
+- Der Umschalter frei/Lucenta+ im Profil gibt es nur im Entwicklungsbau (`#if DEBUG`, `entwicklungsBau()`);
+  im Store-Bau fehlt er.

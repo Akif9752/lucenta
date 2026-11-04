@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 229)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 230)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 229 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 230 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -76,7 +76,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 229 | (dieser) | frei-und-gekauft.md auf sieben freie Tage korrigiert (nur Doku) |
+| 230 | (dieser) | frei-und-gekauft.md ganz auf den Stand des Codes (nur Doku) |
+| 229 | `47d59e0` | frei-und-gekauft.md auf sieben freie Tage korrigiert (nur Doku) |
 | 228 | `68af911` | Rueckblick: Woche, Monat und Jahr auf einer Unterseite der Tagesform, Kalender wieder nur Monat |
 | 227 | `8697fce` | App an die Tab-Leiste angepasst (Hintergrund im Profilkopf und bei Freunde, Konto-Zeile weg), Daten per Datei einspielen |
 | 226 | `bcae32f` | Nur noch die App: Browser-Fassung, CSS-Leiste und Browser-Rueckfaelle entfernt; Pruefungen auf App-Fassung in WebKit |
@@ -497,17 +498,35 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 229** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 230** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 229 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 230 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 230 — frei-und-gekauft.md ganz auf den Stand des Codes
+
+**Auftrag:** „bring den Rest auch auf den aktuellen Stand". Das Dokument mit dem Code abgeglichen (alle `istPlus()`-Stellen,
+Konstanten `FREI_*`, `HG_FREI`, `ZUBEHOER`) und neu geschrieben: Tabelle mit 20 Tieren, 5 von 24 Hintergruenden, Zubehoer,
+Muster, Rueckblick, Kalender, Bandbreite, Vergleich mit zwei Personen, Bericht ueber zwei Freunde, Gruppenbild, Verstehen,
+ausfuehrlicher Test, App-Symbole; gesperrt als verschwommene Vorschau; Preise, kein Einmalkauf, Probezeit und Rueckgewinnung
+vom Store, Pflichten nach 3.1.2; Entwickler-Umschalter nur im Debug-Bau.
+
+**Zwei Widersprueche nicht geglaettet, sondern benannt:**
+- Grundsatz 1 („alle fuenf Dimensionskarten mit Alltag, Beziehungen und Wachstum frei") galt seit Runde 170 nicht mehr — jetzt
+  als Entscheidung des Inhabers beschrieben (Deutung je Dimension ist Lucenta+).
+- Runde 95 versprach „nach dem Kuendigen bleibt lesbar, was waehrend der Laufzeit entstand". Gebaut ist: nach dem Kuendigen
+  wieder die freie Fassung, gespeichert bleibt alles. Als **offen beim Inhaber** im Dokument vermerkt.
+
+Nur Doku, keine Aenderung an der App.
 
 ---
 
