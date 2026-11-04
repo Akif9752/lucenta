@@ -107,7 +107,7 @@
       try{
         var aktiv = document.querySelector('.view.active');
         if (aktiv && aktiv.id === 'view-state') renderStateView();
-        refreshDrawerState(); renderLandingStateTeaser();
+        profilWegeAnwenden(); renderLandingStateTeaser();
       }catch(e){}
       erinnerungNachziehen();
       neu.forEach(function(p){ healthNachEintrag(p[0], p[1]); });
@@ -117,7 +117,6 @@
   }
   function widgetLink(url){
     if (!/^lucenta:\/\/tagesform/.test(url || '')) return;
-    try{ closeDrawer(true); }catch(e){}
     renderStateView(); showView('state');
   }
   function widgetEinrichten(){

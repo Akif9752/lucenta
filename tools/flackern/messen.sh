@@ -11,7 +11,7 @@ HIER="$(cd "$(dirname "$0")" && pwd)"
 swiftc -O -o /tmp/lucenta-helligkeit "$HIER/helligkeit.swift" 2>/dev/null
 P=$(xcrun simctl get_app_container "$SIM" app.lucenta.ios app)
 cat >> "$P/public/index.html" <<'SKRIPT'
-<script>(function(){var s=['btnDrawerToggle','btnDrawerSettings','btnSpracheOeffnen','btnNavZurueck','btnHome','btnDrawerToggle','btnDrawerFreunde','btnHome','btnLandingStateHistory','btnHome','btnDrawerToggle','btnDrawerSettings','btnSpracheOeffnen','btnNavZurueck','btnHome'],i=0;setTimeout(function l(){if(i>=s.length)return;var e=document.getElementById(s[i]);if(e)e.click();i++;setTimeout(l,1400)},3000)})();</script>
+<script>(function(){var s=['tabProfil','btnProfilEinstellungen','btnSpracheOeffnen','btnNavZurueck','btnHome','tabFreunde','btnHome','btnLandingStateHistory','btnHome','tabProfil','btnProfilEinstellungen','btnSpracheOeffnen','btnNavZurueck','btnHome'],i=0;setTimeout(function l(){if(i>=s.length)return;var e=document.getElementById(s[i]);if(e)e.click();i++;setTimeout(l,1400)},3000)})();</script>
 SKRIPT
 xcrun simctl terminate "$SIM" app.lucenta.ios 2>/dev/null || true
 xcrun simctl launch "$SIM" app.lucenta.ios >/dev/null

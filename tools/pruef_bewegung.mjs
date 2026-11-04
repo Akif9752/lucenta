@@ -93,23 +93,25 @@ async function durchlauf(reduziert){
   }
 
   // --- Ansichtswechsel mit Richtung
-  await p.click('#btnDrawerToggle'); await p.waitForTimeout(400);
-  await p.click('#btnDrawerSettings'); await p.waitForTimeout(40);
-  const hinein = await p.evaluate(() => getComputedStyle(document.getElementById('view-settings')).animationName);
-  await p.click('#btnNavZurueck'); await p.waitForTimeout(40);   // seit Feedback B9 der Chevron in der Kopfzeile
+  // Seit der Tab-Leiste: zwei Reiter, hin und zurueck.
+  await p.click('#tabProfil'); await p.waitForTimeout(40);
+  const hinein = await p.evaluate(() => getComputedStyle(document.getElementById('view-profile')).animationName);
+  await p.waitForTimeout(400);
+  await p.click('#tabStart'); await p.waitForTimeout(40);
   const zurueck = await p.evaluate(() => getComputedStyle(document.getElementById('view-landing')).animationName);
   // Hauptseiten wechseln ohne Bewegung (Auftrag des Inhabers, kein Zucken) — mit und ohne reduzierte Bewegung.
   pruefe(hinein === 'none' && zurueck === 'none', 'Hauptseiten wechseln ohne Nachrutschen', `(${hinein}/${zurueck})`);
   await p.waitForTimeout(600);
   // Unterseiten schieben sich dagegen wie in iOS herein
-  await p.click('#btnDrawerToggle'); await p.waitForTimeout(400);
-  await p.click('#btnDrawerSettings'); await p.waitForTimeout(300);
+  await p.click('#tabProfil'); await p.waitForTimeout(400);
+  await p.click('#btnProfilEinstellungen'); await p.waitForTimeout(300);
   await p.click('#btnSpracheOeffnen'); await p.waitForTimeout(40);
   const push = await p.evaluate(() => getComputedStyle(document.getElementById('view-sprache')).animationName);
   pruefe(reduziert ? push === 'none' : push === 'seite-rein', reduziert ? 'Unterseite ohne Schieben' : 'Unterseite schiebt sich herein', `(${push})`);
   await p.waitForTimeout(600);
   await p.click('#btnNavZurueck'); await p.waitForTimeout(600);
   await p.click('#btnNavZurueck'); await p.waitForTimeout(600);
+  await p.click('#tabStart'); await p.waitForTimeout(400);
 
   // --- Fragebogen
   await p.click('#btnStart'); await p.waitForTimeout(500);
@@ -279,8 +281,8 @@ async function durchlauf(reduziert){
          reduziert ? 'Ergebnistitel ohne Feder' : 'Ergebnistitel federt herein', `(${titel})`);
 
   // --- Abweisung: schuettelt das Feld, das den Code nicht annimmt?
-  await p.click('#btnDrawerToggle'); await p.waitForTimeout(400);
-  await p.click('#btnDrawerSettings'); await p.waitForTimeout(500);
+  await p.click('#tabProfil'); await p.waitForTimeout(400);
+  await p.click('#btnProfilEinstellungen'); await p.waitForTimeout(500);
   // Runde 174: "Ergebnis wiederherstellen" ist eingeklappt.
   await p.evaluate(() => { const d = document.getElementById('einstWiederherstellen'); if (d) d.open = true; });
   await p.fill('#restoreCodeInput', 'KEINCODE');
@@ -370,7 +372,7 @@ async function durchlauf(reduziert){
       const s = getComputedStyle(el);
       return s.webkitBackdropFilter || s.backdropFilter;
     };
-    const lies = () => ({ kopf: glas('header.top'), schublade: glas('#drawerPanel'), bild: glas('#imgModal') });
+    const lies = () => ({ kopf: glas('header.top'), leiste: glas('#tabLeiste'), bild: glas('#imgModal') });
     const vorher = lies();
     document.documentElement.setAttribute('data-transparenz', 'reduziert');
     const reduziert = lies();
@@ -382,7 +384,7 @@ async function durchlauf(reduziert){
   // was sie soll. Gefragt ist, OB Glas da ist, weggeht und wiederkommt, nicht wie stark es ist;
   // die gleiche Staerke vorher und nachher haelt die zweite Bedingung fest.
   const glasDa = w => /blur\([1-9][\d.]*px\)/.test(w || '');
-  for (const flaeche of ['kopf', 'schublade', 'bild']){
+  for (const flaeche of ['kopf', 'leiste', 'bild']){
     pruefe(glasDa(tuer.vorher[flaeche]) && tuer.reduziert[flaeche] === 'none'
            && tuer.zurueck[flaeche] === tuer.vorher[flaeche],
            `data-transparenz nimmt das Glas von "${flaeche}" und gibt es zurueck`,

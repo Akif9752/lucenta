@@ -115,7 +115,7 @@ const suchUeberlauf = (breite) => {
   // unerreichbar, die genau deshalb unerreichbar sind, weil ein Dialog offen ist. Genau das ist
   // beim Einhaengen des Lucenta+-Fensters passiert: sechs Funde, alle falsch, alle hinter dem
   // Verdunkler. Gemessen wird, was jemand sieht.
-  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+  const v = document.querySelector('#plusModal.open, #imgModal.open')
          || document.querySelector('.view.active');
   if (!v) return raus;
   v.querySelectorAll('*').forEach(el => {
@@ -227,7 +227,7 @@ const suchTippflaechen = (min) => {
   // unerreichbar, die genau deshalb unerreichbar sind, weil ein Dialog offen ist. Genau das ist
   // beim Einhaengen des Lucenta+-Fensters passiert: sechs Funde, alle falsch, alle hinter dem
   // Verdunkler. Gemessen wird, was jemand sieht.
-  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+  const v = document.querySelector('#plusModal.open, #imgModal.open')
          || document.querySelector('.view.active');
   if (!v) return klein;
   const halb = Math.floor(min/2) - 1;
@@ -247,13 +247,16 @@ const suchTippflaechen = (min) => {
     // und meldete jedes Bedienelement am Seitenende. Uebergehen waere der bequeme Ausweg
     // gewesen und haette echte Faelle mit verschwiegen; stattdessen wird das Element in die
     // Mitte gerollt und danach neu vermessen.
-    if (r.top < halb + 2 || r.bottom > innerHeight - halb - 2){
+    // Die Tab-Leiste schwebt ueber dem Seitenende: Was darunter liegt, rollt man in den freien Bereich.
+    const leiste = document.getElementById('tabLeiste');
+    const unten = leiste && !leiste.hidden ? leiste.getBoundingClientRect().top : innerHeight;
+    if (r.top < halb + 2 || r.bottom > unten - halb - 2){
       el.scrollIntoView({block:'center', inline:'center', behavior:'instant'});
       r = el.getBoundingClientRect();
     }
     const cx = r.left + r.width/2, cy = r.top + r.height/2;
     if (cx < 0 || cx > innerWidth) return;
-    if (cy - halb < 0 || cy + halb > innerHeight - 1) return;   // passt selbst gerollt nicht ins Bild
+    if (cy - halb < 0 || cy + halb > unten - 1) return;   // passt selbst gerollt nicht ins Bild
     const trifft = (x, y) => {
       if (x < 0 || y < 0 || x > innerWidth - 1 || y > innerHeight - 1) return false;
       const t = document.elementFromPoint(x, y);
@@ -287,7 +290,7 @@ const suchNamenlos = () => {
   // unerreichbar, die genau deshalb unerreichbar sind, weil ein Dialog offen ist. Genau das ist
   // beim Einhaengen des Lucenta+-Fensters passiert: sechs Funde, alle falsch, alle hinter dem
   // Verdunkler. Gemessen wird, was jemand sieht.
-  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+  const v = document.querySelector('#plusModal.open, #imgModal.open')
          || document.querySelector('.view.active');
   if (!v) return ohne;
   v.querySelectorAll('button, a[href], [role="switch"]').forEach(el => {
@@ -307,7 +310,7 @@ const suchReste = () => {
   // unerreichbar, die genau deshalb unerreichbar sind, weil ein Dialog offen ist. Genau das ist
   // beim Einhaengen des Lucenta+-Fensters passiert: sechs Funde, alle falsch, alle hinter dem
   // Verdunkler. Gemessen wird, was jemand sieht.
-  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+  const v = document.querySelector('#plusModal.open, #imgModal.open')
          || document.querySelector('.view.active');
   if (!v) return [];
   const t = v.innerText || '';
@@ -341,7 +344,7 @@ const suchUnsichtbarenText = () => {
   // unerreichbar, die genau deshalb unerreichbar sind, weil ein Dialog offen ist. Genau das ist
   // beim Einhaengen des Lucenta+-Fensters passiert: sechs Funde, alle falsch, alle hinter dem
   // Verdunkler. Gemessen wird, was jemand sieht.
-  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+  const v = document.querySelector('#plusModal.open, #imgModal.open')
          || document.querySelector('.view.active');
   if (!v) return f;
   const hinter = el => {
@@ -382,7 +385,7 @@ const suchUnsichtbarenText = () => {
 // misst diese Pruefung am gerenderten Bild und rechnet die Deckung mit, statt die erste
 // nicht-durchsichtige Farbe fuer den Hintergrund zu halten.
 const suchSchwachenKontrast = () => {
-  const v = document.querySelector('#plusModal.open, #imgModal.open, #drawerPanel.open')
+  const v = document.querySelector('#plusModal.open, #imgModal.open')
          || document.querySelector('.view.active');
   if (!v) return [];
   // Der Browser antwortet nicht immer in rgb(). Sobald irgendwo im Stilblatt color-mix()
@@ -493,49 +496,49 @@ const suchSchwachenKontrast = () => {
 // Weg weg, meldet das die Pruefung — was genau der Fund waere, den man sehen will.
 const WEGE = {
   landing:    ['#btnHome'],
-  profile:    ['#btnDrawerToggle', '#btnDrawerProfileRow'],
-  understand: ['#btnDrawerToggle', '#btnDrawerUnderstand'],
-  archetypes: ['#btnDrawerToggle', '#btnDrawerArchetypes'],
-  settings:   ['#btnDrawerToggle', '#btnDrawerSettings'],
-  recht:      ['#btnDrawerToggle', '#btnDrawerSettings', '#btnRecht'],
+  profile:    ['#tabProfil'],
+  understand: ['#tabVerstehen'],
+  archetypes: ['#tabVerstehen', '#btnVsArchetypen'],
+  settings:   ['#tabProfil', '#btnProfilEinstellungen'],
+  recht:      ['#tabProfil', '#btnProfilEinstellungen', '#btnRecht'],
   // Runde 136: die Sprachwahl als eigene Seite. 650 ms nach dem letzten Klick sind mehr als die
   // 0,46 s des Schiebeuebergangs — gemessen wird also die angekommene Seite, nicht der Weg dorthin.
-  sprache:    ['#btnDrawerToggle', '#btnDrawerSettings', '#btnSpracheOeffnen'],
+  sprache:    ['#tabProfil', '#btnProfilEinstellungen', '#btnSpracheOeffnen'],
   // Nur mit App-Bruecke (`nativ`): Die Zeile erscheint erst, wenn AppSymbol antwortet.
-  appicon:    ['#btnDrawerToggle', '#btnDrawerSettings', '#btnSymbolOeffnen'],
-  look:       ['#btnDrawerToggle', '#btnDrawerProfileRow', '#btnAussehenOeffnen'],
+  appicon:    ['#tabProfil', '#btnProfilEinstellungen', '#btnSymbolOeffnen'],
+  look:       ['#tabProfil', '#btnAussehenOeffnen'],
   state:      ['#btnHome', '#btnLandingStateHistory'],
   // Runde 163: Tagesform und Verstehen haben Reiter; jeder Teil bekommt einen eigenen Weg, sonst bliebe
   // alles ausser dem ersten Reiter ungemessen.
   tf_verlauf:  ['#btnHome', '#btnLandingStateHistory'],
   tf_kalender: ['#btnHome', '#btnLandingStateHistory'],
   tf_muster:   ['#btnHome', '#btnLandingStateHistory'],
-  vs_arbeit:   ['#btnDrawerToggle', '#btnDrawerUnderstand'],
-  vs_stress:   ['#btnDrawerToggle', '#btnDrawerUnderstand'],
-  vs_wachstum: ['#btnDrawerToggle', '#btnDrawerUnderstand'],
-  vs_combos:   ['#btnDrawerToggle', '#btnDrawerUnderstand'],
-  vs_data:     ['#btnDrawerToggle', '#btnDrawerUnderstand'],
-  result:     ['#btnDrawerToggle', '#btnDrawerProfileRow', '#btnProfileViewResult'],
+  vs_arbeit:   ['#tabVerstehen'],
+  vs_stress:   ['#tabVerstehen'],
+  vs_wachstum: ['#tabVerstehen'],
+  vs_combos:   ['#tabVerstehen'],
+  vs_data:     ['#tabVerstehen'],
+  result:     ['#tabProfil', '#btnProfileViewResult'],
   quiz:       ['#btnHome', '#btnStart', '#btnRunSelf'],
   // Runde 81: Das Vergleichsergebnis entsteht erst, wenn zwei Codes eingetragen und verglichen
   // wurden — bis dahin ist der Block leer. Die Pruefung lief deshalb bisher an fuenf
   // aufklappbaren Karten, zwei Eingabefeldern und einem Messbalken vorbei, ohne sie je zu
   // sehen. Der Weg traegt seine Eingaben jetzt selbst.
   // Seit dem Umbau der Freunde (Runde 155): eigene Seite, und der Vergleich ist ihre Unterseite.
-  freunde:    ['#btnDrawerToggle', '#btnDrawerFreunde'],
-  vergleich:  ['#btnDrawerToggle', '#btnDrawerFreunde'],
+  freunde:    ['#tabFreunde'],
+  vergleich:  ['#tabFreunde'],
   // Runde 89: Das Lucenta+-Fenster. Ohne diesen Weg waere ein neuer Dialog von KEINER
   // Pruefschicht erfasst — genau die Luecke, die in Runde 84 der Bezahlschranke wegen schon
   // einmal aufging. Er sitzt im Profil, weil dort in der freien Fassung das Verlaufs-Schloss
   // steht; welche der fuenf Stellen es ist, spielt keine Rolle: Alle oeffnen dasselbe Fenster.
-  pluswerbung: ['#btnDrawerToggle', '#btnDrawerProfileRow'],
+  pluswerbung: ['#tabProfil'],
   // Runde 103: Der Ergebnisbild-Dialog. Er war von KEINER Pruefschicht je geoeffnet — dieselbe
   // Luecke, die Runde 89 fuer das Lucenta+-Fenster geschlossen hat, nur eine Tuer weiter. Aufgefallen
   // ist sie erst, als das Fenster in dieser Runde durchscheinend wurde: eine Aenderung am Aussehen
   // eines Dialogs, den keine Messung sieht, ist eine unbelegte Aenderung.
   // Steht bewusst ZULETZT, wie pluswerbung: Beide lassen ihre Ueberlagerung offen stehen, damit
   // gemessen wird, was jemand sieht. zu() raeumt sie vor dem naechsten Weg mit Escape weg.
-  bilddialog:  ['#btnDrawerToggle', '#btnDrawerProfileRow', '#btnProfileViewResult']
+  bilddialog:  ['#tabProfil', '#btnProfileViewResult']
 };
 // Ansichten, deren Kennung nicht 'view-<name>' lautet, und was nach dem Weg noch zu tun ist.
 const NACHBEREITUNG = {
@@ -615,12 +618,11 @@ async function zu(p, ansicht){
   // Runde 103: Zuerst eine etwaige Ueberlagerung wegraeumen. Die Wege "pluswerbung" und
   // "bilddialog" lassen ihr Fenster bewusst OFFEN stehen, damit gemessen wird, was jemand sieht —
   // der naechste Weg beginnt dann aber hinter einem Verdunkler, und #shell traegt inert. Escape
-  // schliesst alle drei Ueberlagerungen (Schublade, Bild-, Plus-Fenster); zweimal, falls zwei
+  // schliesst beide Ueberlagerungen (Bild-, Plus-Fenster); zweimal, falls zwei
   // uebereinanderliegen. Auf einer Seite ohne Ueberlagerung ist der Tastendruck wirkungslos.
   await p.keyboard.press('Escape'); await p.waitForTimeout(150);
   await p.keyboard.press('Escape'); await p.waitForTimeout(250);
   // Immer erst zurueck auf die Startseite, damit jeder Weg von derselben Stelle beginnt.
-  await p.evaluate(() => { document.getElementById('btnDrawerClose')?.click(); });
   await p.waitForTimeout(200);
   await p.evaluate(() => { document.getElementById('btnHome')?.click(); });
   await p.waitForTimeout(350);
@@ -744,9 +746,8 @@ async function durchlauf(lauf, motor, browser){
     // ein Durchlauf laeuft ausdruecklich frei.
     if (plus) await p.evaluate(() => { try{ localStorage.setItem('lucenta_plus','1'); }catch(e){} });
     else      await p.evaluate(() => { try{ localStorage.removeItem('lucenta_plus'); }catch(e){} });
-    await p.evaluate(() => { document.getElementById('btnDrawerToggle')?.click(); });
+    await p.evaluate(() => { document.getElementById('tabProfil')?.click(); });
     await p.waitForTimeout(300);
-    await p.evaluate(() => { document.getElementById('btnDrawerProfileRow')?.click(); });
     await p.waitForTimeout(400);
     const geladen = await p.evaluate(() => { const b = document.getElementById('btnDemo'); if (!b) return false; b.click(); return true; });
     if (!geladen) melde(kennung + ': Beispielnutzerin nicht ladbar (#btnDemo fehlt)');

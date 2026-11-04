@@ -273,7 +273,7 @@
 
   /* Kein grauer Tipp-Aufblitz — ersetzt durch eigene Druckzustaende (Abschnitt am Ende dieses
      Stilblatts). */
-  button, summary, .scale-btn, .avatar-color-swatch, .drawer-tab{
+  button, summary, .scale-btn, .avatar-color-swatch{
     -webkit-tap-highlight-color:transparent;
   }
   /* Die Druckzustaende stehen gesammelt am Ende dieses Stilblatts, damit spaetere :hover-Regeln sie
@@ -416,47 +416,6 @@
   .header-right #viewLabel{
     min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
   }
-  .drawer-tab{
-    width:36px;height:36px;border-radius:50%;flex-shrink:0;
-    border:1px solid var(--line);background:var(--surface);color:var(--ink);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;
-    transition:border-color .15s ease,color .15s ease;
-  }
-  /* :hover nur bei echten Zeigegeraeten (@media (hover:hover)) — sonst bleibt der Zustand auf iOS nach
-     dem Antippen haengen. Jede Regel an ihrer Stelle eingefasst. */
-  @media (hover:hover){ .drawer-tab:hover{border-color:var(--accent-strong);color:var(--accent-strong);} }
-  .drawer-tab:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
-
-  #drawerScrim{
-    position:fixed;inset:0;background:rgba(8,12,10,.45);
-    opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:90;
-  }
-  #drawerScrim.show{opacity:1;pointer-events:auto;}
-  /* Liquid Glass: Die Schublade ist Navigation ueber dem Inhalt; deckender als die Kopfleiste (82 %),
-     wie Apple es fuer grosse Flaechen mit viel Text vorsieht. Im Inhalt selbst kein Glas. */
-  #drawerPanel{
-    position:fixed;top:0;right:0;height:100%;width:min(340px,86vw);
-    background:color-mix(in srgb, var(--surface) 82%, transparent);
-    -webkit-backdrop-filter:blur(20px) saturate(150%);
-    backdrop-filter:blur(20px) saturate(150%);
-    border-left:1px solid var(--line);
-    box-shadow:-16px 0 40px -16px rgba(0,0,0,.3);
-    transform:translateX(100%); visibility:hidden;
-    transition:transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear .32s;
-    z-index:91; display:flex; flex-direction:column;
-    padding:calc(22px + env(safe-area-inset-top, 0px)) calc(20px + env(safe-area-inset-right, 0px)) calc(22px + env(safe-area-inset-bottom, 0px)) 20px;
-    overflow-y:auto;
-    /* Verhindert, dass eine Wischbewegung am Ende der Schubladenliste die Seite dahinter
-       mitscrollt — auf dem Telefon der Unterschied zwischen „Panel" und „Webseite mit Panel". */
-    overscroll-behavior:contain;
-  }
-  #drawerPanel.open{
-    transform:translateX(0); visibility:visible;
-    transition:transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear 0s;
-  }
-  /* Den offenen Zustand ausdruecklich mit aufnehmen: #drawerPanel.open hat hoehere Spezifitaet und
-     ueberschrieb sonst die reduced-motion-Regel. */
-  @media (prefers-reduced-motion: reduce){ #drawerPanel, #drawerPanel.open{transition:visibility 0s;} #drawerScrim{transition:none;} }
 
   #imgModalScrim{
     position:fixed;inset:0;background:rgba(8,12,10,.55);
@@ -479,8 +438,7 @@
     opacity:1;visibility:visible;transform:translate(-50%,-50%);
     transition:opacity .25s ease, transform .25s ease;
   }
-  /* Bugfix Feedback-Runde 32: dieselbe Spezifitäts-Lücke wie bei #drawerPanel.open oben, hier für
-     das Bild-Modal — #imgModal.open muss in der reduced-motion-Regel explizit mitgenannt werden. */
+  /* #imgModal.open hat hoehere Spezifitaet und muss in der reduced-motion-Regel mitgenannt werden. */
   @media (prefers-reduced-motion: reduce){ #imgModal, #imgModal.open{transition:visibility 0s;} #imgModalScrim{transition:none;} }
   .img-modal-inner{display:flex;flex-direction:column;gap:12px;position:relative;}
   #shareImagePreview{width:100%;border-radius:var(--radius-m);border:1px solid var(--line);display:block;background:var(--surface-2);}
@@ -512,23 +470,22 @@
      Volldeckend bei: kein backdrop-filter (sonst unlesbar), "Transparenz reduzieren", "Kontrast
      erhoehen" (prefers-contrast: more). */
   @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-    #drawerPanel, #imgModal, #plusModal{ background:var(--surface); }
+    #imgModal, #plusModal{ background:var(--surface); }
   }
   @media (prefers-reduced-transparency: reduce){
-    #drawerPanel, #imgModal, #plusModal{
+    #imgModal, #plusModal{
       background:var(--surface);
       -webkit-backdrop-filter:none; backdrop-filter:none;
     }
   }
   /* Die zweite Tuer, Begruendung bei der Kopfleiste weiter oben in dieser Datei. */
-  :root[data-transparenz="reduziert"] #drawerPanel,
   :root[data-transparenz="reduziert"] #imgModal,
   :root[data-transparenz="reduziert"] #plusModal{
     background:var(--surface);
     -webkit-backdrop-filter:none; backdrop-filter:none;
   }
   @media (prefers-contrast: more){
-    #drawerPanel, #imgModal, #plusModal{
+    #imgModal, #plusModal{
       background:var(--surface);
       -webkit-backdrop-filter:none; backdrop-filter:none;
     }
@@ -623,50 +580,21 @@
 
   .img-modal-hint{font-size:calc(12.5px * var(--dt, 1));color:var(--muted);line-height:1.5;}
   .img-modal-actions{display:flex;justify-content:flex-end;}
-  .drawer-head{display:flex;justify-content:flex-end;align-items:center;margin-bottom:14px;}
+
   .drawer-close{
     background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;
     border-radius:50%;display:flex;align-items:center;justify-content:center;
     transition:color .15s ease,background .15s ease;
   }
+  /* :hover nur bei echten Zeigegeraeten — sonst bleibt der Zustand auf iOS nach dem Antippen haengen. */
   @media (hover:hover){ .drawer-close:hover{color:var(--ink);background:var(--surface-2);} }
   .drawer-close:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
-  .drawer-section{display:flex;flex-direction:column;gap:10px;}
-  .drawer-section + .drawer-section{margin-top:24px;padding-top:24px;border-top:1px solid var(--line);}
-  /* Gruppentitel der Schublade. Der erste per Nachbar-Selektor, nicht :first-of-type (das bezieht sich
-     auf den Tag). */
-  .drawer-group-title{
-    margin-top:24px;padding-top:24px;border-top:1px solid var(--line);
-    font-family:var(--serif);font-size:calc(13.5px * var(--dt, 1));font-weight:500;color:var(--ink);
-  }
-  .drawer-profile-row + .drawer-group-title{margin-top:0;padding-top:0;border-top:none;}
-  .drawer-group-title + .drawer-section{margin-top:14px;padding-top:0;border-top:none;}
-  .drawer-label{font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
-  .drawer-copy{font-size:calc(13.5px * var(--dt, 1));color:var(--muted);line-height:1.55;}
-
-  .drawer-profile-row{
-    display:flex;align-items:center;gap:12px;width:100%;text-align:left;font-family:inherit;cursor:pointer;
-    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);
-    padding:12px 14px;margin-bottom:22px;transition:border-color .15s ease;
-  }
-  @media (hover:hover){ .drawer-profile-row:hover{border-color:var(--accent-strong);} }
-  .drawer-profile-row:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
-  .drawer-profile-avatar{
-    width:42px;height:42px;border-radius:50%;flex-shrink:0;background:var(--accent);color:var(--accent-ink);
-    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:calc(15px * var(--dt, 1));
-    background-size:cover;background-position:center;overflow:hidden;border:1px solid var(--line);
-  }
-  .drawer-profile-text{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
-  .drawer-profile-text strong{font-family:var(--serif);font-weight:500;font-size:calc(16px * var(--dt, 1));overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .drawer-profile-text .l{font-size:calc(12px * var(--dt, 1));color:var(--muted);}
-  .drawer-profile-row .chev{color:var(--muted);flex-shrink:0;}
 
   .view{display:none;}
   /* Hauptseiten wechseln ohne Bewegung wie Tabs in iOS; nur Unterseiten schieben sich herein (12-ios.css).
      Auftrag des Inhabers: Das Nachrutschen beim Ankommen las sich auf dem Geraet als Zucken. */
   .view.active{display:block;}
 
-  
   /* ---------- Bewegter Hintergrund ----------
      #shell bekommt einen eigenen Stapelkontext, damit die Flaeche zwischen Seitengrund und Inhalt
      liegt (ein negativer z-index verschwaende hinter body). */

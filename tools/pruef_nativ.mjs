@@ -137,12 +137,9 @@ await seite.addInitScript(() => {
 
 await seite.goto(URL, {waitUntil:'networkidle'});
 await seite.waitForTimeout(500);
-await seite.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+await seite.evaluate(() => document.getElementById('tabProfil')?.click());
 await seite.waitForTimeout(300);
-await seite.evaluate(() => {
-  const b = [...document.querySelectorAll('button')].find(x => /Einstellungen|Settings|Ayarlar|Ajustes|Réglages|Impostazioni|Definições|設定/.test(x.textContent||''));
-  b?.click();
-});
+await seite.evaluate(() => document.getElementById('btnProfilEinstellungen')?.click());
 await seite.waitForTimeout(600);
 
 console.log('\n=== Mit Bruecke ist die Erinnerung bedienbar ===');
@@ -354,9 +351,8 @@ ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'),
    'Lucenta+ bleibt dabei aktiv — eine App beendet kein Abo selbst');
 
 console.log('\n=== In der App gibt es keinen Entwickler-Umschalter ===');
-await seite.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+await seite.evaluate(() => document.getElementById('tabProfil')?.click());
 await seite.waitForTimeout(300);
-await seite.evaluate(() => document.getElementById('btnDrawerProfileRow')?.click());
 await seite.waitForTimeout(500);
 ok(await seite.evaluate(() => !document.getElementById('plusSchalter')),
    'kein #plusSchalter mit nativer Bruecke — er verschenkte das Abo');
@@ -410,17 +406,15 @@ ok(/^itms-apps:\/\/apps\.apple\.com\/account\/subscriptions$/.test(url), 'die ri
 
 console.log('\n=== Das Ergebnisbild geht in die Mediathek ===');
 await seite.evaluate(() => { window.__nativLog = []; });
-await seite.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+await seite.evaluate(() => document.getElementById('tabProfil')?.click());
 await seite.waitForTimeout(300);
-await seite.evaluate(() => document.getElementById('btnDrawerProfileRow')?.click());
 await seite.waitForTimeout(400);
 await seite.evaluate(() => document.getElementById('btnDemo')?.click());
 await seite.waitForTimeout(1700);
 await seite.waitForLoadState('networkidle');
 await seite.waitForTimeout(500);
-await seite.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+await seite.evaluate(() => document.getElementById('tabProfil')?.click());
 await seite.waitForTimeout(300);
-await seite.evaluate(() => document.getElementById('btnDrawerProfileRow')?.click());
 await seite.waitForTimeout(400);
 await seite.evaluate(() => { const x=[...document.querySelectorAll('button')].find(v=>/Dein Ergebnis/i.test(v.textContent||'')); x?.click(); });
 await seite.waitForTimeout(900);
@@ -487,9 +481,8 @@ await seite.reload({waitUntil: 'networkidle'});
 await seite.waitForTimeout(700);
 ok(await seite.evaluate(() => localStorage.getItem('lucenta_plus') === '1'),
    'im Entwicklungsbau nimmt die Store-Abfrage beim Start den Vorschau-Stand NICHT weg');
-await seite.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+await seite.evaluate(() => document.getElementById('tabProfil')?.click());
 await seite.waitForTimeout(300);
-await seite.evaluate(() => document.getElementById('btnDrawerProfileRow')?.click());
 await seite.waitForTimeout(500);
 ok(await seite.evaluate(() => !!document.getElementById('plusSchalter')),
    'im Entwicklungsbau steht der Umschalter im Profil');
@@ -613,18 +606,18 @@ await seite.evaluate(() => localStorage.removeItem('__pruef_konto'));
 console.log('\n=== Einstellungen: Version aus der App, Abo verwalten nur mit Abo ===');
 await seite.evaluate(() => { localStorage.removeItem('lucenta_plus'); localStorage.removeItem('__pruef_abo'); });
 await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
-await seite.evaluate(() => { document.getElementById('btnDrawerToggle').click(); });
+await seite.evaluate(() => { document.getElementById('tabProfil').click(); });
 await seite.waitForTimeout(300);
-await seite.evaluate(() => document.getElementById('btnDrawerSettings').click()); await seite.waitForTimeout(500);
+await seite.evaluate(() => document.getElementById('btnProfilEinstellungen').click()); await seite.waitForTimeout(500);
 let einst = await seite.evaluate(() => ({v: document.getElementById('einstVersion').textContent, sichtbar: !document.getElementById('einstVersion').hidden, verwalten: !document.getElementById('btnAboVerwalten').hidden,
   wieder: !document.getElementById('btnPlusWiederherstellen').hidden}));
 ok(einst.v === 'Version 1.4.2' && einst.sichtbar, 'die Versionsnummer kommt aus der App, ohne Zusatz: "' + einst.v + '"');
 ok(!einst.verwalten && einst.wieder, 'ohne Abo kein "Abo verwalten", "Kaeufe wiederherstellen" bleibt');
 await seite.evaluate(() => { localStorage.setItem('lucenta_plus', '1'); localStorage.setItem('__pruef_abo', '1'); });
 await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
-await seite.evaluate(() => { document.getElementById('btnDrawerToggle').click(); });
+await seite.evaluate(() => { document.getElementById('tabProfil').click(); });
 await seite.waitForTimeout(300);
-await seite.evaluate(() => document.getElementById('btnDrawerSettings').click()); await seite.waitForTimeout(500);
+await seite.evaluate(() => document.getElementById('btnProfilEinstellungen').click()); await seite.waitForTimeout(500);
 ok(await seite.evaluate(() => !document.getElementById('btnAboVerwalten').hidden), 'mit Abo erscheint "Abo verwalten"');
 await seite.evaluate(() => { localStorage.removeItem('lucenta_plus'); localStorage.removeItem('__pruef_abo'); });
 
@@ -746,8 +739,8 @@ ok((await seite.evaluate(() => document.querySelector('.view.active')?.id)) === 
 console.log('\n=== App-Sperre: frei, Zeitpunkt waehlbar ===');
 await seite.evaluate(() => { ['__pruef_sperre','__pruef_sperre_ok','__pruef_sperre_nach'].forEach(k => localStorage.removeItem(k)); });
 await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(500);
-await seite.evaluate(() => document.getElementById('btnDrawerToggle').click()); await seite.waitForTimeout(300);
-await seite.evaluate(() => { window.__nativLog = []; document.getElementById('btnDrawerSettings').click(); }); await seite.waitForTimeout(500);
+await seite.evaluate(() => document.getElementById('tabProfil').click()); await seite.waitForTimeout(300);
+await seite.evaluate(() => { window.__nativLog = []; document.getElementById('btnProfilEinstellungen').click(); }); await seite.waitForTimeout(500);
 let sp = await seite.evaluate(() => ({zeile: !document.getElementById('sperreZeile').hidden, nach: !document.getElementById('sperreNachZeile').hidden,
   titel: document.getElementById('sperreTitel').textContent}));
 ok(sp.zeile && !sp.nach && sp.titel === 'Mit Face ID sperren', 'Zeile mit der Art des Geraets, Zeitwahl erst wenn an (' + sp.titel + ')');
@@ -767,9 +760,9 @@ console.log('\n=== Notiz, Jahr und Monatsrueckblick (Tagesform) ===');
 await tageSaeen(45);
 await seite.evaluate(() => { localStorage.setItem('lucenta_plus', '1'); localStorage.setItem('__pruef_abo', '1'); });   // sonst nimmt der Stand beim Start Lucenta+ weg
 await seite.reload({waitUntil: 'networkidle'}); await seite.waitForTimeout(500);
-await seite.evaluate(() => { document.getElementById('btnDrawerToggle').click(); });
+await seite.evaluate(() => { document.getElementById('tabTagesform').click(); });
 await seite.waitForTimeout(300);
-await seite.evaluate(() => { document.getElementById('btnDrawerState').click(); }); await seite.waitForTimeout(700);
+await seite.waitForTimeout(700);
 await seite.evaluate(() => { document.querySelector('#stateEnergyRow button:nth-child(4)')?.click(); document.querySelector('#stateValenceRow button:nth-child(2)')?.click();
   document.getElementById('tfNotiz').value = '  Langer   Spaziergang \n am See  ' + 'x'.repeat(300); document.getElementById('btnStateSave').click(); });
 await seite.waitForTimeout(1500);

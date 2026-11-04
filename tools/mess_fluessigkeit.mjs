@@ -104,24 +104,12 @@ function auswerten(bilder) {
 // gewertet, solange die Eichung meldet, dass GPU-Kosten unsichtbar sind.
 const SZENEN = [
   {
-    name: 'Schublade oeffnet',
-    verdaechtig: 'backdrop-filter der Schublade (20px)',
+    name: 'Reiterwechsel Start -> Profil',
+    verdaechtig: 'backdrop-filter der Tab-Leiste (18px)',
     gpu: true,
-    aus: '#drawerPanel{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}',
+    aus: '#tabLeiste{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}',
     dauer: 900,
-    tun: async (s) => { await s.evaluate(() => document.getElementById('btnDrawerToggle')?.click()); }
-  },
-  {
-    name: 'Schublade schliesst',
-    verdaechtig: 'backdrop-filter der Schublade (20px)',
-    gpu: true,
-    aus: '#drawerPanel{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}',
-    dauer: 900,
-    vorbereiten: async (s) => {
-      await s.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
-      await s.waitForTimeout(800);
-    },
-    tun: async (s) => { await s.evaluate(() => document.getElementById('btnDrawerClose')?.click()); }
+    tun: async (s) => { await s.evaluate(() => document.getElementById('tabProfil')?.click()); }
   },
   {
     name: 'Ansichtswechsel zu den Archetypen (10 Karten)',
@@ -133,10 +121,10 @@ const SZENEN = [
     aus: '.role-card{animation:none!important;opacity:1!important;}',
     dauer: 1400,
     vorbereiten: async (s) => {
-      await s.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+      await s.evaluate(() => document.getElementById('tabVerstehen')?.click());
       await s.waitForTimeout(800);
     },
-    tun: async (s) => { await s.evaluate(() => document.getElementById('btnDrawerArchetypes')?.click()); }
+    tun: async (s) => { await s.evaluate(() => document.getElementById('btnVsArchetypen')?.click()); }
   },
   {
     name: 'Fragebogen: eine Frage weiter',

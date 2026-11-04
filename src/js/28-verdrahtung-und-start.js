@@ -11,10 +11,11 @@
     hideRunChoice();
     try{ $('btnStart').focus(); }catch(e){}
   });
-  $('btnDrawerToggle').addEventListener('click', openDrawer);
-  $('btnDrawerClose').addEventListener('click', closeDrawer);
-  $('drawerScrim').addEventListener('click', closeDrawer);
-  $('btnDrawerFreunde').addEventListener('click', function(){ closeDrawer(true); renderFreunde(); showView('freunde'); });
+  document.querySelectorAll('#tabLeiste .tab').forEach(function(t){
+    t.addEventListener('click', function(){ tabWaehlen(t.getAttribute('data-tab')); });
+  });
+  // Beim Start laeuft kein showView(); ohne diesen Aufruf stuende kein Reiter markiert.
+  tabLeisteAnwenden();
   $('btnBackFromFreunde').addEventListener('click', function(){ showView('landing'); });
   $('freundIch').addEventListener('click', freundIchKlick);
   $('btnBackFromVergleich').addEventListener('click', function(){ renderFreunde(); showView('freunde'); });
@@ -22,12 +23,10 @@
   $('btnErgebnisFreunde').addEventListener('click', function(){ renderFreunde(); showView('freunde'); });
   $('btnFreundSpeichern').addEventListener('click', freundSpeichern);
   $('freundCode').addEventListener('keydown', function(e){ if (e.key === 'Enter') freundSpeichern(); });
-  $('btnDrawerUnderstand').addEventListener('click', function(){ closeDrawer(true); renderUnderstand(); showView('understand'); });
   $('btnLandingTeaserMore').addEventListener('click', function(){ renderUnderstand(); showView('understand'); });
   $('btnBackFromUnderstand').addEventListener('click', function(){ showView('landing'); });
-  $('btnDrawerArchetypes').addEventListener('click', function(){ closeDrawer(true); showView('archetypes'); });
+  $('btnVsArchetypen').addEventListener('click', function(){ showView('archetypes'); });
   $('btnLandingStateHistory').addEventListener('click', function(){ renderStateView(); showView('state'); });
-  if ($('btnDrawerState')) $('btnDrawerState').addEventListener('click', function(){ closeDrawer(true); renderStateView(); showView('state'); });
   // „Ändern" klappt die Skalen wieder auf, mit den gespeicherten Werten bereits gesetzt — ohne
   // diesen Weg wäre der Erledigt-Zustand eine Sackgasse für den Rest des Tages.
   $('btnLandingStateEdit').addEventListener('click', function(){
@@ -62,7 +61,7 @@
         tfBegleiterFreuen();
         tfMeilensteinFeiern();
       });
-      refreshDrawerState();
+      profilWegeAnwenden();
       renderLandingStateTeaser();
       erinnerungNachziehen();
       erstesMusterMelden();
@@ -71,7 +70,8 @@
     }
   });
   // btnBackFromHistory entfernt: view-history existiert nicht mehr.
-  $('btnDrawerProfileRow').addEventListener('click', function(){ closeDrawer(true); renderProfile(); showView('profile'); });
+  $('btnProfilEinstellungen').addEventListener('click', function(){ applyTheme(loadThemeMode()); renderSettings(); showView('settings'); });
+  $('btnProfilPlus').addEventListener('click', function(){ plusSeiteOeffnen('profile'); });
   $('btnBackFromProfile').addEventListener('click', function(){ showView('landing'); });
   $('btnAvatarEdit').addEventListener('click', function(){ $('avatarFileInput').click(); });
   ['profileAvatar', 'settingsAvatar'].forEach(function(id){    // Runde 129: das Tier wippt beim Antippen
@@ -87,7 +87,7 @@
     profile.avatarImg = null;
     if (saveProfile(profile)){
       renderAvatar(profile);
-      refreshDrawerState();
+      profilWegeAnwenden();
       toast(tx('js_bild_entfernt'));
     }
   });
@@ -98,7 +98,7 @@
     profile.avatarColor = btn.dataset.color;
     if (saveProfile(profile)){
       renderAvatar(profile);
-      refreshDrawerState();
+      profilWegeAnwenden();
     } else {
       toast(tx('js_konnte_nicht_gespeichert_w'));
     }
@@ -114,12 +114,10 @@
     profile.name = $('profileName').value;
     if (saveProfile(profile) && !profile.avatarImg) renderAvatar(profile);
   });
-  $('btnDrawerSettings').addEventListener('click', function(){ closeDrawer(true); applyTheme(loadThemeMode()); renderSettings(); showView('settings'); });
-  $('btnDrawerPlus').addEventListener('click', function(){ closeDrawer(true); renderPlusSeite(); showView('plus'); });
-  $('btnEinstPlus').addEventListener('click', function(){ renderPlusSeite(); showView('plus'); });
+  $('btnEinstPlus').addEventListener('click', function(){ plusSeiteOeffnen('settings'); });
   plusSeiteVerdrahten();
   $('btnPlusModalWiederherstellen').addEventListener('click', kaeufeWiederherstellen);
-  $('btnBackFromSettings').addEventListener('click', function(){ showView('landing'); });
+  $('btnBackFromSettings').addEventListener('click', function(){ renderProfile(); showView('profile'); });
   ['themeSystem','themeLight','themeDark'].forEach(function(id){
     $(id).addEventListener('click', function(){ applyTheme($(id).dataset.mode); });
   });
@@ -127,7 +125,7 @@
     clearProgress();
     answers = new Array(50).fill(0); qi = 0;
     renderSettings();
-    refreshDrawerState();
+    profilWegeAnwenden();
     toast(tx('js_unterbrochener_test_verwor'));
   });
   $('btnSettingsEditProfile').addEventListener('click', function(){ renderProfile(); showView('profile'); });
@@ -141,7 +139,7 @@
     answers = new Array(50).fill(0); qi = 0;
     input.value = '';
     renderSettings();
-    refreshDrawerState();
+    profilWegeAnwenden();
     toast(tx('js_ergebnis_wiederhergestellt'));
   });
   $('btnResetData').addEventListener('click', function(){
@@ -165,7 +163,7 @@
     clearCompatArchive();
     clearFreunde();
     scores = null; answers = new Array(50).fill(0); qi = 0; guestRun = false;
-    refreshDrawerState();
+    profilWegeAnwenden();
     renderSettings();
     toast(tx('js_deine_daten_wurden_gelösch'));
     showView('landing');
@@ -333,7 +331,7 @@
     // im Markup hinterlegte deutsche Fassung auf, bevor die gewaehlte Sprache greift.
     applyI18n();
     syncLangButtons();
-    refreshDrawerState();
+    profilWegeAnwenden();
     applyTheme(loadThemeMode());
     schalterAnwenden();
     syncWortmarke();

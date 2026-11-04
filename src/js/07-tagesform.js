@@ -110,7 +110,7 @@
       landingStatePickedEnergy = null; landingStatePickedValence = null;
       renderLandingStateRows();
     });
-    refreshDrawerState();
+    profilWegeAnwenden();
     erinnerungNachziehen();
   }
   function renderLandingStateTeaser(){

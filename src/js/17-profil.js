@@ -57,7 +57,7 @@
       b.addEventListener('click', function(){
         var pr = loadProfile();
         pr.figur = b.getAttribute('data-figur') || null;
-        if (saveProfile(pr)){ renderAvatar(pr); refreshDrawerState(); renderSettings(); }
+        if (saveProfile(pr)){ renderAvatar(pr); profilWegeAnwenden(); renderSettings(); }
         else toast(tx('js_konnte_nicht_gespeichert_w'));
       });
     });
@@ -87,7 +87,7 @@
         }
         var pr = loadProfile();
         pr.zubehoer = id || null;
-        if (saveProfile(pr)){ renderZubehoerRaster(pr); renderAvatar(pr); refreshDrawerState(); aussehenVorschau(); }
+        if (saveProfile(pr)){ renderZubehoerRaster(pr); renderAvatar(pr); profilWegeAnwenden(); aussehenVorschau(); }
         else toast(tx('js_konnte_nicht_gespeichert_w'));
       });
     });
@@ -116,7 +116,7 @@
         if (!hgFrei(id)){ openPlusModal(); return; }
         var pr = loadProfile();
         pr.hintergrund = id || null;
-        if (saveProfile(pr)){ renderHintergrundRaster(pr); refreshDrawerState(); aussehenVorschau(); }
+        if (saveProfile(pr)){ renderHintergrundRaster(pr); profilWegeAnwenden(); aussehenVorschau(); }
         else toast(tx('js_konnte_nicht_gespeichert_w'));
       });
     });
@@ -244,7 +244,7 @@
     syncWortmarke();
     landingPlusKarteAnwenden();
     plusStandAnwenden();
-    refreshDrawerState();
+    profilWegeAnwenden();
     var aktiv = document.querySelector('.view.active');
     var id = aktiv ? aktiv.id : '';
     if (id === 'view-profile') renderProfile();

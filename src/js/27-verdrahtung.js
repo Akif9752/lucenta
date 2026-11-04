@@ -4,7 +4,7 @@
   $('btnBackLanding').addEventListener('click', function(){ if (qi>0 && loadProgress()){ toast(tx('js_fortschritt_gespeichert')); } showView('landing'); });
   $('btnHome').addEventListener('click', function(){ showView('landing'); });
   $('btnBackFromResult').addEventListener('click', function(){ showView('landing'); });
-  $('btnBackFromArchetypes').addEventListener('click', function(){ showView('landing'); });
+  $('btnBackFromArchetypes').addEventListener('click', function(){ renderUnderstand(); showView('understand'); });
   $('btnPrev').addEventListener('click', function(){ if (qi>0){ qi--; renderQuestion(); animateQuestionIn(); saveProgress(); } });
   // "Test wiederholen" geht durch dieselbe Zwischenfrage (eigener Durchlauf oder Gast).
   $('btnRetake').addEventListener('click', requestRun);

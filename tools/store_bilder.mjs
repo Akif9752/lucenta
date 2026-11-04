@@ -52,9 +52,9 @@ const AUFNAHMEN = [
   {id:'4-tagesform',hin: async (p) => { await p.evaluate(() => document.getElementById('btnLandingStateHistory')?.click());
                       await p.waitForTimeout(500);
                       await p.evaluate(() => document.querySelector('#view-state .tf-reiter [data-reiter="verlauf"]')?.click()); }},
-  {id:'5-verstehen',hin: async (p) => { await p.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+  {id:'5-verstehen',hin: async (p) => { await p.evaluate(() => document.getElementById('tabVerstehen')?.click());
                       await p.waitForTimeout(300);
-                      await p.evaluate(() => document.getElementById('btnDrawerUnderstand')?.click()); }}
+                      }}
 ];
 
 // Je Motiv eine Zeile, <em> in der Markenfarbe. Andere Sprachen ohne Eintrag bleiben ohne Ueberschrift.
@@ -66,9 +66,8 @@ const UEBERSCHRIFT = {
   '5-verstehen': {de:'Was die Forschung<br><em>über dich</em> weiß',    en:'What research<br><em>knows about you</em>'}
 };
 async function zuErgebnis(p){
-  await p.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+  await p.evaluate(() => document.getElementById('tabProfil')?.click());
   await p.waitForTimeout(300);
-  await p.evaluate(() => document.getElementById('btnDrawerProfileRow')?.click());
   await p.waitForTimeout(400);
   await p.evaluate(() => document.getElementById('btnProfileViewResult')?.click());
 }
@@ -93,9 +92,8 @@ for (const sprache of SPRACHEN){
       }
       // Beispielnutzerin laden, gekaufte Fassung.
       await p.evaluate(() => { try{ localStorage.setItem('lucenta_plus','1'); }catch(e){} });
-      await p.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+      await p.evaluate(() => document.getElementById('tabProfil')?.click());
       await p.waitForTimeout(300);
-      await p.evaluate(() => document.getElementById('btnDrawerProfileRow')?.click());
       await p.waitForTimeout(400);
       await p.evaluate(() => document.getElementById('btnDemo')?.click());
       await p.waitForTimeout(1700);

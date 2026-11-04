@@ -1,7 +1,6 @@
   var fails=0,checks=0;
   function ok(c,m){checks++; if(!c){fails++;console.log('  FEHLER: '+m);} }
   function view(){ return currentView; }
-  function open(){ return $('drawerPanel').classList.contains('open'); }
   function back(){ history.back(); }
 
   console.log("\n=== Zurück-Geste durch mehrere Ansichten ===");
@@ -26,23 +25,19 @@
   console.log('  zurück zum Ergebnis                    -> scrollY='+window.scrollY);
   ok(window.scrollY===1840,'Scrollposition nicht wiederhergestellt');
 
-  console.log("\n=== Zurück-Geste schließt zuerst die Schublade ===");
-  showView('landing'); openDrawer();
-  console.log('  Schublade offen: '+open()+', Ansicht: '+view());
-  back();
-  console.log('  nach Zurück      offen: '+open()+', Ansicht: '+view());
-  ok(!open(),'Schublade wurde nicht geschlossen');
-  ok(view()==='landing','Ansicht hätte sich nicht ändern dürfen');
-
-  console.log("\n=== Aus der Schublade heraus navigieren erzeugt keinen Geister-Eintrag ===");
+  console.log("\n=== Tab-Leiste: Unterseiten und Fragebogen ===");
+  showView('landing'); showView('profile'); showView('settings');
+  console.log('  Profil -> Einstellungen      -> '+view()+', Leiste sichtbar: '+!$('tabLeiste').hidden);
+  ok(!$('tabLeiste').hidden,'Leiste fehlt auf einer Unterseite');
+  back(); console.log('  zurück                      -> '+view());
+  ok(view()==='profile','Zurück aus den Einstellungen muss ins Profil führen');
+  back(); console.log('  zurück                      -> '+view());
+  ok(view()==='landing','Ein weiteres Zurück muss zur Startseite führen');
+  showView('quiz');
+  console.log('  Fragebogen                  -> Leiste sichtbar: '+!$('tabLeiste').hidden);
+  ok($('tabLeiste').hidden,'Im Fragebogen darf die Leiste nicht stehen');
   showView('landing');
-  var vor=history.__stack.length;
-  openDrawer(); closeDrawer(true); showView('settings');
-  console.log('  Einträge vorher '+vor+', nach Schublade+Einstellungen '+history.__stack.length+' (Ansicht: '+view()+')');
-  ok(view()==='settings','Einstellungen nicht geöffnet');
-  back();
-  console.log('  einmal zurück                          -> '+view());
-  ok(view()==='landing','Ein einziges Zurück muss zur Startseite führen');
+  ok(!$('tabLeiste').hidden,'Nach dem Fragebogen muss die Leiste zurückkommen');
 
   console.log("\n=== Fenstertitel und Fokus folgen der Ansicht ===");
   showView('profile');

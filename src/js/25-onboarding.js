@@ -71,7 +71,7 @@
       if (name) pr.name = name;
       if (obFigur) pr.figur = obFigur;
       saveProfile(pr);
-      refreshDrawerState();
+      profilWegeAnwenden();
     }
     var ob = $('onboarding');
     ob.classList.remove('offen');

@@ -64,36 +64,6 @@
     }
   }
 
-  function openDrawer(){
-    refreshDrawerState();
-    drawerLastFocus = document.activeElement;
-    $('drawerPanel').classList.add('open');
-    setTimeout(function(){ tierWippen($('drawerAvatar')); }, 260);   // Runde 129
-    $('drawerPanel').setAttribute('aria-hidden','false');
-    $('drawerScrim').classList.add('show');
-    $('btnDrawerToggle').setAttribute('aria-expanded','true');
-    document.body.style.overflow='hidden';
-    // Restlichen Seiteninhalt für Screenreader/Tastatur unerreichbar machen, solange der
-    // modale Drawer offen ist — sonst bleibt er per virtuellem Cursor navigierbar.
-    var shell = $('shell'); if (shell) shell.setAttribute('inert','');
-    document.addEventListener('keydown', drawerKeydown);
-    pushOverlayState('drawer');
-    setTimeout(function(){ $('btnDrawerClose').focus(); }, 50);
-  }
-  // keepHistory=true: Der Verlauf ist schon anders behandelt (Zurueck-Geste oder sofort folgende
-  // Ansicht).
-  function closeDrawer(keepHistory){
-    $('drawerPanel').classList.remove('open');
-    $('drawerPanel').setAttribute('aria-hidden','true');
-    $('drawerScrim').classList.remove('show');
-    $('btnDrawerToggle').setAttribute('aria-expanded','false');
-    document.body.style.overflow='';
-    var shell = $('shell'); if (shell) shell.removeAttribute('inert');
-    document.removeEventListener('keydown', drawerKeydown);
-    // Ohne preventScroll scrollte die Rueckgabe des Fokus die gerade geoeffnete Seite nachtraeglich (Sprung).
-    if (drawerLastFocus && drawerLastFocus.focus) drawerLastFocus.focus({preventScroll:true});
-    if (keepHistory !== true) popOverlayState();
-  }
 
   
   // ---------- Sichern und Einspielen ----------

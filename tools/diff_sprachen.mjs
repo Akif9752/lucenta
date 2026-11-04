@@ -60,24 +60,15 @@ const logs=[];
 const FENSTER={viewport:{width:1280,height:1000}};
 
 // ---------- die Helfer, seit Runde 103 mit der Seite als Argument ----------
-async function closeDrawer(p){ await p.evaluate(()=>{
-    const s=document.getElementById('drawerScrim'); const d=document.getElementById('btnDrawerClose');
-    if(s&&s.classList.contains('show')&&d) d.click(); }); await p.waitForTimeout(400); }
-async function drawer(p,id){ await closeDrawer(p); const t=await p.$('#btnDrawerToggle');
-  if(t&&await t.isVisible()){await t.click(); await p.waitForTimeout(350);}
-  const e=await p.$('#'+id); if(e&&await e.isVisible()){await e.click(); await p.waitForTimeout(600); return true;}
-  const c=await p.$('#btnDrawerClose'); if(c&&await c.isVisible())await c.click(); return false; }
-// Seit Feedback B9 steht der Name nur auf der Startseite, und der Chevron fuehrt eine Ebene zurueck:
-// so oft zurueck, bis die Startseite erreicht ist.
-async function home(p){ await closeDrawer(p);
-  for(let i=0;i<4;i++){
-    if(await p.evaluate(()=>document.getElementById('view-landing').classList.contains('active'))) break;
-    const e=await p.$('#btnNavZurueck'); if(!(e&&await e.isVisible())) break;
-    await e.click(); await p.waitForTimeout(600);
-  }
-  await p.waitForTimeout(300); }
+// Seit der Tab-Leiste: ein Ziel ist ein Reiter, bei Unterseiten gefolgt von der Zeile, die sie oeffnet.
+const WEG={verstehen:['tabVerstehen'], archetypen:['tabVerstehen','btnVsArchetypen'], freunde:['tabFreunde'],
+  profil:['tabProfil'], einstellungen:['tabProfil','btnProfilEinstellungen']};
+async function geh(p,ziel){
+  for(const id of WEG[ziel]){ const e=await p.$('#'+id); if(!(e&&await e.isVisible())) return false; await e.click(); await p.waitForTimeout(600); }
+  return true; }
+async function home(p){ const e=await p.$('#tabStart'); if(e&&await e.isVisible()) await e.click(); await p.waitForTimeout(600); }
 // alles Aufklappbare oeffnen, damit auch verborgener Text erfasst wird
-async function expandAll(p){ await closeDrawer(p); await p.evaluate(()=>{
+async function expandAll(p){ await p.evaluate(()=>{
   const v=[...document.querySelectorAll('[id^=view-]')].find(x=>getComputedStyle(x).display!=='none');
   if(!v) return;
   v.querySelectorAll('details').forEach(d=>d.open=true);
@@ -102,7 +93,7 @@ async function grab(p){ await expandAll(p);
       hatProgress:!!localStorage.getItem('lucenta_progress'),
       hatResult:!!localStorage.getItem('lucenta_result')};});
 }
-const STOPS=['btnDrawerUnderstand','btnDrawerArchetypes','btnDrawerFreunde','btnDrawerProfileRow','btnDrawerSettings'];
+const STOPS=['verstehen','archetypen','freunde','profil','einstellungen'];
 async function tour(p){
   const out={};
   out['landing']=await grab(p);
@@ -110,7 +101,7 @@ async function tour(p){
   await p.click('#btnStart'); await p.waitForTimeout(900);
   out['ergebnis']=await grab(p);
   // Seit Runde 155 liegt der Vergleich unter Freunde: einen Code einfuegen, die Vergleichsseite oeffnet sich.
-  if(await drawer(p,'btnDrawerFreunde')){
+  if(await geh(p,'freunde')){
     await p.fill('#freundCode','240k1e1w2d'); await p.click('#btnFreundSpeichern'); await p.waitForTimeout(1200);
     if(await p.evaluate(()=>document.getElementById('view-compare').classList.contains('active'))) out['vergleich']=await grab(p);
     await home(p); await p.click('#btnStart'); await p.waitForTimeout(900);
@@ -126,7 +117,7 @@ async function tour(p){
   const st=await p.$('#btnLandingStateHistory');
   if(st&&await st.isVisible()){await st.click();await p.waitForTimeout(700);
     out['tagesform']=await grab(p); await home(p);}
-  for(const id of STOPS){ if(await drawer(p,id)){ out[id]=await grab(p); await home(p); } }
+  for(const id of STOPS){ if(await geh(p,id)){ out[id]=await grab(p); await home(p); } }
   await home(p); return out;
 }
 
@@ -178,7 +169,7 @@ async function rundgang(code){
   await p.goto(URL,{waitUntil:'networkidle'});
   await p.waitForTimeout(900);
   if(code!=='de'){
-    await drawer(p,'btnDrawerSettings'); await p.click('#btnSpracheOeffnen'); await p.waitForTimeout(600); await p.click('[data-lang="'+code+'"]');
+    await geh(p,'einstellungen'); await p.click('#btnSpracheOeffnen'); await p.waitForTimeout(600); await p.click('[data-lang="'+code+'"]');
     await p.waitForTimeout(900); await home(p);
   }
   const t=await tour(p);

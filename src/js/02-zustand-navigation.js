@@ -44,7 +44,9 @@
 
   // Unterseiten und die Seite, aus der sie kommen (Runde 136).
   var UNTERSEITE_VON = {hilfe:'settings', sprache:'settings', appicon:'settings', verlauf:'profile', compare:'freunde', look:'profile',
-                       ft:'result'};
+                       ft:'result', settings:'profile', plus:'profile', archetypes:'understand'};
+  // Hauptseiten der Tab-Leiste: ohne Zurueck-Pfeil, ihre Pillen bleiben nur fuer alte Wege im Markup.
+  var TAB_WURZELN = {landing:1, state:1, understand:1, freunde:1, profile:1};
   var navWegTimer = null;
   function navWegAufraeumen(){
     if (navWegTimer){ clearTimeout(navWegTimer); navWegTimer = null; }
@@ -102,6 +104,7 @@
     $('viewLabel').textContent = VIEW_LABELS[name] || '';
     document.title = VIEW_TITLES[name] ? ('Lucenta — '+VIEW_TITLES[name]) : 'Lucenta';
     navLeisteAnwenden();
+    tabLeisteAnwenden();
     window.scrollTo({top: opts.restoreScroll ? (viewScroll[name]||0) : 0, behavior:'instant' in window ? 'instant':'auto'});
     syncHeaderScrollState();
     // Der Fortschrittsbalken nur im Fragebogen; --fokuslinie-hoehe geht sonst auf 0, die Kopfleiste
@@ -119,9 +122,6 @@
   window.addEventListener('popstate', function(e){
     // Offene Überlagerungen zuerst schließen: die Zurück-Geste soll das Panel schließen,
     // nicht dahinter die Ansicht wechseln.
-    if ($('drawerPanel').classList.contains('open')){
-      overlayDepth = Math.max(0, overlayDepth-1); closeDrawer(true); return;
-    }
     if ($('imgModal').classList.contains('open')){
       overlayDepth = Math.max(0, overlayDepth-1); closeImgModal(true); return;
     }
@@ -141,7 +141,7 @@
   function navLeisteAnwenden(){
     try{
       var section = $('view-'+currentView), kopf = document.querySelector('header.top');
-      navPille = section ? section.querySelector('.quiz-head > button[id^="btnBack"]') : null;
+      navPille = section && !TAB_WURZELN[currentView] ? section.querySelector('.quiz-head > button[id^="btnBack"]') : null;
       navGrossTitel = section ? section.querySelector('h1, .profile-head') : null;
       $('btnNavZurueck').hidden = !navPille;
       kopf.classList.toggle('unterseite', !!navPille);

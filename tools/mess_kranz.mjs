@@ -57,9 +57,8 @@ const AUSSCHNITT = {x:0, y:150, width:393, height:420};
 // pflichtschuldig 0 Stufen auf 0 % — eine Zahl, die nur nichts gemessen hatte.
 // Deshalb prueft die Messung unten, dass die Ueberschrift ueberhaupt eine Flaeche hat.
 async function zuErgebnis(p){
-  await p.evaluate(() => document.getElementById('btnDrawerToggle')?.click());
+  await p.evaluate(() => document.getElementById('tabProfil')?.click());
   await p.waitForTimeout(300);
-  await p.evaluate(() => document.getElementById('btnDrawerProfileRow')?.click());
   await p.waitForTimeout(400);
   await p.evaluate(() => document.getElementById('btnDemo')?.click());
   await p.waitForTimeout(1700);

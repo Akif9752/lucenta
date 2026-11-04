@@ -3,19 +3,19 @@
    2. Grosse Flaechen brauchen weniger Weg als kleine — gestaffelte Werte.
    Der Block steht am Ende, damit spaetere :hover-Regeln ihn nicht ueberschreiben. */
   /* Faecher im Segmentwaehler schrumpfen nicht — dort wandert die Fuellung. */
-  .btn, .drawer-tab, .avatar-edit,
-  .run-choice-opt, .history-row, .role-card, .drawer-profile-row, .archive-del,
+  .btn, .avatar-edit,
+  .run-choice-opt, .history-row, .role-card, .archive-del,
   .avatar-color-swatch, .profile-remove-photo, .drawer-close{
     transition:transform .24s cubic-bezier(.2,.8,.2,1), border-color .15s ease,
                background .15s ease, color .15s ease, box-shadow .15s ease;
   }
-  .btn:active, .drawer-tab:active, .avatar-edit:active, .archive-del:active,
+  .btn:active, .avatar-edit:active, .archive-del:active,
   .profile-remove-photo:active, .drawer-close:active{
     transform:scale(.955); transition-duration:0s;
   }
   /* Breite Flächen: derselbe Prozentsatz wirkt dort deutlich stärker. */
   .btn-hero:active{ transform:scale(.978); transition-duration:0s; }
-  .run-choice-opt:active, .history-row:active, .role-card:active, .drawer-profile-row:active{
+  .run-choice-opt:active, .history-row:active, .role-card:active{
     transform:scale(.985); border-color:var(--accent-strong); transition-duration:0s;
   }
   .avatar-color-swatch:active{ transform:scale(.9); transition-duration:0s; }
@@ -31,18 +31,17 @@
   .trait-card > summary{ transition:transform .24s cubic-bezier(.2,.8,.2,1); }
 
   @media (prefers-reduced-motion: reduce){
-    .btn:active, .drawer-tab:active, .avatar-edit:active, .archive-del:active,
+    .btn:active, .avatar-edit:active, .archive-del:active,
     .profile-remove-photo:active, .drawer-close:active,
-    .btn-hero:active, .run-choice-opt:active, .history-row:active, .role-card:active,
-    .drawer-profile-row:active, .avatar-color-swatch:active, .scale-btn:active,
+    .btn-hero:active, .run-choice-opt:active, .history-row:active, .role-card:active, .avatar-color-swatch:active, .scale-btn:active,
     .trait-card > summary:active{ transform:none; }
   }
 
 /* ================= Antippflaechen =================
    Mindestens 44x44 pt: ein ::after ohne Erscheinung vergroessert NUR die Trefferflaeche. Ausgenommen
    die Antwortkreise (42 pt bei 320 px) — eine groessere Zone ueberlappte dort die Nachbarn. */
-  .drawer-tab, .wordmark, .btn-sm, .drawer-close{ position:relative; }
-  .drawer-tab::after, .wordmark::after, .btn-sm::after, .drawer-close::after{
+  .wordmark, .btn-sm, .drawer-close{ position:relative; }
+  .wordmark::after, .btn-sm::after, .drawer-close::after{
     content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
     width:max(100%, 44px); height:max(100%, 44px);
     /* Nur Trefferfläche, keine Erscheinung. */
@@ -92,8 +91,7 @@
   html.theme-shift, html.theme-shift body,
   html.theme-shift .card, html.theme-shift .btn, html.theme-shift .stat-tile,
   html.theme-shift .trait-card, html.theme-shift .scale-btn, html.theme-shift .segment-opt,
-  html.theme-shift .state-check-card, html.theme-shift .history-row, html.theme-shift .role-card,
-  html.theme-shift #drawerPanel, html.theme-shift .drawer-section, html.theme-shift .top{
+  html.theme-shift .state-check-card, html.theme-shift .history-row, html.theme-shift .role-card, html.theme-shift .top{
     transition:background-color .28s ease, color .28s ease, border-color .28s ease !important;
   }
 
@@ -101,26 +99,15 @@
   .view.lang-shift{ animation:lang-fade .26s ease both; }
   @keyframes lang-fade{ from{opacity:.55;} to{opacity:1;} }
 
-  /* 3. Schublade: Abschnitte folgen dem Feld mit 34 ms Versatz. */
-  #drawerPanel.open .drawer-section{ animation:drawer-item .26s cubic-bezier(.2,.8,.2,1) both; }
-  /* :nth-child(n of S) zaehlt nur die Abschnitte, nicht alle Geschwister. */
-  #drawerPanel.open .drawer-section:nth-child(1 of .drawer-section){ animation-delay:.06s; }
-  #drawerPanel.open .drawer-section:nth-child(2 of .drawer-section){ animation-delay:.094s; }
-  #drawerPanel.open .drawer-section:nth-child(3 of .drawer-section){ animation-delay:.128s; }
-  #drawerPanel.open .drawer-section:nth-child(4 of .drawer-section){ animation-delay:.162s; }
-  #drawerPanel.open .drawer-section:nth-child(5 of .drawer-section){ animation-delay:.196s; }
-  @keyframes drawer-item{ from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:none;} }
-
   /* Alle drei sind reine Zugabe und verschwinden vollständig, wenn weniger Bewegung gewünscht
      ist. Die Klasse theme-shift wird in dem Fall gar nicht erst gesetzt, lang-shift ebenso. */
   @media (prefers-reduced-motion: reduce){
     html.theme-shift, html.theme-shift body, html.theme-shift .card, html.theme-shift .btn,
     html.theme-shift .stat-tile, html.theme-shift .trait-card, html.theme-shift .scale-btn,
     html.theme-shift .segment-opt, html.theme-shift .state-check-card, html.theme-shift .history-row,
-    html.theme-shift .role-card, html.theme-shift #drawerPanel, html.theme-shift .drawer-section,
+    html.theme-shift .role-card,
     html.theme-shift .top{ transition:none !important; }
     .view.lang-shift{ animation:none; }
-    #drawerPanel.open .drawer-section{ animation:none; }
   }
 
 /* ================= Richtung, Sichtbarkeit, Atmosphaere ================= */
@@ -211,14 +198,14 @@
   }
 
   /* 2. Antippbare Flaechen: zurueckhaltende Unterkante, die beim Druecken zusammengeht. */
-  .trait-card, .history-row, .role-card, .run-choice-opt, .drawer-profile-row{
+  .trait-card, .history-row, .role-card, .run-choice-opt{
     border-width:2px !important;
     box-shadow:0 3px 0 var(--kante);
     transition:transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s cubic-bezier(.2,.8,.2,1),
                border-color .15s ease;
   }
   .trait-card:active, .history-row:active, .role-card:active,
-  .run-choice-opt:active, .drawer-profile-row:active{
+  .run-choice-opt:active{
     transform:translateY(2px); box-shadow:0 1px 0 var(--kante); transition-duration:0s;
   }
 
@@ -242,7 +229,7 @@
 
   @media (prefers-reduced-motion: reduce){
     .trait-card:active, .history-row:active, .role-card:active,
-    .run-choice-opt:active, .drawer-profile-row:active{ transform:none; }
+    .run-choice-opt:active{ transform:none; }
   }
 
   /* 6. Der grosse Geisterknopf der Startseite bekommt eine eigene Flaeche (sonst zogen die Sterne

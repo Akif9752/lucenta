@@ -6,7 +6,7 @@ import { webkit } from 'playwright';
 const b = await webkit.launch(); const p = await b.newPage({viewport:{width:390,height:844}, isMobile:true, hasTouch:true});
 await p.goto('http://127.0.0.1:8017/lucenta.html'); await p.waitForTimeout(600);
 await p.evaluate(() => localStorage.setItem('lucenta_plus','1'));
-await p.click('#btnDrawerToggle'); await p.waitForTimeout(300); await p.click('#btnDrawerProfileRow'); await p.waitForTimeout(500);
+await p.click('#tabProfil'); await p.waitForTimeout(300); await p.click('#tabProfil'); await p.waitForTimeout(500);
 await p.click('#btnDemo'); await p.waitForTimeout(1800);
 const messe = () => p.evaluate(() => {
   const out = new Map();
@@ -23,9 +23,9 @@ const messe = () => p.evaluate(() => {
   }
   return [...out.entries()].map(([k, w]) => k + ': ' + w);
 });
-const wege = { start: [], ergebnis: ['#btnStart'], freunde: ['#btnDrawerToggle','#btnDrawerFreunde'], tagesform: ['#btnDrawerToggle','#btnDrawerState'],
-  verstehen: ['#btnDrawerToggle','#btnDrawerUnderstand'], archetypen: ['#btnDrawerToggle','#btnDrawerArchetypes'], profil: ['#btnDrawerToggle','#btnDrawerProfileRow'],
-  einstellungen: ['#btnDrawerToggle','#btnDrawerSettings'], plus: ['#btnDrawerToggle','#btnDrawerPlus'], hilfe: ['#btnDrawerToggle','#btnDrawerSettings','#btnHilfeOeffnen'] };
+const wege = { start: [], ergebnis: ['#btnStart'], freunde: ['#tabFreunde'], tagesform: ['#tabTagesform'],
+  verstehen: ['#tabVerstehen'], archetypen: ['#tabVerstehen','#btnVsArchetypen'], profil: ['#tabProfil'],
+  einstellungen: ['#tabProfil','#btnProfilEinstellungen'], plus: ['#tabProfil','#btnProfilPlus'], hilfe: ['#tabProfil','#btnProfilEinstellungen','#btnHilfeOeffnen'] };
 let n = 0;
 for (const [name, w] of Object.entries(wege)) {
   await p.evaluate(() => document.getElementById('btnHome')?.click()); await p.waitForTimeout(400);

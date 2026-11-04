@@ -51,7 +51,7 @@ function auswerten(b){
 }
 
 var KEIN_GLAS_KOPF = 'header.top{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}';
-var KEIN_GLAS_SCHUBLADE = '#drawerPanel{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}';
+var KEIN_GLAS_LEISTE = '#tabLeiste{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}';
 var KEIN_HIMMEL = '#sternenhimmel{display:none!important;}';
 
 // Jede Szene: name, css (Abweichung), vorbereiten, tun(während der Aufnahme), dauer
@@ -69,10 +69,8 @@ var SZENEN = [
   {name:'Bildlauf Startseite, Kopfleiste ohne Glas', css:KEIN_GLAS_KOPF, dauer:1600, scroll:true},
   {name:'Bildlauf Startseite, ohne Glas und ohne Himmel', css:KEIN_GLAS_KOPF + KEIN_HIMMEL, dauer:1600, scroll:true},
 
-  {name:'Schublade oeffnet, mit Glas', dauer:900, tun:function(){ klick('btnDrawerToggle'); }},
-  {name:'Schublade oeffnet, ohne Glas', css:KEIN_GLAS_SCHUBLADE, dauer:900, tun:function(){ klick('btnDrawerToggle'); }},
-  {name:'Schublade oeffnet, ohne Glas und ohne Himmel', css:KEIN_GLAS_SCHUBLADE + KEIN_HIMMEL, dauer:900,
-   tun:function(){ klick('btnDrawerToggle'); }},
+  {name:'Startseite, Himmel laeuft, Tab-Leiste ohne Glas', css:KEIN_GLAS_LEISTE, dauer:2000},
+  {name:'Reiterwechsel Start -> Profil', dauer:900, tun:function(){ klick('tabProfil'); }},
 
   {name:'Fragebogen, Antwort und naechste Frage', dauer:900,
    vorbereiten:async function(){ klick('btnStart'); await warte(900); },

@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 223)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 224)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 223 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 224 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -76,7 +76,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 223 | (dieser) | Einstellungen: Datenliste unter Face ID als eigene Karte (klebte an „Sperren nach“) |
+| 224 | (dieser) | Tab-Leiste statt Schublade (5 Reiter, Glas-Kapsel), Einstellungen/Lucenta+ im Profil, Archetypen unter Verstehen |
+| 223 | `1858f76` | Einstellungen: Datenliste unter Face ID als eigene Karte (klebte an „Sperren nach“) |
 | 222 | `5bd1b13` | Fehlersuche mit App-Bruecke; Rechtslinks im Plus-Fenster bei 320 pt; kein Einmalkauf, Im Alltag bleibt Plus |
 | 221 | `06117f8` | Clownfisch im kleinen Avatar wieder ganz im Kreis |
 | 220 | `e4ef083` | Seitenwechsel ohne Zucken (Hauptseiten ohne Nachrutschen, Tierbilder vorgeladen, Kopf-Ausschnitt ohne Filter) |
@@ -180,7 +181,7 @@ Regeln, die er gesetzt hat:
   (stellt per Vision frei, schaetzt die Kopfstelle). Fremde Vorlagen (`vorlagen/`) nie selbst verwenden.
 - **Serie, Meilensteine, Wochenrueckblick (Runde 214):** `tfSerie`, `tfMeilensteine`, `tfMeilensteinFeiern` (07-tagesform.js,
   `#tfSerie`), `tfWocheDaten`/`tfWocheHeuteRendern` (09-rueckblick.js, `#tfWocheHeute`), Mitteilung `wochenErinnerung` (24-native.js).
-- **Onboarding:** `25-onboarding.js`, Markup `#onboarding` vor `#drawerScrim`. Merker `lucenta_onboarding`.
+- **Onboarding:** `25-onboarding.js`, Markup `#onboarding` direkt hinter `#shell`. Merker `lucenta_onboarding`.
   Unter Automatisierung (`navigator.webdriver`) AUS — sonst blockierte es alle Pruefungen; gezielt mit
   `index.html?onboarding=1`. Bestandsnutzer mit Daten bekommen es nie.
 - **Freunde (Runde 155 neu geordnet):** einziger Ort fuer Codes und Vergleiche. `renderFreunde`
@@ -192,7 +193,8 @@ Regeln, die er gesetzt hat:
   10-stellige Codes werden weiter gelesen. **`FIGUREN` nur hinten erweitern** — der Index steht im Code
   (`CODE_FIGUREN = 24`, heute 20 belegt). Name/Figur kommen von der Person. Rangliste `freundeNachNaehe`, Gruppenbild `gruppenRadarSVG` (Lucenta+), Formel
   `uebereinstimmung()` gemeinsam mit `renderCompat`. Im Vergleichsfeld merkt `data-freund` Name/Figur.
-- **Lucenta+-Seite:** `23-plus-seite.js`, `view-plus` (aus der Seitenleiste); gekauft wird weiter im
+- **Lucenta+-Seite:** `23-plus-seite.js`, `view-plus` (Zeile `#btnProfilPlus` im Profil oder `#btnEinstPlus` in den Einstellungen,
+  `plusSeiteOeffnen(von)` setzt den Rueckweg); gekauft wird weiter im
   Kauffenster `#plusModal`. „Abo verwalten": `aboVerwalten()` -> `StoreKit.verwalten`
   (`AppStore.showManageSubscriptions`), Link nur als Rueckfall.
 - **Codes (Runde 152):** Geteilt wird NUR der Freundescode — Ergebnisseite `#einladenBox` ->
@@ -216,8 +218,14 @@ Regeln, die er gesetzt hat:
 - **Kopfzeile (Runde 154):** `navLeisteAnwenden()`/`navZurueck()` in `02-zustand-navigation.js`; eine NEUE Unterseite
   braucht nur ihre Pille `id="btnBack…"` in `.quiz-head` (bei nur der Pille `.nur-zurueck`) — der Chevron
   findet sie selbst. Werkzeuge klicken `#btnNavZurueck`, nie die Pillen (verborgen).
-- **Navigation:** `showView()` in `02-zustand-navigation.js`. `UNTERSEITE_VON = {hilfe, sprache, appicon -> settings; verlauf, look ->
-  profile; compare -> freunde; ft -> result}` steuert den iOS-Push/Pop. **Hauptseiten wechseln ohne jede Bewegung** (Runde 220,
+- **Tab-Leiste (Runde 224, ersetzt die Schublade):** `#tabLeiste` in `#shell` (fuenf Reiter `#tabStart`, `#tabTagesform`,
+  `#tabVerstehen`, `#tabFreunde`, `#tabProfil`), Logik `14-tab-leiste.js` (`TAB_VON` = welcher Reiter leuchtet, `TAB_OHNE` = ohne
+  Leiste: Fragebogen; `tabWaehlen`, `tabLeisteAnwenden`, `profilWegeAnwenden`), Stil am Ende von `12-ios.css`. Hauptseiten
+  (`TAB_WURZELN`) zeigen keinen Zurueck-Pfeil. Einstellungen und Lucenta+ sind Zeilen oben im Profil, Archetypen am Ende von
+  Verstehen (`#btnVsArchetypen`). Werkzeuge gehen ueber die Reiter (`'#tabProfil', '#btnProfilEinstellungen'`).
+  Headless WebKit malt die Unschaerfe der Leiste nicht ins Bild — das Glas im Simulator ansehen.
+- **Navigation:** `showView()` in `02-zustand-navigation.js`. `UNTERSEITE_VON = {hilfe, sprache, appicon -> settings; verlauf, look,
+  settings, plus -> profile; archetypes -> understand; compare -> freunde; ft -> result}` steuert den iOS-Push/Pop. **Hauptseiten wechseln ohne jede Bewegung** (Runde 220,
   kein `rise`/`view-vor`/Staffelung mehr — nicht wieder einbauen, das war das „Zucken"). Den Push/Pop (`.nav-push`/`.nav-pop`, die verlassene Seite als `.nav-weg` fixiert; CSS am Ende von
   `12-ios.css`). Die Zurueck-Wischgeste vom linken Rand steht am Ende von `27-verdrahtung.js` (`randGeste`).
   Eine neue Unterseite = Eintrag in `UNTERSEITE_VON` + `view-…` + Knopf mit `.hilfe-knopf` (Pfeil).
@@ -339,7 +347,9 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
   mindestens ihrem alten Kontrast; Startbild schwarz.
 - **Onboarding (Runde 147):** vier Schritte, ehrlich, Lucenta+ erst nach dem Ergebnis; unter
   Automatisierung (`navigator.webdriver`) aus, gezielt mit `?onboarding=1`.
-- **Lucenta+ aus der Seitenleiste = eigene Seite** (Runde 150), nicht das Kauffenster.
+- **Lucenta+ aus Profil und Einstellungen = eigene Seite** (Runde 150, seit 224 ohne Seitenleiste), nicht das Kauffenster.
+- **Tab-Leiste statt Schublade (Runde 224, Inhaber):** fuenf Reiter Start · Tagesform · Verstehen · Freunde · Profil, kein
+  „Mehr"; schwebende Glas-Kapsel wie iOS 26. Einstellungen und Lucenta+ oben im Profil, Archetypen unter Verstehen.
 - **Tagesform (Runde 130/131):** hoechstens drei Eintraege am Tag, je Tageszeit einer (morgens < 12,
   mittags < 18, abends); ein zweiter ersetzt. Nach dem Eintrag klappt die Erfassung zu, „Aendern"
   oeffnet sie wieder. Erinnerung: abgeloest durch Runde 167/174 (siehe oben: eine am Tag zur
@@ -473,17 +483,51 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 223** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 224** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 223 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 224 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 224 — Tab-Leiste statt Schublade; Archetypen unter Verstehen
+
+**Auftrag:** Punkt A aus der Simulation mit 2000 Personen (Schaetzung) — Tab-Leiste — samt Empfehlung, die Archetypen nach
+Verstehen zu holen. **Gewaehlt (Inhaber):** fuenf Reiter Start · Tagesform · Verstehen · Freunde · Profil, kein „Mehr";
+Einstellungen und Lucenta+ als Zeilen oben im Profil; schwebende Glas-Kapsel wie iOS 26, bei „Transparenz reduzieren" deckend.
+
+- **Leiste:** `#tabLeiste` (Markup in `#shell`, damit sie mit `inert` hinter Dialogen stillsteht), `14-tab-leiste.js` statt
+  `14-schublade.js`. Im Fragebogen ohne Leiste. Tipp auf den aktiven Reiter = nach oben. Hauptseiten ohne Zurueck-Pfeil
+  (`TAB_WURZELN`); die Wechsel zwischen Reitern bleiben ohne Bewegung (Runde 220), nur Unterseiten schieben.
+- **Neue Unterseiten:** Einstellungen und Lucenta+ unter Profil, Archetypen unter Verstehen (`#btnVsArchetypen`). Lucenta+ kommt
+  aus Profil oder Einstellungen zurueck dorthin, woher man kam (`plusSeiteOeffnen`).
+- **Reiternamen:** eigene kurze Schluessel `tab_*` (8 Sprachen), weil z. B. „Check giornaliero" bei keiner Breite passte. Bei 320 pt
+  und groesster Schrift gemessen ohne Abschneiden (Reiternamen wachsen hoechstens auf 110 %). Neu: Englisch „Learn",
+  Franzoesisch „Savoir", Japanisch „記録"/„マイページ" — von mir uebersetzt, muttersprachlich nicht geprueft.
+- **Aufgeraeumt:** Schublade aus Markup, JS (`openDrawer`/`closeDrawer`) und Stil (gut 100 Regeln in vier Dateien),
+  21 verwaiste Schluessel in 8 Sprachen. Alle Werkzeuge gehen ueber die Reiter.
+- **Fehler unterwegs, behoben:** Nach dem Start war kein Reiter markiert (die Markierung setzte nur `showView`). Mein
+  Ersetzungsskript fuer die Werkzeuge schnitt beim ersten Lauf Zeichen ab, das fuer den Stil zerschnitt Kommentare an Kommas —
+  beide Male zurueckgesetzt und richtig wiederholt.
+- **Werkzeuge an die Leiste angepasst:** Die Fehlersuche meldete 137 zu kleine Tippflaechen — Knoepfe UNTER der Leiste, deren
+  Tastpunkt die Leiste traf. Sie rollt solche Elemente jetzt in den freien Bereich (wie vorher nur am Bildrand). Die
+  Bewegungspruefung „Hauptseiten ohne Nachrutschen" misst jetzt Start <-> Profil (Einstellungen sind Unterseite und schieben).
+
+**Gemessen:** Die Bildprobe des Glases in `pruef-app` war immer gleich — headless WebKit malt die Unschaerfe dieser Leiste
+(und auch der Kopfleiste) nicht ins Bildschirmfoto. Im Simulator wirkt das Glas sichtbar. Die Probe prueft jetzt, dass die
+App-Fassung die Regel traegt. Simulator-Messung (`tools/mess_sim`): Startseite mit und ohne Glas der Leiste je Median 17 ms —
+aber auch die Eichung „blur(60px) ganzseitig" liegt bei 17 ms, die Messung sieht GPU-Kosten also nicht. Der Wechsel Start ->
+Profil hat bis zu drei lange Bilder (bis 51 ms, Aufbau des Profils — so auch vorher ueber die Schublade).
+
+**Unsicher:** Ob das Glas ueber dem bewegten Himmel am iPhone etwas kostet, zeigt nur das Geraet. Die Store-Bilder zeigen
+noch die Schublade (`node tools/store_bilder.mjs` vor dem Einreichen).
 
 ---
 

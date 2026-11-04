@@ -521,9 +521,9 @@
     ctx.globalAlpha = 1;
   }
 
-  // Unter Schublade und Fenstern steht der Himmel still: backdrop-filter ueber bewegtem Grund muss
+  // Unter den Fenstern steht der Himmel still: backdrop-filter ueber bewegtem Grund muss
   // WebKit in jedem Bild neu rechnen (gemessen 190 statt 94 ms je Bild).
-  var UEBERLAGERUNGEN = ['drawerPanel', 'imgModal', 'plusModal'].map(function(id){
+  var UEBERLAGERUNGEN = ['imgModal', 'plusModal'].map(function(id){
     return document.getElementById(id);
   }).filter(Boolean);
   function verdeckt(){

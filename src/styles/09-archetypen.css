@@ -64,27 +64,26 @@
   .avatar-color-swatch.avatar-color-quiet{background:var(--surface-2);}
   /* Doppelklassen-Selektor, damit die Spezifitaet unabhaengig von der Reihenfolge ueber der Basisregel
      liegt. */
-  .avatar.avatar-color-ink, .drawer-profile-avatar.avatar-color-ink, .settings-account-avatar.avatar-color-ink{background:var(--ink);color:var(--paper);}
-  .avatar.avatar-color-quiet, .drawer-profile-avatar.avatar-color-quiet, .settings-account-avatar.avatar-color-quiet{background:var(--surface-2);color:var(--ink);}
-  /* "Ruhig" in der Schublade auf --surface-3, weil die Profilzeile selbst --surface-2 traegt. */
-  .drawer-profile-row .drawer-profile-avatar.avatar-color-quiet{background:var(--surface-3);}
+  .avatar.avatar-color-ink, .settings-account-avatar.avatar-color-ink{background:var(--ink);color:var(--paper);}
+  .avatar.avatar-color-quiet, .settings-account-avatar.avatar-color-quiet{background:var(--surface-2);color:var(--ink);}
+
   /* ---------- Das Monogramm wie in iOS ----------
      Zwei Buchstaben in SF in einem Kreis mit Verlauf (oben heller). background-image statt background:
      Das eigene Foto kommt als Inline-background-image und darf die Farbe nicht ueberschreiben. Keine
      neuen Farbmarken. */
-  .avatar:not(.hat-figur), .drawer-profile-avatar:not(.hat-figur), .settings-account-avatar:not(.hat-figur){
+  .avatar:not(.hat-figur), .settings-account-avatar:not(.hat-figur){
     font-family:var(--sans); font-weight:500; letter-spacing:.01em;
   }
-  .avatar.avatar-color-accent:not(.hat-figur), .drawer-profile-avatar.avatar-color-accent:not(.hat-figur),
+  .avatar.avatar-color-accent:not(.hat-figur),
   .settings-account-avatar.avatar-color-accent:not(.hat-figur){
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, #FFFFFF), var(--accent));
   }
-  .avatar.avatar-color-ink:not(.hat-figur), .drawer-profile-avatar.avatar-color-ink:not(.hat-figur),
+  .avatar.avatar-color-ink:not(.hat-figur),
   .settings-account-avatar.avatar-color-ink:not(.hat-figur){
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--ink) 74%, var(--paper)), var(--ink));
   }
   /* "Ruhig" ist das Grau der iOS-Kontakte (helle Buchstaben auf gedecktem Verlauf). */
-  .avatar.avatar-color-quiet:not(.hat-figur), .drawer-profile-avatar.avatar-color-quiet:not(.hat-figur),
+  .avatar.avatar-color-quiet:not(.hat-figur),
   .settings-account-avatar.avatar-color-quiet:not(.hat-figur){
     background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));
     color:var(--paper);
@@ -238,7 +237,6 @@
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-
   /* Skip-Link: unsichtbar bis fokussiert. */
   .skip-link{
     position:absolute;left:12px;top:-48px;z-index:200;
@@ -247,10 +245,9 @@
   }
   .skip-link:focus{top:12px;}
 
-  
   /* ---------- Figur im Initialen-Kreis ----------
      Die Feldfarbe steht als Eigenschaft am Element; der Buchstabe weicht der Figur. */
-  .avatar.hat-figur, .drawer-profile-avatar.hat-figur,
+  .avatar.hat-figur,
   .settings-account-avatar.hat-figur{ background:var(--figur-feld, var(--surface-2)); padding:0; }
   /* Das Tierbild liegt randlos im Kreis, der den Rumpf abschneidet; der Rand steckt im Bild selbst
      (tools/figuren_holen.py, fester Rahmen), der Kopf sitzt wie vor Runde 133. */
@@ -283,7 +280,6 @@
      15-figuren.js). Im Dunkeln 6 % gedaempft, damit sie liegt statt zu leuchten. */
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]) .avatar.hat-figur,
-    :root:not([data-theme="light"]) .drawer-profile-avatar.hat-figur,
     :root:not([data-theme="light"]) .settings-account-avatar.hat-figur,
     :root:not([data-theme="light"]) .figur-wahl{
       background:var(--figur-feld-dunkel, var(--surface-2));
@@ -291,7 +287,6 @@
     :root:not([data-theme="light"]) .figur-bild:not(.figur-kopf){ filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.3)) brightness(.94) saturate(.94); }
   }
   :root[data-theme="dark"] .avatar.hat-figur,
-  :root[data-theme="dark"] .drawer-profile-avatar.hat-figur,
   :root[data-theme="dark"] .settings-account-avatar.hat-figur,
   :root[data-theme="dark"] .figur-wahl{
     background:var(--figur-feld-dunkel, var(--surface-2));
@@ -309,12 +304,6 @@
 
   /* ---------- Hintergrundvorlagen der Profilzeile ----------
      Jede Vorlage setzt Flaeche UND Schriftfarbe. */
-  .drawer-profile-row[data-hg]{ border-color:transparent; color:var(--hg-ink); }
-  .drawer-profile-row[data-hg] .drawer-profile-text strong{ color:var(--hg-ink); }
-  .drawer-profile-row[data-hg] .drawer-profile-text .l,
-  .drawer-profile-row[data-hg] .chev{ color:var(--hg-muted); }
-  /* Der Avatar braucht auf einer gemusterten Flaeche einen eigenen Rand, sonst verschwimmt er. */
-  .drawer-profile-row[data-hg] .drawer-profile-avatar{ border-color:var(--hg-ink); }
 
   /* Ein echtes Sternbild (Grosser Wagen) auf Indigo — unterscheidet sich von Mondnacht und Sternschnuppe
      in Farbe UND Motiv (Auftrag des Inhabers). */
@@ -536,12 +525,6 @@
     background:var(--surface-2); display:flex; align-items:center; justify-content:center;
     color:var(--muted); font-family:var(--mono); font-size:calc(13px * var(--dt, 1));
   }
-
-  /* Beispieldaten: ein Rand in --danger an der Profilzeile. */
-  .drawer-profile-row.ist-demo{
-    outline:2px dashed var(--danger); outline-offset:2px;
-  }
-  .drawer-profile-row.ist-demo .drawer-profile-text .l{ color:var(--danger); }
 
   /* ---------- Vergleich je Dimension ----------
      Dieselbe Bauform wie beim eigenen Ergebnis (.trait-card, 08-formulare-und-dialoge.css); hier nur

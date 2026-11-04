@@ -155,7 +155,7 @@ ok(sprachAntworten.length === 0, 'der Start holt kein einziges Sprachpaket',
    sprachAntworten.map(a => a.url.split('/').pop()).join(', '));
 
 // Der eigentliche Punkt: Laesst sich jede der sieben wirklich einstellen? Der Knopf wird
-// programmatisch getippt (er liegt in der Schublade, die dafuer nicht offen sein muss);
+// programmatisch getippt (er liegt auf der Sprachseite, die dafuer nicht offen sein muss);
 // `document.documentElement.lang` setzt applyI18n() und ist damit der Beleg, dass das Paket
 // angekommen UND angewandt ist.
 const deutscherTitel = befund.h1Text;
@@ -217,33 +217,22 @@ ok(ausnahmen2.length === 0, 'auch der Start mit gemerkter Sprache wirft keine Au
 // durchscheinende Flaeche ueber einem bewegten Sternenhimmel — unlesbar, und keine Pruefung
 // merkte es.
 //
-// Gemessen wird deshalb am Bild, mit einer Gegenprobe: dieselbe Schublade einmal wie gebaut und
-// einmal mit abgeschaltetem backdrop-filter. Sind beide Aufnahmen gleich, hat der Filter nichts
-// getan. Das ist unabhaengig davon, WIE stark die Unschaerfe ist — nur davon, DASS sie wirkt.
-async function schubladeAufnehmen(ohneGlas) {
-  const c = await browser.newContext({ viewport: { width: 393, height: 852 } });
-  const s = await c.newPage();
-  await s.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
-  await s.evaluate(() => document.fonts.ready);
-  if (ohneGlas) {
-    await s.addStyleTag({ content:
-      '#drawerPanel{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}' });
-  }
-  await s.evaluate(() => { document.getElementById('btnDrawerToggle')?.click(); });
-  await s.waitForFunction(() => !!document.querySelector('#drawerPanel.open'), null, { timeout: 4000 })
-         .catch(() => {});
-  await s.waitForTimeout(700);   // die Schublade faehrt in .32s ein
-  const offen = await s.evaluate(() => !!document.querySelector('#drawerPanel.open'));
-  const bild = offen ? await s.locator('#drawerPanel').screenshot() : null;
-  await c.close();
-  return bild;
-}
-const mitGlas = await schubladeAufnehmen(false);
-const ohneGlas = await schubladeAufnehmen(true);
-ok(!!mitGlas && !!ohneGlas, 'die Schublade laesst sich oeffnen und aufnehmen');
-ok(!!mitGlas && !!ohneGlas && !mitGlas.equals(ohneGlas),
-   'das Glas rendert: mit und ohne backdrop-filter sieht die Schublade verschieden aus',
-   mitGlas && ohneGlas ? `${mitGlas.length} gegen ${ohneGlas.length} Byte` : '(keine Aufnahme)');
+// Seit der Tab-Leiste: Headless WebKit malt die Unschaerfe einer festen, kleinen Flaeche nicht ins
+// Bildschirmfoto (auch die der Kopfleiste nicht) — die Bildprobe waere immer gleich. Geprueft wird
+// deshalb, dass die App-Fassung die Regel an der Leiste traegt; ob sie malt, entscheidet der Simulator.
+const glasCtx = await browser.newContext({ viewport: { width: 393, height: 852 } });
+const glasSeite = await glasCtx.newPage();
+await glasSeite.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
+await glasSeite.waitForTimeout(500);
+const leisteGlas = await glasSeite.evaluate(() => {
+  const l = document.getElementById('tabLeiste');
+  if (!l || l.hidden) return null;
+  const s = getComputedStyle(l);
+  return s.webkitBackdropFilter || s.backdropFilter;
+});
+await glasCtx.close();
+ok(!!leisteGlas, 'die Tab-Leiste ist sichtbar', leisteGlas === null ? '(fehlt oder verborgen)' : '');
+ok(/blur\([1-9][\d.]*px\)/.test(leisteGlas || ''), 'die Tab-Leiste traegt ihr Glas in der App-Fassung', leisteGlas || '');
 
 // --- Anmutung wie eine App, und was dabei NICHT verloren gehen darf (Runde 109)
 //
@@ -329,8 +318,8 @@ await anmutungCtx.close();
 const navCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
 const navSeite = await navCtx.newPage();
 await navSeite.goto(`${BASIS}/index.html`, { waitUntil: 'load' });
-await navSeite.click('#btnDrawerToggle'); await navSeite.waitForTimeout(400);
-await navSeite.click('#btnDrawerSettings'); await navSeite.waitForTimeout(700);
+await navSeite.click('#tabProfil'); await navSeite.waitForTimeout(400);
+await navSeite.click('#btnProfilEinstellungen'); await navSeite.waitForTimeout(700);
 await navSeite.click('#btnHilfeOeffnen'); await navSeite.waitForTimeout(700);
 const navBild = await navSeite.evaluate(() => ({
   text: document.getElementById('navZurueckText').textContent,
@@ -345,14 +334,15 @@ ok(navBild.sichtbar && navBild.text === 'Einstellungen' && !navBild.name && navB
    `Text "${navBild.text}", sichtbar ${navBild.sichtbar}, Name ${navBild.name}, Pillen ${navBild.pillen}, Ziel ${navZiel}`);
 // Der Chevron hiess zuerst .nav-zurueck — wie die Bewegungsklasse der Seiten; die Startseite bekam seine
 // Regeln ab (147 statt 350 pt breit). Deshalb: nach dem Zurueck so breit wie der Inhaltsbereich.
+// Seit der Tab-Leiste fuehren die Einstellungen zurueck ins Profil.
 await navSeite.click('#btnNavZurueck'); await navSeite.waitForTimeout(1200);
 const startBreite = await navSeite.evaluate(() => {
-  const v = document.getElementById('view-landing').getBoundingClientRect(), m = document.getElementById('mainContent').getBoundingClientRect();
-  return {aktiv: document.getElementById('view-landing').classList.contains('active'), v: Math.round(v.width), m: Math.round(m.width), l: Math.round(v.left - m.left)};
+  const v = document.getElementById('view-profile').getBoundingClientRect(), m = document.getElementById('mainContent').getBoundingClientRect();
+  return {aktiv: document.getElementById('view-profile').classList.contains('active'), v: Math.round(v.width), m: Math.round(m.width), l: Math.round(v.left - m.left)};
 });
 ok(startBreite.aktiv && startBreite.v === startBreite.m && startBreite.l === 0,
-   'nach „‹ Start" steht die Startseite in voller Breite an ihrem Platz',
-   `Startseite ${startBreite.v} pt bei +${startBreite.l}, Inhaltsbereich ${startBreite.m} pt`);
+   'nach „‹ Profil" steht das Profil in voller Breite an seinem Platz',
+   `Profil ${startBreite.v} pt bei +${startBreite.l}, Inhaltsbereich ${startBreite.m} pt`);
 await navCtx.close();
 
 // Runde 155: Alles mit anderen unter Freunde — ein Feld, Vergleich als Unterseite, Archiv uebernommen.
@@ -366,9 +356,9 @@ await frCtx.addInitScript(() => {
 });
 const fr = await frCtx.newPage();
 await fr.goto(`${BASIS}/index.html`, { waitUntil: 'load' }); await fr.waitForTimeout(500);
-await fr.click('#btnDrawerToggle'); await fr.waitForTimeout(400);
+await fr.click('#tabFreunde'); await fr.waitForTimeout(400);
 const altEingaenge = await fr.evaluate(() => ['btnDrawerCompare', 'btnDrawerCompatArchive'].filter(id => document.getElementById(id)).length);
-await fr.click('#btnDrawerFreunde'); await fr.waitForTimeout(700);
+await fr.waitForTimeout(300);
 const frVorher = await fr.evaluate(() => ({
   felder: document.querySelectorAll('#view-freunde input[type="text"]').length,
   codeSichtbar: !!document.getElementById('freundEigenerCode').offsetHeight,
