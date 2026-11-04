@@ -119,6 +119,12 @@ await seite.addInitScript(() => {
         texte: (o) => { merke('sperre_texte', o); return Promise.resolve({}); }
       },
       // Feedback A4: Konto loeschen. '__pruef_konto' = angemeldet; '__pruef_loeschen' = Antwort.
+      // Apples Tab-Leiste: '__tabs' = was die Huelle zuletzt zeigen soll, '__tabGewaehlt' = ein Tipp darauf.
+      Tabs: {
+        einrichten: (o) => { merke('tabs_einrichten', o); return Promise.resolve({hoehe: 83}); },
+        setzen: (o) => { merke('tabs_setzen', o); window.__tabs = o; return Promise.resolve(); },
+        addListener: (name, f) => { if (name === 'gewaehlt') window.__tabGewaehlt = f; return Promise.resolve({remove(){}}); }
+      },
       Account: {
         stand: () => Promise.resolve({angemeldet: localStorage.getItem('__pruef_konto') === '1', icloud: true}),
         anmelden: () => Promise.resolve({angemeldet: true}),
@@ -804,6 +810,33 @@ ok(ft && ft.f.N1 === 0 && ft.f.N5 === 75 && ft.f.E5 === 100 && ft.f.A2 === 0 && 
   'Auswertung nach Polung (alle 5): Gelassenheit 0, Mass halten 75, Erlebnishunger 100, Aufrichtigkeit 0, Ordnung 25 (' + JSON.stringify(ft && ft.f).slice(0, 80) + ')');
 ok((await seite.evaluate(() => document.querySelectorAll('#ftErgebnis .ft-zeile').length)) === 29, 'Ergebnisseite zeigt 29 Facetten');
 await seite.evaluate(() => { ['lucenta_plus','__pruef_abo','lucenta_result','lucenta_facetten'].forEach(k => localStorage.removeItem(k)); });
+
+console.log('\n=== Apples Tab-Leiste ueber die Bruecke ===');
+const tabEin = await seite.evaluate(() => {
+  const e = window.__nativLog.filter(x => x.was === 'tabs_einrichten').pop();
+  return {titel: e ? e.arg.reiter.map(r => r.titel).join('|') : '', css: document.getElementById('tabLeiste').hidden};
+});
+ok(tabEin.titel === 'Start|Tagesform|Verstehen|Freunde|Profil', 'die Huelle bekommt fuenf Reiter mit Titeln (' + tabEin.titel + ')');
+ok(tabEin.css, 'die CSS-Leiste bleibt in der App verborgen');
+await seite.evaluate(() => window.__tabGewaehlt({id: 'profile'})); await seite.waitForTimeout(400);
+let tabStand = await seite.evaluate(() => ({ansicht: document.querySelector('.view.active').id, tabs: window.__tabs}));
+ok(tabStand.ansicht === 'view-profile' && tabStand.tabs.aktiv === 'profile' && tabStand.tabs.sichtbar === true,
+  'ein Tipp auf „Profil" oeffnet das Profil und markiert den Reiter (' + JSON.stringify(tabStand) + ')');
+await seite.evaluate(() => document.getElementById('btnProfilEinstellungen').click()); await seite.waitForTimeout(400);
+tabStand = await seite.evaluate(() => window.__tabs);
+ok(tabStand.aktiv === 'profile' && tabStand.sichtbar, 'auf der Unterseite Einstellungen bleibt „Profil" markiert');
+await seite.evaluate(() => window.__tabGewaehlt({id: 'profile'})); await seite.waitForTimeout(700);
+ok(await seite.evaluate(() => document.querySelector('.view.active').id === 'view-profile'),
+  'ein zweiter Tipp auf den aktiven Reiter fuehrt von der Unterseite zurueck an seinen Anfang');
+await seite.evaluate(() => document.getElementById('shell').setAttribute('inert', '')); await seite.waitForTimeout(100);
+ok(await seite.evaluate(() => window.__tabs.sichtbar === false), 'ein offenes Web-Fenster (#shell inert) blendet die Leiste aus');
+await seite.evaluate(() => document.getElementById('shell').removeAttribute('inert')); await seite.waitForTimeout(100);
+ok(await seite.evaluate(() => window.__tabs.sichtbar === true), 'nach dem Schliessen kommt sie zurueck');
+await seite.evaluate(() => window.__tabGewaehlt({id: 'landing'})); await seite.waitForTimeout(400);
+await seite.evaluate(() => document.getElementById('btnStart').click()); await seite.waitForTimeout(600);
+tabStand = await seite.evaluate(() => ({ansicht: document.querySelector('.view.active').id, tabs: window.__tabs}));
+ok(tabStand.ansicht !== 'view-quiz' || tabStand.tabs.sichtbar === false, 'im Fragebogen steht keine Leiste (' + tabStand.ansicht + ')');
+await seite.evaluate(() => document.getElementById('btnNavZurueck')?.click()); await seite.waitForTimeout(400);
 
 ok(ausnahmen.length === 0, 'keine Ausnahme in der Konsole: ' + ausnahmen.join(' | '));
 

@@ -16,6 +16,7 @@
   });
   // Beim Start laeuft kein showView(); ohne diesen Aufruf stuende kein Reiter markiert.
   tabLeisteAnwenden();
+  tabNativEinrichten();
   $('btnBackFromFreunde').addEventListener('click', function(){ showView('landing'); });
   $('freundIch').addEventListener('click', freundIchKlick);
   $('btnBackFromVergleich').addEventListener('click', function(){ renderFreunde(); showView('freunde'); });

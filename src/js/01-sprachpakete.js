@@ -100,6 +100,7 @@
     erinnerungAnwenden();   // Runde 129: der Hinweis traegt Uhrzeiten im Format der Sprache
     syncHeroState();
     profilWegeAnwenden();
+    tabNativTitel();
     renderSettings();
     if (currentView === 'result' && scores) renderResult();
     if (currentView === 'understand') renderUnderstand();

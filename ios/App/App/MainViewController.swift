@@ -63,6 +63,7 @@ class MainViewController: CAPBridgeViewController {
         bridge?.registerPluginInstance(LucentaGesundheitPlugin())
         bridge?.registerPluginInstance(LucentaSperrePlugin())
         bridge?.registerPluginInstance(LucentaSymbolPlugin())
+        bridge?.registerPluginInstance(LucentaTabLeistePlugin())
         transparenzVorzeichnen()
         transparenzBeobachten()
         themaEmpfangen()

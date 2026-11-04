@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 224)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 225)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 224 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 225 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -76,7 +76,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 224 | (dieser) | Tab-Leiste statt Schublade (5 Reiter, Glas-Kapsel), Einstellungen/Lucenta+ im Profil, Archetypen unter Verstehen |
+| 225 | (dieser) | Tab-Leiste in der App als Apples UITabBar (echtes Liquid Glass), Browser behaelt CSS-Fassung |
+| 224 | `89990e5` | Tab-Leiste statt Schublade (5 Reiter, Glas-Kapsel), Einstellungen/Lucenta+ im Profil, Archetypen unter Verstehen |
 | 223 | `1858f76` | Einstellungen: Datenliste unter Face ID als eigene Karte (klebte an „Sperren nach“) |
 | 222 | `5bd1b13` | Fehlersuche mit App-Bruecke; Rechtslinks im Plus-Fenster bei 320 pt; kein Einmalkauf, Im Alltag bleibt Plus |
 | 221 | `06117f8` | Clownfisch im kleinen Avatar wieder ganz im Kreis |
@@ -218,7 +219,12 @@ Regeln, die er gesetzt hat:
 - **Kopfzeile (Runde 154):** `navLeisteAnwenden()`/`navZurueck()` in `02-zustand-navigation.js`; eine NEUE Unterseite
   braucht nur ihre Pille `id="btnBack…"` in `.quiz-head` (bei nur der Pille `.nur-zurueck`) — der Chevron
   findet sie selbst. Werkzeuge klicken `#btnNavZurueck`, nie die Pillen (verborgen).
-- **Tab-Leiste (Runde 224, ersetzt die Schublade):** `#tabLeiste` in `#shell` (fuenf Reiter `#tabStart`, `#tabTagesform`,
+- **Tab-Leiste in der App = Apples UITabBar (Runde 225, Inhaber):** `LucentaTabLeistePlugin.swift` (Plugin `Tabs`:
+  `einrichten` mit Titeln, `setzen` aktiv/sichtbar, Ereignis `gewaehlt`), SF Symbols je Kennung, Tint = `--accent`, Kanteneffekt
+  ueber `UIScrollEdgeElementContainerInteraction` (ab iOS 26). JS: `tabNativEinrichten`/`tabNativTitel` (14-tab-leiste.js); die
+  Leiste verschwindet, solange `#shell` inert ist (Plus-, Bildfenster, Onboarding — sonst laege sie darueber). Kennungen stehen in
+  Swift UND JS. Geprueft in `pruef-nativ` („Apples Tab-Leiste").
+- **Tab-Leiste (Runde 224, ersetzt die Schublade; im Browser weiter die CSS-Fassung):** `#tabLeiste` in `#shell` (fuenf Reiter `#tabStart`, `#tabTagesform`,
   `#tabVerstehen`, `#tabFreunde`, `#tabProfil`), Logik `14-tab-leiste.js` (`TAB_VON` = welcher Reiter leuchtet, `TAB_OHNE` = ohne
   Leiste: Fragebogen; `tabWaehlen`, `tabLeisteAnwenden`, `profilWegeAnwenden`), Stil am Ende von `12-ios.css`. Hauptseiten
   (`TAB_WURZELN`) zeigen keinen Zurueck-Pfeil. Einstellungen und Lucenta+ sind Zeilen oben im Profil, Archetypen am Ende von
@@ -483,17 +489,41 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 224** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 225** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 224 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 225 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 225 — Apples eigene Tab-Leiste in der App
+
+**Inhaber:** „die Tab-Leiste muss sich eins zu eins wie die von Apple verhalten und so aussehen — maximal Liquid Glass".
+**Gewaehlt (Inhaber):** echte UITabBar statt CSS-Nachbildung.
+
+- **Warum nicht CSS:** Liquid Glass bricht Licht an den Kanten, zeigt beim Ziehen eine wandernde Lupe, federt und gibt Haptik.
+  CSS kann nur unscharf machen und toenen; Lichtbrechung hinter einem Element (SVG-Filter in backdrop-filter) kennt WebKit nicht.
+- **Gebaut:** `LucentaTabLeistePlugin.swift` legt eine UITabBar unten ueber die WebView (SF Symbols house, sun.max, book, person.2,
+  person.crop.circle, gefuellt wenn aktiv; Tint = Akzent der App; Titel aus den Sprachpaketen, auch nach Sprachwechsel). Ein Tipp
+  geht als `gewaehlt` an `tabWaehlen` — gleicher Weg wie die CSS-Reiter, zweiter Tipp fuehrt zum Anfang bzw. nach oben. Die Seite
+  meldet aktiven Reiter und Sichtbarkeit: weg im Fragebogen und solange ein Web-Fenster offen ist (`#shell` inert, beobachtet).
+  Unter dem Glas der weiche Kanteneffekt der WebView (`UIScrollEdgeElementContainerInteraction`, ab iOS 26).
+- **Im Browser** bleibt die CSS-Leiste aus Runde 224.
+
+**Gemessen:** Im Simulator (iOS 27) zeichnet das System die schwebende Glas-Kapsel mit heller Auswahl-Pille. `pruef-nativ` mit
+nachgestelltem Plugin: fuenf Titel, Markierung auf Unterseiten, zweiter Tipp, Ausblenden bei Fenster und im Test (147 Pruefungen).
+
+**Unsicher:** Einen echten Tipp auf die native Leiste habe ich im Simulator nicht ausgeloest (ginge nur ueber einen eigenen
+Hilfsagenten) — der Weg Tipp -> Seite ist nur mit nachgestelltem Plugin geprueft; am iPhone ansehen. Die Fehlersuche misst die
+App weiter mit der CSS-Leiste (die native sieht headless WebKit nicht). Unter iOS 26 zeichnet das System die Leiste im alten Stil
+(Mindestversion 16.4) — so, wie Apple sie dort selbst zeigt.
 
 ---
 
