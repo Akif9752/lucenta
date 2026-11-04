@@ -1,7 +1,6 @@
 // ---------- Jahr auf einen Blick und Monatsrueckblick (Lucenta+) ----------
-// Entscheidungen des Inhabers: Jahr als Umschalter im Kalender, zwoelf Monate wie in Apples Kalender;
-// Rueckblick unter jedem vergangenen Monat und in den ersten 7 Tagen als Karte auf "Heute". Nur echte
-// Zahlen: Fehlt die Grundlage, entfaellt die Zeile. Beides als Bild teilbar (Bildfenster aus 18).
+// Zwoelf Monate wie in Apples Kalender; alles auf der Seite "Rueckblick" (unten). Nur echte Zahlen: Fehlt
+// die Grundlage, entfaellt die Zeile. Monat und Jahr als Bild teilbar (Bildfenster aus 18).
   var TF_RB_MIN_TAGE = 3;
   var tfJahrVersatz = 0;         // 0 = laufendes Jahr
   var TF_STUFE_ANTEIL = [0, .10, .26, .46, .76, 1];
@@ -106,22 +105,8 @@
       '<button type="button" class="btn btn-ghost btn-sm tf-teilen" data-rb-teilen="'+r.jahr+'-'+r.monat+'">'+tx('tf_als_bild_teilen')+'</button>'+
     '</div>';
   }
-  // Karte auf "Heute": in den ersten 7 Tagen des Monats der Vormonat (Entscheidung des Inhabers).
-  function tfRueckblickHeuteRendern(){
-    var wrap = $('tfRueckblickHeute');
-    if (!wrap) return;
-    var d = new Date(), vm = new Date(d.getFullYear(), d.getMonth() - 1, 1);
-    var r = d.getDate() <= 7 ? tfRueckblickDaten(vm.getFullYear(), vm.getMonth()) : null;
-    if (!r){ wrap.innerHTML = ''; return; }
-    var karte = tfRueckblickHTML(r, tfKalenderGroesse);
-    wrap.innerHTML = istPlus() ? karte : vorschauHTML(karte, tx('tf_rb_plus'));
-    schloesserVerdrahten(wrap);
-    tfTeilenVerdrahten(wrap);
-  }
-
   // ---------- Wochenrueckblick ----------
-  // Sonntag die laufende, Montag die vergangene Woche (Mo–So). Durchschnitt frei; bester Tag und Vergleich zur
-  // Vorwoche Lucenta+ (Entscheidung des Inhabers).
+  // Fuer die Hinweiszeile: Sonntag die laufende, Montag die vergangene Woche (Mo–So), ab drei Eintraegen.
   function tfWocheTage(montag, versatz){
     var s = {};
     for (var i = 0; i < 7; i++) s[tfTagSchluessel(new Date(montag.getFullYear(), montag.getMonth(), montag.getDate() + versatz + i, 12))] = 1;
@@ -142,18 +127,154 @@
     r.beste = wochentagName(new Date(beste.ts).getDay());
     return r;
   }
-  function tfWocheHeuteRendern(){
-    var wrap = $('tfWocheHeute');
+  // ---------- Rueckblick als eigene Seite (Woche · Monat · Jahr) ----------
+  // Entscheidung des Inhabers: eine Unterseite der Tagesform; unter "Heute" nur eine Hinweiszeile, wenn eine
+  // Woche (Sonntag/Montag) oder ein Monat (erste 7 Tage) fertig ist. Frei: Wochenschnitt; Rest Lucenta+.
+  // Ansicht: w = Woche, m = Monat, j = Jahr.
+  var rbAnsicht = 'w', rbWocheVersatz = 0, rbMonatVersatz = 0;
+
+  // Montag der gezeigten Woche: sonntags die laufende, sonst die zuletzt fertige; Versatz in Wochen zurueck.
+  function rbWocheMontag(versatz){
+    var d = new Date(), wt = (d.getDay() + 6) % 7;
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate() - wt - (wt === 6 ? 0 : 7) + 7 * versatz, 12);
+  }
+  function rbWocheDaten(montag){
+    var diese = tfWocheTage(montag, 0), vorige = tfWocheTage(montag, -7);
+    var tage = stateTage(loadStateHistory());
+    var w = tage.filter(function(t){ return diese[t.day]; }), v = tage.filter(function(t){ return vorige[t.day]; });
+    var r = {montag: montag, n: w.length, nach: {}};
+    w.forEach(function(t){ r.nach[t.day] = t; });
+    if (w.length < TF_RB_MIN_TAGE) return r;
+    var mittel = function(l, g){ return l.reduce(function(a, t){ return a + t[g]; }, 0) / l.length; };
+    r.e = mittel(w, 'energy'); r.s = mittel(w, 'valence');
+    if (v.length >= TF_RB_MIN_TAGE){ r.de = r.e - mittel(v, 'energy'); r.ds = r.s - mittel(v, 'valence'); }
+    var beste = w.slice().sort(function(a, b){ return b.valence - a.valence || b.energy - a.energy; })[0];
+    r.beste = wochentagName(new Date(beste.ts).getDay());
+    return r;
+  }
+  // Der gezeigte Monat: in den ersten 7 Tagen der Vormonat, sonst der laufende; Versatz in Monaten zurueck.
+  function rbMonat(versatz){
+    var d = new Date();
+    return new Date(d.getFullYear(), d.getMonth() - (d.getDate() <= 7 ? 1 : 0) + versatz, 1);
+  }
+  function rbFruehesterTag(){
+    var alle = stateTage(loadStateHistory());
+    return alle.length ? alle[0].day : todayKey();
+  }
+  function rbKopf(titel, art, zurueck, vor){
+    return '<div class="tf-kal-kopf">'+
+      '<button type="button" class="tf-kal-pfeil" data-rb-blaettern="'+art+'" data-rb-schritt="-1" aria-label="'+tx('rb_zurueck')+'"'+(zurueck ? '' : ' disabled')+'>‹</button>'+
+      '<span class="tf-kal-monat">'+titel+'</span>'+
+      '<button type="button" class="tf-kal-pfeil" data-rb-blaettern="'+art+'" data-rb-schritt="1" aria-label="'+tx('rb_vor')+'"'+(vor ? '' : ' disabled')+'>›</button>'+
+    '</div>';
+  }
+  function rbSkala(){
+    return '<div class="tf-kal-skala" aria-hidden="true"><span>1</span>'+[1,2,3,4,5].map(function(s){ return '<i class="tf-kal-st'+s+'"></i>'; }).join('')+'<span>5</span></div>';
+  }
+  function rbWocheHTML(plus){
+    if (!plus) rbWocheVersatz = 0;
+    var montag = rbWocheMontag(rbWocheVersatz), sonntag = new Date(montag.getFullYear(), montag.getMonth(), montag.getDate() + 6, 12);
+    var fmt = function(d){ try{ return new Intl.DateTimeFormat(tx('datum_gebietsschema'), {day:'numeric', month:'short'}).format(d); }catch(e){ return tfTagSchluessel(d); } };
+    var r = rbWocheDaten(montag);
+    var zurueck = plus && tfTagSchluessel(montag) > rbFruehesterTag();
+    var tage = '';
+    for (var i = 0; i < 7; i++){
+      var k = tfTagSchluessel(new Date(montag.getFullYear(), montag.getMonth(), montag.getDate() + i, 12));
+      var st = tfStufe(r.nach[k], tfKalenderGroesse);
+      tage += '<i class="'+(st ? 'tf-kal-st'+st : 'tf-jahr-ohne')+'"></i>';
+    }
+    var inhalt;
+    if (r.n < TF_RB_MIN_TAGE) inhalt = '<p class="tf-kal-ueberblick">'+tx('rb_zu_wenig')+'</p>';
+    else {
+      var frei = tx('tf_kal_schnitt').split('{e}').join(tfZahl(r.e)).split('{s}').join(tfZahl(r.s)).split('{n}').join(String(r.n));
+      var mehr = [tx('tf_woche_beste').split('{tag}').join(r.beste)];
+      if (typeof r.de === 'number') mehr.push(tx('tf_woche_vgl').split('{e}').join(tfDiff(r.de)).split('{s}').join(tfDiff(r.ds)));
+      var mehrHTML = '<ul class="tf-rb-zeilen">' + mehr.map(function(z){ return '<li>' + z + '</li>'; }).join('') + '</ul>';
+      inhalt = '<ul class="tf-rb-zeilen"><li>' + frei + '</li></ul>' + (plus ? mehrHTML : vorschauHTML(mehrHTML, tx('tf_woche_plus')));
+    }
+    return rbKopf(fmt(montag) + ' – ' + fmt(sonntag), 'w', zurueck, rbWocheVersatz < 0)+
+      inhalt + '<div class="tf-rb-tage" aria-hidden="true">'+tage+'</div>' + rbSkala();
+  }
+  function rbMonatHTML(plus){
+    if (!plus) rbMonatVersatz = 0;
+    var m = rbMonat(rbMonatVersatz), r = tfRueckblickDaten(m.getFullYear(), m.getMonth());
+    var zurueck = plus && tfTagSchluessel(m) > rbFruehesterTag().slice(0, 8) + '01';
+    var karte = r ? tfRueckblickHTML(r, tfKalenderGroesse) : '<p class="tf-kal-ueberblick">'+tx('rb_zu_wenig')+'</p>';
+    return rbKopf(tfMonatsName(m.getFullYear(), m.getMonth(), true), 'm', zurueck, rbMonatVersatz < 0)+
+      (plus ? karte : vorschauHTML(karte, tx('tf_rb_plus'))) + rbSkala();
+  }
+  function rbJahrHTML(plus){
+    if (!plus) tfJahrVersatz = 0;
+    var jahr = tfJahrHTML(tfKalenderGroesse) + rbSkala();
+    return plus ? jahr : vorschauHTML(jahr, tx('rb_jahr_plus'));
+  }
+  function renderRueckblick(){
+    var wrap = $('rueckblickInhalt');
     if (!wrap) return;
-    var r = tfWocheDaten();
-    if (!r){ wrap.innerHTML = ''; return; }
-    var frei = tx('tf_kal_schnitt').split('{e}').join(tfZahl(r.e)).split('{s}').join(tfZahl(r.s)).split('{n}').join(String(r.n));
-    var mehr = [tx('tf_woche_beste').split('{tag}').join(r.beste)];
-    if (typeof r.de === 'number') mehr.push(tx('tf_woche_vgl').split('{e}').join(tfDiff(r.de)).split('{s}').join(tfDiff(r.ds)));
-    var mehrHTML = '<ul class="tf-rb-zeilen">' + mehr.map(function(z){ return '<li>' + z + '</li>'; }).join('') + '</ul>';
-    wrap.innerHTML = '<div class="tf-rb"><div class="tf-rb-titel">' + tx('tf_woche_titel') + '</div>' +
-      '<ul class="tf-rb-zeilen"><li>' + frei + '</li></ul>' + (istPlus() ? mehrHTML : vorschauHTML(mehrHTML, tx('tf_woche_plus'))) + '</div>';
+    var plus = istPlus();
+    var umschalter = '<div class="segment rb-ansicht" role="radiogroup" aria-label="'+tx('rb_titel')+'">'+
+      [['w', 'rb_woche'], ['m', 'rb_monat'], ['j', 'rb_jahr']].map(function(a){
+        return '<button type="button" class="segment-opt" role="radio" data-rb-ansicht="'+a[0]+'" aria-checked="'+(a[0] === rbAnsicht ? 'true' : 'false')+'">'+
+          '<span class="segment-preis">'+tx(a[1])+'</span></button>';
+      }).join('')+'</div>';
+    var groesse = '<div class="segment tf-kal-groesse" role="radiogroup" aria-label="'+tx('tf_kal_groesse')+'">'+
+      ['valence','energy'].map(function(g){
+        return '<button type="button" class="segment-opt" role="radio" data-rb-groesse="'+g+'" aria-checked="'+(g===tfKalenderGroesse?'true':'false')+'">'+
+          '<span class="segment-preis">'+tx(g === 'energy' ? 'js_energie' : 'js_stimmung')+'</span></button>';
+      }).join('')+'</div>';
+    var inhalt = rbAnsicht === 'j' ? rbJahrHTML(plus) : rbAnsicht === 'm' ? rbMonatHTML(plus) : rbWocheHTML(plus);
+    wrap.innerHTML = umschalter + '<div class="tf-kal-karte rb-karte">' + groesse + inhalt + '</div>';
     schloesserVerdrahten(wrap);
+    tfTeilenVerdrahten(wrap);
+    if (!wrap.querySelectorAll) return;
+    wrap.querySelectorAll('[data-rb-ansicht]').forEach(function(b){
+      b.addEventListener('click', function(){ rbAnsicht = b.getAttribute('data-rb-ansicht'); tapFeedback(); renderRueckblick(); });
+    });
+    wrap.querySelectorAll('[data-rb-groesse]').forEach(function(b){
+      b.addEventListener('click', function(){ tfKalenderGroesse = b.getAttribute('data-rb-groesse'); tapFeedback(); renderRueckblick(); });
+    });
+    wrap.querySelectorAll('[data-rb-blaettern]').forEach(function(b){
+      b.addEventListener('click', function(){
+        if (b.disabled) return;
+        var s = parseInt(b.getAttribute('data-rb-schritt'), 10);
+        if (b.getAttribute('data-rb-blaettern') === 'w') rbWocheVersatz = Math.min(0, rbWocheVersatz + s);
+        else rbMonatVersatz = Math.min(0, rbMonatVersatz + s);
+        tapFeedback(); renderRueckblick();
+      });
+    });
+    wrap.querySelectorAll('[data-jahr]').forEach(function(b){
+      b.addEventListener('click', function(){
+        if (b.disabled) return;
+        tfJahrVersatz = Math.min(0, tfJahrVersatz + parseInt(b.getAttribute('data-jahr'), 10));
+        tapFeedback(); renderRueckblick();
+      });
+    });
+    // Ein Monat im Jahr oeffnet seinen Rueckblick.
+    wrap.querySelectorAll('[data-jahr-monat]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var basis = rbMonat(0), jahr = new Date().getFullYear() + tfJahrVersatz;
+        rbMonatVersatz = Math.min(0, (jahr - basis.getFullYear()) * 12 + (+b.getAttribute('data-jahr-monat')) - basis.getMonth());
+        rbAnsicht = 'm'; tapFeedback(); renderRueckblick();
+      });
+    });
+  }
+  function rueckblickOeffnen(ansicht){
+    if (ansicht){ rbAnsicht = ansicht; rbWocheVersatz = 0; rbMonatVersatz = 0; }
+    renderRueckblick();
+    showView('rueckblick');
+  }
+  // Unter "Heute": eine kleine Zeile, wenn eine Woche oder ein Monat fertig ist.
+  function tfRueckblickHinweisRendern(){
+    var wrap = $('tfRueckblickHinweis');
+    if (!wrap) return;
+    var d = new Date(), vm = new Date(d.getFullYear(), d.getMonth() - 1, 1), art = '', text = '';
+    if (tfWocheDaten()){ art = 'w'; text = tx('rb_hinweis_woche'); }
+    else if (d.getDate() <= 7 && tfRueckblickDaten(vm.getFullYear(), vm.getMonth())){
+      art = 'm'; text = tx('rb_hinweis_monat').split('{monat}').join(tfMonatsName(vm.getFullYear(), vm.getMonth(), false));
+    }
+    wrap.innerHTML = art ? '<button type="button" class="rb-hinweis" data-rb-oeffnen="'+art+'">'+text+' ›</button>' : '';
+    var b = wrap.querySelector ? wrap.querySelector('[data-rb-oeffnen]') : null;
+    if (b) b.addEventListener('click', function(){ rueckblickOeffnen(b.getAttribute('data-rb-oeffnen')); });
   }
 
   // ---------- Bilder ----------

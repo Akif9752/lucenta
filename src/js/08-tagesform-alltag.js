@@ -195,7 +195,6 @@
     return zellen;
   }
   var tfKalenderWahl = '';
-  var tfKalenderAnsicht = 'monat';   // 'monat' | 'jahr'
   function tfZahl(x){ return zahl1(x); }
   function tfDiff(x){ var t = zahl1(Math.abs(x)); return (x > 0.05 ? '+' : x < -0.05 ? '−' : '±') + t; }
   // Monat auf einen Blick: Durchschnitte, Eintragstage, Vergleich zum Vormonat (ab drei Tagen dort).
@@ -280,19 +279,6 @@
           [1,2,3,4,5].map(function(s){ return '<i class="tf-kal-st'+s+'"></i>'; }).join('')+'<span>5</span></div>'+
         '<div class="tf-kal-details" aria-live="polite">'+tfTagDetails(tfKalenderWahl)+'</div>'+
       '</div>';
-    if (tfKalenderVersatz < 0){
-      var rb = tfRueckblickDaten(anfang.getFullYear(), anfang.getMonth());
-      if (rb) karte = karte.replace(/<\/div>$/, tfRueckblickHTML(rb, tfKalenderGroesse) + '</div>');
-    }
-    var ansichtHTML = '<div class="segment tf-kal-ansicht" role="radiogroup" aria-label="'+tx('tf_kal_ansicht')+'">'+
-      [['monat', 'tf_kal_ansicht_monat'], ['jahr', 'tf_kal_ansicht_jahr']].map(function(a){
-        return '<button type="button" class="segment-opt" role="radio" data-kal-ansicht="'+a[0]+'" aria-checked="'+(a[0] === tfKalenderAnsicht ? 'true' : 'false')+'">'+
-          '<span class="segment-preis">'+tx(a[1])+'</span></button>';
-      }).join('')+'</div>';
-    karte = tfKalenderAnsicht === 'jahr'
-      ? '<div class="tf-kal-karte">'+ansichtHTML+groesseHTML+tfJahrHTML(tfKalenderGroesse)+
-          '<div class="tf-kal-skala" aria-hidden="true"><span>1</span>'+[1,2,3,4,5].map(function(s){ return '<i class="tf-kal-st'+s+'"></i>'; }).join('')+'<span>5</span></div></div>'
-      : karte.replace('<div class="tf-kal-karte">', '<div class="tf-kal-karte">'+ansichtHTML);
     // Runde 127: Kalender nur mit Lucenta+, frei verschwommen (laufender Monat, echte Tage).
     wrap.innerHTML = '<h2 class="section-title section-title-sub">'+tx('tf_kal_titel')+'</h2>'+
       (plus ? karte : vorschauHTML(karte, tx('tf_kal_plus')));
@@ -313,26 +299,6 @@
         tfKalenderRendern();
       });
     });
-    wrap.querySelectorAll('[data-kal-ansicht]').forEach(function(b){
-      b.addEventListener('click', function(){ tfKalenderAnsicht = b.getAttribute('data-kal-ansicht'); tapFeedback(); tfKalenderRendern(); });
-    });
-    wrap.querySelectorAll('[data-jahr]').forEach(function(b){
-      b.addEventListener('click', function(){
-        if (b.disabled) return;
-        tfJahrVersatz = Math.min(0, tfJahrVersatz + parseInt(b.getAttribute('data-jahr'), 10));
-        tapFeedback(); tfKalenderRendern();
-      });
-    });
-    // Ein Monat im Jahr oeffnet ihn in der Monatsansicht.
-    wrap.querySelectorAll('[data-jahr-monat]').forEach(function(b){
-      b.addEventListener('click', function(){
-        var jetzt = new Date(), jahr = jetzt.getFullYear() + tfJahrVersatz;
-        tfKalenderVersatz = Math.min(0, (jahr - jetzt.getFullYear()) * 12 + (+b.getAttribute('data-jahr-monat')) - jetzt.getMonth());
-        tfKalenderAnsicht = 'monat'; tfKalenderWahl = '';
-        tapFeedback(); tfKalenderRendern();
-      });
-    });
-    tfTeilenVerdrahten(wrap);
     wrap.querySelectorAll('[data-groesse]').forEach(function(b){
       b.addEventListener('click', function(){
         tfKalenderGroesse = b.getAttribute('data-groesse');

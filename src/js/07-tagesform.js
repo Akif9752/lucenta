@@ -418,8 +418,7 @@
     renderStateTrend();
     tfAuswertungenRendern();
     tfSerieRendern();
-    tfWocheHeuteRendern();
-    tfRueckblickHeuteRendern();
+    tfRueckblickHinweisRendern();
     tfBegleiterRendern();
   }
   // Ist die laufende Tageszeit eingetragen, steht statt der Skalen die Bestaetigung mit "Aendern".

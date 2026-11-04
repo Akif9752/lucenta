@@ -3,7 +3,7 @@
   // Im Fragebogen verschwindet die Leiste, damit niemand mitten im Test die Seite wechselt.
   var TAB_VON = {
     landing:'landing', result:'landing', ft:'landing',
-    state:'state',
+    state:'state', rueckblick:'state',
     understand:'understand', archetypes:'understand',
     freunde:'freunde', compare:'freunde',
     profile:'profile', verlauf:'profile', look:'profile', settings:'profile', plus:'profile',

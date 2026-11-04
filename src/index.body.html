@@ -308,8 +308,8 @@
     <!-- Runde 124: die Erinnerung dort, wo sie gebraucht wird. Derselbe Stand wie in den
          Einstellungen (erinnerungAnwenden() setzt beide). -->
     <div id="tfSerie" class="tf-serie" data-tf-teil="heute"></div>
-    <div id="tfWocheHeute" data-tf-teil="heute"></div>
-    <div id="tfRueckblickHeute" data-tf-teil="heute"></div>
+    <div id="tfRueckblickHinweis" data-tf-teil="heute"></div>
+    <button type="button" class="hilfe-knopf tf-rb-zeile" id="btnRueckblickOeffnen" data-tf-teil="heute"><span class="profil-weg-text"><strong data-i18n="rb_titel">Rückblick</strong><span data-i18n="rb_zeile">Deine Woche, dein Monat und dein Jahr auf einen Blick.</span></span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
     <div class="tf-erinnerung" data-tf-teil="heute">
       <div class="settings-zeile-text">
         <strong data-i18n="tf_erinnerung_titel">Tägliche Erinnerung</strong>
@@ -326,6 +326,17 @@
   </section>
 
   <!-- COMPAT ARCHIVE -->
+
+  <!-- RUECKBLICK: Woche, Monat, Jahr (09-rueckblick.js), Unterseite der Tagesform -->
+  <section class="view" id="view-rueckblick" tabindex="-1">
+    <div class="quiz-head nur-zurueck">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromRueckblick" data-i18n="zurueck_tagesform">← Tagesform</button>
+    </div>
+    <div class="archetypes-head">
+      <h1 data-i18n="rb_titel">Rückblick</h1>
+    </div>
+    <div id="rueckblickInhalt"></div>
+  </section>
 
   <!-- LUCENTA+ als Seite (23-plus-seite.js) -->
   <section class="view" id="view-plus" tabindex="-1">

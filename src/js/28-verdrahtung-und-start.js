@@ -33,6 +33,8 @@
     try{ $('landingStateEnergyRow').querySelector('button').focus(); }catch(e){}
   });
   $('btnBackFromState').addEventListener('click', function(){ showView('landing'); });
+  $('btnRueckblickOeffnen').addEventListener('click', function(){ rueckblickOeffnen(); });
+  $('btnBackFromRueckblick').addEventListener('click', function(){ renderStateView(); showView('state'); });
   $('btnTfAendern').addEventListener('click', function(){
     tfAendernOffen = true;
     $('tfErledigt').style.display = 'none';

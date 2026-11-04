@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 227)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 228)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 227 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 228 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -76,7 +76,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 227 | (dieser) | App an die Tab-Leiste angepasst (Hintergrund im Profilkopf und bei Freunde, Konto-Zeile weg), Daten per Datei einspielen |
+| 228 | (dieser) | Rueckblick: Woche, Monat und Jahr auf einer Unterseite der Tagesform, Kalender wieder nur Monat |
+| 227 | `8697fce` | App an die Tab-Leiste angepasst (Hintergrund im Profilkopf und bei Freunde, Konto-Zeile weg), Daten per Datei einspielen |
 | 226 | `bcae32f` | Nur noch die App: Browser-Fassung, CSS-Leiste und Browser-Rueckfaelle entfernt; Pruefungen auf App-Fassung in WebKit |
 | 225 | `8012a38` | Tab-Leiste in der App als Apples UITabBar (echtes Liquid Glass) |
 | 224 | `89990e5` | Tab-Leiste statt Schublade (5 Reiter, Glas-Kapsel), Einstellungen/Lucenta+ im Profil, Archetypen unter Verstehen |
@@ -123,9 +124,11 @@ Regeln, die er gesetzt hat:
 
 ### Wo was steht
 
-- **Jahr/Rueckblick/Notiz (Runde 184):** `09-rueckblick.js` (`tfJahrHTML`, `tfRueckblickDaten/HTML/Bild`, `tfJahrBild`,
-  `tfRueckblickHeuteRendern`), Umschalter `tfKalenderAnsicht` in `tfKalenderRendern` (07b), Notiz `#tfNotiz`/`tfNotizBereinigen`.
-  Bildfenster: `openImgModal(bild)`.
+- **Rueckblick (Runde 228, ersetzt die Orte aus Runde 184):** Unterseite `view-rueckblick` der Tagesform (`UNTERSEITE_VON.rueckblick
+  = 'state'`), Zeile `#btnRueckblickOeffnen` unter Heute, darueber zu Wochen-/Monatsende `#tfRueckblickHinweis`. Logik in
+  `09-rueckblick.js`: `renderRueckblick`, `rueckblickOeffnen(ansicht)`, Ansicht `rbAnsicht` = w/m/j, Blaettern `rbWocheVersatz`/
+  `rbMonatVersatz` (nur Lucenta+), Jahr `tfJahrHTML` (Tipp auf einen Monat oeffnet seinen Rueckblick). Kalender nur noch Monat.
+  Notiz `#tfNotiz`/`tfNotizBereinigen`; Bildfenster `openImgModal(bild)`.
 - **Sperre (Runde 183):** `LucentaSperre.swift` (`AppSperre`, Plugin `Lock`), JS `sperreEinrichten`/`sperreNachziehen` (19b),
   Zeilen `#sperreZeile`/`#sperreNachZeile`. Zum Testen im Simulator: `defaults write app.lucenta.ios lucenta_sperre_an -bool YES`,
   Face ID per `notifyutil -p com.apple.BiometricKit_Sim.pearl.match`.
@@ -493,17 +496,40 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 227** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 228** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 227 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 228 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 228 — Rueckblick: Woche, Monat und Jahr auf einer Seite
+
+**Auftrag:** Punkt B aus der Simulation. **Gewaehlt (Inhaber):** eigene Unterseite „Rueckblick ›" unter Heute mit Woche · Monat ·
+Jahr und Pfeilen zum Blaettern; unter Heute zu diesen Zeiten nur eine kleine Hinweiszeile; der Kalender zeigt wieder nur den
+Monat. Das loest die Orte aus Runde 184 ab (Jahr-Umschalter im Kalender, Monatsrueckblick unter vergangenen Monaten, Karten
+unter Heute) — ausdruecklicher neuer Auftrag.
+
+- **Woche:** sonntags die laufende, sonst die zuletzt fertige Woche (Mo–So), sieben Tage als Reihe; Schnitt frei, bester Tag und
+  Vergleich zur Vorwoche Lucenta+ (wie bisher). Blaettern mit Lucenta+.
+- **Monat:** in den ersten 7 Tagen der Vormonat, sonst der laufende; Karte wie bisher (teilbar), Lucenta+.
+- **Jahr:** wie bisher (teilbar), Lucenta+; ein Tipp auf einen Monat springt in dessen Rueckblick.
+- **Hinweis unter Heute:** „Deine Woche ist da ›" (So/Mo, ab drei Eintraegen) bzw. „Dein Oktober ist da ›" (erste 7 Tage).
+- 12 neue Texte in 8 Sprachen (u. a. „Rueckblick", „← Tagesform"); drei Texte des Kalender-Umschalters entfallen.
+- Pruefungen: `pruef-nativ` prueft Seite, Jahr -> Monat und Woche (147); die Fehlersuche hat drei neue Wege (`rb_woche/monat/jahr`).
+- `pruef-nativ`: Der ausfuehrliche Test (116 Antworten) verlor unter paralleler Last einen Tipp und fiel durch; er tippt jetzt
+  weiter, bis das Ergebnis gespeichert ist (hoechstens 160). Allein lief er immer durch.
+
+**Gemessen:** WebKit, 390 pt, dunkel, Beispieldaten mit Lucenta+: Woche und Jahr ohne Ausnahme angesehen.
+
+**Unsicher:** Seitennamen in fremden Sprachen von mir gewaehlt (en „Review", fr „Bilan", tr „Geriye bakış", ja „振り返り").
 
 ---
 

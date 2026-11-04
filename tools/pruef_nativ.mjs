@@ -746,11 +746,21 @@ await seite.evaluate(() => document.querySelector('[data-reiter="kalender"]').cl
 await seite.evaluate(() => (() => { const d = new Date(), k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     document.querySelector('[data-kal-tag="' + k + '"]')?.click(); })()); await seite.waitForTimeout(300);
 ok(await seite.evaluate(() => /Langer Spaziergang/.test(document.querySelector('.tf-kal-details')?.textContent || '')), 'die Notiz steht in den Tagesdetails des Kalenders');
-await seite.evaluate(() => document.querySelector('[data-kal-ansicht="jahr"]').click()); await seite.waitForTimeout(300);
-ok((await seite.evaluate(() => document.querySelectorAll('.tf-jahr-monat').length)) === 12, 'Jahresansicht mit zwoelf Monaten');
+ok(await seite.evaluate(() => !document.querySelector('[data-kal-ansicht]') && !document.querySelector('#tfKalender .tf-rb')),
+  'der Kalender zeigt nur noch den Monat (Jahr und Monatsrueckblick leben im Rueckblick)');
+await seite.evaluate(() => document.querySelector('[data-reiter="heute"]').click()); await seite.waitForTimeout(300);
+await seite.evaluate(() => document.getElementById('btnRueckblickOeffnen').click()); await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => document.querySelector('.view.active')?.id === 'view-rueckblick' && document.querySelectorAll('[data-rb-ansicht]').length === 3),
+  'die Zeile „Rueckblick" oeffnet die Seite mit Woche · Monat · Jahr');
+await seite.evaluate(() => document.querySelector('[data-rb-ansicht="j"]').click()); await seite.waitForTimeout(300);
+ok((await seite.evaluate(() => document.querySelectorAll('#rueckblickInhalt .tf-jahr-monat').length)) === 12, 'Jahresansicht mit zwoelf Monaten');
 await seite.evaluate(() => document.querySelector('[data-jahr-monat="' + (new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).getMonth()) + '"]')?.click()); await seite.waitForTimeout(300);
-const rbk = await seite.evaluate(() => ({ansicht: !!document.querySelector('.tf-kal-raster'), rb: document.querySelector('.tf-kal-karte .tf-rb')?.textContent || ''}));
-ok(rbk.ansicht && /4,0|4\.0/.test(rbk.rb), 'Tipp auf einen Monat oeffnet ihn, darunter der Rueckblick mit echten Zahlen (' + JSON.stringify(rbk).slice(0, 160) + ')');
+const rbk = await seite.evaluate(() => ({ansicht: document.querySelector('[data-rb-ansicht="m"]')?.getAttribute('aria-checked'), rb: document.querySelector('#rueckblickInhalt .tf-rb')?.textContent || ''}));
+ok(rbk.ansicht === 'true' && /4,0|4\.0/.test(rbk.rb), 'Tipp auf einen Monat oeffnet seinen Rueckblick mit echten Zahlen (' + JSON.stringify(rbk).slice(0, 160) + ')');
+await seite.evaluate(() => document.querySelector('[data-rb-ansicht="w"]').click()); await seite.waitForTimeout(300);
+ok(await seite.evaluate(() => document.querySelectorAll('#rueckblickInhalt .tf-rb-tage i').length === 7), 'die Woche zeigt sieben Tage');
+await seite.evaluate(() => document.getElementById('btnNavZurueck').click()); await seite.waitForTimeout(500);
+ok(await seite.evaluate(() => document.querySelector('.view.active')?.id === 'view-state'), 'zurueck fuehrt in die Tagesform');
 await seite.evaluate(() => { localStorage.removeItem('lucenta_plus'); localStorage.removeItem('__pruef_abo'); localStorage.removeItem('lucenta_state'); });
 
 console.log('\n=== Ausfuehrlicher Test: 116 Aussagen, 29 Facetten ===');
@@ -769,7 +779,11 @@ ok(await seite.evaluate(() => document.getElementById('ftWahl').classList.contai
   'das Antwortwort erscheint ueber der Skala');
 await seite.waitForTimeout(400);
 await seite.evaluate(() => document.getElementById('ftPrev').click()); await seite.waitForTimeout(300);
-for (let i = 0; i < 116; i++){ await seite.evaluate(() => document.querySelector('#ftRow button:nth-child(5)').click()); await seite.waitForTimeout(280); }
+// Unter paralleler Last geht mit fester Wartezeit mal ein Tipp verloren: weiter tippen, bis gespeichert ist (hoechstens 160).
+for (let i = 0; i < 160; i++){
+  if (await seite.evaluate(() => !!localStorage.getItem('lucenta_facetten'))) break;
+  await seite.evaluate(() => document.querySelector('#ftRow button:nth-child(5)')?.click()); await seite.waitForTimeout(280);
+}
 await seite.waitForTimeout(1200);
 const ft = await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_facetten') || 'null'));
 ok(ft && Object.keys(ft.f).length === 29 && !('O6' in ft.f), 'gespeichert: 29 Facetten, ohne O6');
