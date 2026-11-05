@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-05, nach Runde 232)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-05, nach Runde 233)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 232 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 233 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -76,7 +76,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 232 | (dieser) | Notiz in der Bestaetigung, Wiederherstellungscode nicht mehr angeboten, Freigrenze bleibt 7 Tage |
+| 233 | (dieser) | Notiz auch ueber den Kurzbefehl, Store-Bilder aus der App im Simulator (6,9 und 6,3 Zoll) |
+| 232 | `2de698b` | Notiz in der Bestaetigung, Wiederherstellungscode nicht mehr angeboten, Freigrenze bleibt 7 Tage |
 | 231 | `d881744` | Grundsatz nach dem Kuendigen bleibt lesbar aus frei-und-gekauft.md gestrichen (nur Doku) |
 | 230 | `ccf38f2` | frei-und-gekauft.md ganz auf den Stand des Codes (nur Doku) |
 | 229 | `47d59e0` | frei-und-gekauft.md auf sieben freie Tage korrigiert (nur Doku) |
@@ -153,7 +154,7 @@ Regeln, die er gesetzt hat:
   `24-native.js` (`erinnerungZeit`, `erinnerungAlle`); Kaufpfade `plusKnopfText` (05), `probeTage`/`plusStandUebernehmen`/
   `bewertungErbitten` (19b), `aboGeaendert` + `bewerten` in `LucentaKaeufePlugin.swift`; erstes Muster frei +
   `musterAngebotText` (07b); Hintergruende `HINTERGRUENDE`/`HG_GRUPPEN`/`HG_FREI` (15-figuren.js) + `.hg-*` (09-archetypen.css).
-  Werkzeuge: `tools/flackern/`, `tools/datenschutz_seite.mjs` (→ `web/datenschutz/`), `tools/store_bilder.mjs` (mit Ueberschriften).
+  Werkzeuge: `tools/flackern/`, `tools/datenschutz_seite.mjs` (→ `web/datenschutz/`), `tools/store_bilder/` (aus dem Simulator, mit Ueberschriften).
 - **Stil:** `src/styles/12-ios.css` (letzte Datei, schlaegt alle) fuer iOS-Form, Glas, Kaufseite,
   Vorschauen, Hilfe-Knopf. Farbmarken in `00-grundlagen.css` — **je drei Bloecke**. Bewegung und
   Feiern in `11-feier.css` (Abschnitt 8 = Runde 129–132). Tagesform in `07-tagesform.css`.
@@ -274,7 +275,7 @@ Regeln, die er gesetzt hat:
 **Kein laufender Auftrag.** Runden 165–222 sind erledigt, gepusht und auf Simulator und iPhone installiert. Der naechste
 Auftrag kommt im Gespraech.
 
-*Zuletzt angeboten, noch nicht beauftragt:* Store-Bilder mit dem heutigen Stand neu erzeugen (`node tools/store_bilder.mjs`,
+*Erledigt in Runde 233:* Store-Bilder aus dem Simulator mit Apples Tab-Leiste (`npm run store-bilder`); vorher:
 zuletzt Runde 178 — seitdem Serie, Meilensteine, Wochenrueckblick, Zubehoer, App-Symbole neu).
 
 *Wartet auf den Inhaber:* die Tierbilder aus dem Generator (Runde 212); danach je Tier Kopfstelle (`koepfe.json`, auch den
@@ -289,7 +290,7 @@ gemessen, nicht am Geraet). Meldet er wieder Ruckeln: `sh tools/flackern/wege.sh
 
 *Seit laengerem offen:* Fachdurchsicht der 40 Verstehen-Karten (Psychologie) und muttersprachliche Durchsicht aller
 Uebersetzungen (alle neuen Texte seit Runde 165 hat die Sitzung selbst uebersetzt). Store-Bilder kurz vor dem Einreichen
-neu erzeugen (`node tools/store_bilder.mjs`, zuletzt Runde 178). Pruefbericht Richtlinien: `docs/richtlinien-pruefung.md`.
+neu erzeugen (`npm run store-bilder`, zuletzt Runde 233). Pruefbericht Richtlinien: `docs/richtlinien-pruefung.md`.
 
 *Am echten iPhone noch nie geprueft:* Widget antippen und Health-Erlaubnis (braucht den bezahlten Account fuer App
 Group/HealthKit), ob das Widget die heutige Erinnerung absagen kann, echte Anmeldung mit Apple + CloudKit, echter Kauf/Probezeit/Win-back, Teilen-Blatt
@@ -502,17 +503,40 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 232** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 233** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 232 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 233 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 233 — Notiz ueber den Kurzbefehl; Store-Bilder aus dem Simulator
+
+**Inhaber:** „mach das Unsichere und mach J".
+
+- **Notiz ueber Siri/Kurzbefehle:** `TagesformEintragenIntent` hat den freiwilligen Parameter „Notiz" (Siri fragt nicht danach,
+  in der Kurzbefehle-App laesst er sich fuellen; 8 Sprachen im String-Katalog). Er geht ueber den Widget-Eingang
+  (`WidgetEmpfaenger.eintragen(…, notiz:)`) an die Seite; `widgetEingangUebernehmen` uebernimmt ihn (bereinigt, 200 Zeichen)
+  und behaelt sonst die Notiz des ersetzten Eintrags. Das **Widget** kann technisch keinen Text aufnehmen (nur Knoepfe) —
+  dort bleibt „Notiz hinzufuegen" in der App. `pruef-nativ` 150.
+- **J, Store-Bilder:** neues Werkzeug `tools/store_bilder/` (ersetzt `tools/store_bilder.mjs`): `aufnehmen.sh` faehrt die echte
+  App im Simulator (6,9" iPhone 18 Pro Max 1320 x 2868, 6,3" iPhone 18 Pro 1206 x 2622, Statusleiste 9:41), haengt je Szene
+  `szene.js` an die installierte index.html (Sprache, Lucenta+, Beispieldaten, Weg ueber `window.__lucentaTab`), nimmt mit
+  `simctl io` auf und stellt die Datei wieder her; `rahmen.mjs` setzt Ueberschrift und Rahmen. 20 Bilder (de, en).
+- **Drei Fallen unterwegs, gemessen:** (1) Der Debug-Bau zeichnet im Simulator erst nach 10–16 s — kuerzere Wartezeiten ergaben
+  schwarze Bilder. (2) Die Pruefung der Sprache ueber den Speicher lud bei Deutsch endlos neu (317 Neuladungen in 40 s).
+  (3) Die App schreibt beim Start nach dem Nachladen des alten Pakets die Sprache selbst zurueck — der Wechsel geschieht jetzt
+  nach 3 s und einmal je Start (`sessionStorage`). Jede Szene ist danach angesehen.
+
+**Unsicher:** Die Bilder zeigen das dunkle Erscheinungsbild (Vorgabe der App), die alten waren hell. Ein Durchgang dauert rund
+16 Minuten.
 
 ---
 

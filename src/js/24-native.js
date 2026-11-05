@@ -98,6 +98,9 @@
       var e = {day: tagSchluessel(x.ts), ts: x.ts, energy: x.energy, valence: x.valence, slot: zeitabschnitt(x.ts)};
       if (h.some(function(a){ return a.day === e.day && a.slot === e.slot && a.ts >= e.ts; })) return;
       var alt = h.filter(function(a){ return a.day === e.day && a.slot === e.slot; })[0];
+      // Notiz aus dem Kurzbefehl; ohne sie bleibt die des ersetzten Eintrags.
+      var n = tfNotizBereinigen(x.notiz) || (alt && tfNotizBereinigen(alt.notiz));
+      if (n) e.notiz = n;
       h = h.filter(function(a){ return a !== alt; });
       h.push(e); neu.push([e, alt]);
     });

@@ -91,9 +91,10 @@ die Store-Beschreibung muss es genauso halten.
 - **Impressum und Datenschutzerklärung** in der App, unter Einstellungen → Rechtliches.
 - **Barrierefreiheit**: Trefferflächen ab 44 px, jede Schaltfläche mit Namen, reduzierte
   Bewegung durchgehend beachtet, 200-%-Zoom geprüft.
-- **Bildschirmfotos für den Store** in beiden von Apple verlangten Größen (1290 × 2796 und
-  1179 × 2556), fünf Ansichten je Größe und Sprache: `npm run store-bilder`. Sie entstehen aus
-  der Beispielnutzerin in der gekauften Fassung — nur dort sind die Ansichten gefüllt.
+- **Bildschirmfotos für den Store** aus der echten App im Simulator, mit Apples Tab-Leiste: 6,9 Zoll
+  (1320 × 2868, iPhone 18 Pro Max) und 6,3 Zoll (1206 × 2622, iPhone 18 Pro), fünf Ansichten je Größe
+  und Sprache: `npm run store-bilder` (vorher `npm run installieren -- sim`, rund 16 Minuten). Sie entstehen
+  aus der Beispielnutzerin in der gekauften Fassung, im dunklen Erscheinungsbild der App.
 - **Die Store-Texte** in allen acht Sprachen: `docs/store-eintrag.md`. Zeichenzahlen von
   `npm run pruef-store` gezählt, nicht geschätzt.
 - **Der Weg für Käufe wiederherstellen und Abo verwalten** (Richtlinie 3.1.2) steht unter
@@ -230,11 +231,9 @@ blockiert.
    genutzt werden duerfen, nach `docs/tierbilder-prompts.md`; Nachweis der Lizenz aufheben. Einbau macht die Sitzung
    (`tools/figuren_bilder_holen.py`). Bis dahin zeigt die App die eigenen 3D-Figuren. **Vor dem Einreichen** danach die
    Store-Bilder neu erzeugen (`npm run store-bilder`), damit sie die endgueltigen Tiere zeigen.
-7. **Die Bildschirmfotos hochladen.** Erzeugt sind sie (zuletzt Runde 166, `assets/store/`, beide
-   Größen, deutsch und englisch) — hochladen kann sie nur, wer in App Store Connect angemeldet
-   ist. Sie stammen aus dem Browser, nicht vom Gerät: für die Einreichung reicht das, Apple
-   prüft die Pixelmaße, nicht die Herkunft. Wenn dir auf dem echten iPhone etwas auffällt, was
-   im Bild anders aussieht, ist `npm run store-bilder` in einer Minute noch einmal gelaufen.
+7. **Die Bildschirmfotos hochladen.** Erzeugt sind sie (zuletzt Runde 233, `assets/store/`, 6,9 und
+   6,3 Zoll, deutsch und englisch, aus der App im Simulator) — hochladen kann sie nur, wer in App Store
+   Connect angemeldet ist. Nach den endgültigen Tierbildern `npm run store-bilder` noch einmal laufen lassen.
 
 ## 6. Der größte offene Punkt bleibt fachlich, nicht technisch
 

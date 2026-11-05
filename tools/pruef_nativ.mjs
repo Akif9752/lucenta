@@ -678,6 +678,11 @@ ok(wl.some(m => m.verarbeitet && m.verarbeitet.length === 2), 'beide Zahlen-Eint
 ok(wl.some(m => m.stand && Object.values(m.stand.eintraege).some(w => w.energy === 2)), 'der neue Stand geht ans Widget');
 await seite.evaluate(() => { window.__widget = []; window.lucentaWidgetEingang([{ts: Date.now() - 864e5 * 5, energy: 3, valence: 3}]); });
 ok((await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_state')).length)) === 1, 'ein Eintrag aelter als drei Tage wird verworfen');
+// Kurzbefehl mit Notiz: ersetzt den Eintrag derselben Tageszeit und traegt die Notiz (gekuerzt) mit.
+await seite.evaluate(() => { window.lucentaWidgetEingang([{ts: Date.now(), energy: 4, valence: 4, notiz: '  Per   Siri  ' + 'y'.repeat(300)}]); });
+await seite.waitForTimeout(200);
+const sn = await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_state')).slice(-1)[0]);
+ok(sn.energy === 4 && /^Per Siri y/.test(sn.notiz || '') && sn.notiz.length === 200, 'Notiz aus dem Kurzbefehl uebernommen und auf 200 Zeichen begrenzt');
 
 console.log('\n=== Apple Health: nur auf Wunsch, nur schreiben ===');
 await seite.evaluate(() => { localStorage.removeItem('lucenta_state'); localStorage.removeItem('lucenta_health'); localStorage.removeItem('__pruef_health'); });

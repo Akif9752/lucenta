@@ -16,12 +16,18 @@ struct TagesformEintragenIntent: AppIntent {
                requestValueDialog: IntentDialog("How is your energy, from 1 to 5?"))
     var energie: Int
 
+    // Freiwillig: Siri fragt nicht danach, in der Kurzbefehle-App laesst sie sich fuellen. Bleibt auf dem Geraet.
+    @Parameter(title: "Note")
+    var notiz: String?
+
     static var parameterSummary: some ParameterSummary {
-        Summary("Log mood \(\.$stimmung) and energy \(\.$energie)")
+        Summary("Log mood \(\.$stimmung) and energy \(\.$energie)") {
+            \.$notiz
+        }
     }
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        WidgetEmpfaenger.eintragen(energy: energie, valence: stimmung)
+        WidgetEmpfaenger.eintragen(energy: energie, valence: stimmung, notiz: notiz)
         await MainActor.run { NotificationCenter.default.post(name: WidgetEmpfaenger.neuerEintrag, object: nil) }
         return .result(dialog: IntentDialog("Logged: mood \(stimmung), energy \(energie)."))
     }

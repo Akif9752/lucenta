@@ -41,9 +41,11 @@ final class WidgetEmpfaenger: NSObject, WKScriptMessageHandler {
         if let d = try? JSONSerialization.data(withJSONObject: liste) { try? d.write(to: u, options: .atomic) }
     }
 
-    nonisolated static func eintragen(energy: Int, valence: Int) {
+    nonisolated static func eintragen(energy: Int, valence: Int, notiz: String? = nil) {
         var l = eingang()
-        l.append(["ts": (Date().timeIntervalSince1970 * 1000).rounded(), "energy": energy, "valence": valence])
+        var e: [String: Any] = ["ts": (Date().timeIntervalSince1970 * 1000).rounded(), "energy": energy, "valence": valence]
+        if let n = notiz?.trimmingCharacters(in: .whitespacesAndNewlines), !n.isEmpty { e["notiz"] = String(n.prefix(200)) }
+        l.append(e)
         eingangSchreiben(Array(l.suffix(30)))
         WidgetCenter.shared.reloadAllTimelines()
     }

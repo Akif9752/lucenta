@@ -17,7 +17,7 @@
     "ios:sync": "node build.js && npx cap sync ios && npm run ios:claude",
     "installieren": "sh tools/installieren.sh",
     "runde": "node tools/runde_abschliessen.mjs",
-    "store-bilder": "node tools/store_bilder.mjs",
+    "store-bilder": "sh tools/store_bilder/aufnehmen.sh",
     "pruef-store": "python3 tools/pruef_store_texte.py",
     "mac:entlasten": "node tools/mac_entlasten.mjs",
     "pruef-app": "node tools/pruef_appfassung.mjs",
