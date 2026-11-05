@@ -505,7 +505,6 @@
     if (andererName) legende = legende.replace(/(dot-other"><\/span>)[^<]*/, '$1' + andererName);
     var radarBlock = '<div class="radar-wrap compat-radar">'+radarSVG(me, 300, {scores:other, name:andererName})+'</div>'+
       legende;
-    var note = tx('js_die_prozentzahl_oben_ist_e');
     // Der frueher hier stehende Hinweiskasten ist raus: Er saesse unter fuenf Karten, die den
     // gleichen Hinweis schon in sich tragen, und wuerde denselben Satz sechsmal sagen.
     if (vergleichGesperrt){
@@ -514,7 +513,7 @@
       return;
     }
     var bericht = paarBerichtHTML(me, other, andererName);
-    box.innerHTML = scoreBlock + radarBlock + summary + (cmpPlus ? bericht : vorschauHTML(bericht, tx('pb_plus'))) + lines.join('') + note;
+    box.innerHTML = scoreBlock + radarBlock + summary + (cmpPlus ? bericht : vorschauHTML(bericht, tx('pb_plus'))) + lines.join('');
     startCompatBars(box);
     schloesserVerdrahten(box);
     lastCompatSnapshot = { myCode: $('cmpMe').value.trim(), otherCode: $('cmpOther').value.trim(), match: match };

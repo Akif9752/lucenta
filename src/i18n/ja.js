@@ -378,7 +378,6 @@
       'js_von__dimensionen_ähnlich': ' / 5 の次元が近く、',
       'js_unterschiedlich__beides_k': ' が異なります。どちらも、どれだけ意識して向き合うかしだいでよい土台になります。</div>',
       'js_duandere_person': '<div class="compat-legend"><span><span class="dot dot-me"></span>あなた</span><span><span class="dot dot-other"></span>相手</span></div>',
-      'js_die_prozentzahl_oben_ist_e': '<div class="compat-note">この割合は、二人の五つの値がどれだけ近いかを示します。似ているほうがよいわけではありません。</div>',
       'js_übereinstimmung': '一致度',
       'js_noch_kein_ergebnis_auf_die': 'この端末にはまだ結果がありません。',
       'js_test_starten_2': '診断をはじめる',

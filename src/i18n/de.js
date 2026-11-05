@@ -75,7 +75,6 @@ CONTENT.de = {
       'js_von__dimensionen_ähnlich': ' von 5 Dimensionen ähnlich, ',
       'js_unterschiedlich__beides_k': ' unterschiedlich — beides kann eine gute Basis sein, je nachdem, wie bewusst ihr damit umgeht.</div>',
       'js_duandere_person': '<div class="compat-legend"><span><span class="dot dot-me"></span>Du</span><span><span class="dot dot-other"></span>Andere Person</span></div>',
-      'js_die_prozentzahl_oben_ist_e': '<div class="compat-note">Die Prozentzahl zeigt, wie nah eure fünf Werte beieinander liegen &mdash; ähnlicher heißt nicht besser.</div>',
       'js_übereinstimmung': 'Übereinstimmung',
       'js_noch_kein_ergebnis_auf_die': 'Noch kein Ergebnis auf diesem Gerät.',
       'js_test_starten_2': 'Test starten',

@@ -378,7 +378,6 @@
       'js_von__dimensionen_ähnlich': ' / 5 boyut benzer, ',
       'js_unterschiedlich__beides_k': ' farklı — ne kadar bilinçli davrandığınıza göre ikisi de iyi bir zemin olabilir.</div>',
       'js_duandere_person': '<div class="compat-legend"><span><span class="dot dot-me"></span>Sen</span><span><span class="dot dot-other"></span>Diğer kişi</span></div>',
-      'js_die_prozentzahl_oben_ist_e': '<div class="compat-note">Yüzde, beş puanınızın birbirine ne kadar yakın olduğunu gösterir &mdash; daha benzer daha iyi demek değildir.</div>',
       'js_übereinstimmung': 'Örtüşme',
       'js_noch_kein_ergebnis_auf_die': 'Bu cihazda henüz sonuç yok.',
       'js_test_starten_2': 'Teste başla',

@@ -375,7 +375,6 @@
       'js_von__dimensionen_ähnlich': ' of 5 dimensions alike, ',
       'js_unterschiedlich__beides_k': ' different — either can be a good basis, depending on how consciously you handle it.</div>',
       'js_duandere_person': '<div class="compat-legend"><span><span class="dot dot-me"></span>You</span><span><span class="dot dot-other"></span>Other person</span></div>',
-      'js_die_prozentzahl_oben_ist_e': '<div class="compat-note">The percentage shows how close your five scores are &mdash; more similar does not mean better.</div>',
       'js_übereinstimmung': 'Overlap',
       'js_noch_kein_ergebnis_auf_die': 'No result on this device yet.',
       'js_test_starten_2': 'Start the test',

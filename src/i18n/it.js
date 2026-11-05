@@ -374,7 +374,6 @@
       'js_von__dimensionen_ähnlich': ' dimensioni su 5 simili, ',
       'js_unterschiedlich__beides_k': ' diverse: entrambe le cose possono essere una buona base, a seconda di quanta consapevolezza ci metti.</div>',
       'js_duandere_person': '<div class="compat-legend"><span><span class="dot dot-me"></span>Tu</span><span><span class="dot dot-other"></span>L’altra persona</span></div>',
-      'js_die_prozentzahl_oben_ist_e': '<div class="compat-note">La percentuale mostra quanto sono vicini i vostri cinque punteggi &mdash; più simile non vuol dire migliore.</div>',
       'js_übereinstimmung': 'Corrispondenza',
       'js_noch_kein_ergebnis_auf_die': 'Nessun risultato su questo dispositivo finora.',
       'js_test_starten_2': 'Inizia il test',
