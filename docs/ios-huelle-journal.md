@@ -44,6 +44,12 @@ lassen. Die Richtungen:
   einen Blick, Monatsrueckblick, Notiz am Eintrag, Siri-Kurzbefehle, Tier mit drei Ausdruecken nach der Tagesform,
   Freundespaar-Bericht, ausfuehrlicher Test mit 29 Facetten (Lucenta+). Der Inhaber fragt gern „was haben erfolgreiche
   Apps dieser Sparte?" und waehlt dann Nummern aus der Liste.
+- **Runde 223–236: grosser Umbau auf „nur App"** — Tab-Leiste statt Schublade, in der App als Apples UITabBar (echtes Liquid
+  Glass, `LucentaTabLeistePlugin.swift`); keine Browser-Fassung mehr (nur `dist/index.html`, Pruefungen in WebKit mit
+  `tools/app_bruecke.mjs`); Hintergrund im Profilkopf und auf der Freunde-Karte; Rueckblick Woche/Monat/Jahr als Unterseite der
+  Tagesform; Notiz in der Bestaetigung und im Kurzbefehl; Daten sichern/einspielen als Datei; Store-Bilder aus dem Simulator
+  (`npm run store-bilder`); Simulation mit 2000 Personen (A–J) bis auf C abgearbeitet; Rundlauf durch die App (Runde 236).
+  Er arbeitet die offene Liste Buchstabe fuer Buchstabe ab und will am Ende jeder Runde die Liste sehen.
 - **Runde 214–222: App-Feinschliff waehrend er auf die Tierbilder wartet** — Serie/Meilensteine/Wochenrueckblick,
   Zubehoer, alternative App-Symbole, Einstellungen entbuggt (218/219), Seitenwechsel ohne Zucken (220), Fehlersuche mit
   App-Bruecke (222). Er meldet Fehler knapp und pauschal („sehr verbuggt", „ruckelt immer noch") — dann **messen, welche
@@ -275,34 +281,33 @@ Regeln, die er gesetzt hat:
 
 ### Was offen ist
 
-**Kein laufender Auftrag.** Runden 165–222 sind erledigt, gepusht und auf Simulator und iPhone installiert. Der naechste
-Auftrag kommt im Gespraech.
+**Kein laufender Auftrag.** Runden 223–236 sind erledigt, gepusht und auf Simulator und iPhone installiert.
 
-*Erledigt in Runde 233:* Store-Bilder aus dem Simulator mit Apples Tab-Leiste (`npm run store-bilder`); vorher:
-zuletzt Runde 178 — seitdem Serie, Meilensteine, Wochenrueckblick, Zubehoer, App-Symbole neu).
+*Kann die Sitzung bauen (aus der Simulation, Runde 223):* **C** — Schutztag der Serie sichtbar machen, Serienzaehler leiser
+(gegen Serien-Druck). Mit Optionen vorlegen, bevor gebaut wird.
 
-*Wartet auf den Inhaber (Reihenfolge laut Inhaber, Runde 234):* zuerst die Tierbilder aus dem Generator (Runde 212, werden erzeugt);
-Impressum, Kontakt-E-Mail und Datenschutz-URL kommen erst ganz zuletzt; die Domain fuer Einladungslinks und der bezahlte
-Developer-Account erst viel spaeter (Runde 235) — nicht vorher danach fragen. Nach den Tierbildern danach je Tier Kopfstelle (`koepfe.json`, auch den
-Sonderfall „Kopf so gross wie das Bild", Runde 221) und Zubehoer-Lage ansehen und die Store-Bilder neu erzeugen. Aus der
-Funktionsliste (Runde 213) nicht gewaehlt: Reflexionsfrage, kurze Uebung, Export, Health lesen, Apple Watch.
+*Am iPhone vom Inhaber anzusehen (im Simulator/WebKit gebaut, am Geraet nicht bestaetigt):* Apples Tab-Leiste (Tippen, Ziehen
+zwischen Reitern, Ruckeln ueber dem Sternenhimmel), Daten sichern und per Dateiauswahl einspielen, Rueckblick, Notiz in der
+Bestaetigung und im Kurzbefehl, die neuen Erinnerungen (hoechstens drei am Tag), Profilkopf/Freunde-Karte/Portraet-Karte.
 
-*Nach Runde 220 am Geraet zu bestaetigen:* ob „Aussehen" auf dem iPhone noch spuerbar verzoegert anlaeuft (im Simulator
-gemessen, nicht am Geraet). Meldet er wieder Ruckeln: `sh tools/flackern/wege.sh` und die betroffene Seite messen.
+*Wartet auf den Inhaber (Reihenfolge laut Inhaber, Runde 234/235 — nicht vorher danach fragen):*
+1. **Tierbilder** aus dem Generator (werden erzeugt). Danach Einbau (`python3 tools/figuren_bilder_holen.py`), je Tier Kopfstelle
+   (`koepfe.json`, Sonderfall „Kopf so gross wie das Bild", Runde 221) und Zubehoer-Lage ansehen, Store-Bilder neu (`npm run store-bilder`, ~16 Min.).
+2. Fachdurchsicht der 40 Verstehen-Karten, muttersprachliche Durchsicht der Uebersetzungen (alles seit Runde 165 selbst uebersetzt).
+3. **Viel spaeter:** Domain fuer Einladungslinks (`einladung/`), bezahlter Developer-Account, Abo-Produkte `lucenta.plus.monat`/`.jahr`.
+4. **Ganz zuletzt:** Impressum, Kontakt-E-Mail (dann auch die Kontaktzeile unter „Hilfe & Ueber"), Datenschutz-URL.
 
-*Wartet auf eine Entscheidung des Inhabers (aus Runde 179, mit Empfehlung vorgelegt — nicht ungefragt bauen):*
-- **Kontaktzeile** unter „Hilfe & Ueber" (`mailto:`) — braucht die E-Mail-Adresse des Inhabers.
+*Aus der Funktionsliste (Runde 213) nicht gewaehlt:* Reflexionsfrage, kurze Uebung, Export, Health lesen, Apple Watch.
 
-*Seit laengerem offen:* Fachdurchsicht der 40 Verstehen-Karten (Psychologie) und muttersprachliche Durchsicht aller
-Uebersetzungen (alle neuen Texte seit Runde 165 hat die Sitzung selbst uebersetzt). Store-Bilder kurz vor dem Einreichen
-neu erzeugen (`npm run store-bilder`, zuletzt Runde 233). Pruefbericht Richtlinien: `docs/richtlinien-pruefung.md`.
-
-*Am echten iPhone noch nie geprueft:* Widget antippen und Health-Erlaubnis (braucht den bezahlten Account fuer App
-Group/HealthKit), ob das Widget die heutige Erinnerung absagen kann, echte Anmeldung mit Apple + CloudKit, echter Kauf/Probezeit/Win-back, Teilen-Blatt
-beim Einladen, Abo-verwalten-Blatt. (Haptik, Wischgesten, Erinnerungen laufen auf dem iPhone 15 Pro des Inhabers.)
+*Am echten iPhone noch nie geprueft (braucht den bezahlten Account):* Widget antippen, Health-Erlaubnis, echte Anmeldung mit Apple
++ CloudKit, echter Kauf/Probezeit/Win-back.
 
 *Nicht erneut zur Wahl stellen (abgenommen, „passt"):* Polwoerter der Tagesform, Strahlenkranz, Push/Pop, schwarzes
-Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht noch einmal suchen**.
+Startbild, Profilkopf, Freunde-Karte. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht noch einmal suchen**.
+
+*Werkzeug-Fallen dieser Runden:* Hilfsskripte in `tools/` rutschen von selbst in den Git-Index — vor dem Commit
+`git status --short tools` und mit `git rm --cached` herausnehmen. Lange `python3 - <<EOF`-Befehle liessen den Freigabe-Hook
+mehrmals haengen: Skripte mit Write nach /tmp legen und kurz ausfuehren. Im Simulator zeichnet der Debug-Bau erst nach 10–16 s.
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
