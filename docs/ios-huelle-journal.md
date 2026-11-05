@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-05, nach Runde 236)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-05, nach Runde 237)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 236 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 237 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -82,7 +82,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 236 | (dieser) | Rundlauf: Rueckweg der Rechtsseite, Datenschutz-Fakten, Beispieldaten; Profilkopf, Rueckblick, Portraet-Karte, Ergebnisseite |
+| 237 | (dieser) | Fehlersuche mit 2000 simulierten Personen (Werkzeug npm run personen), zwoelf Befunde, App unveraendert |
+| 236 | `a5c9f07` | Rundlauf: Rueckweg der Rechtsseite, Datenschutz-Fakten, Beispieldaten; Profilkopf, Rueckblick, Portraet-Karte, Ergebnisseite |
 | 235 | `b19e5ee` | Zu jeder Tageszeit: hoechstens drei Mitteilungen am Tag (ohne Nacherinnerung) |
 | 234 | `452388f` | Vergleich ohne den Satz zur Prozentzahl; Reihenfolge der Inhaberaufgaben vermerkt |
 | 233 | `b00919c` | Notiz auch ueber den Kurzbefehl, Store-Bilder aus der App im Simulator (6,9 und 6,3 Zoll) |
@@ -282,6 +283,13 @@ Regeln, die er gesetzt hat:
 ### Was offen ist
 
 **Kein laufender Auftrag.** Runden 223–236 sind erledigt, gepusht und auf Simulator und iPhone installiert.
+
+*Aus der Fehlersuche mit 2000 Personen (Runde 237, noch nicht behoben, dem Inhaber vorgelegt):* kann ich bauen — Gastdurchlauf
+ueberschreibt eigenes Ergebnis, Codes von Hand normalisieren (Leerzeichen, Gedankenstrich, O/I), Tagesform-Grenze 800 (Datenschutztext
+nennt 800, mitziehen), „Alle Daten loeschen" vollstaendig (+ Widget), Tagesform-Seite beim Wiederoeffnen auffrischen, halbes Emoji
+in der Notiz, Freunde mit gleichem Ergebnis, Hinweis bei vollem Speicher, Einspielen ersetzt ganz. Braucht seine Entscheidung —
+Startsprache = iPhone-Sprache, Benutzer-ID fuer andere Schriften/kurze Namen, Brasilianisches Portugiesisch, Satz zur
+EU-OS-Plattform im Impressum, Wochenbeginn nach Region, staerkere Pruefsumme (laengerer Code). Werkzeug: `npm run personen`.
 
 *Kann die Sitzung bauen (aus der Simulation, Runde 223):* **C** — Schutztag der Serie sichtbar machen, Serienzaehler leiser
 (gegen Serien-Druck). Mit Optionen vorlegen, bevor gebaut wird.
@@ -513,17 +521,61 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 236** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 237** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 236 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 237 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 237 — Fehlersuche mit 2000 simulierten Personen (nur Werkzeug, App unveraendert)
+
+**Inhaber:** „mach noch eine ausfuehrliche detaillierte Fehlersuche, simuliere dass es 2000 Personen machen aus
+unterschiedlichsten Backgrounds". Neues Werkzeug `tools/personen_simulation.mjs` (`npm run personen [anzahl]`, ~100 Min.
+fuer 2000, Bericht `.pruef-log/personen.json`): Jede Person bedient die App wirklich (WebKit, App-Bruecke, `dist/index.html`)
+mit eigener Region (26 Gebiete, 8 Sprachen, Zeitzonen bis +14/−11, Kathmandu, Lord Howe), Uhrzeit (Mitternacht, Silvester,
+Abschnittsgrenzen, Zeitumstellung EU/US), Breite 320–440 pt, Textgroesse 88–200 %, Hell/Dunkel/System, wenig Bewegung,
+Antwortmuster (realistisch, zufaellig, gleichfoermig, Zurueck, Doppeltipp, Abbruch mit Neustart, Sprachwechsel mitten im
+Test), Namen aus vielen Schriften, Freundescodes von Hand (mit Fehlern), Notizen, Einspielen, Loeschen, Speicher voll.
+
+**Ohne Fund (alle 2000):** keine Ausnahme, kein Konsolenfehler, kein seitlicher Ueberstand, keine Textreste; Ergebnis stimmt
+bei jedem Muster mit den Antworten ueberein (auch Zurueck, Abbruch, Sprachwechsel, Doppeltipp); Tagesform immer am richtigen
+Ortstag und in der richtigen Tageszeit, auch bei Zeitumstellung; Namen und Notizen nie als HTML; Onboarding endet immer.
+
+**Funde (Personen von 2000), im Code nachgeprueft:**
+1. 1530 — Erster Start immer auf Deutsch: die iPhone-Sprache wird nirgends gelesen (`01-sprachpakete.js`, `LANG = 'de'`).
+2. 423 — Keine Benutzer-ID aus Namen in anderen Schriften (さくら, 山田太郎, محمد, Олег) und bei kurzen Namen (Li, Bo).
+3. 223 — **Gastdurchlauf ueberschreibt das eigene Ergebnis**: Fortschritt wird auch fuer Gaeste gespeichert, „Weitermachen"
+   setzt `guestRun = false` (`syncHeroState`). Wer das Handy weiterreicht und die Person wechselt kurz den Reiter, verliert sein Ergebnis.
+4. 637 Ablehnungen — von Hand richtig gemeinte Codes abgelehnt: Leerzeichen statt Strich (200), ohne Striche (193),
+   Gedankenstrich (148), O/I statt 0/1 (96). 68 Tippfehler als gueltig angenommen (2-Bit-Pruefsumme, jeder vierte).
+5. 173 — Tagesform ueber 800 Eintraege still geloescht: bei drei Eintraegen am Tag bleiben 268 Tage; damit ist auch der
+   Meilenstein „ein Jahr" fuer sie unerreichbar.
+6. 157 — Brasilien bekommt europaeisches Portugiesisch.
+7. 104 von 104 — „Alle Daten loeschen" laesst den ausfuehrlichen Test (`lucenta_facetten`), Meilensteine, freie
+   Vergleichspersonen zurueck; das Widget wird nicht benachrichtigt.
+8. 102 von 102 — Tagesform-Seite nach Mitternacht beim Wiederoeffnen nicht aufgefrischt (zeigt gestern als erledigt);
+   der Startseite passiert das nicht (`visibilitychange` zeichnet nur sie neu).
+9. 75 — Notiz auf 200 Zeichen gekuerzt teilt ein Emoji (halbes Zeichen am Ende).
+10. ~55 — Freunde mit gleichem Ergebnis: als „dein eigener Code" abgelehnt oder ersetzen einander (Kennung = Ergebniscode).
+11. 40 — Speicher voll: Ergebnisseite erscheint, gespeichert ist nichts, keine Meldung.
+12. 10 — Einspielen mischt: was die Sicherung nicht traegt, bleibt vom alten Bestand stehen; keine Rueckfrage.
+
+**Aus dem Code dazu:** Kalenderwoche beginnt immer montags (USA, Japan, Brasilien: sonntags); Erinnerungen sind feste Zeitpunkte
+(auf Reisen bis zum naechsten Oeffnen zur alten Ortszeit); Impressum verweist auf die EU-OS-Plattform, die am 20.07.2025
+eingestellt wurde.
+
+**Unsicher / verworfen:** 4 Laeufe brachen beim Neuladen nach dem Einspielen ab, 3× „gueltige Sicherung nicht eingespielt" —
+beides vermutlich Zeitpunkt des Werkzeugs, nicht nachgewiesen. Die Mitternachtsfaelle des grossen Laufs waren ein Werkzeugfehler
+(der Test drehte die Uhr schon ueber Mitternacht) und wurden mit korrigiertem Werkzeug nachgefahren (102 Personen). Personen sind
+Schaetzungen der Verteilung, keine Marktzahlen. Nichts in der App geaendert.
 
 ---
 

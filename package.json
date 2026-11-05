@@ -11,6 +11,7 @@
     "pruef-bewegung": "node tools/pruef_bewegung.mjs",
     "mess-fluessigkeit": "node tools/mess_fluessigkeit.mjs",
     "fehlersuche": "node tools/fehlersuche.mjs",
+    "personen": "node tools/personen_simulation.mjs",
     "schriften": "node tools/schriften_holen.mjs",
     "pruef-nativ": "node tools/pruef_nativ.mjs",
     "ios:claude": "node -e \"const f=require('fs');f.mkdirSync('ios/App',{recursive:true});f.copyFileSync('tools/xcode-CLAUDE.md','ios/App/CLAUDE.md');console.log('ios/App/CLAUDE.md geschrieben')\"",
