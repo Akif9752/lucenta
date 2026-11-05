@@ -92,10 +92,10 @@
     if (r.stichwort) z.push(tx(r.stichwortBeste ? 'tf_rb_stichwort_beste' : 'tf_rb_stichwort_oft').split('{tag}').join(tx('tf_tag_' + r.stichwort)));
     return z;
   }
-  function tfRueckblickHTML(r, groesse){
+  function tfRueckblickHTML(r, groesse, ohneTitel){
     var nach = tfTageNachSchluessel();
     return '<div class="tf-rb">'+
-      '<div class="tf-rb-titel">'+tx('tf_rb_titel').split('{monat}').join(tfMonatsName(r.jahr, r.monat, false))+'</div>'+
+      (ohneTitel ? '' : '<div class="tf-rb-titel">'+tx('tf_rb_titel').split('{monat}').join(tfMonatsName(r.jahr, r.monat, false))+'</div>')+
       '<ul class="tf-rb-zeilen">'+tfRueckblickZeilen(r).map(function(z){ return '<li>'+z+'</li>'; }).join('')+'</ul>'+
       '<div class="tf-rb-tage" aria-hidden="true">'+tfMonatsZellen(r.jahr, r.monat, nach).map(function(z){
         if (!z) return '<i class="tf-jahr-leer"></i>';
@@ -192,14 +192,21 @@
       var mehrHTML = '<ul class="tf-rb-zeilen">' + mehr.map(function(z){ return '<li>' + z + '</li>'; }).join('') + '</ul>';
       inhalt = '<ul class="tf-rb-zeilen"><li>' + frei + '</li></ul>' + (plus ? mehrHTML : vorschauHTML(mehrHTML, tx('tf_woche_plus')));
     }
+    var namen = [];
+    try{ var wf = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {weekday:'narrow'});
+      for (var w = 0; w < 7; w++) namen.push(wf.format(new Date(2024, 0, 1 + w))); }   // 2024-01-01 war ein Montag
+    catch(e){ namen = ['1','2','3','4','5','6','7']; }
+    var teilen = plus && r.n >= TF_RB_MIN_TAGE
+      ? '<button type="button" class="btn btn-ghost btn-sm tf-teilen" data-woche-teilen="'+rbWocheVersatz+'">'+tx('tf_als_bild_teilen')+'</button>' : '';
     return rbKopf(fmt(montag) + ' – ' + fmt(sonntag), 'w', zurueck, rbWocheVersatz < 0)+
-      inhalt + '<div class="tf-rb-tage" aria-hidden="true">'+tage+'</div>' + rbSkala();
+      inhalt + '<div class="tf-kal-wochentage rb-wochentage" aria-hidden="true">'+namen.map(function(n){ return '<span>'+n+'</span>'; }).join('')+'</div>'+
+      '<div class="tf-rb-tage" aria-hidden="true">'+tage+'</div>' + teilen + rbSkala();
   }
   function rbMonatHTML(plus){
     if (!plus) rbMonatVersatz = 0;
     var m = rbMonat(rbMonatVersatz), r = tfRueckblickDaten(m.getFullYear(), m.getMonth());
     var zurueck = plus && tfTagSchluessel(m) > rbFruehesterTag().slice(0, 8) + '01';
-    var karte = r ? tfRueckblickHTML(r, tfKalenderGroesse) : '<p class="tf-kal-ueberblick">'+tx('rb_zu_wenig')+'</p>';
+    var karte = r ? tfRueckblickHTML(r, tfKalenderGroesse, true) : '<p class="tf-kal-ueberblick">'+tx('rb_zu_wenig')+'</p>';
     return rbKopf(tfMonatsName(m.getFullYear(), m.getMonth(), true), 'm', zurueck, rbMonatVersatz < 0)+
       (plus ? karte : vorschauHTML(karte, tx('tf_rb_plus'))) + rbSkala();
   }
@@ -355,10 +362,38 @@
     tfLegende(ctx, C, W, 1270, groesse);
     return {canvas: L.c, datei: 'lucenta-' + r.jahr + '-' + String(r.monat + 1).padStart(2, '0') + '.png', text: titel};
   }
+  function rbWocheBild(versatz, groesse){
+    var montag = rbWocheMontag(versatz), r = rbWocheDaten(montag);
+    var L = tfLeinwand(), ctx = L.ctx, C = L.C, W = SHARE_FORMAT.w, M = 84;
+    var fmt = function(d){ try{ return new Intl.DateTimeFormat(tx('datum_gebietsschema'), {day:'numeric', month:'short'}).format(d); }catch(e){ return tfTagSchluessel(d); } };
+    var sonntag = new Date(montag.getFullYear(), montag.getMonth(), montag.getDate() + 6, 12);
+    var titel = decodeEntities(tx('tf_woche_titel')) + ' · ' + fmt(montag) + ' – ' + fmt(sonntag);
+    tfBildKopf(ctx, C, M, decodeEntities(tx('tagesform_2')));
+    ctx.fillStyle = C.ink; ctx.font = '600 60px ' + SHARE_SERIF;
+    var y = wrapCanvasText(ctx, titel, M, 250, W - 2 * M, 68) + 28;
+    ctx.font = '500 32px ' + SHARE_SANS;
+    var zeilen = [tx('tf_kal_schnitt').split('{e}').join(tfZahl(r.e)).split('{s}').join(tfZahl(r.s)).split('{n}').join(String(r.n)),
+                  tx('tf_woche_beste').split('{tag}').join(r.beste)];
+    if (typeof r.de === 'number') zeilen.push(tx('tf_woche_vgl').split('{e}').join(tfDiff(r.de)).split('{s}').join(tfDiff(r.ds)));
+    zeilen.forEach(function(z){ ctx.fillStyle = C.ink; y = wrapCanvasText(ctx, decodeEntities(z.replace(/<[^>]+>/g, '')), M, y + 52, W - 2 * M, 42); });
+    var schritt = 128, zelle = 112, x = (W - 7 * schritt + (schritt - zelle)) / 2, oben = Math.max(y + 60, 700), heute = todayKey();
+    for (var i = 0; i < 7; i++){
+      var k = tfTagSchluessel(new Date(montag.getFullYear(), montag.getMonth(), montag.getDate() + i, 12));
+      ctx.fillStyle = tfZellFarbe(C, tfStufe(r.nach[k], groesse), k > heute);
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x + i * schritt, oben, zelle, zelle, zelle * .22); else ctx.rect(x + i * schritt, oben, zelle, zelle);
+      ctx.fill();
+    }
+    tfLegende(ctx, C, W, 1270, groesse);
+    return {canvas: L.c, datei: 'lucenta-woche-' + tfTagSchluessel(montag) + '.png', text: titel};
+  }
   function tfTeilenVerdrahten(wurzel){
     if (!wurzel || !wurzel.querySelectorAll) return;
     wurzel.querySelectorAll('[data-jahr-teilen]').forEach(function(b){
       b.addEventListener('click', function(){ openImgModal(tfJahrBild(+b.getAttribute('data-jahr-teilen'), tfKalenderGroesse)); });
+    });
+    wurzel.querySelectorAll('[data-woche-teilen]').forEach(function(b){
+      b.addEventListener('click', function(){ openImgModal(rbWocheBild(+b.getAttribute('data-woche-teilen'), tfKalenderGroesse)); });
     });
     wurzel.querySelectorAll('[data-rb-teilen]').forEach(function(b){
       b.addEventListener('click', function(){

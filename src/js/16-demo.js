@@ -131,7 +131,7 @@
       lucenta_history: JSON.stringify(verlauf),
       lucenta_state: JSON.stringify(zustand),
       lucenta_compat_archive: JSON.stringify(archiv),
-      lucenta_profile: JSON.stringify({name:'Alex', avatarImg:null, avatarColor:'accent',
+      lucenta_profile: JSON.stringify({name:'Alex', benutzerId:'alex', avatarImg:null, avatarColor:'accent',
                                        figur:'fuchs', hintergrund:'sternenbild'})
     };
   }

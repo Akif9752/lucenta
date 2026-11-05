@@ -41,6 +41,15 @@
     renderPlusSeite();
     showView('plus');
   }
+  // Rechtliches oeffnet sich aus Einstellungen, Lucenta+-Seite oder Kauffenster; zurueck geht es dorthin.
+  var RECHT_ZURUECK = {settings: 'hilfe_zurueck', profile: 'zurueck_profil', plus: 'zurueck_lucenta_plus'};
+  function rechtOeffnen(){
+    var von = currentView && currentView !== 'recht' ? currentView : 'settings';
+    UNTERSEITE_VON.recht = von;
+    var pille = $('btnBackFromRecht'), k = RECHT_ZURUECK[von] || 'start_8';
+    if (pille){ pille.setAttribute('data-i18n', k); pille.textContent = tx(k); }
+    showView('recht');
+  }
   function plusSeiteVerdrahten(){
     $('btnBackFromPlus').addEventListener('click', function(){
       var von = UNTERSEITE_VON.plus;

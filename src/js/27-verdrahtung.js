@@ -8,9 +8,12 @@
   $('btnPrev').addEventListener('click', function(){ if (qi>0){ qi--; renderQuestion(); animateQuestionIn(); saveProgress(); } });
   // "Test wiederholen" geht durch dieselbe Zwischenfrage (eigener Durchlauf oder Gast).
   $('btnRetake').addEventListener('click', requestRun);
-  $('btnRetakeTop').addEventListener('click', requestRun);
-    $('btnRecht').addEventListener('click', function(){ renderRecht(); showView('recht'); });
-  $('btnBackFromRecht').addEventListener('click', function(){ showView('landing'); });
+    $('btnRecht').addEventListener('click', function(){ renderRecht(); rechtOeffnen(); });
+  $('btnBackFromRecht').addEventListener('click', function(){
+    var von = UNTERSEITE_VON.recht || 'settings';
+    if (von === 'settings') renderSettings(); else if (von === 'plus') renderPlusSeite(); else if (von === 'profile') renderProfile();
+    showView(von);
+  });
   // Runde 131: die haeufigen Fragen als eigene Seite; zurueck geht es dorthin, woher man kam.
   $('btnHilfeOeffnen').addEventListener('click', function(){ showView('hilfe'); });
   $('btnBackFromHilfe').addEventListener('click', function(){ showView('settings'); });

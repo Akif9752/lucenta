@@ -59,14 +59,16 @@
      die Karte und der Chip rechts heraushing. */
   .preview-label{font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
   .preview-body{display:flex;align-items:center;gap:18px;margin-top:14px;}
-  .radar-wrap.preview-radar{max-width:130px;flex-shrink:0;margin:0;}
+  .radar-wrap.preview-radar{width:118px;max-width:118px;flex-shrink:0;margin:0;overflow:visible;}
+  /* Das Netz belegt nur gut die Haelfte des Bildes (Rand fuer die hier ausgeblendeten Beschriftungen). */
+  .preview-radar svg{transform:scale(1.6);transform-origin:center;}
   .preview-radar .radar-axis-label,.preview-radar .radar-axis-value{display:none;}
   .preview-text{flex:1;min-width:0;}
   .preview-title{font-family:var(--serif);font-size:calc(18px * var(--dt, 1));}
   /* --accent-2-text fuer Schrift (die Fuellfarbe liegt als Text unter AA). */
   .preview-title .sep{color:var(--accent-2-text);}
   .preview-text p{margin-top:8px;font-size:calc(13px * var(--dt, 1));color:var(--muted);line-height:1.55;}
-  @media (max-width:420px){ .preview-body{flex-direction:column;align-items:flex-start;} .radar-wrap.preview-radar{max-width:160px;align-self:center;} }
+  .preview-body{gap:22px;}
 
   /* minmax(0,1fr) statt 1fr, damit alle fuenf Spalten gleich breit sind. */
   .factsgrid{margin-top:28px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;}

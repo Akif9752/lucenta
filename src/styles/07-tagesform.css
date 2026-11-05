@@ -264,7 +264,8 @@
   .tf-rb{ margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
   .rb-karte .tf-rb{ margin-top:12px; padding-top:0; border-top:none; }
   .rb-ansicht{ margin:18px 0 12px; }
-  .rb-karte .tf-rb-tage{ margin:10px 0 4px; }
+  .rb-karte .tf-rb-tage{ margin:4px 0 4px; }
+  .rb-wochentage{ max-width:260px; gap:4px; margin-top:12px; }
   .tf-rb-zeile{ margin:16px 0; min-height:56px; gap:12px; }
   .rb-hinweis{ display:block; margin:16px 0 0; padding:0; border:none; background:none; font:inherit; cursor:pointer;
     color:var(--accent-strong); font-weight:600; font-size:calc(15px * var(--dt, 1)); text-align:left; min-height:44px; }

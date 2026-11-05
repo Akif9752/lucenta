@@ -219,7 +219,7 @@
       return;
     }
     if ($('plusModal').classList.contains('open')) closePlusModal();
-    renderRecht(true); showView('recht');
+    renderRecht(true); rechtOeffnen();
   });
   [['btnCopyCode', 'myCode']].forEach(function(paar){
     $(paar[0]).addEventListener('click', function(){ codeKopieren($(paar[1]).textContent); });

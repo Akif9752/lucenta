@@ -946,6 +946,10 @@
   .profil-poster{ align-self:stretch; display:flex; flex-direction:column; align-items:center; gap:12px;
     padding:24px 16px 20px; border-radius:var(--radius-m); color:var(--hg-ink, var(--ink)); }
   .profil-poster:not([data-hg]){ background:var(--surface); }
+  /* Muster wie das Sternbild laufen durch den Namen; ein weicher Schatten in der Gegenfarbe haelt ihn lesbar. */
+  .profil-poster[data-hg] .profil-poster-name, .aussehen-buehne[data-hg] .aussehen-name{
+    text-shadow:0 0 14px var(--hg-schatten, rgba(0,0,0,.65)), 0 1px 3px var(--hg-schatten, rgba(0,0,0,.55)); }
+  .hg-daemmerung, .hg-wueste, .hg-nebel, .hg-papier, .hg-lagune, .hg-morgentau, .hg-kirschbluete, .hg-gletscher, .hg-prisma, .hg-sonnenstrahl, .hg-lavendel, .hg-wolken{ --hg-schatten:rgba(255,255,255,.75); }
   .profil-poster-name{ font-family:var(--marke); font-weight:600; font-size:calc(22px * min(var(--dt, 1), 1.3));
     color:var(--hg-ink, var(--ink)); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .profil-poster-demo{ font-size:calc(13px * var(--dt, 1)); color:var(--danger); font-weight:600; }
