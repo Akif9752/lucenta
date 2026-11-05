@@ -280,15 +280,12 @@
   // Oeffnen neu gesetzt. Wer zehn Tage nicht oeffnet, bekommt keine mehr (gewollt).
   var ERINNERUNG_AN = 'lucenta_erinnerung';
   var ERINNERUNG_ID = 4711;            // die alte taegliche Mitteilung; wird beim Planen mit abgesagt
-  // 9, 14, 20 Uhr plus Nacherinnerung zwei Stunden spaeter: sechs am Tag. iOS haelt hoechstens 64
-  // ausstehende Mitteilungen je App, daher 10 Tage (60).
+  // 9, 14, 20 Uhr, hoechstens drei am Tag und nur fuer offene Tageszeiten (Entscheidung des Inhabers: keine
+  // Nacherinnerung mehr). Die Kennungen behalten den Abstand von sechs je Tag, damit alte Nacherinnerungen mit abgesagt werden.
   var ERINNERUNG_ID_BASIS = 47100, ERINNERUNG_TAGE = 10, ERINNERUNG_JE_TAG = 6;
   var ERINNERUNG_ALT_ANZAHL = 42;      // Runde 130: 14 x 3 — beim Absagen mit erfasst
-  // Innerhalb der Abschnitte aus TF_ABSCHNITT_BEGINN (bis 12, bis 18): 9 und 11, 14 und 16, 20 und 22.
   var ERINNERUNG_STUNDE = {morgen:9, mittag:14, abend:20};
-  var ERINNERUNG_NACH_STUNDEN = 2;
   var ERINNERUNG_TITEL = {morgen:'erinnerung_titel_morgen', mittag:'erinnerung_titel_mittag', abend:'erinnerung_titel_abend'};
-  var ERINNERUNG_NACH_TITEL = {morgen:'erinnerung_nach_morgen', mittag:'erinnerung_nach_mittag', abend:'erinnerung_nach_abend'};
   var ERINNERUNG_ALLE = 'lucenta_erinnerung_alle';
   // Uhrzeit der einen Erinnerung am Tag, waehlbar (Entscheidung des Inhabers); "HH:MM", Vorgabe 20:00.
   var ERINNERUNG_ZEIT = 'lucenta_erinnerung_zeit';
@@ -395,16 +392,13 @@
     for (var t = 0; t < ERINNERUNG_TAGE; t++){
       TF_ABSCHNITTE.forEach(function(s, k){
         if (t === 0 && heute[s]) return;                   // heute schon eingetragen: keine Erinnerung
-        [0, 1].forEach(function(nach){
-          var um = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() + t,
-                            ERINNERUNG_STUNDE[s] + nach * ERINNERUNG_NACH_STUNDEN, 0, 0);
-          if (um.getTime() <= jetzt.getTime()) return;    // iOS weist Zeiten in der Vergangenheit ab
-          liste.push({
-            id: ERINNERUNG_ID_BASIS + t * ERINNERUNG_JE_TAG + k * 2 + nach,
-            title: decodeEntities(tx(nach ? ERINNERUNG_NACH_TITEL[s] : ERINNERUNG_TITEL[s])),
-            body: decodeEntities(tx('erinnerung_text_mitteilung')),
-            schedule: {at: um, allowWhileIdle: true}
-          });
+        var um = new Date(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate() + t, ERINNERUNG_STUNDE[s], 0, 0);
+        if (um.getTime() <= jetzt.getTime()) return;    // iOS weist Zeiten in der Vergangenheit ab
+        liste.push({
+          id: ERINNERUNG_ID_BASIS + t * ERINNERUNG_JE_TAG + k * 2,
+          title: decodeEntities(tx(ERINNERUNG_TITEL[s])),
+          body: decodeEntities(tx('erinnerung_text_mitteilung')),
+          schedule: {at: um, allowWhileIdle: true}
         });
       });
     }
