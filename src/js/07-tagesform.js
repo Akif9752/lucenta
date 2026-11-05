@@ -77,6 +77,7 @@
       tx('js_energie_praefix')+tagWert(entry.energy)+tx('js_trenner_stimmung')+tagWert(entry.valence);
     $('landingStateNaechster').textContent = tfNaechsterText(entry.slot);
     done.style.display = 'flex';
+    notizBereichAnwenden('landing', entry);
     done.classList.remove('just-saved');
     if (animate){
       // Neustart der Animation erzwingen, falls am selben Tag mehrfach geändert wird
@@ -86,6 +87,7 @@
   }
   function showLandingStateInputs(){
     $('landingStateDone').style.display = 'none';
+    notizBereichAnwenden('landing', null);
     aufklappen($('landingStateInputs'));     // Runde 131: wieder auf, wie es zugeklappt ist
     $('landingStateCopy').style.display = '';
     updateLandingStateCopy();
@@ -434,6 +436,7 @@
     var notiz = $('stateTodayNote');
     if (!eintrag || tfAendernOffen){
       erl.style.display = 'none';
+      notizBereichAnwenden('tf', null);
       erf.style.display = '';
       if (notiz) notiz.style.display = '';
       return fertig();
@@ -442,6 +445,7 @@
     $('tfErledigtTitel').textContent = tfText('tf_abschnitt_eingetragen', {abschnitt: tx('tf_abschnitt_'+abschnitt)});
     $('tfErledigtWerte').textContent = tx('js_energie_praefix')+tagWert(eintrag.energy)+tx('js_trenner_stimmung')+tagWert(eintrag.valence);
     $('tfErledigtNaechster').textContent = tfNaechsterText(abschnitt);
+    notizBereichAnwenden('tf', eintrag);
     var schonDa = erl.style.display === 'flex';
     var zeigen = function(){
       erl.style.display = 'flex';
@@ -635,3 +639,31 @@
   }
 
   
+
+  // ---------- Notiz in der Bestaetigung (Startseite und Tagesform) ----------
+  function notizBereichAnwenden(praefix, eintrag){
+    var el = $(praefix + 'NotizBereich');
+    if (!el) return;
+    if (!eintrag){ el.hidden = true; el.innerHTML = ''; return; }
+    el.hidden = false;
+    var abschnitt = eintrag.slot || zeitabschnitt(eintrag.ts);
+    el.innerHTML = (eintrag.notiz ? '<p class="tf-notiz-text">' + escapeHTML(eintrag.notiz) + '</p>' : '') +
+      '<button type="button" class="tf-notiz-knopf" data-notiz="oeffnen">' + tx(eintrag.notiz ? 'tf_notiz_aendern' : 'tf_notiz_hinzu') + '</button>' +
+      '<div class="tf-notiz-form" hidden><textarea class="tf-notiz" rows="2" maxlength="200" placeholder="' +
+        tx('tf_notiz_ph') + '" aria-label="' + tx('aria_tf_notiz') + '"></textarea>' +
+      '<button type="button" class="btn btn-primary btn-sm" data-notiz="sichern">' + tx('speichern') + '</button></div>';
+    if (!el.querySelector) return;
+    var form = el.querySelector('.tf-notiz-form'), feld = el.querySelector('textarea');
+    var oeffnen = el.querySelector('[data-notiz="oeffnen"]'), sichern = el.querySelector('[data-notiz="sichern"]');
+    if (!form || !feld || !oeffnen || !sichern) return;
+    oeffnen.addEventListener('click', function(){
+      form.hidden = false; this.hidden = true; feld.value = eintrag.notiz || '';
+      try{ feld.focus(); }catch(e){}
+    });
+    sichern.addEventListener('click', function(){
+      if (!tfNotizSetzen(eintrag.day, abschnitt, feld.value)) return;
+      toast(tx('tf_notiz_gesichert'));
+      var frisch = heuteEingetragen()[abschnitt] || eintrag;
+      ['landing', 'tf'].forEach(function(v){ var b = $(v + 'NotizBereich'); if (b && !b.hidden) notizBereichAnwenden(v, frisch); });
+    });
+  }

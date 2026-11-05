@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-04, nach Runde 231)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-05, nach Runde 232)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 231 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 232 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -76,7 +76,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 231 | (dieser) | Grundsatz nach dem Kuendigen bleibt lesbar aus frei-und-gekauft.md gestrichen (nur Doku) |
+| 232 | (dieser) | Notiz in der Bestaetigung, Wiederherstellungscode nicht mehr angeboten, Freigrenze bleibt 7 Tage |
+| 231 | `d881744` | Grundsatz nach dem Kuendigen bleibt lesbar aus frei-und-gekauft.md gestrichen (nur Doku) |
 | 230 | `ccf38f2` | frei-und-gekauft.md ganz auf den Stand des Codes (nur Doku) |
 | 229 | `47d59e0` | frei-und-gekauft.md auf sieben freie Tage korrigiert (nur Doku) |
 | 228 | `68af911` | Rueckblick: Woche, Monat und Jahr auf einer Unterseite der Tagesform, Kalender wieder nur Monat |
@@ -131,7 +132,8 @@ Regeln, die er gesetzt hat:
   = 'state'`), Zeile `#btnRueckblickOeffnen` unter Heute, darueber zu Wochen-/Monatsende `#tfRueckblickHinweis`. Logik in
   `09-rueckblick.js`: `renderRueckblick`, `rueckblickOeffnen(ansicht)`, Ansicht `rbAnsicht` = w/m/j, Blaettern `rbWocheVersatz`/
   `rbMonatVersatz` (nur Lucenta+), Jahr `tfJahrHTML` (Tipp auf einen Monat oeffnet seinen Rueckblick). Kalender nur noch Monat.
-  Notiz `#tfNotiz`/`tfNotizBereinigen`; Bildfenster `openImgModal(bild)`.
+  Notiz: in beiden Bestaetigungen `#landingNotizBereich`/`#tfNotizBereich` (`notizBereichAnwenden`, 07-tagesform.js),
+  gespeichert mit `tfNotizSetzen(tag, abschnitt, text)`; „Aendern" behaelt sie. Bildfenster `openImgModal(bild)`.
 - **Sperre (Runde 183):** `LucentaSperre.swift` (`AppSperre`, Plugin `Lock`), JS `sperreEinrichten`/`sperreNachziehen` (19b),
   Zeilen `#sperreZeile`/`#sperreNachZeile`. Zum Testen im Simulator: `defaults write app.lucenta.ios lucenta_sperre_an -bool YES`,
   Face ID per `notifyutil -p com.apple.BiometricKit_Sim.pearl.match`.
@@ -298,6 +300,7 @@ Startbild. Das allererste Startbild zeichnet iOS vor dem App-Start — **nicht n
 
 ### Entscheidungen, die nicht zurueckgedreht werden duerfen
 
+- **Freigrenze bleibt bei 7 Tagen Tagesform (Runde 232, Inhaber).** Nicht erneut zur Wahl stellen.
 - **Nur die App, keine Browser-Fassung (Runde 226, Inhaber):** kein `dist/lucenta.html`, keine Rueckfaelle „ohne Bruecke"
   fuer den Browser, keine zweite (Browser-)Sitzung. Pruefungen laden `dist/index.html` in WebKit mit nachgestellter Bruecke.
   Bleiben bewusst: `web/datenschutz/` (Apples Pflicht-URL) und `einladung/` (fuer spaetere Links).
@@ -499,17 +502,36 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 231** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 232** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 231 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 232 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 232 — Wiederherstellungscode nicht mehr angeboten; Notiz in der Bestaetigung
+
+**Inhaber:** „H: Freigabe bei 7 lassen. Jetzt E machen. F auch machen." **Gewaehlt (Inhaber, F):** „Notiz hinzufuegen" in der
+Bestaetigung nach jedem Eintrag, Startseite und Tagesform; das Feld unten in der Tagesform faellt weg.
+
+- **H:** Freigrenze bleibt bei 7 Tagen — als Entscheidung im Uebergabeblock.
+- **E:** In Einstellungen -> Daten zeigt „Ergebnis wiederherstellen" keinen eigenen Code mehr (Anzeige und Kopieren weg);
+  die Eingabe fuer aeltere Codes bleibt, der Hinweis nennt iCloud und „Daten sichern" als heutigen Weg (8 Sprachen).
+  Der Gastdurchlauf zeigt seinen Code weiter (er ist der einzige Weg, ein Gast-Ergebnis mitzunehmen).
+- **F, gemessen:** Die Notiz stand in der Tagesform bei 1773 pt (Energie bei 529 pt), hinter fuenf Fragen und den Stichworten;
+  die schnelle Eingabe auf der Startseite hatte gar keine. Jetzt steht unter beiden Bestaetigungen „Notiz hinzufuegen" -> Feld
+  -> Speichern, danach die Notiz mit „Notiz aendern". `tfNotizSetzen` schreibt sie an den gezeigten Eintrag; ersetzt „Aendern"
+  den Eintrag, bleibt die Notiz.
+- Pruefungen: `pruef-nativ` prueft den neuen Notizweg (Hinzufuegen, Kuerzen auf 200, Anzeige, Erhalt beim Aendern) — 149.
+
+**Unsicher:** Widget und Siri tragen weiter ohne Notiz ein; die Notiz laesst sich danach in der App ergaenzen.
 
 ---
 

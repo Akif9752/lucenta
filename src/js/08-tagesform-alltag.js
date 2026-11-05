@@ -70,7 +70,6 @@
   function tfErfassungZuruecksetzen(){
     tfOceanGewaehlt = {};
     tfTagsGewaehlt = [];
-    if ($('tfNotiz')) $('tfNotiz').value = '';
     tfFragenRendern();
     tfStichworteRendern();
   }
@@ -79,7 +78,7 @@
   function tfErfassungExtra(){
     var o = {};
     ORDER.forEach(function(d){ if (tfOceanGewaehlt[d]) o[d] = tfOceanGewaehlt[d]; });
-    return {ocean:o, tags:tfTagsGewaehlt.slice(), notiz: $('tfNotiz') ? $('tfNotiz').value : ''};
+    return {ocean:o, tags:tfTagsGewaehlt.slice()};
   }
 
   // ---------- Die gezeigten Tage ----------

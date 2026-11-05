@@ -737,11 +737,25 @@ await seite.evaluate(() => { document.getElementById('tabTagesform').click(); })
 await seite.waitForTimeout(300);
 await seite.waitForTimeout(700);
 await seite.evaluate(() => { document.querySelector('#stateEnergyRow button:nth-child(4)')?.click(); document.querySelector('#stateValenceRow button:nth-child(2)')?.click();
-  document.getElementById('tfNotiz').value = '  Langer   Spaziergang \n am See  ' + 'x'.repeat(300); document.getElementById('btnStateSave').click(); });
+  document.getElementById('btnStateSave').click(); });
 await seite.waitForTimeout(1500);
+// Die Notiz kommt nach dem Eintrag, in der Bestaetigung (Entscheidung des Inhabers).
+ok(await seite.evaluate(() => !document.querySelector('#tfErfassung textarea') && !document.getElementById('tfNotizBereich').hidden),
+  'die Bestaetigung bietet „Notiz hinzufuegen", das Formular hat kein Notizfeld mehr');
+await seite.evaluate(() => document.querySelector('#tfNotizBereich [data-notiz="oeffnen"]').click()); await seite.waitForTimeout(200);
+await seite.evaluate(() => { document.querySelector('#tfNotizBereich textarea').value = '  Langer   Spaziergang \n am See  ' + 'x'.repeat(300);
+  document.querySelector('#tfNotizBereich [data-notiz="sichern"]').click(); });
+await seite.waitForTimeout(500);
 const nz = await seite.evaluate(() => JSON.parse(localStorage.getItem('lucenta_state')).slice(-1)[0].notiz || '');
 ok(nz.indexOf('Langer Spaziergang am See') === 0 && nz.length === 200, 'Notiz gespeichert, Leerraum zusammengefasst, auf 200 Zeichen begrenzt (' + nz.length + ')');
-ok(await seite.evaluate(() => document.getElementById('tfNotiz').value === ''), 'nach dem Speichern ist das Feld leer');
+ok(await seite.evaluate(() => /Langer Spaziergang/.test(document.querySelector('#tfNotizBereich .tf-notiz-text')?.textContent || '')),
+  'die Notiz steht danach in der Bestaetigung, der Knopf heisst „Notiz aendern"');
+await seite.evaluate(() => { document.getElementById('btnTfAendern').click(); });
+await seite.waitForTimeout(400);
+await seite.evaluate(() => { document.querySelector('#stateValenceRow button:nth-child(3)')?.click(); document.getElementById('btnStateSave').click(); });
+await seite.waitForTimeout(1500);
+ok(await seite.evaluate(() => /Langer Spaziergang/.test(JSON.parse(localStorage.getItem('lucenta_state')).slice(-1)[0].notiz || '')),
+  '„Aendern" und neu speichern behaelt die Notiz');
 await seite.evaluate(() => document.querySelector('[data-reiter="kalender"]').click()); await seite.waitForTimeout(400);
 await seite.evaluate(() => (() => { const d = new Date(), k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     document.querySelector('[data-kal-tag="' + k + '"]')?.click(); })()); await seite.waitForTimeout(300);

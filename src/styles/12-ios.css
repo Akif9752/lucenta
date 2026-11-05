@@ -408,7 +408,7 @@
   input[type="text"], input[type="time"], input[type="search"], input:not([type]), textarea, select{
     font-size:max(16px, calc(16px * var(--dt, 1))) !important;
   }
-  .field input[type="text"], #restoreCodeInput, #myCode, #wiederCode{ font-family:var(--code); }
+  .field input[type="text"], #restoreCodeInput, #myCode{ font-family:var(--code); }
 
   /* Runde 126: Die Hilfe als EINE Zeile, die aufklappt — die zehn Fragen standen vorher offen
      untereinander und zogen die Einstellungen in die Laenge. Gleiche Form wie die Fragen selbst. */

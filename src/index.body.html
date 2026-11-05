@@ -84,6 +84,9 @@
         </div>
         <button type="button" class="btn btn-ghost btn-sm" id="btnLandingStateEdit" data-i18n="ändern">Ändern</button>
       </div>
+      <!-- Notiz zum gerade gezeigten Eintrag (Entscheidung des Inhabers: in der Bestaetigung, nicht im Formular).
+           Bleibt auf dem Geraet; nicht nach Health, nicht in den Freundescode. -->
+      <div class="tf-notiz-bereich" id="landingNotizBereich" hidden></div>
       <button type="button" class="btn btn-ghost btn-sm" id="btnLandingStateHistory" style="align-self:flex-start;" data-i18n="tagesformverlauf_ansehen">Fünf Fragen, Kalender &amp; Bandbreite</button>
     </div>
 
@@ -266,6 +269,9 @@
         </div>
         <button type="button" class="btn btn-ghost btn-sm" id="btnTfAendern" data-i18n="ändern_2">Ändern</button>
       </div>
+      <!-- Notiz zum gerade gezeigten Eintrag (Entscheidung des Inhabers: in der Bestaetigung, nicht im Formular).
+           Bleibt auf dem Geraet; nicht nach Health, nicht in den Freundescode. -->
+      <div class="tf-notiz-bereich" id="tfNotizBereich" hidden></div>
       <div class="tf-erfassung" id="tfErfassung">
       <div class="state-question">
         <div class="state-q-label" data-i18n="energie_2">Energie</div>
@@ -292,14 +298,6 @@
           <span class="tf-freiwillig" data-i18n="tf_freiwillig_2">freiwillig</span>
         </div>
         <div class="tf-chips" id="tfStichworte" role="group" aria-label="Stichworte zum Tag" data-i18n-aria="aria_tf_stichworte"></div>
-      </div>
-      <!-- Bleibt auf dem Geraet; nicht nach Health, nicht in den Freundescode (Entscheidung des Inhabers). -->
-      <div class="tf-teil">
-        <div class="tf-teil-kopf">
-          <span class="state-q-label" data-i18n="tf_notiz_titel">Notiz</span>
-          <span class="tf-freiwillig" data-i18n="tf_freiwillig_2">freiwillig</span>
-        </div>
-        <textarea id="tfNotiz" class="tf-notiz" rows="2" maxlength="200" placeholder="Was dir heute wichtig war" data-i18n-placeholder="tf_notiz_ph" aria-label="Notiz zum Eintrag" data-i18n-aria="aria_tf_notiz"></textarea>
       </div>
       <button type="button" class="btn btn-primary btn-sm" id="btnStateSave" style="align-self:flex-start;" data-i18n="speichern">Speichern</button>
       </div>
@@ -613,11 +611,7 @@
         <input type="file" id="importDatei" accept="application/json,.json" hidden>
       <details class="settings-restore einst-aufklapp" id="einstWiederherstellen">
         <summary class="settings-restore-label"><span data-i18n="ergebnis_wiederherstellen">Ergebnis wiederherstellen</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></summary>
-        <div class="code-box" id="wiederCodeBox" hidden>
-          <span><span data-i18n="wiederherstellungscode">Dein Wiederherstellungscode:</span> <b class="mono" id="wiederCode">&mdash;</b></span>
-          <button type="button" class="btn btn-ghost btn-sm" id="btnCopyWiederCode" data-i18n="kopieren">Kopieren</button>
-        </div>
-        <p class="settings-restore-desc" data-i18n="wiederherstellungscode_desc">Nur für dich: Er trägt dein Ergebnis auf ein neues Gerät. Hast du ihn von einem anderen Gerät notiert, gib ihn hier ein. Zum Vergleichen teilst du den Freundescode.</p>
+        <p class="settings-restore-desc" data-i18n="wiederherstellungscode_desc">Hast du früher einen Wiederherstellungscode notiert, gib ihn hier ein. Auf ein neues Gerät kommt dein Ergebnis heute über iCloud oder „Daten sichern“.</p>
         <div class="settings-restore-row">
           <div class="field"><input type="text" id="restoreCodeInput" placeholder="Code einfügen" data-i18n-placeholder="ph_code_einfügen" aria-label="Ergebnis-Code zum Wiederherstellen" data-i18n-aria="aria_ergebnis_code_zum_wiederhers"></div>
           <button type="button" class="btn btn-ghost btn-sm" id="btnRestoreCode" data-i18n="wiederherstellen">Wiederherstellen</button>

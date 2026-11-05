@@ -163,6 +163,16 @@
   function tfNotizBereinigen(n){
     return typeof n === 'string' ? n.replace(/\s+/g, ' ').trim().slice(0, TF_NOTIZ_MAX) : '';
   }
+  // Die Notiz nachtraeglich an den Eintrag eines Tages und Abschnitts; leer nimmt sie weg.
+  function tfNotizSetzen(tag, abschnitt, text){
+    var h = loadStateHistory(), n = tfNotizBereinigen(text), gefunden = false;
+    for (var i = h.length - 1; i >= 0; i--){
+      if (h[i].day !== tag || (h[i].slot || zeitabschnitt(h[i].ts)) !== abschnitt) continue;
+      if (n) h[i].notiz = n; else delete h[i].notiz;
+      gefunden = true; break;
+    }
+    return gefunden && saveStateHistoryList(h);
+  }
   // Grobe Tageszeiten statt Uhrzeiten.
   function zeitabschnitt(ts){
     var h;
@@ -233,7 +243,8 @@
     var t = tfTagsBereinigen(extra && extra.tags);
     if (o) eintrag.ocean = o;
     if (t.length) eintrag.tags = t;
-    var n = tfNotizBereinigen(extra && extra.notiz);
+    // Ersetzt ein Eintrag denselben Abschnitt ("Aendern"), bleibt dessen Notiz.
+    var n = tfNotizBereinigen(extra && extra.notiz) || (alt && tfNotizBereinigen(alt.notiz));
     if (n) eintrag.notiz = n;
     h.push(eintrag);
     h.sort(function(a,b){ return a.ts-b.ts; });

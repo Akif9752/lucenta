@@ -221,7 +221,7 @@
     if ($('plusModal').classList.contains('open')) closePlusModal();
     renderRecht(true); showView('recht');
   });
-  [['btnCopyCode', 'myCode'], ['btnCopyWiederCode', 'wiederCode']].forEach(function(paar){
+  [['btnCopyCode', 'myCode']].forEach(function(paar){
     $(paar[0]).addEventListener('click', function(){ codeKopieren($(paar[1]).textContent); });
   });
   function codeKopieren(code){

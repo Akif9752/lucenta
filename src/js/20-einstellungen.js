@@ -19,8 +19,6 @@
     var progress = loadProgress();
     var result = loadResult();
     var profile = loadProfile();
-    $('wiederCodeBox').hidden = !result;
-    $('wiederCode').textContent = result ? toCode(result) : '';
 
     $('einstTestGruppe').hidden = !progress;
     if (progress){
