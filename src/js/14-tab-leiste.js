@@ -6,7 +6,7 @@
     state:'state', rueckblick:'state',
     understand:'understand', archetypes:'understand',
     freunde:'freunde', compare:'freunde',
-    profile:'profile', verlauf:'profile', look:'profile', settings:'profile', plus:'profile',
+    profile:'profile', verlauf:'profile', name:'profile', profilverlauf:'profile', look:'profile', settings:'profile', plus:'profile',
     hilfe:'profile', sprache:'profile', appicon:'profile', recht:'profile'
   };
   var TAB_OHNE = {quiz:1, 'ft-test':1};

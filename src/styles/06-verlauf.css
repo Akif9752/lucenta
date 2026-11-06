@@ -33,7 +33,7 @@
   /* Kurze Marke der fuehrenden Dimension in --muted, nicht --muted-soft: Sie liegt auf einer Karte,
      --muted-soft erreicht dort nur 4,26:1. */
   #historyContent .history-dim{
-    font-size:calc(10px * var(--dt, 1));letter-spacing:.05em;color:var(--muted);flex-shrink:0;
+    font-size:calc(11px * var(--dt, 1));color:var(--muted);flex-shrink:0;
     margin-top:1px;white-space:nowrap;
   }
   /* Die Kante traegt den Pol, nicht die Dimension; nur die Farbe (Breite setzt 10-druckzustaende.css). */

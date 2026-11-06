@@ -21,9 +21,9 @@
   .qcard.q-in{ animation:q-enter .3s cubic-bezier(.2,.8,.2,1) both; }
   @keyframes q-enter{ from{opacity:0;transform:translateY(9px);} to{opacity:1;transform:none;} }
   @media (prefers-reduced-motion: reduce){ .qcard.q-in{animation:none;} }
-  .qtext{font-family:var(--serif);font-size:calc(clamp(21px,4.4vw,27px) * min(var(--dt, 1), 1.3));line-height:1.3;letter-spacing:-.005em;}
-  .qtext::before{content:'„';color:var(--accent-2);}
-  .qtext::after{content:'“';color:var(--accent-2);}
+  /* Die Aussage steht gross und frei, ohne Karte und Anfuehrungszeichen, ungetrennt (Entscheidung des Inhabers). */
+  .qtext{font-family:var(--serif);font-size:calc(clamp(24px,6.6vw,30px) * min(var(--dt, 1), 1.3));line-height:1.25;letter-spacing:-.01em;
+    font-weight:600;-webkit-hyphens:manual;hyphens:manual;}
 
   .scale{margin-top:22px;}
   .scale-row{display:flex;gap:8px;justify-content:space-between;}
@@ -54,3 +54,24 @@
   
   .skala-wahl{ position:relative; }
   .skala-wahl-text{ position:absolute; left:50%; bottom:0; transform:translateX(-50%); white-space:nowrap; }
+
+  /* Ohne Karte: die Flaeche, der Rand und die Polsterung der Fragekarte entfallen. */
+  .qcard{ background:none; border:none !important; box-shadow:none !important; padding:8px 2px; min-height:150px; }
+
+  /* Abgestufte Skala im Test (Entscheidung des Inhabers): aussen groesser, zur Mitte kleiner; links grau, rechts
+     tuerkis getoent. Nur im Fragebogen — die Tagesform nutzt dieselben Kreise gleich gross. */
+  #scaleRow, #ftRow{ align-items:center; gap:clamp(6px, 2.4vw, 12px); }
+  #scaleRow .scale-btn, #ftRow .scale-btn{ flex:0 0 auto; position:relative; }
+  #scaleRow .scale-btn:nth-child(1), #scaleRow .scale-btn:nth-child(5),
+  #ftRow .scale-btn:nth-child(1), #ftRow .scale-btn:nth-child(5){ width:min(15.5vw, 62px); }
+  #scaleRow .scale-btn:nth-child(2), #scaleRow .scale-btn:nth-child(4),
+  #ftRow .scale-btn:nth-child(2), #ftRow .scale-btn:nth-child(4){ width:min(12.5vw, 50px); }
+  #scaleRow .scale-btn:nth-child(3), #ftRow .scale-btn:nth-child(3){ width:min(10vw, 40px); }
+  #scaleRow .scale-btn:nth-child(1), #ftRow .scale-btn:nth-child(1){ border-color:var(--muted); }
+  #scaleRow .scale-btn:nth-child(2), #ftRow .scale-btn:nth-child(2){ border-color:color-mix(in srgb, var(--muted) 70%, var(--line-strong)); }
+  #scaleRow .scale-btn:nth-child(4), #ftRow .scale-btn:nth-child(4){ border-color:color-mix(in srgb, var(--accent) 65%, var(--line-strong)); }
+  #scaleRow .scale-btn:nth-child(5), #ftRow .scale-btn:nth-child(5){ border-color:var(--accent); }
+  #scaleRow .scale-btn.picked, #ftRow .scale-btn.picked{ border-color:var(--accent); }
+  /* Die kleineren Kreise behalten eine Trefferflaeche von 44 pt (die Abstaende reichen, nichts ueberlappt). */
+  #scaleRow .scale-btn::after, #ftRow .scale-btn::after{ content:''; position:absolute; left:50%; top:50%;
+    width:max(100%, 44px); height:max(100%, 44px); transform:translate(-50%, -50%); }

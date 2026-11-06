@@ -17,15 +17,25 @@
     try{ return new Intl.DateTimeFormat(tx('datum_gebietsschema'), mitJahr ? {month:'long', year:'numeric'} : {month:'long'})
       .format(new Date(jahr, monat, 1)); }catch(e){ return (monat + 1) + (mitJahr ? '/' + jahr : ''); }
   }
-  // Zellen eines Monats, Montag zuerst: null = Luecke vor dem 1., sonst {day, tag}.
+  // Zellen eines Monats ab wochenBeginn(): null = Luecke vor dem 1., sonst {day, tag}.
   function tfMonatsZellen(jahr, monat, nachSchluessel){
-    var leer = (new Date(jahr, monat, 1).getDay() + 6) % 7, n = new Date(jahr, monat + 1, 0).getDate(), z = [];
+    var leer = wochentagNr(new Date(jahr, monat, 1)), n = new Date(jahr, monat + 1, 0).getDate(), z = [];
     for (var i = 0; i < leer; i++) z.push(null);
     for (var t = 1; t <= n; t++){
       var k = tfTagSchluessel(new Date(jahr, monat, t));
       z.push({day: k, tag: nachSchluessel[k] || null});
     }
     return z;
+  }
+
+  // Kein zweiter Umschalter (Entscheidung des Inhabers): Die Flaeche zeigt die Stimmung, ein Balken unten die Energie.
+  function tfEnergieBalken(tag){
+    if (!tag || typeof tag.energy !== 'number') return '';
+    return '<b class="tf-e" style="width:'+Math.round(Math.max(1, Math.min(5, tag.energy)) / 5 * 60)+'%"></b>';
+  }
+  function tfLegendeHTML(){
+    return '<div class="tf-kal-skala" aria-hidden="true"><span>1</span>'+[1,2,3,4,5].map(function(s){ return '<i class="tf-kal-st'+s+'"></i>'; }).join('')+
+      '<span>5</span><span class="tf-legende-text">'+tx('tf_legende')+'</span></div>';
   }
 
   // ---------- Jahr ----------
@@ -100,20 +110,20 @@
       '<div class="tf-rb-tage" aria-hidden="true">'+tfMonatsZellen(r.jahr, r.monat, nach).map(function(z){
         if (!z) return '<i class="tf-jahr-leer"></i>';
         var st = tfStufe(z.tag, groesse);
-        return '<i class="'+(st ? 'tf-kal-st'+st : 'tf-jahr-ohne')+'"></i>';
+        return '<i class="'+(st ? 'tf-kal-st'+st : 'tf-jahr-ohne')+'">'+tfEnergieBalken(z.tag)+'</i>';
       }).join('')+'</div>'+
       '<button type="button" class="btn btn-ghost btn-sm tf-teilen" data-rb-teilen="'+r.jahr+'-'+r.monat+'">'+tx('tf_als_bild_teilen')+'</button>'+
     '</div>';
   }
   // ---------- Wochenrueckblick ----------
-  // Fuer die Hinweiszeile: Sonntag die laufende, Montag die vergangene Woche (Mo–So), ab drei Eintraegen.
+  // Fuer die Hinweiszeile: am letzten Wochentag die laufende, am ersten die vergangene Woche, ab drei Eintraegen.
   function tfWocheTage(montag, versatz){
     var s = {};
     for (var i = 0; i < 7; i++) s[tfTagSchluessel(new Date(montag.getFullYear(), montag.getMonth(), montag.getDate() + versatz + i, 12))] = 1;
     return s;
   }
   function tfWocheDaten(jetzt){
-    var d = jetzt || new Date(), wt = (d.getDay() + 6) % 7;          // 0 = Montag
+    var d = jetzt || new Date(), wt = wochentagNr(d);                  // 0 = erster Tag der Woche
     if (wt !== 6 && wt !== 0) return null;
     var montag = new Date(d.getFullYear(), d.getMonth(), d.getDate() - wt - (wt === 0 ? 7 : 0), 12);
     var diese = tfWocheTage(montag, 0), vorige = tfWocheTage(montag, -7);
@@ -129,13 +139,13 @@
   }
   // ---------- Rueckblick als eigene Seite (Woche · Monat · Jahr) ----------
   // Entscheidung des Inhabers: eine Unterseite der Tagesform; unter "Heute" nur eine Hinweiszeile, wenn eine
-  // Woche (Sonntag/Montag) oder ein Monat (erste 7 Tage) fertig ist. Frei: Wochenschnitt; Rest Lucenta+.
+  // Woche (letzter/erster Wochentag) oder ein Monat (erste 7 Tage) fertig ist. Frei: Wochenschnitt; Rest Lucenta+.
   // Ansicht: w = Woche, m = Monat, j = Jahr.
   var rbAnsicht = 'w', rbWocheVersatz = 0, rbMonatVersatz = 0;
 
-  // Montag der gezeigten Woche: sonntags die laufende, sonst die zuletzt fertige; Versatz in Wochen zurueck.
+  // Erster Tag der gezeigten Woche: am letzten Wochentag die laufende, sonst die zuletzt fertige; Versatz in Wochen.
   function rbWocheMontag(versatz){
-    var d = new Date(), wt = (d.getDay() + 6) % 7;
+    var d = new Date(), wt = wochentagNr(d);
     return new Date(d.getFullYear(), d.getMonth(), d.getDate() - wt - (wt === 6 ? 0 : 7) + 7 * versatz, 12);
   }
   function rbWocheDaten(montag){
@@ -168,9 +178,7 @@
       '<button type="button" class="tf-kal-pfeil" data-rb-blaettern="'+art+'" data-rb-schritt="1" aria-label="'+tx('rb_vor')+'"'+(vor ? '' : ' disabled')+'>›</button>'+
     '</div>';
   }
-  function rbSkala(){
-    return '<div class="tf-kal-skala" aria-hidden="true"><span>1</span>'+[1,2,3,4,5].map(function(s){ return '<i class="tf-kal-st'+s+'"></i>'; }).join('')+'<span>5</span></div>';
-  }
+  function rbSkala(){ return tfLegendeHTML(); }
   function rbWocheHTML(plus){
     if (!plus) rbWocheVersatz = 0;
     var montag = rbWocheMontag(rbWocheVersatz), sonntag = new Date(montag.getFullYear(), montag.getMonth(), montag.getDate() + 6, 12);
@@ -181,7 +189,7 @@
     for (var i = 0; i < 7; i++){
       var k = tfTagSchluessel(new Date(montag.getFullYear(), montag.getMonth(), montag.getDate() + i, 12));
       var st = tfStufe(r.nach[k], tfKalenderGroesse);
-      tage += '<i class="'+(st ? 'tf-kal-st'+st : 'tf-jahr-ohne')+'"></i>';
+      tage += '<i class="'+(st ? 'tf-kal-st'+st : 'tf-jahr-ohne')+'">'+tfEnergieBalken(r.nach[k])+'</i>';
     }
     var inhalt;
     if (r.n < TF_RB_MIN_TAGE) inhalt = '<p class="tf-kal-ueberblick">'+tx('rb_zu_wenig')+'</p>';
@@ -194,7 +202,7 @@
     }
     var namen = [];
     try{ var wf = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {weekday:'narrow'});
-      for (var w = 0; w < 7; w++) namen.push(wf.format(new Date(2024, 0, 1 + w))); }   // 2024-01-01 war ein Montag
+      for (var w = 0; w < 7; w++) namen.push(wf.format(wochentagMuster(w))); }
     catch(e){ namen = ['1','2','3','4','5','6','7']; }
     var teilen = plus && r.n >= TF_RB_MIN_TAGE
       ? '<button type="button" class="btn btn-ghost btn-sm tf-teilen" data-woche-teilen="'+rbWocheVersatz+'">'+tx('tf_als_bild_teilen')+'</button>' : '';
@@ -224,21 +232,13 @@
         return '<button type="button" class="segment-opt" role="radio" data-rb-ansicht="'+a[0]+'" aria-checked="'+(a[0] === rbAnsicht ? 'true' : 'false')+'">'+
           '<span class="segment-preis">'+tx(a[1])+'</span></button>';
       }).join('')+'</div>';
-    var groesse = '<div class="segment tf-kal-groesse" role="radiogroup" aria-label="'+tx('tf_kal_groesse')+'">'+
-      ['valence','energy'].map(function(g){
-        return '<button type="button" class="segment-opt" role="radio" data-rb-groesse="'+g+'" aria-checked="'+(g===tfKalenderGroesse?'true':'false')+'">'+
-          '<span class="segment-preis">'+tx(g === 'energy' ? 'js_energie' : 'js_stimmung')+'</span></button>';
-      }).join('')+'</div>';
     var inhalt = rbAnsicht === 'j' ? rbJahrHTML(plus) : rbAnsicht === 'm' ? rbMonatHTML(plus) : rbWocheHTML(plus);
-    wrap.innerHTML = umschalter + '<div class="tf-kal-karte rb-karte">' + groesse + inhalt + '</div>';
+    wrap.innerHTML = umschalter + '<div class="tf-kal-karte rb-karte">' + inhalt + '</div>';
     schloesserVerdrahten(wrap);
     tfTeilenVerdrahten(wrap);
     if (!wrap.querySelectorAll) return;
     wrap.querySelectorAll('[data-rb-ansicht]').forEach(function(b){
       b.addEventListener('click', function(){ rbAnsicht = b.getAttribute('data-rb-ansicht'); tapFeedback(); renderRueckblick(); });
-    });
-    wrap.querySelectorAll('[data-rb-groesse]').forEach(function(b){
-      b.addEventListener('click', function(){ tfKalenderGroesse = b.getAttribute('data-rb-groesse'); tapFeedback(); renderRueckblick(); });
     });
     wrap.querySelectorAll('[data-rb-blaettern]').forEach(function(b){
       b.addEventListener('click', function(){

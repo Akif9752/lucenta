@@ -12,14 +12,15 @@
     try{ t = t.replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; return decodeURIComponent(escape(atob(t))); }
     catch(e){ return ''; }
   }
-  // ---------- Kurzer Freundescode (Runde 159, Entscheidung des Inhabers): <id>-XXXX-XXXX ----------
-  // Die 8 Zeichen tragen die fuenf Werte, die Figur (als Platz in FIGUREN — neue Tiere nur HINTEN
-  // anhaengen, sonst aendern sich alle Codes) und 2 Bit Pruefsumme; Crockford-Alphabet ohne I L O U.
+  // ---------- Kurzer Freundescode: <id>-XXXX-XXXXX (Entscheidung des Inhabers) ----------
+  // Die 9 Zeichen tragen die fuenf Werte, die Figur (Platz in FIGUREN — neue Tiere nur HINTEN anhaengen) und
+  // 7 Bit Pruefsumme (Rest mod 127: jedes einzelne falsche Zeichen ab der dritten Stelle faellt sicher auf).
+  // Alte Codes mit 8 Zeichen und 2 Bit werden weiter gelesen. Crockford-Alphabet ohne I L O U.
   var CODE_ZEICHEN = '0123456789ABCDEFGHJKMNPQRSTVWXYZ', CODE_FIGUREN = 24;
-  var KURZCODE_MUSTER = /([a-z0-9._]{2,20})-([0-9a-hjkmnp-tv-z]{4})-([0-9a-hjkmnp-tv-z]{4})/i;
+  var KURZCODE_MUSTER = /([a-z0-9._]{2,20})-([0-9a-hjkmnp-tv-z]{4})-([0-9a-hjkmnp-tv-z]{4,5})(?![0-9a-z])/i;
   // Von Hand abgetippt: Leerzeichen oder nichts statt Strich, O/I/L statt 0/1 (Crockford). Nur fuer kurze
   // Eingaben — in einer ganzen Einladung fuende das lockere Muster sonst Woerter.
-  var KURZCODE_LOCKER = /^([a-z0-9._]{2,20})[\s-]+([0-9a-z]{4})[\s-]*([0-9a-z]{4})$/i;
+  var KURZCODE_LOCKER = /^([a-z0-9._]{2,20})[\s-]+([0-9a-z]{4})[\s-]*([0-9a-z]{4,5})$/i;
   function benutzerIdGueltig(id){ return /^[a-z0-9._]{2,20}$/.test(id || ''); }
   // Ohne lateinische Buchstaben (さくら, محمد) ein Vorschlag wie „freund4821“, einmal je Sitzung (Entscheidung des Inhabers).
   var idVorschlagZahl = String(1000 + Math.floor(Math.random() * 9000));
@@ -36,10 +37,9 @@
     var fi = 0;
     for (var i = 0; i < FIGUREN.length; i++) if (FIGUREN[i].id === figurId){ fi = i + 1; break; }
     n = n * CODE_FIGUREN + fi;
-    var pruef = String(n).split('').reduce(function(a, z){ return a + (+z); }, 0) % 4;
-    n = n * 4 + pruef;
+    n = n * 128 + n % 127;
     var t = '';
-    for (var j = 0; j < 8; j++){ t = CODE_ZEICHEN.charAt(n % 32) + t; n = Math.floor(n / 32); }
+    for (var j = 0; j < 9; j++){ t = CODE_ZEICHEN.charAt(n % 32) + t; n = Math.floor(n / 32); }
     return t.slice(0, 4) + '-' + t.slice(4);
   }
   function kurzcodeLesen(text){
@@ -52,8 +52,13 @@
     if (!m) return null;
     var t = (m[2] + m[3]).toUpperCase(), n = 0;
     for (var i = 0; i < t.length; i++){ var v = CODE_ZEICHEN.indexOf(t.charAt(i)); if (v < 0) return null; n = n * 32 + v; }
-    var pruef = n % 4; n = Math.floor(n / 4);
-    if (String(n).split('').reduce(function(a, z){ return a + (+z); }, 0) % 4 !== pruef) return null;
+    if (t.length === 9){
+      var p7 = n % 128; n = Math.floor(n / 128);
+      if (n % 127 !== p7) return null;
+    } else {
+      var pruef = n % 4; n = Math.floor(n / 4);
+      if (String(n).split('').reduce(function(a, z){ return a + (+z); }, 0) % 4 !== pruef) return null;
+    }
     var fi = n % CODE_FIGUREN; n = Math.floor(n / CODE_FIGUREN);
     var sc = {};
     for (var k = ORDER.length - 1; k >= 0; k--){ sc[ORDER[k]] = n % 101; n = Math.floor(n / 101); }
@@ -122,7 +127,7 @@
       var a=-Math.PI/2+i*(2*Math.PI/5), lx=c+labelR*Math.cos(a), ly=c+labelR*Math.sin(a);
       var anker = Math.abs(Math.cos(a))<0.2 ? 'middle' : (Math.cos(a)>0?'start':'end');
       return '<line x1="'+c+'" y1="'+c+'" x2="'+(c+r*Math.cos(a)).toFixed(1)+'" y2="'+(c+r*Math.sin(a)).toFixed(1)+'" stroke="var(--line)" stroke-width="1"/>'+
-        '<text x="'+lx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" text-anchor="'+anker+'" class="radar-axis-label">'+RADAR_LABELS[f]+'</text>';
+        radarLabelSVG(f, lx.toFixed(1), ly + 4, anker, 'radar-axis-label');
     }).join('');
     var linien = liste.map(function(e, i){
       return '<polygon points="'+pts(e.sc)+'" fill="none" stroke="var('+GRUPPE_FARBEN[i]+')" stroke-width="2" stroke-linejoin="round"/>';

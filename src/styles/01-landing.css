@@ -23,11 +23,11 @@
   }
   .btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
   .btn-primary{background:var(--accent);color:var(--accent-ink);}
-  @media (hover:hover){ .btn-primary:hover{transform:translateY(-1px);box-shadow:var(--shadow);background:var(--accent-strong);} }
+  @media (hover:hover){ .btn-primary:hover{background:var(--accent-strong);} }
   .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
   @media (hover:hover){ .btn-ghost:hover{border-color:var(--accent-strong);color:var(--accent-strong);} }
   .btn-sm{padding:9px 16px;font-size:calc(13.5px * var(--dt, 1));border-radius:100px;}
-  .btn-hero{width:100%;justify-content:center;padding:19px 28px;font-size:calc(17.5px * var(--dt, 1));box-shadow:var(--shadow);}
+  .btn-hero{width:100%;justify-content:center;padding:19px 28px;font-size:calc(17.5px * var(--dt, 1));}
   @media (hover:hover){ .btn-hero:hover{transform:translateY(-1px);} }
   /* .meta-row (Minuten/Dimensionen/Kostenlos-Fakten-Zeile unter dem Hero-Button) auf
      Nutzerfeedback hin entfernt. */

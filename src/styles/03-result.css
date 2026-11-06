@@ -30,7 +30,9 @@
   .radar-wrap svg polygon:last-of-type{transform-origin:center;transform-box:fill-box;animation:radar-in .7s cubic-bezier(.2,.8,.2,1) both;}
   @keyframes radar-in{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
   @media (prefers-reduced-motion: reduce){ .radar-wrap svg polygon:last-of-type{animation:none;} }
-  .radar-axis-label{font-family:var(--mono);font-size:9.5px;fill:var(--muted);}
+  .radar-axis-label{font-family:var(--sans);font-size:10px;font-weight:500;fill:var(--muted);}
+  /* Volle Namen am Netz: auf dem schmalsten Bildschirm etwas kleiner, sonst ragt „émotionnelle“ links hinaus. */
+  @media (max-width:340px){ .radar-axis-label{font-size:9px;} }
   .radar-axis-value{font-family:var(--serif);font-size:13px;fill:var(--ink);font-weight:600;}
   /* Im Vergleich: eigener Wert Teal, anderer Wert Amber, wie Polygon und Legende. */
   .radar-axis-value.radar-axis-value-me{fill:var(--accent-strong);}
@@ -67,22 +69,8 @@
 
   
   /* ---------- Dimensionsfarbe ----------
-     --dim-aktiv setzt das JS (staerkste eigene Dimension); Rueckfall --accent. Nur Akzente, nie
-     Flaechen unter Text. */
-  /* Schrift in der Dimensionsfarbe ueber den Schrift-Zwilling (die Datenfarbe erreicht als Text keine
-     4,5:1). */
-  #view-result .result-head .eyebrow{ color:var(--dim-aktiv-text, var(--accent-strong)); }
-  #view-result .result-head .eyebrow::before{ background:var(--dim-aktiv, var(--accent)); }
-  #view-result .radar-wrap svg polygon:last-of-type{
-    stroke:var(--dim-aktiv, var(--accent));
-    fill:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 22%, transparent);
-  }
-  #previewCard.preview-eigen .preview-label{ color:var(--dim-aktiv-text, var(--muted)); }
-  #previewCard.preview-eigen .radar-wrap svg polygon:last-of-type{
-    stroke:var(--dim-aktiv, var(--accent));
-    fill:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 22%, transparent);
-  }
-  #previewCard.preview-eigen{ border-color:color-mix(in srgb, var(--dim-aktiv, var(--accent)) 45%, var(--line)); }
+     --dim-aktiv setzt das JS (staerkste eigene Dimension). Seit der Entscheidung des Inhabers zu den Farbrollen
+     traegt sie nur noch Lichthof und Strahlenkranz hinter dem Titel; Netz, Ueberzeile und Karte sind tuerkis/grau. */
 
   /* ---------- Rhythmus-Hinweis ----------
      Sagt, was man mit dem Ergebnis tut (wiederholen). Kein Kasten, Kante links wie bei den

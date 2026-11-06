@@ -165,23 +165,33 @@
   console.log("\n[13] pickRandomUnderstandCard liefert immer eine gueltige Karte");
   for(var pk=0;pk<300;pk++){ var card=pickRandomUnderstandCard(); ok(card&&card.title&&card.body,"ungueltige Karte"); }
 
-  console.log("\n[14] Kurzer Freundescode <id>-XXXX-XXXX: hin und zurueck, Tippfehler, alte Codes");
-  var rnd=function(){ return Math.floor(Math.random()*101); }, fehlerErkannt=0, fehlerVersuche=0;
+  console.log("\n[14] Kurzer Freundescode <id>-XXXX-XXXXX: hin und zurueck, Tippfehler, alte Codes");
+  var rnd=function(){ return Math.floor(Math.random()*101); }, fehlerErkannt=0, fehlerVersuche=0, abgelehnt=0;
   for(var kc=0;kc<3000;kc++){
     var sc={O:rnd(),C:rnd(),E:rnd(),A:rnd(),S:rnd()}, fig=(kc%(FIGUREN.length+1))===0 ? '' : FIGUREN[kc%FIGUREN.length].id;
     var teil=kurzcodeTeil(sc, fig), code='mia.k_'+(kc%7)+'-'+teil, info=freundescodeLesen('Hier: '+code+' – bis bald');
-    ok(/^[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$/.test(teil), "Kurzteil hat falsches Format: "+teil);
+    ok(/^[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{5}$/.test(teil), "Kurzteil hat falsches Format: "+teil);
     ok(info && info.code===toCode(sc) && info.figur===fig && info.name==='mia.k_'+(kc%7), "Kurzcode nicht umkehrbar: "+code);
     ok(freundescodeLesen(code.toLowerCase()) && freundescodeLesen(code.toLowerCase()).code===toCode(sc), "Kleinschreibung nicht gelesen: "+code);
     // ein Zeichen vertippt
-    var vorne=code.indexOf('-')+1, pos=vorne+Math.floor(Math.random()*9); if(code.charAt(pos)==='-') pos++;
+    var vorne=code.indexOf('-')+1, pos=vorne+Math.floor(Math.random()*10); if(code.charAt(pos)==='-') pos++;
     var falsch=code.slice(0,pos)+(code.charAt(pos)==='7'?'8':'7')+code.slice(pos+1), r=freundescodeLesen(falsch);
-    fehlerVersuche++; if(!r || r.code!==toCode(sc)) fehlerErkannt++;
+    fehlerVersuche++; if(!r || r.code!==toCode(sc)) fehlerErkannt++; if(!r) abgelehnt++;
     ok(!r || r.code!==toCode(sc) || r.figur!==fig, "Tippfehler unbemerkt gleich: "+falsch);
   }
   var quote=fehlerErkannt/fehlerVersuche;
   console.log("  Tippfehler ergeben nie stillschweigend denselben Freund; abgelehnt statt falsch gelesen: "+Math.round(100*quote)+" %");
-  ok(!freundescodeLesen('ab-1234-5678'), "zu kurze ID angenommen");
+  console.log("  davon ganz abgelehnt (kein falscher Freund): "+Math.round(100*abgelehnt/fehlerVersuche)+" %");
+  ok(abgelehnt/fehlerVersuche >= 0.98, "zu viele Tippfehler ergeben einen falschen Freund: "+Math.round(100*abgelehnt/fehlerVersuche)+" %");
+  ok(!freundescodeLesen('a-1234-56789'), "zu kurze ID angenommen");
+  // Alte Codes mit 8 Zeichen und 2 Bit Pruefsumme (bis Runde 238) bleiben lesbar.
+  (function(){
+    var sc={O:33,E:71,C:5,A:88,S:60}, n=0; ORDER.forEach(function(f){ n=n*101+sc[f]; }); n=n*CODE_FIGUREN+0;
+    n=n*4+(String(n).split('').reduce(function(a,z){ return a+(+z); },0)%4);
+    var t=''; for(var j=0;j<8;j++){ t=CODE_ZEICHEN.charAt(n%32)+t; n=Math.floor(n/32); }
+    var info=freundescodeLesen('Code: anna-'+t.slice(0,4)+'-'+t.slice(4)+' – bis bald');
+    ok(info && info.code===toCode(sc) && info.name==='anna', "alter 8-stelliger Code nicht mehr gelesen");
+  })();
   ok(freundescodeLesen('L1.221r1k1y1c.fuchs.QWxleA') && freundescodeLesen('L1.221r1k1y1c.fuchs.QWxleA').name==='Alex', "alter L1-Code nicht mehr gelesen");
   ok(benutzerIdAusName('Jürgen Groß')==='jurgengross' && benutzerIdAusName('Al')==='al' && benutzerIdAusName('Işıl')==='isil', "ID-Vorschlag aus dem Namen falsch: "+benutzerIdAusName('Jürgen Groß'));
   // Von Hand abgetippt (Runde 238): Leerzeichen, ohne Striche, Gedankenstrich, O/I statt 0/1.

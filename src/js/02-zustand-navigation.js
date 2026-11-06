@@ -43,7 +43,7 @@
   }
 
   // Unterseiten und die Seite, aus der sie kommen (Runde 136).
-  var UNTERSEITE_VON = {hilfe:'settings', sprache:'settings', appicon:'settings', verlauf:'profile', compare:'freunde', look:'profile',
+  var UNTERSEITE_VON = {hilfe:'settings', sprache:'settings', appicon:'settings', verlauf:'profilverlauf', name:'profile', profilverlauf:'profile', compare:'freunde', look:'profile',
                        ft:'result', settings:'profile', plus:'profile', archetypes:'understand', rueckblick:'state', recht:'settings'};
   // Hauptseiten der Tab-Leiste: ohne Zurueck-Pfeil, ihre Pillen bleiben nur fuer alte Wege im Markup.
   var TAB_WURZELN = {landing:1, state:1, understand:1, freunde:1, profile:1};

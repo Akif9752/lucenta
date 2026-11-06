@@ -315,14 +315,15 @@
   function tfSerie(){
     var tage = {};
     loadStateHistory().forEach(function(e){ tage[tfTagNr(e.day)] = true; });
-    var heute = tfTagNr(todayKey()), d = tage[heute] ? heute : heute - 1, n = 0, verziehen = 0, wochen = {};
+    var heute = tfTagNr(todayKey()), d = tage[heute] ? heute : heute - 1, n = 0, verziehen = 0, wochen = {}, geschuetzt = {};
+    var wocheVon = function(x){ return Math.floor((x + (11 - wochenBeginn()) % 7) / 7); };   // Tag 0 (1.1.1970) war ein Donnerstag
     for (;;){
       if (tage[d]){ n++; d--; continue; }
-      var woche = Math.floor((d + 3) / 7);              // Tag 0 (1.1.1970) war ein Donnerstag: so beginnt die Woche montags
-      if (n > 0 && !wochen[woche] && tage[d - 1]){ wochen[woche] = 1; verziehen++; d--; continue; }
+      var woche = wocheVon(d);
+      if (n > 0 && !wochen[woche] && tage[d - 1]){ wochen[woche] = 1; geschuetzt[d] = 1; verziehen++; d--; continue; }
       break;
     }
-    return {n: n, verziehen: verziehen, heuteOffen: !tage[heute]};
+    return {n: n, verziehen: verziehen, heuteOffen: !tage[heute], geschuetzt: geschuetzt, schutzGenutzt: !!wochen[wocheVon(heute)]};
   }
   function tfMeilensteine(){
     var tage = stateTage(loadStateHistory());
@@ -337,11 +338,10 @@
     if (!wrap) return;
     var s = tfSerie(), m = tfMeilensteine();
     if (!m.tage){ wrap.innerHTML = ''; return; }
-    var satz = s.heuteOffen ? (s.n ? tx('tf_serie_heute').split('{n}').join(String(s.n + 1)) : tx('tf_serie_start'))
-             : (s.n >= 2 ? tx('tf_serie_n').split('{n}').join(String(s.n)) : tx('tf_serie_eins'));
-    wrap.innerHTML = '<div class="tf-serie-karte"><div class="tf-serie-zahl" aria-hidden="true">' + s.n + '</div>' +
-      '<div class="tf-serie-text"><div class="tf-serie-satz">' + satz + '</div>' +
-      (s.verziehen ? '<div class="tf-serie-unter">' + tx('tf_serie_verziehen') + '</div>' : '') + '</div></div>' +
+    // Eine leise Zeile ohne Aufforderung (Entscheidung des Inhabers); der Schutztag sichtbar, der genutzte im Kalender.
+    var zeile = s.n ? (s.n >= 2 ? tx('tf_serie_n').split('{n}').join(String(s.n)) : tx('tf_serie_eins')) + ' · ' +
+      tx(s.schutzGenutzt ? 'tf_serie_schutz_genutzt' : 'tf_serie_schutz_frei') : '';
+    wrap.innerHTML = (zeile ? '<p class="tf-serie-zeile"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6z"></path></svg>' + zeile + '</p>' : '') +
       '<div class="tf-abzeichen-titel">' + tx('tf_ms_titel') + '</div><div class="tf-abzeichen">' + m.liste.map(function(a){
         return '<div class="tf-abzeichen-stk" data-ms="' + a.id + '" data-erreicht="' + (a.erreicht ? 1 : 0) + '">' +
           '<span class="tf-abzeichen-marke" aria-hidden="true">' + (a.id === 'jahr' ? '\u2605' : a.n) + '</span>' +

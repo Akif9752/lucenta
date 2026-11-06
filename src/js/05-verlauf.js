@@ -94,8 +94,7 @@
   // Kante links; der juengste Eintrag hervorgehoben. Bewusst ohne neue Texte.
   function verlaufZeileHTML(e, istNeuste){
     var a = archetypeOf(e.scores);
-    var titel = NOUN[a.top1][e.scores[a.top1]>=50?'high':'low'] + ' · ' +
-                ADJ[a.top2][e.scores[a.top2]>=50?'high':'low'];
+    var titel = eigenerTitel(e.scores);
     var datum = ''; try{ datum = historyDateFmt().format(new Date(e.date)); }catch(ex){}
     var pol = e.scores[a.top1]>=50 ? 'high' : 'low';
     return '<div class="history-row history-pol-'+pol+(istNeuste?' history-neu':'')+'">'+
@@ -103,7 +102,7 @@
         '<div class="history-date">'+datum+'</div>'+
         '<div class="history-title">'+titel+'</div>'+
       '</div>'+
-      '<div class="history-dim mono">'+RADAR_LABELS[a.top1]+'</div>'+
+      '<div class="history-dim">'+radarName(a.top1)+'</div>'+
       '</div>';
   }
   // Kurve einer Dimension: feste Flaeche 300x64, Breite aus dem Stilblatt (Punkte bleiben rund). Die

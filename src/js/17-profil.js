@@ -171,12 +171,14 @@
     var profile = loadProfile();
     $('profileName').value = profile.name || '';
     $('profileBenutzerId').value = profile.benutzerId || '';
+    if ($('profilNameStand')) $('profilNameStand').textContent =
+      [profile.name, eigeneBenutzerId() ? '@' + eigeneBenutzerId() : ''].filter(Boolean).join(' · ') || tx('ph_dein_name');
     renderAvatar(profile);
     var last = loadResult();
     var block = $('profileResultBlock');
     if (last){
       var a = archetypeOf(last);
-      var title = NOUN[a.top1][last[a.top1]>=50?'high':'low'] + ' <span class="sep">·</span> ' + ADJ[a.top2][last[a.top2]>=50?'high':'low'];
+      var title = eigenerTitel(last, ' <span class="sep">·</span> ');
       var motto = MOTTO[a.top1][last[a.top1]>=50?'high':'low'];
       block.innerHTML = '<div class="profile-result-card"><div><strong>'+title+'</strong><div class="l">'+motto+'</div></div><button type="button" class="btn btn-ghost btn-sm" id="btnProfileViewResult">' + tx('js_ansehen') + '</button></div>';
       $('btnProfileViewResult').addEventListener('click', function(){ scores = last; renderResult(); showView('result'); });

@@ -182,8 +182,7 @@
   }
   function tfKalenderZellen(versatz, tageNachSchluessel){
     var anfang = tfMonatsAnfang(versatz);
-    // Montag als erster Wochentag (ISO).
-    var leer = (anfang.getDay() + 6) % 7;
+    var leer = wochentagNr(anfang);
     var tageImMonat = new Date(anfang.getFullYear(), anfang.getMonth() + 1, 0).getDate();
     var zellen = [];
     for (var i = 0; i < leer; i++) zellen.push(null);
@@ -242,10 +241,9 @@
     var wochentage = [];
     try{
       var wf = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {weekday:'narrow'});
-      // 2024-01-01 war ein Montag.
-      for (var w = 0; w < 7; w++) wochentage.push(wf.format(new Date(2024, 0, 1 + w)));
+      for (var w = 0; w < 7; w++) wochentage.push(wf.format(wochentagMuster(w)));
     }catch(e){ wochentage = ['1','2','3','4','5','6','7']; }
-    var heute = todayKey();
+    var heute = todayKey(), schutz = tfSerie().geschuetzt;
     var zellen = tfKalenderZellen(tfKalenderVersatz, nachSchluessel).map(function(z){
       if (!z) return '<span class="tf-kal-zelle tf-kal-leer" aria-hidden="true"></span>';
       var wert = z.tag ? z.tag[tfKalenderGroesse] : null;
@@ -253,16 +251,14 @@
       var name = z.nr + '';
       var label = z.tag ? (tx('js_energie')+' '+tagWert(z.tag.energy)+'/5, '+tx('js_stimmung')+' '+tagWert(z.tag.valence)+'/5')
                         : tx('tf_kal_kein_eintrag');
+      var geschuetzt = !z.tag && schutz[tfTagNr(z.day)];
+      if (geschuetzt) label = tx('tf_schutztag');
       // Seit Runde 161 Knoepfe (Entscheidung des Inhabers): ein Tipp zeigt die Eintraege des Tages darunter.
       return '<button type="button" class="tf-kal-zelle'+(z.tag ? ' tf-kal-st'+stufe : '')+
         (z.day === heute ? ' tf-kal-tag0' : '')+(z.day === tfKalenderWahl ? ' tf-kal-wahl' : '')+'" data-kal-tag="'+z.day+'" '+
-        'aria-pressed="'+(z.day === tfKalenderWahl ? 'true' : 'false')+'" aria-label="'+z.nr+'. '+monatName+': '+label+'"><span aria-hidden="true">'+name+'</span></button>';
+        'aria-pressed="'+(z.day === tfKalenderWahl ? 'true' : 'false')+'" aria-label="'+z.nr+'. '+monatName+': '+label+'"><span aria-hidden="true">'+name+'</span>'+tfEnergieBalken(z.tag)+
+        (geschuetzt ? '<svg class="tf-kal-schild" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 4 5.5v5.7c0 5 3.4 9.6 8 10.8 4.6-1.2 8-5.8 8-10.8V5.5z"></path></svg>' : '')+'</button>';
     }).join('');
-    var groesseHTML = '<div class="segment tf-kal-groesse" role="radiogroup" aria-label="'+tx('tf_kal_groesse')+'">'+
-      ['valence','energy'].map(function(g){
-        return '<button type="button" class="segment-opt" role="radio" data-groesse="'+g+'" aria-checked="'+(g===tfKalenderGroesse?'true':'false')+'">'+
-          '<span class="segment-preis">'+tx(g === 'energy' ? 'js_energie' : 'js_stimmung')+'</span></button>';
-      }).join('')+'</div>';
     var karte =
       '<div class="tf-kal-karte">'+
         '<div class="tf-kal-kopf">'+
@@ -270,12 +266,10 @@
           '<span class="tf-kal-monat">'+monatName+'</span>'+
           '<button type="button" class="tf-kal-pfeil" data-kal="1" aria-label="'+tx('tf_kal_folgemonat')+'"'+(tfKalenderVersatz < 0?'':' disabled')+'>›</button>'+
         '</div>'+
-        groesseHTML+
         tfMonatUeberblick(alle, anfang)+
         '<div class="tf-kal-wochentage" aria-hidden="true">'+wochentage.map(function(w){ return '<span>'+w+'</span>'; }).join('')+'</div>'+
         '<div class="tf-kal-raster">'+zellen+'</div>'+
-        '<div class="tf-kal-skala" aria-hidden="true"><span>1</span>'+
-          [1,2,3,4,5].map(function(s){ return '<i class="tf-kal-st'+s+'"></i>'; }).join('')+'<span>5</span></div>'+
+        tfLegendeHTML()+
         '<div class="tf-kal-details" aria-live="polite">'+tfTagDetails(tfKalenderWahl)+'</div>'+
       '</div>';
     // Runde 127: Kalender nur mit Lucenta+, frei verschwommen (laufender Monat, echte Tage).
@@ -295,13 +289,6 @@
       b.addEventListener('click', function(){
         var t = b.getAttribute('data-kal-tag');
         tfKalenderWahl = tfKalenderWahl === t ? '' : t;
-        tfKalenderRendern();
-      });
-    });
-    wrap.querySelectorAll('[data-groesse]').forEach(function(b){
-      b.addEventListener('click', function(){
-        tfKalenderGroesse = b.getAttribute('data-groesse');
-        tapFeedback();
         tfKalenderRendern();
       });
     });
@@ -331,7 +318,7 @@
     for (var i = 0; i < 7; i++){ summe.push({energy:0, valence:0}); n.push(0); }
     tage.forEach(function(t){
       var d;
-      try{ d = (new Date(t.ts).getDay() + 6) % 7; }catch(e){ return; }
+      try{ d = wochentagNr(new Date(t.ts)); }catch(e){ return; }
       summe[d].energy += t.energy; summe[d].valence += t.valence; n[d]++;
     });
     return summe.map(function(s, i){
@@ -353,8 +340,8 @@
     var wert = function(t){ return (t.energy + t.valence) / 2; };
     var sortiert = tage.slice().sort(function(a, b){ return wert(b) - wert(a); });
     var n = Math.max(3, Math.round(tage.length / 5));
-    var wtName = function(i){ try{ return new Intl.DateTimeFormat(tx('datum_gebietsschema'), {weekday:'long'}).format(new Date(2024, 0, 1 + i)); }catch(e){ return String(i + 1); } };
-    var wtVon = function(t){ return (new Date(t.ts).getDay() + 6) % 7; };
+    var wtName = function(i){ try{ return new Intl.DateTimeFormat(tx('datum_gebietsschema'), {weekday:'long'}).format(wochentagMuster(i)); }catch(e){ return String(i + 1); } };
+    var wtVon = function(t){ return wochentagNr(new Date(t.ts)); };
     var anteilGesamt = function(test){ return tage.filter(test).length / tage.length; };
     var beschreibe = function(gruppe){
       var teile = [];
@@ -412,7 +399,7 @@
       var namen = [];
       try{
         var wf = new Intl.DateTimeFormat(tx('datum_gebietsschema'), {weekday:'short'});
-        for (var w = 0; w < 7; w++) namen.push(wf.format(new Date(2024, 0, 1 + w)));
+        for (var w = 0; w < 7; w++) namen.push(wf.format(wochentagMuster(w)));
       }catch(e){ namen = ['1','2','3','4','5','6','7']; }
       var saeule = function(v, art){
         return v === null ? '<i class="tf-wt-saeule tf-wt-'+art+' tf-wt-ohne"></i>'

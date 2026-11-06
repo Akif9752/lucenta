@@ -19,12 +19,11 @@
     var view = $('view-landing');
     if (!view) return;
     var hero = view.querySelector('.hero');
-    var why = view.querySelector('.why');
     var sub = view.querySelector('.hero .sub');
     var state = $('landingStateTeaser');
     var verstehen = $('landingUnderstandTeaser');
     var portrait = $('previewCard');
-    if (!hero || !why || !state || !verstehen || !portrait) return;
+    if (!hero || !state || !verstehen || !portrait) return;
     var hatErgebnis = !!loadResult();
 
     // Die ausführliche Erklärung des Modells ist Text für den ersten Besuch.
@@ -32,8 +31,8 @@
 
     var plusKarte = $('landingPlusKarte');
     var soll = hatErgebnis
-      ? [hero, state, portrait, verstehen, why]
-      : [hero, why, state, verstehen, portrait];
+      ? [hero, state, portrait, verstehen]
+      : [hero, state, verstehen, portrait];
     // Runde 127: Die Lucenta+-Karte steht mit Ergebnis gleich nach der Tagesform — dort, wo jemand
     // gerade gesehen hat, was die App kann.
     if (plusKarte && hatErgebnis) soll.splice(2, 0, plusKarte);
@@ -46,21 +45,22 @@
     var gleich = ist.length === soll.length;
     for (var j=0; gleich && j<soll.length; j++){ if (ist[j] !== soll[j]) gleich = false; }
     if (gleich) return;
-    // Vor dem ersten Element einsetzen, das nicht Teil der Umordnung ist (die Kachelreihe),
-    // damit alles Übrige an seinem Platz bleibt.
-    var anker = null;
-    for (var k=0;k<view.children.length;k++){
-      if (soll.indexOf(view.children[k]) < 0 && view.children[k].className.indexOf('factsgrid') >= 0){
-        anker = view.children[k]; break;
-      }
-    }
-    soll.forEach(function(el){ view.insertBefore(el, anker); });
+    soll.forEach(function(el){ view.appendChild(el); });
   }
 
   // Mit Ergebnis zeigt die Karte das eigene Portraet. Die Farbe der staerksten Dimension geht als
   // Eigenschaft an den Behaelter — immer nur EINE (fuenf gleichzeitig sind nicht sicher
   // unterscheidbar).
   var DIM_MARKE = {O:'--dim-o', C:'--dim-c', E:'--dim-e', A:'--dim-a', S:'--dim-s'};
+  // Name einer Dimension fuer Netz und Kacheln: | trennt die Zeilen; einzeilig ohne Trennstrich.
+  function radarName(f){ return String(RADAR_LABELS[f] || LABELS[f] || f).replace(/-\|/g, '').replace(/\|/g, ' '); }
+  function radarZeilen(f){ return String(RADAR_LABELS[f] || LABELS[f] || f).split('|'); }
+  // Als SVG-Text: jede Zeile ein tspan, die letzte steht auf y (darunter folgt der Wert).
+  function radarLabelSVG(f, x, y, anker, klasse){
+    var z = radarZeilen(f), h = 11;
+    return '<text x="'+x+'" y="'+(y - (z.length - 1) * h).toFixed(1)+'" text-anchor="'+anker+'" class="'+klasse+'">'+
+      z.map(function(t, i){ return '<tspan x="'+x+'"'+(i ? ' dy="'+h+'"' : '')+'>'+escapeHTML(t)+'</tspan>'; }).join('')+'</text>';
+  }
   function setzeDimensionsfarbe(el, sc){
     if (!el || !sc) return;
     try{
@@ -85,7 +85,7 @@
       var pol1 = res[a.top1] >= 50 ? 'high' : 'low';
       var pol2 = res[a.top2] >= 50 ? 'high' : 'low';
       label.innerHTML = tx('js_dein_porträt');
-      titel.innerHTML = NOUN[a.top1][pol1] + ' <span class="sep">·</span> ' + ADJ[a.top2][pol2];
+      titel.innerHTML = titelNomen(a.top1, pol1, true) + ' <span class="sep">·</span> ' + titelAdj(a.top2, pol2, true);
       text.innerHTML = MOTTO[a.top1][pol1];
       $('previewRadar').innerHTML = radarSVG(res, 160);
       setzeDimensionsfarbe(karte, res);
@@ -132,7 +132,7 @@
         ? '<text x="'+lx.toFixed(1)+'" y="'+(ly+13).toFixed(1)+'" text-anchor="'+anchor+'" class="radar-axis-value radar-axis-value-me">'+sc[f]+'</text>'+
           '<text x="'+lx.toFixed(1)+'" y="'+(ly+27).toFixed(1)+'" text-anchor="'+anchor+'" class="radar-axis-value radar-axis-value-other">'+other.scores[f]+'</text>'
         : '<text x="'+lx.toFixed(1)+'" y="'+(ly+13).toFixed(1)+'" text-anchor="'+anchor+'" class="radar-axis-value">'+sc[f]+'</text>';
-      return '<text x="'+lx.toFixed(1)+'" y="'+(ly-4).toFixed(1)+'" text-anchor="'+anchor+'" class="radar-axis-label">'+RADAR_LABELS[f]+'</text>'+valueLine;
+      return radarLabelSVG(f, lx.toFixed(1), ly - 4, anchor, 'radar-axis-label')+valueLine;
     }).join('');
 
     var ariaLabel = other

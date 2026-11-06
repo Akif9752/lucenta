@@ -86,7 +86,8 @@
     --surface-3:#C9C8C2;
     --shadow:0 1px 2px rgba(0,0,0,.05), 0 12px 32px -12px rgba(0,0,0,.16);
     --shadow-sm:0 1px 2px rgba(0,0,0,.06);
-    --radius-l: 26px;
+    /* Zwei Radien (Entscheidung des Inhabers): Karten und Fenster --radius-m, kleine Elemente --radius-s. */
+    --radius-l: 18px;
     --radius-m: 18px;
     --radius-s: 12px;
     /* Die Unterkante, die in dieser Formensprache den weichen Schatten ersetzt. */

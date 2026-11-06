@@ -133,6 +133,33 @@
     return Math.floor(Date.UTC(+t[1], +t[2]-1, +t[3]) / 86400000);
   }
 
+  // ---------- Wochenbeginn ----------
+  // Erster Wochentag nach der Region des iPhones wie in Apples Kalender (Entscheidung des Inhabers): 0 = Sonntag,
+  // 1 = Montag, 6 = Samstag. Intl.Locale kennt ihn erst ab iOS 17, darunter die Liste aus CLDR.
+  var SONNTAG_REGIONEN = 'AG AS BD BR BS BT BW BZ CA CO DM DO ET GT GU HK HN ID IL IN JM JP KE KH KR LA MH MM MO MT MX MZ NI NP PA PE PH PK PR PT PY SA SG SV TH TT TW UM US VE VI WS YE ZA ZW';
+  var SAMSTAG_REGIONEN = 'AE AF BH DJ DZ EG IQ IR JO KW LY OM QA SD SY';
+  var _wochenBeginn = null;
+  function wochenBeginn(){
+    if (_wochenBeginn !== null) return _wochenBeginn;
+    _wochenBeginn = 1;
+    try{
+      var tag = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+      var loc = (typeof Intl !== 'undefined' && Intl.Locale) ? new Intl.Locale(tag) : null;
+      var info = loc && (typeof loc.getWeekInfo === 'function' ? loc.getWeekInfo() : loc.weekInfo);
+      if (info && info.firstDay) _wochenBeginn = info.firstDay % 7;
+      else {
+        var region = ((loc && loc.region) || (String(tag).split(/[-_]/)[1] || '')).toUpperCase();
+        if (region && SONNTAG_REGIONEN.indexOf(region) >= 0) _wochenBeginn = 0;
+        else if (region && SAMSTAG_REGIONEN.indexOf(region) >= 0) _wochenBeginn = 6;
+      }
+    }catch(e){}
+    return _wochenBeginn;
+  }
+  // Platz eines Datums in der Woche: 0 = erster Tag nach wochenBeginn().
+  function wochentagNr(d){ return (d.getDay() - wochenBeginn() + 7) % 7; }
+  // Datum des w-ten Wochentags einer Musterwoche (fuer die Namen der Spalten).
+  function wochentagMuster(w){ return new Date(2024, 0, 7 + wochenBeginn() + w); }   // 2024-01-07 war ein Sonntag
+
   // 2200 Eintraege (~400 KB): zwei Jahre bei drei am Tag — Jahresrueckblick und Meilenstein „ein Jahr" bleiben
   // erreichbar. Nicht viel hoeher: Die iCloud-Sicherung ist ein Datensatz, CloudKit erlaubt 1 MB. Datenschutztext nennt die Zahl.
   var MAX_STATE_EINTRAEGE = 2200;

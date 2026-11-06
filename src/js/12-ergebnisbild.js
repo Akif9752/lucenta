@@ -62,7 +62,8 @@
       var lx = cx + labelR*Math.cos(ang), ly = cy + labelR*Math.sin(ang);
       ctx.textAlign = Math.abs(Math.cos(ang))<0.2 ? 'center' : (Math.cos(ang)>0 ? 'left':'right');
       ctx.fillStyle = C.muted; ctx.font = '600 21px '+SHARE_SANS;
-      ctx.fillText(RADAR_LABELS[f], lx, ly-6);
+      var zeilen = radarZeilen(f);
+      zeilen.forEach(function(z, k){ ctx.fillText(z, lx, ly - 6 - (zeilen.length - 1 - k) * 24); });
       ctx.fillStyle = C.ink; ctx.font = '600 32px '+SHARE_SERIF;
       ctx.fillText(String(sc[f]), lx, ly+30);
     });
@@ -92,7 +93,7 @@
 
     var arch = archetypeOf(scores);
     var pole1 = scores[arch.top1]>=50?'high':'low', pole2 = scores[arch.top2]>=50?'high':'low';
-    var titleText = NOUN[arch.top1][pole1] + ' · ' + ADJ[arch.top2][pole2];
+    var titleText = titelNomen(arch.top1, pole1, !guestRun) + ' · ' + titelAdj(arch.top2, pole2, !guestRun);
     ctx.fillStyle = C.ink; ctx.font = '600 60px '+SHARE_SERIF;
     var afterTitleY = wrapCanvasText(ctx, titleText, M, M+188, W-2*M, 68);
     ctx.fillStyle = C.accent2; ctx.font = 'italic 500 30px '+SHARE_SERIF;

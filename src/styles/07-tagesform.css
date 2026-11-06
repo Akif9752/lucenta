@@ -284,12 +284,6 @@
     background:var(--surface-2); transform:rotate(45deg); border-radius:2px; }
 
   /* ---------- Serie und Meilensteine ---------- */
-  .tf-serie-karte{ display:flex; align-items:center; gap:12px; margin:16px 0 10px; }
-  .tf-serie-zahl{ min-width:44px; height:44px; padding:0 8px; box-sizing:border-box; border-radius:22px; display:flex; align-items:center;
-    justify-content:center; background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:calc(18px * var(--dt, 1));
-    font-variant-numeric:tabular-nums; }
-  .tf-serie-satz{ font-weight:600; font-size:calc(15px * var(--dt, 1)); color:var(--ink); }
-  .tf-serie-unter{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); margin-top:2px; }
   .tf-abzeichen-titel{ font-size:calc(13px * var(--dt, 1)); font-weight:600; color:var(--muted); margin:4px 0 8px; }
   .tf-abzeichen{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:6px; }
   .tf-abzeichen-stk{ display:flex; flex-direction:column; align-items:center; gap:4px; }
@@ -300,3 +294,26 @@
   .tf-abzeichen-stk[data-erreicht="1"] .tf-abzeichen-name{ color:var(--ink); }
   /* nur fuer Bildschirmleser */
   .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; }
+
+  /* „Mehr erfassen“: zugeklappt die fuenf Fragen und Stichworte; der Speichern-Knopf gross darunter. */
+  .tf-mehr{ border-top:1px solid var(--line); padding-top:4px; }
+  .tf-mehr > summary{ list-style:none; cursor:pointer; min-height:44px; display:flex; align-items:center; justify-content:space-between;
+    font-size:calc(15px * var(--dt, 1)); font-weight:500; color:var(--accent-strong); }
+  .tf-mehr > summary::-webkit-details-marker{ display:none; }
+  .tf-mehr > summary::after{ content:''; width:8px; height:8px; border-right:2px solid currentColor; border-bottom:2px solid currentColor;
+    transform:rotate(45deg); margin:0 4px 4px 0; transition:transform .2s ease; }
+  .tf-mehr[open] > summary::after{ transform:rotate(225deg); margin-bottom:0; }
+  .tf-mehr > .tf-teil{ margin-bottom:14px; }
+  .tf-mehr > .tf-teil:first-of-type{ border-top:none; padding-top:6px; }
+  .tf-speichern{ width:100%; min-height:50px; }
+
+  /* Energie als Balken unten in derselben Zelle (Stimmung ist die Flaeche); Breite = Energie 1–5. */
+  .tf-kal-zelle, .tf-rb-tage > i{ position:relative; overflow:hidden; }
+  .tf-e{ position:absolute; left:50%; bottom:16%; height:3px; transform:translateX(-50%); background:var(--ink); opacity:.6; border-radius:2px; pointer-events:none; }
+  .tf-kal-skala{ flex-wrap:wrap; }
+  .tf-kal-skala .tf-legende-text{ flex-basis:100%; text-align:center; margin-top:4px; color:var(--muted); }
+
+  /* Serie als leise Zeile; das Schild markiert den genutzten Schutztag im Kalender. */
+  .tf-serie-zeile{ display:flex; align-items:center; gap:6px; margin:14px 0 10px; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
+  .tf-serie-zeile svg{ flex-shrink:0; }
+  .tf-kal-schild{ position:absolute; right:3px; top:3px; color:var(--muted); }

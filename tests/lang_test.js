@@ -140,6 +140,31 @@
   Object.defineProperty(globalThis, 'navigator', {value: navAlt, configurable: true, writable: true});
   ok(geraeteSprache() === 'de', "unter Automatisierung bleibt Deutsch");
 
+  console.log("\n=== Titelform ===");
+  (function(){
+    var vorher = LANG;
+    if (LANG !== 'de') setLang('de');
+    var p = loadProfile(); p.titelform = 'w'; saveProfile(p);
+    ok(titelNomen('O','high',true) === 'Visionärin' && titelNomen('O','high',false) === 'Visionär:in', "Titelform Sie (de): "+titelNomen('O','high',true));
+    p.titelform = 'm'; saveProfile(p);
+    ok(titelNomen('O','high',true) === 'Visionär' && titelNomen('S','high',true) === 'Anker', "Titelform Er (de): "+titelNomen('O','high',true));
+    setLang('es');
+    ok(titelNomen('O','high',true) === 'Visionario' && titelAdj('E','low',true) === 'reservado' && titelNomen('O','high',false) === 'Visionaria', "Titelform Er (es)");
+    p.titelform = 'n'; saveProfile(p);
+    ok(titelNomen('O','high',true) === 'Visionaria', "Titelform neutral (es) = heutige Form");
+    setLang(vorher);
+  })();
+
+  console.log("\n=== Wochenbeginn nach Region ===");
+  [['en-US',0], ['de-DE',1], ['ja-JP',0], ['pt-BR',0], ['tr-TR',1], ['ar-EG',6], ['fr-CA',0], ['en-GB',1]].forEach(function(f){
+    Object.defineProperty(globalThis, 'navigator', {value: {languages: [f[0]], language: f[0]}, configurable: true, writable: true});
+    _wochenBeginn = null;
+    ok(wochenBeginn() === f[1], "Wochenbeginn "+f[0]+" -> "+wochenBeginn()+" statt "+f[1]);
+  });
+  ok(wochentagNr(new Date(2026, 10, 1)) === 6 && wochentagMuster(0).getDay() === 1, "Platz in der Woche falsch (Wochenbeginn Montag)");
+  Object.defineProperty(globalThis, 'navigator', {value: navAlt, configurable: true, writable: true});
+  _wochenBeginn = null;
+
   console.log("\n==================================================");
   console.log(fails===0 ? ("ALLE "+checks+" PRUEFUNGEN BESTANDEN") : (fails+" von "+checks+" PRUEFUNGEN FEHLGESCHLAGEN"));
   console.log("==================================================");

@@ -21,7 +21,7 @@
   $('btnErgebnisFreunde').addEventListener('click', function(){ renderFreunde(); showView('freunde'); });
   $('btnFreundSpeichern').addEventListener('click', freundSpeichern);
   $('freundCode').addEventListener('keydown', function(e){ if (e.key === 'Enter') freundSpeichern(); });
-  $('btnLandingTeaserMore').addEventListener('click', function(){ renderUnderstand(); showView('understand'); });
+  $('landingUnderstandTeaser').addEventListener('click', function(){ renderUnderstand(); showView('understand'); });
   $('btnBackFromUnderstand').addEventListener('click', function(){ showView('landing'); });
   $('btnVsArchetypen').addEventListener('click', function(){ showView('archetypes'); });
   $('btnLandingStateHistory').addEventListener('click', function(){ renderStateView(); showView('state'); });
@@ -42,6 +42,11 @@
     aufklappen($('tfErfassung'));
     try{ $('stateEnergyRow').querySelector('button').focus(); }catch(e){}
   });
+  // „Mehr erfassen“ merkt sich, ob es offen war.
+  if ($('tfMehr')){
+    try{ $('tfMehr').open = localStorage.getItem('lucenta_tf_mehr') === '1'; }catch(e){}
+    $('tfMehr').addEventListener('toggle', function(){ try{ localStorage.setItem('lucenta_tf_mehr', $('tfMehr').open ? '1' : '0'); }catch(e){} });
+  }
   $('btnStateSave').addEventListener('click', function(){
     if (!statePickedEnergy || !statePickedValence){
       toast(tx('js_bitte_beide_fragen'));
@@ -283,8 +288,8 @@
   // Rueckfall: Wo keine Datei geteilt werden kann, gehen Titel und Code als Text hinaus.
   function teilenAlsText(){
     var arch = archetypeOf(scores);
-    var titel = tx('js_mein_lucentaporträt')+ (NOUN[arch.top1][scores[arch.top1]>=50?'high':'low']) +' · '+
-      (ADJ[arch.top2][scores[arch.top2]>=50?'high':'low']);
+    var titel = tx('js_mein_lucentaporträt')+ titelNomen(arch.top1, scores[arch.top1]>=50?'high':'low', !guestRun) +' · '+
+      titelAdj(arch.top2, scores[arch.top2]>=50?'high':'low', !guestRun);
     var kern = CORE[arch.top1][scores[arch.top1]>=50?'high':'low'] || '';
     var text = guestRun ? titel + tx('js_mach_den_test_und_verglei') + toCode(scores) : titel + '. ' + kern + ' ' + einladungsText();
     function inAblage(){

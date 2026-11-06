@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-06, nach Runde 238)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-06, nach Runde 239)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 238 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 239 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -82,8 +82,9 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 238 | (dieser) | Funde der Personen-Simulation behoben, Start in iPhone-Sprache, Benutzer-ID ab 2 Zeichen, EU-OS-Satz gestrichen |
-| 237 | `f04be62` | Fehlersuche mit 2000 simulierten Personen (Werkzeug npm run personen), zwoelf Befunde, App unveraendert |
+| 239 | (dieser) | Design-Durchsicht umgesetzt: flache Formen, Farbrollen, volle Namen, Tagesform kurz, Profil-Unterseiten, Titelform, 9-stelliger Code, Wochenbeginn |
+| 238 | `d629808` | Funde der Personen-Simulation behoben, Start in iPhone-Sprache, Benutzer-ID ab 2 Zeichen, EU-OS-Satz gestrichen |
+| 237 | `0726f52` | Fehlersuche mit 2000 simulierten Personen (Werkzeug npm run personen), zwoelf Befunde, App unveraendert |
 | 236 | `a5c9f07` | Rundlauf: Rueckweg der Rechtsseite, Datenschutz-Fakten, Beispieldaten; Profilkopf, Rueckblick, Portraet-Karte, Ergebnisseite |
 | 235 | `b19e5ee` | Zu jeder Tageszeit: hoechstens drei Mitteilungen am Tag (ohne Nacherinnerung) |
 | 234 | `452388f` | Vergleich ohne den Satz zur Prozentzahl; Reihenfolge der Inhaberaufgaben vermerkt |
@@ -286,8 +287,8 @@ Regeln, die er gesetzt hat:
 **Kein laufender Auftrag.** Runden 223–236 sind erledigt, gepusht und auf Simulator und iPhone installiert.
 
 *Aus der Fehlersuche mit 2000 Personen (Runde 237), in Runde 238 behoben:* alle neun Fehler und die drei Entscheidungen
-(Startsprache, Benutzer-ID, Impressum). **Noch offen, braucht seine Entscheidung:** Brasilianisch (erst nach der muttersprachlichen
-Durchsicht, Inhaber), Wochenbeginn nach Region, staerkere Pruefsumme (laengerer Code; jeder vierte Tippfehler gilt heute als gueltig).
+(Startsprache, Benutzer-ID, Impressum). **Noch offen:** Brasilianisch (erst nach der muttersprachlichen Durchsicht, Inhaber). Wochenbeginn und
+laengerer Code in Runde 239 gebaut.
 Werkzeug: `npm run personen` (Zusagen von Runde 238 eingebaut).
 
 - **Startsprache (Runde 238, Inhaber):** Ohne gewaehlte Sprache die des iPhones, wenn eine der acht, sonst Englisch; NICHT gemerkt
@@ -296,8 +297,29 @@ Werkzeug: `npm run personen` (Zusagen von Runde 238 eingebaut).
 - **Benutzer-ID ab 2 Zeichen (Runde 238, Inhaber);** ohne lateinische Buchstaben Vorschlag `tx('benutzer_id_vorschlag')` + 4 Ziffern
   (freund/friend/amigo/ami/amico/amigo/arkadas/tomo). Kein Satz zur EU-OS-Plattform im Impressum (eingestellt 20.07.2025).
 
-*Kann die Sitzung bauen (aus der Simulation, Runde 223):* **C** — Schutztag der Serie sichtbar machen, Serienzaehler leiser
-(gegen Serien-Druck). Mit Optionen vorlegen, bevor gebaut wird.
+*Design-Durchsicht „500 Designer" (nach Runde 238), alle Entscheidungen in Runde 239 gebaut* — sie gelten als fest:
+- **Schrift bleibt wie sie ist** (KEINE iOS-Textstile, Inhaber — nicht erneut vorschlagen).
+- **Formensprache:** Knoepfe flach gefuellt als Kapsel, Druck nur durch Abdunkeln/Verkleinern; keine harten Unterkanten, kein Glanz;
+  Karten `--radius-m` (18), kleine Elemente `--radius-s` (12); `--radius-l` ist auf 18 gezogen.
+- **Farbrollen:** Tuerkis = antippbar; Orange/Lila nur fuer Dimensionen bzw. die zweite Person; Ueber-/Unterzeilen grau,
+  Zwischentitel `--ink`; Netz tuerkis (`--dim-aktiv` nur noch Lichthof/Strahlenkranz). Grossbuchstaben nur fuer Abschnittskoepfe.
+  Block „Ueberzeilen und Farbrollen" am Ende von `12-ios.css`.
+- **Netz und Kacheln mit vollen Namen:** `RADAR_LABELS` je Sprache mit `|` als Zeilenumbruch (`radarZeilen`, `radarName`, `radarLabelSVG`).
+- **Tagesform:** Energie + Stimmung + grosser Speichern-Knopf; fuenf Fragen und Stichworte in `<details id="tfMehr">` („Mehr erfassen",
+  `lucenta_tf_mehr`). Serie als leise Zeile mit Schild, genutzter Schutztag als Schild im Kalender (`tfSerie().geschuetzt`).
+- **Kalender/Rueckblick ohne zweiten Umschalter:** Flaeche = Stimmung, Balken (`tfEnergieBalken`) = Energie, Legende `tfLegendeHTML`.
+  Im Jahr nur die Stimmung (Zellen zu klein fuer einen Balken).
+- **Startseite:** Hero, Tagesform, (Lucenta+), Portraet-Karte, Forschungs-Zeile (`#landingUnderstandTeaser` ist jetzt ein Knopf).
+  „Warum kein MBTI?" und „Was bedeutet OCEAN?" stehen als erste Haeufige Fragen.
+- **Profil:** Kopf + Zeilen Figur & Hintergrund, Name & Benutzer-ID (`view-name`, mit Titelform), Verlauf (`view-profilverlauf`:
+  Ergebnis, Kurven, fruehere Durchlaeufe; darunter `view-verlauf`), Lucenta+, Einstellungen. Stile per `:is(#view-profile, #view-name, #view-profilverlauf)`.
+- **Titelform** `profile.titelform` w/m/n (`titelNomen`, `titelAdj`, `eigenerTitel` in 04-auswertung.js): Deutsch aus „:in" abgeleitet,
+  romanisch `NOUN_M`/`ADJ_M`; nur eigene Titel, Freunde neutral.
+- **Test:** Aussage gross ohne Karte/Anfuehrungszeichen, ungetrennt; Skala abgestuft (aussen 62, Mitte 40 pt, Trefferflaeche 44).
+- **Ergebnis-Karten** blenden nur direkt nach dem Test ein (`ergebnisFrisch`).
+- **Freundescode** `<id>-XXXX-XXXXX` (Rest mod 127, 7 Bit), alte 8-stellige gelesen. **Wochenbeginn** nach Region (`wochenBeginn`).
+
+*Aus der Simulation (Runde 223):* **C** in Runde 239 gebaut (Serie leise, Schutztag als Schild).
 
 *Am iPhone vom Inhaber anzusehen (im Simulator/WebKit gebaut, am Geraet nicht bestaetigt):* Apples Tab-Leiste (Tippen, Ziehen
 zwischen Reitern, Ruckeln ueber dem Sternenhimmel), Daten sichern und per Dateiauswahl einspielen, Rueckblick, Notiz in der
@@ -526,17 +548,43 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 238** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 239** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 238 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 239 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 239 — Design-Durchsicht umgesetzt: alle Entscheidungen des Inhabers
+
+**Inhaber:** „frag mich weiter aus ueber die noch offenen Punkte, bis die Liste abgearbeitet ist, dann am Ende alles Entschiedene
+umsetzen". Gefragt in drei Runden (je vier Fragen), alle wie empfohlen gewaehlt, ausser: Schrift bleibt (keine iOS-Textstile).
+Gebaut: Formensprache flach, zwei Radien; Farbrollen und Ueberzeilen; Netz und Kacheln mit vollen Namen (8 Sprachen); Testskala
+abgestuft, Aussage ohne Karte; Tagesform mit „Mehr erfassen"; Kalender/Rueckblick ohne zweiten Umschalter (Energie als Balken);
+Serie leise, Schutztag als Schild (Punkt C erledigt); Startseite entschlackt, MBTI/OCEAN in die Hilfe; Profil mit zwei Unterseiten;
+Titelform Sie/Er/Neutral (de + es/fr/it/pt, maennliche Formen selbst ergaenzt); Ergebnis-Karten nur beim ersten Enthuellen;
+Freundescode 9 Zeichen (7 Bit), Wochenbeginn nach Region; Commit von Runde 237 umbenannt (force-with-lease, Inhalt gleich).
+
+**Korrektur an der Design-Durchsicht:** „Tippziele unter 44 pt" war eine Messung der sichtbaren Groesse — die Trefferflaeche ist bei
+`.btn-sm` und am Kamera-Knopf schon 44 pt (unsichtbares `::after`, 10-druckzustaende.css). Nichts geaendert; dazu gelernt: die
+Trefferflaeche messen, nicht die Kante.
+
+**Fehler unterwegs, behoben:** neue Funktion `tfLegende` ueberschrieb gleichnamige Zeichenfunktion des Teilbilds (Ausnahme im Rueckblick)
+— umbenannt in `tfLegendeHTML`. Energie-Balken an den unteren Rand runder Zellen war abgeschnitten — jetzt mittig unter der Zahl.
+Fehlersuche: „émotionnelle“ am Netz ragte bei 320 pt 3 px links hinaus — Netzbeschriftung dort 9 statt 10 px.
+
+**Geprueft:** Testreihen (Codes 9-stellig mit 100 % erkannten Tippfehlern in der Stichprobe, alte Codes, Wochenbeginn nach 8 Regionen,
+Titelform de/es), Sprachaudit, pruef-alles; Bilder der geaenderten Ansichten in WebKit angesehen.
+
+**Unsicher:** Am Geraet nicht angesehen (Glas, echte Tab-Leiste). Die maennlichen romanischen Formen und die Zeilenumbrueche der
+Dimensionsnamen sind selbst gesetzt — gehoeren in die muttersprachliche Durchsicht. Im Jahresblick traegt die Zelle nur die Stimmung.
 
 ---
 

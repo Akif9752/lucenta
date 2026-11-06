@@ -49,11 +49,6 @@
       </div>
     </div>
 
-    <details class="why">
-      <summary data-i18n-text="warum_kein_mbti_kein_horosko">Warum kein MBTI, kein Horoskop?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
-      <p data-i18n="typtests_wie_mbti_sortieren">Typ-Tests wie MBTI sortieren dich in eine von 16 Schubladen &mdash; obwohl die Forschung zeigt, dass Persönlichkeit fließend ist, nicht kategorial. Sternzeichen haben keinerlei nachgewiesenen Zusammenhang mit Charakterzügen.</p>
-      <p data-i18n="die_bigfivedimensionen_extra">Die Big-Five-Dimensionen (Extraversion, Verträglichkeit, Gewissenhaftigkeit, emotionale Stabilität, Offenheit) sind seit den 1980ern in hunderten Studien über Kulturen hinweg repliziert &mdash; sie sagen tatsächlich etwas über Verhalten, Beziehungen und Wohlbefinden voraus.</p>
-    </details>
 
     <div class="understand-card state-teaser-card" id="landingStateTeaser" style="animation:none;opacity:1;">
       <div class="understand-group-label" data-i18n="tagesform">Tagesform</div>
@@ -98,12 +93,13 @@
       <button type="button" class="btn btn-primary btn-sm" data-plus-info data-i18n="plus_start_knopf">Lucenta+ entdecken</button>
     </div>
 
-    <div class="understand-card" id="landingUnderstandTeaser" style="animation:none;opacity:1;">
-      <div class="understand-group-label" data-i18n-html="aus_der_forschung__verstehen">Aus der Forschung <span class="sep">·</span> Verstehen</div>
-      <h3 id="landingTeaserTitle">&mdash;</h3>
-      <p id="landingTeaserBody">&mdash;</p>
-      <button type="button" class="btn btn-ghost btn-sm" id="btnLandingTeaserMore" style="margin-top:10px;" data-i18n="mehr_davon_entdecken">Mehr davon entdecken</button>
-    </div>
+    <!-- Der Forschungs-Teaser als eine Zeile (Entscheidung des Inhabers); fuehrt nach Verstehen. -->
+    <button type="button" class="start-forschung-zeile" id="landingUnderstandTeaser">
+      <span class="start-forschung-text"><span class="start-forschung-label" data-i18n="aus_der_forschung_kurz">Aus der Forschung</span>
+        <span class="start-forschung-titel" id="landingTeaserTitle">&mdash;</span></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+      <span id="landingTeaserBody" hidden></span>
+    </button>
 
     <!-- renderPreviewCard() fuellt die Karte je nach Lage (eigenes Portraet oder Beispiel); deshalb
          keine i18n-Marken hier — applyI18n() ersetzte sonst das eigene Portraet. -->
@@ -118,15 +114,6 @@
       </div>
     </div>
 
-    <div class="factsgrid">
-      <!-- Trennstellen an allen Silbengrenzen (je Box nur ~56px bei 390px). -->
-      <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="o">O</div><div class="v" data-i18n="ofshyfenshyheit">Of&shy;fen&shy;heit</div></div><div class="en" data-i18n="openshyness">Open&shy;ness</div></div>
-      <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="c">C</div><div class="v" data-i18n="geshywisshysenshyhafshytigsh">Ge&shy;wis&shy;sen&shy;haf&shy;tig&shy;keit</div></div><div class="en" data-i18n="conshyscishyenshytiousshynes">Con&shy;sci&shy;en&shy;tious&shy;ness</div></div>
-      <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="e">E</div><div class="v" data-i18n="exshytrashyvershysion">Ex&shy;tra&shy;ver&shy;sion</div></div><div class="en" data-i18n="exshytrashyvershysion_2">Ex&shy;tra&shy;ver&shy;sion</div></div>
-      <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="a">A</div><div class="v" data-i18n="vershyträgshylichshykeit">Ver&shy;träg&shy;lich&shy;keit</div></div><div class="en" data-i18n="agreeshyableshyness">Agree&shy;able&shy;ness</div></div>
-      <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="n">N</div><div class="v" data-i18n="stashybishylishytät">Sta&shy;bi&shy;li&shy;tät</div></div><div class="en" data-i18n="neushyroshytishycism">Neu&shy;ro&shy;ti&shy;cism</div></div>
-    </div>
-    <p class="acronym-note" data-i18n-html="das_akronym_ocean_ist_der_in">Das Akronym <b>OCEAN</b> ist der international gebräuchliche Name des Modells &mdash; die Buchstaben folgen den englischen Fachbegriffen (klein darunter). Bei <b>N</b> weichen wir bewusst von der deutschen Direktübersetzung „Neurotizismus“ ab und nennen die Dimension „Emotionale Stabilität“ &mdash; gleiche Skala, nur ohne die defizitorientierte Sprache.</p>
   </section>
 
   <!-- QUIZ -->
@@ -282,7 +269,9 @@
         <div class="state-q-sub" data-i18n-html="angespanntentspannt_2"><span>Angespannt</span><span>Entspannt</span></div>
         <div class="scale-row" id="stateValenceRow" role="group" aria-label="Stimmung von 1 (angespannt) bis 5 (entspannt)" data-i18n-aria="aria_stimmung_von_1_angespannt_bi"></div>
       </div>
-      <!-- Runde 124: fuenf Fragen, je Dimension eine, freiwillig. Gerendert von tfFragenRendern(). -->
+      <!-- Fuenf Fragen und Stichworte zugeklappt unter „Mehr erfassen“ (Entscheidung des Inhabers); die Wahl bleibt gemerkt. -->
+      <details class="tf-mehr" id="tfMehr">
+      <summary class="tf-mehr-kopf" data-i18n="tf_mehr_erfassen">Mehr erfassen</summary>
       <div class="tf-teil">
         <div class="tf-teil-kopf">
           <span class="state-q-label" data-i18n="tf_fragen_titel">Heute war ich eher …</span>
@@ -298,7 +287,8 @@
         </div>
         <div class="tf-chips" id="tfStichworte" role="group" aria-label="Stichworte zum Tag" data-i18n-aria="aria_tf_stichworte"></div>
       </div>
-      <button type="button" class="btn btn-primary btn-sm" id="btnStateSave" style="align-self:flex-start;" data-i18n="speichern">Speichern</button>
+      </details>
+      <button type="button" class="btn btn-primary tf-speichern" id="btnStateSave" data-i18n="speichern">Speichern</button>
       </div>
     </div>
 
@@ -424,37 +414,70 @@
       <button type="button" class="profile-remove-photo" id="btnAvatarRemove" style="display:none;" data-i18n="bild_entfernen">Bild entfernen</button>
       <!-- Figur und Hintergrund auf eigener Seite (Entscheidung des Inhabers); hier nur der Weg mit Vorschau. -->
       <button type="button" class="hilfe-knopf aussehen-zeile" id="btnAussehenOeffnen"><span class="aussehen-mini" id="aussehenMini" aria-hidden="true"></span><span class="aussehen-zeile-text" data-i18n="figur_hintergrund">Figur &amp; Hintergrund</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
-      <label class="profile-name-label" for="profileName" data-i18n="name">Name</label>
-      <input type="text" id="profileName" class="name-input" placeholder="Dein Name" data-i18n-placeholder="ph_dein_name" maxlength="30" autocomplete="off">
-      <label class="profile-name-label" for="profileBenutzerId" data-i18n="benutzer_id">Benutzer-ID</label>
-      <input type="text" id="profileBenutzerId" class="name-input mono" placeholder="z. B. akif" data-i18n-placeholder="benutzer_id_ph" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false">
-      <p class="settings-hint benutzer-id-hinweis" data-i18n="benutzer_id_hinweis">Steht vorne in deinem Freundescode und ist der Name, unter dem dich Freunde sehen. 3–20 Zeichen: a–z, 0–9, Punkt, Unterstrich.</p>
     </div>
 
 
     <!-- Wie der Apple-Account in iOS: die Wege zu Lucenta+ und Einstellungen oben im Profil (Entscheidung des Inhabers). -->
     <div class="profil-wege">
+      <button type="button" class="profil-weg" id="btnNameOeffnen"><span class="profil-weg-text"><strong data-i18n="name_und_id">Name &amp; Benutzer-ID</strong><span id="profilNameStand"></span></span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
+      <button type="button" class="profil-weg" id="btnEntwicklungOeffnen"><span class="profil-weg-text"><strong data-i18n="verlauf">Verlauf</strong><span data-i18n="verlauf_unter">Dein Ergebnis, die Kurven und frühere Durchläufe</span></span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
       <button type="button" class="profil-weg" id="btnProfilPlus"><span class="profil-weg-text"><strong data-i18n="plus_marke_klar">Lucenta+</strong><span id="profilPlusStand" data-i18n="plus_kurz_frei">Alles, was über die Zeit entsteht</span></span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
       <button type="button" class="profil-weg" id="btnProfilEinstellungen"><span class="profil-weg-text"><strong data-i18n="einstellungen_2">Einstellungen</strong><span data-i18n="konto_darstellung_daten_und">Konto, Darstellung, Daten und Hilfe an einem Ort.</span></span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></button>
     </div>
 
-    <h2 class="section-title" data-i18n="dein_ergebnis">Dein Ergebnis</h2>
-    <div id="profileResultBlock"></div>
-
-    <!-- Der Verlauf ist Teil des Profils. -->
-    <h2 class="section-title" data-i18n="verlauf">Verlauf</h2>
-    <div id="historyContent"></div>
     <!-- Die Einordnung steht unter ihrem Gegenstand, wie ueberall in der App. -->
     <!-- Runde 79: Entwicklerbereich. Ganz unten, hinter allem Echten. -->
     <div class="settings-group" id="demoBlock"></div>
 
+  </section>
+
+
+  <!-- Name, Benutzer-ID und Titelform: Unterseite des Profils (Entscheidung des Inhabers). -->
+  <section class="view" id="view-name" tabindex="-1">
+    <div class="quiz-head nur-zurueck">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromName" data-i18n="zurueck_profil">← Profil</button>
+    </div>
+    <div class="archetypes-head">
+      <h1 data-i18n="name_und_id">Name &amp; Benutzer-ID</h1>
+    </div>
+    <div class="profile-head name-felder">
+      <label class="profile-name-label" for="profileName" data-i18n="name">Name</label>
+      <input type="text" id="profileName" class="name-input" placeholder="Dein Name" data-i18n-placeholder="ph_dein_name" maxlength="30" autocomplete="off">
+      <label class="profile-name-label" for="profileBenutzerId" data-i18n="benutzer_id">Benutzer-ID</label>
+      <input type="text" id="profileBenutzerId" class="name-input mono" placeholder="z. B. akif" data-i18n-placeholder="benutzer_id_ph" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <p class="settings-hint benutzer-id-hinweis" data-i18n="benutzer_id_hinweis">Steht vorne in deinem Freundescode und ist der Name, unter dem dich Freunde sehen. 3–20 Zeichen: a–z, 0–9, Punkt, Unterstrich.</p>
+      <!-- Form des Titels (Entscheidung des Inhabers); nur in Sprachen, die sie unterscheiden (titelFormSichtbar). -->
+      <div class="titelform" id="titelformGruppe">
+        <div class="profile-name-label" id="titelformLabel" data-i18n="titelform">Form deines Titels</div>
+        <div class="segment" role="radiogroup" aria-labelledby="titelformLabel">
+          <button type="button" class="segment-opt" role="radio" data-titelform="w" aria-checked="false"><span class="segment-preis" data-i18n="titelform_w">Sie</span></button>
+          <button type="button" class="segment-opt" role="radio" data-titelform="m" aria-checked="false"><span class="segment-preis" data-i18n="titelform_m">Er</span></button>
+          <button type="button" class="segment-opt" role="radio" data-titelform="n" aria-checked="true"><span class="segment-preis" data-i18n="titelform_n">Neutral</span></button>
+        </div>
+        <p class="settings-hint" id="titelformBeispiel"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ergebnis, Kurven und fruehere Durchlaeufe: Unterseite des Profils. -->
+  <section class="view" id="view-profilverlauf" tabindex="-1">
+    <div class="quiz-head nur-zurueck">
+      <button class="btn btn-ghost btn-sm" id="btnBackFromEntwicklung" data-i18n="zurueck_profil">← Profil</button>
+    </div>
+    <div class="archetypes-head">
+      <h1 data-i18n="verlauf">Verlauf</h1>
+    </div>
+    <h2 class="section-title" data-i18n="dein_ergebnis">Dein Ergebnis</h2>
+    <div id="profileResultBlock"></div>
+
+    <div id="historyContent"></div>
     <p class="profile-note" style="margin-top:12px;" data-i18n-html="bigfivedimensionen_gelten_au">Big-Five-Dimensionen gelten auf Wochensicht als stabil — ein echter Trend zeigt sich erst über mehrere Monate, nicht von einem Durchlauf zum nächsten. Die letzten <b id="historyMaxCount">&mdash;</b> Testdurchläufe auf diesem Gerät fließen hier ein.</p>
   </section>
 
   <!-- Alle frueheren Ergebnisse: Unterseite des Profils, damit das Profil kurz bleibt. -->
   <section class="view" id="view-verlauf" tabindex="-1">
     <div class="quiz-head nur-zurueck">
-      <button class="btn btn-ghost btn-sm" id="btnBackFromVerlauf" data-i18n="zurueck_profil">← Profil</button>
+      <button class="btn btn-ghost btn-sm" id="btnBackFromVerlauf" data-i18n="zurueck_verlauf">← Verlauf</button>
     </div>
     <div class="archetypes-head">
       <h1 data-i18n="fruehere_ergebnisse_titel">Frühere Ergebnisse</h1>
@@ -701,6 +724,23 @@
       <h1 data-i18n="tf_haeufige_fragen_2">Häufige Fragen</h1>
     </div>
       <div class="faq-item-list">
+    <details class="faq-item">
+          <summary data-i18n-text="warum_kein_mbti_kein_horosko">Warum kein MBTI, kein Horoskop?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
+          <p data-i18n="typtests_wie_mbti_sortieren">Typ-Tests wie MBTI sortieren dich in eine von 16 Schubladen &mdash; obwohl die Forschung zeigt, dass Persönlichkeit fließend ist, nicht kategorial. Sternzeichen haben keinerlei nachgewiesenen Zusammenhang mit Charakterzügen.</p>
+          <p data-i18n="die_bigfivedimensionen_extra">Die Big-Five-Dimensionen (Extraversion, Verträglichkeit, Gewissenhaftigkeit, emotionale Stabilität, Offenheit) sind seit den 1980ern in hunderten Studien über Kulturen hinweg repliziert &mdash; sie sagen tatsächlich etwas über Verhalten, Beziehungen und Wohlbefinden voraus.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n-text="faq_ocean_frage">Was bedeutet OCEAN?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></summary>
+          <div class="factsgrid">
+            <!-- Trennstellen an allen Silbengrenzen (je Box nur ~56px bei 390px). -->
+            <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="o">O</div><div class="v" data-i18n="ofshyfenshyheit">Of&shy;fen&shy;heit</div></div><div class="en" data-i18n="openshyness">Open&shy;ness</div></div>
+            <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="c">C</div><div class="v" data-i18n="geshywisshysenshyhafshytigsh">Ge&shy;wis&shy;sen&shy;haf&shy;tig&shy;keit</div></div><div class="en" data-i18n="conshyscishyenshytiousshynes">Con&shy;sci&shy;en&shy;tious&shy;ness</div></div>
+            <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="e">E</div><div class="v" data-i18n="exshytrashyvershysion">Ex&shy;tra&shy;ver&shy;sion</div></div><div class="en" data-i18n="exshytrashyvershysion_2">Ex&shy;tra&shy;ver&shy;sion</div></div>
+            <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="a">A</div><div class="v" data-i18n="vershyträgshylichshykeit">Ver&shy;träg&shy;lich&shy;keit</div></div><div class="en" data-i18n="agreeshyableshyness">Agree&shy;able&shy;ness</div></div>
+            <div class="fact-col"><div class="fact-box"><div class="k" data-i18n="n">N</div><div class="v" data-i18n="stashybishylishytät">Sta&shy;bi&shy;li&shy;tät</div></div><div class="en" data-i18n="neushyroshytishycism">Neu&shy;ro&shy;ti&shy;cism</div></div>
+          </div>
+          <p class="acronym-note" data-i18n-html="das_akronym_ocean_ist_der_in">Das Akronym <b>OCEAN</b> ist der international gebräuchliche Name des Modells &mdash; die Buchstaben folgen den englischen Fachbegriffen (klein darunter). Bei <b>N</b> weichen wir bewusst von der deutschen Direktübersetzung „Neurotizismus“ ab und nennen die Dimension „Emotionale Stabilität“ &mdash; gleiche Skala, nur ohne die defizitorientierte Sprache.</p>
+        </details>
         <details class="faq-item">
           <summary data-i18n-text="wie_wird_mein_ergebnis_berec">Wie wird mein Ergebnis berechnet?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
           <p data-i18n="aus__wissenschaftlich_validi">Aus 50 wissenschaftlich validierten Aussagen (IPIP Big-Five-Modell). Jede Antwort fließt in eine von fünf Dimensionen ein; das Ergebnis zeigt deine Ausprägung auf einer Skala von 0 bis 100 relativ zu den Aussagen selbst, nicht im Vergleich zu einer Bevölkerungsgruppe. Wie jede Selbstauskunfts-Messung ist das eine Schätzung mit einer natürlichen Schwankungsbreite, keine exakte, fixe Zahl — nimm die Werte als verlässliche Tendenz, nicht auf den Punkt genau.</p>

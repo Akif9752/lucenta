@@ -22,7 +22,17 @@
   if ($('btnSymbolOeffnen')) $('btnSymbolOeffnen').addEventListener('click', function(){ showView('appicon'); });
   if ($('btnBackFromSymbol')) $('btnBackFromSymbol').addEventListener('click', function(){ showView('settings'); });
   $('btnBackFromSprache').addEventListener('click', function(){ showView('settings'); });
-  $('btnBackFromVerlauf').addEventListener('click', function(){ showView('profile'); });
+  $('btnBackFromVerlauf').addEventListener('click', function(){ showView('profilverlauf'); });
+  $('btnNameOeffnen').addEventListener('click', function(){ renderProfile(); titelformAnwenden(); showView('name'); });
+  $('btnEntwicklungOeffnen').addEventListener('click', function(){ renderProfile(); showView('profilverlauf'); });
+  $('btnBackFromName').addEventListener('click', function(){ renderProfile(); showView('profile'); });
+  $('btnBackFromEntwicklung').addEventListener('click', function(){ renderProfile(); showView('profile'); });
+  document.querySelectorAll('[data-titelform]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var p = loadProfile(); p.titelform = b.getAttribute('data-titelform'); saveProfile(p);
+      titelformAnwenden(); renderProfile();
+    });
+  });
   // Der Knopf wird mit dem Verlauf neu gezeichnet, deshalb am Behaelter.
   $('historyContent').addEventListener('click', function(e){
     if (e.target.closest && e.target.closest('#btnVerlaufAlle')) showView('verlauf');

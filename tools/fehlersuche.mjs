@@ -503,7 +503,7 @@ const WEGE = {
   vs_wachstum: ['#tabVerstehen'],
   vs_combos:   ['#tabVerstehen'],
   vs_data:     ['#tabVerstehen'],
-  result:     ['#tabProfil', '#btnProfileViewResult'],
+  result:     ['#tabProfil', '#btnEntwicklungOeffnen', '#btnProfileViewResult'],
   quiz:       ['#btnHome', '#btnStart', '#btnRunSelf'],
   // Runde 81: Das Vergleichsergebnis entsteht erst, wenn zwei Codes eingetragen und verglichen
   // wurden — bis dahin ist der Block leer. Die Pruefung lief deshalb bisher an fuenf
@@ -516,6 +516,8 @@ const WEGE = {
   // Pruefschicht erfasst — genau die Luecke, die in Runde 84 der Bezahlschranke wegen schon
   // einmal aufging. Er sitzt im Profil, weil dort in der freien Fassung das Verlaufs-Schloss
   // steht; welche der fuenf Stellen es ist, spielt keine Rolle: Alle oeffnen dasselbe Fenster.
+  name:        ['#tabProfil', '#btnNameOeffnen'],
+  profilverlauf: ['#tabProfil', '#btnEntwicklungOeffnen'],
   pluswerbung: ['#tabProfil'],
   // Runde 103: Der Ergebnisbild-Dialog. Er war von KEINER Pruefschicht je geoeffnet — dieselbe
   // Luecke, die Runde 89 fuer das Lucenta+-Fenster geschlossen hat, nur eine Tuer weiter. Aufgefallen
@@ -523,10 +525,12 @@ const WEGE = {
   // eines Dialogs, den keine Messung sieht, ist eine unbelegte Aenderung.
   // Steht bewusst ZULETZT, wie pluswerbung: Beide lassen ihre Ueberlagerung offen stehen, damit
   // gemessen wird, was jemand sieht. zu() raeumt sie vor dem naechsten Weg mit Escape weg.
-  bilddialog:  ['#tabProfil', '#btnProfileViewResult']
+  bilddialog:  ['#tabProfil', '#btnEntwicklungOeffnen', '#btnProfileViewResult']
 };
 // Ansichten, deren Kennung nicht 'view-<name>' lautet, und was nach dem Weg noch zu tun ist.
 const NACHBEREITUNG = {
+  // „Mehr erfassen“ ist zugeklappt; aufgeklappt messen, sonst blieben fuenf Fragen und die Stichworte ungemessen.
+  state: {ansicht:'state', tun: async (p) => { await p.evaluate(() => { const d = document.getElementById('tfMehr'); if (d) d.open = true; }); await p.waitForTimeout(250); }},
   tf_verlauf: {ansicht:'state', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '.tf-reiter [data-reiter="verlauf"]'); await p.waitForTimeout(350); }},
   tf_kalender: {ansicht:'state', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '.tf-reiter [data-reiter="kalender"]'); await p.waitForTimeout(350); }},
   rb_woche: {ansicht:'rueckblick', tun: async (p) => { await p.evaluate(x => document.querySelector(x)?.click(), '[data-rb-ansicht="w"]'); await p.waitForTimeout(350); }},

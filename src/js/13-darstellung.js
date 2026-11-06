@@ -216,7 +216,8 @@
     clearProgress();
     function reveal(){
       quizSchliesst = false;
-      renderResult(previous);
+      ergebnisFrisch = true;
+      try{ renderResult(previous); } finally{ ergebnisFrisch = false; }
       showView('result');
       ergebnisEnthuellen();
       // Voller Speicher: Das Ergebnis steht da, ist aber nicht gesichert — das muss man wissen.
@@ -244,8 +245,10 @@
 
   // Jede Ergebniskarte blendet ein, wenn sie in den Blick kommt (IntersectionObserver; beim Rendern
   // ist die Ansicht noch display:none und misst 0). Nach drei Sekunden wird sicherheitshalber alles
-  // gezeigt.
+  // gezeigt. Nur direkt nach dem Test; spaeter steht alles sofort da (Entscheidung des Inhabers).
+  var ergebnisFrisch = false;
   function revealOnScroll(elemente){
+    if (!ergebnisFrisch) return;
     // Erst aussteigen, dann anfassen — das Ersatz-DOM der Testreihen kennt weder IntersectionObserver
     // noch children.
     if (!elemente || prefersReducedMotion() || !('IntersectionObserver' in window)) return;
@@ -273,7 +276,7 @@
     var arch = archetypeOf(scores);
     setzeDimensionsfarbe($('view-result'), scores);
     var pole1 = scores[arch.top1]>=50?'high':'low', pole2 = scores[arch.top2]>=50?'high':'low';
-    $('archTitle').innerHTML = NOUN[arch.top1][pole1] + ' <span class="sep">·</span> ' + ADJ[arch.top2][pole2];
+    $('archTitle').innerHTML = titelNomen(arch.top1, pole1, !guestRun) + ' <span class="sep">·</span> ' + titelAdj(arch.top2, pole2, !guestRun);
     $('archMotto').textContent = MOTTO[arch.top1][pole1];
     $('shareTitle').textContent = arch.title;
     synthesisSetzen(CORE[arch.top1][pole1] + ' ' + FLAVOR[arch.top2][pole2]);
@@ -300,10 +303,11 @@
 
     // Kennzahlenreihe unter dem Kurzportraet; zaehlt beim Erscheinen hoch.
     var stripHTML = sortedTraits.map(function(f,i){
+      // Farbpunkt der Dimension, Zahl, darunter der volle Name (Entscheidung des Inhabers).
       return '<div class="stat-tile" style="animation-delay:'+(i*70)+'ms">'+
-        '<div class="stat-label">'+RADAR_LABELS[f]+'</div>'+
-        '<div class="stat-num mono" id="statNum-'+f+'">0</div>'+
+        '<div class="stat-num mono"><i class="stat-punkt" style="background:var(--dim-'+f.toLowerCase()+')" aria-hidden="true"></i><span id="statNum-'+f+'">0</span></div>'+
         gaugeBarHTML(scores[f])+
+        '<div class="stat-label">'+radarZeilen(f).map(escapeHTML).join('<br>')+'</div>'+
         '</div>';
     }).join('');
     $('statStrip').innerHTML = stripHTML;

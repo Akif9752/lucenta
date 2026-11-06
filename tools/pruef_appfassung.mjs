@@ -336,8 +336,8 @@ const frVorher = await fr.evaluate(() => ({
   namen: [...document.querySelectorAll('#freundeListe .history-title')].map(e => e.textContent),
 }));
 await fr.click('[data-ich="zeigen"]'); await fr.waitForTimeout(200);
-// Runde 159: kurzer Code <id>-XXXX-XXXX statt L1.…
-const codeDanach = await fr.evaluate(() => /^pruef-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$/.test(document.getElementById('freundEigenerCode').textContent) && !!document.getElementById('freundEigenerCode').offsetHeight);
+// Kurzer Code <id>-XXXX-XXXXX (seit Runde 239 neun Zeichen) statt L1.…
+const codeDanach = await fr.evaluate(() => /^pruef-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{5}$/.test(document.getElementById('freundEigenerCode').textContent) && !!document.getElementById('freundEigenerCode').offsetHeight);
 await fr.fill('#freundCode', '240k1e1w2d'); await fr.click('#btnFreundSpeichern'); await fr.waitForTimeout(1200);
 const frVergleich = await fr.evaluate(() => ({ansicht: document.querySelector('.view.active').id,
   karten: document.querySelectorAll('#view-compare .compat-card').length, zurueck: document.getElementById('navZurueckText').textContent}));

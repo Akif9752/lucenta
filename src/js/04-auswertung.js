@@ -29,6 +29,35 @@
     return n ? max/n : 0;
   }
 
+  // ---------- Titelform (Entscheidung des Inhabers) ----------
+  // 'w', 'm' oder 'n' (die heutige Form: Deutsch „Visionaer:in“, romanisch weiblich), im Profil gewaehlt. Nur fuer
+  // Titel, die die Person selbst meinen; Freunde stehen immer in der neutralen Form.
+  function titelForm(){ try{ var f = loadProfile().titelform; return f === 'w' || f === 'm' ? f : 'n'; }catch(e){ return 'n'; } }
+  function titelFormSichtbar(){ return LANG === 'de' || !!(L && L.NOUN_M); }
+  function titelNomen(f, pol, eigen){
+    var form = eigen ? titelForm() : 'n', w = NOUN[f][pol];
+    if (form === 'm' && L && L.NOUN_M) return L.NOUN_M[f][pol];
+    if (LANG === 'de' && form !== 'n') return w.replace(/:in\b/, form === 'w' ? 'in' : '');
+    return w;
+  }
+  function titelAdj(f, pol, eigen){
+    var form = eigen ? titelForm() : 'n';
+    return (form === 'm' && L && L.ADJ_M) ? L.ADJ_M[f][pol] : ADJ[f][pol];
+  }
+  function eigenerTitel(sc, trenner){
+    var a = archetypeOf(sc);
+    return titelNomen(a.top1, sc[a.top1] >= 50 ? 'high' : 'low', true) + (trenner || ' · ') + titelAdj(a.top2, sc[a.top2] >= 50 ? 'high' : 'low', true);
+  }
+  function titelformAnwenden(){
+    var g = $('titelformGruppe');
+    if (!g) return;
+    g.hidden = !titelFormSichtbar();
+    var form = titelForm();
+    document.querySelectorAll('[data-titelform]').forEach(function(b){ b.setAttribute('aria-checked', b.getAttribute('data-titelform') === form ? 'true' : 'false'); });
+    var r = loadResult(), bsp = $('titelformBeispiel');
+    if (bsp) bsp.textContent = r ? eigenerTitel(r) : '';
+  }
+
   function archetypeOf(sc){
     var dev = ORDER.map(function(f){ return {f:f, d:Math.abs(sc[f]-50)}; });
     dev.sort(function(a,b){ return b.d-a.d; });
@@ -50,7 +79,7 @@
     try{ freunde = loadFreunde().map(function(f){ var sc = fromCode(f.code); return sc ? {f:f, r:rolleVon(sc)} : null; }).filter(Boolean); }catch(e){}
     var kopf = ich
       ? '<div class="arch-ich"><div class="eyebrow">'+tx('arch_deine_rolle')+'</div>'+
-          '<div class="arch-ich-titel">'+NOUN[ich.f][ich.p]+' <span class="sep">·</span> '+ADJ[ich.f2][ich.p2]+'</div>'+
+          '<div class="arch-ich-titel">'+titelNomen(ich.f, ich.p, true)+' <span class="sep">·</span> '+titelAdj(ich.f2, ich.p2, true)+'</div>'+
           '<p class="arch-ich-text">'+tx('arch_entsteht').split('{d1}').join(LABELS[ich.f]).split('{w1}').join(String(eigen[ich.f]))
             .split('{d2}').join(LABELS[ich.f2]).split('{w2}').join(String(eigen[ich.f2]))+'</p></div>'
       : '<p class="arch-ohne-test">'+tx('arch_ohne_test')+'</p>';
@@ -70,15 +99,15 @@
           return ['high','low'].map(function(q){
             var meins = istIch && ich.f2 === o && ich.p2 === q;
             var ihre = mitRolle.filter(function(x){ return x.r.f2 === o && x.r.p2 === q; });
-            return '<li class="arch-kombi'+(meins ? ' arch-kombi-ich' : '')+'"><span class="arch-kombi-titel">'+NOUN[t][p]+' · '+ADJ[o][q]+'</span>'+
+            return '<li class="arch-kombi'+(meins ? ' arch-kombi-ich' : '')+'"><span class="arch-kombi-titel">'+titelNomen(t, p, true)+' · '+titelAdj(o, q, true)+'</span>'+
               (meins ? '<span class="arch-du">'+tx('arch_du')+'</span>' : '')+figuren(ihre)+
               '<span class="arch-kombi-satz">'+FLAVOR[o][q]+'</span></li>';
           }).join('');
         }).join('');
         return '<details class="role-card role-pol-'+p+(istIch ? ' role-ich' : '')+'" style="animation-delay:'+((gi*2+pi)*40)+'ms">'+
           '<summary>'+
-            '<div class="role-tag role-tag-'+p+'">'+ADJ[t][p]+(istIch ? ' · '+tx('arch_du') : '')+'</div>'+
-            '<div class="role-title">'+NOUN[t][p]+'</div>'+
+            '<div class="role-tag role-tag-'+p+'">'+titelAdj(t, p, true)+(istIch ? ' · '+tx('arch_du') : '')+'</div>'+
+            '<div class="role-title">'+titelNomen(t, p, true)+'</div>'+
             '<div class="role-motto">'+MOTTO[t][p]+'</div>'+
             '<p class="role-desc">'+CORE[t][p]+'</p>'+
             (naehe === null ? '' : '<div class="arch-naehe"><span>'+tx('arch_naehe')+'</span>'+

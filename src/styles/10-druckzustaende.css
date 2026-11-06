@@ -141,26 +141,12 @@
   }
 
 /* ================= Fuehlbare Bedienung =================
-   Das Handwerk, nicht die Bindungsmechanik: kein Serien-Zaehler, kein XP, keine Bestenliste. */
+   Knoepfe flach gefuellt als Kapsel; Druck nur durch kurzes Abdunkeln und Verkleinern, keine harte
+   Unterkante, kein Glanz (Entscheidung des Inhabers). */
 
-  /* 1. Primaere Knoepfe: eine sichtbare Unterkante, die beim Druecken zusammengeht. Nur fuer die
-     Haupthandlung. */
-  .btn-primary{
-    box-shadow:0 4px 0 var(--accent-deep);
-    transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s cubic-bezier(.2,.8,.2,1),
-               background .15s ease;
-  }
-  .btn-primary:active{
-    transform:translateY(3px); box-shadow:0 1px 0 var(--accent-deep); transition-duration:0s;
-  }
-  .btn-hero.btn-primary{ box-shadow:0 5px 0 var(--accent-deep); }
-  .btn-hero.btn-primary:active{ transform:translateY(4px); box-shadow:0 1px 0 var(--accent-deep); }
-  /* Der bisherige Schwebe-Effekt hob den Knopf an und ersetzte dabei den Schatten — damit wäre
-     die Kante beim Zeigen verschwunden. Beide Zustände tragen sie jetzt. */
-  @media (hover:hover){
-    .btn-primary:hover{ transform:translateY(-1px); box-shadow:0 5px 0 var(--accent-deep); }
-    .btn-hero.btn-primary:hover{ transform:translateY(-1px); box-shadow:0 6px 0 var(--accent-deep); }
-  }
+  /* 1. Primaere Knoepfe dunkeln beim Druecken ab (das Verkleinern steht oben bei .btn:active). */
+  .btn-primary{ transition:transform .18s cubic-bezier(.2,.8,.2,1), background .15s ease, filter .15s ease; }
+  .btn-primary:active{ filter:brightness(.86); transition-duration:0s; }
 
   /* 2. Die Fuellung der Antwort federt auf, der Ring gibt einen kurzen Impuls. */
   .scale-btn .fill{ transition:width .26s cubic-bezier(.34,1.56,.64,1), height .26s cubic-bezier(.34,1.56,.64,1), background .15s ease; }
@@ -187,70 +173,27 @@
     #focusline.beat #focusline-fill{ animation:none; }
   }
 
-/* ================= Erscheinungsbild: Kante statt Schatten =================
-   Bedienbare Flaechen: kraeftiger Rand (2px), harte Unterkante, grosse Radien. Lesetext ohne Rahmen.
-   Schatten nur noch zwischen Ebenen (Dialoge). */
+/* ================= Erscheinungsbild: flach =================
+   Karten ohne Schatten mit feinem Rand; antippbare Flaechen quittieren ueber Verkleinern und Hinterlegen. */
 
-  /* 1. Flaechen, die man ansieht: kraeftiger Rand, grosser Radius, kein Schatten. */
-  .trend-list, .state-check-card, .understand-card, .preview-card, .delta-card, .compat-line-total{
-    border-width:2px !important;
-    box-shadow:none !important;
-  }
+  .trend-list, .state-check-card, .understand-card, .preview-card, .delta-card, .compat-line-total{ box-shadow:none !important; }
+  .trait-card, .history-row, .role-card, .run-choice-opt{ box-shadow:none; transition:transform .2s cubic-bezier(.2,.8,.2,1), background .15s ease, border-color .15s ease; }
 
-  /* 2. Antippbare Flaechen: zurueckhaltende Unterkante, die beim Druecken zusammengeht. */
-  .trait-card, .history-row, .role-card, .run-choice-opt{
-    border-width:2px !important;
-    box-shadow:0 3px 0 var(--kante);
-    transition:transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s cubic-bezier(.2,.8,.2,1),
-               border-color .15s ease;
-  }
-  .trait-card:active, .history-row:active, .role-card:active,
-  .run-choice-opt:active{
-    transform:translateY(2px); box-shadow:0 1px 0 var(--kante); transition-duration:0s;
-  }
-
-  /* 3. Antwortkreise: kraeftiger Rand, die Auswahl fuellt die Flaeche. */
-  .scale-btn{ border-width:2.5px; }
+  /* Antwortkreise: die Auswahl fuellt die Flaeche. */
+  .scale-btn{ border-width:2px; }
   .scale-btn.picked{ background:var(--accent); border-color:var(--accent); }
   .scale-btn.picked .fill{ background:var(--accent-ink); }
 
-  /* 4. Der Fortschrittsbalken war 3px hoch und lag als Haarlinie unter der Kopfzeile. In dieser
-        Formensprache ist er ein eigenes Objekt: dicker, mit runden Enden. */
+  /* Der Fortschrittsbalken als eigenes Objekt: dicker, mit runden Enden. Die Unterlinie nur, solange
+     er sichtbar ist (sonst bliebe ganz oben eine Haarlinie ohne Bedeutung). */
   #focusline{ height:var(--fokuslinie-hoehe); background:var(--surface-2); }
-  /* Die Unterkante gehoert zum sichtbaren Zustand — sonst bliebe ausserhalb des Fragebogens
-     eine Haarlinie ganz oben stehen, die nichts bedeutet. Gemessen: 1px statt 0. */
   html.fortschritt-sichtbar #focusline{ border-bottom:1px solid var(--line); }
   #focusline-fill{ border-radius:0 100px 100px 0; }
   .focusline-tick{ opacity:.35; }
 
-  /* 5. Die grosse Fragekarte trug einen weichen Schatten und wirkte dadurch schwebend statt
-        greifbar. */
-  .qcard{ border:2px solid var(--line); box-shadow:0 4px 0 var(--kante) !important; }
-
-  @media (prefers-reduced-motion: reduce){
-    .trait-card:active, .history-row:active, .role-card:active,
-    .run-choice-opt:active{ transform:none; }
-  }
-
-  /* 6. Der grosse Geisterknopf der Startseite bekommt eine eigene Flaeche (sonst zogen die Sterne
-     hindurch); die kleinen stehen auf Karten und bleiben. */
-  .btn-hero.btn-ghost{
-    background:var(--surface);
-    border:2px solid var(--line-strong);
-    box-shadow:0 4px 0 var(--kante);
-    transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s cubic-bezier(.2,.8,.2,1),
-               border-color .15s ease;
-  }
-  .btn-hero.btn-ghost:active{
-    transform:translateY(3px); box-shadow:0 1px 0 var(--kante); transition-duration:0s;
-  }
-  @media (hover:hover){
-    .btn-hero.btn-ghost:hover{ transform:translateY(-1px); box-shadow:0 5px 0 var(--kante); border-color:var(--accent-strong); }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .btn-hero.btn-ghost{ transition:border-color .15s ease; }
-    .btn-hero.btn-ghost:active{ transform:none; }
-  }
+  /* Der grosse Geisterknopf der Startseite traegt eine eigene Flaeche (sonst zogen die Sterne hindurch). */
+  .btn-hero.btn-ghost{ background:var(--surface); border:1px solid var(--line-strong); box-shadow:none; }
+  .btn-hero.btn-ghost:active{ background:var(--surface-2); }
 
   /* ---------- Bewegung aus ----------
      Ein Block fuer alles (auch kuenftige Animationen). Dauer nahezu null statt none, damit

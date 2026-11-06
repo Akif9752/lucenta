@@ -122,106 +122,106 @@
   #view-settings #btnResetData.armed{ font-weight:600; }
 
 /* ================= Das Profil als iOS-Kontaktkarte =================
-   Grosses Bild oben, darunter Gruppen; auf #view-profile beschraenkt. Zwei !important als Gegengewicht
+   Grosses Bild oben, darunter Gruppen; auf :is(#view-profile, #view-name, #view-profilverlauf) beschraenkt. Zwei !important als Gegengewicht
    zu border-width:2px !important aus 10-druckzustaende.css. */
 
   /* Abschnittstitel wie ueberall in iOS. */
-  #view-profile .section-title, #view-look .section-title{
+  :is(#view-profile, #view-name, #view-profilverlauf) .section-title, #view-look .section-title{
     margin-top:30px; padding:0 16px 7px; display:block;
     font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; line-height:1.3;
     text-transform:uppercase; letter-spacing:.02em; color:var(--muted);
   }
-  #view-profile .section-title .n{ border:none; padding:0; margin-left:6px; font-size:calc(13px * var(--dt, 1)); }
-  #view-profile .section-lead, #view-look .section-lead{ margin:0 0 8px; padding:0 16px; font-size:calc(13px * var(--dt, 1)); line-height:1.4; max-width:none; }
+  :is(#view-profile, #view-name, #view-profilverlauf) .section-title .n{ border:none; padding:0; margin-left:6px; font-size:calc(13px * var(--dt, 1)); }
+  :is(#view-profile, #view-name, #view-profilverlauf) .section-lead, #view-look .section-lead{ margin:0 0 8px; padding:0 16px; font-size:calc(13px * var(--dt, 1)); line-height:1.4; max-width:none; }
 
   /* Name: ein Textfeld in einer Zeile, wie "Vorname" in der Kontaktkarte — keine Unterstrich-Linie,
      sondern eine Flaeche mit dem Text linksbuendig. */
-  #view-profile .profile-name-label{
+  :is(#view-profile, #view-name, #view-profilverlauf) .profile-name-label{
     align-self:stretch; text-align:left; margin-top:26px; padding:0 16px 7px;
     font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); letter-spacing:.02em;
   }
-  #view-profile .name-input{
+  :is(#view-profile, #view-name, #view-profilverlauf) .name-input{
     max-width:none; width:100%; box-sizing:border-box; margin:0; padding:12px 16px;
     background:var(--surface); border:none; border-radius:var(--radius-m);
     font-family:var(--sans); font-size:calc(17px * var(--dt, 1)); text-align:left;
   }
-  #view-profile .name-input:focus{ border:none; }
+  :is(#view-profile, #view-name, #view-profilverlauf) .name-input:focus{ border:none; }
 
   /* Bildwahl: Farbtupfer und Figuren auf einer gemeinsamen Flaeche. */
-  #view-profile .figur-raster, #view-look .figur-raster,
-  #view-profile .hg-raster, #view-look .hg-raster{
+  :is(#view-profile, #view-name, #view-profilverlauf) .figur-raster, #view-look .figur-raster,
+  :is(#view-profile, #view-name, #view-profilverlauf) .hg-raster, #view-look .hg-raster{
     max-width:none; width:100%; box-sizing:border-box; padding:14px;
     background:var(--surface); border-radius:var(--radius-m);
   }
-  #view-profile .figur-raster{ margin-top:14px; }
+  :is(#view-profile, #view-name, #view-profilverlauf) .figur-raster{ margin-top:14px; }
 
   /* Ergebnis: eine Zeile wie jede andere Gruppe. */
-  #view-profile .profile-result-card,
-  #view-profile .profile-empty{
+  :is(#view-profile, #view-name, #view-profilverlauf) .profile-result-card,
+  :is(#view-profile, #view-name, #view-profilverlauf) .profile-empty{
     margin-top:0; background:var(--surface); border:none; border-radius:var(--radius-m);
     box-shadow:none; padding:12px 16px;
   }
-  #view-profile .profile-result-card strong{ font-family:var(--sans); font-weight:500; }
+  :is(#view-profile, #view-name, #view-profilverlauf) .profile-result-card strong{ font-family:var(--sans); font-weight:500; }
 
   /* Verlauf: eine Liste statt einzelner Karten. */
-  #view-profile .trend-list{
+  :is(#view-profile, #view-name, #view-profilverlauf) .trend-list{
     margin-top:0; border:none !important; box-shadow:none !important; border-radius:var(--radius-m);
   }
-  #view-profile .history-list{
+  :is(#view-profile, #view-name, #view-profilverlauf) .history-list{
     gap:0; margin-top:10px; background:var(--surface); border-radius:var(--radius-m); overflow:hidden;
   }
-  #view-profile #historyContent .history-row{
+  :is(#view-profile, #view-name, #view-profilverlauf) #historyContent .history-row{
     position:relative; border:none !important; border-radius:0; box-shadow:none !important;
     background:transparent; padding:11px 16px;
   }
-  #view-profile #historyContent .history-row:active{ transform:none; box-shadow:none !important; }
-  #view-profile #historyContent .history-row + .history-row::before{
+  :is(#view-profile, #view-name, #view-profilverlauf) #historyContent .history-row:active{ transform:none; box-shadow:none !important; }
+  :is(#view-profile, #view-name, #view-profilverlauf) #historyContent .history-row + .history-row::before{
     content:''; position:absolute; top:0; left:16px; right:0; height:1px; background:var(--line);
   }
   /* Die Pol-Kante wird in der Liste zum Punkt vor dem Titel. */
-  #view-profile #historyContent .history-pol-high .history-title::before,
-  #view-profile #historyContent .history-pol-low .history-title::before{
+  :is(#view-profile, #view-name, #view-profilverlauf) #historyContent .history-pol-high .history-title::before,
+  :is(#view-profile, #view-name, #view-profilverlauf) #historyContent .history-pol-low .history-title::before{
     content:''; display:inline-block; width:8px; height:8px; border-radius:50%;
     margin-right:8px; vertical-align:1px; background:var(--accent);
   }
-  #view-profile #historyContent .history-pol-low .history-title::before{ background:var(--accent-2); }
-  #view-profile #historyContent .history-neu{ background:transparent; }
+  :is(#view-profile, #view-name, #view-profilverlauf) #historyContent .history-pol-low .history-title::before{ background:var(--accent-2); }
+  :is(#view-profile, #view-name, #view-profilverlauf) #historyContent .history-neu{ background:transparent; }
 
   /* Der Entwicklerbereich unten (Beispieldaten, Plus-Schalter) wie eine Einstellungsgruppe. */
-  #view-profile #demoBlock{ background:none; border:none; box-shadow:none; padding:0; margin-top:30px; }
-  #view-profile #demoBlock > h2{
+  :is(#view-profile, #view-name, #view-profilverlauf) #demoBlock{ background:none; border:none; box-shadow:none; padding:0; margin-top:30px; }
+  :is(#view-profile, #view-name, #view-profilverlauf) #demoBlock > h2{
     font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; text-transform:uppercase;
     letter-spacing:.02em; color:var(--muted); margin:0 0 7px; padding:0 16px;
   }
-  #view-profile #demoBlock > .settings-group-desc{ font-size:calc(13px * var(--dt, 1)); padding:0 16px; margin:0 0 8px; }
-  #view-profile #demoBlock .daten-knoepfe{
+  :is(#view-profile, #view-name, #view-profilverlauf) #demoBlock > .settings-group-desc{ font-size:calc(13px * var(--dt, 1)); padding:0 16px; margin:0 0 8px; }
+  :is(#view-profile, #view-name, #view-profilverlauf) #demoBlock .daten-knoepfe{
     margin-top:0; background:var(--surface); border-radius:var(--radius-m); overflow:hidden;
   }
-  #view-profile #demoBlock .daten-knoepfe .btn{
+  :is(#view-profile, #view-name, #view-profilverlauf) #demoBlock .daten-knoepfe .btn{
     width:100%; min-height:46px; justify-content:flex-start; padding:12px 16px;
     background:transparent; border:none; border-radius:0; box-shadow:none;
     font-family:var(--sans); font-size:calc(16px * var(--dt, 1)); font-weight:400; color:var(--accent-strong);
   }
-  #view-profile #demoBlock .daten-knoepfe .btn:active{ transform:none; background:var(--surface-2); }
-  #view-profile #demoBlock .settings-row{
+  :is(#view-profile, #view-name, #view-profilverlauf) #demoBlock .daten-knoepfe .btn:active{ transform:none; background:var(--surface-2); }
+  :is(#view-profile, #view-name, #view-profilverlauf) #demoBlock .settings-row{
     margin-top:10px; background:var(--surface); border:none; border-radius:var(--radius-m); padding:12px 16px;
   }
 
   /* Das Ergebnis fuehrt wie jede andere Zeile mit einem Winkel weiter: Der Knopf "Ansehen" liegt
      ueber der ganzen Zeile, seine Beschriftung bleibt fuer VoiceOver. */
-  #view-profile .profile-result-card{ position:relative; padding-right:40px; flex-wrap:nowrap; }
-  #view-profile #btnProfileViewResult{
+  :is(#view-profile, #view-name, #view-profilverlauf) .profile-result-card{ position:relative; padding-right:40px; flex-wrap:nowrap; }
+  :is(#view-profile, #view-name, #view-profilverlauf) #btnProfileViewResult{
     position:absolute; inset:0; width:100%; height:100%; margin:0; padding:0 16px;
     display:flex; align-items:center; justify-content:flex-end;
     background:transparent; border:none; border-radius:inherit; box-shadow:none;
     font-size:0; color:var(--muted-soft);
   }
-  #view-profile #btnProfileViewResult::after{
+  :is(#view-profile, #view-name, #view-profilverlauf) #btnProfileViewResult::after{
     content:'\203A'; font-size:calc(24px * var(--dt, 1)); line-height:1; font-family:var(--sans);
     position:static; transform:none; width:auto; height:auto; top:auto; left:auto;
   }
-  #view-profile #btnProfileViewResult:active{ transform:none; background:color-mix(in srgb, var(--ink) 6%, transparent); }
-  #view-profile .settings-row-text strong{ font-family:var(--sans); font-weight:400; font-size:calc(16px * var(--dt, 1)); }
+  :is(#view-profile, #view-name, #view-profilverlauf) #btnProfileViewResult:active{ transform:none; background:color-mix(in srgb, var(--ink) 6%, transparent); }
+  :is(#view-profile, #view-name, #view-profilverlauf) .settings-row-text strong{ font-family:var(--sans); font-weight:400; font-size:calc(16px * var(--dt, 1)); }
 
   /* "Kein Bild" zeigt das Monogramm. Steht hier, weil eine spaetere background-Kurzform in
      09-archetypen.css die Regel dort loescht. */
@@ -277,13 +277,13 @@
   /* 2. Listenzeilen: sofort hinterlegt, langsam ausgeblendet. */
   .wahl-zeile,
   #view-settings .daten-knoepfe .btn,
-  #view-profile #btnProfileViewResult,
-  #view-profile #demoBlock .daten-knoepfe .btn{
+  :is(#view-profile, #view-name, #view-profilverlauf) #btnProfileViewResult,
+  :is(#view-profile, #view-name, #view-profilverlauf) #demoBlock .daten-knoepfe .btn{
     transition:background .45s ease;
   }
   .wahl-zeile:active,
   #view-settings .daten-knoepfe .btn:active,
-  #view-profile #btnProfileViewResult:active{ transition-duration:0s; }
+  :is(#view-profile, #view-name, #view-profilverlauf) #btnProfileViewResult:active{ transition-duration:0s; }
 
   /* 3. Das Haekchen springt auf. Die Drehung muss in der Animation mitstehen — das Haekchen ist ein
         gedrehter Winkel, und eine Animation nur ueber scale wuerde die Drehung ueberschreiben. */
@@ -358,12 +358,8 @@
      unberuehrt). */
   header.top{ box-shadow:inset 0 -1px 0 var(--glas-rand); }
 
-  /* Hauptknopf als getoentes Glas ("prominent glass"): Farbe deckend, dazu Kante und Glanz. */
-  .btn-primary{
-    background-image:linear-gradient(175deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,0) 52%);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.45), inset 0 -1px 0 rgba(0,0,0,.12),
-               0 6px 18px -8px color-mix(in srgb, var(--accent) 70%, transparent);
-  }
+  /* Hauptknopf flach gefuellt (Entscheidung des Inhabers: kein Glanzverlauf, kein Schein). */
+  .btn-primary{ background-image:none; box-shadow:none; }
 
   /* Die Tueren. */
   @media (prefers-reduced-transparency: reduce){
@@ -958,3 +954,44 @@
   .freund-ich-kopf[data-hg]{ padding:12px 14px; border-radius:var(--radius-m); color:var(--hg-ink); }
   .freund-ich-kopf[data-hg] .history-title, .freund-ich-kopf[data-hg] .freund-ich-id{ color:var(--hg-ink); }
   .freund-ich-kopf[data-hg] .history-date{ color:var(--hg-muted); }
+
+/* ================= Ueberzeilen und Farbrollen (Entscheidung des Inhabers) =================
+   Grossbuchstaben nur fuer Abschnittskoepfe wie in iOS-Listen (grau, ohne Strich). Alles andere normal
+   geschrieben: Ueberzeilen und Unterzeilen grau, Zwischentitel weiss/schwarz, Links in der Akzentfarbe.
+   Orange und Lila nur noch, wo eine Dimension oder die zweite Person gemeint ist. */
+  .eyebrow{ font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:600; letter-spacing:0;
+    text-transform:none; color:var(--muted); margin-bottom:8px; }
+  .eyebrow::before{ display:none; }
+  .preview-label, .vs-dim, .kombi-dims, .tf-kal-zeit, .role-tag{ font-family:var(--sans); letter-spacing:0; text-transform:none; }
+  .preview-label, .vs-dim{ font-size:calc(13px * var(--dt, 1)); font-weight:600; color:var(--muted); }
+  .role-tag, .role-tag-high, .role-tag-low{ font-size:calc(12px * var(--dt, 1)); font-weight:600; color:var(--muted); }
+  .rhythmus-titel, .befund-titel, .trait-section-label, .recht-text h3, #onboarding .ob-fuer-dich-titel{
+    font-family:var(--sans); font-size:calc(14px * var(--dt, 1)); font-weight:600; letter-spacing:0; text-transform:none; color:var(--ink);
+  }
+  .vs-label{ color:var(--ink); }
+  .tf-muster-frei{ letter-spacing:0; text-transform:none; color:var(--muted); }
+  .trait-more{ font-family:var(--sans); font-size:calc(14px * var(--dt, 1)); font-weight:500; letter-spacing:0; text-transform:none; color:var(--accent-strong); }
+  .understand-group-label{ font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; letter-spacing:.02em; color:var(--muted); }
+  .figur-gruppen .hg-gruppe-titel, .hg-gruppen .hg-gruppe-titel, .arch-gruppe-titel{
+    font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; letter-spacing:.02em; color:var(--muted);
+  }
+  .motto, .role-motto{ font-family:var(--sans); color:var(--muted); letter-spacing:0; }
+  .archetype .sep, .preview-title .sep{ color:var(--muted); }
+  .storage-warning b, .uniform-note b, .guest-note b{ color:var(--ink); }
+
+/* Forschungs-Teaser der Startseite als eine Listenzeile (Entscheidung des Inhabers). */
+  .start-forschung-zeile{ appearance:none; width:100%; margin-top:14px; display:flex; align-items:center; gap:12px; min-height:56px;
+    padding:10px 16px; text-align:left; font:inherit; color:var(--ink); background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius-m); cursor:pointer; }
+  .start-forschung-zeile:active{ background:var(--surface-2); }
+  .start-forschung-text{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .start-forschung-label{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
+  .start-forschung-titel{ font-size:calc(15px * var(--dt, 1)); font-weight:600; }
+  .start-forschung-zeile .chev{ color:var(--muted); flex-shrink:0; }
+  .faq-item .factsgrid{ margin:4px 0 12px; }
+  .faq-item .acronym-note{ margin:0 0 14px; font-size:calc(13.5px * var(--dt, 1)); color:var(--muted); line-height:1.55; }
+
+/* Titelform auf der Unterseite Name & Benutzer-ID. */
+  .titelform{ margin-top:22px; }
+  .titelform .segment{ margin-top:6px; }
+  .titelform[hidden]{ display:none; }
