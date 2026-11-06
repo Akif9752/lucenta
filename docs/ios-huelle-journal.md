@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-05, nach Runde 237)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-06, nach Runde 238)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 237 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 238 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -82,7 +82,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 237 | (dieser) | Fehlersuche mit 2000 simulierten Personen (Werkzeug npm run personen), zwoelf Befunde, App unveraendert |
+| 238 | (dieser) | Funde der Personen-Simulation behoben, Start in iPhone-Sprache, Benutzer-ID ab 2 Zeichen, EU-OS-Satz gestrichen |
+| 237 | `f04be62` | Fehlersuche mit 2000 simulierten Personen (Werkzeug npm run personen), zwoelf Befunde, App unveraendert |
 | 236 | `a5c9f07` | Rundlauf: Rueckweg der Rechtsseite, Datenschutz-Fakten, Beispieldaten; Profilkopf, Rueckblick, Portraet-Karte, Ergebnisseite |
 | 235 | `b19e5ee` | Zu jeder Tageszeit: hoechstens drei Mitteilungen am Tag (ohne Nacherinnerung) |
 | 234 | `452388f` | Vergleich ohne den Satz zur Prozentzahl; Reihenfolge der Inhaberaufgaben vermerkt |
@@ -284,12 +285,16 @@ Regeln, die er gesetzt hat:
 
 **Kein laufender Auftrag.** Runden 223–236 sind erledigt, gepusht und auf Simulator und iPhone installiert.
 
-*Aus der Fehlersuche mit 2000 Personen (Runde 237, noch nicht behoben, dem Inhaber vorgelegt):* kann ich bauen — Gastdurchlauf
-ueberschreibt eigenes Ergebnis, Codes von Hand normalisieren (Leerzeichen, Gedankenstrich, O/I), Tagesform-Grenze 800 (Datenschutztext
-nennt 800, mitziehen), „Alle Daten loeschen" vollstaendig (+ Widget), Tagesform-Seite beim Wiederoeffnen auffrischen, halbes Emoji
-in der Notiz, Freunde mit gleichem Ergebnis, Hinweis bei vollem Speicher, Einspielen ersetzt ganz. Braucht seine Entscheidung —
-Startsprache = iPhone-Sprache, Benutzer-ID fuer andere Schriften/kurze Namen, Brasilianisches Portugiesisch, Satz zur
-EU-OS-Plattform im Impressum, Wochenbeginn nach Region, staerkere Pruefsumme (laengerer Code). Werkzeug: `npm run personen`.
+*Aus der Fehlersuche mit 2000 Personen (Runde 237), in Runde 238 behoben:* alle neun Fehler und die drei Entscheidungen
+(Startsprache, Benutzer-ID, Impressum). **Noch offen, braucht seine Entscheidung:** Brasilianisch (erst nach der muttersprachlichen
+Durchsicht, Inhaber), Wochenbeginn nach Region, staerkere Pruefsumme (laengerer Code; jeder vierte Tippfehler gilt heute als gueltig).
+Werkzeug: `npm run personen` (Zusagen von Runde 238 eingebaut).
+
+- **Startsprache (Runde 238, Inhaber):** Ohne gewaehlte Sprache die des iPhones, wenn eine der acht, sonst Englisch; NICHT gemerkt
+  (folgt dem Geraet, bis die Person waehlt). Unter Automatisierung Deutsch, gezielt mit `?geraetesprache` (`geraeteSprache()`,
+  01-sprachpakete.js). Die Testgeruest-Dateien setzen `navigator.webdriver`.
+- **Benutzer-ID ab 2 Zeichen (Runde 238, Inhaber);** ohne lateinische Buchstaben Vorschlag `tx('benutzer_id_vorschlag')` + 4 Ziffern
+  (freund/friend/amigo/ami/amico/amigo/arkadas/tomo). Kein Satz zur EU-OS-Plattform im Impressum (eingestellt 20.07.2025).
 
 *Kann die Sitzung bauen (aus der Simulation, Runde 223):* **C** — Schutztag der Serie sichtbar machen, Serienzaehler leiser
 (gegen Serien-Druck). Mit Optionen vorlegen, bevor gebaut wird.
@@ -521,17 +526,52 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 237** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 238** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 237 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 238 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 238 — Funde der Fehlersuche behoben, drei Entscheidungen des Inhabers gebaut
+
+**Inhaber:** „los" — die neun Fehler aus Runde 237 und seine Wahl: Start in der iPhone-Sprache, sonst Englisch; Benutzer-ID ab
+2 Zeichen mit Vorschlag; Brasilianisch spaeter; Satz zur EU-OS-Plattform streichen.
+
+**Fehler, behoben:**
+- Gastdurchlauf: Der Fortschritt traegt `gast`, „Weitermachen" stellt `guestRun` wieder her — das eigene Ergebnis bleibt.
+- Freundescodes von Hand: Gedankenstriche werden Bindestriche; bei kurzer Eingabe (≤ 40 Zeichen) zusaetzlich Leerzeichen oder
+  nichts statt Strich und O/I/L statt 0/1 (Crockford, `KURZCODE_LOCKER`). In ganzen Einladungen gilt weiter nur das strenge Muster.
+- Tagesform: hoechstens 2200 statt 800 Eintraege (zwei Jahre bei drei am Tag, ~400 KB). Grenze nach oben: die iCloud-Sicherung ist
+  EIN CloudKit-Datensatz (1 MB). Datenschutztext in 8 Sprachen und `web/datenschutz/` nachgezogen.
+- „Alle Daten loeschen" nimmt auch ausfuehrlichen Test, Meilensteine, „erstes Muster", freie Vergleichspersonen, Nutzungszaehler
+  mit und meldet dem Widget den leeren Tag. Einstellungen bleiben.
+- Tagesform-Seite beim Wiederoeffnen nach neuem Tag oder Abschnitt neu gezeichnet (nicht bei halber Eingabe, offener Notiz, „Aendern").
+- Notiz: kein halbes Emoji mehr am Ende der 200 Zeichen.
+- Freunde mit gleichem Ergebnis: „dein eigener Code" nur, wenn auch die Benutzer-ID passt; ersetzt wird nur bei gleichem Code UND
+  gleicher ID (IDs aus Vornamen sind nicht eindeutig); Vergleich und Entfernen ueber die Kennung des Eintrags.
+- Voller Speicher: nach dem Test die Meldung „Konnte nicht gespeichert werden …" statt des Kaufangebots.
+- Einspielen: fragt vorher (`js_import_frage`, 8 Sprachen) und ersetzt den Bestand ganz — was die Sicherung nicht traegt, wird entfernt.
+
+**Entscheidungen gebaut:** `geraeteSprache()` (nicht gemerkt; unter Automatisierung Deutsch, gezielt `?geraetesprache`); Benutzer-ID
+`{2,20}` mit Vorschlag `benutzer_id_vorschlag` + 4 Ziffern, Hinweistexte „2–20" in 8 Sprachen; Satz zur EU-OS-Plattform aus dem
+Impressum (8 Sprachen), der zur Verbraucherschlichtung bleibt.
+
+**Geprueft:** Testreihen um abgetippte Codes, zweistellige IDs, Vorschlag und Geraetesprache erweitert. Personen-Simulation erneut
+(400 Personen + alle Mitternachts-/Silvesterfaelle): keine Funde mehr ausser Brasilien (zurueckgestellt) und den Tippfehlern, die die
+2-Bit-Pruefsumme nicht erkennt (Entscheidung offen).
+
+**Unsicher:** Am Geraet nicht angesehen; ob `navigator.languages` in der WKWebView die iPhone-Sprache meldet, auch wenn fuer Lucenta
+in den iOS-Einstellungen eine eigene Sprache gewaehlt ist, ist nur am Simulator/iPhone zu sehen. Beim ersten Start erscheint die
+Oberflaeche einen Augenblick auf Deutsch, bis das Sprachpaket geladen ist. Die iCloud-Sicherung mit 2200 Eintraegen voller langer
+Notizen kaeme nahe an 1 MB.
 
 ---
 

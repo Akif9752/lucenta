@@ -1,3 +1,5 @@
+// Wie unter den Pruefwerkzeugen gilt Automatisierung: Die App startet auf Deutsch (geraeteSprache).
+Object.defineProperty(globalThis, 'navigator', {value: {webdriver: true, language: 'de-DE', languages: ['de-DE']}, configurable: true, writable: true});
 var __store={};
 global.localStorage={getItem:k=>Object.prototype.hasOwnProperty.call(__store,k)?__store[k]:null,
   setItem:(k,v)=>{__store[k]=String(v)},removeItem:k=>{delete __store[k]}};

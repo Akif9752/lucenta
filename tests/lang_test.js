@@ -131,6 +131,15 @@
   setLang('de');
   console.log("  Werte in allen sieben Sprachen: "+referenz);
 
+  console.log("\n=== Sprache des iPhones beim ersten Start ===");
+  var navAlt = navigator;
+  [[['ja-JP'],'ja'], [['pt-BR','en-US'],'pt'], [['sv-SE','tr-TR'],'tr'], [['sv-SE'],'en'], [['de-AT'],'de'], [[],'en']].forEach(function(f){
+    Object.defineProperty(globalThis, 'navigator', {value: {languages: f[0], language: f[0][0]}, configurable: true, writable: true});
+    ok(geraeteSprache() === f[1], "Geraetesprache "+f[0].join(',')+" -> "+geraeteSprache()+" statt "+f[1]);
+  });
+  Object.defineProperty(globalThis, 'navigator', {value: navAlt, configurable: true, writable: true});
+  ok(geraeteSprache() === 'de', "unter Automatisierung bleibt Deutsch");
+
   console.log("\n==================================================");
   console.log(fails===0 ? ("ALLE "+checks+" PRUEFUNGEN BESTANDEN") : (fails+" von "+checks+" PRUEFUNGEN FEHLGESCHLAGEN"));
   console.log("==================================================");

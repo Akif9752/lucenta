@@ -210,7 +210,7 @@
     hideRunChoice();
     if (progress){
       btn.textContent = tx('js_weitermachen_frage')+(progress.qi+1)+'/50) →';
-      btn.onclick = function(){ guestRun=false; answers=progress.answers; qi=progress.qi; renderQuestion(); showView('quiz'); };
+      btn.onclick = function(){ guestRun=!!progress.gast; answers=progress.answers; qi=progress.qi; renderQuestion(); showView('quiz'); };
       sec.style.display = '';
       sec.removeAttribute('aria-expanded');
       sec.removeAttribute('aria-controls');

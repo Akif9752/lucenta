@@ -74,7 +74,8 @@
       return;
     }
     LANG = code;
-    try{ localStorage.setItem('lucenta_lang', code); }catch(e){}
+    // Die Sprache des iPhones wird nicht gemerkt: Bis die Person selbst waehlt, folgt die App dem Geraet.
+    if (!_geraetWechsel) try{ localStorage.setItem('lucenta_lang', code); }catch(e){}
     L = CONTENT[LANG];
     LABELS = L.LABELS; RADAR_LABELS = L.RADAR_LABELS; FACTORS = L.FACTORS; PROFILES = L.PROFILES;
     CORE = L.CORE; FLAVOR = L.FLAVOR; MOTTO = L.MOTTO; NOUN = L.NOUN; ADJ = L.ADJ;
@@ -212,9 +213,33 @@
 
   // Die gemerkte Sprache nachholen, wenn ihr Paket nicht eingebettet ist: Die App startet kurz auf
   // Deutsch und stellt um, sobald die Datei (aus dem Bundle) da ist.
-  var _stillerWechsel = false;
+  var _stillerWechsel = false, _geraetWechsel = false;
+  // Ohne gewaehlte Sprache die des iPhones, wenn es eine der acht ist, sonst Englisch (Entscheidung des Inhabers).
+  // Unter Automatisierung bleibt Deutsch (die Pruefungen erwarten es), gezielt mit ?geraetesprache.
+  function geraeteSprache(){
+    try{
+      var gezielt = false;
+      try{ gezielt = /[?&]geraetesprache/.test(location.search); }catch(e){}
+      if (navigator.webdriver && !gezielt) return 'de';
+      var liste = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || ''];
+      for (var i = 0; i < liste.length; i++){
+        var c = String(liste[i] || '').slice(0, 2).toLowerCase();
+        if (c === 'de' || SPRACHQUELLEN[c] || CONTENT[c]) return c;
+      }
+    }catch(e){}
+    return 'en';
+  }
   try{
     var _gemerkt = localStorage.getItem('lucenta_lang');
+    if (!_gemerkt){
+      var _geraet = geraeteSprache();
+      if (_geraet !== LANG) ladeSprachpaket(_geraet, function(erfolg){
+        if (!erfolg) return;
+        _stillerWechsel = true; _geraetWechsel = true;
+        try{ setLang(_geraet); }
+        finally{ _stillerWechsel = false; _geraetWechsel = false; }
+      });
+    }
     if (_gemerkt && _gemerkt !== LANG && !CONTENT[_gemerkt] && SPRACHQUELLEN[_gemerkt]){
       ladeSprachpaket(_gemerkt, function(erfolg){
         if (!erfolg) return;   // bleibt auf Deutsch — lesbar ist besser als leer

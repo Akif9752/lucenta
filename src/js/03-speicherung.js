@@ -10,7 +10,7 @@
     }catch(e){ return false; }
   }
   function saveResult(sc){
-    try{ localStorage.setItem('lucenta_result', JSON.stringify(sc)); }catch(e){}
+    try{ localStorage.setItem('lucenta_result', JSON.stringify(sc)); return true; }catch(e){ return false; }
   }
   function loadResult(){
     try{
@@ -26,7 +26,8 @@
     }catch(e){ return null; }
   }
   function saveProgress(){
-    try{ localStorage.setItem('lucenta_progress', JSON.stringify({answers:answers, qi:qi})); }catch(e){}
+    // Ein Gastdurchlauf bleibt beim Fortsetzen einer — sonst ueberschriebe er das eigene Ergebnis.
+    try{ localStorage.setItem('lucenta_progress', JSON.stringify({answers:answers, qi:qi, gast:!!guestRun})); }catch(e){}
   }
   function loadProgress(){
     try{
@@ -132,8 +133,9 @@
     return Math.floor(Date.UTC(+t[1], +t[2]-1, +t[3]) / 86400000);
   }
 
-  // 800 Eintraege (~130 KB): Der Monatskalender blaettert weit zurueck.
-  var MAX_STATE_EINTRAEGE = 800;
+  // 2200 Eintraege (~400 KB): zwei Jahre bei drei am Tag — Jahresrueckblick und Meilenstein „ein Jahr" bleiben
+  // erreichbar. Nicht viel hoeher: Die iCloud-Sicherung ist ein Datensatz, CloudKit erlaubt 1 MB. Datenschutztext nennt die Zahl.
+  var MAX_STATE_EINTRAEGE = 2200;
 
   // ---------- Die fuenf Dimensionen in der Tagesform ----------
   // Optional je Eintrag: ocean {O..S: 1–5, einzelne duerfen fehlen} und tags aus der festen Liste
@@ -161,7 +163,9 @@
   }
   var TF_NOTIZ_MAX = 200;
   function tfNotizBereinigen(n){
-    return typeof n === 'string' ? n.replace(/\s+/g, ' ').trim().slice(0, TF_NOTIZ_MAX) : '';
+    if (typeof n !== 'string') return '';
+    // Ohne halbes Zeichen am Ende: Emoji sind zwei UTF-16-Einheiten.
+    return n.replace(/\s+/g, ' ').trim().slice(0, TF_NOTIZ_MAX).replace(/[\uD800-\uDBFF]$/, '').trim();
   }
   // Die Notiz nachtraeglich an den Eintrag eines Tages und Abschnitts; leer nimmt sie weg.
   function tfNotizSetzen(tag, abschnitt, text){

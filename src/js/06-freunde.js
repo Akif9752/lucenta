@@ -16,13 +16,19 @@
   // Die 8 Zeichen tragen die fuenf Werte, die Figur (als Platz in FIGUREN — neue Tiere nur HINTEN
   // anhaengen, sonst aendern sich alle Codes) und 2 Bit Pruefsumme; Crockford-Alphabet ohne I L O U.
   var CODE_ZEICHEN = '0123456789ABCDEFGHJKMNPQRSTVWXYZ', CODE_FIGUREN = 24;
-  var KURZCODE_MUSTER = /([a-z0-9._]{3,20})-([0-9a-hjkmnp-tv-z]{4})-([0-9a-hjkmnp-tv-z]{4})/i;
-  function benutzerIdGueltig(id){ return /^[a-z0-9._]{3,20}$/.test(id || ''); }
+  var KURZCODE_MUSTER = /([a-z0-9._]{2,20})-([0-9a-hjkmnp-tv-z]{4})-([0-9a-hjkmnp-tv-z]{4})/i;
+  // Von Hand abgetippt: Leerzeichen oder nichts statt Strich, O/I/L statt 0/1 (Crockford). Nur fuer kurze
+  // Eingaben — in einer ganzen Einladung fuende das lockere Muster sonst Woerter.
+  var KURZCODE_LOCKER = /^([a-z0-9._]{2,20})[\s-]+([0-9a-z]{4})[\s-]*([0-9a-z]{4})$/i;
+  function benutzerIdGueltig(id){ return /^[a-z0-9._]{2,20}$/.test(id || ''); }
+  // Ohne lateinische Buchstaben (さくら, محمد) ein Vorschlag wie „freund4821“, einmal je Sitzung (Entscheidung des Inhabers).
+  var idVorschlagZahl = String(1000 + Math.floor(Math.random() * 9000));
   function benutzerIdAusName(name){
     var t = String(name || '').toLowerCase();
     if (t.normalize) t = t.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    t = t.replace(/ß/g, 'ss').replace(/[^a-z0-9._]/g, '').slice(0, 20);
-    return t.length >= 3 ? t : '';
+    t = t.replace(/ß/g, 'ss').replace(/ı/g, 'i').replace(/[^a-z0-9._]/g, '').slice(0, 20);
+    if (t.length >= 2) return t;
+    return String(name || '').trim() ? tx('benutzer_id_vorschlag') + idVorschlagZahl : '';
   }
   function kurzcodeTeil(sc, figurId){
     var n = 0;
@@ -37,7 +43,12 @@
     return t.slice(0, 4) + '-' + t.slice(4);
   }
   function kurzcodeLesen(text){
-    var m = KURZCODE_MUSTER.exec(text || '');
+    text = String(text || '').replace(/[\u2010-\u2015\u2212]/g, '-');
+    var m = KURZCODE_MUSTER.exec(text);
+    if (!m && text.trim().length <= 40){
+      m = KURZCODE_LOCKER.exec(text.trim());
+      if (m){ var crock = function(s){ return s.replace(/o/gi, '0').replace(/[il]/gi, '1'); }; m = [m[0], m[1], crock(m[2]), crock(m[3])]; }
+    }
     if (!m) return null;
     var t = (m[2] + m[3]).toUpperCase(), n = 0;
     for (var i = 0; i < t.length; i++){ var v = CODE_ZEICHEN.indexOf(t.charAt(i)); if (v < 0) return null; n = n * 32 + v; }
@@ -140,10 +151,11 @@
   // Wie "Ansehen" im Archiv: das eigene Ergebnis zeigen und den Vergleich mit dieser Person rechnen.
   // Der Vergleich mit einem Freund ist eine Unterseite von Freunde (view-compare).
   var vergleichFreund = null;
-  function freundVergleichen(code){
+  // Zwei Freunde koennen dasselbe Ergebnis haben: Wo die Kennung bekannt ist, gilt sie.
+  function freundVergleichen(code, id){
     var eigen = loadResult();
     if (!eigen){ toast(tx('js_kein_eigenes_ergebnis_vorh')); return; }
-    var f = loadFreunde().filter(function(x){ return x.code === code; })[0];
+    var f = loadFreunde().filter(function(x){ return id ? x.id === id : x.code === code; })[0];
     if (!f) return;
     vergleichFreund = f;
     $('cmpMe').value = toCode(eigen);
@@ -159,7 +171,7 @@
   function freundEntfernen(){
     var f = vergleichFreund;
     if (!f || !window.confirm(decodeEntities(tx('freunde_entfernen_frage').split('{name}').join(freundName(f))))) return;
-    saveFreunde(loadFreunde().filter(function(x){ return x.code !== f.code; }));
+    saveFreunde(loadFreunde().filter(function(x){ return f.id ? x.id !== f.id : x.code !== f.code; }));
     vergleichFreund = null;
     toast(tx('freunde_entfernt'));
     renderFreunde();
@@ -185,9 +197,10 @@
     try{ info = freundescodeLesen(decodeURIComponent(url)); }catch(e){ info = freundescodeLesen(url); }
     if (!info) return;
     letzterEinladungsLink = url;
-    if (!freundAnlegen(info)) return;
+    var neu = freundAnlegen(info);
+    if (!neu) return;
     renderFreunde();
-    if (loadResult()) freundVergleichen(info.code); else showView('freunde');
+    if (loadResult()) freundVergleichen(info.code, neu); else showView('freunde');
   }
   // Dynamic Type: Die Huelle setzt --dt an :root (MainViewController.textFaktor). Ab 140 % schaltet das
   // Stilblatt auf umbrechende Zeilen um; die Schwelle steht nur hier.
@@ -224,15 +237,18 @@
     } else { inAblage(); }
   }
 
+  // Gibt die Kennung des Eintrags zurueck, sonst false.
   function freundAnlegen(info){
-    var eigen = loadResult();
-    if (eigen && toCode(eigen) === info.code){ toast(tx('freunde_eigener_code')); return false; }
-    // Derselbe Code ist dieselbe Person: aktualisiert, nicht verdoppelt.
-    var l = loadFreunde().filter(function(f){ return f.code !== info.code; });
-    l.push({id: 'f' + Date.now().toString(36), name: info.name, figur: info.figur, code: info.code, ts: Date.now()});
+    var eigen = loadResult(), eigeneId = eigeneBenutzerId();
+    // Gleiches Ergebnis heisst nicht dieselbe Person: eigen nur, wenn auch die Benutzer-ID passt (oder keine dabei ist).
+    if (eigen && toCode(eigen) === info.code && (!info.name || !eigeneId || info.name === eigeneId)){ toast(tx('freunde_eigener_code')); return false; }
+    // Nur derselbe Code mit derselben ID ersetzt: IDs entstehen aus Vornamen und sind nicht eindeutig (zwei „anna").
+    var l = loadFreunde().filter(function(f){ return !(f.code === info.code && f.name === info.name); });
+    var id = 'f' + Date.now().toString(36);
+    l.push({id: id, name: info.name, figur: info.figur, code: info.code, ts: Date.now()});
     if (!saveFreunde(l)){ toast(tx('js_konnte_nicht_gespeichert_w')); return false; }
     toast(tx('freunde_gespeichert'));
-    return true;
+    return id;
   }
   // EIN Feld fuer alles: Freundescode, ganze Einladung oder ein alter 10-stelliger Code (dann ohne Namen).
   // Die Person wird angelegt und der Vergleich geoeffnet.
@@ -244,11 +260,12 @@
       if (nur.length === 10 && fromCode(nur)) info = {code: nur, figur: '', name: ''};
     }
     if (!info){ schuetteln(feld); toast(tx('freunde_code_ungueltig')); return; }
-    if (!freundAnlegen(info)){ schuetteln(feld); return; }
+    var neu = freundAnlegen(info);
+    if (!neu){ schuetteln(feld); return; }
     feld.value = '';
     renderFreunde();
     renderSettings();
-    if (loadResult()) freundVergleichen(info.code);
+    if (loadResult()) freundVergleichen(info.code, neu);
   }
 
   // Eine Zeile = ein Knopf zum Vergleich, mit der Uebereinstimmung rechts.
@@ -330,7 +347,7 @@
       renderAvatarInto(el, {name: f.name, figur: f.figur || null, avatarColor: 'accent'});
     });
     wrap.querySelectorAll('[data-freund-vergleichen]').forEach(function(b){
-      b.addEventListener('click', function(){ freundVergleichen(l[+b.getAttribute('data-freund-vergleichen')].f.code); });
+      b.addEventListener('click', function(){ var f = l[+b.getAttribute('data-freund-vergleichen')].f; freundVergleichen(f.code, f.id); });
     });
   }
   // Das Vergleichsarchiv ist in Freunde aufgegangen (Entscheidung des Inhabers): Jeder gespeicherte

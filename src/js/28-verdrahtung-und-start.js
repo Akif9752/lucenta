@@ -162,6 +162,10 @@
     clearStateHistory();
     clearCompatArchive();
     clearFreunde();
+    // Alles, was etwas ueber die Person sagt; Einstellungen (Sprache, Darstellung, Erinnerung) bleiben.
+    ['lucenta_facetten','lucenta_facetten_lauf','lucenta_meilensteine','lucenta_erstes_muster','lucenta_vergleich_frei',
+     'lucenta_nutzung','lucenta_nutzung_teilen'].forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    try{ widgetStandMelden(); }catch(e){}
     scores = null; answers = new Array(50).fill(0); qi = 0; guestRun = false;
     profilWegeAnwenden();
     renderSettings();
@@ -367,6 +371,10 @@
       // Der Abschnitt kann gewechselt haben (morgens weggelegt, mittags geoeffnet). Eine halb
       // ausgefuellte Karte bleibt aber stehen — sonst verloere man den ersten Tipp.
       if (!landingStatePickedEnergy && !landingStatePickedValence) renderLandingStateTeaser();
+      // Ebenso die Tagesform-Seite (ueber Mitternacht offen gelassen), nur bei neuem Tag oder Abschnitt und ohne halbe Eingabe.
+      var notizForm = $('tfNotizBereich') && $('tfNotizBereich').querySelector('.tf-notiz-form'), notizOffen = notizForm && !notizForm.hidden;
+      if (currentView === 'state' && tfGezeichnetFuer !== todayKey() + aktuellerAbschnitt() &&
+          !statePickedEnergy && !statePickedValence && !tfAendernOffen && !notizOffen) renderStateView();
     });
     erinnerungTippVerdrahten(function(){ renderStateView(); showView('state'); });
     // Haptik bei jedem Bedienelement, im capture-Schritt (auch wo ein Knopf die Ausbreitung anhaelt).

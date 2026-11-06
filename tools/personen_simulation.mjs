@@ -196,14 +196,16 @@ async function lauf(browser, P){
   const spracheAbwarten = async (s) => { for (let i = 0; i < 30; i++){ if (await ev(() => document.documentElement.lang) === s) return true;
     await p.waitForTimeout(100); await lauf(100); } return false; };
 
-  await p.goto(URL + (P.onboarding ? '?onboarding=1' : ''), { waitUntil: 'load' });
+  // ?geraetesprache: unter Automatisierung bliebe die App sonst auf Deutsch (geraeteSprache in 01-sprachpakete.js).
+  await p.goto(URL + '?geraetesprache' + (P.onboarding ? '&onboarding=1' : ''), { waitUntil: 'load' });
   await lauf(1500);
 
   // Sprache beim ersten Start: die des iPhones?
-  const geraet = P.gebiet.slice(0, 2);
+  // Zusage: die Sprache des iPhones, wenn es eine der acht ist, sonst Englisch.
+  const geraet = P.gebiet.slice(0, 2), sollStart = ['de','en','es','fr','it','pt','tr','ja'].includes(geraet) ? geraet : 'en';
+  await spracheAbwarten(sollStart);
   const angezeigt = await ev(() => document.documentElement.lang);
-  if (['de','en','es','fr','it','pt','tr','ja'].includes(geraet) && angezeigt !== geraet)
-    fund('Startsprache nicht die des iPhones', `${P.gebiet} -> ${angezeigt}`);
+  if (angezeigt !== sollStart) fund('Startsprache nicht die des iPhones', `${P.gebiet} -> ${angezeigt}`);
   if (P.gebiet === 'pt-BR') fund('Hinweis: Brasilien bekommt Portugal-Portugiesisch', 'pt-PT');
 
   if (P.onboarding){
@@ -283,7 +285,7 @@ async function lauf(browser, P){
   if (!erg && P.voll){
     const zeigt = await ev(() => document.getElementById('view-result').classList.contains('active'));
     const meldung = await ev(() => (document.getElementById('toast') || {}).textContent || '');
-    fund('Speicher voll: Ergebnis nicht gesichert, ohne Hinweis', (zeigt ? 'Ergebnisseite erscheint trotzdem' : 'keine Ergebnisseite') + '; Meldung: ' + (meldung.trim() || '(keine)'));
+    if (!meldung.trim()) fund('Speicher voll: Ergebnis nicht gesichert, ohne Hinweis', (zeigt ? 'Ergebnisseite erscheint trotzdem' : 'keine Ergebnisseite') + '; Meldung: ' + (meldung.trim() || '(keine)'));
   } else if (!erg) fund('kein Ergebnis gespeichert', P.muster);
   else {
     const soll = erwartet(ant);
@@ -336,7 +338,9 @@ async function lauf(browser, P){
     await lauf(500);
     const freunde = JSON.parse(await ls('lucenta_freunde') || '[]');
     const nachher = freunde.length;
-    const angenommen = nachher > vorher || (nachher === vorher && vorher >= 30);
+    const echtId = echt.split('-').slice(0, -2).join('-');
+    // Schon in der Liste (dieselbe Person zweimal) zaehlt als angenommen.
+    const angenommen = nachher > vorher || freunde.some(f => f.name === echtId) || (nachher === vorher && vorher >= 30);
     if (v.art === 'tippfehler' && nachher > vorher) fund('Tippfehler im Freundescode als gueltig angenommen', v.text);
     if (['leerzeichen', 'o-statt-0', 'gedankenstrich', 'ohne-striche'].includes(v.art) && !angenommen) fund('Richtig gemeinter Code abgelehnt (' + v.art + ')', v.text.slice(0, 40));
     if (['genau', 'einladung', 'klein', 'umbruch'].includes(v.art) && nachher <= vorher && vorher < 30 && !freunde.some(f => f.name === echt.split('-').slice(0, -2).join('-')))
@@ -382,7 +386,7 @@ async function lauf(browser, P){
       await lauf(400);
       const h2 = JSON.parse(await ls('lucenta_state') || '[]');
       const l2 = h2.reduce((a, x) => (!a || x.ts > a.ts) ? x : a, null);
-      const soll = P.notiz.replace(/\s+/g, ' ').trim().slice(0, 200);
+      const soll = P.notiz.replace(/\s+/g, ' ').trim().slice(0, 200).replace(/[\uD800-\uDBFF]$/, '').trim();
       if (l2 && (l2.notiz || '') !== soll && soll.length <= 200) fund('Notiz anders gespeichert als eingegeben', JSON.stringify(P.notiz.slice(0, 30)));
       if (l2 && l2.notiz && /[\uD800-\uDBFF]$/.test(l2.notiz)) fund('Notiz endet mit halbem Emoji', '');
       if (await ev(() => !!document.querySelector('#tfNotizBereich b'))) fund('Notiz als HTML eingesetzt', P.notiz);

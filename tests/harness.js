@@ -1,3 +1,5 @@
+// Wie unter den Pruefwerkzeugen gilt Automatisierung: Die App startet auf Deutsch (geraeteSprache).
+Object.defineProperty(globalThis, 'navigator', {value: {webdriver: true, language: 'de-DE', languages: ['de-DE']}, configurable: true, writable: true});
 // --- minimal stubs so the core can load outside a browser ---
 var __store = {};
 global.localStorage = {

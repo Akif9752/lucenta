@@ -183,7 +183,16 @@
   console.log("  Tippfehler ergeben nie stillschweigend denselben Freund; abgelehnt statt falsch gelesen: "+Math.round(100*quote)+" %");
   ok(!freundescodeLesen('ab-1234-5678'), "zu kurze ID angenommen");
   ok(freundescodeLesen('L1.221r1k1y1c.fuchs.QWxleA') && freundescodeLesen('L1.221r1k1y1c.fuchs.QWxleA').name==='Alex', "alter L1-Code nicht mehr gelesen");
-  ok(benutzerIdAusName('Jürgen Groß')==='jurgengross' && benutzerIdAusName('Al')==='', "ID-Vorschlag aus dem Namen falsch: "+benutzerIdAusName('Jürgen Groß'));
+  ok(benutzerIdAusName('Jürgen Groß')==='jurgengross' && benutzerIdAusName('Al')==='al' && benutzerIdAusName('Işıl')==='isil', "ID-Vorschlag aus dem Namen falsch: "+benutzerIdAusName('Jürgen Groß'));
+  // Von Hand abgetippt (Runde 238): Leerzeichen, ohne Striche, Gedankenstrich, O/I statt 0/1.
+  (function(){
+    var sc={O:12,E:80,C:0,A:100,S:47}, teil=kurzcodeTeil(sc,''), roh=teil.replace('-','');
+    var soll=toCode(sc), varianten=['anna '+teil.replace('-',' '), 'anna-'+roh, 'anna\u2013'+teil.replace('-','\u2013'), '  anna-'+teil.toLowerCase()+'\n',
+      'anna-'+teil.replace(/0/g,'O').replace(/1/g,'I')];
+    varianten.forEach(function(v){ var i=freundescodeLesen(v); ok(i && i.code===soll && i.name==='anna', "abgetippter Code nicht gelesen: "+JSON.stringify(v)); });
+    ok(freundescodeLesen('li-'+teil) && freundescodeLesen('li-'+teil).name==='li', "zweistellige Benutzer-ID nicht gelesen");
+  })();
+  ok(/^freund\d{4}$/.test(benutzerIdAusName('さくら')) && benutzerIdGueltig(benutzerIdAusName('محمد')) && benutzerIdAusName('  ')==='', "ohne lateinische Buchstaben kein gueltiger Vorschlag: "+benutzerIdAusName('さくら'));
 
   console.log("\n==================================================");
   console.log(fails===0 ? ("ALLE "+checks+" PRUEFUNGEN BESTANDEN") : (fails+" von "+checks+" PRUEFUNGEN FEHLGESCHLAGEN"));

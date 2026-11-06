@@ -401,7 +401,9 @@
     setTimeout(function(){ funkenAn(tier); }, 250);
   }
 
+  var tfGezeichnetFuer = '';
   function renderStateView(){
+    tfGezeichnetFuer = todayKey() + aktuellerAbschnitt();
     // Runde 129: Die Zeile nennt den laufenden Abschnitt und sagt, ob Speichern ihn neu anlegt oder
     // ersetzt. Die Skalen stehen leer — vorbelegt saehe ein Ersetzen wie ein Bestaetigen aus.
     var abschnitt = aktuellerAbschnitt();

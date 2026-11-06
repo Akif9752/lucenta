@@ -206,10 +206,11 @@
     // Ausserhalb der ORDER-Schluessel, stoert weder toCode() noch den Vergleich.
     scores.uniform = answerUniformity(answers) >= UNIFORM_THRESHOLD;
     // Gastdurchlauf: nichts speichern, kein Verlauf, keine Delta-Karte.
+    var gesichert = true;
     if (guestRun){
       previous = null;
     } else {
-      saveResult(scores);
+      gesichert = saveResult(scores);
       appendHistory(scores);
     }
     clearProgress();
@@ -218,7 +219,9 @@
       renderResult(previous);
       showView('result');
       ergebnisEnthuellen();
-      plusAngebotNachTest();
+      // Voller Speicher: Das Ergebnis steht da, ist aber nicht gesichert — das muss man wissen.
+      if (!gesichert) toast(tx('js_konnte_nicht_gespeichert_w'), 6000);
+      else plusAngebotNachTest();
     }
     // Kurzer "Analysiere..."-Moment, bei reduzierter Bewegung uebersprungen.
     if (prefersReducedMotion()){ reveal(); return; }
