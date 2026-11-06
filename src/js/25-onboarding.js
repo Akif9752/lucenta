@@ -1,6 +1,6 @@
   // ---------- Onboarding beim ersten Oeffnen ----------
-  // Vier Schritte (Entscheidung des Inhabers): was man erfaehrt, eigenes Ziel waehlen, Vertrauen,
-  // Name und Figur -> direkt in den Test. Ehrlich: keine erfundenen Zahlen, Lucenta+ erst nach dem
+  // Drei Schritte (Entscheidung des Inhabers): was man erfaehrt, eigenes Ziel waehlen, Name und Figur -> direkt
+  // in den Test. Die Anmeldung kommt einmal unter dem ersten Ergebnis (sicherKarteAnwenden). Ehrlich: keine erfundenen Zahlen, Lucenta+ erst nach dem
   // Ergebnis. Unter Automatisierung (navigator.webdriver) bleibt es aus, sonst blockierte es jede
   // Pruefung; mit ?onboarding=1 laesst es sich gezielt pruefen.
   var ONBOARDING_SCHLUESSEL = 'lucenta_onboarding';
@@ -20,10 +20,8 @@
     return !navigator.webdriver;
   }
 
-  var OB_ANMELDEN = 4, OB_LETZTER = 5;
-  function obSchrittZeigen(n, richtung){
-    // Den Anmeldeschritt gibt es nur mit nativer Bruecke und ohne bestehende Anmeldung.
-    if (n === OB_ANMELDEN && (!kontoModul() || kontoStand.angemeldet)) n += (richtung || 1);
+  var OB_LETZTER = 3;
+  function obSchrittZeigen(n){
     obSchritt = n;
     var ob = $('onboarding');
     ob.querySelectorAll('.ob-step').forEach(function(s){
@@ -33,18 +31,9 @@
     });
     ob.querySelectorAll('.ob-dots span').forEach(function(p, i){ p.classList.toggle('an', i < n); });
     $('btnObZurueck').hidden = n === 1;
-    if (n === 3) obFuerDichAnwenden();
     if (n === OB_LETZTER) obFigurRaster();
     var h = ob.querySelector('.ob-step[data-step="'+n+'"] h1');
     if (h) setTimeout(function(){ try{ h.focus(); }catch(e){} }, 60);
-  }
-
-  // Schritt 3 greift die eigene Wahl aus Schritt 2 auf: wo genau Lucenta dazu etwas zeigt.
-  function obFuerDichAnwenden(){
-    var wrap = $('obFuerDich');
-    var ziele = obZiele.length ? obZiele : ['verstehen'];
-    wrap.innerHTML = '<div class="ob-fuer-dich-titel">'+tx('ob_fuer_dich')+'</div><ul>'+
-      ziele.map(function(z){ return '<li>'+tx('ob_ziel_'+z+'_nutzen')+'</li>'; }).join('')+'</ul>';
   }
 
   function obFigurRaster(){
@@ -66,10 +55,13 @@
   function onboardingBeenden(testStarten){
     try{ localStorage.setItem(ONBOARDING_SCHLUESSEL, '1'); }catch(e){}
     var name = ($('obName').value || '').trim();
-    if (name || obFigur){
+    // Ziele werden gemerkt (Ergebnis, Verstehen, Erinnerung richten sich danach); mit dem Namen steht die
+    // Benutzer-ID sofort fest (Entscheidung des Inhabers, aenderbar unter Name & Benutzer-ID).
+    if (name || obFigur || obZiele.length){
       var pr = loadProfile();
       if (name) pr.name = name;
       if (obFigur) pr.figur = obFigur;
+      if (obZiele.length) pr.ziele = obZiele.slice();
       saveProfile(pr);
       profilWegeAnwenden();
     }
@@ -97,13 +89,9 @@
     var ob = $('onboarding');
     if (!ob) return;
     ob.querySelectorAll('[data-ob-weiter]').forEach(function(b){
-      b.addEventListener('click', function(){ obSchrittZeigen(Math.min(OB_LETZTER, obSchritt + 1), 1); });
+      b.addEventListener('click', function(){ obSchrittZeigen(Math.min(OB_LETZTER, obSchritt + 1)); });
     });
-    $('btnObZurueck').addEventListener('click', function(){ obSchrittZeigen(Math.max(1, obSchritt - 1), -1); });
-    // Nach der Anmeldung weiter; wurde ein iCloud-Stand uebernommen, laedt die Seite ohnehin neu.
-    $('btnObApple').addEventListener('click', function(){
-      kontoAnmelden(function(neuGeladen){ if (!neuGeladen && kontoStand.angemeldet) obSchrittZeigen(OB_LETZTER, 1); });
-    });
+    $('btnObZurueck').addEventListener('click', function(){ obSchrittZeigen(Math.max(1, obSchritt - 1)); });
     $('btnObUeberspringen').addEventListener('click', function(){ onboardingBeenden(false); });
     $('btnObStarten').addEventListener('click', function(){ onboardingBeenden(true); });
     // Neues iPhone: anmelden, und liegt in der iCloud ein Stand, ersetzt er das Onboarding.

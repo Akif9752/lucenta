@@ -27,7 +27,13 @@
         }).join('')+'</section>';
     };
     // Reiter (Entscheidung des Inhabers, Runde 163): immer nur ein Teil sichtbar; die Wahl bleibt.
-    if (!vsReiter) vsReiter = BEREICHE[0];
+    // Ohne eigene Wahl oeffnet Verstehen im Bereich, der zu den Zielen aus dem Onboarding passt (Entscheidung des Inhabers).
+    if (!vsReiter){
+      var ziele = [];
+      try{ ziele = loadProfile().ziele || []; }catch(e){}
+      vsReiter = ziele.indexOf('beziehungen') >= 0 ? 'beziehungen' : ziele.indexOf('arbeit') >= 0 ? 'arbeit'
+               : ziele.indexOf('staerken') >= 0 ? 'wachstum' : ziele.indexOf('tagesform') >= 0 ? 'data' : BEREICHE[0];
+    }
     var inhalt = '<div class="vs-inhalt" role="tablist" aria-label="'+tx('vs_inhalt')+'">'+
       BEREICHE.map(function(b){ return [b, 'vs_bereich_'+b]; }).concat([['combos', 'vs_kombis'], ['data', 'vs_daten']]).map(function(z){
         return '<button type="button" class="vs-sprung" role="tab" data-vs-ziel="'+z[0]+'" aria-selected="'+(z[0] === vsReiter ? 'true' : 'false')+'">'+tx(z[1])+'</button>';

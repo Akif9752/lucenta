@@ -317,3 +317,15 @@
   .tf-serie-zeile{ display:flex; align-items:center; gap:6px; margin:14px 0 10px; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
   .tf-serie-zeile svg{ flex-shrink:0; }
   .tf-kal-schild{ position:absolute; right:3px; top:3px; color:var(--muted); }
+
+  /* Fruehere Tageszeiten von heute sind Knoepfe (nachtragen); als Chip, damit man sieht, dass man tippen kann. */
+  button.tf-abschnitt{ appearance:none; font:inherit; color:inherit; background:var(--surface-2); border:1px solid transparent;
+    border-radius:100px; padding:6px 12px; min-height:32px; cursor:pointer; position:relative; }
+  button.tf-abschnitt[aria-pressed="true"]{ border-color:var(--accent); color:var(--ink); }
+  button.tf-abschnitt::after{ content:''; position:absolute; left:0; right:0; top:50%; height:44px; transform:translateY(-50%); }
+  .tf-abschnitte{ align-items:center; gap:8px; }
+  .tf-abschnitt-hinweis{ flex-basis:100%; margin:2px 0 0; font-size:calc(12px * var(--dt, 1)); color:var(--muted); }
+  /* Die einmalige Frage nach der Erinnerung. */
+  .erinnerung-frage{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:12px; padding:12px 14px;
+    border-radius:var(--radius-s); background:var(--surface-2); font-size:calc(14px * var(--dt, 1)); color:var(--ink); }
+  .erinnerung-frage > span{ flex:1 1 100%; }

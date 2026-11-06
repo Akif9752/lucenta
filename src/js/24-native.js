@@ -430,6 +430,31 @@
   function erinnerungNachziehen(){
     if (nativVorhanden() && erinnerungAn()) erinnerungPlanen();
   }
+  // Einmal fragen, im passenden Moment (Entscheidung des Inhabers): nach dem ersten Eintrag, mit dem Ziel
+  // „Tag zu Tag“ schon vorher. Danach nie wieder ungefragt; der Schalter bleibt.
+  var ERINNERUNG_GEFRAGT = 'lucenta_erinnerung_gefragt';
+  function erinnerungFrageAnwenden(){
+    var zeigen = false;
+    try{
+      var ziele = loadProfile().ziele || [];
+      zeigen = nativVorhanden() && !erinnerungAn() && localStorage.getItem(ERINNERUNG_GEFRAGT) !== '1' &&
+        (stateTage(loadStateHistory()).length >= 1 || ziele.indexOf('tagesform') >= 0);
+    }catch(e){}
+    document.querySelectorAll('.erinnerung-frage-ort').forEach(function(ort){
+      ort.innerHTML = zeigen ? '<div class="erinnerung-frage"><span>'+tx('erinnerung_frage')+'</span>'+
+        '<button type="button" class="btn btn-primary btn-sm" data-erinnerung-frage="ja">'+tx('ja')+'</button>'+
+        '<button type="button" class="btn btn-ghost btn-sm" data-erinnerung-frage="nein">'+tx('nein')+'</button></div>' : '';
+    });
+  }
+  function erinnerungFrageVerdrahten(){
+    document.addEventListener('click', function(e){
+      var b = e.target && e.target.closest ? e.target.closest('[data-erinnerung-frage]') : null;
+      if (!b) return;
+      try{ localStorage.setItem(ERINNERUNG_GEFRAGT, '1'); }catch(x){}
+      if (b.getAttribute('data-erinnerung-frage') === 'ja' && !erinnerungAn()) erinnerungUmschalten();
+      erinnerungFrageAnwenden();
+    });
+  }
   function erinnerungUmschalten(){
     if (!nativVorhanden()) return;
     var an = !erinnerungAn();

@@ -208,6 +208,7 @@
     var result = loadResult();
     var btn = $('btnStart'), sec = $('btnHeroSecondary');
     hideRunChoice();
+    sec.classList.remove('als-link');
     if (progress){
       btn.textContent = tx('js_weitermachen_frage')+(progress.qi+1)+'/50) →';
       btn.onclick = function(){ guestRun=!!progress.gast; answers=progress.answers; qi=progress.qi; renderQuestion(); showView('quiz'); };
@@ -225,7 +226,9 @@
       btn.textContent = tx('js_dein_ergebnis_ansehen');
       btn.onclick = function(){ guestRun=false; scores=result; renderResult(); showView('result'); };
       sec.style.display = '';
-      sec.textContent = tx('js_test_erneut_machen');
+      // Wiederholen als unauffaelliger Link (Entscheidung des Inhabers): das Ergebnis gilt ueber Monate.
+      sec.classList.add('als-link');
+      sec.textContent = tx('test_wiederholen_2');
       sec.onclick = requestRun;
       sec.setAttribute('aria-expanded', 'false');
       sec.setAttribute('aria-controls', 'runChoice');

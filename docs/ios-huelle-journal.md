@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-06, nach Runde 239)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-06, nach Runde 240)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 239 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 240 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -82,7 +82,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 239 | (dieser) | Design-Durchsicht umgesetzt: flache Formen, Farbrollen, volle Namen, Tagesform kurz, Profil-Unterseiten, Titelform, 9-stelliger Code, Wochenbeginn |
+| 240 | (dieser) | UX/UI-Durchsicht umgesetzt: Onboarding 3 Schritte, Tageszeiten nachtragen, ein Lucenta+-Abschnitt, Erinnerung einmal fragen, ID automatisch |
+| 239 | `b9b2527` | Design-Durchsicht umgesetzt: flache Formen, Farbrollen, volle Namen, Tagesform kurz, Profil-Unterseiten, Titelform, 9-stelliger Code, Wochenbeginn |
 | 238 | `d629808` | Funde der Personen-Simulation behoben, Start in iPhone-Sprache, Benutzer-ID ab 2 Zeichen, EU-OS-Satz gestrichen |
 | 237 | `0726f52` | Fehlersuche mit 2000 simulierten Personen (Werkzeug npm run personen), zwoelf Befunde, App unveraendert |
 | 236 | `a5c9f07` | Rundlauf: Rueckweg der Rechtsseite, Datenschutz-Fakten, Beispieldaten; Profilkopf, Rueckblick, Portraet-Karte, Ergebnisseite |
@@ -319,6 +320,16 @@ Werkzeug: `npm run personen` (Zusagen von Runde 238 eingebaut).
 - **Ergebnis-Karten** blenden nur direkt nach dem Test ein (`ergebnisFrisch`).
 - **Freundescode** `<id>-XXXX-XXXXX` (Rest mod 127, 7 Bit), alte 8-stellige gelesen. **Wochenbeginn** nach Region (`wochenBeginn`).
 
+*UX/UI-Durchsicht (nach Runde 239), entschieden vom Inhaber, Runde 240:* Onboarding Begruessung → Ziele → Name & Figur → Test
+(„Sichere dein Portraet" einmal als Karte unter dem ersten Ergebnis, „Schon dabei? Mit Apple anmelden" bleibt auf Schritt 1). Ziele im
+Profil gemerkt: Ergebnis zeigt zuerst die passenden Abschnitte, Verstehen oeffnet im passenden Bereich, „Tag zu Tag" schlaegt die
+Erinnerung vor. Tageszeiten antippbar: fruehere Abschnitte von heute nachtragen (spaetere nicht), je Abschnitt ein Eintrag.
+Ergebnisseite frei: freie Teile oben, Gesperrtes gesammelt in EINEM Abschnitt „Mit Lucenta+" unten (Umfang unveraendert). Benutzer-ID
+aus dem Onboarding-Namen sofort fest, Einladen mit einem Tipp. Erinnerung einmal nach dem ersten Eintrag anbieten (Ja/Nein, nie
+wieder ungefragt). Tagesform-Einleitung voll bis zum dritten Tag, dann ein Satz; volle Erklaerung in den FAQ. „Test wiederholen" als
+unauffaelliger Link. **Bewusst unveraendert (Inhaber):** Entwicklerbereich „Beispieldaten" im Profil fuer alle; Startkopf „Lern dich
+kennen — mit Wissenschaft …" auch fuer Wiederkehrende. Nicht erneut vorschlagen.
+
 *Aus der Simulation (Runde 223):* **C** in Runde 239 gebaut (Serie leise, Schutztag als Schild).
 
 *Am iPhone vom Inhaber anzusehen (im Simulator/WebKit gebaut, am Geraet nicht bestaetigt):* Apples Tab-Leiste (Tippen, Ziehen
@@ -548,17 +559,46 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 239** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 240** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 239 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 240 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 240 — UX/UI-Durchsicht: Ablaeufe nach den Entscheidungen des Inhabers
+
+**Inhaber:** „ich meinte mit Designer eigentlich UX/UI-Designer". Durchgespielt in WebKit mit App-Bruecke: Erststart mit
+Onboarding, erster Test (51 Tipps), erster Eintrag (2 Tipps), leere Reiter, freie Fassung mit Beispieldaten (Schloesser je Seite
+gezaehlt). Zehn Befunde, in zwei Fragerunden entschieden; zwei bewusst unveraendert (Beispieldaten im Profil, Startkopf).
+
+**Gebaut:**
+- Onboarding drei Schritte (Begruessung → Ziele → Name & Figur → Test). Die Schritte „Darauf kannst du dich verlassen" und
+  „Sichere dein Portraet" entfallen; die Anmeldung steht einmal als Karte unter dem ersten Ergebnis (`sicherKarte`,
+  `lucenta_sicher_angebot`). Ungenutzte Texte der zwei Schritte in 8 Sprachen entfernt.
+- Ziele (`profile.ziele`): Beziehungen bzw. Alltag zuerst in den Dimensionskarten (`zielReihenfolge`), Verstehen oeffnet im passenden
+  Bereich, „Tag zu Tag" bietet die Erinnerung schon vor dem ersten Eintrag an.
+- Tageszeiten: fruehere und laufende als Knopf (`data-tf-abschnitt`, `gewaehlterAbschnitt`), Nachtragen mit Zeitpunkt in der
+  Tageszeit; Hinweiszeile, solange ein frueherer Abschnitt offen ist.
+- Ergebnis frei: Dimensionskarten ohne Aufklapper (`data-frei`), alles Gesperrte in EINEM Abschnitt „Mit Lucenta+" (`#ergebnisPlusAbschnitt`)
+  mit einer Vorschau; die Facetten-Karte steht frei nicht mehr extra. Schloesser auf der Ergebnisseite 11 → 1.
+- Benutzer-ID steht mit dem Namen sofort fest (`eigeneBenutzerId`); „Einladen" mit einem Tipp.
+- Erinnerung einmal fragen („Soll ich dich abends erinnern? Ja / Nein", `lucenta_erinnerung_gefragt`), Schalter bleibt.
+- Tagesform-Einleitung voll bis zum dritten Tag, dann ein Satz; die volle als Haeufige Frage „Was haelt die Tagesform fest?".
+- „Test wiederholen" auf der Startseite als Link.
+
+**Geprueft:** Testreihen, Audit, pruef-alles; Ablaeufe erneut aufgenommen und angesehen.
+
+**Unsicher:** Am Geraet nicht angesehen. Die Zuordnung Ziel → Abschnitt/Bereich ist meine (Beziehungen → Beziehungen, Arbeit/Staerken →
+Alltag bzw. Wachstum, Tag zu Tag → Aus deinen Daten). Nachgetragene Eintraege bekommen 3 Stunden nach Beginn der Tageszeit als
+Zeitpunkt (morgens 9, mittags 15 Uhr); Health erhaelt diesen Zeitpunkt. pruef-nativ prueft jetzt die neue Zusage (drei Schritte, Karte einmal).
 
 ---
 

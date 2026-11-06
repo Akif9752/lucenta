@@ -50,20 +50,22 @@
   // Drei Punkte mit Namen: gefuellt = eingetragen, Ring = jetzt dran. `neu` bekommt die
   // Fuell-Animation — nur direkt nach dem Speichern, aus demselben Grund wie bei just-saved.
   function tfAbschnitteRendern(neu){
-    var heute = heuteEingetragen(), jetzt = aktuellerAbschnitt();
+    var heute = heuteEingetragen(), jetzt = gewaehlterAbschnitt(), laufend = TF_ABSCHNITTE.indexOf(aktuellerAbschnitt());
+    var offenFrueher = TF_ABSCHNITTE.some(function(s, i){ return i < laufend && !heute[s]; });
     ['landingTfAbschnitte', 'stateTfAbschnitte'].forEach(function(id){
       var wrap = $(id);
       if (!wrap) return;
-      wrap.innerHTML = TF_ABSCHNITTE.map(function(s){
-        // Zustaende als vollstaendige data-Attribute: audit_i18n.py erkennt Bezeichner am Kontext,
-        // und ein nacktes ' voll' im Code liest es — zu Recht — als moeglichen deutschen Text.
+      // Fruehere und laufende Tageszeit sind antippbar (nachtragen), spaetere nicht.
+      wrap.innerHTML = TF_ABSCHNITTE.map(function(s, i){
+        // Zustaende als vollstaendige data-Attribute: audit_i18n.py erkennt Bezeichner am Kontext.
         var zustand = (heute[s] ? ' data-belegt="1"' : '') + (s === jetzt ? ' data-jetzt="1"' : '') +
                       (s === neu && !prefersReducedMotion() ? ' data-neu="1"' : '');
-        return '<span class="tf-abschnitt"'+zustand+' role="img" aria-label="'+tx('tf_abschnitt_'+s)+': '+
-                 tx(heute[s] ? 'tf_abschnitt_voll' : 'tf_abschnitt_offen')+'">'+
-                 '<span class="tf-abschnitt-punkt" aria-hidden="true"></span>'+
-                 '<span aria-hidden="true">'+tx('tf_abschnitt_'+s)+'</span></span>';
-      }).join('');
+        var innen = '<span class="tf-abschnitt-punkt" aria-hidden="true"></span><span>'+tx('tf_abschnitt_'+s)+'</span>';
+        var label = tx('tf_abschnitt_'+s)+': '+tx(heute[s] ? 'tf_abschnitt_voll' : 'tf_abschnitt_offen');
+        return i <= laufend
+          ? '<button type="button" class="tf-abschnitt"'+zustand+' data-tf-abschnitt="'+s+'" aria-pressed="'+(s === jetzt ? 'true' : 'false')+'" aria-label="'+label+'">'+innen+'</button>'
+          : '<span class="tf-abschnitt"'+zustand+' role="img" aria-label="'+label+'">'+innen+'</span>';
+      }).join('') + (offenFrueher && jetzt === aktuellerAbschnitt() ? '<p class="tf-abschnitt-hinweis">'+tx('tf_abschnitt_nachtragen')+'</p>' : '');
     });
   }
   function showLandingStateDone(entry, animate){
@@ -94,12 +96,13 @@
   }
   function maybeSaveLandingState(){
     if (!landingStatePickedEnergy || !landingStatePickedValence){ updateLandingStateCopy(); return; }
-    var ok = addStateEntry(landingStatePickedEnergy, landingStatePickedValence);
+    var ok = addStateEntry(landingStatePickedEnergy, landingStatePickedValence, {slot: gewaehlterAbschnitt()});
     if (!ok){
       toast(tx('js_konnte_nicht_gespeichert_w'));
       return;
     }
-    var abschnitt = aktuellerAbschnitt();
+    var abschnitt = gewaehlterAbschnitt();
+    tfAbschnittWahl = null;
     erstesMusterMelden();
     // Die Karte bestaetigt selbst (kein Toast). Erst klappen die Skalen zu, dann springt die
     // Bestaetigung auf; geleert werden die Skalen erst danach.
@@ -114,11 +117,12 @@
     });
     profilWegeAnwenden();
     erinnerungNachziehen();
+    erinnerungFrageAnwenden();
   }
   function renderLandingStateTeaser(){
     // Runde 129: "erledigt" heisst jetzt: der LAUFENDE Abschnitt ist eingetragen. Wer morgens
     // eingetragen hat, sieht mittags wieder die Skalen.
-    var eintrag = heuteEingetragen()[aktuellerAbschnitt()];
+    var eintrag = heuteEingetragen()[gewaehlterAbschnitt()];
     // Die Skalen stehen beim Wiederkommen leer; "Aendern" ersetzt den Eintrag des Abschnitts.
     landingStatePickedEnergy = null;
     landingStatePickedValence = null;
@@ -126,6 +130,7 @@
     tfAbschnitteRendern(null);
     if (eintrag){ showLandingStateDone(eintrag, false); }
     else { showLandingStateInputs(); }
+    erinnerungFrageAnwenden();
   }
   // Befunde aus der Tagesform — nur bei genug Daten und mit benannten Grenzen.
   // Schwankungsbreite ab 7 Tagen; Wochentagsmuster ab 14 Tagen und mindestens zwei Messungen je
@@ -404,9 +409,13 @@
   var tfGezeichnetFuer = '';
   function renderStateView(){
     tfGezeichnetFuer = todayKey() + aktuellerAbschnitt();
-    // Runde 129: Die Zeile nennt den laufenden Abschnitt und sagt, ob Speichern ihn neu anlegt oder
+    // Die Erklaerung, bis drei Tage eingetragen sind; danach ein Satz (die volle steht in den Haeufigen Fragen).
+    var einl = $('tfEinleitung');
+    if (einl){ var schl = stateTage(loadStateHistory()).length >= 3 ? 'tf_einleitung_kurz' : 'tf_einleitung';
+      einl.setAttribute('data-i18n', schl); einl.textContent = decodeEntities(tx(schl)); }
+    // Runde 129: Die Zeile nennt den gewaehlten Abschnitt und sagt, ob Speichern ihn neu anlegt oder
     // ersetzt. Die Skalen stehen leer — vorbelegt saehe ein Ersetzen wie ein Bestaetigen aus.
-    var abschnitt = aktuellerAbschnitt();
+    var abschnitt = gewaehlterAbschnitt();
     var name = tx('tf_abschnitt_'+abschnitt);
     statePickedEnergy = null;
     statePickedValence = null;
@@ -424,6 +433,7 @@
     tfSerieRendern();
     tfRueckblickHinweisRendern();
     tfBegleiterRendern();
+    erinnerungFrageAnwenden();
   }
   // Ist die laufende Tageszeit eingetragen, steht statt der Skalen die Bestaetigung mit "Aendern".
   // `neu` = direkt nach dem Speichern (sichtbar zuklappen).
@@ -432,7 +442,7 @@
     var erf = $('tfErfassung'), erl = $('tfErledigt');
     var fertig = function(){ if (danach) danach(); };
     if (!erf || !erl) return fertig();
-    var abschnitt = aktuellerAbschnitt(), eintrag = heuteEingetragen()[abschnitt];
+    var abschnitt = gewaehlterAbschnitt(), eintrag = heuteEingetragen()[abschnitt];
     // Die Zeile "… schon eingetragen – Speichern ersetzt" gehoert zur offenen Erfassung; neben der
     // Bestaetigung waere sie doppelt und spraeche von einem Knopf, der gerade nicht da ist.
     var notiz = $('stateTodayNote');

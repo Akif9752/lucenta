@@ -318,25 +318,42 @@
     // Die Dimensionskarten beginnen alle zugeklappt; die Kopfzeile traegt Wert, Balken und Kernsatz
     // (Feedback B12).
     var list = $('traitsList'); list.innerHTML='';
+    // Frei stehen die Karten ohne Aufklapper; was Lucenta+ ist, steht gesammelt in einem Abschnitt darunter
+    // (Entscheidung des Inhabers: keine verstreuten Schloesser, der Umfang bleibt gleich).
+    var plusErgebnis = istPlus();
     sortedTraits.forEach(function(f,i){
       var pole = scores[f]>=50 ? 'high':'low';
       var pr = PROFILES[f][pole];
-      var card = document.createElement('details');
-      card.className='trait-card';
+      var card = document.createElement(plusErgebnis ? 'details' : 'div');
+      card.className = 'trait-card';
+      if (!plusErgebnis) card.setAttribute('data-frei', '1');
+      card.setAttribute('data-trait', f);
       card.style.animationDelay = (i*60)+'ms';
-      card.innerHTML =
-        '<summary>'+
-          '<div class="trait-top"><span class="trait-name">'+LABELS[f]+'</span><span class="trait-score mono">'+scores[f]+' / 100</span></div>'+
+      var kopf = '<div class="trait-top"><span class="trait-name">'+LABELS[f]+'</span><span class="trait-score mono">'+scores[f]+' / 100</span></div>'+
           gaugeBarHTML(scores[f])+
-          '<div class="trait-teaser">'+pr.teaser+'</div>'+
-          '<div class="trait-more"><span class="tm-shut">'+tx('js_alltag_beziehungen_wachstum')+'</span>'+
-          '<span class="tm-open">'+tx('js_weniger_anzeigen')+'</span>'+
-            '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>'+
-          '</div>'+
-        '</summary>'+
-        berichtTeileHTML(pr);
+          '<div class="trait-teaser">'+pr.teaser+'</div>';
+      card.innerHTML = plusErgebnis
+        ? '<summary>'+kopf+
+            '<div class="trait-more"><span class="tm-shut">'+tx('js_alltag_beziehungen_wachstum')+'</span>'+
+            '<span class="tm-open">'+tx('js_weniger_anzeigen')+'</span>'+
+              '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>'+
+            '</div>'+
+          '</summary>'+berichtTeileHTML(pr)
+        : kopf;
       list.appendChild(card);
     });
+    var plusTeil = $('ergebnisPlusAbschnitt');
+    if (plusTeil){
+      if (plusErgebnis || guestRun){ plusTeil.innerHTML = ''; plusTeil.hidden = true; }
+      else {
+        var f0 = sortedTraits[0], pr0 = PROFILES[f0][scores[f0]>=50 ? 'high':'low'];
+        plusTeil.hidden = false;
+        plusTeil.innerHTML = '<h2 class="section-title">'+tx('plus_ergebnis_titel')+'</h2>'+
+          vorschauHTML('<div class="trait-card" data-frei="1" style="opacity:1;animation:none"><div class="trait-top"><span class="trait-name">'+LABELS[f0]+'</span></div>'+
+            berichtTeileHTML(pr0, true)+'</div>', tx('plus_ergebnis_text'));
+        schloesserVerdrahten(plusTeil);
+      }
+    }
     schloesserVerdrahten(list);
     renderRhythmus();
     revealOnScroll(list.children);
@@ -346,21 +363,44 @@
 
     renderDelta(previous);
     ftKarteRendern();
+    sicherKarteAnwenden();
+  }
+  // Einmal unter dem ersten eigenen Ergebnis: die Anmeldung, die frueher im Onboarding stand (Entscheidung des Inhabers).
+  var SICHER_GEZEIGT = 'lucenta_sicher_angebot';
+  function sicherKarteAnwenden(){
+    var k = $('sicherKarte');
+    if (!k) return;
+    var gezeigt = false;
+    try{ gezeigt = localStorage.getItem(SICHER_GEZEIGT) === '1'; }catch(e){}
+    var zeigen = !guestRun && !gezeigt && !!kontoModul() && !kontoStand.angemeldet;
+    k.hidden = !zeigen;
+    if (zeigen) try{ localStorage.setItem(SICHER_GEZEIGT, '1'); }catch(e){}
   }
 
   // Kurzportraet vollstaendig (Entscheidung des Inhabers, loest „Mehr" aus Feedback B12 ab): frei und zum Teilen gedacht.
   function synthesisSetzen(text){
     $('synthesis').textContent = text;
   }
+  // Die Ziele aus dem Onboarding ordnen die drei Abschnitte (Entscheidung des Inhabers): Beziehungen zuerst bei
+  // „mit anderen“, Alltag bei Arbeit/Staerken, sonst wie bisher.
+  // Ergebnis: Plaetze der Abschnitte 0 = Alltag, 1 = Beziehungen, 2 = Wachstum.
+  function zielReihenfolge(){
+    var ziele = [];
+    try{ ziele = loadProfile().ziele || []; }catch(e){}
+    var vorn = [];
+    if (ziele.indexOf('beziehungen') >= 0) vorn.push(1);
+    if (ziele.indexOf('arbeit') >= 0 || ziele.indexOf('staerken') >= 0) vorn.push(0);
+    return vorn.concat([0, 1, 2].filter(function(t){ return vorn.indexOf(t) < 0; }));
+  }
   // Der ausfuehrliche Bericht ist Lucenta+, alle drei Abschnitte (Entscheidung des Inhabers). Frei: Kopfzeile,
   // Messbalken und Kernsatz; die Abschnitte verschwommen.
-  function berichtTeileHTML(pr){
+  function berichtTeileHTML(pr, offen){
     var abschnitt = function(label, text){
       return '<div class="trait-section"><div class="trait-section-label">'+tx(label)+'</div><p>'+text+'</p></div>';
     };
-    if (istPlus()){
-      return '<div class="trait-sections">'+abschnitt('js_im_alltag', pr.alltag)+
-        abschnitt('js_in_beziehungen', pr.beziehungen)+abschnitt('js_wachstumsimpuls', pr.wachstum)+'</div>';
+    if (istPlus() || offen){
+      var teile = [abschnitt('js_im_alltag', pr.alltag), abschnitt('js_in_beziehungen', pr.beziehungen), abschnitt('js_wachstumsimpuls', pr.wachstum)];
+      return '<div class="trait-sections">'+zielReihenfolge().map(function(t){ return teile[t]; }).join('')+'</div>';
     }
     return '<div class="trait-sections">'+
       vorschauHTML(abschnitt('js_im_alltag', pr.alltag)+abschnitt('js_in_beziehungen', pr.beziehungen)+abschnitt('js_wachstumsimpuls', pr.wachstum),

@@ -65,9 +65,14 @@
     if (n !== 0 || fi > FIGUREN.length) return null;
     return {code: toCode(sc), figur: fi ? FIGUREN[fi - 1].id : '', name: m[1].toLowerCase()};
   }
+  // Mit einem Namen steht die ID sofort fest (Entscheidung des Inhabers, aenderbar); ohne Namen bleibt die Abfrage.
   function eigeneBenutzerId(){
     var p = loadProfile();
-    return benutzerIdGueltig(p.benutzerId) ? p.benutzerId : '';
+    if (benutzerIdGueltig(p.benutzerId)) return p.benutzerId;
+    var v = p.name && String(p.name).trim() ? benutzerIdAusName(p.name) : '';
+    if (!benutzerIdGueltig(v)) return '';
+    p.benutzerId = v; saveProfile(p);
+    return v;
   }
   function eigenerFreundescode(){
     var r = loadResult(), id = eigeneBenutzerId();

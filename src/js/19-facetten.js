@@ -122,6 +122,8 @@
     var wrap = $('ftKarte');
     if (!wrap) return;
     var erg = ftErgebnisLesen(), lauf = ftLaufLesen(), plus = istPlus();
+    // Frei steht der ausfuehrliche Test im gesammelten Abschnitt „Mit Lucenta+“ (Entscheidung des Inhabers).
+    if (!plus){ wrap.innerHTML = ''; return; }
     var text = erg ? tx('ft_karte_da').split('{datum}').join(historyDateFmt().format(new Date(erg.ts)))
              : lauf ? tx('ft_karte_lauf').split('{n}').join(String(lauf.pos + 1)) : tx('ft_karte_neu');
     var knoepfe = !plus ? '<button type="button" class="btn btn-primary btn-sm" data-plus-info>' + plusKnopfText() + '</button>'

@@ -42,6 +42,16 @@
     aufklappen($('tfErfassung'));
     try{ $('stateEnergyRow').querySelector('button').focus(); }catch(e){}
   });
+  if ($('btnSicherApple')) $('btnSicherApple').addEventListener('click', function(){ $('sicherKarte').hidden = true; kontoAnmelden(); });
+  if ($('btnSicherSpaeter')) $('btnSicherSpaeter').addEventListener('click', function(){ $('sicherKarte').hidden = true; });
+  // Tageszeit antippen: fruehere von heute nachtragen (die Wahl gilt bis zum Speichern).
+  document.addEventListener('click', function(e){
+    var b = e.target && e.target.closest ? e.target.closest('[data-tf-abschnitt]') : null;
+    if (!b) return;
+    tfAbschnittWahl = b.getAttribute('data-tf-abschnitt');
+    renderLandingStateTeaser();
+    if (currentView === 'state'){ tfAendernOffen = false; renderStateView(); }
+  });
   // „Mehr erfassen“ merkt sich, ob es offen war.
   if ($('tfMehr')){
     try{ $('tfMehr').open = localStorage.getItem('lucenta_tf_mehr') === '1'; }catch(e){}
@@ -52,8 +62,10 @@
       toast(tx('js_bitte_beide_fragen'));
       return;
     }
-    var abschnitt = aktuellerAbschnitt(), ersetzt = !!heuteEingetragen()[abschnitt];
-    var ok = addStateEntry(statePickedEnergy, statePickedValence, tfErfassungExtra());
+    var abschnitt = gewaehlterAbschnitt(), ersetzt = !!heuteEingetragen()[abschnitt];
+    var extra = tfErfassungExtra(); extra.slot = abschnitt;
+    var ok = addStateEntry(statePickedEnergy, statePickedValence, extra);
+    tfAbschnittWahl = null;
     if (ok){
       toast(ersetzt ? tfText('tf_ersetzt_toast', {abschnitt: tx('tf_abschnitt_'+abschnitt)})
                     : tx('js_tagesform_gespeichert'));
@@ -69,6 +81,7 @@
       profilWegeAnwenden();
       renderLandingStateTeaser();
       erinnerungNachziehen();
+      erinnerungFrageAnwenden();
       erstesMusterMelden();
     } else {
       toast(tx('js_konnte_nicht_gespeichert_w_2'));
@@ -382,6 +395,7 @@
           !statePickedEnergy && !statePickedValence && !tfAendernOffen && !notizOffen) renderStateView();
     });
     erinnerungTippVerdrahten(function(){ renderStateView(); showView('state'); });
+    erinnerungFrageVerdrahten();
     // Haptik bei jedem Bedienelement, im capture-Schritt (auch wo ein Knopf die Ausbreitung anhaelt).
     // Deaktivierte Elemente schweigen.
     document.addEventListener('click', function(e){

@@ -220,6 +220,14 @@
   var TF_ABSCHNITTE = ['morgen', 'mittag', 'abend'];
   var TF_ABSCHNITT_BEGINN = {morgen:0, mittag:12, abend:18};
   function aktuellerAbschnitt(){ return zeitabschnitt(Date.now()); }
+  // Gewaehlte Tageszeit fuer den naechsten Eintrag: die laufende oder eine fruehere von heute (Entscheidung des
+  // Inhabers: nachtragen ja, vorgreifen nein).
+  var tfAbschnittWahl = null;
+  function gewaehlterAbschnitt(){
+    var jetzt = aktuellerAbschnitt();
+    return (tfAbschnittWahl && TF_ABSCHNITTE.indexOf(tfAbschnittWahl) >= 0 &&
+            TF_ABSCHNITTE.indexOf(tfAbschnittWahl) < TF_ABSCHNITTE.indexOf(jetzt)) ? tfAbschnittWahl : jetzt;
+  }
   // Welche Abschnitte heute schon belegt sind, je Abschnitt der juengste Eintrag. Bestand von vor
   // Runde 129 kann einen Abschnitt mehrfach tragen; gezeigt wird dann der letzte.
   function heuteEingetragen(){
@@ -264,8 +272,13 @@
   }
   function addStateEntry(energy, valence, extra){
     var h = loadStateHistory();
-    var jetzt = Date.now();
-    var eintrag = {day:todayKey(), ts:jetzt, energy:energy, valence:valence, slot:zeitabschnitt(jetzt)};
+    var jetzt = Date.now(), slot = zeitabschnitt(jetzt);
+    // Nachgetragen: der Eintrag bekommt einen Zeitpunkt in seiner Tageszeit, damit alles, was nach ts rechnet, passt.
+    var wahl = extra && extra.slot;
+    if (wahl && TF_ABSCHNITTE.indexOf(wahl) >= 0 && TF_ABSCHNITTE.indexOf(wahl) < TF_ABSCHNITTE.indexOf(slot)){
+      var d = new Date(); jetzt = new Date(d.getFullYear(), d.getMonth(), d.getDate(), ({morgen:9, mittag:15, abend:21})[wahl], 0, 0).getTime(); slot = wahl;
+    }
+    var eintrag = {day:todayKey(), ts:jetzt, energy:energy, valence:valence, slot:slot};
     // Runde 129: Ein Eintrag im selben Abschnitt desselben Tages ersetzt den vorhandenen — so kann
     // ein Tag nie mehr als drei tragen. Auch mehrfacher Altbestand im Abschnitt geht dabei auf.
     var alt = h.filter(function(e){ return e.day === eintrag.day && e.slot === eintrag.slot; })[0];
