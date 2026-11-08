@@ -4,7 +4,7 @@
   var TAB_VON = {
     landing:'landing', result:'landing', ft:'landing',
     state:'state', rueckblick:'state',
-    understand:'understand', archetypes:'understand',
+    understand:'understand', archetypes:'understand', archrolle:'understand',
     freunde:'freunde', compare:'freunde',
     profile:'profile', verlauf:'profile', name:'profile', profilverlauf:'profile', look:'profile', settings:'profile', plus:'profile',
     hilfe:'profile', sprache:'profile', appicon:'profile', recht:'profile'

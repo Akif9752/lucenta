@@ -1,5 +1,14 @@
 // ---------- "Verstehen": profilbasierte Kurz-Einordnungen ----------
   var vsReiter = '';
+  // Die eine Zeile der Bereiche wischt seitlich; der gewaehlte rollt in den Blick (Entscheidung des Inhabers).
+  function vsLeisteZeigen(wrap, sofort){
+    try{
+      var b = wrap.querySelector('.vs-sprung[aria-selected="true"]'), leiste = wrap.querySelector('.vs-inhalt');
+      if (!b || !leiste) return;
+      var ziel = b.offsetLeft - (leiste.clientWidth - b.offsetWidth) / 2;
+      leiste.scrollTo({left: Math.max(0, ziel), behavior: (sofort || prefersReducedMotion()) ? 'auto' : 'smooth'});
+    }catch(e){}
+  }
   function renderUnderstand(){
     var last = loadResult();
     var wrap = $('understandContent');
@@ -55,9 +64,10 @@
         vsReiter = b.getAttribute('data-vs-ziel');
         wrap.setAttribute('data-vs-reiter', vsReiter);
         wrap.querySelectorAll('[data-vs-ziel]').forEach(function(x){ x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
-        tapFeedback();
+        vsLeisteZeigen(wrap, false);
       });
     });
+    vsLeisteZeigen(wrap, true);
   }
 
   // ---------- Kombinationen ----------

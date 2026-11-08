@@ -67,6 +67,7 @@
     var ok = addStateEntry(statePickedEnergy, statePickedValence, extra);
     tfAbschnittWahl = null;
     if (ok){
+      setTimeout(function(){ haptik('ok'); }, 120);
       toast(ersetzt ? tfText('tf_ersetzt_toast', {abschnitt: tx('tf_abschnitt_'+abschnitt)})
                     : tx('js_tagesform_gespeichert'));
       // Runde 131: erst zuklappen, dann neu zeichnen — sonst leerten sich die Skalen sichtbar.
@@ -224,6 +225,10 @@
     b.addEventListener('click', function(){
       var r = b.getAttribute('data-reiter');
       $('view-state').setAttribute('data-reiter', r);
+      // Der Titel nennt, was der Reiter zeigt (Design-Audit: „Wie geht es dir gerade?“ nur fuer Heute).
+      var titelSchl = {heute:'wie_geht_es_dir_gerade', verlauf:'tf_titel_verlauf', kalender:'tf_titel_kalender', muster:'tf_titel_muster'}[r];
+      var tfTitel = $('tfSeitenTitel');
+      if (titelSchl && tfTitel){ tfTitel.setAttribute('data-i18n', titelSchl); tfTitel.textContent = decodeEntities(tx(titelSchl)); navLeisteAnwenden(); }
       document.querySelectorAll('.tf-reiter [data-reiter]').forEach(function(x){ x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
       tapFeedback();
     });

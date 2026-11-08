@@ -78,6 +78,7 @@
   // nicht.
   function schuetteln(el){
     if (!el || !el.classList) return;
+    setTimeout(function(){ haptik('warn'); }, 100);
     if (prefersReducedMotion()) return;
     el.classList.remove('schuettel');
     try{ void el.offsetWidth; }catch(e){}

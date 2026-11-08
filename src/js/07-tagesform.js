@@ -103,6 +103,7 @@
     }
     var abschnitt = gewaehlterAbschnitt();
     tfAbschnittWahl = null;
+    setTimeout(function(){ haptik('ok'); }, 120);
     erstesMusterMelden();
     // Die Karte bestaetigt selbst (kein Toast). Erst klappen die Skalen zu, dann springt die
     // Bestaetigung auf; geleert werden die Skalen erst danach.
@@ -368,6 +369,7 @@
     if (zNeu.length) setTimeout(function(){ toast(tx('zub_neu').split('{name}').join(tx('zub_' + zNeu[0]))); }, neu.length ? 3200 : 900);
     try{ localStorage.setItem(MS_SCHLUESSEL, JSON.stringify(erreicht)); }catch(e){}
     if (!neu.length) return;
+    setTimeout(function(){ haptik('max'); }, 400);
     var a = m.liste.filter(function(x){ return x.id === neu[neu.length - 1]; })[0];
     setTimeout(function(){
       toast(tx('tf_ms_neu').split('{name}').join(tfMsName(a)));

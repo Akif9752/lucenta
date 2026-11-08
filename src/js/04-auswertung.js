@@ -90,45 +90,66 @@
           '<span class="arch-freund-name">'+escapeHTML(freundName(x.f))+'</span></span>'; }).join('')+
         (liste.length > 5 ? '<span class="arch-freunde-mehr">+'+(liste.length - 5)+'</span>' : '')+'</span>' : '';
     };
-    $('archetypeGroups').innerHTML = kopf + ORDER.map(function(t, gi){
-      var karten = ['high','low'].map(function(p, pi){
+    // Zehn Rollen als Raster, je Zeile eine Dimension (hoch | niedrig); Antippen oeffnet die Rolle (Entscheidung des Inhabers).
+    archFreunde = freunde;
+    $('archetypeGroups').innerHTML = kopf + '<div class="rollen-raster">' + ORDER.map(function(t){
+      return '<div class="rollen-zeile-titel">'+LABELS[t]+'</div>' + ['high','low'].map(function(p){
         var naehe = eigen ? (p === 'high' ? eigen[t] : 100 - eigen[t]) : null;
         var istIch = ich && ich.f === t && ich.p === p;
         var mitRolle = freunde.filter(function(x){ return x.r.f === t && x.r.p === p; });
-        var kombis = ORDER.filter(function(o){ return o !== t; }).map(function(o){
-          return ['high','low'].map(function(q){
-            var meins = istIch && ich.f2 === o && ich.p2 === q;
-            var ihre = mitRolle.filter(function(x){ return x.r.f2 === o && x.r.p2 === q; });
-            return '<li class="arch-kombi'+(meins ? ' arch-kombi-ich' : '')+'"><span class="arch-kombi-titel">'+titelNomen(t, p, true)+' · '+titelAdj(o, q, true)+'</span>'+
-              (meins ? '<span class="arch-du">'+tx('arch_du')+'</span>' : '')+figuren(ihre)+
-              '<span class="arch-kombi-satz">'+FLAVOR[o][q]+'</span></li>';
-          }).join('');
-        }).join('');
-        return '<details class="role-card role-pol-'+p+(istIch ? ' role-ich' : '')+'" style="animation-delay:'+((gi*2+pi)*40)+'ms">'+
-          '<summary>'+
-            '<div class="role-tag role-tag-'+p+'">'+titelAdj(t, p, true)+(istIch ? ' · '+tx('arch_du') : '')+'</div>'+
-            '<div class="role-title">'+titelNomen(t, p, true)+'</div>'+
-            '<div class="role-motto">'+MOTTO[t][p]+'</div>'+
-            '<p class="role-desc">'+CORE[t][p]+'</p>'+
-            (naehe === null ? '' : '<div class="arch-naehe"><span>'+tx('arch_naehe')+'</span>'+
-              '<span class="arch-naehe-balken" aria-hidden="true"><span style="width:'+Math.max(3, naehe)+'%"></span></span>'+
-              '<span class="mono">'+naehe+' %</span></div>')+
-            figuren(mitRolle)+
-            // Fusszeile wie bei Ergebnis und Verstehen: sagt, dass sich die Karte aufklappen laesst.
-            '<span class="trait-more arch-zu"><span class="tm-shut">'+tx('arch_titel_zeigen')+'</span>'+
-            '<span class="tm-open">'+tx('js_weniger_anzeigen')+'</span>'+
-            '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></span>'+
-          '</summary>'+
-          '<div class="arch-kombis"><div class="hg-gruppe-titel">'+tx('arch_kombis')+'</div><ul>'+kombis+'</ul></div>'+
-        '</details>';
+        return '<button type="button" class="rollen-kachel role-pol-'+p+(istIch ? ' role-ich' : '')+'" data-archrolle="'+t+'-'+p+'">'+
+          '<span class="role-tag">'+titelAdj(t, p, true)+(istIch ? ' · '+tx('arch_du') : '')+'</span>'+
+          '<span class="role-title">'+titelNomen(t, p, true)+'</span>'+
+          (naehe === null ? '' : '<span class="arch-naehe"><span class="arch-naehe-balken" aria-hidden="true"><span style="width:'+Math.max(3, naehe)+'%"></span></span>'+
+            '<span class="mono">'+naehe+' %</span></span>')+
+          figuren(mitRolle.slice(0, 3))+'</button>';
       }).join('');
-      return '<section class="arch-gruppe"><h2 class="arch-gruppe-titel">'+LABELS[t]+'</h2>'+karten+'</section>';
-    }).join('');
+    }).join('') + '</div>';
     var wrap = $('archetypeGroups');
-    if (wrap.querySelectorAll) wrap.querySelectorAll('[data-arch-freund]').forEach(function(el){
-      var x = freunde[+el.getAttribute('data-arch-freund')];
-      if (x) renderAvatarInto(el, {name: x.f.name, figur: x.f.figur || null, avatarColor: 'accent'});
+    if (wrap.querySelectorAll){
+      wrap.querySelectorAll('[data-arch-freund]').forEach(function(el){
+        var x = freunde[+el.getAttribute('data-arch-freund')];
+        if (x) renderAvatarInto(el, {name: x.f.name, figur: x.f.figur || null, avatarColor: 'accent'});
+      });
+      wrap.querySelectorAll('[data-archrolle]').forEach(function(btn){
+        btn.addEventListener('click', function(){ var z = btn.getAttribute('data-archrolle').split('-'); rolleOeffnen(z[0], z[1]); });
+      });
+    }
+  }
+  // Die Rolle als Unterseite der Archetypen: Text, Naehe, Freunde und ihre acht Titel.
+  var archFreunde = [];
+  function rolleOeffnen(t, p){
+    var eigen = loadResult(), ich = eigen ? rolleVon(eigen) : null, freunde = archFreunde;
+    var naehe = eigen ? (p === 'high' ? eigen[t] : 100 - eigen[t]) : null;
+    var istIch = ich && ich.f === t && ich.p === p;
+    var mitRolle = freunde.filter(function(x){ return x.r.f === t && x.r.p === p; });
+    var marken = function(liste){
+      return liste.length ? '<span class="arch-freunde">'+liste.map(function(x){
+        return '<span class="arch-freund-marke"><span class="avatar arch-freund" data-arch-freund="'+freunde.indexOf(x)+'" aria-hidden="true"></span>'+
+          '<span class="arch-freund-name">'+escapeHTML(freundName(x.f))+'</span></span>'; }).join('')+'</span>' : '';
+    };
+    var kombis = ORDER.filter(function(o){ return o !== t; }).map(function(o){
+      return ['high','low'].map(function(q){
+        var meins = istIch && ich.f2 === o && ich.p2 === q;
+        var ihre = mitRolle.filter(function(x){ return x.r.f2 === o && x.r.p2 === q; });
+        return '<li class="arch-kombi'+(meins ? ' arch-kombi-ich' : '')+'"><span class="arch-kombi-titel">'+titelNomen(t, p, true)+' · '+titelAdj(o, q, true)+'</span>'+
+          (meins ? '<span class="arch-du">'+tx('arch_du')+'</span>' : '')+marken(ihre)+
+          '<span class="arch-kombi-satz">'+FLAVOR[o][q]+'</span></li>';
+      }).join('');
+    }).join('');
+    var el = $('rolleInhalt');
+    el.innerHTML = '<div class="archetypes-head"><div class="eyebrow">'+LABELS[t]+' · '+titelAdj(t, p, true)+(istIch ? ' · '+tx('arch_du') : '')+'</div>'+
+        '<h1>'+titelNomen(t, p, true)+'</h1><p class="role-motto">'+MOTTO[t][p]+'</p></div>'+
+      '<div class="role-card role-pol-'+p+(istIch ? ' role-ich' : '')+'" style="opacity:1;animation:none">'+
+        '<p class="role-desc">'+CORE[t][p]+'</p>'+
+        (naehe === null ? '' : '<div class="arch-naehe"><span>'+tx('arch_naehe')+'</span><span class="arch-naehe-balken" aria-hidden="true"><span style="width:'+Math.max(3, naehe)+'%"></span></span><span class="mono">'+naehe+' %</span></div>')+
+        marken(mitRolle)+'</div>'+
+      '<h2 class="section-title">'+tx('arch_kombis')+'</h2><ul class="arch-kombis-liste">'+kombis+'</ul>';
+    if (el.querySelectorAll) el.querySelectorAll('[data-arch-freund]').forEach(function(m){
+      var x = freunde[+m.getAttribute('data-arch-freund')];
+      if (x) renderAvatarInto(m, {name: x.f.name, figur: x.f.figur || null, avatarColor: 'accent'});
     });
+    showView('archrolle');
   }
 
   

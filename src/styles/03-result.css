@@ -1,5 +1,5 @@
 /* ---------- Result ---------- */
-  .result-head{padding:30px 0 4px;text-align:center;}
+  .result-head{padding:28px 0 4px;text-align:center;}
   .result-head .eyebrow{justify-content:center;}
   /* 8.6vw (33,5px bei 390px, 27,5px bei 320px), damit sich der Titel gegen den Absatz durchsetzt;
      text-wrap:balance gegen ein einzelnes Wort in der zweiten Zeile. */
@@ -10,22 +10,22 @@
   .motto{margin-top:8px;font-family:var(--mono);font-size:calc(13px * var(--dt, 1));color:var(--accent-2-text);letter-spacing:.01em;}
 
   .synthesis{
-    margin:26px auto 0;max-width:46ch;text-align:center;
+    margin:24px auto 0;max-width:46ch;text-align:center;
     /* Eine Stufe zurueck, damit der Titel fuehrt statt mit dem Absatz zu konkurrieren. */
     font-family:var(--serif);font-size:calc(17px * var(--dt, 1));line-height:1.62;color:var(--ink);
   }
 
   .delta-card{
-    margin:22px auto 0;max-width:400px;background:var(--surface);border:1px solid var(--line);
-    border-radius:var(--radius-m);padding:16px 18px;
+    margin:20px auto 0;max-width:400px;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius-m);padding:16px 16px;
   }
-  .delta-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:calc(14px * var(--dt, 1));border-top:1px solid var(--line);}
+  .delta-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:calc(14px * var(--dt, 1));border-top:1px solid var(--line);}
   .delta-move{font-family:var(--mono);font-size:calc(12.5px * var(--dt, 1));}
   .delta-up, .delta-down{color:var(--ink);font-weight:600;}
   .delta-flat{color:var(--muted);}
-  .delta-note{margin-top:10px;line-height:1.5;}
+  .delta-note{margin-top:8px;line-height:1.5;}
 
-  .radar-wrap{margin:26px auto 0;max-width:320px;}
+  .radar-wrap{margin:24px auto 0;max-width:320px;}
   .radar-wrap svg{width:100%;height:auto;overflow:visible;}
   .radar-wrap svg polygon:last-of-type{transform-origin:center;transform-box:fill-box;animation:radar-in .7s cubic-bezier(.2,.8,.2,1) both;}
   @keyframes radar-in{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
@@ -39,33 +39,33 @@
   .radar-axis-value.radar-axis-value-other{fill:var(--accent-2-text);}
 
   .share-card{
-    margin-top:30px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
-    padding:26px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+    margin-top:28px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+    padding:24px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden;
   }
   .share-card::before{
     content:'';position:absolute;inset:0;
     background:radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%);
     pointer-events:none;
   }
-  .share-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:relative;}
+  .share-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;position:relative;}
   .share-brand{font-family:var(--serif);font-size:calc(14px * var(--dt, 1));color:var(--muted);}
   .share-title{font-family:var(--serif);font-size:calc(21px * var(--dt, 1));margin-top:8px;position:relative;}
   /* Runde 112: .share-scores und .chip sind entfallen, mit den Chips der Ergebniskarte
      (Begruendung in index.body.html). */
-  .share-actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;position:relative;}
+  .share-actions{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;position:relative;}
   .code-box{
-    margin-top:10px;font-family:var(--mono);font-size:calc(13px * var(--dt, 1));background:var(--surface-2);
-    border:1px dashed var(--line);border-radius:var(--radius-s);padding:10px 12px;
+    margin-top:8px;font-family:var(--mono);font-size:calc(13px * var(--dt, 1));background:var(--surface-2);
+    border:1px dashed var(--line);border-radius:var(--radius-s);padding:8px 12px;
     /* Zoom-Test: Code-Zeile und „Kopieren"-Schaltflaeche zusammen breiter als der Kasten. */
-    display:flex;justify-content:space-between;align-items:center;gap:10px;position:relative;flex-wrap:wrap;
+    display:flex;justify-content:space-between;align-items:center;gap:8px;position:relative;flex-wrap:wrap;
   }
   /* Bewusst NICHT Teil der gedämpften Fußnoten-Gruppe: handlungsrelevanter Hinweis in normaler
      Lesegröße, wie .storage-warning — nur ohne Warnfarbe, weil hier nichts schiefgegangen ist. */
   /* .code-box und .field setzen display und schlagen sonst das hidden-Attribut. */
   .code-box[hidden], .field[hidden]{display:none;}
   .einladen-box{font-family:var(--sans);font-size:calc(14px * var(--dt, 1));line-height:1.45;border-style:solid;}
-  .settings-restore .code-box{margin:0 0 10px;}
-  .code-lead{margin-top:10px;font-size:calc(13.5px * var(--dt, 1));color:var(--muted);line-height:1.55;position:relative;}
+  .settings-restore .code-box{margin:0 0 8px;}
+  .code-lead{margin-top:8px;font-size:calc(13.5px * var(--dt, 1));color:var(--muted);line-height:1.55;position:relative;}
 
   
   /* ---------- Dimensionsfarbe ----------
@@ -76,12 +76,12 @@
      Sagt, was man mit dem Ergebnis tut (wiederholen). Kein Kasten, Kante links wie bei den
      Tagesform-Befunden. */
   .rhythmus{
-    margin:18px auto 0; max-width:46ch;
-    border-left:2px solid var(--accent); padding-left:14px; text-align:left;
+    margin:16px auto 0; max-width:46ch;
+    border-left:2px solid var(--accent); padding-left:12px; text-align:left;
   }
   .rhythmus-titel{
     font-family:var(--mono); font-size:calc(11px * var(--dt, 1)); letter-spacing:.05em; text-transform:uppercase;
-    color:var(--accent-2-text); margin-bottom:5px;
+    color:var(--accent-2-text); margin-bottom:4px;
   }
   .rhythmus-text{ font-size:calc(13.5px * var(--dt, 1)); line-height:1.6; color:var(--ink); margin:0; }
   .rhythmus-text b{ color:var(--ink); font-weight:600; }

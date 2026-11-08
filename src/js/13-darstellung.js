@@ -48,6 +48,9 @@
   function renderQuestion(){
     var it = ITEMS[qi];
     $('qNow').textContent = (qi+1);
+    // Das Fuenfeck neben dem Zaehler fuellt sich je Zehntel (5 Fragen) von unten (Entscheidung des Inhabers).
+    var stand = $('qFuenfeckStand');
+    if (stand && stand.setAttribute) stand.setAttribute('y', String(24 - Math.floor(qi / 5) / 10 * 24));
     $('qText').textContent = it.text;
     $('focusline-fill').style.width = Math.round((qi/50)*100)+'%';
     // Der Strich traegt role=progressbar nur im Fragebogen.
@@ -85,20 +88,26 @@
     focuslineBeatTimer = setTimeout(function(){ fl.classList.remove('beat'); focuslineBeatTimer = null; }, 620);
   }
 
-  // Haptik ueber das native Haptics-Plugin (Taptic Engine). Ein leichter Tick; aus bei reduzierter Bewegung.
-  // Jedes Bedienelement gibt einen Impuls (Entscheidung des Inhabers; zentraler Zuhoerer
-  // hapticsUeberall in 28-verdrahtung-und-start.js). Die Entprellung hier verhindert doppeltes Vibrieren.
+  // Haptik nach Bedeutung (Entscheidung des Inhabers): Auswahl bei jedem Bedienelement (zentraler Zuhoerer in
+  // 28-verdrahtung-und-start.js), Erfolg, Warnung, kraeftig nur bei Meilensteinen. Nur der Haptik-Schalter stellt
+  // sie ab — „Bewegung reduzieren“ betrifft Bewegung, nicht das Fuehlen (wie bei Apple).
   var letzteHaptik = 0;
-  function tapFeedback(){
-    if (haptikAbgeschaltet() || prefersReducedMotion()) return;
+  function haptik(art){
+    if (haptikAbgeschaltet()) return;
     var jetzt = Date.now();
-    if (jetzt - letzteHaptik < 90) return;
+    if (art === 'sel' && jetzt - letzteHaptik < 90) return;
     letzteHaptik = jetzt;
     try{
       var h = nativModul('Haptics');
-      if (h && h.impact) h.impact({ style: 'LIGHT' });
+      if (!h) return;
+      if (art === 'ok' && h.notification) h.notification({ type: 'SUCCESS' });
+      else if (art === 'warn' && h.notification) h.notification({ type: 'WARNING' });
+      else if (art === 'max' && h.impact) h.impact({ style: 'HEAVY' });
+      else if (h.selectionStart && h.selectionChanged){ h.selectionStart(); h.selectionChanged(); if (h.selectionEnd) h.selectionEnd(); }
+      else if (h.impact) h.impact({ style: 'LIGHT' });
     }catch(e){}
   }
+  function tapFeedback(){ haptik('sel'); }
 
   var quizAdvanceTimeout = null;
   // Klasse entfernen, offsetWidth lesen, neu setzen — sonst erkennt WebKit die Animation nicht
@@ -218,6 +227,7 @@
       quizSchliesst = false;
       ergebnisFrisch = true;
       try{ renderResult(previous); } finally{ ergebnisFrisch = false; }
+      haptik('ok');
       showView('result');
       ergebnisEnthuellen();
       // Voller Speicher: Das Ergebnis steht da, ist aber nicht gesichert — das muss man wissen.
@@ -372,7 +382,7 @@
     if (!k) return;
     var gezeigt = false;
     try{ gezeigt = localStorage.getItem(SICHER_GEZEIGT) === '1'; }catch(e){}
-    var zeigen = !guestRun && !gezeigt && !!kontoModul() && !kontoStand.angemeldet;
+    var zeigen = ergebnisFrisch && !guestRun && !gezeigt && !!kontoModul() && !kontoStand.angemeldet;
     k.hidden = !zeigen;
     if (zeigen) try{ localStorage.setItem(SICHER_GEZEIGT, '1'); }catch(e){}
   }
@@ -453,11 +463,19 @@
     var liste = function(l, leer){ return l.length ? '<ul class="pb-liste">' + l.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>'
                                                   : '<p class="pb-leer">' + tx(leer) + '</p>'; };
     var abschnitt = function(titel, inhalt){ return '<div class="pb-abschnitt"><h3>' + tx(titel) + '</h3>' + inhalt + '</div>'; };
+    // Zuerst je ein Satz zu verbindet/ergaenzt/reibt, das Ausfuehrliche zugeklappt darunter (Entscheidung des Inhabers).
+    var ersterSatz = function(l, leer){ return '<p>' + (l.length ? String(l[0]).replace(/<span class="pb-paar">[\s\S]*$/, '') : tx(leer)) + '</p>'; };
     return '<section class="pb-bericht"><h2 class="section-title section-title-sub">' + tx('pb_titel') + '</h2>' +
-      abschnitt('pb_verbindet', liste(gleich, 'pb_verbindet_leer')) +
-      abschnitt('pb_ergaenzt', liste(mittel, 'pb_ergaenzt_leer')) +
-      abschnitt('pb_reibt', liste(gross, 'pb_reibt_leer')) +
-      abschnitt('pb_reden', '<p>' + tx(groessterAbstand < 15 ? 'pb_rat_aehnlich' : 'pb_rat_' + groesste) + '</p>') +
+      '<div class="pb-abschnitt pb-kurz">' +
+        '<h3>' + tx('pb_verbindet') + '</h3>' + ersterSatz(gleich, 'pb_verbindet_leer') +
+        '<h3>' + tx('pb_ergaenzt') + '</h3>' + ersterSatz(mittel, 'pb_ergaenzt_leer') +
+        '<h3>' + tx('pb_reibt') + '</h3>' + ersterSatz(gross, 'pb_reibt_leer') + '</div>' +
+      '<details class="pb-mehr"><summary class="trait-more">' + tx('pb_mehr') + '</summary>' +
+        abschnitt('pb_verbindet', liste(gleich, 'pb_verbindet_leer')) +
+        abschnitt('pb_ergaenzt', liste(mittel, 'pb_ergaenzt_leer')) +
+        abschnitt('pb_reibt', liste(gross, 'pb_reibt_leer')) +
+        abschnitt('pb_reden', '<p>' + tx(groessterAbstand < 15 ? 'pb_rat_aehnlich' : 'pb_rat_' + groesste) + '</p>') +
+      '</details>' +
     '</section>';
   }
 
@@ -511,7 +529,7 @@
                tx(schluessel)+'</div><p>'+text+'</p></div>' : '';
       };
       // In der freien Fassung geht die Karte trotzdem auf und erklaert darin, was dahinter liegt.
-      return '<details class="trait-card compat-card"'+((cmpPlus && i===0)?' open':'')+
+      return '<details class="trait-card compat-card"'+
         ' style="animation-delay:'+(i*60)+'ms">'+
         '<summary>'+
           '<div class="trait-top"><span class="trait-name">'+LABELS[f]+'</span>'+
@@ -560,7 +578,8 @@
       return;
     }
     var bericht = paarBerichtHTML(me, other, andererName);
-    box.innerHTML = scoreBlock + radarBlock + summary + (cmpPlus ? bericht : vorschauHTML(bericht, tx('pb_plus'))) + lines.join('');
+    box.innerHTML = scoreBlock + radarBlock + summary + (cmpPlus ? bericht : vorschauHTML(bericht, tx('pb_plus'))) +
+      '<details class="pb-mehr cmp-dims"><summary class="trait-more">' + tx('cmp_dims_einzeln') + '</summary>' + lines.join('') + '</details>';
     startCompatBars(box);
     schloesserVerdrahten(box);
     lastCompatSnapshot = { myCode: $('cmpMe').value.trim(), otherCode: $('cmpOther').value.trim(), match: match };

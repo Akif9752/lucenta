@@ -23,6 +23,7 @@
   if ($('btnBackFromSymbol')) $('btnBackFromSymbol').addEventListener('click', function(){ showView('settings'); });
   $('btnBackFromSprache').addEventListener('click', function(){ showView('settings'); });
   $('btnBackFromVerlauf').addEventListener('click', function(){ showView('profilverlauf'); });
+  $('btnBackFromRolle').addEventListener('click', function(){ showView('archetypes'); });
   $('btnNameOeffnen').addEventListener('click', function(){ renderProfile(); titelformAnwenden(); showView('name'); });
   $('btnEntwicklungOeffnen').addEventListener('click', function(){ renderProfile(); showView('profilverlauf'); });
   $('btnBackFromName').addEventListener('click', function(){ renderProfile(); showView('profile'); });

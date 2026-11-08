@@ -86,6 +86,18 @@
     --surface-3:#C9C8C2;
     --shadow:0 1px 2px rgba(0,0,0,.05), 0 12px 32px -12px rgba(0,0,0,.16);
     --shadow-sm:0 1px 2px rgba(0,0,0,.06);
+    /* Bewegung (Entscheidung des Inhabers): drei Dauern, eine Standardkurve; die Feder nur bei Erfolg
+       (Speichern, Meilenstein, Ergebnis). Strahlenkranz, Push/Pop und Ueberlagerungen haben eigene Zeiten. */
+    /* Bausteine (Entscheidung des Inhabers): drei Knopfgroessen; Flaechen: --paper (Grund), --surface (Karte),
+       --surface-2 (Element auf der Karte), --surface-3 nur fuer die Spur von Umschaltern und Schaltern. */
+    --knopf-gross: 50px;
+    --knopf: 44px;
+    --knopf-klein: 36px;
+    --dauer-kurz: 150ms;
+    --dauer: 250ms;
+    --dauer-lang: 400ms;
+    --kurve: cubic-bezier(.2,.8,.2,1);
+    --feder: cubic-bezier(.34,1.56,.64,1);
     /* Zwei Radien (Entscheidung des Inhabers): Karten und Fenster --radius-m, kleine Elemente --radius-s. */
     --radius-l: 18px;
     --radius-m: 18px;
@@ -343,7 +355,7 @@
     /* Dieselbe Filterliste wie balken-impuls: Bei ungleichen Listen stuerzt WebKit beim Puls ab
        (CAPresentationModifier, nachgestellt). */
     filter:brightness(1) saturate(1);
-    transition:width .4s ease;
+    transition:width var(--dauer-lang) var(--kurve);
   }
 
   /* Die Kopfleiste klebt beim Scrollen, direkt unter der Fokuslinie. Die Trennlinie erscheint erst
@@ -368,7 +380,7 @@
     -webkit-backdrop-filter:blur(20px) saturate(160%);
     backdrop-filter:blur(20px) saturate(160%);
     border-bottom:1px solid transparent;
-    transition:border-color .2s ease;
+    transition:border-color var(--dauer-kurz) var(--kurve);
   }
   /* Ohne backdrop-filter (oder bei "Transparenz reduzieren") waere eine durchscheinende Leiste ohne
      Unschaerfe unlesbar — dann die volldeckende Leiste. */
@@ -431,7 +443,7 @@
     -webkit-backdrop-filter:blur(20px) saturate(150%);
     backdrop-filter:blur(20px) saturate(150%);
     border:1px solid var(--line);border-radius:var(--radius-l);
-    box-shadow:var(--shadow);padding:22px;z-index:96;opacity:0;visibility:hidden;
+    box-shadow:var(--shadow);padding:20px;z-index:96;opacity:0;visibility:hidden;
     transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
     max-height:88vh;overflow-y:auto;
   }
@@ -457,7 +469,7 @@
     -webkit-backdrop-filter:blur(20px) saturate(150%);
     backdrop-filter:blur(20px) saturate(150%);
     border:1px solid var(--line);border-radius:var(--radius-l);
-    box-shadow:var(--shadow);padding:22px;z-index:96;opacity:0;visibility:hidden;
+    box-shadow:var(--shadow);padding:20px;z-index:96;opacity:0;visibility:hidden;
     transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
     max-height:86vh;overflow-y:auto;
   }
@@ -500,13 +512,13 @@
      Produkt aussehen darf. Alles Weitere ist Text. */
   .plus-modal-marke{
     font-family:var(--serif);font-size:calc(15px * var(--dt, 1));font-weight:600;color:var(--ink);
-    letter-spacing:.01em;margin:0 0 10px;
+    letter-spacing:.01em;margin:0 0 8px;
   }
   .plus-modal-marke span{color:var(--accent-strong);}
   .plus-modal-titel{font-family:var(--serif);font-size:calc(20px * var(--dt, 1));line-height:1.25;margin:0 0 8px;text-wrap:balance;}
   .plus-modal-lead{font-size:calc(13.5px * var(--dt, 1));line-height:1.6;color:var(--muted);margin:0 0 16px;}
   .plus-vorteile{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:12px;}
-  .plus-vorteil{display:flex;gap:11px;align-items:flex-start;}
+  .plus-vorteil{display:flex;gap:12px;align-items:flex-start;}
   /* Das Haken-Zeichen steht in der Akzentfarbe auf einer eigenen Flaeche: In einer Liste aus
      vier Punkten braucht das Auge einen Anker, sonst wird sie als Absatz gelesen. */
   .plus-vorteil-marke{
@@ -517,8 +529,8 @@
   .plus-vorteil-text strong{display:block;font-size:calc(14px * var(--dt, 1));line-height:1.35;color:var(--ink);margin-bottom:2px;}
   .plus-vorteil-text span{display:block;font-size:calc(12.5px * var(--dt, 1));line-height:1.55;color:var(--muted);}
   .plus-modal-fuss{
-    border-top:1px solid var(--line);padding-top:14px;
-    display:flex;flex-direction:column;gap:9px;
+    border-top:1px solid var(--line);padding-top:12px;
+    display:flex;flex-direction:column;gap:8px;
   }
   .plus-modal-fuss p{margin:0;font-size:calc(12.5px * var(--dt, 1));line-height:1.55;color:var(--muted);}
   .plus-modal-fuss b{color:var(--ink);font-weight:600;}
@@ -526,15 +538,15 @@
   /* grid-auto-flow:column + grid-auto-columns:1fr: die Spaltenzahl folgt der Zahl der Faecher (zwei
      oder drei). */
   .segment{
-    margin:16px 0 0;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:3px;
-    background:var(--surface-3);border-radius:11px;padding:3px;
+    margin:16px 0 0;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;
+    background:var(--surface-3);border-radius:var(--radius-s);padding:4px;
   }
   .segment-opt{
     -webkit-appearance:none;appearance:none;cursor:pointer;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-    min-height:52px;padding:8px 10px;border:none;border-radius:9px;
+    min-height:52px;padding:8px 8px;border:none;border-radius:calc(var(--radius-s) - 4px);
     background:transparent;color:var(--muted);
-    transition:background .18s ease, color .18s ease, box-shadow .18s ease;
+    transition:background var(--dauer-kurz) var(--kurve), color var(--dauer-kurz) var(--kurve), box-shadow var(--dauer-kurz) var(--kurve);
   }
   .segment-opt[aria-checked="true"]{
     background:var(--surface);color:var(--ink);
@@ -576,14 +588,14 @@
   .segment-opt[aria-checked="true"] .segment-spar{color:var(--accent-2-text);}
   .plus-modal-cta{margin-top:12px;width:100%;justify-content:center;}
   .plus-modal-kuendigen{
-    margin:10px 0 0;font-size:calc(11.5px * var(--dt, 1));line-height:1.5;color:var(--muted-soft);text-align:center;
+    margin:8px 0 0;font-size:calc(11.5px * var(--dt, 1));line-height:1.5;color:var(--muted-soft);text-align:center;
   }
 
   .img-modal-hint{font-size:calc(12.5px * var(--dt, 1));color:var(--muted);line-height:1.5;}
   .img-modal-actions{display:flex;justify-content:flex-end;}
 
   .drawer-close{
-    background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;
+    background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;
     border-radius:50%;display:flex;align-items:center;justify-content:center;
     transition:color .15s ease,background .15s ease;
   }
@@ -615,5 +627,5 @@
   }
 
   html.fortschritt-sichtbar{ --fokuslinie-hoehe:10px; }
-  #focusline{ overflow:hidden; transition:height .22s cubic-bezier(.2,.8,.2,1); }
+  #focusline{ overflow:hidden; transition:height var(--dauer) var(--kurve); }
   @media (prefers-reduced-motion: reduce){ #focusline{ transition:none; } }

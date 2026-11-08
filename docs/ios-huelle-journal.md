@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-06, nach Runde 240)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-08, nach Runde 241)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 240 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 241 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -82,7 +82,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 240 | (dieser) | UX/UI-Durchsicht umgesetzt: Onboarding 3 Schritte, Tageszeiten nachtragen, ein Lucenta+-Abschnitt, Erinnerung einmal fragen, ID automatisch |
+| 241 | (dieser) | Design-Audit umgesetzt: Fehler/Regelbrueche, Haptik nach Bedeutung, Vergleich kurz, Bewegungs- und Bausteintokens, Fuenfeck, Archetypen-Raster |
+| 240 | `a971890` | UX/UI-Durchsicht umgesetzt: Onboarding 3 Schritte, Tageszeiten nachtragen, ein Lucenta+-Abschnitt, Erinnerung einmal fragen, ID automatisch |
 | 239 | `b9b2527` | Design-Durchsicht umgesetzt: flache Formen, Farbrollen, volle Namen, Tagesform kurz, Profil-Unterseiten, Titelform, 9-stelliger Code, Wochenbeginn |
 | 238 | `d629808` | Funde der Personen-Simulation behoben, Start in iPhone-Sprache, Benutzer-ID ab 2 Zeichen, EU-OS-Satz gestrichen |
 | 237 | `0726f52` | Fehlersuche mit 2000 simulierten Personen (Werkzeug npm run personen), zwoelf Befunde, App unveraendert |
@@ -330,6 +331,15 @@ wieder ungefragt). Tagesform-Einleitung voll bis zum dritten Tag, dann ein Satz;
 unauffaelliger Link. **Bewusst unveraendert (Inhaber):** Entwicklerbereich „Beispieldaten" im Profil fuer alle; Startkopf „Lern dich
 kennen — mit Wissenschaft …" auch fuer Wiederkehrende. Nicht erneut vorschlagen.
 
+*Design-Audit „Senior-Team" (nach Runde 240), entschieden vom Inhaber, Runde 241:* Phase 1 ohne Rueckfrage (Fehler/Regelbrueche).
+Vergleich: Ring, Netz, je ein Satz verbindet/ergaenzt/reibt oben, Gespraechstipps und Dimensionskarten zugeklappt, nichts gestrichen.
+Bewegung 150/250/400 ms, eine Standardkurve, Federn nur bei Speichern/Meilenstein/Ergebnis (Strahlenkranz, Push/Pop, Hauptseiten
+bleiben). Haptik nach Bedeutung (Auswahl, Erfolg, Warnung, kraeftig bei Meilensteinen), nur am Haptik-Schalter. Lucenta+-Seite fuer
+Abonnenten: Freigeschaltetes als Wege, Abo verwalten/Kaeufe wiederherstellen klein. Verstehen-Bereiche einzeilig wischbar. Tokens:
+3 Flaechen, 2 Radien (Datenmarken ausgenommen), Knoepfe 50/44/36, 4-pt-Abstaende, ein Chip mit zwei Arten (Schrift ausgenommen).
+Fuenfeck als Signatur (Leerzustaende, Test-Fortschritt je Zehntel, Meilensteine). Archetypen als Raster mit Detailseite.
+**Sterne/Sternbilder bleiben** bis zu den TestFlight-Gespraechen (Inhaber) — vorher nicht erneut vorschlagen.
+
 *Aus der Simulation (Runde 223):* **C** in Runde 239 gebaut (Serie leise, Schutztag als Schild).
 
 *Am iPhone vom Inhaber anzusehen (im Simulator/WebKit gebaut, am Geraet nicht bestaetigt):* Apples Tab-Leiste (Tippen, Ziehen
@@ -559,17 +569,51 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 240** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 241** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 240 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 241 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 241 — Design-Audit des Senior-Teams umgesetzt
+
+**Inhaber:** Audit durch ein simuliertes Team aus sieben Senior-Rollen (Product, Visual, Brand, Design System, UX Research,
+Motion, Interaction), danach „los": Phase 1 ohne Rueckfrage, der Rest in drei Fragerunden entschieden (alles wie empfohlen; die
+Sterne bleiben bis zu Nutzertests).
+
+**Fehler und Regelbrueche (Phase 1):**
+- „Sichere dein Portraet" erschien bei jedem ersten Oeffnen eines Ergebnisses (auch Beispieldaten) — jetzt nur direkt nach einem
+  eben beendeten eigenen Test (`ergebnisFrisch`); pruef-nativ prueft beides (gespeichertes Ergebnis ohne Karte, nach dem Test einmal).
+- Haptik war an „Bewegung reduzieren" gekoppelt — jetzt nur am Haptik-Schalter.
+- Tuerkis an nicht antippbaren Stellen (Vergleich-Zwischentitel, „Insgesamt", eigene Kombination) — jetzt Weiss/Schwarz.
+- Erinnerungsfrage und -schalter zugleich — der Schalter verschwindet, solange die Frage steht (`#tfErinnerungZeile`).
+- Ergebniskarte ohne zweiten Titel; Titel je Tagesform-Reiter (Dein Verlauf/Kalender/Muster); Kalenderzellen als abgerundetes
+  Quadrat wie im Rueckblick; Datenuebersicht als Liste mit Anzahl rechts; Kartenkoepfe der Startseite normal geschrieben;
+  Kurzportraet linksbuendig.
+
+**Entschieden und gebaut:** Haptik nach Bedeutung (`haptik('sel'|'ok'|'warn'|'max')`); Vergleich mit Kurzfassung oben,
+„Mehr zu euch zwei" und „Die fuenf Dimensionen einzeln" zugeklappt; Bewegungs-Tokens `--dauer-kurz/--dauer/--dauer-lang`,
+`--kurve`, `--feder` (79 Dauern und 84 Kurven in Uebergaengen ersetzt; Federn nur noch bei Speichern, Meilenstein, Ergebnis;
+Ueberlagerungen, Push/Pop, Strahlenkranz, Hauptseiten unberuehrt); Lucenta+-Seite fuer Abonnenten mit Wegen (`plusWegGehen`);
+Verstehen-Bereiche einzeilig wischbar (`vsLeisteZeigen`); Tokens: Knoepfe `--knopf-gross/--knopf/--knopf-klein`, Flaechen
+paper/surface/surface-2 (+ surface-3 nur als Spur), Radien `--radius-m`/`--radius-s` (Segment konzentrisch), 376 Abstaende ins
+4-pt-Raster (Gleichstand abgerundet), ein Chip-Baustein mit zwei Arten (Filter gefuellt, Auswahl umrandet, mind. 44 breit);
+Fuenfeck in Leerzustaenden, als Test-Fortschritt (fuellt sich je Zehntel) und als Meilenstein-Marke; Archetypen als Raster mit
+Unterseite `view-archrolle`.
+
+**Werkzeug:** fehlersuche rollt seitlich abgeschnittene Bedienelemente in den Blick (wischbare Leiste) und klappt im Vergleich
+die neuen Abschnitte auf.
+
+**Unsicher:** Am Geraet nicht angesehen (Haptik-Arten fuehlt man nur dort). Die Rundung aller Abstaende veraendert viele
+Stellen um 2 px — angesehen wurden die Hauptansichten, nicht jede Unterseite. Die Schrift ist unveraendert (Entscheidung).
 
 ---
 

@@ -547,7 +547,13 @@ ok(await obSchritt() === '3', 'nach den Zielen folgen Name und Figur');
 await seite.evaluate(() => { localStorage.setItem('lucenta_onboarding', '1'); localStorage.setItem('lucenta_result', JSON.stringify({O:70,C:40,E:55,A:60,S:45})); });
 await seite.goto(URL, {waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
 await seite.evaluate(() => document.getElementById('btnStart').click()); await seite.waitForTimeout(700);
-ok(await seite.evaluate(() => !document.getElementById('sicherKarte').hidden), 'unter dem ersten Ergebnis steht „Sichere dein Portraet"');
+ok(await seite.evaluate(() => document.getElementById('sicherKarte').hidden), 'ein gespeichertes Ergebnis oeffnen zeigt die Karte nicht (Runde 241)');
+await seite.evaluate(() => { localStorage.removeItem('lucenta_result'); localStorage.removeItem('lucenta_history'); });
+await seite.goto(URL, {waitUntil: 'networkidle'}); await seite.waitForTimeout(600);
+await seite.evaluate(() => document.getElementById('btnStart').click()); await seite.waitForTimeout(500);
+for (let i = 0; i < 50; i++){ await seite.evaluate(() => document.getElementById('scaleRow').children[3].click()); await seite.waitForTimeout(260); }
+await seite.waitForTimeout(2500);
+ok(await seite.evaluate(() => !document.getElementById('sicherKarte').hidden), 'direkt nach dem ersten Test steht „Sichere dein Portraet"');
 await seite.evaluate(() => document.getElementById('btnBackFromResult').click()); await seite.waitForTimeout(400);
 await seite.evaluate(() => document.getElementById('btnStart').click()); await seite.waitForTimeout(700);
 ok(await seite.evaluate(() => document.getElementById('sicherKarte').hidden), 'und nur einmal');

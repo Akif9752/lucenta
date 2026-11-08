@@ -232,7 +232,8 @@ const suchTippflaechen = (min) => {
     // Apples Tab-Leiste (nativ, hier unsichtbar) deckt rund 83 pt am unteren Rand: Was darunter liegt,
     // rollt man in den freien Bereich.
     const unten = innerHeight - (document.documentElement.classList.contains('mit-tabs') ? 83 : 0);
-    if (r.top < halb + 2 || r.bottom > unten - halb - 2){
+    // Ebenso seitlich: In einer wischbaren Leiste (Verstehen) steht ein Chip halb am Rand; man wischt ihn in den Blick.
+    if (r.top < halb + 2 || r.bottom > unten - halb - 2 || r.left < 0 || r.right > innerWidth){
       el.scrollIntoView({block:'center', inline:'center', behavior:'instant'});
       r = el.getBoundingClientRect();
     }
@@ -481,6 +482,7 @@ const WEGE = {
   profile:    ['#tabProfil'],
   understand: ['#tabVerstehen'],
   archetypes: ['#tabVerstehen', '#btnVsArchetypen'],
+  archrolle:  ['#tabVerstehen', '#btnVsArchetypen', '[data-archrolle]'],
   settings:   ['#tabProfil', '#btnProfilEinstellungen'],
   recht:      ['#tabProfil', '#btnProfilEinstellungen', '#btnRecht'],
   // Runde 136: die Sprachwahl als eigene Seite. 650 ms nach dem letzten Klick sind mehr als die
@@ -556,9 +558,10 @@ const NACHBEREITUNG = {
     await p.fill('#freundCode', '240k1e1w2d');
     await p.click('#btnFreundSpeichern');
     await p.waitForTimeout(1400);
-    // Alle Karten aufklappen: zugeklappt bleibt der halbe Inhalt ungemessen.
-    await p.evaluate(() => document.querySelectorAll('.compat-card').forEach(k => k.open = true));
-    await p.waitForTimeout(500);
+    // Alle Karten aufklappen, auch die Abschnitte darum (seit Runde 241 zugeklappt): sonst bliebe der halbe Inhalt
+    // ungemessen. Die Karten blenden beim Aufklappen ein — darauf warten.
+    await p.evaluate(() => document.querySelectorAll('#view-compare .pb-mehr, .compat-card').forEach(k => k.open = true));
+    await p.waitForTimeout(1200);
     // Ohne diese Zeile waere ein leeres Vergleichsergebnis eine bestandene Pruefung: Wo nichts
     // steht, ragt nichts heraus und ist keine Flaeche zu klein. Eine Pruefung, die an ihrem
     // eigenen Gegenstand vorbeilaufen kann, ist keine.

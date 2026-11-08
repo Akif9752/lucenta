@@ -6,8 +6,8 @@
   .btn, .avatar-edit,
   .run-choice-opt, .history-row, .role-card, .archive-del,
   .avatar-color-swatch, .profile-remove-photo, .drawer-close{
-    transition:transform .24s cubic-bezier(.2,.8,.2,1), border-color .15s ease,
-               background .15s ease, color .15s ease, box-shadow .15s ease;
+    transition:transform var(--dauer) var(--kurve), border-color var(--dauer-kurz) var(--kurve),
+               background var(--dauer-kurz) var(--kurve), color var(--dauer-kurz) var(--kurve), box-shadow var(--dauer-kurz) var(--kurve);
   }
   .btn:active, .avatar-edit:active, .archive-del:active,
   .profile-remove-photo:active, .drawer-close:active{
@@ -20,7 +20,7 @@
   }
   .avatar-color-swatch:active{ transform:scale(.9); transition-duration:0s; }
   /* Die Antwortkreise (fuenfzigmal je Durchlauf): Druck sofort, Fuellung weich. */
-  .scale-btn{ transition:transform .24s cubic-bezier(.2,.8,.2,1), border-color .15s ease, background .15s ease; }
+  .scale-btn{ transition:transform var(--dauer) var(--kurve), border-color var(--dauer-kurz) var(--kurve), background var(--dauer-kurz) var(--kurve); }
   .scale-btn:active{
     transform:scale(.9); border-color:var(--accent-strong); background:var(--surface-2);
     transition-duration:0s;
@@ -28,7 +28,7 @@
   /* Aufklappbares: eine Fläche, die nur Text trägt, quittiert über Helligkeit statt über Größe. */
   .trait-card > summary:active .trait-more, .why summary:active, .faq-item summary:active{ opacity:.62; }
   .trait-card > summary:active{ transform:scale(.99); transition-duration:0s; }
-  .trait-card > summary{ transition:transform .24s cubic-bezier(.2,.8,.2,1); }
+  .trait-card > summary{ transition:transform var(--dauer) var(--kurve); }
 
   @media (prefers-reduced-motion: reduce){
     .btn:active, .avatar-edit:active, .archive-del:active,
@@ -92,7 +92,7 @@
   html.theme-shift .card, html.theme-shift .btn, html.theme-shift .stat-tile,
   html.theme-shift .trait-card, html.theme-shift .scale-btn, html.theme-shift .segment-opt,
   html.theme-shift .state-check-card, html.theme-shift .history-row, html.theme-shift .role-card, html.theme-shift .top{
-    transition:background-color .28s ease, color .28s ease, border-color .28s ease !important;
+    transition:background-color var(--dauer) var(--kurve), color var(--dauer) var(--kurve), border-color var(--dauer) var(--kurve) !important;
   }
 
   /* 2. Sprachwechsel: kurzes Aufblenden, nur Deckkraft (der Text soll nicht springen). */
@@ -145,19 +145,19 @@
    Unterkante, kein Glanz (Entscheidung des Inhabers). */
 
   /* 1. Primaere Knoepfe dunkeln beim Druecken ab (das Verkleinern steht oben bei .btn:active). */
-  .btn-primary{ transition:transform .18s cubic-bezier(.2,.8,.2,1), background .15s ease, filter .15s ease; }
+  .btn-primary{ transition:transform var(--dauer-kurz) var(--kurve), background var(--dauer-kurz) var(--kurve), filter var(--dauer-kurz) var(--kurve); }
   .btn-primary:active{ filter:brightness(.86); transition-duration:0s; }
 
   /* 2. Die Fuellung der Antwort federt auf, der Ring gibt einen kurzen Impuls. */
-  .scale-btn .fill{ transition:width .26s cubic-bezier(.34,1.56,.64,1), height .26s cubic-bezier(.34,1.56,.64,1), background .15s ease; }
-  .scale-btn.picked{ animation:antwort-puls .34s cubic-bezier(.34,1.56,.64,1); }
+  .scale-btn .fill{ transition:width var(--dauer) var(--kurve), height var(--dauer) var(--kurve), background var(--dauer-kurz) var(--kurve); }
+  .scale-btn.picked{ animation:antwort-puls var(--dauer) var(--kurve); }
   @keyframes antwort-puls{
     0%  { box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 42%, transparent); }
     100%{ box-shadow:0 0 0 11px color-mix(in srgb, var(--accent) 0%, transparent); }
   }
 
   /* 3. Der Fortschrittsbalken mit derselben Feder. */
-  #focusline-fill{ transition:width .5s cubic-bezier(.34,1.4,.64,1); }
+  #focusline-fill{ transition:width var(--dauer-lang) var(--kurve); }
   #focusline.beat #focusline-fill{ animation:balken-impuls .6s ease; }
   @keyframes balken-impuls{
     0%,100%{ filter:brightness(1) saturate(1); }
@@ -165,7 +165,7 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    .btn-primary, .btn-hero.btn-primary{ transition:background .15s ease; }
+    .btn-primary, .btn-hero.btn-primary{ transition:background var(--dauer-kurz) var(--kurve); }
     .btn-primary:active, .btn-hero.btn-primary:active{ transform:none; }
     .scale-btn.picked{ animation:none; }
     .scale-btn .fill{ transition:none; }
@@ -177,7 +177,7 @@
    Karten ohne Schatten mit feinem Rand; antippbare Flaechen quittieren ueber Verkleinern und Hinterlegen. */
 
   .trend-list, .state-check-card, .understand-card, .preview-card, .delta-card, .compat-line-total{ box-shadow:none !important; }
-  .trait-card, .history-row, .role-card, .run-choice-opt{ box-shadow:none; transition:transform .2s cubic-bezier(.2,.8,.2,1), background .15s ease, border-color .15s ease; }
+  .trait-card, .history-row, .role-card, .run-choice-opt{ box-shadow:none; transition:transform var(--dauer-kurz) var(--kurve), background var(--dauer-kurz) var(--kurve), border-color var(--dauer-kurz) var(--kurve); }
 
   /* Antwortkreise: die Auswahl fuellt die Flaeche. */
   .scale-btn{ border-width:2px; }

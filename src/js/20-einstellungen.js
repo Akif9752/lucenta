@@ -38,17 +38,21 @@
     }
     if (result) items.push(tx('js_gespeichertes_ergebnis'));
     if (progress) items.push(tx('js_unterbrochener_test'));
+    // Eine Zeile je Art, die Anzahl rechts (Design-Audit: keine Protokollzeile).
+    var zeile = function(text, n){ return {t: String(text).split('{n}').join('').replace(/^\s+|\s+$/g, ''), n: n}; };
     var histCount = loadHistory().length;
-    if (histCount) items.push(histCount + (histCount===1 ? tx('js_ergebnis_im_verlauf') : tx('js_ergebnisse_im_verlauf')));
+    if (histCount) items.push(zeile(tx(histCount===1 ? 'js_ergebnis_im_verlauf' : 'js_ergebnisse_im_verlauf'), histCount));
     var stateCount = loadStateHistory().length;
-    if (stateCount) items.push(stateCount + (stateCount===1 ? tx('js_tagesformeintrag') : tx('js_tagesformeinträge')));
+    if (stateCount) items.push(zeile(tx(stateCount===1 ? 'js_tagesformeintrag' : 'js_tagesformeinträge'), stateCount));
     var archiveCount = loadCompatArchive().length;
-    if (archiveCount) items.push(archiveCount + (archiveCount===1 ? tx('js_gespeicherter_vergleich') : tx('js_gespeicherte_vergleiche')));
+    if (archiveCount) items.push(zeile(tx(archiveCount===1 ? 'js_gespeicherter_vergleich' : 'js_gespeicherte_vergleiche'), archiveCount));
     var freundeCount = loadFreunde().length;
-    if (freundeCount) items.push(tx(freundeCount===1 ? 'freunde_datenpunkt_1' : 'freunde_datenpunkt_n').split('{n}').join(String(freundeCount)));
+    if (freundeCount) items.push(zeile(tx(freundeCount===1 ? 'freunde_datenpunkt_1' : 'freunde_datenpunkt_n'), freundeCount));
     var list = $('settingsDataList');
     if (items.length){
-      list.innerHTML = '<li>'+items.join(' · ')+'</li>';   // eine Zeile statt einer je Bestand
+      list.innerHTML = items.map(function(x){
+        return typeof x === 'string' ? '<li><span>'+x+'</span></li>' : '<li><span>'+x.t+'</span><span class="mono daten-n">'+x.n+'</span></li>';
+      }).join('');
       list.style.display = '';
       $('settingsEmptyNote').style.display = 'none';
     } else {

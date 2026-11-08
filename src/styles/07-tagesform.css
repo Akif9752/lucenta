@@ -1,21 +1,21 @@
 /* ---------- Tagesform / State-Check: kurzfristiger Zustand (Energie/Stimmung), bewusst getrennt
      vom stabilen Trait-Ergebnis oben ---------- */
-  .state-check-card{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:20px 18px;display:flex;flex-direction:column;gap:22px;}
+  .state-check-card{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:20px 16px;display:flex;flex-direction:column;gap:20px;}
   .state-today-note{margin:0;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);}
   /* Runde 131: die Erfassung als eigener Block, damit sie als Ganzes zuklappen kann. */
-  .tf-erfassung{display:flex;flex-direction:column;gap:22px;transform-origin:top center;}
+  .tf-erfassung{display:flex;flex-direction:column;gap:20px;transform-origin:top center;}
   /* Das Zuklappen (zuklappen()/aufklappen() in 22-feier.js): Die Hoehe laeuft auf null, der Inhalt
      schrumpft dabei leicht nach oben weg. Die Bestaetigung springt danach mit haken-feder auf. */
   .klappt-zu{overflow:hidden;opacity:0;transform:scale(.94) translateY(-10px);
-    transition:height .48s cubic-bezier(.6,0,.25,1), opacity .32s ease, transform .48s cubic-bezier(.6,0,.25,1);}
-  .klappt-auf{overflow:hidden;transition:height .48s cubic-bezier(.2,.8,.2,1);}
+    transition:height var(--dauer-lang) var(--kurve), opacity var(--dauer) var(--kurve), transform var(--dauer-lang) var(--kurve);}
+  .klappt-auf{overflow:hidden;transition:height var(--dauer-lang) var(--kurve);}
   .state-question{display:flex;flex-direction:column;gap:8px;}
   .state-q-label{font-family:var(--serif);font-size:calc(16px * var(--dt, 1));}
   /* gap gegen ineinanderlaufende Skalenenden bei 200 %. */
   .state-q-sub{display:flex;justify-content:space-between;gap:12px;font-size:calc(12px * var(--dt, 1));color:var(--muted);}
 
   /* Der Haken zeichnet sich nur direkt nach dem Speichern, nicht beim Zurueckkehren. */
-  #landingStateInputs{display:flex;flex-direction:column;gap:22px;}
+  #landingStateInputs{display:flex;flex-direction:column;gap:20px;}
   /* flex-wrap als Absicherung fuer starke Textvergroesserung (vgl. Zoom-Pruefung Runde 48):
      bricht dort die Schaltflaeche in eine eigene Zeile, statt aus der Karte zu laufen. */
   .state-done{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
@@ -31,9 +31,9 @@
 
   /* Runde 129: die drei Tageszeiten. Gefuellt = eingetragen, Ring = jetzt dran, leer = offen.
      Das Wort steht neben dem Punkt, damit der Zustand nicht allein an der Farbe haengt. */
-  .tf-abschnitte{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 14px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);}
-  .state-check-card .tf-abschnitte{margin:0 0 10px;}
-  .tf-abschnitt{display:inline-flex;align-items:center;gap:6px;}
+  .tf-abschnitte{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 12px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);}
+  .state-check-card .tf-abschnitte{margin:0 0 8px;}
+  .tf-abschnitt{display:inline-flex;align-items:center;gap:4px;}
   .tf-abschnitt-punkt{position:relative;width:11px;height:11px;border-radius:50%;flex-shrink:0;
     box-shadow:inset 0 0 0 1.5px var(--line-strong);}
   .tf-abschnitt[data-jetzt]{color:var(--ink);font-weight:600;}
@@ -73,8 +73,8 @@
   /* Runde 82: Die Marke fuer einen Tag mit mehreren Eintraegen. Bewusst neben dem Datum und
      nicht neben den Werten: Sie sagt etwas ueber die Erhebung, nicht ueber das Befinden. */
   .tf-anzahl{
-    margin-left:6px; font-size:calc(10.5px * var(--dt, 1)); color:var(--muted);
-    border:1px solid var(--line); border-radius:100px; padding:1px 5px;
+    margin-left:4px; font-size:calc(10.5px * var(--dt, 1)); color:var(--muted);
+    border:1px solid var(--line); border-radius:100px; padding:1px 4px;
   }
 
 /* ---------- Die Tagesform ----------
@@ -82,11 +82,11 @@
    Marken braeuchten je drei Bloecke). */
 
   /* Die freiwilligen Teile der Erfassung: Fragen und Stichworte. */
-  .tf-teil{ display:flex; flex-direction:column; gap:10px; padding-top:18px; border-top:1px solid var(--line); }
-  .tf-teil-kopf{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+  .tf-teil{ display:flex; flex-direction:column; gap:8px; padding-top:16px; border-top:1px solid var(--line); }
+  .tf-teil-kopf{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
   .tf-freiwillig{ font-size:calc(12px * var(--dt, 1)); color:var(--muted); }
   .tf-teil-text{ margin:0; font-size:calc(13px * var(--dt, 1)); line-height:1.45; color:var(--muted); }
-  .tf-fragen{ display:flex; flex-direction:column; gap:18px; margin-top:4px; }
+  .tf-fragen{ display:flex; flex-direction:column; gap:16px; margin-top:4px; }
   .tf-frage-kopf{ display:flex; align-items:center; gap:8px; }
   .tf-frage-punkt{ width:9px; height:9px; border-radius:50%; background:var(--tf-farbe); flex-shrink:0; }
   .tf-frage-name{ font-size:calc(14px * var(--dt, 1)); font-weight:500; color:var(--ink); }
@@ -99,10 +99,10 @@
 
   .tf-chips{ display:flex; flex-wrap:wrap; gap:8px; }
   /* 16 px Mindestgroesse: darunter zoomt iOS beim Tippen ins Feld. */
-  .tf-notiz{ display:block; width:100%; box-sizing:border-box; resize:none; padding:10px 14px; border:1px solid var(--line);
+  .tf-notiz{ display:block; width:100%; box-sizing:border-box; resize:none; padding:8px 12px; border:1px solid var(--line);
     border-radius:var(--radius-m); background:var(--paper); color:var(--ink); font-family:var(--sans);
     font-size:calc(16px * var(--dt, 1)); line-height:1.4; }
-  .tf-notiz-bereich{ margin-top:10px; display:flex; flex-direction:column; gap:8px; }
+  .tf-notiz-bereich{ margin-top:8px; display:flex; flex-direction:column; gap:8px; }
   .tf-notiz-bereich[hidden], .tf-notiz-form[hidden]{ display:none; }
   .tf-notiz-text{ margin:0; font-size:calc(14px * var(--dt, 1)); line-height:1.45; color:var(--ink); white-space:pre-wrap; }
   .tf-notiz-knopf{ align-self:flex-start; min-height:44px; padding:0; border:none; background:none; font:inherit; cursor:pointer;
@@ -114,10 +114,10 @@
   .tf-kal-notiz{ display:block; color:var(--ink); font-style:italic; white-space:pre-wrap; overflow-wrap:anywhere; }
   .tf-chip{
     /* 44 Punkt hoch: Apples Mindestmass fuer ein Tippziel (die Fehlersuche fand 36). */
-    min-height:44px; padding:9px 15px; border-radius:100px; cursor:pointer;
+    min-height:44px; padding:8px 16px; border-radius:100px; cursor:pointer;
     font:inherit; font-size:calc(14px * var(--dt, 1)); color:var(--ink);
     background:var(--surface-2); border:1px solid transparent;
-    transition:background-color .15s ease, color .15s ease, transform .18s cubic-bezier(.2,.8,.2,1);
+    transition:background-color var(--dauer-kurz) var(--kurve), color var(--dauer-kurz) var(--kurve), transform var(--dauer-kurz) var(--kurve);
   }
   .tf-chip[aria-pressed="true"]{ background:var(--accent); color:var(--accent-ink); }
   .tf-chip:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
@@ -126,7 +126,7 @@
 
   /* Die Erinnerung als eine Zeile, wie in den Einstellungen. */
   .tf-erinnerung{
-    margin-top:14px; padding:12px 16px; display:flex; align-items:center; gap:12px;
+    margin-top:12px; padding:12px 16px; display:flex; align-items:center; gap:12px;
     background:var(--surface); border-radius:var(--radius-m);
   }
   .tf-erinnerung .settings-zeile-text{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
@@ -138,7 +138,7 @@
 
   /* ---------- Bandbreite ---------- */
   .tf-band-karte{ background:var(--surface); border-radius:var(--radius-m); padding:16px; display:flex; flex-direction:column; gap:16px; }
-  .tf-band-kopf{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:7px; }
+  .tf-band-kopf{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:8px; }
   /* Als Schrift die -text-Fassung der Datenfarbe: Die Flaechenfarbe erreicht als kleine Schrift
      4,5:1 nicht (Fehlersuche). Dieselbe Trennung wie im Radar (--dim-aktiv-text). */
   .tf-band-name{ font-size:calc(14.5px * var(--dt, 1)); font-weight:500; color:var(--tf-farbe-text, var(--ink)); }
@@ -156,16 +156,16 @@
   /* Das Testergebnis als Strich ueber die ganze Hoehe — eine andere FORM als das Mittel, damit
      beide nicht allein an der Farbe zu unterscheiden sind. */
   .tf-band-test{ position:absolute; top:-4px; bottom:-4px; width:3px; margin-left:-1.5px; border-radius:2px; background:var(--ink); }
-  .tf-band-legende{ display:flex; flex-wrap:wrap; gap:6px 14px; font-size:calc(11.5px * var(--dt, 1)); color:var(--muted-soft); }
-  .tf-band-legende span{ display:inline-flex; align-items:center; gap:6px; }
+  .tf-band-legende{ display:flex; flex-wrap:wrap; gap:4px 12px; font-size:calc(11.5px * var(--dt, 1)); color:var(--muted-soft); }
+  .tf-band-legende span{ display:inline-flex; align-items:center; gap:4px; }
   .tf-band-legende i{ display:inline-block; }
   .tf-lg-band{ width:18px; height:8px; border-radius:4px; background:color-mix(in srgb, var(--muted) 45%, transparent); }
   .tf-lg-mittel{ width:8px; height:8px; border-radius:50%; box-shadow:0 0 0 2px var(--muted); }
   .tf-lg-test{ width:3px; height:12px; border-radius:2px; background:var(--ink); }
-  .tf-band-satz{ margin:10px 0 0; font-size:calc(14px * var(--dt, 1)); line-height:1.45; color:var(--ink); }
+  .tf-band-satz{ margin:8px 0 0; font-size:calc(14px * var(--dt, 1)); line-height:1.45; color:var(--ink); }
 
   /* ---------- Kalender ---------- */
-  .tf-kal-karte{ background:var(--surface); border-radius:var(--radius-m); padding:14px 14px 16px; display:flex; flex-direction:column; gap:12px; }
+  .tf-kal-karte{ background:var(--surface); border-radius:var(--radius-m); padding:12px 12px 16px; display:flex; flex-direction:column; gap:12px; }
   .tf-kal-kopf{ display:flex; align-items:center; justify-content:space-between; }
   .tf-kal-monat{ font-size:calc(16px * var(--dt, 1)); font-weight:600; color:var(--ink); }
   .tf-kal-pfeil{
@@ -176,7 +176,7 @@
      1,7:1 und sah trotzdem bedienbar aus. Der Platz bleibt, damit der Monatsname nicht springt. */
   .tf-kal-pfeil:disabled{ visibility:hidden; }
   .tf-kal-pfeil:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:-2px; }
-  .tf-kal-wochentage, .tf-kal-raster{ display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:5px; }
+  .tf-kal-wochentage, .tf-kal-raster{ display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:4px; }
   .tf-kal-wochentage span{ text-align:center; font-size:calc(11px * var(--dt, 1)); color:var(--muted-soft); }
   .tf-kal-zelle{
     aspect-ratio:1; border-radius:50%; border:none; padding:0; font:inherit; font-size:calc(13px * min(var(--dt, 1), 1.4));
@@ -204,10 +204,10 @@
   .tf-kal-skala i{ width:16px; height:10px; border-radius:3px; display:inline-block; }
 
   /* ---------- Muster ---------- */
-  .tf-muster-karte{ background:var(--surface); border-radius:var(--radius-m); padding:14px 16px; margin-bottom:12px; }
-  .tf-wt-bild{ display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; margin:12px 0 8px; }
-  .tf-wt-tag{ display:flex; flex-direction:column; align-items:center; gap:6px; }
-  .tf-wt-saeulen{ height:80px; width:100%; display:flex; align-items:flex-end; justify-content:center; gap:3px; }
+  .tf-muster-karte{ background:var(--surface); border-radius:var(--radius-m); padding:12px 16px; margin-bottom:12px; }
+  .tf-wt-bild{ display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; margin:12px 0 8px; }
+  .tf-wt-tag{ display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .tf-wt-saeulen{ height:80px; width:100%; display:flex; align-items:flex-end; justify-content:center; gap:4px; }
   .tf-wt-saeule{ display:block; width:9px; min-height:3px; border-radius:4px 4px 2px 2px; }
   .tf-wt-energie{ background:var(--daten-energie); }
   .tf-wt-stimmung{ background:var(--daten-stimmung); }
@@ -228,9 +228,9 @@
   .tf-kal-eintraege li{ display:flex; flex-direction:column; gap:2px; line-height:1.45; }
   .tf-kal-zeit{ font-size:calc(12px * var(--dt, 1)); color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
   .tf-wt-bild.tf-tz-bild{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
-  .tf-beste .befund + .befund{ margin-top:10px; }
+  .tf-beste .befund + .befund{ margin-top:8px; }
   /* Reiter (Runde 163): nur der gewaehlte Teil ist sichtbar. */
-  .tf-reiter{ margin:4px 0 18px; }
+  .tf-reiter{ margin:4px 0 16px; }
   .tf-reiter .segment-opt{ min-height:44px; }
   .tf-reiter .segment-opt[aria-selected="true"]{ background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.18); }
   #view-state[data-reiter="heute"] [data-tf-teil]:not([data-tf-teil="heute"]),
@@ -250,8 +250,8 @@
 
   /* Jahr auf einen Blick: zwoelf Monatsblaetter wie in Apples Kalender. */
   .tf-kal-ansicht{ margin-bottom:12px; }
-  .tf-jahr{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px 12px; margin-top:12px; }
-  .tf-jahr-monat{ display:flex; flex-direction:column; gap:5px; padding:0; border:none; background:none; color:inherit; text-align:left; cursor:pointer; }
+  .tf-jahr{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px 12px; margin-top:12px; }
+  .tf-jahr-monat{ display:flex; flex-direction:column; gap:4px; padding:0; border:none; background:none; color:inherit; text-align:left; cursor:pointer; }
   .tf-jahr-monat:active{ opacity:.62; }
   .tf-jahr-name{ font-size:calc(13px * var(--dt, 1)); font-weight:600; color:var(--accent-strong); }
   .tf-jahr-tage, .tf-rb-tage{ display:grid; grid-template-columns:repeat(7, 1fr); gap:2px; }
@@ -259,37 +259,39 @@
   .tf-jahr-ohne{ background:var(--line); }
   .tf-jahr-zukunft{ background:var(--line); opacity:.35; }
   .tf-jahr-tag0{ box-shadow:0 0 0 1.5px var(--ink); }
-  .tf-teilen{ margin-top:14px; }
+  .tf-teilen{ margin-top:12px; }
   /* Monatsrueckblick */
-  .tf-rb{ margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
+  .tf-rb{ margin-top:16px; padding-top:12px; border-top:1px solid var(--line); }
   .rb-karte .tf-rb{ margin-top:12px; padding-top:0; border-top:none; }
-  .rb-ansicht{ margin:18px 0 12px; }
+  .rb-ansicht{ margin:16px 0 12px; }
   .rb-karte .tf-rb-tage{ margin:4px 0 4px; }
   .rb-wochentage{ max-width:260px; gap:4px; margin-top:12px; }
   .tf-rb-zeile{ margin:16px 0; min-height:56px; gap:12px; }
   .rb-hinweis{ display:block; margin:16px 0 0; padding:0; border:none; background:none; font:inherit; cursor:pointer;
     color:var(--accent-strong); font-weight:600; font-size:calc(15px * var(--dt, 1)); text-align:left; min-height:44px; }
   .tf-rb-titel{ font-family:var(--serif); font-size:calc(22px * min(var(--dt, 1), 1.3)); line-height:1.2; margin-bottom:8px; }
-  .tf-rb-zeilen{ list-style:none; margin:0 0 14px; padding:0; display:flex; flex-direction:column; gap:6px;
+  .tf-rb-zeilen{ list-style:none; margin:0 0 12px; padding:0; display:flex; flex-direction:column; gap:4px;
     color:var(--muted); font-size:calc(14px * var(--dt, 1)); line-height:1.45; }
   .tf-rb-tage{ gap:4px; max-width:260px; }
 
   /* Begleiter: das eigene Tier mit einer Sprechblase. */
-  .tf-begleiter{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .tf-begleiter{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
   .tf-begleiter[hidden]{ display:none; }
   .tf-begleiter-tier{ width:56px; height:56px; flex-shrink:0; }
-  .tf-begleiter-satz{ position:relative; margin:0; padding:10px 14px; border-radius:16px; background:var(--surface-2);
+  .tf-begleiter-satz{ position:relative; margin:0; padding:8px 12px; border-radius:var(--radius-m); background:var(--surface-2);
     color:var(--ink); font-size:calc(15px * var(--dt, 1)); line-height:1.35; }
-  .tf-begleiter-satz::before{ content:""; position:absolute; left:-6px; top:50%; width:12px; height:12px; margin-top:-6px;
+  .tf-begleiter-satz::before{ content:""; position:absolute; left:-6px; top:50%; width:12px; height:12px; margin-top:-4px;
     background:var(--surface-2); transform:rotate(45deg); border-radius:2px; }
 
   /* ---------- Serie und Meilensteine ---------- */
   .tf-abzeichen-titel{ font-size:calc(13px * var(--dt, 1)); font-weight:600; color:var(--muted); margin:4px 0 8px; }
-  .tf-abzeichen{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:6px; }
+  .tf-abzeichen{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:4px; }
   .tf-abzeichen-stk{ display:flex; flex-direction:column; align-items:center; gap:4px; }
-  .tf-abzeichen-marke{ width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    border:2px dashed var(--line); color:var(--muted); font-weight:700; font-size:calc(14px * var(--dt, 1)); }
-  .tf-abzeichen-stk[data-erreicht="1"] .tf-abzeichen-marke{ border:2px solid var(--accent); background:var(--accent); color:var(--accent-ink); }
+  /* Meilenstein-Marken als Fuenfeck, das Zeichen der Marke (Entscheidung des Inhabers). */
+  .tf-abzeichen-marke{ width:44px; height:44px; display:flex; align-items:center; justify-content:center; padding-top:4px; box-sizing:border-box;
+    clip-path:polygon(50% 2%, 98% 37%, 80% 96%, 20% 96%, 2% 37%); background:var(--surface-2); color:var(--muted);
+    font-weight:700; font-size:calc(14px * var(--dt, 1)); }
+  .tf-abzeichen-stk[data-erreicht="1"] .tf-abzeichen-marke{ background:var(--accent); color:var(--accent-ink); }
   .tf-abzeichen-name{ font-size:calc(12px * var(--dt, 1)); color:var(--muted); text-align:center; }
   .tf-abzeichen-stk[data-erreicht="1"] .tf-abzeichen-name{ color:var(--ink); }
   /* nur fuer Bildschirmleser */
@@ -301,10 +303,10 @@
     font-size:calc(15px * var(--dt, 1)); font-weight:500; color:var(--accent-strong); }
   .tf-mehr > summary::-webkit-details-marker{ display:none; }
   .tf-mehr > summary::after{ content:''; width:8px; height:8px; border-right:2px solid currentColor; border-bottom:2px solid currentColor;
-    transform:rotate(45deg); margin:0 4px 4px 0; transition:transform .2s ease; }
+    transform:rotate(45deg); margin:0 4px 4px 0; transition:transform var(--dauer-kurz) var(--kurve); }
   .tf-mehr[open] > summary::after{ transform:rotate(225deg); margin-bottom:0; }
-  .tf-mehr > .tf-teil{ margin-bottom:14px; }
-  .tf-mehr > .tf-teil:first-of-type{ border-top:none; padding-top:6px; }
+  .tf-mehr > .tf-teil{ margin-bottom:12px; }
+  .tf-mehr > .tf-teil:first-of-type{ border-top:none; padding-top:4px; }
   .tf-speichern{ width:100%; min-height:50px; }
 
   /* Energie als Balken unten in derselben Zelle (Stimmung ist die Flaeche); Breite = Energie 1–5. */
@@ -314,18 +316,22 @@
   .tf-kal-skala .tf-legende-text{ flex-basis:100%; text-align:center; margin-top:4px; color:var(--muted); }
 
   /* Serie als leise Zeile; das Schild markiert den genutzten Schutztag im Kalender. */
-  .tf-serie-zeile{ display:flex; align-items:center; gap:6px; margin:14px 0 10px; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
+  .tf-serie-zeile{ display:flex; align-items:center; gap:4px; margin:12px 0 8px; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
   .tf-serie-zeile svg{ flex-shrink:0; }
   .tf-kal-schild{ position:absolute; right:3px; top:3px; color:var(--muted); }
 
   /* Fruehere Tageszeiten von heute sind Knoepfe (nachtragen); als Chip, damit man sieht, dass man tippen kann. */
   button.tf-abschnitt{ appearance:none; font:inherit; color:inherit; background:var(--surface-2); border:1px solid transparent;
-    border-radius:100px; padding:6px 12px; min-height:32px; cursor:pointer; position:relative; }
+    border-radius:100px; padding:4px 12px; min-height:32px; cursor:pointer; position:relative; }
   button.tf-abschnitt[aria-pressed="true"]{ border-color:var(--accent); color:var(--ink); }
   button.tf-abschnitt::after{ content:''; position:absolute; left:0; right:0; top:50%; height:44px; transform:translateY(-50%); }
   .tf-abschnitte{ align-items:center; gap:8px; }
   .tf-abschnitt-hinweis{ flex-basis:100%; margin:2px 0 0; font-size:calc(12px * var(--dt, 1)); color:var(--muted); }
   /* Die einmalige Frage nach der Erinnerung. */
-  .erinnerung-frage{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:12px; padding:12px 14px;
+  .erinnerung-frage{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:12px; padding:12px 12px;
     border-radius:var(--radius-s); background:var(--surface-2); font-size:calc(14px * var(--dt, 1)); color:var(--ink); }
   .erinnerung-frage > span{ flex:1 1 100%; }
+  .tf-erinnerung[hidden]{ display:none !important; }
+
+  /* Eine Zellform fuer Tagesdaten: abgerundetes Quadrat wie in Rueckblick und Jahr. */
+  .tf-kal-zelle{ border-radius:var(--radius-s); }

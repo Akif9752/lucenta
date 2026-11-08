@@ -1,20 +1,20 @@
 /* ---------- Archetypes overview ---------- */
-  .archetypes-head{padding:22px 0 4px;}
+  .archetypes-head{padding:20px 0 4px;}
   .archetypes-head h1{font-size:calc(clamp(24px,6vw,32px) * min(var(--dt, 1), 1.3));line-height:1.15;margin-top:8px;letter-spacing:-.01em;}
-  .archetypes-head p{margin-top:14px;font-size:calc(14.5px * var(--dt, 1));color:var(--muted);max-width:56ch;line-height:1.6;}
+  .archetypes-head p{margin-top:12px;font-size:calc(14.5px * var(--dt, 1));color:var(--muted);max-width:56ch;line-height:1.6;}
   .archetypes-head b{color:var(--ink);}
   /* Fuenf Gruppen je Dimension; der Abstand ZWISCHEN den Gruppen (26px) deutlich groesser als
      innerhalb (12px). */
-  .archetype-groups{margin-top:26px;display:flex;flex-direction:column;gap:26px;}
+  .archetype-groups{margin-top:24px;display:flex;flex-direction:column;gap:24px;}
   .arch-gruppe{display:flex;flex-direction:column;gap:12px;}
   /* Die Linie hinter dem Titel macht ihn zur Trennung. */
   .arch-gruppe-titel{
     font-family:var(--mono);font-size:calc(11px * var(--dt, 1));font-weight:500;letter-spacing:.06em;
     text-transform:uppercase;color:var(--muted);margin:0;
-    display:flex;align-items:center;gap:10px;
+    display:flex;align-items:center;gap:8px;
   }
   .arch-gruppe-titel::after{content:'';flex:1;height:1px;background:var(--line);}
-  .role-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:16px 18px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;transition:border-color .15s ease;}
+  .role-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:16px 16px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;transition:border-color var(--dauer-kurz) var(--kurve);}
   /* Der Pol als Kante (nur die Farbe — die Breite setzt 10-druckzustaende.css mit !important). */
   .role-pol-high{border-left-color:var(--accent);}
   .role-pol-low{border-left-color:var(--accent-2);}
@@ -28,9 +28,9 @@
   .role-tag-low{color:var(--accent-2-text);}
   .role-title{font-family:var(--serif);font-size:calc(17px * var(--dt, 1));}
   .role-motto{margin-top:4px;font-family:var(--mono);font-size:calc(12.5px * var(--dt, 1));color:var(--accent-2-text);letter-spacing:.01em;}
-  .role-desc{margin-top:10px;font-size:calc(14px * var(--dt, 1));color:var(--muted);line-height:1.55;}
+  .role-desc{margin-top:8px;font-size:calc(14px * var(--dt, 1));color:var(--muted);line-height:1.55;}
 
-  .profile-head{padding:22px 0 4px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .profile-head{padding:20px 0 4px;display:flex;flex-direction:column;align-items:center;text-align:center;}
   .avatar-wrap{position:relative;width:96px;height:96px;}
   .avatar{
     width:96px;height:96px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
@@ -41,21 +41,21 @@
     position:absolute;right:-2px;bottom:-2px;width:32px;height:32px;border-radius:50%;
     background:var(--surface);border:1px solid var(--line);color:var(--muted);cursor:pointer;
     display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);
-    transition:color .15s ease,border-color .15s ease;
+    transition:color var(--dauer-kurz) var(--kurve),border-color var(--dauer-kurz) var(--kurve);
   }
   @media (hover:hover){ .avatar-edit:hover{color:var(--accent-strong);border-color:var(--accent-strong);} }
   .avatar-edit:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
   .profile-remove-photo{
-    margin-top:10px;background:none;border:none;color:var(--muted);font-size:calc(12.5px * var(--dt, 1));
+    margin-top:8px;background:none;border:none;color:var(--muted);font-size:calc(12.5px * var(--dt, 1));
     text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-family:inherit;
   }
   @media (hover:hover){ .profile-remove-photo:hover{color:var(--ink);} }
-  .avatar-color-row{margin-top:14px;display:flex;gap:10px;}
+  .avatar-color-row{margin-top:12px;display:flex;gap:8px;}
   /* Der Ring der Farbtupfer in --muted, sonst ist "Ruhig" auf hellem Grund unsichtbar. */
   .avatar-color-swatch{
     width:28px;height:28px;border-radius:50%;padding:0;cursor:pointer;
     border:2px solid transparent;box-shadow:0 0 0 1px var(--muted) inset;
-    transition:border-color .15s ease;
+    transition:border-color var(--dauer-kurz) var(--kurve);
   }
   .avatar-color-swatch[aria-pressed="true"]{border-color:var(--ink);}
   .avatar-color-swatch:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
@@ -90,7 +90,7 @@
   .avatar-color-swatch.avatar-color-quiet{background-image:linear-gradient(180deg, color-mix(in srgb, var(--muted) 58%, var(--paper)), var(--muted));}
   .profile-name-label{margin-top:20px;font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
   .name-input{
-    margin-top:6px;border:none;border-bottom:1px solid var(--line);background:none;
+    margin-top:4px;border:none;border-bottom:1px solid var(--line);background:none;
     font-family:var(--serif);font-size:calc(22px * var(--dt, 1));color:var(--ink);text-align:center;padding:4px 2px 8px;
     width:100%;max-width:280px;
   }
@@ -99,7 +99,7 @@
   .name-input:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
   /* Platzhalter ueber die berechnete Farbstufe statt Transparenz (Kontrast 4,5:1). */
   .name-input::placeholder{color:var(--muted-soft);opacity:1;}
-  .profile-note{margin-top:14px;max-width:38ch;line-height:1.5;}
+  .profile-note{margin-top:12px;max-width:38ch;line-height:1.5;}
 
   /* Absicherungs-Hinweise (Wissenschaft, Recht) als unterste, leise Textebene. .storage-warning
      ausgenommen — der ist handlungsrelevant. */
@@ -110,20 +110,20 @@
   }
   /* Noch eine Stufe leiser (Entscheidung des Inhabers); nicht unter 10,5 px, sonst unleserlich. */
   .acronym-note{ font-size:calc(10.5px * var(--dt, 1)); }
-  .profile-empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius-m);padding:20px 18px;margin-top:14px;text-align:center;}
+  .profile-empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius-m);padding:20px 16px;margin-top:12px;text-align:center;}
   .profile-empty p{color:var(--muted);font-size:calc(14px * var(--dt, 1));}
-  .profile-empty .btn{margin-top:14px;}
+  .profile-empty .btn{margin-top:12px;}
   .profile-empty .empty-icon{color:var(--muted);opacity:.7;margin-bottom:8px;}
   .profile-result-card{
     background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
-    padding:16px 18px;margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    padding:16px 16px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
   }
   .profile-result-card strong{font-family:var(--serif);font-size:calc(17px * var(--dt, 1));}
   .profile-result-card .l{font-size:calc(12.5px * var(--dt, 1));color:var(--muted);margin-top:2px;}
 
   /* Runde 97: .theme-toggle traegt jetzt zusaetzlich .segment und damit dessen Aussehen. Was
      hier bleibt, ist nur der Abstand nach oben; alles Uebrige kommt aus dem Segmentwaehler. */
-  .theme-toggle{margin-top:14px;}
+  .theme-toggle{margin-top:12px;}
   /* Ein Wort je Fach: 44 pt Hoehe (Apples Mindestmass) statt 52. */
   .theme-toggle .segment-opt{min-height:44px;}
   .danger-btn{border-color:var(--accent-2);color:var(--accent-2-text);}
@@ -133,75 +133,75 @@
   .settings-hint{margin-top:8px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);}
   .settings-row{
     margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);padding:14px 16px;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-m);padding:12px 16px;
   }
   .settings-row .l{font-size:calc(14px * var(--dt, 1));}
-  .settings-datalist{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
-  .settings-datalist li{font-size:calc(13.5px * var(--dt, 1));color:var(--ink);padding:9px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-s);}
+  .settings-datalist{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;}
+  .settings-datalist li{font-size:calc(13.5px * var(--dt, 1));color:var(--ink);padding:8px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-s);}
   .settings-empty{margin-top:12px;font-size:calc(13.5px * var(--dt, 1));color:var(--muted);font-style:italic;}
   .settings-restore{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);}
   .settings-restore-label{font-family:var(--serif);font-size:calc(14.5px * var(--dt, 1));color:var(--ink);}
   .settings-restore-desc{margin-top:4px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);line-height:1.5;}
-  .settings-restore-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
+  .settings-restore-row{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;}
   .settings-restore-row .field{flex:1;min-width:160px;}
 
   .settings-group{
-    margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
-    padding:20px 20px 22px;
+    margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:20px 20px 20px;
   }
-  .archetypes-head + .settings-group{margin-top:26px;}
+  .archetypes-head + .settings-group{margin-top:24px;}
   .settings-group h2{font-family:var(--serif);font-size:calc(17px * var(--dt, 1));font-weight:500;margin:0;}
-  .settings-group-desc{margin-top:5px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);line-height:1.55;}
+  .settings-group-desc{margin-top:4px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);line-height:1.55;}
 
   .faq-item{border-top:1px solid var(--line);}
   .faq-item:first-child{border-top:none;}
   .faq-item summary{
-    list-style:none;cursor:pointer;padding:13px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;
+    list-style:none;cursor:pointer;padding:12px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;
     font-size:calc(14px * var(--dt, 1));color:var(--ink);
   }
   .faq-item summary::-webkit-details-marker{display:none;}
-  .faq-item summary .chev{color:var(--muted);flex-shrink:0;transition:transform .2s ease;transform:rotate(90deg);}
+  .faq-item summary .chev{color:var(--muted);flex-shrink:0;transition:transform var(--dauer-kurz) var(--kurve);transform:rotate(90deg);}
   .faq-item[open] summary .chev{transform:rotate(-90deg);}
   .faq-item summary:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
-  .faq-item p{margin:0 0 14px;font-size:calc(13.5px * var(--dt, 1));color:var(--muted);line-height:1.55;}
+  .faq-item p{margin:0 0 12px;font-size:calc(13.5px * var(--dt, 1));color:var(--muted);line-height:1.55;}
 
   .compare-box{
     margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
-    padding:18px;display:flex;flex-direction:column;gap:12px;
+    padding:16px;display:flex;flex-direction:column;gap:12px;
   }
-  .field{display:flex;flex-direction:column;gap:6px;}
+  .field{display:flex;flex-direction:column;gap:4px;}
   .field label{font-size:calc(12.5px * var(--dt, 1));color:var(--muted);font-family:var(--mono);}
   .field input{
-    font-family:var(--mono);font-size:calc(14px * var(--dt, 1));padding:10px 12px;border-radius:var(--radius-s);
+    font-family:var(--mono);font-size:calc(14px * var(--dt, 1));padding:8px 12px;border-radius:var(--radius-s);
     border:1px solid var(--line);background:var(--surface-2);color:var(--ink);
   }
   .field input:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
 
-  .compat-result{margin-top:6px;display:flex;flex-direction:column;gap:10px;}
-  .compat-radar{margin:6px auto 0;max-width:280px;}
-  .compat-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 18px;font-size:calc(13px * var(--dt, 1));color:var(--muted);}
-  .compat-legend > span{display:inline-flex;align-items:center;gap:6px;}
+  .compat-result{margin-top:4px;display:flex;flex-direction:column;gap:8px;}
+  .compat-radar{margin:4px auto 0;max-width:280px;}
+  .compat-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 16px;font-size:calc(13px * var(--dt, 1));color:var(--muted);}
+  .compat-legend > span{display:inline-flex;align-items:center;gap:4px;}
   .compat-legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;}
   .dot-me{background:var(--accent);}
   .dot-other{background:var(--accent-2);}
-  .compat-line{font-size:calc(14px * var(--dt, 1));line-height:1.6;padding:12px 14px;background:var(--surface-2);border-radius:var(--radius-s);}
-  .compat-line b{color:var(--accent-strong);}
+  .compat-line{font-size:calc(14px * var(--dt, 1));line-height:1.6;padding:12px 12px;background:var(--surface-2);border-radius:var(--radius-s);}
+  .compat-line b{color:var(--ink);}
   /* Die Gesamt-Zusammenfassung hebt sich von den fünf Einzelzeilen durch Umriss statt Füllung ab —
      war zuvor als Inline-Style direkt im erzeugten Markup hinterlegt. */
   .compat-line-total{background:transparent;border:1px solid var(--line);}
-  .compat-save-row{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;}
+  .compat-save-row{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;}
   .compat-save-row .field{flex:1;min-width:160px;}
   /* Live-Pruefung der Code-Felder: dezenter Rahmen, Rot nur bei zehnstelligem, aber ungueltigem Code. */
   input.field-valid{border-color:var(--accent-strong);}
   /* Als Token mit eigenem Dunkelwert (3:1 fuer Bedienelemente). */
   input.field-invalid{border-color:var(--danger);}
-  .archive-empty-note{margin-top:14px;}
-  .archive-row-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .archive-empty-note{margin-top:12px;}
+  .archive-row-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
   .archive-match{font-family:var(--mono);font-size:calc(12.5px * var(--dt, 1));color:var(--accent-strong);font-weight:600;white-space:nowrap;}
-  .archive-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .15s ease,background .15s ease;}
+  .archive-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color var(--dauer-kurz) var(--kurve),background var(--dauer-kurz) var(--kurve);}
   @media (hover:hover){ .archive-del:hover{color:var(--accent-2-text);background:var(--surface-2);} }
   .archive-del:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
-  .understand-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:18px 18px;margin-top:14px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;}
+  .understand-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:16px 16px;margin-top:12px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;}
   @media (prefers-reduced-motion: reduce){ .understand-card{animation:none;opacity:1;} }
   .understand-group-label{font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin:28px 0 4px;}
   /* Die Ausnahme fuer das erste Gruppenlabel nur auf der Startseiten-Karte. */
@@ -219,7 +219,7 @@
   .toast{
     position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
     background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);
-    font-size:calc(13.5px * var(--dt, 1));padding:10px 16px;border-radius:100px;
+    font-size:calc(13.5px * var(--dt, 1));padding:8px 16px;border-radius:100px;
     box-shadow:var(--shadow);opacity:0;transition:all .25s ease;pointer-events:none;z-index:50;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -227,8 +227,8 @@
   /* Skip-Link: unsichtbar bis fokussiert. */
   .skip-link{
     position:absolute;left:12px;top:-48px;z-index:200;
-    background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:var(--radius-s);
-    font-size:calc(13.5px * var(--dt, 1));text-decoration:none;transition:top .15s ease;
+    background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:var(--radius-s);
+    font-size:calc(13.5px * var(--dt, 1));text-decoration:none;transition:top var(--dauer-kurz) var(--kurve);
   }
   .skip-link:focus{top:12px;}
 
@@ -249,7 +249,7 @@
   .figur-bild:not(.figur-kopf){ filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.16)); }
 
   .figur-raster{
-    margin-top:14px; display:grid; gap:8px;
+    margin-top:12px; display:grid; gap:8px;
     grid-template-columns:repeat(auto-fit, minmax(52px, 1fr));
     width:100%; max-width:340px;
   }
@@ -257,7 +257,7 @@
     aspect-ratio:1; border-radius:50%; padding:0; cursor:pointer; overflow:hidden;
     border:2px solid transparent; box-shadow:0 0 0 1px var(--line) inset;
     background:var(--figur-feld, var(--surface-2));
-    transition:border-color .15s ease, transform .18s cubic-bezier(.2,.8,.2,1);
+    transition:border-color var(--dauer-kurz) var(--kurve), transform var(--dauer-kurz) var(--kurve);
   }
   .figur-wahl[aria-pressed="true"]{ border-color:var(--ink); }
 
@@ -492,14 +492,14 @@
 
   /* Die kleinen Vorschauen in der Profilansicht: dieselben Klassen, nur klein. */
   .hg-raster{
-    margin-top:14px; display:grid; gap:8px;
+    margin-top:12px; display:grid; gap:8px;
     grid-template-columns:repeat(auto-fit, minmax(58px, 1fr));
     width:100%; max-width:340px;
   }
   .hg-wahl{
     height:38px; border-radius:var(--radius-s); cursor:pointer; padding:0;
     border:2px solid transparent; box-shadow:0 0 0 1px var(--line) inset;
-    transition:border-color .15s ease, transform .18s cubic-bezier(.2,.8,.2,1);
+    transition:border-color var(--dauer-kurz) var(--kurve), transform var(--dauer-kurz) var(--kurve);
   }
   .hg-wahl[aria-pressed="true"]{ border-color:var(--ink); }
   .hg-wahl:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
@@ -513,7 +513,7 @@
   /* ---------- Vergleich je Dimension ----------
      Dieselbe Bauform wie beim eigenen Ergebnis (.trait-card, 08-formulare-und-dialoge.css); hier nur
      zwei Werte und der Abstand. */
-  .compat-paar{display:flex;align-items:baseline;gap:6px;font-size:calc(13px * var(--dt, 1));flex-shrink:0;}
+  .compat-paar{display:flex;align-items:baseline;gap:4px;font-size:calc(13px * var(--dt, 1));flex-shrink:0;}
   .compat-wert-me{color:var(--accent-strong);font-weight:500;}
   .compat-wert-other{color:var(--accent-2-text);font-weight:500;}
   .compat-wert-sep{color:var(--muted);}
@@ -522,12 +522,12 @@
   .cmp-span{
     position:absolute;top:0;bottom:0;border-radius:100px;
     background:linear-gradient(90deg, var(--accent), var(--accent-2));
-    opacity:.55;transition:width .9s cubic-bezier(.2,.8,.2,1);
+    opacity:.55;transition:width .9s var(--kurve);
   }
   .cmp-dot{
     position:absolute;top:50%;width:12px;height:12px;border-radius:50%;
     background:var(--surface);transform:translate(-50%,-50%);box-shadow:var(--shadow-sm);
-    transition:left .9s cubic-bezier(.2,.8,.2,1);
+    transition:left .9s var(--kurve);
   }
   .cmp-dot-me{border:2.5px solid var(--accent-strong);z-index:2;}
   .cmp-dot-other{border:2.5px solid var(--accent-2-text);z-index:1;}
@@ -539,7 +539,7 @@
   /* Kombinationen und eigene Daten benutzen .understand-card weiter. */
   /* Welche zwei Dimensionen die Karte behandelt, ueber der Ueberschrift. Klein und in der
      Mono-Schrift wie alle Kennzeichnungen der App: Es ist eine Angabe, keine Aussage. */
-  .kombi-dims{font-size:calc(10.5px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;}
+  .kombi-dims{font-size:calc(10.5px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:4px;}
   /* Die aus den eigenen Daten gerechneten Karten heben sich durch eine Kante ab, nicht durch
      eine Farbe: Sie sind kein Hinweis und keine Warnung, sondern ein anderer Ursprung. */
   .understand-daten{border-left:3px solid var(--accent);}
@@ -549,7 +549,7 @@
      Stellen zeigen stattdessen die verschwommene Vorschau des echten Inhalts (vorschauHTML,
      12-ios.css). */
   .schloss{
-    margin-top:14px; display:flex; gap:12px; align-items:flex-start;
+    margin-top:12px; display:flex; gap:12px; align-items:flex-start;
     background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-m);
     padding:16px 16px;
   }
@@ -559,29 +559,29 @@
 
   /* Der Entwickler-Umschalter benutzt .settings-row weiter. */
   /* flex:1, sonst rutscht der Schalter unter den Text (.settings-row hat flex-wrap). */
-  .settings-row-text{ display:flex; flex-direction:column; gap:3px; min-width:0; flex:1; }
+  .settings-row-text{ display:flex; flex-direction:column; gap:4px; min-width:0; flex:1; }
   .settings-row-text strong{ font-family:var(--serif); font-weight:500; font-size:calc(14.5px * var(--dt, 1)); }
   .settings-row-desc{ font-size:calc(12.5px * var(--dt, 1)); color:var(--muted); line-height:1.5; }
-  .hg-gruppen{ margin-top:14px; display:flex; flex-direction:column; gap:14px; max-width:340px; }
+  .hg-gruppen{ margin-top:12px; display:flex; flex-direction:column; gap:12px; max-width:340px; }
   .hg-gruppen .hg-raster{ margin-top:0; }
-  .hg-gruppe-titel{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); margin:0 0 6px; }
+  .hg-gruppe-titel{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); margin:0 0 4px; }
   .hg-wahl{ position:relative; }
   .hg-zu .hg-schloss{ position:absolute; right:5px; bottom:5px; color:var(--hg-ink); opacity:.9;
     filter:drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
   .hg-gruppen .hg-raster{ grid-template-columns:repeat(4, minmax(0, 1fr)); }
   /* Rollenatlas */
-  .arch-ich{ background:var(--surface); border-radius:var(--radius-m); padding:18px; margin-bottom:22px; }
-  .arch-ich-titel{ font-family:var(--serif); font-size:calc(24px * min(var(--dt, 1), 1.3)); line-height:1.2; margin:6px 0 8px; }
+  .arch-ich{ background:var(--surface); border-radius:var(--radius-m); padding:16px; margin-bottom:20px; }
+  .arch-ich-titel{ font-family:var(--serif); font-size:calc(24px * min(var(--dt, 1), 1.3)); line-height:1.2; margin:4px 0 8px; }
   .arch-ich-text, .arch-ohne-test{ color:var(--muted); line-height:1.5; margin:0; }
   .arch-ohne-test{ margin-bottom:20px; }
   details.role-card > summary{ list-style:none; cursor:pointer; }
   details.role-card > summary::-webkit-details-marker{ display:none; }
   .role-ich{ border-color:var(--accent-strong); box-shadow:0 0 0 1px var(--accent-strong) inset; }
-  .arch-naehe{ display:flex; align-items:center; gap:10px; margin-top:12px; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
+  .arch-naehe{ display:flex; align-items:center; gap:8px; margin-top:12px; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
   .arch-naehe-balken{ flex:1; height:6px; border-radius:3px; background:var(--line); overflow:hidden; }
   .arch-naehe-balken span{ display:block; height:100%; background:var(--accent); border-radius:3px; }
-  .arch-freunde{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:10px; }
-  .arch-freund-marke{ display:inline-flex; align-items:center; gap:6px; max-width:100%; padding:2px 10px 2px 2px;
+  .arch-freunde{ display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-top:8px; }
+  .arch-freund-marke{ display:inline-flex; align-items:center; gap:4px; max-width:100%; padding:2px 8px 2px 2px;
     border-radius:999px; background:var(--line); }
   .arch-freund{ width:24px; height:24px; flex-shrink:0; font-size:calc(10px * var(--dt, 1)); }
   .arch-freund-name{ font-size:calc(13px * var(--dt, 1)); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:9em; }
@@ -592,20 +592,20 @@
   details.role-card[open] .tm-open{ display:inline; color:var(--muted); }
   details.role-card[open] .arch-zu .chev{ transform:rotate(-90deg); }
   details.role-card > summary:active .arch-zu{ opacity:.62; }
-  .arch-kombis{ margin-top:14px; border-top:1px solid var(--line); padding-top:12px; }
-  .arch-kombis ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
-  .arch-kombi{ display:grid; grid-template-columns:1fr auto; gap:2px 10px; align-items:center; }
+  .arch-kombis{ margin-top:12px; border-top:1px solid var(--line); padding-top:12px; }
+  .arch-kombis ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .arch-kombi{ display:grid; grid-template-columns:1fr auto; gap:2px 8px; align-items:center; }
   .arch-kombi-titel{ font-weight:600; }
   .arch-kombi-satz{ grid-column:1 / -1; color:var(--muted); font-size:calc(14px * var(--dt, 1)); line-height:1.45; }
   .arch-kombi .arch-freunde{ margin-top:2px; grid-column:1 / -1; }
-  .arch-kombi-ich .arch-kombi-titel{ color:var(--accent-strong); }
+  .arch-kombi-ich .arch-kombi-titel{ color:var(--ink); font-weight:700; }
   .arch-du{ font-size:calc(12px * var(--dt, 1)); font-weight:600; color:var(--accent-ink); background:var(--accent-strong); border-radius:999px; padding:2px 8px; }
 
   /* ---------- Zubehoer fuer den Begleiter ---------- */
   .hat-figur{ position:relative; }
   .figur-zubehoer{ position:absolute; height:auto; transform:translateY(-50%); pointer-events:none;
     -webkit-user-select:none; user-select:none; filter:drop-shadow(0 1px 1px rgba(0,0,0,.18)); }
-  .zub-raster{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-top:10px; }
+  .zub-raster{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-top:8px; }
   .zub-wahl{ min-height:96px; border-radius:var(--radius-s); cursor:pointer; padding:8px 4px; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:4px; background:var(--surface-2); color:var(--ink);
     border:2px solid transparent; box-shadow:0 0 0 1px var(--line) inset; }
@@ -613,4 +613,16 @@
   .zub-wahl:focus-visible{ outline:2px solid var(--accent-strong); outline-offset:2px; }
   .zub-wahl img{ width:44px; height:44px; object-fit:contain; }
   .zub-name{ font-size:calc(13px * var(--dt, 1)); font-weight:600; }
-  .zub-schwelle{ display:flex; align-items:center; gap:3px; font-size:calc(11px * var(--dt, 1)); color:var(--muted); text-align:center; }
+  .zub-schwelle{ display:flex; align-items:center; gap:4px; font-size:calc(11px * var(--dt, 1)); color:var(--muted); text-align:center; }
+
+  /* Zehn Rollen als Raster: je Zeile eine Dimension, links der hohe, rechts der niedrige Pol. */
+  .rollen-raster{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px; }
+  .rollen-zeile-titel{ grid-column:1 / -1; margin:12px 4px 0; font-size:calc(13px * var(--dt, 1)); color:var(--muted); }
+  .rollen-zeile-titel:first-child{ margin-top:0; }
+  .rollen-kachel{ appearance:none; font:inherit; color:var(--ink); text-align:left; display:flex; flex-direction:column; gap:4px;
+    padding:12px; min-height:44px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-m); cursor:pointer; }
+  .rollen-kachel:active{ background:var(--surface-2); transform:scale(.98); }
+  .rollen-kachel .role-title{ font-weight:600; font-size:calc(15px * var(--dt, 1)); }
+  .rollen-kachel .arch-naehe{ display:flex; align-items:center; gap:4px; font-size:calc(12px * var(--dt, 1)); color:var(--muted); }
+  .rollen-kachel .arch-naehe-balken{ flex:1; }
+  .arch-kombis-liste{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; }

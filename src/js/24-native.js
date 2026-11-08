@@ -440,6 +440,9 @@
       zeigen = nativVorhanden() && !erinnerungAn() && localStorage.getItem(ERINNERUNG_GEFRAGT) !== '1' &&
         (stateTage(loadStateHistory()).length >= 1 || ziele.indexOf('tagesform') >= 0);
     }catch(e){}
+    // Solange die Frage steht, nicht zugleich den Schalter zeigen (zwei Bedienwege fuer dasselbe).
+    var schalterZeile = $('tfErinnerungZeile');
+    if (schalterZeile) schalterZeile.hidden = zeigen;
     document.querySelectorAll('.erinnerung-frage-ort').forEach(function(ort){
       ort.innerHTML = zeigen ? '<div class="erinnerung-frage"><span>'+tx('erinnerung_frage')+'</span>'+
         '<button type="button" class="btn btn-primary btn-sm" data-erinnerung-frage="ja">'+tx('ja')+'</button>'+

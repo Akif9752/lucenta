@@ -25,7 +25,8 @@
       ? '<button type="button" class="btn btn-primary btn-sm" id="'+opts.btnId+'">'+opts.btnLabel+'</button>'
       : '';
     return '<div class="profile-empty'+extra+'">'
-      + '<svg class="empty-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke-dasharray="2.5 3.2"></circle><path d="M12 8v4l2.3 2.3"></path></svg>'
+      // Das Fuenfeck ist das Zeichen der Marke (Entscheidung des Inhabers): leer = gestrichelt.
+      + '<svg class="empty-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="2.6 2.4" aria-hidden="true"><polygon points="12,2.5 21.5,9.4 17.9,20.5 6.1,20.5 2.5,9.4"></polygon></svg>'
       + '<p>'+message+'</p>'+btn+'</div>';
   }
   // Ein Baustein fuer alle verschlossenen Stellen. Nennt, was dahinter liegt; kein Countdown, keine

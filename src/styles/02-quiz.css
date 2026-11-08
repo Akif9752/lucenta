@@ -8,11 +8,11 @@
   .quiz-body::before{content:'';flex:1 0 0;}
   .quiz-body::after{content:'';flex:2.4 0 0;}
   /* flex-wrap fuer 200 % Textgroesse. */
-  .quiz-head{padding:28px 0 6px;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;}
+  .quiz-head{padding:28px 0 4px;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;}
   .qcount{font-family:var(--mono);font-size:calc(13px * var(--dt, 1));color:var(--muted);}
   .qcard{
-    margin-top:18px;background:var(--surface);border:1px solid var(--line);
-    border-radius:var(--radius-l);padding:34px 26px;box-shadow:var(--shadow);
+    margin-top:16px;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius-l);padding:32px 24px;box-shadow:var(--shadow);
     min-height:180px;display:flex;align-items:center;
   }
   /* Die neue Frage kommt herein; nur EIN-, nicht ausblendend (sonst verschwaende die eben getippte
@@ -25,15 +25,15 @@
   .qtext{font-family:var(--serif);font-size:calc(clamp(24px,6.6vw,30px) * min(var(--dt, 1), 1.3));line-height:1.25;letter-spacing:-.01em;
     font-weight:600;-webkit-hyphens:manual;hyphens:manual;}
 
-  .scale{margin-top:22px;}
+  .scale{margin-top:20px;}
   .scale-row{display:flex;gap:8px;justify-content:space-between;}
   .scale-btn{
     /* Rand in --line-strong (3:1 fuer Bedienelemente). */
     flex:1;aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line-strong);
-    background:var(--surface);cursor:pointer;transition:all .15s ease;
+    background:var(--surface);cursor:pointer;transition:all var(--dauer-kurz) var(--kurve);
     display:flex;align-items:center;justify-content:center;
   }
-  .scale-btn .fill{width:0%;height:0%;border-radius:50%;background:var(--accent);transition:all .15s ease;}
+  .scale-btn .fill{width:0%;height:0%;border-radius:50%;background:var(--accent);transition:all var(--dauer-kurz) var(--kurve);}
   @media (hover:hover){ .scale-btn:hover{border-color:var(--accent-strong);} }
   .scale-btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
   .scale-btn.picked{border-color:var(--accent);}
@@ -41,15 +41,15 @@
   /* Alle fuenf Stufen beschriftet, jede unter ihrem Knopf (flex:1, gleicher Abstand wie .scale-row).
      Kurze Texte; der volle Wortlaut steht im aria-label. overflow-wrap gegen lange Einzelwoerter. */
   /* Nur die Enden beschriftet, gross genug zum Lesen (Feedback B11); die Mitte zeigt skala-wahl beim Tippen. */
-  .scale-labels{display:flex;justify-content:space-between;gap:16px;margin-top:10px;font-size:calc(15px * var(--dt, 1));color:var(--muted);}
+  .scale-labels{display:flex;justify-content:space-between;gap:16px;margin-top:8px;font-size:calc(15px * var(--dt, 1));color:var(--muted);}
   .scale-labels span{flex:0 1 45%;min-width:0;line-height:1.3;overflow-wrap:break-word;}
   .scale-labels span:last-child{text-align:right;}
   .skala-wahl{min-height:calc(22px * var(--dt, 1));margin-bottom:8px;text-align:center;font-size:calc(15px * var(--dt, 1));
-    font-weight:600;color:var(--accent-strong);opacity:0;transition:opacity .2s ease;}
+    font-weight:600;color:var(--accent-strong);opacity:0;transition:opacity var(--dauer-kurz) var(--kurve);}
   .skala-wahl.zeigen{opacity:1;}
   @media (prefers-reduced-motion: reduce){ .skala-wahl{transition:none;} }
 
-  .quiz-nav{margin-top:22px;display:flex;justify-content:space-between;align-items:center;}
+  .quiz-nav{margin-top:20px;display:flex;justify-content:space-between;align-items:center;}
 
   
   .skala-wahl{ position:relative; }
@@ -75,3 +75,7 @@
   /* Die kleineren Kreise behalten eine Trefferflaeche von 44 pt (die Abstaende reichen, nichts ueberlappt). */
   #scaleRow .scale-btn::after, #ftRow .scale-btn::after{ content:''; position:absolute; left:50%; top:50%;
     width:max(100%, 44px); height:max(100%, 44px); transform:translate(-50%, -50%); }
+
+  .qcount{ display:inline-flex; align-items:center; gap:6px; }
+  .q-fuenfeck{ color:var(--line-strong); flex-shrink:0; }
+  .q-fuenfeck rect{ transition:y var(--dauer-lang) var(--kurve); }
