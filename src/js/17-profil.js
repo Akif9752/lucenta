@@ -246,7 +246,9 @@
   // Zeile in den Einstellungen nennt die laufende Fassung neben "Kaeufe wiederherstellen".
   function plusStandAnwenden(){
     var el = $('plusStand');
-    if (el) el.innerHTML = tx(istPlus() ? 'plus_kurz_aktiv' : 'plus_kurz_frei');
+    // Die Marke mitziehen: Sonst setzte ein Sprachwechsel (applyI18n) wieder den Text der freien Fassung ein.
+    var schl = istPlus() ? 'plus_kurz_aktiv' : 'plus_kurz_frei';
+    if (el){ el.setAttribute('data-i18n', schl); el.innerHTML = tx(schl); }
     // Verwalten nur mit Abo; Wiederherstellen immer (Richtlinie 3.1.2).
     if ($('btnAboVerwalten')) $('btnAboVerwalten').hidden = !istPlus();
   }

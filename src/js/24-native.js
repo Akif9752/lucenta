@@ -434,17 +434,22 @@
   // „Tag zu Tag“ schon vorher. Danach nie wieder ungefragt; der Schalter bleibt.
   var ERINNERUNG_GEFRAGT = 'lucenta_erinnerung_gefragt';
   function erinnerungFrageAnwenden(){
-    var zeigen = false;
+    var zeigen = false, vorher = false;
     try{
-      var ziele = loadProfile().ziele || [];
+      var ziele = loadProfile().ziele || [], tage = stateTage(loadStateHistory()).length;
       zeigen = nativVorhanden() && !erinnerungAn() && localStorage.getItem(ERINNERUNG_GEFRAGT) !== '1' &&
-        (stateTage(loadStateHistory()).length >= 1 || ziele.indexOf('tagesform') >= 0);
+        (tage >= 1 || ziele.indexOf('tagesform') >= 0);
+      vorher = tage === 0 && ziele.indexOf('tagesform') >= 0;
     }catch(e){}
+    // Gefragt wird in der Bestaetigung eines Eintrags, nicht ueber dem Formular (Entscheidung des Inhabers);
+    // nur mit dem Ziel „Tag zu Tag" schon vor dem allerersten Eintrag.
+    var bestaetigt = function(id){ var e = $(id); return !!e && e.style.display !== 'none'; };
+    var amOrt = {landing: bestaetigt('landingStateDone') || vorher, tf: bestaetigt('tfErledigt') || vorher};
     // Solange die Frage steht, nicht zugleich den Schalter zeigen (zwei Bedienwege fuer dasselbe).
     var schalterZeile = $('tfErinnerungZeile');
-    if (schalterZeile) schalterZeile.hidden = zeigen;
+    if (schalterZeile) schalterZeile.hidden = zeigen && amOrt.tf;
     document.querySelectorAll('.erinnerung-frage-ort').forEach(function(ort){
-      ort.innerHTML = zeigen ? '<div class="erinnerung-frage"><span>'+tx('erinnerung_frage')+'</span>'+
+      ort.innerHTML = zeigen && amOrt[ort.getAttribute('data-ort')] ? '<div class="erinnerung-frage"><span>'+tx('erinnerung_frage')+'</span>'+
         '<button type="button" class="btn btn-primary btn-sm" data-erinnerung-frage="ja">'+tx('ja')+'</button>'+
         '<button type="button" class="btn btn-ghost btn-sm" data-erinnerung-frage="nein">'+tx('nein')+'</button></div>' : '';
     });

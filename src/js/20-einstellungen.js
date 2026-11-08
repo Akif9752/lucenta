@@ -39,7 +39,7 @@
     if (result) items.push(tx('js_gespeichertes_ergebnis'));
     if (progress) items.push(tx('js_unterbrochener_test'));
     // Eine Zeile je Art, die Anzahl rechts (Design-Audit: keine Protokollzeile).
-    var zeile = function(text, n){ return {t: String(text).split('{n}').join('').replace(/^\s+|\s+$/g, ''), n: n}; };
+    var zeile = function(text, n){ var t = String(text).split('{n}').join('').replace(/^\s+|\s+$/g, ''); return {t: t.charAt(0).toUpperCase() + t.slice(1), n: n}; };
     var histCount = loadHistory().length;
     if (histCount) items.push(zeile(tx(histCount===1 ? 'js_ergebnis_im_verlauf' : 'js_ergebnisse_im_verlauf'), histCount));
     var stateCount = loadStateHistory().length;

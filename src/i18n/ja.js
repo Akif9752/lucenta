@@ -1351,7 +1351,6 @@
       'ja': 'はい',
       'nein': 'いいえ',
       'tf_einleitung_kurz': '結果は平均、デイリーチェックはその日のあなた。',
-      'faq_tagesform_frage': 'デイリーチェックは何を記録しますか？',
       'tf_abschnitt_nachtragen': '前の時間帯をタップすると、あとから記録できます。',
       'benutzer_id': 'ユーザーID',
       'name_und_id': '名前とユーザーID',

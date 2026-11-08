@@ -82,7 +82,7 @@
       <!-- Notiz zum gerade gezeigten Eintrag (Entscheidung des Inhabers: in der Bestaetigung, nicht im Formular).
            Bleibt auf dem Geraet; nicht nach Health, nicht in den Freundescode. -->
       <div class="tf-notiz-bereich" id="landingNotizBereich" hidden></div>
-      <div class="erinnerung-frage-ort"></div>
+      <div class="erinnerung-frage-ort" data-ort="landing"></div>
       <button type="button" class="btn btn-ghost btn-sm" id="btnLandingStateHistory" style="align-self:flex-start;" data-i18n="tagesformverlauf_ansehen">Fünf Fragen, Kalender &amp; Bandbreite</button>
     </div>
 
@@ -274,7 +274,7 @@
       <!-- Notiz zum gerade gezeigten Eintrag (Entscheidung des Inhabers: in der Bestaetigung, nicht im Formular).
            Bleibt auf dem Geraet; nicht nach Health, nicht in den Freundescode. -->
       <div class="tf-notiz-bereich" id="tfNotizBereich" hidden></div>
-      <div class="erinnerung-frage-ort"></div>
+      <div class="erinnerung-frage-ort" data-ort="tf"></div>
       <div class="tf-erfassung" id="tfErfassung">
       <div class="state-question">
         <div class="state-q-label" data-i18n="energie_2">Energie</div>
@@ -759,10 +759,6 @@
           <p class="acronym-note" data-i18n-html="das_akronym_ocean_ist_der_in">Das Akronym <b>OCEAN</b> ist der international gebräuchliche Name des Modells &mdash; die Buchstaben folgen den englischen Fachbegriffen (klein darunter). Bei <b>N</b> weichen wir bewusst von der deutschen Direktübersetzung „Neurotizismus“ ab und nennen die Dimension „Emotionale Stabilität“ &mdash; gleiche Skala, nur ohne die defizitorientierte Sprache.</p>
         </details>
         <details class="faq-item">
-          <summary data-i18n-text="faq_tagesform_frage">Was hält die Tagesform fest?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></summary>
-          <p data-i18n="tf_einleitung">Dein Testergebnis beschreibt, wie du im Schnitt bist.</p>
-        </details>
-        <details class="faq-item">
           <summary data-i18n-text="wie_wird_mein_ergebnis_berec">Wie wird mein Ergebnis berechnet?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
           <p data-i18n="aus__wissenschaftlich_validi">Aus 50 wissenschaftlich validierten Aussagen (IPIP Big-Five-Modell). Jede Antwort fließt in eine von fünf Dimensionen ein; das Ergebnis zeigt deine Ausprägung auf einer Skala von 0 bis 100 relativ zu den Aussagen selbst, nicht im Vergleich zu einer Bevölkerungsgruppe. Wie jede Selbstauskunfts-Messung ist das eine Schätzung mit einer natürlichen Schwankungsbreite, keine exakte, fixe Zahl — nimm die Werte als verlässliche Tendenz, nicht auf den Punkt genau.</p>
         </details>
@@ -793,6 +789,7 @@
         <details class="faq-item">
           <summary data-i18n-text="was_ist_der_unterschied_zwis">Was ist der Unterschied zwischen meinem Ergebnis und der Tagesform?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>
           <p data-i18n="dein_testergebnis_misst_stab">Dein Testergebnis misst stabile Eigenschaften (Traits) &mdash; die ändern sich laut Forschung nicht von Tag zu Tag. Die Tagesform misst dagegen deinen aktuellen Zustand (State): Energie und Stimmung schwanken ganz normal von Tag zu Tag, unabhängig von deinem Profil. Beide Konzepte sind in der Psychologie klar getrennt, deshalb behandelt Lucenta sie auch getrennt &mdash; ein schlechter Tag ändert nichts an deinem Testergebnis.</p>
+          <p data-i18n="tf_einleitung">Dein Testergebnis beschreibt, wie du im Schnitt bist.</p>
         </details>
         <details class="faq-item">
           <summary data-i18n-text="kann_ich_mehrere_vergleiche">Kann ich mehrere Vergleiche gleichzeitig speichern?<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></summary>

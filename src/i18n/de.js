@@ -1046,7 +1046,6 @@ CONTENT.de = {
       'ja': 'Ja',
       'nein': 'Nein',
       'tf_einleitung_kurz': 'Dein Ergebnis ist der Schnitt, die Tagesform der Tag.',
-      'faq_tagesform_frage': 'Was hält die Tagesform fest?',
       'tf_abschnitt_nachtragen': 'Tippe eine frühere Tageszeit an, um sie nachzutragen.',
       'benutzer_id': 'Benutzer-ID',
       'name_und_id': 'Name & Benutzer-ID',

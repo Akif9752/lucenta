@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-08, nach Runde 242)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-08, nach Runde 243)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 242 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 243 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -82,7 +82,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 242 | (dieser) | Gegenpruefung nach dem Umbau: Simulation 400 sauber, G1 im Simulator, Store-Szene repariert (nur Werkzeuge/Doku) |
+| 243 | (dieser) | Design-Team im Simulator: Rundgang dunkel/de und hell/en, zehn Funde behoben |
+| 242 | `2137a90` | Gegenpruefung nach dem Umbau: Simulation 400 sauber, G1 im Simulator, Store-Szene repariert (nur Werkzeuge/Doku) |
 | 241 | `88b2679` | Design-Audit umgesetzt: Fehler/Regelbrueche, Haptik nach Bedeutung, Vergleich kurz, Bewegungs- und Bausteintokens, Fuenfeck, Archetypen-Raster |
 | 240 | `a971890` | UX/UI-Durchsicht umgesetzt: Onboarding 3 Schritte, Tageszeiten nachtragen, ein Lucenta+-Abschnitt, Erinnerung einmal fragen, ID automatisch |
 | 239 | `b9b2527` | Design-Durchsicht umgesetzt: flache Formen, Farbrollen, volle Namen, Tagesform kurz, Profil-Unterseiten, Titelform, 9-stelliger Code, Wochenbeginn |
@@ -366,6 +367,16 @@ Fuenfeck als Signatur (Leerzustaende, Test-Fortschritt je Zehntel, Meilensteine)
 | O1 | Sterne/Sternbilder vs. „nicht mit Sternzeichen" | vertagt bis zu Nutzertests (Inhaber) |
 | O2 | Nutzertests H1–H5 ueber TestFlight | wartet auf bezahlten Account (Inhaber) |
 | G1 | Am Geraet: Meldungen ueber der Tab-Leiste, Glas/Unschaerfe, Haptik | Simulator geprueft (242): Meldung frei ueber der Tab-Leiste, Glas da; Haptik nur am iPhone (Inhaber) |
+| S1 | Simulator-Rundgang (243): Erinnerungsfrage ueber dem Formular statt in der Bestaetigung | erledigt (243) |
+| S2 | Leerer Monat im Kalender: „Tippe auf einen Tag" doppelt | erledigt (243) |
+| S3 | Wochenbeginn: WKWebView meldet nur die Sprache, Region fehlte (Montag statt Sonntag in den USA) | erledigt (243) |
+| S4 | „Lucenta+" als einzige Zeile tuerkis in Profil und Einstellungen | erledigt (243) |
+| S5 | Titelform mittig, Felder darueber linksbuendig | erledigt (243) |
+| S6 | Datenliste teils klein geschrieben („gespeicherte Freunde") | erledigt (243) |
+| S7 | Zwei fast gleiche Haeufige Fragen zur Tagesform | erledigt (243) |
+| S8 | Acht Titel einer Rolle ohne Gliederung | erledigt (243) |
+| S9 | „Beispieldaten — nicht deine" rot auf lila kaum lesbar | erledigt (243) |
+| S10 | Einstellungen nach Sprachwechsel: Lucenta+-Zeile zeigt den Text der freien Fassung | erledigt (243) |
 
 *Aus der Simulation (Runde 223):* **C** in Runde 239 gebaut (Serie leise, Schutztag als Schild).
 
@@ -596,17 +607,45 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 242** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 243** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 242 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 243 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 243 — Design-Team im Simulator: Rundgang durch die echte App
+
+**Inhaber:** „das Design-Team soll sich die App nochmal ganz detailliert im Simulator anschauen und auf Fehlersuche gehen".
+Zwei Rundgaenge in der installierten App (iPhone 18 Pro, Apples Tab-Leiste, Beispieldaten, Lucenta+): dunkel/Deutsch und
+hell/Englisch, je 30 Szenen (Skript an die installierte index.html gehaengt, danach zurueckgesetzt). Zehn Funde (S1–S10 in der
+Liste des Teams), alle behoben:
+- Erinnerungsfrage stand auf Start und Tagesform UEBER dem Formular — jetzt nur in der Bestaetigung (`data-ort`), mit Ziel
+  „Tag zu Tag" vor dem allerersten Eintrag; der Schalter verschwindet nur, solange die Frage auf der Tagesform-Seite steht.
+- Leerer Monat: der Satz „Tippe auf einen Tag fuer die Einzelheiten" stand zweimal.
+- Wochenbeginn: Die WKWebView meldet in `navigator.language` nur „en" — ohne Region fiel die Woche auf Montag. Jetzt die Region aus
+  `Intl.DateTimeFormat().resolvedOptions().locale`, wenn die Sprache keine traegt.
+- Lucenta+-Zeile in Profil und Einstellungen als einzige tuerkis — jetzt wie alle Zeilen.
+- Titelform mittig unter linksbuendigen Feldern — jetzt linksbuendig, Umschalter ueber die ganze Breite.
+- Datenliste teils klein geschrieben — erster Buchstabe gross.
+- Zwei fast gleiche Haeufige Fragen zur Tagesform — die neue aus Runde 240 ist in „Was ist der Unterschied …" aufgegangen.
+- Die acht Titel einer Rolle als Liste mit Trennlinien.
+- „Beispieldaten — nicht deine" rot auf dem lila Poster kaum lesbar — helle Schrift auf rot getoenter Pille.
+- Nach einem Sprachwechsel stand in den Einstellungen bei aktivem Abo der Text der freien Fassung (die Marke `data-i18n` blieb
+  alt und applyI18n setzte ihn zurueck).
+
+**Gut befunden:** Apples Tab-Leiste und Glas, Meldungen frei darueber, Startsprache nach dem iPhone, Archetypen-Raster,
+Vergleich kurz, Lucenta+-Seite, Fuenfeck an Meilensteinen und im Test, Titel je Reiter.
+
+**Unsicher:** Die Szenen liefen nach Zeitplan; zwei Szenen (Start oben, Fragebogen hell) wurden verpasst und sind aus frueheren
+Aufnahmen bekannt. Die Beispieldaten im Simulator stammen von Ende Oktober (daher leerer November).
 
 ---
 

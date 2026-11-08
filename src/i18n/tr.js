@@ -1351,7 +1351,6 @@
       'ja': 'Evet',
       'nein': 'Hayır',
       'tf_einleitung_kurz': 'Sonucun ortalaman, günlük kaydın ise günün.',
-      'faq_tagesform_frage': 'Günlük kayıt neyi tutar?',
       'tf_abschnitt_nachtragen': 'Eklemek için günün daha önceki bir zamanına dokun.',
       'benutzer_id': 'Kullanıcı kimliği',
       'name_und_id': 'Ad ve kullanıcı kimliği',

@@ -1347,7 +1347,6 @@
       'ja': 'Sì',
       'nein': 'No',
       'tf_einleitung_kurz': 'Il tuo risultato è la media, il diario è la giornata.',
-      'faq_tagesform_frage': 'Che cosa registra il diario?',
       'tf_abschnitt_nachtragen': 'Tocca un momento precedente della giornata per aggiungerlo.',
       'benutzer_id': 'ID utente',
       'name_und_id': 'Nome e ID utente',

@@ -201,7 +201,7 @@
     var vor = new Date(anfang.getFullYear(), anfang.getMonth() - 1, 1), keyVor = tfTagSchluessel(vor).slice(0, 7);
     var mittel = function(liste, g){ return liste.reduce(function(a, t){ return a + t[g]; }, 0) / liste.length; };
     var dieser = alle.filter(function(t){ return t.day.slice(0, 7) === key; });
-    if (!dieser.length) return '<p class="tf-kal-ueberblick">'+tx('tf_kal_tippen')+'</p>';
+    if (!dieser.length) return '';   // der Hinweis steht schon unter dem Raster
     var zeile = tx('tf_kal_schnitt').split('{e}').join(tfZahl(mittel(dieser, 'energy'))).split('{s}').join(tfZahl(mittel(dieser, 'valence')))
       .split('{n}').join(String(dieser.length));
     var vorige = alle.filter(function(t){ return t.day.slice(0, 7) === keyVor; });

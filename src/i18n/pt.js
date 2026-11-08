@@ -1347,7 +1347,6 @@
       'ja': 'Sim',
       'nein': 'Não',
       'tf_einleitung_kurz': 'O teu resultado é a média; o registo é o dia.',
-      'faq_tagesform_frage': 'O que guarda o registo diário?',
       'tf_abschnitt_nachtragen': 'Toca num momento anterior do dia para o registar.',
       'benutzer_id': 'ID de utilizador',
       'name_und_id': 'Nome e ID de utilizador',

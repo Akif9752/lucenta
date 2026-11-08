@@ -1348,7 +1348,6 @@
       'ja': 'Yes',
       'nein': 'No',
       'tf_einleitung_kurz': 'Your result is the average, your check-in is the day.',
-      'faq_tagesform_frage': 'What does the check-in record?',
       'tf_abschnitt_nachtragen': 'Tap an earlier time of day to add it later.',
       'benutzer_id': 'User ID',
       'name_und_id': 'Name & user ID',

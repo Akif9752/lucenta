@@ -1347,7 +1347,6 @@
       'ja': 'Oui',
       'nein': 'Non',
       'tf_einleitung_kurz': 'Ton résultat, c’est la moyenne ; ton suivi, c’est la journée.',
-      'faq_tagesform_frage': 'Que retient le suivi du jour ?',
       'tf_abschnitt_nachtragen': 'Touche un moment plus tôt de la journée pour le compléter.',
       'benutzer_id': 'Identifiant',
       'name_und_id': 'Nom et identifiant',

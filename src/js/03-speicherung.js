@@ -143,7 +143,9 @@
     if (_wochenBeginn !== null) return _wochenBeginn;
     _wochenBeginn = 1;
     try{
-      var tag = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+      var sys = ''; try{ sys = Intl.DateTimeFormat().resolvedOptions().locale || ''; }catch(x){}
+      var nav = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+      var tag = /[-_][A-Za-z]{2}\b/.test(nav) ? nav : (/[-_][A-Za-z]{2}\b/.test(sys) ? sys : nav);
       var loc = (typeof Intl !== 'undefined' && Intl.Locale) ? new Intl.Locale(tag) : null;
       var info = loc && (typeof loc.getWeekInfo === 'function' ? loc.getWeekInfo() : loc.weekInfo);
       if (info && info.firstDay) _wochenBeginn = info.firstDay % 7;
