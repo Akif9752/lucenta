@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-08, nach Runde 243)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-08, nach Runde 244)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 243 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 244 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -82,7 +82,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 243 | (dieser) | Design-Team im Simulator: Rundgang dunkel/de und hell/en, zehn Funde behoben |
+| 244 | (dieser) | Vergleich: Aufklapp-Zeilen neu; tiefer Simulator-Rundgang (3 Laeufe), sieben Funde behoben |
+| 243 | `6a5f691` | Design-Team im Simulator: Rundgang dunkel/de und hell/en, zehn Funde behoben |
 | 242 | `2137a90` | Gegenpruefung nach dem Umbau: Simulation 400 sauber, G1 im Simulator, Store-Szene repariert (nur Werkzeuge/Doku) |
 | 241 | `88b2679` | Design-Audit umgesetzt: Fehler/Regelbrueche, Haptik nach Bedeutung, Vergleich kurz, Bewegungs- und Bausteintokens, Fuenfeck, Archetypen-Raster |
 | 240 | `a971890` | UX/UI-Durchsicht umgesetzt: Onboarding 3 Schritte, Tageszeiten nachtragen, ein Lucenta+-Abschnitt, Erinnerung einmal fragen, ID automatisch |
@@ -377,6 +378,14 @@ Fuenfeck als Signatur (Leerzustaende, Test-Fortschritt je Zehntel, Meilensteine)
 | S8 | Acht Titel einer Rolle ohne Gliederung | erledigt (243) |
 | S9 | „Beispieldaten — nicht deine" rot auf lila kaum lesbar | erledigt (243) |
 | S10 | Einstellungen nach Sprachwechsel: Lucenta+-Zeile zeigt den Text der freien Fassung | erledigt (243) |
+| V1 | Vergleich: „Mehr zu euch zwei" und „Die fuenf Dimensionen einzeln" als blasse Textlinks (Inhaber) | erledigt (244): Aufklapp-Zeilen mit Untertitel und Pfeil |
+| T1 | Begleiter sprach von der laufenden statt der gewaehlten Tageszeit | erledigt (244) |
+| T2 | Kopfleiste: langer Titel („Impressum und Datenschutz") ueberlagerte „Einstellungen" | erledigt (244) |
+| T3 | Fortschrittsbalken im Test lief von Tuerkis nach Orange | erledigt (244) |
+| T4 | Dekorative tuerkise Kanten (Befunde, „Wie oft?", Aus deinen Daten) | erledigt (244): grau |
+| T5 | Lucenta+-Zeile im Profil blieb tuerkis (spezifischere Regel) | erledigt (244) |
+| T6 | Feld fuer den Freundescode mit Unterstrich statt wie die uebrigen Felder | erledigt (244) |
+| T7 | Grosse Schrift: Freundescode-Feld schnitt den Platzhalter ab | erledigt (244) |
 
 *Aus der Simulation (Runde 223):* **C** in Runde 239 gebaut (Serie leise, Schutztag als Schild).
 
@@ -607,17 +616,36 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 243** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 244** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 243 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 244 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 244 — Vergleich neu gegliedert, tiefer Rundgang im Simulator
+
+**Inhaber:** „bei der Vergleichsseite muessen ‚Mehr zu euch zwei' und ‚Die fuenf Dimensionen einzeln' ueberarbeitet werden — das
+Design-Team soll sich drum kuemmern; und nochmal ein sehr tiefgehender Rundgang im Simulator auf Fehler und schlechte Dinge".
+
+**Vergleich (V1):** Beide waren blasse tuerkise Textlinks am Ende einer Karte, ohne Hinweis, was dahinter liegt. Jetzt je eine
+Aufklapp-Zeile (`aufklappKopfHTML`: Titel, Untertitel, Pfeil, 50 pt hoch); der Inhalt folgt frei darunter. Auf der Vergleichskarte
+liegen alle inneren Bloecke eine Ebene hoeher (surface-2, ohne Rand), sonst verschwammen sie mit der Karte. Untertitel in 8 Sprachen.
+
+**Rundgang:** drei Laeufe in der installierten App — dunkel/Deutsch/Lucenta+ mit Interaktionen (Notiz, Kalendertag, Rueckblick
+Monat, alle Verstehen-Bereiche, Rollenseite, ungueltiger Code, Vergleich offen, Sprache, App-Symbol, Recht, Hilfe, Facetten,
+Fragebogen), hell/Deutsch/frei mit Systemtextgroesse „Bedienungshilfe M" (Kauffenster, gesperrte Stellen) und ein Erststart auf
+Englisch (Onboarding, leere Reiter). Sieben Funde (T1–T7 in der Liste des Teams), alle behoben.
+
+**Unsicher:** Szenen nach Zeitplan; die Erststart-Szenen zeigen nach dem Onboarding den Test, die leeren Zustaende stammen vom
+Ueberspringen. Der Simulator traegt danach keine Beispieldaten mehr (Erststart-Lauf hat geleert).
 
 ---
 

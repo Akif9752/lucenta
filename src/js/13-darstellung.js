@@ -449,6 +449,12 @@
   // ---------- Bericht ueber zwei Freunde (Lucenta+, Entscheidung des Inhabers) ----------
   // Fasst ueber alle fuenf Werte zusammen, statt die Karten je Dimension zu wiederholen. Grenzen wie dort:
   // unter 15 Punkten aehnlich, ab 35 ein grosser Unterschied. Namen stehen nie im Satz (Beugung in 8 Sprachen).
+  // Aufklapp-Zeile (Design-Team): eine Karte mit Titel, Untertitel und Pfeil; der Inhalt folgt darunter frei, ohne
+  // Karte in der Karte.
+  function aufklappKopfHTML(titel, unter){
+    return '<summary class="aufklapp-kopf"><span class="aufklapp-text"><strong>' + tx(titel) + '</strong><span>' + tx(unter) + '</span></span>' +
+      '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></summary>';
+  }
   function paarBerichtHTML(me, other, name){
     var ich = tx('pb_du'), du = name || tx('pb_gegenueber');
     var gleich = [], mittel = [], gross = [], groessterAbstand = -1, groesste = null;
@@ -470,12 +476,12 @@
         '<h3>' + tx('pb_verbindet') + '</h3>' + ersterSatz(gleich, 'pb_verbindet_leer') +
         '<h3>' + tx('pb_ergaenzt') + '</h3>' + ersterSatz(mittel, 'pb_ergaenzt_leer') +
         '<h3>' + tx('pb_reibt') + '</h3>' + ersterSatz(gross, 'pb_reibt_leer') + '</div>' +
-      '<details class="pb-mehr"><summary class="trait-more">' + tx('pb_mehr') + '</summary>' +
+      '<details class="aufklapp pb-mehr">' + aufklappKopfHTML('pb_mehr', 'pb_mehr_unter') + '<div class="aufklapp-inhalt">' +
         abschnitt('pb_verbindet', liste(gleich, 'pb_verbindet_leer')) +
         abschnitt('pb_ergaenzt', liste(mittel, 'pb_ergaenzt_leer')) +
         abschnitt('pb_reibt', liste(gross, 'pb_reibt_leer')) +
         abschnitt('pb_reden', '<p>' + tx(groessterAbstand < 15 ? 'pb_rat_aehnlich' : 'pb_rat_' + groesste) + '</p>') +
-      '</details>' +
+      '</div></details>' +
     '</section>';
   }
 
@@ -579,7 +585,7 @@
     }
     var bericht = paarBerichtHTML(me, other, andererName);
     box.innerHTML = scoreBlock + radarBlock + summary + (cmpPlus ? bericht : vorschauHTML(bericht, tx('pb_plus'))) +
-      '<details class="pb-mehr cmp-dims"><summary class="trait-more">' + tx('cmp_dims_einzeln') + '</summary>' + lines.join('') + '</details>';
+      '<details class="aufklapp pb-mehr cmp-dims">' + aufklappKopfHTML('cmp_dims_einzeln', 'cmp_dims_unter') + '<div class="aufklapp-inhalt">' + lines.join('') + '</div></details>';
     startCompatBars(box);
     schloesserVerdrahten(box);
     lastCompatSnapshot = { myCode: $('cmpMe').value.trim(), otherCode: $('cmpOther').value.trim(), match: match };

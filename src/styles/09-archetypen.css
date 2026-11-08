@@ -542,7 +542,7 @@
   .kombi-dims{font-size:calc(10.5px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:4px;}
   /* Die aus den eigenen Daten gerechneten Karten heben sich durch eine Kante ab, nicht durch
      eine Farbe: Sie sind kein Hinweis und keine Warnung, sondern ein anderer Ursprung. */
-  .understand-daten{border-left:3px solid var(--accent);}
+  .understand-daten{border-left:3px solid var(--line-strong);}
 
   /* ---------- Schloss ----------
      Der Kasten fuer verschlossene Stellen ohne Vorschau (z. B. Archiv voll). Die meisten gesperrten

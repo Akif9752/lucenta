@@ -879,6 +879,8 @@
       'tf_titel_muster': 'Your patterns',
       'pb_mehr': 'More about the two of you',
       'cmp_dims_einzeln': 'The five dimensions one by one',
+      'pb_mehr_unter': 'What connects you, complements you and rubs – plus a tip for talking',
+      'cmp_dims_unter': 'Per dimension: your scores, everyday life, conversation and things together',
       'tf_legende': 'Colour: mood · bar: energy',
       'tf_kal_kein_eintrag': 'no entry',
       'tf_kal_vormonat': 'Previous month',

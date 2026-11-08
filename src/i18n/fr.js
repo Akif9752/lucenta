@@ -878,6 +878,8 @@
       'tf_titel_muster': 'Tes tendances',
       'pb_mehr': 'Plus sur vous deux',
       'cmp_dims_einzeln': 'Les cinq dimensions une à une',
+      'pb_mehr_unter': 'Ce qui vous relie, vous complète et frotte – avec un conseil pour en parler',
+      'cmp_dims_unter': 'Par dimension : vos scores, le quotidien, la conversation et ce que vous partagez',
       'tf_legende': 'Couleur : humeur · barre : énergie',
       'tf_kal_kein_eintrag': 'pas d’entrée',
       'tf_kal_vormonat': 'Mois précédent',

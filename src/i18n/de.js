@@ -577,6 +577,8 @@ CONTENT.de = {
       'tf_titel_muster': 'Deine Muster',
       'pb_mehr': 'Mehr zu euch zwei',
       'cmp_dims_einzeln': 'Die fünf Dimensionen einzeln',
+      'pb_mehr_unter': 'Was euch verbindet, ergänzt und reibt – dazu ein Gesprächstipp',
+      'cmp_dims_unter': 'Je Dimension: eure Werte, Alltag, Gespräch und Gemeinsames',
       'tf_legende': 'Fläche: Stimmung · Balken: Energie',
       'tf_kal_kein_eintrag': 'kein Eintrag',
       'tf_kal_vormonat': 'Vorheriger Monat',

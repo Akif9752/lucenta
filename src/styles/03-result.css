@@ -77,7 +77,7 @@
      Tagesform-Befunden. */
   .rhythmus{
     margin:16px auto 0; max-width:46ch;
-    border-left:2px solid var(--accent); padding-left:12px; text-align:left;
+    border-left:2px solid var(--line-strong); padding-left:12px; text-align:left;
   }
   .rhythmus-titel{
     font-family:var(--mono); font-size:calc(11px * var(--dt, 1)); letter-spacing:.05em; text-transform:uppercase;

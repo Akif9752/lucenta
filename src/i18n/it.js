@@ -878,6 +878,8 @@
       'tf_titel_muster': 'I tuoi schemi',
       'pb_mehr': 'Di più su voi due',
       'cmp_dims_einzeln': 'Le cinque dimensioni una per una',
+      'pb_mehr_unter': 'Cosa vi unisce, vi completa e crea attrito, con un consiglio per parlarne',
+      'cmp_dims_unter': 'Per dimensione: i vostri valori, la quotidianità, il dialogo e ciò che fate insieme',
       'tf_legende': 'Colore: umore · barra: energia',
       'tf_kal_kein_eintrag': 'nessuna voce',
       'tf_kal_vormonat': 'Mese precedente',

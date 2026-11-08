@@ -878,6 +878,8 @@
       'tf_titel_muster': 'Tus patrones',
       'pb_mehr': 'Más sobre vosotros dos',
       'cmp_dims_einzeln': 'Las cinco dimensiones una a una',
+      'pb_mehr_unter': 'Lo que os une, os complementa y choca, con un consejo para hablar',
+      'cmp_dims_unter': 'Por dimensión: vuestros valores, el día a día, la conversación y lo compartido',
       'tf_legende': 'Color: ánimo · barra: energía',
       'tf_kal_kein_eintrag': 'sin registro',
       'tf_kal_vormonat': 'Mes anterior',

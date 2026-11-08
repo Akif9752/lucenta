@@ -937,7 +937,7 @@
   .profil-weg .chev{ color:var(--muted); flex-shrink:0; }
   .profil-weg-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
   .profil-weg-text strong{ font-weight:400; font-size:calc(16px * var(--dt, 1)); }
-  #btnProfilPlus .profil-weg-text strong{ font-weight:600; color:var(--accent-strong); }
+  #btnProfilPlus .profil-weg-text strong{ font-weight:600; color:var(--ink); }
   .profil-weg-text span{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); line-height:1.35; }
   /* Verstehen: der Weg zu allen Archetypen am Ende der Seite. */
   .vs-archetypen{ margin-top:28px; min-height:56px; gap:12px; }
@@ -1014,10 +1014,19 @@
 
 /* Vergleich: Kurzfassung oben, das Ausfuehrliche zugeklappt. */
   .pb-kurz h3{ margin-top:12px; } .pb-kurz h3:first-child{ margin-top:0; }
-  .pb-mehr{ margin-top:12px; }
-  .pb-mehr > summary{ list-style:none; cursor:pointer; min-height:44px; display:flex; align-items:center; }
-  .pb-mehr > summary::-webkit-details-marker{ display:none; }
-  .pb-mehr[open] > summary{ margin-bottom:4px; }
+  /* Aufklapp-Zeile: Kopf als Karte (Titel, Untertitel, Pfeil), der Inhalt frei darunter (Design-Team). */
+  .aufklapp{ margin-top:12px; }
+  .aufklapp > .aufklapp-kopf{ list-style:none; cursor:pointer; display:flex; align-items:center; gap:12px; min-height:var(--knopf-gross);
+    padding:12px 16px; background:var(--surface); border-radius:var(--radius-m); }
+  .aufklapp > .aufklapp-kopf::-webkit-details-marker{ display:none; }
+  .aufklapp > .aufklapp-kopf:active{ background:var(--surface-2); }
+  .aufklapp-text{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .aufklapp-text strong{ font-weight:600; color:var(--ink); }
+  .aufklapp-text span{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); line-height:1.35; }
+  .aufklapp > .aufklapp-kopf .chev{ color:var(--muted); flex-shrink:0; transition:transform var(--dauer) var(--kurve); }
+  .aufklapp[open] > .aufklapp-kopf .chev{ transform:rotate(180deg); }
+  .aufklapp-inhalt{ padding-top:4px; }
+  .aufklapp-inhalt > .pb-abschnitt:first-child, .aufklapp-inhalt > .compat-card:first-child{ margin-top:8px; }
 
 /* Datenuebersicht in den Einstellungen: eine Zeile je Art, Anzahl rechts. */
   #settingsDataList li{ display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-top:1px solid var(--line); }
@@ -1047,3 +1056,17 @@
   .arch-kombis-liste{ background:var(--surface); border-radius:var(--radius-m); padding:0 16px; gap:0; }
   .arch-kombis-liste .arch-kombi{ padding:12px 0; border-top:1px solid var(--line); }
   .arch-kombis-liste .arch-kombi:first-child{ border-top:none; }
+/* Im Vergleich liegt alles auf einer Karte: innere Bloecke eine Ebene hoeher (surface-2), ohne Rand — sonst
+   verschwammen Kurzfassung, Abschnitte und die beiden Aufklapp-Zeilen mit der Karte (Design-Team). */
+  .compare-box .pb-abschnitt, .compare-box .aufklapp > .aufklapp-kopf, .compare-box .compat-card{ background:var(--surface-2); border-color:transparent; }
+  .compare-box .aufklapp > .aufklapp-kopf:active{ background:var(--surface-3); }
+
+/* Kopfleiste: der Zurueck-Text endet vor dem Titel in der Mitte (lange Titel wie „Impressum und Datenschutz“ ueberlagerten ihn). */
+  .kopf-zurueck{ max-width:calc(30% - 4px); }
+/* Feld fuer den Freundescode wie die uebrigen Eingabefelder: gefuellt, abgerundet, linksbuendig. */
+  #view-freunde .freund-hinzu .name-input{ background:var(--surface); border:none; border-radius:var(--radius-m); padding:12px 16px;
+    max-width:none; text-align:left; min-height:var(--knopf); box-sizing:border-box; }
+  #view-freunde .freund-hinzu .name-input:focus{ border:none; }
+/* Grosse Schrift: Feld und „Hinzufuegen“ untereinander, sonst schneidet das Feld den Platzhalter ab. */
+  :root[data-text="gross"] #view-freunde .freund-hinzu{ flex-wrap:wrap; }
+  :root[data-text="gross"] #view-freunde .freund-hinzu .name-input{ flex-basis:100%; }

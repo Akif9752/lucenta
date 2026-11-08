@@ -351,7 +351,7 @@
   #focusline-fill{
     position:relative; z-index:1;
     height:100%; width:0%;
-    background:linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+    background:var(--accent);
     /* Dieselbe Filterliste wie balken-impuls: Bei ungleichen Listen stuerzt WebKit beim Puls ab
        (CAPresentationModifier, nachgestellt). */
     filter:brightness(1) saturate(1);

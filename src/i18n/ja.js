@@ -882,6 +882,8 @@
       'tf_titel_muster': 'パターン',
       'pb_mehr': 'ふたりについてもっと',
       'cmp_dims_einzeln': '5つの特性をひとつずつ',
+      'pb_mehr_unter': 'ふたりをつなぐもの、補い合うもの、ぶつかるもの――話すためのヒントつき',
+      'cmp_dims_unter': '特性ごとに：ふたりの値、日常、会話、一緒にすること',
       'tf_legende': '色：気分・バー：エネルギー',
       'tf_kal_kein_eintrag': '記録なし',
       'tf_kal_vormonat': '前の月',

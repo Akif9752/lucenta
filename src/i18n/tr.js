@@ -882,6 +882,8 @@
       'tf_titel_muster': 'Örüntülerin',
       'pb_mehr': 'İkiniz hakkında daha fazlası',
       'cmp_dims_einzeln': 'Beş boyut tek tek',
+      'pb_mehr_unter': 'Sizi neyin bağladığı, tamamladığı ve sürtüştürdüğü – bir konuşma ipucuyla',
+      'cmp_dims_unter': 'Boyut boyut: puanlarınız, gündelik hayat, sohbet ve ortak olanlar',
       'tf_legende': 'Renk: ruh hâli · çubuk: enerji',
       'tf_kal_kein_eintrag': 'kayıt yok',
       'tf_kal_vormonat': 'Önceki ay',

@@ -387,7 +387,7 @@
     var wrap = $('tfBegleiter'), profil = loadProfile ? loadProfile() : null;
     if (!wrap) return;
     if (!profil || !profil.figur || profil.avatarImg){ wrap.hidden = true; return; }
-    var heute = heuteEingetragen(), abschnitt = aktuellerAbschnitt(), eintrag = heute[abschnitt];
+    var heute = heuteEingetragen(), abschnitt = gewaehlterAbschnitt(), eintrag = heute[abschnitt];
     var ausdruck = tfBegleiterAusdruck(heute);
     renderAvatarInto($('tfBegleiterTier'), profil, ausdruck);
     var satz;
