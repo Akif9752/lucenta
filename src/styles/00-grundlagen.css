@@ -327,7 +327,6 @@
     padding-right:var(--rand-rechts);
     padding-bottom:calc(80px + env(safe-area-inset-bottom, 0px));
     min-height:100vh;
-    position:relative;
   }
 
   /* top focus-line: the "clarity" motif — sharpens as you progress */
@@ -340,22 +339,19 @@
     position:sticky; top:env(safe-area-inset-top, 0px); z-index:31;
     /* Kein width:100% — das bezoege sich auf die Inhaltsbreite und hielte den Balken trotz negativer
        Raender fest. */
-    height:3px;
-    background:var(--line);
     margin-bottom:0;
   }
   .focusline-tick{
     position:absolute; top:0; bottom:0; width:2px;
-    background:var(--paper); opacity:.55; z-index:2;
+    background:var(--paper); z-index:2;
   }
   #focusline-fill{
-    position:relative; z-index:1;
+    z-index:1;
     height:100%; width:0%;
     background:var(--accent);
     /* Dieselbe Filterliste wie balken-impuls: Bei ungleichen Listen stuerzt WebKit beim Puls ab
        (CAPresentationModifier, nachgestellt). */
     filter:brightness(1) saturate(1);
-    transition:width var(--dauer-lang) var(--kurve);
   }
 
   /* Die Kopfleiste klebt beim Scrollen, direkt unter der Fokuslinie. Die Trennlinie erscheint erst
@@ -466,12 +462,10 @@
     position:fixed;top:50%;left:50%;transform:translate(-50%,-46%);width:min(380px,88vw);
     /* Runde 103, Liquid Glass Schritt 2 — wie das Bild-Fenster darueber. */
     background:color-mix(in srgb, var(--surface) 86%, transparent);
-    -webkit-backdrop-filter:blur(20px) saturate(150%);
-    backdrop-filter:blur(20px) saturate(150%);
     border:1px solid var(--line);border-radius:var(--radius-l);
-    box-shadow:var(--shadow);padding:20px;z-index:96;opacity:0;visibility:hidden;
+    box-shadow:var(--shadow);z-index:96;opacity:0;visibility:hidden;
     transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
-    max-height:86vh;overflow-y:auto;
+    overflow-y:auto;
   }
   #plusModal.open{
     opacity:1;visibility:visible;transform:translate(-50%,-50%);
@@ -539,7 +533,7 @@
      oder drei). */
   .segment{
     margin:16px 0 0;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;
-    background:var(--surface-3);border-radius:var(--radius-s);padding:4px;
+    border-radius:var(--radius-s);padding:4px;
   }
   .segment-opt{
     -webkit-appearance:none;appearance:none;cursor:pointer;
@@ -595,8 +589,7 @@
   .img-modal-actions{display:flex;justify-content:flex-end;}
 
   .drawer-close{
-    background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;
-    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;padding:4px;
     transition:color .15s ease,background .15s ease;
   }
   /* :hover nur bei echten Zeigegeraeten — sonst bleibt der Zustand auf iOS nach dem Antippen haengen. */

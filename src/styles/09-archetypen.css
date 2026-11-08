@@ -1,6 +1,6 @@
 /* ---------- Archetypes overview ---------- */
   .archetypes-head{padding:20px 0 4px;}
-  .archetypes-head h1{font-size:calc(clamp(24px,6vw,32px) * min(var(--dt, 1), 1.3));line-height:1.15;margin-top:8px;letter-spacing:-.01em;}
+  .archetypes-head h1{font-size:calc(clamp(24px,6vw,32px) * min(var(--dt, 1), 1.3));margin-top:8px;letter-spacing:-.01em;}
   .archetypes-head p{margin-top:12px;font-size:calc(14.5px * var(--dt, 1));color:var(--muted);max-width:56ch;line-height:1.6;}
   .archetypes-head b{color:var(--ink);}
   /* Fuenf Gruppen je Dimension; der Abstand ZWISCHEN den Gruppen (26px) deutlich groesser als
@@ -50,7 +50,7 @@
     text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-family:inherit;
   }
   @media (hover:hover){ .profile-remove-photo:hover{color:var(--ink);} }
-  .avatar-color-row{margin-top:12px;display:flex;gap:8px;}
+  .avatar-color-row{display:flex;}
   /* Der Ring der Farbtupfer in --muted, sonst ist "Ruhig" auf hellem Grund unsichtbar. */
   .avatar-color-swatch{
     width:28px;height:28px;border-radius:50%;padding:0;cursor:pointer;
@@ -203,7 +203,7 @@
   .archive-del:focus-visible{outline:2px solid var(--accent-strong);outline-offset:2px;}
   .understand-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:16px 16px;margin-top:12px;opacity:0;animation:card-in .5s cubic-bezier(.2,.8,.2,1) both;}
   @media (prefers-reduced-motion: reduce){ .understand-card{animation:none;opacity:1;} }
-  .understand-group-label{font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--accent-strong);margin:28px 0 4px;}
+  .understand-group-label{text-transform:uppercase;margin:28px 0 4px;}
   /* Die Ausnahme fuer das erste Gruppenlabel nur auf der Startseiten-Karte. */
   .understand-card .understand-group-label:first-child{margin-top:4px;}
   .understand-card h3{font-family:var(--serif);font-size:calc(16.5px * var(--dt, 1));font-weight:500;}
@@ -218,9 +218,9 @@
      Kante. */
   .toast{
     position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
-    background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);
+    background:var(--surface);color:var(--ink);
     font-size:calc(13.5px * var(--dt, 1));padding:8px 16px;border-radius:100px;
-    box-shadow:var(--shadow);opacity:0;transition:all .25s ease;pointer-events:none;z-index:50;
+    opacity:0;transition:all .25s ease;pointer-events:none;z-index:50;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
@@ -254,7 +254,7 @@
     width:100%; max-width:340px;
   }
   .figur-wahl{
-    aspect-ratio:1; border-radius:50%; padding:0; cursor:pointer; overflow:hidden;
+    aspect-ratio:1; border-radius:50%; padding:0; cursor:pointer;
     border:2px solid transparent; box-shadow:0 0 0 1px var(--line) inset;
     background:var(--figur-feld, var(--surface-2));
     transition:border-color var(--dauer-kurz) var(--kurve), transform var(--dauer-kurz) var(--kurve);
@@ -497,7 +497,7 @@
     width:100%; max-width:340px;
   }
   .hg-wahl{
-    height:38px; border-radius:var(--radius-s); cursor:pointer; padding:0;
+    border-radius:var(--radius-s); cursor:pointer; padding:0;
     border:2px solid transparent; box-shadow:0 0 0 1px var(--line) inset;
     transition:border-color var(--dauer-kurz) var(--kurve), transform var(--dauer-kurz) var(--kurve);
   }
@@ -565,7 +565,6 @@
   .hg-gruppen{ margin-top:12px; display:flex; flex-direction:column; gap:12px; max-width:340px; }
   .hg-gruppen .hg-raster{ margin-top:0; }
   .hg-gruppe-titel{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); margin:0 0 4px; }
-  .hg-wahl{ position:relative; }
   .hg-zu .hg-schloss{ position:absolute; right:5px; bottom:5px; color:var(--hg-ink); opacity:.9;
     filter:drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
   .hg-gruppen .hg-raster{ grid-template-columns:repeat(4, minmax(0, 1fr)); }
@@ -625,4 +624,4 @@
   .rollen-kachel .role-title{ font-weight:600; font-size:calc(15px * var(--dt, 1)); }
   .rollen-kachel .arch-naehe{ display:flex; align-items:center; gap:4px; font-size:calc(12px * var(--dt, 1)); color:var(--muted); }
   .rollen-kachel .arch-naehe-balken{ flex:1; }
-  .arch-kombis-liste{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; }
+  .arch-kombis-liste{ list-style:none; margin:0; display:flex; flex-direction:column; }

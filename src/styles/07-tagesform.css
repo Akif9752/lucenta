@@ -31,7 +31,7 @@
 
   /* Runde 129: die drei Tageszeiten. Gefuellt = eingetragen, Ring = jetzt dran, leer = offen.
      Das Wort steht neben dem Punkt, damit der Zustand nicht allein an der Farbe haengt. */
-  .tf-abschnitte{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 12px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);}
+  .tf-abschnitte{display:flex;flex-wrap:wrap;margin:2px 0 12px;font-size:calc(12.5px * var(--dt, 1));color:var(--muted);}
   .state-check-card .tf-abschnitte{margin:0 0 8px;}
   .tf-abschnitt{display:inline-flex;align-items:center;gap:4px;}
   .tf-abschnitt-punkt{position:relative;width:11px;height:11px;border-radius:50%;flex-shrink:0;
@@ -57,9 +57,7 @@
     100%{transform:scale(1) rotate(0);}
   }
   @keyframes done-gleiten{from{opacity:0;transform:translateX(-14px);}to{opacity:1;transform:none;}}
-  @keyframes done-pop{from{transform:scale(.6);opacity:0;}to{transform:scale(1);opacity:1;}}
   @keyframes check-draw{to{stroke-dashoffset:0;}}
-  @keyframes done-fade{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:none;}}
   @media (prefers-reduced-motion: reduce){
     .state-done.just-saved .state-done-check,
     .state-done.just-saved .state-done-text{animation:none;}
@@ -134,7 +132,7 @@
   .tf-erinnerung .settings-hint{ font-size:calc(12.5px * var(--dt, 1)); color:var(--muted); }
 
   .tf-leer, .tf-hinweis{ margin:8px 0 0; font-size:calc(13px * var(--dt, 1)); line-height:1.45; color:var(--muted); }
-  .tf-muster-frei{ margin:0 0 8px; font-size:calc(12px * var(--dt, 1)); font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--accent); }
+  .tf-muster-frei{ margin:0 0 8px; font-size:calc(12px * var(--dt, 1)); font-weight:600; }
 
   /* ---------- Bandbreite ---------- */
   .tf-band-karte{ background:var(--surface); border-radius:var(--radius-m); padding:16px; display:flex; flex-direction:column; gap:16px; }
@@ -179,7 +177,7 @@
   .tf-kal-wochentage, .tf-kal-raster{ display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:4px; }
   .tf-kal-wochentage span{ text-align:center; font-size:calc(11px * var(--dt, 1)); color:var(--muted-soft); }
   .tf-kal-zelle{
-    aspect-ratio:1; border-radius:50%; border:none; padding:0; font:inherit; font-size:calc(13px * min(var(--dt, 1), 1.4));
+    aspect-ratio:1; border:none; padding:0; font:inherit; font-size:calc(13px * min(var(--dt, 1), 1.4));
     display:flex; align-items:center; justify-content:center; color:var(--muted-soft);
     background:transparent;
   }

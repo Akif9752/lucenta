@@ -1,10 +1,9 @@
 /* ---------- Landing ---------- */
   .hero{padding:36px 0 8px;}
   .eyebrow{
-    font-family:var(--mono); font-size:calc(12px * var(--dt, 1)); letter-spacing:.06em; text-transform:uppercase;
-    color:var(--accent-strong); margin-bottom:12px; display:flex; align-items:center; gap:8px;
+      display:flex; align-items:center; gap:8px;
   }
-  .eyebrow::before{content:'';width:16px;height:1px;background:var(--accent-strong);display:inline-block;}
+  .eyebrow::before{content:'';width:16px;height:1px;background:var(--accent-strong);}
   .hero h1{font-size:calc(clamp(30px,7vw,44px) * min(var(--dt, 1), 1.3)); line-height:1.08; letter-spacing:-.01em;}
   /* Startseiten-Titel in Fraunces 500 mit kursiver Hervorhebung (Entscheidung des Inhabers) — neben
      der Wortmarke die einzige Ausnahme von SF. */
@@ -19,7 +18,6 @@
     /* max-width statt fester Breite, sonst laeuft die Beschriftung bei 200 % aus der Pille. */
     max-width:100%;
     display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;
-    transition:transform var(--dauer-kurz) var(--kurve), box-shadow var(--dauer-kurz) var(--kurve), background var(--dauer-kurz) var(--kurve);
   }
   .btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
   .btn-primary{background:var(--accent);color:var(--accent-ink);}
@@ -58,7 +56,7 @@
   /* flex-wrap, weil die Zeile aus Bezeichnung und „Beispiel"-Chip bei 200 % Zoom breiter war als
      die Karte und der Chip rechts heraushing. */
   .preview-label{font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-  .preview-body{display:flex;align-items:center;gap:16px;margin-top:12px;}
+  .preview-body{display:flex;align-items:center;margin-top:12px;}
   .radar-wrap.preview-radar{width:118px;max-width:118px;flex-shrink:0;margin:0;overflow:visible;}
   /* Das Netz belegt nur gut die Haelfte des Bildes (Rand fuer die hier ausgeblendeten Beschriftungen). */
   .preview-radar svg{transform:scale(1.6);transform-origin:center;}

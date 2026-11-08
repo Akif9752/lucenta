@@ -126,11 +126,8 @@
     var m=html.match(/width:([-\d.]+)%/);
     if(!isNaN(v)) ok(m && parseFloat(m[1])>=0 && parseFloat(m[1])<=100, "gaugeBar nicht geclamped bei "+v+": "+m);
   });
-  ok(sparklineSVG([],140,32).indexOf('<path')===-1, "sparkline mit 0 Werten zeichnet Pfad");
-  ok(sparklineSVG([50],140,32).indexOf('<path')===-1, "sparkline mit 1 Wert zeichnet Pfad");
-  ok(sparklineSVG([10,90],140,32).indexOf('<path')!==-1, "sparkline mit 2 Werten zeichnet keinen Pfad");
   [-10,0,50,100,140].forEach(function(p){ var s=ringGaugeSVG(p,132,'x'); ok(s.indexOf('NaN')===-1, "ringGauge NaN bei "+p); });
-  console.log("  gauge/sparkline/ring: keine NaN, korrekt geclamped");
+  console.log("  gauge/ring: keine NaN, korrekt geclamped");
 
   console.log("\n[11] Radar-Geometrie: keine NaN, Punkte im Rahmen");
   for(var g=0;g<200;g++){

@@ -20,7 +20,6 @@
   }
   .avatar-color-swatch:active{ transform:scale(.9); transition-duration:0s; }
   /* Die Antwortkreise (fuenfzigmal je Durchlauf): Druck sofort, Fuellung weich. */
-  .scale-btn{ transition:transform var(--dauer) var(--kurve), border-color var(--dauer-kurz) var(--kurve), background var(--dauer-kurz) var(--kurve); }
   .scale-btn:active{
     transform:scale(.9); border-color:var(--accent-strong); background:var(--surface-2);
     transition-duration:0s;
@@ -150,7 +149,6 @@
 
   /* 2. Die Fuellung der Antwort federt auf, der Ring gibt einen kurzen Impuls. */
   .scale-btn .fill{ transition:width var(--dauer) var(--kurve), height var(--dauer) var(--kurve), background var(--dauer-kurz) var(--kurve); }
-  .scale-btn.picked{ animation:antwort-puls var(--dauer) var(--kurve); }
   @keyframes antwort-puls{
     0%  { box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 42%, transparent); }
     100%{ box-shadow:0 0 0 11px color-mix(in srgb, var(--accent) 0%, transparent); }
@@ -167,7 +165,6 @@
   @media (prefers-reduced-motion: reduce){
     .btn-primary, .btn-hero.btn-primary{ transition:background var(--dauer-kurz) var(--kurve); }
     .btn-primary:active, .btn-hero.btn-primary:active{ transform:none; }
-    .scale-btn.picked{ animation:none; }
     .scale-btn .fill{ transition:none; }
     #focusline-fill{ transition:none; }
     #focusline.beat #focusline-fill{ animation:none; }

@@ -43,8 +43,6 @@
   .trait-more{
     margin-top:12px;padding-top:12px;border-top:1px solid var(--line);
     display:flex;justify-content:space-between;align-items:center;gap:8px;
-    font-family:var(--mono);font-size:calc(11px * var(--dt, 1));text-transform:uppercase;letter-spacing:.05em;
-    color:var(--accent-strong);
   }
   .trait-more .chev{color:var(--muted);flex-shrink:0;transition:transform var(--dauer-kurz) var(--kurve);transform:rotate(90deg);}
   .trait-card[open] .trait-more .chev{transform:rotate(-90deg);}

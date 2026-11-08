@@ -8,19 +8,16 @@
   .quiz-body::before{content:'';flex:1 0 0;}
   .quiz-body::after{content:'';flex:2.4 0 0;}
   /* flex-wrap fuer 200 % Textgroesse. */
-  .quiz-head{padding:28px 0 4px;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;}
+  .quiz-head{padding:28px 0 4px;display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;}
   .qcount{font-family:var(--mono);font-size:calc(13px * var(--dt, 1));color:var(--muted);}
   .qcard{
-    margin-top:16px;background:var(--surface);border:1px solid var(--line);
-    border-radius:var(--radius-l);padding:32px 24px;box-shadow:var(--shadow);
-    min-height:180px;display:flex;align-items:center;
+    margin-top:16px;
+    border-radius:var(--radius-l);
+    display:flex;align-items:center;
   }
   /* Die neue Frage kommt herein; nur EIN-, nicht ausblendend (sonst verschwaende die eben getippte
      Antwort). */
   /* ACHTUNG: Diese Regel greift NICHT — 11-feier.css ersetzt sie durch q-schwung. */
-  .qcard.q-in{ animation:q-enter .3s cubic-bezier(.2,.8,.2,1) both; }
-  @keyframes q-enter{ from{opacity:0;transform:translateY(9px);} to{opacity:1;transform:none;} }
-  @media (prefers-reduced-motion: reduce){ .qcard.q-in{animation:none;} }
   /* Die Aussage steht gross und frei, ohne Karte und Anfuehrungszeichen, ungetrennt (Entscheidung des Inhabers). */
   .qtext{font-family:var(--serif);font-size:calc(clamp(24px,6.6vw,30px) * min(var(--dt, 1), 1.3));line-height:1.25;letter-spacing:-.01em;
     font-weight:600;-webkit-hyphens:manual;hyphens:manual;}
@@ -30,13 +27,12 @@
   .scale-btn{
     /* Rand in --line-strong (3:1 fuer Bedienelemente). */
     flex:1;aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line-strong);
-    background:var(--surface);cursor:pointer;transition:all var(--dauer-kurz) var(--kurve);
+    background:var(--surface);cursor:pointer;
     display:flex;align-items:center;justify-content:center;
   }
-  .scale-btn .fill{width:0%;height:0%;border-radius:50%;background:var(--accent);transition:all var(--dauer-kurz) var(--kurve);}
+  .scale-btn .fill{width:0%;height:0%;border-radius:50%;background:var(--accent);}
   @media (hover:hover){ .scale-btn:hover{border-color:var(--accent-strong);} }
   .scale-btn:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
-  .scale-btn.picked{border-color:var(--accent);}
   .scale-btn.picked .fill{width:62%;height:62%;}
   /* Alle fuenf Stufen beschriftet, jede unter ihrem Knopf (flex:1, gleicher Abstand wie .scale-row).
      Kurze Texte; der volle Wortlaut steht im aria-label. overflow-wrap gegen lange Einzelwoerter. */

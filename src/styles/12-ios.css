@@ -685,7 +685,7 @@
      mittig erst nach dem Hochscrollen des grossen. Die Zurueck-Pillen bleiben unsichtbar im Dokument —
      der Chevron loest sie aus (navLeisteAnwenden in 02-zustand-navigation.js). */
   .kopf-zurueck{
-    display:flex; align-items:center; gap:4px; min-height:44px; max-width:42%; margin:0 0 0 -8px; padding:0 8px;
+    display:flex; align-items:center; gap:4px; min-height:44px; margin:0 0 0 -8px; padding:0 8px;
     background:none; border:none; color:var(--accent-strong); cursor:pointer;
     font-family:var(--sans); font-size:calc(17px * min(var(--dt, 1), 1.2)); font-weight:400; letter-spacing:-.01em;
   }
@@ -785,7 +785,7 @@
   details.vs-karte > summary::-webkit-details-marker{ display:none; }
   .vs-dim{ display:block; font-size:calc(12px * var(--dt, 1)); color:var(--muted); letter-spacing:.03em; text-transform:uppercase; margin-bottom:4px; }
   .vs-mehr{ border-top:1px solid var(--line); margin-top:12px; padding-top:8px; }
-  .vs-label{ font-size:calc(12px * var(--dt, 1)); color:var(--accent-strong); font-weight:600; margin:8px 0 2px; }
+  .vs-label{ font-size:calc(12px * var(--dt, 1)); font-weight:600; margin:8px 0 2px; }
   .vs-mehr p{ margin:0 0 4px; line-height:1.5; }
   .vs-frage{ font-style:italic; }
 
@@ -810,7 +810,7 @@
   .aussehen-name{ font-family:var(--marke); font-size:calc(22px * min(var(--dt, 1), 1.3)); font-weight:600; color:var(--hg-ink, var(--ink)); }
   #view-look .avatar-color-row{ margin-top:12px; }
   /* Verstehen-Reiter: nur der gewaehlte Teil (data-vs-reiter am Inhalt). */
-  .vs-sprung[aria-selected="true"]{ background:var(--accent-strong); color:var(--accent-ink); font-weight:600; }
+  .vs-sprung[aria-selected="true"]{ font-weight:600; }
   #understandContent[data-vs-reiter="beziehungen"] .vs-teil:not([data-vs-teil="beziehungen"]){ display:none; }
   #understandContent[data-vs-reiter="arbeit"] .vs-teil:not([data-vs-teil="arbeit"]){ display:none; }
   #understandContent[data-vs-reiter="stress"] .vs-teil:not([data-vs-teil="stress"]){ display:none; }

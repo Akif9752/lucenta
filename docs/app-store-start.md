@@ -76,7 +76,12 @@ die Store-Beschreibung muss es genauso halten.
       exchanges the authorization code, so no refresh or access tokens exist that could be revoked;
       there is no server. Account deletion is in Settings → Account → "Delete sign-in and iCloud
       data": it deletes the user's record from their private CloudKit database and forgets the
-      local identifier.
+      local identifier. (Path: Profile tab → Settings → Account; the button appears once signed in.)
+
+      Lucenta+ is an auto-renewable subscription (lucenta.plus.monat, lucenta.plus.jahr, one
+      group). The paywall opens from Profile → Lucenta+ or from any locked section; "Restore
+      Purchases" is on the same page. Apple Health access is write-only (mood as State of Mind)
+      and off by default. The app works fully offline and sends no data.
 - **Mindestversion iOS 16.4** (Runde 213, Entscheidung des Inhabers; das Widget 17.0). Darunter fehlten Farben
   (`color-mix()` ab 16.2) und der Strahlenkranz (`@property` ab 16.4). Im Store steht damit „Erfordert iOS 16.4 oder neuer".
 - **Zugriffsbegruendungen** in `Info.plist`: Health nur schreiben (`NSHealthUpdateUsageDescription`), Face ID fuer die

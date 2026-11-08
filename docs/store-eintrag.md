@@ -1,6 +1,6 @@
 ---
 titel: Der App-Store-Eintrag — fertige Texte und Bilder
-stand: 2026-09
+stand: 2026-11
 ---
 
 # App Store Connect: was hier fertig liegt
@@ -54,18 +54,19 @@ Typ-Schubladen. Ein Spektrum, das wirklich zu dir passt.
 
 FÜNFZIG AUSSAGEN, SIEBEN MINUTEN
 Der Test beruht auf den Big-Five-Markern des International Personality Item Pool. Dein Ergebnis
-ist kein Typ aus sechzehn Kästchen, sondern fünf Werte zwischen 0 und 100 — und ein
-ausführlicher Bericht zu jedem davon.
+ist kein Typ aus sechzehn Kästchen, sondern fünf Werte zwischen 0 und 100 — dazu ein Titel, der
+deine Kombination beschreibt, und zu jeder Dimension, was sie im Alltag bedeutet.
 
 DEINE TAGESFORM
 Persönlichkeit ändert sich nicht von Tag zu Tag. Energie und Stimmung schon. Zwei Angaben am
 Tag, zwei Sekunden — und über Wochen wird sichtbar, wohin es geht, an welchen Wochentagen und
 zu welcher Tageszeit du oben und unten liegst, und wie du nach einem schwachen Tag weitermachst.
+Auf Wunsch mit Erinnerung, Widget und der Stimmung in Apple Health.
 
 VERGLEICHEN
-Ein zehnstelliger Code genügt, um dein Profil mit dem einer anderen Person zu vergleichen — für
-jede Dimension in Alltag, Gespräch und gemeinsamem Unternehmen. Ohne Konto, ohne dass jemand
-Daten austauscht.
+Ein kurzer Freundescode genügt, um dein Profil mit dem einer anderen Person zu vergleichen: was
+euch verbindet, ergänzt und reibt, und für jede Dimension Alltag, Gespräch und gemeinsames
+Unternehmen. Ohne Konto, ohne dass Daten über einen Server laufen.
 
 DEINE DATEN GEHÖREN DIR
 Keine Werbung, kein Tracking, keine Weitergabe. Ohne Anmeldung verlassen deine Antworten, dein
@@ -75,11 +76,12 @@ können. Die Schriften stecken in der
 App selbst — beim Öffnen wird nichts nachgeladen, und Lucenta funktioniert vollständig ohne Netz.
 
 LUCENTA+
-Frei ist ein vollständiges Produkt: der ganze Test, dein Porträt, der volle Bericht über alle
-fünf Dimensionen, das Ergebnisbild, der Vergleich, Tagesform eintragen und vierzehn Tage sehen.
-Lucenta+ öffnet, was mit der Zeit wächst — den ganzen Verlauf, die Befunde aus der Tagesform,
-den Vergleich in der Tiefe und "Verstehen". Was während der Laufzeit entstanden ist, bleibt
-danach lesbar.
+Frei: der ganze Test, dein Ergebnistitel, das Radar, der Kern jeder Dimension, das Ergebnisbild
+zum Teilen, der Vergleich mit zwei Personen, Tagesform eintragen und die letzten sieben Tage sehen.
+Lucenta+ öffnet den vollständigen Bericht und alles, was mit der Zeit wächst: die Befunde und den
+Verlauf deiner Tagesform, den Vergleich in der Tiefe mit beliebig vielen Menschen, "Verstehen",
+den ausführlichen Test mit 29 Facetten und die Kurve über alle Durchläufe. Endet das Abo, wird
+nichts gelöscht — was du erfasst hast, bleibt gespeichert.
 
 Acht Sprachen: Deutsch, Englisch, Spanisch, Französisch, Italienisch, Portugiesisch, Türkisch,
 Japanisch.
@@ -104,18 +106,19 @@ that actually fits you.
 
 FIFTY STATEMENTS, SEVEN MINUTES
 The test is built on the Big Five markers of the International Personality Item Pool. Your
-result is not a type out of sixteen boxes but five values between 0 and 100 — with a full
-report on each of them.
+result is not a type out of sixteen boxes but five values between 0 and 100 — plus a title that
+describes your combination, and for each dimension what it means in everyday life.
 
 YOUR DAILY STATE
 Personality does not change from day to day. Energy and mood do. Two answers a day, two seconds
 — and over weeks it becomes visible which way it is going, on which weekdays and at which times
-of day you sit high and low, and how you carry on after a weak day.
+of day you sit high and low, and how you carry on after a weak day. Optionally with a reminder,
+a widget and your mood in Apple Health.
 
 COMPARING
-A ten-character code is all it takes to compare your profile with someone else's — for every
-dimension across everyday life, conversation and doing things together. No account, and nobody
-exchanges data.
+A short friend code is all it takes to compare your profile with someone else's: what connects
+you, complements you and rubs, and for every dimension everyday life, conversation and doing
+things together. No account, and no data goes through a server.
 
 YOUR DATA BELONGS TO YOU
 No advertising, no tracking, nothing passed on. Without signing in, your answers, your result,
@@ -124,11 +127,12 @@ backup then lives end-to-end encrypted in your own iCloud, where we cannot read 
 itself — nothing is fetched when you open it, and Lucenta works fully offline.
 
 LUCENTA+
-Free is a complete product: the whole test, your portrait, the full report across all five
-dimensions, the result image, the comparison, logging your daily state and seeing fourteen days.
-Lucenta+ opens what grows over time — the whole history, the findings from your daily state, the
-comparison in depth and "Understand". What emerged while you subscribed stays readable
-afterwards.
+Free: the whole test, your result title, the radar, the core of each dimension, the result image
+to share, comparing with two people, logging your daily state and seeing the last seven days.
+Lucenta+ opens the full report and everything that grows over time: the findings and history of
+your daily state, the comparison in depth with as many people as you like, "Understand", the
+in-depth test with 29 facets and the curve across all your runs. If the subscription ends,
+nothing is deleted — what you recorded stays saved.
 
 Eight languages: German, English, Spanish, French, Italian, Portuguese, Turkish, Japanese.
 
@@ -145,7 +149,8 @@ do not replace therapeutic, psychological or medical advice.
 
 **Descripción (resumen):** El texto largo sigue la estructura alemana, sección por sección:
 modelo Big Five en lugar de signos del zodiaco · cincuenta frases del IPIP · estado del día ·
-comparación mediante código · tus datos son tuyos · Lucenta+ · ocho idiomas · aviso de que no
+comparación mediante código de amigo · tus datos son tuyos · Lucenta+ (gratis: siete días de
+estado del día y dos comparaciones) · ocho idiomas · aviso de que no
 es un instrumento clínico.
 
 ### Français

@@ -264,25 +264,6 @@
            tx('js_stimmung') + ' ' + tagWert(erst.valence) + tx('js_verlauf_bis') + tagWert(letzt.valence) + '.';
   }
 
-  function sparklineSVG(values, w, h){
-    w = w || 140; h = h || 32;
-    if (!values || values.length<2){
-      return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" role="img" aria-hidden="true"></svg>';
-    }
-    var pad = 4;
-    var pts = values.map(function(v,i){
-      var x = pad + (i/(values.length-1))*(w-2*pad);
-      var y = pad + (1-v/100)*(h-2*pad);
-      return [x,y];
-    });
-    var path = pts.map(function(p,i){ return (i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' ');
-    var last = pts[pts.length-1];
-    return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" role="img" aria-hidden="true">'+
-      '<path d="'+path+'" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'+
-      '<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="3" fill="var(--accent-strong)"/>'+
-      '</svg>';
-  }
-
   // Der Bewegungsschalter der App wirkt an EINER Stelle: prefersReducedMotion() fragen alle Bewegungen
   // ab. Das System kann nur strenger sein — steht es auf reduziert, hilft "An" nicht.
   function bewegungAbgeschaltet(){
