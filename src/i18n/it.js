@@ -841,7 +841,7 @@
       'tf_bandbreite_lg_band': 'i tuoi giorni',
       'tf_bandbreite_lg_mittel': 'media dei giorni',
       'tf_bandbreite_lg_test': 'risultato del test',
-      'tf_bandbreite_grenze': 'Le domande giornaliere sono brevi e hanno una scala propria. Guarda la posizione – la tua vita quotidiana sta intorno al tuo risultato, sopra o sotto? –, non il numero esatto.',
+      'tf_bandbreite_grenze': 'Le domande giornaliere sono brevi e hanno una scala propria. Guarda la posizione, non il numero esatto: la tua vita quotidiana sta intorno al tuo risultato, sopra o sotto?',
       'tf_bandbreite_ohne_test': 'Con un risultato del test vedrai anche dove si colloca nella fascia.',
       'tf_kal_titel': 'Calendario',
       'tf_titel_verlauf': 'La tua cronologia',

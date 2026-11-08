@@ -470,6 +470,10 @@
                                                   : '<p class="pb-leer">' + tx(leer) + '</p>'; };
     var abschnitt = function(titel, inhalt){ return '<div class="pb-abschnitt"><h3>' + tx(titel) + '</h3>' + inhalt + '</div>'; };
     // Zuerst je ein Satz zu verbindet/ergaenzt/reibt, das Ausfuehrliche zugeklappt darunter (Entscheidung des Inhabers).
+    // Aufgeklappt nur, was oben noch nicht steht: sonst wiederholten sich erster Satz und Leer-Hinweis.
+    var mehr = function(titel, l){ return l.length ? abschnitt(titel, liste(l)) : ''; };
+    var paarTeil = gross.length ? String(gross[0]).match(/<span class="pb-paar">([\s\S]*)<\/span>$/) : null;
+    var grossRest = (paarTeil ? [paarTeil[1]] : []).concat(gross.slice(1));
     var ersterSatz = function(l, leer){ return '<p>' + (l.length ? String(l[0]).replace(/<span class="pb-paar">[\s\S]*$/, '') : tx(leer)) + '</p>'; };
     return '<section class="pb-bericht"><h2 class="section-title section-title-sub">' + tx('pb_titel') + '</h2>' +
       '<div class="pb-abschnitt pb-kurz">' +
@@ -477,9 +481,7 @@
         '<h3>' + tx('pb_ergaenzt') + '</h3>' + ersterSatz(mittel, 'pb_ergaenzt_leer') +
         '<h3>' + tx('pb_reibt') + '</h3>' + ersterSatz(gross, 'pb_reibt_leer') + '</div>' +
       '<details class="aufklapp pb-mehr">' + aufklappKopfHTML('pb_mehr', 'pb_mehr_unter') + '<div class="aufklapp-inhalt">' +
-        abschnitt('pb_verbindet', liste(gleich, 'pb_verbindet_leer')) +
-        abschnitt('pb_ergaenzt', liste(mittel, 'pb_ergaenzt_leer')) +
-        abschnitt('pb_reibt', liste(gross, 'pb_reibt_leer')) +
+        mehr('pb_verbindet', gleich.slice(1)) + mehr('pb_ergaenzt', mittel.slice(1)) + mehr('pb_reibt', grossRest) +
         abschnitt('pb_reden', '<p>' + tx(groessterAbstand < 15 ? 'pb_rat_aehnlich' : 'pb_rat_' + groesste) + '</p>') +
       '</div></details>' +
     '</section>';

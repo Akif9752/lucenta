@@ -34,12 +34,14 @@
       var parts = [];
       if (profile.name) parts.push(tx('js_datenpunkt_name'));
       if (profile.avatarImg) parts.push(tx('js_datenpunkt_bild'));
-      items.push(tx('js_datenpunkt_profil') + ' (' + parts.join(', ') + ')');
+      items.push({t: tx('js_datenpunkt_profil'), n: parts.join(', '), text: true});
     }
-    if (result) items.push(tx('js_gespeichertes_ergebnis'));
-    if (progress) items.push(tx('js_unterbrochener_test'));
     // Eine Zeile je Art, die Anzahl rechts (Design-Audit: keine Protokollzeile).
     var zeile = function(text, n){ var t = String(text).split('{n}').join('').replace(/^\s+|\s+$/g, ''); return {t: t.charAt(0).toUpperCase() + t.slice(1), n: n}; };
+    // „1 gespeichertes Ergebnis“: die Eins nach rechts wie bei den uebrigen Zeilen.
+    var eins = function(text){ var t = String(text); return /^\s*1\s/.test(t) ? zeile(t.replace(/^\s*1\s+/, ''), 1) : t; };
+    if (result) items.push(eins(tx('js_gespeichertes_ergebnis')));
+    if (progress) items.push(eins(tx('js_unterbrochener_test')));
     var histCount = loadHistory().length;
     if (histCount) items.push(zeile(tx(histCount===1 ? 'js_ergebnis_im_verlauf' : 'js_ergebnisse_im_verlauf'), histCount));
     var stateCount = loadStateHistory().length;
@@ -51,7 +53,7 @@
     var list = $('settingsDataList');
     if (items.length){
       list.innerHTML = items.map(function(x){
-        return typeof x === 'string' ? '<li><span>'+x+'</span></li>' : '<li><span>'+x.t+'</span><span class="mono daten-n">'+x.n+'</span></li>';
+        return typeof x === 'string' ? '<li><span>'+x+'</span></li>' : '<li><span>'+x.t+'</span><span class="'+(x.text ? '' : 'mono ')+'daten-n">'+x.n+'</span></li>';
       }).join('');
       list.style.display = '';
       $('settingsEmptyNote').style.display = 'none';

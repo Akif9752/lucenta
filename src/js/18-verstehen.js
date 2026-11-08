@@ -122,7 +122,10 @@
     var hist = [];   try{ hist = loadHistory(); }catch(e){}
     var eintraege = []; try{ eintraege = loadStateHistory(); }catch(e){}
     var tage = eintraege.length ? stateTage(eintraege) : [];
-    var archiv = []; try{ archiv = loadCompatArchive(); }catch(e){}
+    // Andere Profile: die gespeicherten Freunde, dazu ein altes Vergleichsarchiv (je Code einmal).
+    var andereCodes = [];
+    try{ loadFreunde().forEach(function(f){ if (andereCodes.indexOf(f.code) < 0) andereCodes.push(f.code); }); }catch(e){}
+    try{ loadCompatArchive().forEach(function(e){ if (e.otherCode && andereCodes.indexOf(e.otherCode) < 0) andereCodes.push(e.otherCode); }); }catch(e){}
 
     // 1) Die Form des Profils: was daraus fuer das Lesen des Restes folgt.
     var hoch = ORDER.reduce(function(a,f){ return sc[f] > sc[a] ? f : a; }, ORDER[0]);
@@ -193,13 +196,13 @@
               (beweglich.d <= 8 ? tx('js_ed_fest_ruhig') : tx('js_ed_fest_bewegt'))});
     }
 
-    // 5) Wo du anderen am naechsten bist (das Archiv nennt das andere Ende).
-    if (archiv.length >= 3){
+    // 5) Wo du anderen am naechsten bist.
+    if (andereCodes.length >= 3){
       var summe = {}, n = 0;
       ORDER.forEach(function(f){ summe[f] = 0; });
-      archiv.forEach(function(e){
+      andereCodes.forEach(function(code){
         var andere = null;
-        try{ andere = fromCode(e.otherCode); }catch(x){}
+        try{ andere = fromCode(code); }catch(x){}
         if (!andere) return;
         n++;
         ORDER.forEach(function(f){ summe[f] += Math.abs(sc[f] - andere[f]); });

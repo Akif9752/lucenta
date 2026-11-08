@@ -202,10 +202,12 @@
     var mittel = function(liste, g){ return liste.reduce(function(a, t){ return a + t[g]; }, 0) / liste.length; };
     var dieser = alle.filter(function(t){ return t.day.slice(0, 7) === key; });
     if (!dieser.length) return '';   // der Hinweis steht schon unter dem Raster
-    var zeile = tx('tf_kal_schnitt').split('{e}').join(tfZahl(mittel(dieser, 'energy'))).split('{s}').join(tfZahl(mittel(dieser, 'valence')))
+    // Wert und Wort bleiben zusammen („Stimmung −0,2“, „8 Tage“), sonst steht die Zahl allein in der naechsten Zeile.
+    var fest = function(t){ return String(t).replace(/ \{/g, '\u00a0{').replace(/\} /g, '}\u00a0'); };
+    var zeile = fest(tx('tf_kal_schnitt')).split('{e}').join(tfZahl(mittel(dieser, 'energy'))).split('{s}').join(tfZahl(mittel(dieser, 'valence')))
       .split('{n}').join(String(dieser.length));
     var vorige = alle.filter(function(t){ return t.day.slice(0, 7) === keyVor; });
-    var vgl = vorige.length >= 3 ? '<br>'+tx('tf_kal_vgl').split('{e}').join(tfDiff(mittel(dieser, 'energy') - mittel(vorige, 'energy')))
+    var vgl = vorige.length >= 3 ? '<br>'+fest(tx('tf_kal_vgl')).split('{e}').join(tfDiff(mittel(dieser, 'energy') - mittel(vorige, 'energy')))
       .split('{s}').join(tfDiff(mittel(dieser, 'valence') - mittel(vorige, 'valence'))) : '';
     return '<p class="tf-kal-ueberblick">'+zeile+vgl+'</p>';
   }

@@ -842,7 +842,7 @@
       'tf_bandbreite_lg_band': 'your days',
       'tf_bandbreite_lg_mittel': 'average of the days',
       'tf_bandbreite_lg_test': 'test result',
-      'tf_bandbreite_grenze': 'The daily questions are short and use their own scale. Read the position – is your everyday life around your result, above or below it? – not the exact number.',
+      'tf_bandbreite_grenze': 'The daily questions are short and use their own scale. Read the position, not the exact number: is your everyday life around your result, above or below it?',
       'tf_bandbreite_ohne_test': 'Once you have a test result, you will also see where it sits within the band.',
       'tf_kal_titel': 'Calendar',
       'tf_titel_verlauf': 'Your history',

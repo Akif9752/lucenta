@@ -841,7 +841,7 @@
       'tf_bandbreite_lg_band': 'os teus dias',
       'tf_bandbreite_lg_mittel': 'média dos dias',
       'tf_bandbreite_lg_test': 'resultado do teste',
-      'tf_bandbreite_grenze': 'As perguntas diárias são curtas e têm a sua própria escala. Repara na posição – o teu dia a dia está à volta do teu resultado, acima ou abaixo? –, não no número exato.',
+      'tf_bandbreite_grenze': 'As perguntas diárias são curtas e têm a sua própria escala. Repara na posição, não no número exato: o teu dia a dia está à volta do teu resultado, acima ou abaixo?',
       'tf_bandbreite_ohne_test': 'Com um resultado do teste vês também onde ele fica dentro da faixa.',
       'tf_kal_titel': 'Calendário',
       'tf_titel_verlauf': 'O teu histórico',

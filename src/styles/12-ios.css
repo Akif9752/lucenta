@@ -599,7 +599,7 @@
 
   .verlauf-alle{ margin-top:8px; }
   /* Wiederherstellen im Kauffenster: leise, wie in iOS-Apps ueblich (Richtlinie 3.1.2). */
-  .plus-modal-leise{ display:block; min-height:44px; margin:4px auto 0; padding:8px 16px; background:none; border:none; font:inherit; font-size:calc(14px * var(--dt, 1)); color:var(--muted); cursor:pointer; }
+  .plus-modal-leise{ display:block; min-height:44px; margin:4px auto 0; padding:8px 16px; background:none; border:none; font:inherit; font-size:calc(14px * var(--dt, 1)); color:var(--accent-strong); cursor:pointer; }
 
   /* Freunde: Zeilen wie im Archiv, mit Figur vorn; das Raster der Figuren kleiner als im Profil. */
 
@@ -900,7 +900,7 @@
   /* Ausfuehrlicher Test: Karte auf dem Ergebnis, 29 Facetten */
   .ft-karte{ background:var(--surface); border-radius:var(--radius-m); padding:16px; margin-top:20px; }
   .ft-karte-titel{ font-family:var(--serif); font-size:calc(20px * min(var(--dt, 1), 1.3)); margin-bottom:4px; }
-  .ft-karte p{ margin:0 0 12px; color:var(--muted); line-height:1.5; }
+  .ft-karte p{ margin:0 0 12px; font-size:calc(15px * var(--dt, 1)); color:var(--muted); line-height:1.5; }
   .ft-dim{ margin-top:20px; }
   .ft-dim-titel{ font-size:calc(18px * var(--dt, 1)); margin:0 0 8px; display:flex; justify-content:space-between; }
   .ft-zeile{ background:var(--surface); border-radius:var(--radius-m); padding:12px 16px; margin-top:8px; }
@@ -976,7 +976,7 @@
   }
   .vs-label{ color:var(--ink); }
   .tf-muster-frei{ letter-spacing:0; text-transform:none; color:var(--muted); }
-  .trait-more{ font-family:var(--sans); font-size:calc(14px * var(--dt, 1)); font-weight:500; letter-spacing:0; text-transform:none; color:var(--accent-strong); }
+  .trait-more{ font-family:var(--sans); font-size:calc(14px * var(--dt, 1)); font-weight:500; letter-spacing:0; text-transform:none; color:var(--accent-strong); -webkit-hyphens:none; hyphens:none; }
   .understand-group-label{ font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; letter-spacing:.02em; color:var(--muted); }
   .figur-gruppen .hg-gruppe-titel, .hg-gruppen .hg-gruppe-titel, .arch-gruppe-titel{
     font-family:var(--sans); font-size:calc(13px * var(--dt, 1)); font-weight:400; letter-spacing:.02em; color:var(--muted);
@@ -1021,7 +1021,7 @@
   .aufklapp > .aufklapp-kopf::-webkit-details-marker{ display:none; }
   .aufklapp > .aufklapp-kopf:active{ background:var(--surface-2); }
   .aufklapp-text{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
-  .aufklapp-text strong{ font-weight:600; color:var(--ink); }
+  .aufklapp-text strong{ font-size:calc(16px * var(--dt, 1)); font-weight:600; color:var(--ink); }
   .aufklapp-text span{ font-size:calc(13px * var(--dt, 1)); color:var(--muted); line-height:1.35; }
   .aufklapp > .aufklapp-kopf .chev{ color:var(--muted); flex-shrink:0; transition:transform var(--dauer) var(--kurve); }
   .aufklapp[open] > .aufklapp-kopf .chev{ transform:rotate(180deg); }
@@ -1059,14 +1059,20 @@
 /* Im Vergleich liegt alles auf einer Karte: innere Bloecke eine Ebene hoeher (surface-2), ohne Rand — sonst
    verschwammen Kurzfassung, Abschnitte und die beiden Aufklapp-Zeilen mit der Karte (Design-Team). */
   .compare-box .pb-abschnitt, .compare-box .aufklapp > .aufklapp-kopf, .compare-box .compat-card{ background:var(--surface-2); border-color:transparent; }
+  /* Auf surface-2 verschwand die Spur des Vergleichs (selbe Farbe); nur die zwei Punkte blieben sichtbar. */
+  .compare-box .compat-card .gauge-track{ background:var(--surface-3); }
   .compare-box .aufklapp > .aufklapp-kopf:active{ background:var(--surface-3); }
 
 /* Kopfleiste: der Zurueck-Text endet vor dem Titel in der Mitte (lange Titel wie „Impressum und Datenschutz“ ueberlagerten ihn). */
   .kopf-zurueck{ max-width:calc(30% - 4px); }
+  /* Solange der kleine Titel nicht steht, darf das Ziel bis zur Mitte reichen („Verstehen“ wurde sonst gekuerzt). */
+  header.top:not(.titel-sichtbar) .kopf-zurueck{ max-width:60%; }
 /* Feld fuer den Freundescode wie die uebrigen Eingabefelder: gefuellt, abgerundet, linksbuendig. */
   #view-freunde .freund-hinzu .name-input{ background:var(--surface); border:none; border-radius:var(--radius-m); padding:12px 16px;
     max-width:none; text-align:left; min-height:var(--knopf); box-sizing:border-box; }
   #view-freunde .freund-hinzu .name-input:focus{ border:none; }
+  /* Der Platzhalter in der Systemschrift: in der Monoschrift des Codes passte er nicht ins Feld. */
+  #freundCode::placeholder{ font-family:var(--sans); text-overflow:ellipsis; }
 /* Grosse Schrift: Feld und „Hinzufuegen“ untereinander, sonst schneidet das Feld den Platzhalter ab. */
   :root[data-text="gross"] #view-freunde .freund-hinzu{ flex-wrap:wrap; }
   :root[data-text="gross"] #view-freunde .freund-hinzu .name-input{ flex-basis:100%; }
