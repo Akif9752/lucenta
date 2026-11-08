@@ -29,7 +29,9 @@
     if (S === '1-start'){ tab('landing'); scrollTo(0, 0); }
     if (S === '2-ergebnis' || S === '3-bericht'){
       tab('profile');
-      nach(600, function(){
+      // Seit Runde 240 liegt das Ergebnis auf der Unterseite Verlauf des Profils.
+      nach(600, function(){ klick('#btnEntwicklungOeffnen'); });
+      nach(1300, function(){
         klick('#btnProfileViewResult');
         if (S === '3-bericht') nach(700, function(){
           var t = document.getElementById('traitsList'), h = t && (t.previousElementSibling || t);

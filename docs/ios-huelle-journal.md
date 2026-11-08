@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-08, nach Runde 241)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-08, nach Runde 242)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 241 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 242 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -82,7 +82,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 241 | (dieser) | Design-Audit umgesetzt: Fehler/Regelbrueche, Haptik nach Bedeutung, Vergleich kurz, Bewegungs- und Bausteintokens, Fuenfeck, Archetypen-Raster |
+| 242 | (dieser) | Gegenpruefung nach dem Umbau: Simulation 400 sauber, G1 im Simulator, Store-Szene repariert (nur Werkzeuge/Doku) |
+| 241 | `88b2679` | Design-Audit umgesetzt: Fehler/Regelbrueche, Haptik nach Bedeutung, Vergleich kurz, Bewegungs- und Bausteintokens, Fuenfeck, Archetypen-Raster |
 | 240 | `a971890` | UX/UI-Durchsicht umgesetzt: Onboarding 3 Schritte, Tageszeiten nachtragen, ein Lucenta+-Abschnitt, Erinnerung einmal fragen, ID automatisch |
 | 239 | `b9b2527` | Design-Durchsicht umgesetzt: flache Formen, Farbrollen, volle Namen, Tagesform kurz, Profil-Unterseiten, Titelform, 9-stelliger Code, Wochenbeginn |
 | 238 | `d629808` | Funde der Personen-Simulation behoben, Start in iPhone-Sprache, Benutzer-ID ab 2 Zeichen, EU-OS-Satz gestrichen |
@@ -340,6 +341,32 @@ Abonnenten: Freigeschaltetes als Wege, Abo verwalten/Kaeufe wiederherstellen kle
 Fuenfeck als Signatur (Leerzustaende, Test-Fortschritt je Zehntel, Meilensteine). Archetypen als Raster mit Detailseite.
 **Sterne/Sternbilder bleiben** bis zu den TestFlight-Gespraechen (Inhaber) — vorher nicht erneut vorschlagen.
 
+**Liste des Senior-Teams** (Design-Audit nach Runde 240) — nach JEDER Runde mit Stand zeigen (Auftrag des Inhabers):
+
+| Nr. | Punkt | Stand |
+| --- | --- | --- |
+| K1 | „Sichere dein Portraet" nur nach frischem Test | erledigt (241) |
+| K2 | Haptik nicht an „Bewegung reduzieren" | erledigt (241) |
+| K3 | Tuerkis nur an Antippbarem | erledigt (241) |
+| W1 | Erinnerungsfrage ohne doppelten Schalter | erledigt (241) |
+| W2 | Ergebniskarte ohne zweiten Titel | erledigt (241) |
+| W3 | Titel je Tagesform-Reiter | erledigt (241) |
+| W4 | Eine Zellform fuer Tagesdaten | erledigt (241) |
+| W5 | Vergleich: Kurzfassung oben, Rest zugeklappt | erledigt (241) |
+| W6 | Bewegungs-Tokens, Feder nur bei Erfolg | erledigt (241) |
+| W7 | Haptik nach Bedeutung | erledigt (241), am Geraet zu fuehlen |
+| W8 | Datenuebersicht als Liste | erledigt (241) |
+| W9 | Kartenkoepfe der Startseite einheitlich | erledigt (241) |
+| Q1 | Bausteine und Tokens (ohne Schrift) | erledigt (241) |
+| Q2 | Fuenfeck als Signatur | erledigt (241) |
+| Q3 | Lucenta+-Seite fuer Abonnenten mit Wegen | erledigt (241) |
+| Q4 | Archetypen als Raster mit Rollenseite | erledigt (241) |
+| Q5 | Verstehen-Bereiche einzeilig wischbar | erledigt (241) |
+| Q6 | Kurzportraet linksbuendig | erledigt (241) |
+| O1 | Sterne/Sternbilder vs. „nicht mit Sternzeichen" | vertagt bis zu Nutzertests (Inhaber) |
+| O2 | Nutzertests H1–H5 ueber TestFlight | wartet auf bezahlten Account (Inhaber) |
+| G1 | Am Geraet: Meldungen ueber der Tab-Leiste, Glas/Unschaerfe, Haptik | Simulator geprueft (242): Meldung frei ueber der Tab-Leiste, Glas da; Haptik nur am iPhone (Inhaber) |
+
 *Aus der Simulation (Runde 223):* **C** in Runde 239 gebaut (Serie leise, Schutztag als Schild).
 
 *Am iPhone vom Inhaber anzusehen (im Simulator/WebKit gebaut, am Geraet nicht bestaetigt):* Apples Tab-Leiste (Tippen, Ziehen
@@ -569,17 +596,33 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 241** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 242** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 241 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 242 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 242 — Gegenpruefung nach dem Umbau (nur Werkzeuge und Doku)
+
+**Inhaber:** „los" zur Gegenpruefung. Personen-Simulation mit 400 Personen auf dem Stand nach Runde 241: keine neuen Funde (nur
+Brasilien, zurueckgestellt; 4 Werkzeug-Abbrueche beim Neuladen nach dem Einspielen wie bisher). Kein Tippfehler mehr als gueltiger
+Code angenommen (neunstelliger Code). Die Pruefung „Benutzer-ID aus dem Namen" fragt jetzt die neue Zusage ab (mit Namen keine Abfrage).
+
+**G1 im Simulator:** eine Meldung steht frei ueber Apples Tab-Leiste, nicht darunter; Kopfleiste und Leiste zeigen Glas. Der
+Simulator startete Lucenta auf Englisch — die Startsprache nach dem iPhone greift in der echten WKWebView. Haptik bleibt am iPhone.
+
+**Fehler gefunden und behoben:** `tools/store_bilder/szene.js` oeffnete das Ergebnis ueber `#btnProfileViewResult` im Profil — der
+liegt seit Runde 240 auf der Unterseite Verlauf. Die Store-Bilder 2 und 3 waeren leer gewesen; jetzt erst `#btnEntwicklungOeffnen`.
+
+**Unsicher:** Store-Bilder nicht neu aufgenommen (erst nach den Tierbildern, Reihenfolge des Inhabers).
 
 ---
 

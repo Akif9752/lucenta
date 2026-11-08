@@ -317,8 +317,9 @@ async function lauf(browser, P){
   await klick('#tabFreunde'); await lauf(400);
   let eigenerCode = '';
   if (erg){
-    const vorschlag = await ev(() => (document.getElementById('freundIchId') || {}).value || '');
-    if (!vorschlag && P.name.trim()) fund('Keine Benutzer-ID aus dem Namen', JSON.stringify(P.name.slice(0, 20)));
+    // Seit Runde 240 steht die ID mit dem Namen sofort fest: Mit Namen darf keine Abfrage mehr kommen.
+    const abfrage = await ev(() => !!document.getElementById('freundIchId'));
+    if (abfrage && P.name.trim()) fund('Mit Namen trotzdem nach der Benutzer-ID gefragt', JSON.stringify(P.name.slice(0, 20)));
     await ev(id => { const f = document.getElementById('freundIchId'); if (f){ if (!f.value) f.value = id; document.querySelector('[data-ich="id"]').click(); } },
       'p' + P.nr.toString(36) + 'x');
     await lauf(400);
