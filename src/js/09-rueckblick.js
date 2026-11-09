@@ -59,7 +59,7 @@
         '<span class="tf-kal-monat">'+jahr+'</span>'+
         '<button type="button" class="tf-kal-pfeil" data-jahr="1" aria-label="'+tx('tf_jahr_folgejahr')+'"'+(tfJahrVersatz < 0 ? '' : ' disabled')+'>›</button>'+
       '</div>'+
-      '<p class="tf-kal-ueberblick">'+tx('tf_jahr_tage').split('{n}').join(String(tage))+'</p>'+
+      '<p class="tf-kal-ueberblick">'+wertFest(tx('tf_jahr_tage')).split('{n}').join(String(tage))+'</p>'+
       '<div class="tf-jahr">'+monate+'</div>'+
       (tage ? '<button type="button" class="btn btn-ghost btn-sm tf-teilen" data-jahr-teilen="'+jahr+'">'+tx('tf_als_bild_teilen')+'</button>' : '');
   }
@@ -96,8 +96,8 @@
     return r;
   }
   function tfRueckblickZeilen(r){
-    var z = [tx('tf_kal_schnitt').split('{e}').join(tfZahl(r.e)).split('{s}').join(tfZahl(r.s)).split('{n}').join(String(r.n))];
-    if (typeof r.de === 'number') z.push(tx('tf_kal_vgl').split('{e}').join(tfDiff(r.de)).split('{s}').join(tfDiff(r.ds)));
+    var z = [wertFest(tx('tf_kal_schnitt')).split('{e}').join(tfZahl(r.e)).split('{s}').join(tfZahl(r.s)).split('{n}').join(String(r.n))];
+    if (typeof r.de === 'number') z.push(wertFest(tx('tf_kal_vgl')).split('{e}').join(tfDiff(r.de)).split('{s}').join(tfDiff(r.ds)));
     if (r.zeit) z.push(tx('tf_rb_zeit').split('{zeit}').join(tx('tf_abschnitt_' + r.zeit)));
     if (r.stichwort) z.push(tx(r.stichwortBeste ? 'tf_rb_stichwort_beste' : 'tf_rb_stichwort_oft').split('{tag}').join(tx('tf_tag_' + r.stichwort)));
     return z;
@@ -194,9 +194,9 @@
     var inhalt;
     if (r.n < TF_RB_MIN_TAGE) inhalt = '<p class="tf-kal-ueberblick">'+tx('rb_zu_wenig')+'</p>';
     else {
-      var frei = tx('tf_kal_schnitt').split('{e}').join(tfZahl(r.e)).split('{s}').join(tfZahl(r.s)).split('{n}').join(String(r.n));
+      var frei = wertFest(tx('tf_kal_schnitt')).split('{e}').join(tfZahl(r.e)).split('{s}').join(tfZahl(r.s)).split('{n}').join(String(r.n));
       var mehr = [tx('tf_woche_beste').split('{tag}').join(r.beste)];
-      if (typeof r.de === 'number') mehr.push(tx('tf_woche_vgl').split('{e}').join(tfDiff(r.de)).split('{s}').join(tfDiff(r.ds)));
+      if (typeof r.de === 'number') mehr.push(wertFest(tx('tf_woche_vgl')).split('{e}').join(tfDiff(r.de)).split('{s}').join(tfDiff(r.ds)));
       var mehrHTML = '<ul class="tf-rb-zeilen">' + mehr.map(function(z){ return '<li>' + z + '</li>'; }).join('') + '</ul>';
       inhalt = '<ul class="tf-rb-zeilen"><li>' + frei + '</li></ul>' + (plus ? mehrHTML : vorschauHTML(mehrHTML, tx('tf_woche_plus')));
     }
@@ -372,9 +372,9 @@
     ctx.fillStyle = C.ink; ctx.font = '600 60px ' + SHARE_SERIF;
     var y = wrapCanvasText(ctx, titel, M, 250, W - 2 * M, 68) + 28;
     ctx.font = '500 32px ' + SHARE_SANS;
-    var zeilen = [tx('tf_kal_schnitt').split('{e}').join(tfZahl(r.e)).split('{s}').join(tfZahl(r.s)).split('{n}').join(String(r.n)),
+    var zeilen = [wertFest(tx('tf_kal_schnitt')).split('{e}').join(tfZahl(r.e)).split('{s}').join(tfZahl(r.s)).split('{n}').join(String(r.n)),
                   tx('tf_woche_beste').split('{tag}').join(r.beste)];
-    if (typeof r.de === 'number') zeilen.push(tx('tf_woche_vgl').split('{e}').join(tfDiff(r.de)).split('{s}').join(tfDiff(r.ds)));
+    if (typeof r.de === 'number') zeilen.push(wertFest(tx('tf_woche_vgl')).split('{e}').join(tfDiff(r.de)).split('{s}').join(tfDiff(r.ds)));
     zeilen.forEach(function(z){ ctx.fillStyle = C.ink; y = wrapCanvasText(ctx, decodeEntities(z.replace(/<[^>]+>/g, '')), M, y + 52, W - 2 * M, 42); });
     var schritt = 128, zelle = 112, x = (W - 7 * schritt + (schritt - zelle)) / 2, oben = Math.max(y + 60, 700), heute = todayKey();
     for (var i = 0; i < 7; i++){

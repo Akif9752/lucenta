@@ -1076,3 +1076,28 @@
 /* Grosse Schrift: Feld und „Hinzufuegen“ untereinander, sonst schneidet das Feld den Platzhalter ab. */
   :root[data-text="gross"] #view-freunde .freund-hinzu{ flex-wrap:wrap; }
   :root[data-text="gross"] #view-freunde .freund-hinzu .name-input{ flex-basis:100%; }
+/* Mit der Textgroesse des iPhones wachsen (fehlten bisher; tools/darstellung_suche.mjs). */
+  #view-freunde .history-title{ font-size:calc(16px * var(--dt, 1)); }
+  .arch-ich-text, .arch-kombi-titel, .arch-ohne-test{ font-size:calc(16px * var(--dt, 1)); }
+/* Auf der Kachel (surface-2) braucht die Spur die Farbe der Spuren, sonst bleibt nur der Punkt. */
+  .stat-tile .gauge-track{ background:var(--surface-3); }
+/* Bedienelemente trennen keine Woerter („Ja-nuar“, „Kalen-der“): das Wort rutscht ganz in die naechste Zeile und wird
+   nur gebrochen, wenn es allein nicht passt. */
+  button, summary, [role="tab"], .chip{ -webkit-hyphens:manual; hyphens:manual; }
+  .trait-top > .trait-name{ min-width:0; }   /* sonst ragt ein langes Wort aus dem Kartenkopf, statt zu brechen */
+/* Freundescode: Feld und „Hinzufuegen“ teilen sich die Zeile nur, solange der Platzhalter ins Feld passt. */
+  #view-freunde .freund-hinzu{ flex-wrap:wrap; }
+  #view-freunde .freund-hinzu .name-input{ flex:1 1 220px; }
+  input::placeholder{ text-overflow:ellipsis; }
+/* Grosse Schrift: Dimensionsnamen im Verlauf umbrechen statt mit „…“ zu enden. */
+  :root[data-text="gross"] .trend-name{ white-space:normal; overflow:visible; }
+/* Schmale iPhones (320 pt): vier Reiter passen nicht nebeneinander („Calendrier“, „Örüntüler“) — zwei mal zwei. */
+  @media (max-width:359px){ .tf-reiter{ grid-auto-flow:row; grid-template-columns:1fr 1fr; } }
+/* Grosse Schrift: Raster mit weniger Spalten, sonst passen einzelne Woerter nicht in ihre Kachel. */
+  :root[data-text="gross"] .rollen-raster{ grid-template-columns:1fr; }
+  :root[data-text="gross"] .zub-raster{ grid-template-columns:1fr 1fr; }
+  :root[data-text="gross"] .symbol-raster{ grid-template-columns:1fr 1fr; }
+  :root[data-text="gross"] .tf-jahr{ grid-template-columns:1fr; }
+  .kopf-zurueck.nur-pfeil span{ display:none; }
+  .name-felder > .titelform{ align-self:stretch; }   /* die Felder darueber stehen linksbuendig ueber die ganze Breite */
+  .tf-rb-zeilen{ -webkit-hyphens:none; hyphens:none; }

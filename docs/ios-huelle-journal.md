@@ -7,12 +7,12 @@ gehoert ebenfalls hierher — nicht stillschweigend uebersprungen. Neueste Eintr
 
 ---
 
-## ÜBERGABE an die naechste Sitzung (Stand 2026-11-08, nach Runde 246)
+## ÜBERGABE an die naechste Sitzung (Stand 2026-11-09, nach Runde 247)
 
 **Lies NUR diesen Block.** Er genuegt allein; die Eintraege darunter sind Begruendungen zum
 Nachschlagen. Dazu `tools/xcode-CLAUDE.md` (liegt als `ios/App/CLAUDE.md` neben der `.xcodeproj`
 und wird von Xcode geladen) und die `CLAUDE.md` im Wurzelverzeichnis. Zuletzt vollstaendig
-durchgesehen nach Runde 246 — es gilt dieser Block, nicht aeltere Fassungen.
+durchgesehen nach Runde 247 — es gilt dieser Block, nicht aeltere Fassungen.
 
 ### Wie der Inhaber arbeitet
 
@@ -82,7 +82,8 @@ Regeln, die er gesetzt hat:
 
 | Runde | Commit | Inhalt |
 | --- | --- | --- |
-| 246 | (dieser) | A1 (Verstehen liest Freunde) und neun Darstellungsfehler aus drei Simulator-Rundgaengen (D1–D9) |
+| 247 | (dieser) | Darstellung: neun neue Messungen in der Fehlersuche, Bildrundgang ueber jede Seite, Funde D10–D14 |
+| 246 | `5594144` | A1 (Verstehen liest Freunde) und neun Darstellungsfehler aus drei Simulator-Rundgaengen (D1–D9) |
 | 245 | `ab92f65` | Store-Texte auf den heutigen Stand (frei 7 Tage, Bericht Lucenta+, Freundescode), 74 Texte, 72 CSS-Deklarationen, 1 Funktion aufgeraeumt |
 | 244 | `abdc378` | Vergleich: Aufklapp-Zeilen neu; tiefer Simulator-Rundgang (3 Laeufe), sieben Funde behoben |
 | 243 | `6a5f691` | Design-Team im Simulator: Rundgang dunkel/de und hell/en, zehn Funde behoben |
@@ -398,6 +399,11 @@ Fuenfeck als Signatur (Leerzustaende, Test-Fortschritt je Zehntel, Meilensteine)
 | D7 | Kalender-Ueberblick: Zahl allein in der naechsten Zeile („−0,2“, „jours“), Trennung „Crois-sance“ | erledigt (246): geschuetzte Leerzeichen, keine Trennung |
 | D8 | Datenliste: „Profil (Name)“ und „1 gespeichertes Ergebnis“ ohne Wert rechts | erledigt (246) |
 | D9 | Texte: „? –,“ in der Bandbreite (6 Sprachen), „An was fuer Tagen“; Franzoesisch brach vor „:“ und „?“ um | erledigt (246): umformuliert, 236 geschuetzte Leerzeichen in fr |
+| D10 | Kopfleiste: Ziel und Titel beide gekuerzt („Einstellun… Impressum und D…“) | erledigt (247): Platz wird verteilt; passt der Titel nicht, bleibt wie bei iOS nur der Pfeil |
+| D11 | Ergebnis-Kacheln: Spur unsichtbar (surface-2 auf surface-2) | erledigt (247) |
+| D12 | Grosse Schrift: Namen in der Freundesliste, Rollen-Texte wuchsen nicht mit; Verlaufsnamen bei 200 % mit „…“ | erledigt (247) |
+| D13 | Silbentrennung in Knoepfen/Reitern („Ja-nuar“, „Kalen-der“), vier Reiter auf 320 pt zu eng, Raster bei 200 % zu eng | erledigt (247): keine Trennung in Bedienelementen, 2×2-Reiter, weniger Spalten |
+| D14 | Rueckblick: Zahl allein in der Zeile, „Stim-mung“; Freundescode-Feld auf 320 pt; Titelform mittig | erledigt (247) |
 
 *Aus der Simulation (Runde 223):* **C** in Runde 239 gebaut (Serie leise, Schutztag als Schild).
 
@@ -628,17 +634,41 @@ Reihenfolge fuer den Store-Start (Details: `docs/app-store-start.md`):
 ### Stand der Umgebung
 
 Simulator **iPhone 18 Pro** (iOS 27.0, `B55215E2-9318-4732-9132-F2D7FFFC18EC`), iPhone 15 Pro des Inhabers per Kabel
-(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 246** installiert (iPhone-Bau mit
+(`00008130-001E79CC0178001C`); auf beiden ist der Stand von **Runde 247** installiert (iPhone-Bau mit
 `CODE_SIGN_ENTITLEMENTS=/tmp/lucenta-health.entitlements` — nur HealthKit; die Datei liegt in `/tmp`, bei Bedarf neu anlegen:
 ein plist mit `com.apple.developer.healthkit` = true. App Group laesst sich im Personal Team nicht signieren → Widget ohne Daten). Bundle-ID `app.lucenta.ios`.
 Kein eigenes Simulator-Programm in diesem Xcode. Deployment Target 16.4 (Runde 213; Widget 17.0) — in Xcode
 **nicht** „Update to recommended settings" akzeptieren. Kein Blender, kein Bildgenerator; SceneKit/CoreGraphics ja.
 
-Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 246 (`git push` erlaubt); kein Pull Request ohne
+Branch `claude/lucenta-setup-browser-test-j6hn7f`, **gepusht** bis Runde 247 (`git push` erlaubt); kein Pull Request ohne
 Bitte. Arbeitsbaum sauber bis auf `ios/App/App.xcworkspace/xcshareddata/` (absichtlich unversioniert).
 Pruefstand: `pruef-alles` 9/9 (voll ~10 Min., losgeloest starten) — `tests` 10 Reihen, `pruef-app` 36, `pruef-nativ` 139,
 `fehlersuche` ohne Fund. Der PreToolUse-Hook faellt bei langen `sleep`-Befehlen oft aus: lieber `sleep 580` und danach
 einmal `tail`, als Schleifen.
+
+---
+
+## Runde 247 — Darstellung: neue Messungen und Rundgang ueber jede Seite
+
+**Inhaber:** „suche ganz akribisch und detailliert nach weiteren Darstellungsfehlern auf jeder einzelnen Seite der App".
+
+**Messung:** Die Fehlersuche sah die Fehlerarten aus Runde 246 nicht. Neu `tools/darstellung_suche.mjs`, eingehaengt in alle
+17 Durchlaeufe der Fehlersuche (jede Seite, hell/dunkel, frei/Plus, de/fr/tr/ja, 320 pt, 200 %): gekuerzter Text, Platzhalter
+breiter als das Feld, Flaeche ohne Kontrast zum Grund, Schrift waechst nicht mit, Text doppelt, Text ueberlappt, Inhalt
+abgeschnitten, Silbentrennung im Bedienelement, verwaiste Zahl. Geeicht an Fehlalarmen: zugeklappte Karten melden in WebKit
+weiter Flaechen (ausgenommen), Japanisch bricht ohne Trennung, ein Wort, das allein breiter ist als der Knopf, muss brechen,
+Kopfleiste mit Ziel und Titel, die zusammen nicht passen. Erster Lauf 134 Funde, am Ende keiner.
+
+**Bild:** Simulator-Rundgang ueber die Seiten, die noch nie fotografiert waren (Sprache, Hilfe, Recht, App-Symbol, Name,
+Aussehen, Verlauf, Rueckblick Woche/Monat/Jahr, Rollen-Detail, Tagesform-Verlauf, Facetten, Ergebnisbild, Fragebogen,
+Lucenta+-Seite und Kauffenster frei). Daraus D10 und D14 (Titelform, „Stim-mung").
+
+**Selbst verursacht und behoben:** Die Trenn-Regel fuer Bedienelemente liess bei 200 % „Gewissenhaftigkeit" aus dem
+Vergleichskopf ragen (Flex-Element ohne min-width:0).
+
+**Unsicher:** Der gewaehlte Kreis im Fragebogen (tuerkis mit dunklem Punkt) liest sich auf dem mittleren, kleinsten Kreis wie
+eine „0" — Gestaltung, nicht angefasst. Onboarding in diesem Rundgang nicht im Bild (Beispieldaten verhindern es; in Runde 244
+gesehen).
 
 ---
 

@@ -150,6 +150,7 @@
       var titel = VIEW_TITLES[currentView] || (navGrossTitel && navGrossTitel.tagName === 'H1' ? navGrossTitel.textContent.trim() : '');
       $('navTitel').textContent = navPille ? titel : '';
     }catch(e){}
+    navPlatzVerteilen();
   }
   function navZurueck(){ if (navPille) navPille.click(); }
   // Die Trennlinie unter der Kopfleiste erst nach dem Scrollen; der kleine Titel, sobald der grosse
@@ -164,7 +165,33 @@
       if (navPille && navGrossTitel && $('navTitel').textContent)
         zeigen = navGrossTitel.getBoundingClientRect().bottom < headerTopEl.getBoundingClientRect().bottom;
     }catch(e){}
-    headerTopEl.classList.toggle('titel-sichtbar', zeigen);
+    if (headerTopEl.classList.contains('titel-sichtbar') !== zeigen){
+      headerTopEl.classList.toggle('titel-sichtbar', zeigen);
+      navPlatzVerteilen();
+    }
+  }
+  // Zurueck-Ziel und kleiner Titel teilen sich die Leiste: Der Titel bleibt mittig und bekommt, was das Ziel
+  // nicht braucht; erst wenn beides nicht passt, wird zuerst das Ziel (bis 30 %), dann der Titel gekuerzt.
+  function navPlatzVerteilen(){
+    try{
+      var leiste = headerTopEl || document.querySelector('header.top'), zur = $('btnNavZurueck'), titel = $('navTitel');
+      if (!leiste || !zur || !titel) return;
+      zur.style.maxWidth = ''; titel.style.left = titel.style.right = '';
+      zur.classList.remove('nur-pfeil'); zur.removeAttribute('aria-label');
+      if (!leiste.classList.contains('titel-sichtbar') || zur.hidden) return;
+      zur.style.maxWidth = 'none';   // natuerliche Breite messen, nicht die vom Stilblatt gedeckelte
+      var w = leiste.clientWidth, ziel = Math.ceil(zur.getBoundingClientRect().width) + 1;
+      var rg = document.createRange(); rg.selectNodeContents(titel);
+      var tb = rg.getBoundingClientRect().width, rand = Math.max(ziel + 12, 56);   // Textbreite, nicht die des Kastens
+      // Passt der Titel neben dem vollen Ziel nicht, bleibt wie bei iOS nur der Pfeil (Name fuer VoiceOver bleibt).
+      if (tb > w - 2 * rand){
+        zur.setAttribute('aria-label', $('navZurueckText').textContent);
+        zur.classList.add('nur-pfeil');
+        rand = Math.max(Math.min(rand, (w - tb) / 2), 52);
+      }
+      zur.style.maxWidth = Math.floor(rand - 2) + 'px';
+      titel.style.left = titel.style.right = Math.round(rand) + 'px';
+    }catch(e){}
   }
   window.addEventListener('scroll', syncHeaderScrollState, {passive:true});
 

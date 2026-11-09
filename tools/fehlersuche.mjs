@@ -41,6 +41,8 @@ if (!pkg) {
 }
 const { webkit } = pkg;
 import { APP_URL as URL, appBruecke, tabKnoepfe } from './app_bruecke.mjs';
+import { suchGekuerzt, suchPlatzhalter, suchUnsichtbareFlaeche, suchStarreSchrift, suchDoppelterText, suchUeberlappung,
+  suchAbgeschnitten, suchTrennungImBedienelement, suchVerwaisteZeile } from './darstellung_suche.mjs';
 const MOTOREN = ['webkit'];
 const GLEICHZEITIG = Math.max(1, Number(process.env.LUCENTA_PARALLEL || 4));
 const STARTER = { webkit: () => webkit.launch() };
@@ -667,6 +669,16 @@ async function pruefeAnsicht(p, ansicht, kennung, breite, melde){
     ['Rest einer Ersetzung im Text', suchReste, null],
     ['unsichtbarer Text', suchUnsichtbarenText, null],
     ['zu schwacher Kontrast', suchSchwachenKontrast, null],
+    // Runde 247: Darstellungsfehler, die nur im Bild auffielen (tools/darstellung_suche.mjs).
+    ['Text gekuerzt', suchGekuerzt, null],
+    ['Platzhalter passt nicht ins Feld', suchPlatzhalter, null],
+    ['Flaeche ohne Kontrast zum Grund', suchUnsichtbareFlaeche, null],
+    ['Schrift waechst nicht mit', suchStarreSchrift, null],
+    ['Text doppelt', suchDoppelterText, null],
+    ['Text ueberlappt', suchUeberlappung, null],
+    ['Inhalt abgeschnitten', suchAbgeschnitten, null],
+    ['Trennung im Bedienelement', suchTrennungImBedienelement, null],
+    ['verwaiste letzte Zeile', suchVerwaisteZeile, null],
   ]){
     const treffer = arg === null ? await p.evaluate(fn) : await p.evaluate(fn, arg);
     treffer.forEach(t => melde(kennung + ' / ' + ansicht + ': ' + name + ' — ' + t));
